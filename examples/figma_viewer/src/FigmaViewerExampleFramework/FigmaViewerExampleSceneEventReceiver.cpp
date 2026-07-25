@@ -21,7 +21,7 @@
 #include "Kernel/NodeCast.h"
 #include "Kernel/VocabularyHelper.h"
 
-#include "Figma/Types.h"
+#include "figma/figma.hpp"
 
 #include "imgui.h"
 
@@ -589,7 +589,7 @@ namespace Mengine
 
         ImGui::Separator();
 
-        ImGui::Text( "Figma SDK version: %u", ::Figma::FIGMA_SDK_VERSION );
+        ImGui::Text( "Figma SDK version: %u", FIGMA_SDK_VERSION );
         ImGui::Text( "Status: %s", m_status.c_str() );
         ImGui::Text( "File: %s", m_figPathInput );
         ImGui::Text( "Fonts: %s", m_fontsPathInput[0] != '\0' ? m_fontsPathInput : "default" );

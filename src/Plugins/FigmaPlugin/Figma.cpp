@@ -53,7 +53,7 @@ namespace Mengine
             DECLARE_FACTORABLE( FigmaRenderScissor );
 
         public:
-            void setScissorViewport( const mt::mat4f & _wm, const ::Figma::Rectf & _rect, const RenderScissorInterface * _parent )
+            void setScissorViewport( const mt::mat4f & _wm, const figma_rectf_t & _rect, const RenderScissorInterface * _parent )
             {
                 Viewport viewport;
                 viewport.setRectangle(
@@ -94,9 +94,14 @@ namespace Mengine
         typedef IntrusivePtr<FigmaRenderScissor, RenderScissorInterface> FigmaRenderScissorPtr;
         typedef Vector<const RenderScissorInterface *> VectorRenderScissorInterface;
         //////////////////////////////////////////////////////////////////////////
-        static String makeString( ::Figma::FigmaStringView _value )
+        static String makeString( figma_string_view_t _value )
         {
-            return String( _value.data(), _value.size() );
+            if( _value.data == nullptr || _value.size == 0 )
+            {
+                return String();
+            }
+
+            return String( _value.data, _value.size );
         }
         //////////////////////////////////////////////////////////////////////////
         static String normalizePath( String _path )
@@ -465,24 +470,24 @@ namespace Mengine
             *_blue = Detail::clamp01( *_blue * (1.f - amount) + targetBlue * amount );
         }
         //////////////////////////////////////////////////////////////////////////
-        static float imageFilterValue_( const ::Figma::RenderBatchDesc & _batch, size_t _filterColorAdjustIndex, size_t _paintFilterIndex )
+        static float imageFilterValue_( const figma_render_batch_desc_t & _batch, size_t _filterColorAdjustIndex, size_t _paintFilterIndex )
         {
             float value = 0.f;
 
-            if( _batch.hasFilterColorAdjustValue == true && _filterColorAdjustIndex < 8 )
+            if( _batch.has_filter_color_adjust == FIGMA_TRUE && _filterColorAdjustIndex < 8 )
             {
-                value += _batch.filterColorAdjust[_filterColorAdjustIndex];
+                value += _batch.filter_color_adjust[_filterColorAdjustIndex];
             }
 
-            if( _batch.hasPaintFilterValue == true && _paintFilterIndex < 10 )
+            if( _batch.has_paint_filter == FIGMA_TRUE && _paintFilterIndex < 10 )
             {
-                value += _batch.paintFilter[_paintFilterIndex];
+                value += _batch.paint_filter[_paintFilterIndex];
             }
 
             return value;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool hasImageFilter_( const ::Figma::RenderBatchDesc & _batch )
+        static bool hasImageFilter_( const figma_render_batch_desc_t & _batch )
         {
             const size_t indices[] = {0, 1, 2, 4, 6, 7};
 
@@ -494,14 +499,14 @@ namespace Mengine
                 }
             }
 
-            if( _batch.hasPaintFilterValue == true )
+            if( _batch.has_paint_filter == FIGMA_TRUE )
             {
-                if( StdMath::fabs( _batch.paintFilter[8] ) > 0.0001f )
+                if( StdMath::fabs( _batch.paint_filter[8] ) > 0.0001f )
                 {
                     return true;
                 }
 
-                if( StdMath::fabs( _batch.paintFilter[9] ) > 0.0001f )
+                if( StdMath::fabs( _batch.paint_filter[9] ) > 0.0001f )
                 {
                     return true;
                 }
@@ -510,7 +515,7 @@ namespace Mengine
             return false;
         }
         //////////////////////////////////////////////////////////////////////////
-        static void applyImageFilter_( uint8_t * const _pixels, size_t _pitch, uint32_t _width, uint32_t _height, const ::Figma::RenderBatchDesc & _batch )
+        static void applyImageFilter_( uint8_t * const _pixels, size_t _pitch, uint32_t _width, uint32_t _height, const figma_render_batch_desc_t & _batch )
         {
             if( _pixels == nullptr || Detail::hasImageFilter_( _batch ) == false )
             {
@@ -523,8 +528,8 @@ namespace Mengine
             const float exposure = Detail::imageFilterValue_( _batch, 4, 4 );
             const float temperature = Detail::imageFilterValue_( _batch, 6, 6 );
             const float vibrance = Detail::imageFilterValue_( _batch, 7, 7 );
-            const float contrast = _batch.hasPaintFilterValue == true ? _batch.paintFilter[8] : 0.f;
-            const float brightness = _batch.hasPaintFilterValue == true ? _batch.paintFilter[9] : 0.f;
+            const float contrast = _batch.has_paint_filter == FIGMA_TRUE ? _batch.paint_filter[8] : 0.f;
+            const float brightness = _batch.has_paint_filter == FIGMA_TRUE ? _batch.paint_filter[9] : 0.f;
 
             for( uint32_t y = 0; y != _height; ++y )
             {
@@ -571,17 +576,17 @@ namespace Mengine
             }
         }
         //////////////////////////////////////////////////////////////////////////
-        static void appendImageFilterSignature_( String * const _signature, const ::Figma::RenderBatchDesc & _batch )
+        static void appendImageFilterSignature_( String * const _signature, const figma_render_batch_desc_t & _batch )
         {
             Char buffer[512];
             const int32_t size = MENGINE_SNPRINTF( buffer, 512,
                 "|filter:%u:%.9g:%.9g:%.9g:%.9g:%.9g:%.9g:%.9g:%.9g|paint:%u:%.9g:%.9g:%.9g:%.9g:%.9g:%.9g:%.9g:%.9g:%.9g:%.9g",
-                _batch.hasFilterColorAdjustValue == true ? 1u : 0u,
-                _batch.filterColorAdjust[0], _batch.filterColorAdjust[1], _batch.filterColorAdjust[2], _batch.filterColorAdjust[3],
-                _batch.filterColorAdjust[4], _batch.filterColorAdjust[5], _batch.filterColorAdjust[6], _batch.filterColorAdjust[7],
-                _batch.hasPaintFilterValue == true ? 1u : 0u,
-                _batch.paintFilter[0], _batch.paintFilter[1], _batch.paintFilter[2], _batch.paintFilter[3], _batch.paintFilter[4],
-                _batch.paintFilter[5], _batch.paintFilter[6], _batch.paintFilter[7], _batch.paintFilter[8], _batch.paintFilter[9]
+                _batch.has_filter_color_adjust == FIGMA_TRUE ? 1u : 0u,
+                _batch.filter_color_adjust[0], _batch.filter_color_adjust[1], _batch.filter_color_adjust[2], _batch.filter_color_adjust[3],
+                _batch.filter_color_adjust[4], _batch.filter_color_adjust[5], _batch.filter_color_adjust[6], _batch.filter_color_adjust[7],
+                _batch.has_paint_filter == FIGMA_TRUE ? 1u : 0u,
+                _batch.paint_filter[0], _batch.paint_filter[1], _batch.paint_filter[2], _batch.paint_filter[3], _batch.paint_filter[4],
+                _batch.paint_filter[5], _batch.paint_filter[6], _batch.paint_filter[7], _batch.paint_filter[8], _batch.paint_filter[9]
             );
 
             if( size > 0 )
@@ -595,9 +600,13 @@ namespace Mengine
             return static_cast<float>(_value) / 64.f;
         }
         //////////////////////////////////////////////////////////////////////////
-        static void appendSignature( String * const _signature, ::Figma::FigmaStringView _value )
+        static void appendSignature( String * const _signature, figma_string_view_t _value )
         {
-            _signature->append( _value.data(), _value.size() );
+            if( _value.data != nullptr && _value.size != 0 )
+            {
+                _signature->append( _value.data, _value.size );
+            }
+
             _signature->push_back( '|' );
         }
         //////////////////////////////////////////////////////////////////////////
@@ -640,7 +649,7 @@ namespace Mengine
             DECLARE_FACTORABLE( FigmaTextRasterizer );
 
         private:
-            typedef Vector<::Figma::RenderGeneratedTextLineDesc> VectorTextLine;
+            typedef Vector<figma_render_generated_text_line_desc_t> VectorTextLine;
             typedef Vector<char32_t> VectorCodepoint;
             typedef Map<String, FT_Face> MapFace;
 
@@ -709,14 +718,14 @@ namespace Mengine
                 this->clearFaces_();
             }
 
-            bool makeTextSignature( const ::Figma::RenderListInterface * _renderList, uint32_t _batchIndex, const ::Figma::RenderGeneratedTextureDesc & _desc, float _rasterScale, String * const _signature ) const
+            bool makeTextSignature( const figma_render_list_t * _renderList, uint32_t _batchIndex, const figma_render_generated_texture_desc_t & _desc, float _rasterScale, String * const _signature ) const
             {
                 if( _renderList == nullptr || _signature == nullptr )
                 {
                     return false;
                 }
 
-                if( _desc.text.empty() == true || _desc.color.a <= 0.f || _desc.fontSize <= 0.f || _desc.rect.w <= 0.f || _desc.rect.h <= 0.f )
+                if( _desc.text.size == 0 || _desc.color.a <= 0.f || _desc.font_size <= 0.f || _desc.rect.w <= 0.f || _desc.rect.h <= 0.f )
                 {
                     return false;
                 }
@@ -731,13 +740,13 @@ namespace Mengine
                 }
 
                 VectorTextLine lines;
-                lines.reserve( _desc.textLineCount );
+                lines.reserve( _desc.text_line_count );
 
-                for( uint32_t lineIndex = 0; lineIndex != _desc.textLineCount; ++lineIndex )
+                for( uint32_t lineIndex = 0; lineIndex != _desc.text_line_count; ++lineIndex )
                 {
-                    ::Figma::RenderGeneratedTextLineDesc line;
+                    figma_render_generated_text_line_desc_t line{};
 
-                    if( _renderList->getGeneratedTextureTextLine( _batchIndex, lineIndex, &line ) != ::Figma::EResult::Ok )
+                    if( figma_render_list_get_generated_texture_text_line( _renderList, _batchIndex, lineIndex, &line ) != FIGMA_RESULT_OK )
                     {
                         return false;
                     }
@@ -750,14 +759,14 @@ namespace Mengine
                 return true;
             }
             //////////////////////////////////////////////////////////////////////////
-            bool makeTextPixels( const ::Figma::RenderListInterface * _renderList, uint32_t _batchIndex, const ::Figma::RenderGeneratedTextureDesc & _desc, float _rasterScale, Data * const _pixels, uint32_t * const _width, uint32_t * const _height )
+            bool makeTextPixels( const figma_render_list_t * _renderList, uint32_t _batchIndex, const figma_render_generated_texture_desc_t & _desc, float _rasterScale, Data * const _pixels, uint32_t * const _width, uint32_t * const _height )
             {
                 if( m_library == nullptr || _pixels == nullptr || _width == nullptr || _height == nullptr )
                 {
                     return false;
                 }
 
-                if( _desc.text.empty() == true || _desc.color.a <= 0.f || _desc.fontSize <= 0.f || _desc.rect.w <= 0.f || _desc.rect.h <= 0.f )
+                if( _desc.text.size == 0 || _desc.color.a <= 0.f || _desc.font_size <= 0.f || _desc.rect.w <= 0.f || _desc.rect.h <= 0.f )
                 {
                     return false;
                 }
@@ -770,7 +779,7 @@ namespace Mengine
                 }
 
                 const float rasterScale = StdAlgorithm::max( 1.f, _rasterScale );
-                const FT_UInt pixelSize = static_cast<FT_UInt>(StdAlgorithm::max<long>( 1, StdMath::lround( _desc.fontSize * rasterScale ) ));
+                const FT_UInt pixelSize = static_cast<FT_UInt>(StdAlgorithm::max<long>( 1, StdMath::lround( _desc.font_size * rasterScale ) ));
 
                 if( FT_Set_Pixel_Sizes( face, 0, pixelSize ) != FT_Err_Ok )
                 {
@@ -786,13 +795,13 @@ namespace Mengine
                 }
 
                 VectorTextLine lines;
-                lines.reserve( _desc.textLineCount );
+                lines.reserve( _desc.text_line_count );
 
-                for( uint32_t lineIndex = 0; lineIndex != _desc.textLineCount; ++lineIndex )
+                for( uint32_t lineIndex = 0; lineIndex != _desc.text_line_count; ++lineIndex )
                 {
-                    ::Figma::RenderGeneratedTextLineDesc line;
+                    figma_render_generated_text_line_desc_t line{};
 
-                    if( _renderList->getGeneratedTextureTextLine( _batchIndex, lineIndex, &line ) != ::Figma::EResult::Ok )
+                    if( figma_render_list_get_generated_texture_text_line( _renderList, _batchIndex, lineIndex, &line ) != FIGMA_RESULT_OK )
                     {
                         return false;
                     }
@@ -802,9 +811,9 @@ namespace Mengine
 
                 _pixels->assign( width * height * 4, 0 );
 
-                for( uint32_t lineIndex = 0; lineIndex != _desc.textLineCount; ++lineIndex )
+                for( uint32_t lineIndex = 0; lineIndex != _desc.text_line_count; ++lineIndex )
                 {
-                    const ::Figma::RenderGeneratedTextLineDesc & line = lines[lineIndex];
+                    const figma_render_generated_text_line_desc_t & line = lines[lineIndex];
                     StringView lineText = this->textLineView_( _desc, lines, lineIndex );
                     VectorCodepoint codepoints = this->decodeUtf8_( lineText );
 
@@ -813,8 +822,8 @@ namespace Mengine
                         continue;
                     }
 
-                    const float ascent = line.lineAscent > 0.f
-                        ? line.lineAscent * rasterScale
+                    const float ascent = line.line_ascent > 0.f
+                        ? line.line_ascent * rasterScale
                         : Detail::to26Dot6( face->size->metrics.ascender );
                     const float baselineX = line.x * rasterScale;
                     const float baselineY = line.y * rasterScale + ascent;
@@ -843,15 +852,15 @@ namespace Mengine
                 m_faces.clear();
             }
 
-            String makeSignature_( const ::Figma::RenderGeneratedTextureDesc & _desc, const VectorTextLine & _lines, uint32_t _width, uint32_t _height ) const
+            String makeSignature_( const figma_render_generated_texture_desc_t & _desc, const VectorTextLine & _lines, uint32_t _width, uint32_t _height ) const
             {
                 String signature;
                 Detail::appendSignature( &signature, _desc.key );
                 Detail::appendSignature( &signature, _desc.text );
-                Detail::appendSignature( &signature, _desc.fontFamily );
-                Detail::appendSignature( &signature, _desc.fontStyle );
-                Detail::appendSignature( &signature, _desc.fontPostscriptName );
-                signature += Helper::stringFloat( _desc.fontSize );
+                Detail::appendSignature( &signature, _desc.font_family );
+                Detail::appendSignature( &signature, _desc.font_style );
+                Detail::appendSignature( &signature, _desc.font_postscript_name );
+                signature += Helper::stringFloat( _desc.font_size );
                 signature.push_back( '|' );
                 signature += Helper::stringFloat( _desc.color.r );
                 signature.push_back( ',' );
@@ -866,7 +875,7 @@ namespace Mengine
                 signature += Helper::stringFormat( "%u", _height );
                 signature.push_back( '|' );
 
-                for( const ::Figma::RenderGeneratedTextLineDesc & line : _lines )
+                for( const figma_render_generated_text_line_desc_t & line : _lines )
                 {
                     Detail::appendSignature( &signature, line.text );
                     signature += Helper::stringFloat( line.x );
@@ -875,14 +884,14 @@ namespace Mengine
                     signature.push_back( ',' );
                     signature += Helper::stringFloat( line.width );
                     signature.push_back( ',' );
-                    signature += Helper::stringFloat( line.lineAscent );
+                    signature += Helper::stringFloat( line.line_ascent );
                     signature.push_back( '|' );
                 }
 
                 return signature;
             }
 
-            FT_Face faceForDesc_( const ::Figma::RenderGeneratedTextureDesc & _desc )
+            FT_Face faceForDesc_( const figma_render_generated_texture_desc_t & _desc )
             {
                 String key = this->fontKeyForDesc_( _desc );
 
@@ -904,19 +913,19 @@ namespace Mengine
                 return face;
             }
 
-            String fontKeyForDesc_( const ::Figma::RenderGeneratedTextureDesc & _desc ) const
+            String fontKeyForDesc_( const figma_render_generated_texture_desc_t & _desc ) const
             {
-                if( _desc.fontPostscriptName.empty() == false )
+                if( _desc.font_postscript_name.size != 0 )
                 {
-                    return Detail::makeString( _desc.fontPostscriptName );
+                    return Detail::makeString( _desc.font_postscript_name );
                 }
 
-                String key = Detail::makeString( _desc.fontFamily );
+                String key = Detail::makeString( _desc.font_family );
 
-                if( key.empty() == false && _desc.fontStyle.empty() == false )
+                if( key.empty() == false && _desc.font_style.size != 0 )
                 {
                     key += "-";
-                    key += Detail::makeString( _desc.fontStyle );
+                    key += Detail::makeString( _desc.font_style );
                 }
 
                 return key;
@@ -1074,11 +1083,11 @@ namespace Mengine
 #endif
             }
 
-            FT_Face openFaceForDesc_( const ::Figma::RenderGeneratedTextureDesc & _desc ) const
+            FT_Face openFaceForDesc_( const figma_render_generated_texture_desc_t & _desc ) const
             {
-                const String postscriptName = Detail::makeString( _desc.fontPostscriptName );
-                const String familyName = Detail::makeString( _desc.fontFamily );
-                const String styleName = Detail::makeString( _desc.fontStyle );
+                const String postscriptName = Detail::makeString( _desc.font_postscript_name );
+                const String familyName = Detail::makeString( _desc.font_family );
+                const String styleName = Detail::makeString( _desc.font_style );
 
                 if( postscriptName.empty() == true && familyName.empty() == true )
                 {
@@ -1162,10 +1171,16 @@ namespace Mengine
                 return result;
             }
 
-            StringView sourceTextView_( const ::Figma::RenderGeneratedTextureDesc & _desc, const ::Figma::RenderGeneratedTextLineDesc & _line ) const
+            StringView sourceTextView_( const figma_render_generated_texture_desc_t & _desc, const figma_render_generated_text_line_desc_t & _line ) const
             {
-                const ::Figma::FigmaStringView source = _line.text.empty() == false ? _line.text : _desc.text;
-                return StringView( source.data(), source.size() );
+                const figma_string_view_t source = _line.text.size != 0 ? _line.text : _desc.text;
+
+                if( source.data == nullptr || source.size == 0 )
+                {
+                    return {};
+                }
+
+                return StringView( source.data, source.size );
             }
 
             StringView trimTrailingWhitespace_( StringView _value ) const
@@ -1210,9 +1225,9 @@ namespace Mengine
                 return {};
             }
 
-            StringView textLineView_( const ::Figma::RenderGeneratedTextureDesc & _desc, const VectorTextLine & _lines, size_t _lineIndex ) const
+            StringView textLineView_( const figma_render_generated_texture_desc_t & _desc, const VectorTextLine & _lines, size_t _lineIndex ) const
             {
-                const ::Figma::RenderGeneratedTextLineDesc & line = _lines[_lineIndex];
+                const figma_render_generated_text_line_desc_t & line = _lines[_lineIndex];
                 StringView view = this->sourceTextView_( _desc, line );
 
                 if( view.find_first_of( "\r\n" ) == StringView::npos )
@@ -1405,7 +1420,7 @@ namespace Mengine
                 this->writeTargetPixel_( _target, outputRed, outputGreen, outputBlue, outputAlpha );
             }
 
-            void blendGlyphBitmapPixel_( const FT_Bitmap & _bitmap, int32_t _sourceX, int32_t _sourceY, uint8_t * const _target, const ::Figma::RenderGeneratedTextureDesc & _desc ) const
+            void blendGlyphBitmapPixel_( const FT_Bitmap & _bitmap, int32_t _sourceX, int32_t _sourceY, uint8_t * const _target, const figma_render_generated_texture_desc_t & _desc ) const
             {
                 const float commandAlpha = Detail::clamp01( _desc.color.a );
 
@@ -1452,7 +1467,7 @@ namespace Mengine
                 this->blendStraightPixel_( _target, Detail::clamp01( _desc.color.r ), Detail::clamp01( _desc.color.g ), Detail::clamp01( _desc.color.b ), sourceAlpha );
             }
 
-            void rasterizeLine_( FT_Face _face, const ::Figma::RenderGeneratedTextureDesc & _desc, const VectorCodepoint & _codepoints, float _baselineX, float _baselineY, float _horizontalScale, uint8_t * const _pixels, uint32_t _width, uint32_t _height, uint32_t _stride ) const
+            void rasterizeLine_( FT_Face _face, const figma_render_generated_texture_desc_t & _desc, const VectorCodepoint & _codepoints, float _baselineX, float _baselineY, float _horizontalScale, uint8_t * const _pixels, uint32_t _width, uint32_t _height, uint32_t _stride ) const
             {
                 float penX = _baselineX;
                 FT_UInt previousGlyph = 0;
@@ -1533,96 +1548,96 @@ namespace Mengine
             MapFace m_faces;
         };
         //////////////////////////////////////////////////////////////////////////
-        static const Char * getFigmaResultMessage( ::Figma::EResult _result )
+        static const Char * getFigmaResultMessage( figma_result_t _result )
         {
             switch( _result )
             {
-            case ::Figma::EResult::Ok:
+            case FIGMA_RESULT_OK:
                 return "Ok";
-            case ::Figma::EResult::InvalidArgument:
+            case FIGMA_RESULT_INVALID_ARGUMENT:
                 return "InvalidArgument";
-            case ::Figma::EResult::OutOfMemory:
+            case FIGMA_RESULT_OUT_OF_MEMORY:
                 return "OutOfMemory";
-            case ::Figma::EResult::IoFailed:
+            case FIGMA_RESULT_IO_FAILED:
                 return "IoFailed";
-            case ::Figma::EResult::ParseFailed:
+            case FIGMA_RESULT_PARSE_FAILED:
                 return "ParseFailed";
-            case ::Figma::EResult::UnsupportedFormat:
+            case FIGMA_RESULT_UNSUPPORTED_FORMAT:
                 return "UnsupportedFormat";
-            case ::Figma::EResult::MissingEntry:
+            case FIGMA_RESULT_MISSING_ENTRY:
                 return "MissingEntry";
-            case ::Figma::EResult::NotFound:
+            case FIGMA_RESULT_NOT_FOUND:
                 return "NotFound";
-            case ::Figma::EResult::InvalidState:
+            case FIGMA_RESULT_INVALID_STATE:
                 return "InvalidState";
-            case ::Figma::EResult::VersionMismatch:
+            case FIGMA_RESULT_VERSION_MISMATCH:
                 return "VersionMismatch";
             }
 
             return "Unknown";
         }
         //////////////////////////////////////////////////////////////////////////
-        static EMaterialBlendMode getFigmaMaterialBlendMode( ::Figma::ERenderBlendMode _blendMode )
+        static EMaterialBlendMode getFigmaMaterialBlendMode( figma_render_blend_mode_t _blendMode )
         {
             switch( _blendMode )
             {
-            case ::Figma::ERenderBlendMode::Screen:
+            case FIGMA_RENDER_BLEND_SCREEN:
                 return EMB_SCREEN;
-            case ::Figma::ERenderBlendMode::Multiply:
+            case FIGMA_RENDER_BLEND_MULTIPLY:
                 return EMB_MULTIPLY;
-            case ::Figma::ERenderBlendMode::ColorDodge:
-            case ::Figma::ERenderBlendMode::Lighten:
+            case FIGMA_RENDER_BLEND_COLOR_DODGE:
+            case FIGMA_RENDER_BLEND_LIGHTEN:
                 return EMB_ADD;
-            case ::Figma::ERenderBlendMode::PassThrough:
-            case ::Figma::ERenderBlendMode::Normal:
+            case FIGMA_RENDER_BLEND_PASS_THROUGH:
+            case FIGMA_RENDER_BLEND_NORMAL:
             default:
                 return EMB_NORMAL;
             }
         }
         //////////////////////////////////////////////////////////////////////////
-        static ::Figma::EPointerButton getFigmaPointerButton( uint32_t _button )
+        static figma_pointer_button_t getFigmaPointerButton( uint32_t _button )
         {
             switch( _button )
             {
             case MC_LBUTTON:
-                return ::Figma::EPointerButton::Left;
+                return FIGMA_POINTER_BUTTON_LEFT;
             case MC_MBUTTON:
-                return ::Figma::EPointerButton::Middle;
+                return FIGMA_POINTER_BUTTON_MIDDLE;
             case MC_RBUTTON:
-                return ::Figma::EPointerButton::Right;
+                return FIGMA_POINTER_BUTTON_RIGHT;
             default:
-                return ::Figma::EPointerButton::Other;
+                return FIGMA_POINTER_BUTTON_OTHER;
             }
         }
         //////////////////////////////////////////////////////////////////////////
-        static ::Figma::InputModifierFlags getFigmaInputModifiers( const InputSpecialData & _special )
+        static figma_input_modifier_flags_t getFigmaInputModifiers( const InputSpecialData & _special )
         {
-            ::Figma::InputModifierFlags modifiers = ::Figma::EInputModifierFlag::None;
+            figma_input_modifier_flags_t modifiers = FIGMA_INPUT_MODIFIER_NONE;
 
             if( _special.isShift == true )
             {
-                modifiers |= ::Figma::EInputModifierFlag::Shift;
+                modifiers |= FIGMA_INPUT_MODIFIER_SHIFT;
             }
 
             if( _special.isControl == true )
             {
-                modifiers |= ::Figma::EInputModifierFlag::Control;
+                modifiers |= FIGMA_INPUT_MODIFIER_CONTROL;
             }
 
             if( _special.isAlt == true )
             {
-                modifiers |= ::Figma::EInputModifierFlag::Alt;
+                modifiers |= FIGMA_INPUT_MODIFIER_ALT;
             }
 
             if( _special.isSpecial == true )
             {
-                modifiers |= ::Figma::EInputModifierFlag::Command;
+                modifiers |= FIGMA_INPUT_MODIFIER_COMMAND;
             }
 
             return modifiers;
         }
         //////////////////////////////////////////////////////////////////////////
-        static void transformFigmaVertex( RenderVertex2D * const _vertex, const ::Figma::RenderVertex & _figmaVertex, const mt::mat4f & _wm, const RenderTextureInterfacePtr & _texture, ColorValue_ARGB _color )
+        static void transformFigmaVertex( RenderVertex2D * const _vertex, const figma_render_vertex_t & _figmaVertex, const mt::mat4f & _wm, const RenderTextureInterfacePtr & _texture, ColorValue_ARGB _color )
         {
             mt::vec3f position( _figmaVertex.x, _figmaVertex.y, 0.f );
             mt::mul_v3_v3_m4( &_vertex->position, position, _wm );
@@ -1753,14 +1768,14 @@ namespace Mengine
             return true;
         }
 
-        ::Figma::ViewportDesc viewport;
+        figma_viewport_desc_t viewport{};
         viewport.width = m_viewportSize.x;
         viewport.height = m_viewportSize.y;
         viewport.scale = m_viewportScale;
 
-        ::Figma::EResult result = m_player->setViewport( viewport );
+        figma_result_t result = figma_player_set_viewport( m_player, &viewport );
 
-        if( result != ::Figma::EResult::Ok )
+        if( result != FIGMA_RESULT_OK )
         {
             LOGGER_ERROR( "figma '%s' resource '%s' invalid viewport result '%s'"
                 , this->getName().c_str()
@@ -1839,9 +1854,9 @@ namespace Mengine
             return false;
         }
 
-        ::Figma::EResult result = m_player->restart();
+        figma_result_t result = figma_player_restart( m_player );
 
-        if( result != ::Figma::EResult::Ok )
+        if( result != FIGMA_RESULT_OK )
         {
             LOGGER_ERROR( "figma '%s' resource '%s' invalid replay result '%s'"
                 , this->getName().c_str()
@@ -1857,32 +1872,32 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Figma::inputPointerMove( float _x, float _y )
     {
-        return this->inputPointer_( ::Figma::EPointerEventType::Move, 0, _x, _y, ::Figma::EPointerButton::None, ::Figma::EInputModifierFlag::None, nullptr );
+        return this->inputPointer_( FIGMA_POINTER_EVENT_MOVE, 0, _x, _y, FIGMA_POINTER_BUTTON_NONE, FIGMA_INPUT_MODIFIER_NONE, nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Figma::inputPointerDown( float _x, float _y, uint32_t _button )
     {
-        return this->inputPointer_( ::Figma::EPointerEventType::Down, 0, _x, _y, Detail::getFigmaPointerButton( _button ), ::Figma::EInputModifierFlag::None, nullptr );
+        return this->inputPointer_( FIGMA_POINTER_EVENT_DOWN, 0, _x, _y, Detail::getFigmaPointerButton( _button ), FIGMA_INPUT_MODIFIER_NONE, nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Figma::inputPointerUp( float _x, float _y, uint32_t _button )
     {
-        return this->inputPointer_( ::Figma::EPointerEventType::Up, 0, _x, _y, Detail::getFigmaPointerButton( _button ), ::Figma::EInputModifierFlag::None, nullptr );
+        return this->inputPointer_( FIGMA_POINTER_EVENT_UP, 0, _x, _y, Detail::getFigmaPointerButton( _button ), FIGMA_INPUT_MODIFIER_NONE, nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Figma::inputPointerCancel( float _x, float _y )
     {
-        return this->inputPointer_( ::Figma::EPointerEventType::Cancel, 0, _x, _y, ::Figma::EPointerButton::None, ::Figma::EInputModifierFlag::None, nullptr );
+        return this->inputPointer_( FIGMA_POINTER_EVENT_CANCEL, 0, _x, _y, FIGMA_POINTER_BUTTON_NONE, FIGMA_INPUT_MODIFIER_NONE, nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Figma::inputKeyDown( uint32_t _keyCode )
     {
-        return this->inputKey_( ::Figma::EKeyEventType::Down, _keyCode, ::Figma::EInputModifierFlag::None, nullptr );
+        return this->inputKey_( FIGMA_KEY_EVENT_DOWN, _keyCode, FIGMA_INPUT_MODIFIER_NONE, nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Figma::inputKeyUp( uint32_t _keyCode )
     {
-        return this->inputKey_( ::Figma::EKeyEventType::Up, _keyCode, ::Figma::EInputModifierFlag::None, nullptr );
+        return this->inputKey_( FIGMA_KEY_EVENT_UP, _keyCode, FIGMA_INPUT_MODIFIER_NONE, nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Figma::setBindingText( const String & _key, const String & _value )
@@ -1916,9 +1931,10 @@ namespace Mengine
             return true;
         }
 
-        const ::Figma::EResult result = m_player->setVisible( ::Figma::FigmaStringView( _key.data(), _key.size() ), _value );
+        const figma_string_view_t key{_key.data(), _key.size()};
+        const figma_result_t result = figma_player_set_visible( m_player, key, _value == true ? FIGMA_TRUE : FIGMA_FALSE );
 
-        return result == ::Figma::EResult::Ok;
+        return result == FIGMA_RESULT_OK;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Figma::setBindingEnabled( const String & _key, bool _value )
@@ -1934,9 +1950,10 @@ namespace Mengine
             return true;
         }
 
-        const ::Figma::EResult result = m_player->setEnabled( ::Figma::FigmaStringView( _key.data(), _key.size() ), _value );
+        const figma_string_view_t key{_key.data(), _key.size()};
+        const figma_result_t result = figma_player_set_enabled( m_player, key, _value == true ? FIGMA_TRUE : FIGMA_FALSE );
 
-        return result == ::Figma::EResult::Ok;
+        return result == FIGMA_RESULT_OK;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Figma::setBindingImage( const String & _key, const String & _assetId )
@@ -1961,9 +1978,10 @@ namespace Mengine
             return true;
         }
 
-        const ::Figma::EResult result = m_player->setState( ::Figma::FigmaStringView( _key.data(), _key.size() ), _value );
+        const figma_string_view_t key{_key.data(), _key.size()};
+        const figma_result_t result = figma_player_set_state( m_player, key, _value == true ? FIGMA_TRUE : FIGMA_FALSE );
 
-        return result == ::Figma::EResult::Ok;
+        return result == FIGMA_RESULT_OK;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Figma::setBindingValue( const String & _key, const FigmaBindingValue & _value )
@@ -1987,9 +2005,10 @@ namespace Mengine
             return true;
         }
 
-        const ::Figma::EResult result = m_player->clearBindingValue( ::Figma::FigmaStringView( _key.data(), _key.size() ) );
+        const figma_string_view_t key{_key.data(), _key.size()};
+        const figma_result_t result = figma_player_clear_binding_value( m_player, key );
 
-        return result == ::Figma::EResult::Ok;
+        return result == FIGMA_RESULT_OK;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Figma::navigateToFrame( const String & _targetFrameId )
@@ -1999,9 +2018,10 @@ namespace Mengine
             return false;
         }
 
-        const ::Figma::EResult result = m_player->navigateToFrame( ::Figma::FigmaStringView( _targetFrameId.data(), _targetFrameId.size() ) );
+        const figma_string_view_t targetFrameId{_targetFrameId.data(), _targetFrameId.size()};
+        const figma_result_t result = figma_player_navigate_to_frame( m_player, targetFrameId );
 
-        return result == ::Figma::EResult::Ok;
+        return result == FIGMA_RESULT_OK;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Figma::openOverlay( const String & _targetFrameId )
@@ -2011,9 +2031,10 @@ namespace Mengine
             return false;
         }
 
-        const ::Figma::EResult result = m_player->openOverlay( ::Figma::FigmaStringView( _targetFrameId.data(), _targetFrameId.size() ) );
+        const figma_string_view_t targetFrameId{_targetFrameId.data(), _targetFrameId.size()};
+        const figma_result_t result = figma_player_open_overlay( m_player, targetFrameId );
 
-        return result == ::Figma::EResult::Ok;
+        return result == FIGMA_RESULT_OK;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Figma::closeOverlay()
@@ -2023,9 +2044,9 @@ namespace Mengine
             return false;
         }
 
-        const ::Figma::EResult result = m_player->closeOverlay();
+        const figma_result_t result = figma_player_close_overlay( m_player );
 
-        return result == ::Figma::EResult::Ok;
+        return result == FIGMA_RESULT_OK;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Figma::goBack()
@@ -2035,9 +2056,9 @@ namespace Mengine
             return false;
         }
 
-        const ::Figma::EResult result = m_player->goBack();
+        const figma_result_t result = figma_player_go_back( m_player );
 
-        return result == ::Figma::EResult::Ok;
+        return result == FIGMA_RESULT_OK;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Figma::_compile()
@@ -2063,8 +2084,8 @@ namespace Mengine
             , m_resourceFigma->getName().c_str()
         );
 
-        ::Figma::RuntimeInterface * runtime = data->getFigmaRuntime();
-        ::Figma::DocumentInterface * document = data->getFigmaDocument();
+        figma_runtime_t * runtime = data->getFigmaRuntime();
+        figma_document_t * document = data->getFigmaDocument();
 
         MENGINE_ASSERTION_MEMORY_PANIC( runtime, "figma '%s' resource '%s' invalid runtime"
             , this->getName().c_str()
@@ -2076,17 +2097,17 @@ namespace Mengine
             , m_resourceFigma->getName().c_str()
         );
 
-        ::Figma::PlayerDesc playerDesc;
+        figma_player_desc_t playerDesc{};
         playerDesc.viewport.width = m_viewportSize.x;
         playerDesc.viewport.height = m_viewportSize.y;
         playerDesc.viewport.scale = m_viewportScale;
-        playerDesc.startFrameId = m_startFrameId.empty() == true ? nullptr : m_startFrameId.c_str();
-        playerDesc.ud = this;
+        playerDesc.start_frame_id = {m_startFrameId.data(), m_startFrameId.size()};
+        playerDesc.user_data = this;
 
-        ::Figma::PlayerInterface * player = nullptr;
-        ::Figma::EResult result = runtime->createPlayer( document, playerDesc, &player );
+        figma_player_t * player = nullptr;
+        figma_result_t result = figma_runtime_create_player( runtime, document, &playerDesc, &player );
 
-        if( result != ::Figma::EResult::Ok )
+        if( result != FIGMA_RESULT_OK )
         {
             LOGGER_ERROR( "figma '%s' resource '%s' invalid create player result '%s'"
                 , this->getName().c_str()
@@ -2101,13 +2122,37 @@ namespace Mengine
 
         m_player = player;
 
-        m_player->setActionRouter( this );
+        figma_action_router_t actionRouter{};
+        actionRouter.user_data = this;
+        actionRouter.route_trigger = &Figma::routeTriggerCallback_;
+        actionRouter.route_action = &Figma::routeActionCallback_;
+        actionRouter.on_frame_changed = &Figma::onFrameChangedCallback_;
+        actionRouter.on_overlay_opened = &Figma::onOverlayOpenedCallback_;
+        actionRouter.on_overlay_closed = &Figma::onOverlayClosedCallback_;
+        actionRouter.on_state_changed = &Figma::onStateChangedCallback_;
+
+        result = figma_player_set_action_router( m_player, &actionRouter );
+
+        if( result != FIGMA_RESULT_OK )
+        {
+            LOGGER_ERROR( "figma '%s' resource '%s' invalid action router result '%s'"
+                , this->getName().c_str()
+                , m_resourceFigma->getName().c_str()
+                , Detail::getFigmaResultMessage( result )
+            );
+
+            figma_player_destroy( m_player );
+            m_player = nullptr;
+            m_resourceFigma->release();
+
+            return false;
+        }
 
         for( const MapFigmaBindingValue::value_type & binding : m_bindingValues )
         {
             if( this->applyBindingValue_( binding.first, binding.second ) == false )
             {
-                m_player->destroy();
+                figma_player_destroy( m_player );
                 m_player = nullptr;
                 m_resourceFigma->release();
 
@@ -2122,7 +2167,7 @@ namespace Mengine
     {
         if( m_player != nullptr )
         {
-            m_player->destroy();
+            figma_player_destroy( m_player );
             m_player = nullptr;
         }
 
@@ -2184,9 +2229,9 @@ namespace Mengine
 
         const float dt = _context->time * 0.001f * m_playbackRate;
 
-        ::Figma::EResult result = m_player->update( dt );
+        figma_result_t result = figma_player_update( m_player, dt );
 
-        if( result != ::Figma::EResult::Ok )
+        if( result != FIGMA_RESULT_OK )
         {
             LOGGER_ERROR( "figma '%s' resource '%s' invalid update result '%s'"
                 , this->getName().c_str()
@@ -2379,23 +2424,23 @@ namespace Mengine
         return texture;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr Figma::createAssetTexture_( ::Figma::DocumentInterface * _document, const ::Figma::RenderBatchDesc & _batch ) const
+    RenderTextureInterfacePtr Figma::createAssetTexture_( figma_document_t * _document, const figma_render_batch_desc_t & _batch ) const
     {
-        if( _document == nullptr || _batch.textureKey.empty() == true )
+        if( _document == nullptr || _batch.texture_key.size == 0 )
         {
             return nullptr;
         }
 
-        const ::Figma::AssetDesc * asset = _document->findAsset( _batch.textureKey );
+        figma_asset_desc_t asset{};
 
-        if( asset == nullptr || asset->bytes.empty() == true )
+        if( figma_document_find_asset( _document, _batch.texture_key, &asset ) == FIGMA_FALSE || asset.bytes.size == 0 )
         {
             return nullptr;
         }
 
         ConstString codecType = ConstString::none();
-        const String mime = Detail::toLowerString( Detail::makeString( ::Figma::FigmaStringView( asset->mime.data(), asset->mime.size() ) ) );
-        const String path = Detail::toLowerString( Detail::makeString( ::Figma::FigmaStringView( asset->path.data(), asset->path.size() ) ) );
+        const String mime = Detail::toLowerString( Detail::makeString( asset.mime ) );
+        const String path = Detail::toLowerString( Detail::makeString( asset.path ) );
 
         if( mime == "image/png" || Detail::hasExtension( path, ".png" ) == true )
         {
@@ -2420,14 +2465,14 @@ namespace Mengine
         MemoryInputInterfacePtr memory = MEMORY_SERVICE()
             ->createMemoryInput( MENGINE_DOCUMENT_FACTORABLE );
 
-        void * buffer = memory->newBuffer( asset->bytes.size() );
+        void * buffer = memory->newBuffer( asset.bytes.size );
 
         if( buffer == nullptr )
         {
             return nullptr;
         }
 
-        Helper::memoryCopy( buffer, 0, asset->bytes.data(), 0, asset->bytes.size() );
+        Helper::memoryCopy( buffer, 0, asset.bytes.data, 0, asset.bytes.size );
 
         ImageDecoderInterfacePtr decoder = CODEC_SERVICE()
             ->createDecoder( codecType, MENGINE_DOCUMENT_FACTORABLE );
@@ -2550,7 +2595,7 @@ namespace Mengine
         return texture;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr Figma::createGeneratedTexture_( const ::Figma::RenderListInterface * _renderList, uint32_t _batchIndex, const ::Figma::RenderGeneratedTextureDesc & _desc ) const
+    RenderTextureInterfacePtr Figma::createGeneratedTexture_( const figma_render_list_t * _renderList, uint32_t _batchIndex, const figma_render_generated_texture_desc_t & _desc ) const
     {
         if( _renderList == nullptr || m_textRasterizer == nullptr )
         {
@@ -2571,38 +2616,38 @@ namespace Mengine
         return this->createTextureFromPixels_( width, height, pixels.data(), width * 4 );
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr Figma::getBatchTexture_( const ::Figma::RenderListInterface * _renderList, const ::Figma::RenderBatchDesc & _batch, uint32_t _batchIndex ) const
+    RenderTextureInterfacePtr Figma::getBatchTexture_( const figma_render_list_t * _renderList, const figma_render_batch_desc_t & _batch, uint32_t _batchIndex ) const
     {
-        if( _batch.textureKey.empty() == true )
+        if( _batch.texture_key.size == 0 )
         {
             return nullptr;
         }
 
         String cacheKey;
 
-        switch( _batch.textureType )
+        switch( _batch.texture_type )
         {
-        case ::Figma::ERenderTextureType::Asset:
+        case FIGMA_RENDER_TEXTURE_ASSET:
             cacheKey = "asset:";
             break;
-        case ::Figma::ERenderTextureType::Generated:
+        case FIGMA_RENDER_TEXTURE_GENERATED:
             cacheKey = "generated:";
             break;
-        case ::Figma::ERenderTextureType::None:
+        case FIGMA_RENDER_TEXTURE_NONE:
         default:
             return nullptr;
         }
 
-        cacheKey.append( _batch.textureKey.data(), _batch.textureKey.size() );
+        cacheKey.append( _batch.texture_key.data, _batch.texture_key.size );
 
-        if( _batch.textureType == ::Figma::ERenderTextureType::Asset )
+        if( _batch.texture_type == FIGMA_RENDER_TEXTURE_ASSET )
         {
             Detail::appendImageFilterSignature_( &cacheKey, _batch );
         }
 
         MapTextureCache::iterator it_found = m_textureCache.find( cacheKey );
 
-        if( _batch.textureType == ::Figma::ERenderTextureType::Asset )
+        if( _batch.texture_type == FIGMA_RENDER_TEXTURE_ASSET )
         {
             if( it_found != m_textureCache.end() )
             {
@@ -2610,7 +2655,7 @@ namespace Mengine
             }
 
             const FigmaDataInterfacePtr & data = m_resourceFigma->getData();
-            ::Figma::DocumentInterface * document = data->getFigmaDocument();
+            figma_document_t * document = data->getFigmaDocument();
 
             TextureCacheDesc desc;
             desc.texture = this->createAssetTexture_( document, _batch );
@@ -2625,9 +2670,9 @@ namespace Mengine
             return desc.texture;
         }
 
-        ::Figma::RenderGeneratedTextureDesc generatedDesc;
+        figma_render_generated_texture_desc_t generatedDesc{};
 
-        if( _renderList->getGeneratedTexture( _batchIndex, &generatedDesc ) != ::Figma::EResult::Ok )
+        if( figma_render_list_get_generated_texture( _renderList, _batchIndex, &generatedDesc ) != FIGMA_RESULT_OK )
         {
             return nullptr;
         }
@@ -2682,14 +2727,14 @@ namespace Mengine
             return;
         }
 
-        const ::Figma::RenderListInterface * renderList = m_player->getRenderList();
+        const figma_render_list_t * renderList = figma_player_get_render_list( m_player );
 
         if( renderList == nullptr )
         {
             return;
         }
 
-        const uint32_t batchCount = renderList->getBatchCount();
+        const uint32_t batchCount = figma_render_list_get_batch_count( renderList );
 
         m_renderVertices.resize( batchCount );
         m_renderIndices.resize( batchCount );
@@ -2736,19 +2781,19 @@ namespace Mengine
 
         for( uint32_t batchIndex = 0; batchIndex != batchCount; ++batchIndex )
         {
-            ::Figma::RenderBatchDesc batch;
-            ::Figma::EResult result = renderList->getBatch( batchIndex, &batch );
+            figma_render_batch_desc_t batch{};
+            figma_result_t result = figma_render_list_get_batch( renderList, batchIndex, &batch );
 
-            if( result != ::Figma::EResult::Ok )
+            if( result != FIGMA_RESULT_OK )
             {
                 continue;
             }
 
-            if( batch.renderLayerId != activeRenderLayerId )
+            if( batch.render_layer_id != activeRenderLayerId )
             {
                 finishRenderLayer();
 
-                if( batch.renderLayerId != 0 )
+                if( batch.render_layer_id != 0 )
                 {
                     if( _context->resolution != nullptr )
                     {
@@ -2770,13 +2815,13 @@ namespace Mengine
 
                     if( activeRenderLayerTarget != nullptr )
                     {
-                        activeRenderLayerId = batch.renderLayerId;
-                        activeRenderLayerOpacity = batch.renderLayerOpacity;
+                        activeRenderLayerId = batch.render_layer_id;
+                        activeRenderLayerOpacity = batch.render_layer_opacity;
                     }
                 }
             }
 
-            if( activeRenderLayerId != 0 && batch.renderLayerId == activeRenderLayerId && activeRenderLayerTarget != nullptr )
+            if( activeRenderLayerId != 0 && batch.render_layer_id == activeRenderLayerId && activeRenderLayerTarget != nullptr )
             {
                 context.target = activeRenderLayerTarget->target.get();
             }
@@ -2785,10 +2830,10 @@ namespace Mengine
                 context.target = _context->target;
             }
 
-            if( batch.batchType == ::Figma::ERenderBatchType::ClipBegin )
+            if( batch.batch_type == FIGMA_RENDER_BATCH_CLIP_BEGIN )
             {
                 Detail::FigmaRenderScissorPtr scissor = Helper::makeFactorableUnique<Detail::FigmaRenderScissor>( MENGINE_DOCUMENT_FORWARD );
-                scissor->setScissorViewport( wm, batch.clipRect, context.scissor );
+                scissor->setScissorViewport( wm, batch.clip_rect, context.scissor );
 
                 context.scissor = scissor.get();
                 scissorStack.emplace_back( context.scissor );
@@ -2797,7 +2842,7 @@ namespace Mengine
                 continue;
             }
 
-            if( batch.batchType == ::Figma::ERenderBatchType::ClipEnd )
+            if( batch.batch_type == FIGMA_RENDER_BATCH_CLIP_END )
             {
                 if( scissorStack.size() > 1 )
                 {
@@ -2808,19 +2853,19 @@ namespace Mengine
                 continue;
             }
 
-            if( batch.batchType != ::Figma::ERenderBatchType::Geometry )
+            if( batch.batch_type != FIGMA_RENDER_BATCH_GEOMETRY )
             {
                 continue;
             }
 
-            if( batch.vertexCount == 0 || batch.indexCount == 0 )
+            if( batch.vertex_count == 0 || batch.index_count == 0 )
             {
                 continue;
             }
 
             RenderTextureInterfacePtr texture;
 
-            if( batch.shaderType == ::Figma::ERenderShaderType::Texture )
+            if( batch.shader_type == FIGMA_RENDER_SHADER_TEXTURE )
             {
                 texture = this->getBatchTexture_( renderList, batch, batchIndex );
 
@@ -2829,13 +2874,13 @@ namespace Mengine
                     continue;
                 }
             }
-            else if( batch.shaderType != ::Figma::ERenderShaderType::Color || batch.textureType != ::Figma::ERenderTextureType::None )
+            else if( batch.shader_type != FIGMA_RENDER_SHADER_COLOR || batch.texture_type != FIGMA_RENDER_TEXTURE_NONE )
             {
                 continue;
             }
 
-            const bool renderToLayer = activeRenderLayerId != 0 && batch.renderLayerId == activeRenderLayerId && activeRenderLayerTarget != nullptr;
-            const float batchAlpha = renderToLayer == true ? batch.opacity : batch.opacity * batch.renderLayerOpacity;
+            const bool renderToLayer = activeRenderLayerId != 0 && batch.render_layer_id == activeRenderLayerId && activeRenderLayerTarget != nullptr;
+            const float batchAlpha = renderToLayer == true ? batch.opacity : batch.opacity * batch.render_layer_opacity;
 
             ColorValue_ARGB color = Helper::makeRGBAF(
                 totalColorR,
@@ -2850,11 +2895,11 @@ namespace Mengine
             }
 
             VectorRenderVertex2D & vertices = m_renderVertices[batchIndex];
-            vertices.resize( batch.vertexCount );
+            vertices.resize( batch.vertex_count );
 
-            for( uint32_t vertexIndex = 0; vertexIndex != batch.vertexCount; ++vertexIndex )
+            for( uint32_t vertexIndex = 0; vertexIndex != batch.vertex_count; ++vertexIndex )
             {
-                const ::Figma::RenderVertex & figmaVertex = batch.vertices[vertexIndex];
+                const figma_render_vertex_t & figmaVertex = batch.vertices[vertexIndex];
                 RenderVertex2D & vertex = vertices[vertexIndex];
 
                 ColorValue_ARGB vertexColor = Helper::makeRGBAF(
@@ -2868,14 +2913,14 @@ namespace Mengine
             }
 
             VectorRenderIndex & indices = m_renderIndices[batchIndex];
-            indices.resize( batch.indexCount );
+            indices.resize( batch.index_count );
 
-            for( uint32_t index = 0; index != batch.indexCount; ++index )
+            for( uint32_t index = 0; index != batch.index_count; ++index )
             {
                 indices[index] = static_cast<RenderIndex>(batch.indices[index]);
             }
 
-            EMaterialBlendMode blendMode = Detail::getFigmaMaterialBlendMode( batch.blendMode );
+            EMaterialBlendMode blendMode = Detail::getFigmaMaterialBlendMode( batch.blend_mode );
 
             RenderMaterialInterfacePtr material;
 
@@ -2912,47 +2957,47 @@ namespace Mengine
 
             m_renderMaterials.emplace_back( material );
 
-            _renderPipeline->addRenderObject( &context, material, nullptr, vertices.data(), batch.vertexCount, indices.data(), batch.indexCount, nullptr, false, MENGINE_DOCUMENT_FORWARD );
+            _renderPipeline->addRenderObject( &context, material, nullptr, vertices.data(), batch.vertex_count, indices.data(), batch.index_count, nullptr, false, MENGINE_DOCUMENT_FORWARD );
         }
 
         finishRenderLayer();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Figma::inputPointer_( ::Figma::EPointerEventType _type, uint32_t _pointerId, float _x, float _y, ::Figma::EPointerButton _button, ::Figma::InputModifierFlags _modifiers, ::Figma::InputDispatchResult * const _dispatch )
+    bool Figma::inputPointer_( figma_pointer_event_type_t _type, uint32_t _pointerId, float _x, float _y, figma_pointer_button_t _button, figma_input_modifier_flags_t _modifiers, figma_input_dispatch_result_t * const _dispatch )
     {
         if( m_player == nullptr )
         {
             return false;
         }
 
-        ::Figma::PointerEvent event;
+        figma_pointer_event_t event{};
         event.type = _type;
-        event.pointerId = _pointerId;
+        event.pointer_id = _pointerId;
         event.x = _x;
         event.y = _y;
         event.button = _button;
         event.modifiers = _modifiers;
 
-        ::Figma::EResult result = m_player->inputPointer( event, _dispatch );
+        figma_result_t result = figma_player_input_pointer( m_player, &event, _dispatch );
 
-        return result == ::Figma::EResult::Ok;
+        return result == FIGMA_RESULT_OK;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Figma::inputKey_( ::Figma::EKeyEventType _type, uint32_t _keyCode, ::Figma::InputModifierFlags _modifiers, ::Figma::InputDispatchResult * const _dispatch )
+    bool Figma::inputKey_( figma_key_event_type_t _type, uint32_t _keyCode, figma_input_modifier_flags_t _modifiers, figma_input_dispatch_result_t * const _dispatch )
     {
         if( m_player == nullptr )
         {
             return false;
         }
 
-        ::Figma::KeyEvent event;
+        figma_key_event_t event{};
         event.type = _type;
-        event.keyCode = _keyCode;
+        event.key_code = _keyCode;
         event.modifiers = _modifiers;
 
-        ::Figma::EResult result = m_player->inputKey( event, _dispatch );
+        figma_result_t result = figma_player_input_key( m_player, &event, _dispatch );
 
-        return result == ::Figma::EResult::Ok;
+        return result == FIGMA_RESULT_OK;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Figma::screenToLocal_( const RenderContext * _context, const mt::vec2f & _screenPoint, mt::vec2f * const _localPoint ) const
@@ -3003,14 +3048,14 @@ namespace Mengine
             return false;
         }
 
-        bool hit = false;
-        const ::Figma::EResult result = m_player->hitTest( localPoint.x, localPoint.y, &hit );
-        if( result != ::Figma::EResult::Ok )
+        figma_bool_t hit = FIGMA_FALSE;
+        const figma_result_t result = figma_player_hit_test( m_player, localPoint.x, localPoint.y, &hit );
+        if( result != FIGMA_RESULT_OK )
         {
             return false;
         }
 
-        return hit;
+        return hit == FIGMA_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
@@ -3034,8 +3079,8 @@ namespace Mengine
     {
         MENGINE_UNUSED( _context );
 
-        ::Figma::InputDispatchResult dispatch;
-        const ::Figma::EKeyEventType type = _event.isDown == true ? ::Figma::EKeyEventType::Down : ::Figma::EKeyEventType::Up;
+        figma_input_dispatch_result_t dispatch{};
+        const figma_key_event_type_t type = _event.isDown == true ? FIGMA_KEY_EVENT_DOWN : FIGMA_KEY_EVENT_UP;
         if( this->inputKey_( type, static_cast<uint32_t>(_event.code), Detail::getFigmaInputModifiers( _event.special ), &dispatch ) == false )
         {
             return false;
@@ -3060,8 +3105,8 @@ namespace Mengine
             return false;
         }
 
-        ::Figma::InputDispatchResult dispatch;
-        const ::Figma::EPointerEventType type = _event.isDown == true ? ::Figma::EPointerEventType::Down : ::Figma::EPointerEventType::Up;
+        figma_input_dispatch_result_t dispatch{};
+        const figma_pointer_event_type_t type = _event.isDown == true ? FIGMA_POINTER_EVENT_DOWN : FIGMA_POINTER_EVENT_UP;
         if( this->inputPointer_( type, _event.touchId, localPoint.x, localPoint.y, Detail::getFigmaPointerButton( static_cast<uint32_t>(_event.button) ), Detail::getFigmaInputModifiers( _event.special ), &dispatch ) == false )
         {
             return false;
@@ -3094,8 +3139,8 @@ namespace Mengine
             return false;
         }
 
-        ::Figma::InputDispatchResult dispatch;
-        if( this->inputPointer_( ::Figma::EPointerEventType::Move, _event.touchId, localPoint.x, localPoint.y, ::Figma::EPointerButton::None, Detail::getFigmaInputModifiers( _event.special ), &dispatch ) == false )
+        figma_input_dispatch_result_t dispatch{};
+        if( this->inputPointer_( FIGMA_POINTER_EVENT_MOVE, _event.touchId, localPoint.x, localPoint.y, FIGMA_POINTER_BUTTON_NONE, Detail::getFigmaInputModifiers( _event.special ), &dispatch ) == false )
         {
             return false;
         }
@@ -3119,8 +3164,8 @@ namespace Mengine
             return false;
         }
 
-        ::Figma::InputDispatchResult dispatch;
-        if( this->inputPointer_( ::Figma::EPointerEventType::Move, _event.touchId, localPoint.x, localPoint.y, ::Figma::EPointerButton::None, Detail::getFigmaInputModifiers( _event.special ), &dispatch ) == false )
+        figma_input_dispatch_result_t dispatch{};
+        if( this->inputPointer_( FIGMA_POINTER_EVENT_MOVE, _event.touchId, localPoint.x, localPoint.y, FIGMA_POINTER_BUTTON_NONE, Detail::getFigmaInputModifiers( _event.special ), &dispatch ) == false )
         {
             return false;
         }
@@ -3136,64 +3181,116 @@ namespace Mengine
             return;
         }
 
-        this->inputPointer_( ::Figma::EPointerEventType::Move, _event.touchId, localPoint.x, localPoint.y, ::Figma::EPointerButton::None, Detail::getFigmaInputModifiers( _event.special ), nullptr );
+        this->inputPointer_( FIGMA_POINTER_EVENT_MOVE, _event.touchId, localPoint.x, localPoint.y, FIGMA_POINTER_BUTTON_NONE, Detail::getFigmaInputModifiers( _event.special ), nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    ::Figma::EResult Figma::routeTrigger( const ::Figma::TriggerEvent & _event )
+    figma_result_t FIGMA_CALL Figma::routeTriggerCallback_( void * _userData, const figma_trigger_event_t * _event )
+    {
+        if( _userData == nullptr || _event == nullptr )
+        {
+            return FIGMA_RESULT_INVALID_ARGUMENT;
+        }
+
+        Figma * self = static_cast<Figma *>(_userData);
+
+        return self->routeTrigger_( *_event );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    figma_result_t FIGMA_CALL Figma::routeActionCallback_( void * _userData, const figma_action_event_t * _event, figma_action_response_t * _response )
+    {
+        if( _userData == nullptr || _event == nullptr || _response == nullptr )
+        {
+            return FIGMA_RESULT_INVALID_ARGUMENT;
+        }
+
+        Figma * self = static_cast<Figma *>(_userData);
+
+        return self->routeAction_( *_event, _response );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void FIGMA_CALL Figma::onFrameChangedCallback_( void * _userData, figma_string_view_t _previousFrameId, figma_string_view_t _currentFrameId )
+    {
+        Figma * self = static_cast<Figma *>(_userData);
+
+        self->onFrameChanged_( _previousFrameId, _currentFrameId );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void FIGMA_CALL Figma::onOverlayOpenedCallback_( void * _userData, figma_string_view_t _frameId )
+    {
+        Figma * self = static_cast<Figma *>(_userData);
+
+        self->onOverlayOpened_( _frameId );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void FIGMA_CALL Figma::onOverlayClosedCallback_( void * _userData, figma_string_view_t _frameId )
+    {
+        Figma * self = static_cast<Figma *>(_userData);
+
+        self->onOverlayClosed_( _frameId );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void FIGMA_CALL Figma::onStateChangedCallback_( void * _userData, figma_string_view_t _sourceNodeId, figma_string_view_t _previousStateId, figma_string_view_t _currentStateId )
+    {
+        Figma * self = static_cast<Figma *>(_userData);
+
+        self->onStateChanged_( _sourceNodeId, _previousStateId, _currentStateId );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    figma_result_t Figma::routeTrigger_( const figma_trigger_event_t & _event )
     {
         FigmaTriggerEvent event;
-        event.inputKind = _event.inputKind;
-        event.triggerType = _event.triggerType;
-        event.interactionId = Detail::makeString( _event.interactionId );
-        event.sourceNodeId = Detail::makeString( _event.sourceNodeId );
-        event.currentFrameId = Detail::makeString( _event.currentFrameId );
-        event.pointerId = _event.pointer.pointerId;
+        event.inputKind = static_cast<EFigmaActionInputKind>(_event.input_kind);
+        event.triggerType = static_cast<EFigmaTriggerType>(_event.trigger_type);
+        event.interactionId = Detail::makeString( _event.interaction_id );
+        event.sourceNodeId = Detail::makeString( _event.source_node_id );
+        event.currentFrameId = Detail::makeString( _event.current_frame_id );
+        event.pointerId = _event.pointer.pointer_id;
         event.x = _event.pointer.x;
         event.y = _event.pointer.y;
         event.button = static_cast<uint32_t>(_event.pointer.button);
-        event.keyCode = _event.key.keyCode;
-        event.modifiers = static_cast<uint32_t>(_event.inputKind == ::Figma::EActionInputKind::Key ? _event.key.modifiers : _event.pointer.modifiers);
+        event.keyCode = _event.key.key_code;
+        event.modifiers = static_cast<uint32_t>(_event.input_kind == FIGMA_ACTION_INPUT_KEY ? _event.key.modifiers : _event.pointer.modifiers);
 
         EVENTABLE_METHOD( EVENT_FIGMA_TRIGGER )
             ->onFigmaTrigger( event );
 
-        return ::Figma::EResult::Ok;
+        return FIGMA_RESULT_OK;
     }
     //////////////////////////////////////////////////////////////////////////
-    ::Figma::EResult Figma::routeAction( const ::Figma::ActionEvent & _event, ::Figma::ActionResponse * const _response )
+    figma_result_t Figma::routeAction_( const figma_action_event_t & _event, figma_action_response_t * const _response )
     {
         FigmaActionEvent event;
-        event.inputKind = _event.inputKind;
-        event.triggerType = _event.triggerType;
-        event.connectionType = _event.connectionType;
-        event.navigationType = _event.navigationType;
-        event.actionId = Detail::makeString( _event.actionId );
-        event.interactionId = Detail::makeString( _event.interactionId );
-        event.sourceNodeId = Detail::makeString( _event.sourceNodeId );
-        event.currentFrameId = Detail::makeString( _event.currentFrameId );
-        event.targetFrameId = Detail::makeString( _event.targetFrameId );
-        event.pointerId = _event.pointer.pointerId;
+        event.inputKind = static_cast<EFigmaActionInputKind>(_event.input_kind);
+        event.triggerType = static_cast<EFigmaTriggerType>(_event.trigger_type);
+        event.connectionType = static_cast<EFigmaConnectionType>(_event.connection_type);
+        event.navigationType = static_cast<EFigmaNavigationType>(_event.navigation_type);
+        event.actionId = Detail::makeString( _event.action_id );
+        event.interactionId = Detail::makeString( _event.interaction_id );
+        event.sourceNodeId = Detail::makeString( _event.source_node_id );
+        event.currentFrameId = Detail::makeString( _event.current_frame_id );
+        event.targetFrameId = Detail::makeString( _event.target_frame_id );
+        event.pointerId = _event.pointer.pointer_id;
         event.x = _event.pointer.x;
         event.y = _event.pointer.y;
         event.button = static_cast<uint32_t>(_event.pointer.button);
-        event.keyCode = _event.key.keyCode;
-        event.modifiers = static_cast<uint32_t>(_event.inputKind == ::Figma::EActionInputKind::Key ? _event.key.modifiers : _event.pointer.modifiers);
+        event.keyCode = _event.key.key_code;
+        event.modifiers = static_cast<uint32_t>(_event.input_kind == FIGMA_ACTION_INPUT_KEY ? _event.key.modifiers : _event.pointer.modifiers);
 
         FigmaActionResponse response;
-        response.result = _response->result;
-        response.targetFrameId = Detail::makeString( _response->targetFrameId );
+        response.result = static_cast<EFigmaActionResult>(_response->result);
+        response.targetFrameId = Detail::makeString( _response->target_frame_id );
 
         EVENTABLE_METHOD( EVENT_FIGMA_ACTION )
             ->onFigmaAction( event, &response );
 
-        _response->result = response.result;
+        _response->result = static_cast<figma_action_result_t>(response.result);
         m_actionTargetFrameId = response.targetFrameId;
-        _response->targetFrameId = ::Figma::FigmaStringView( m_actionTargetFrameId.data(), m_actionTargetFrameId.size() );
+        _response->target_frame_id = {m_actionTargetFrameId.data(), m_actionTargetFrameId.size()};
 
-        return ::Figma::EResult::Ok;
+        return FIGMA_RESULT_OK;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Figma::onFrameChanged( ::Figma::FigmaStringView _previousFrameId, ::Figma::FigmaStringView _currentFrameId )
+    void Figma::onFrameChanged_( figma_string_view_t _previousFrameId, figma_string_view_t _currentFrameId )
     {
         const String previousFrameId = Detail::makeString( _previousFrameId );
         const String currentFrameId = Detail::makeString( _currentFrameId );
@@ -3202,7 +3299,7 @@ namespace Mengine
             ->onFigmaFrameChanged( previousFrameId, currentFrameId );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Figma::onOverlayOpened( ::Figma::FigmaStringView _frameId )
+    void Figma::onOverlayOpened_( figma_string_view_t _frameId )
     {
         const String frameId = Detail::makeString( _frameId );
 
@@ -3210,7 +3307,7 @@ namespace Mengine
             ->onFigmaOverlayOpened( frameId );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Figma::onOverlayClosed( ::Figma::FigmaStringView _frameId )
+    void Figma::onOverlayClosed_( figma_string_view_t _frameId )
     {
         const String frameId = Detail::makeString( _frameId );
 
@@ -3218,7 +3315,7 @@ namespace Mengine
             ->onFigmaOverlayClosed( frameId );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Figma::onStateChanged( ::Figma::FigmaStringView _sourceNodeId, ::Figma::FigmaStringView _previousStateId, ::Figma::FigmaStringView _currentStateId )
+    void Figma::onStateChanged_( figma_string_view_t _sourceNodeId, figma_string_view_t _previousStateId, figma_string_view_t _currentStateId )
     {
         const String sourceNodeId = Detail::makeString( _sourceNodeId );
         const String previousStateId = Detail::makeString( _previousStateId );
@@ -3235,31 +3332,37 @@ namespace Mengine
             return true;
         }
 
-        const ::Figma::FigmaStringView key( _key.data(), _key.size() );
-        ::Figma::EResult result = ::Figma::EResult::InvalidArgument;
+        const figma_string_view_t key{_key.data(), _key.size()};
+        figma_result_t result = FIGMA_RESULT_INVALID_ARGUMENT;
 
         switch( _value.type )
         {
         case EFigmaBindingValueType::Text:
-            result = m_player->setText( key, ::Figma::FigmaStringView( _value.stringValue.data(), _value.stringValue.size() ) );
+            {
+                const figma_string_view_t value{_value.stringValue.data(), _value.stringValue.size()};
+                result = figma_player_set_text( m_player, key, value );
+            }
             break;
         case EFigmaBindingValueType::Number:
-            result = m_player->setNumber( key, _value.numberValue );
+            result = figma_player_set_number( m_player, key, _value.numberValue );
             break;
         case EFigmaBindingValueType::Boolean:
             {
-                ::Figma::BindingValue value;
-                value.type = ::Figma::EBindingValueType::Boolean;
-                value.boolValue = _value.boolValue;
-                result = m_player->setBindingValue( key, value );
+                figma_binding_value_t value{};
+                value.type = FIGMA_BINDING_VALUE_BOOLEAN;
+                value.bool_value = _value.boolValue == true ? FIGMA_TRUE : FIGMA_FALSE;
+                result = figma_player_set_binding_value( m_player, key, &value );
             }
             break;
         case EFigmaBindingValueType::Image:
-            result = m_player->setImage( key, ::Figma::FigmaStringView( _value.stringValue.data(), _value.stringValue.size() ) );
+            {
+                const figma_string_view_t value{_value.stringValue.data(), _value.stringValue.size()};
+                result = figma_player_set_image( m_player, key, value );
+            }
             break;
         }
 
-        return result == ::Figma::EResult::Ok;
+        return result == FIGMA_RESULT_OK;
     }
     //////////////////////////////////////////////////////////////////////////
 }

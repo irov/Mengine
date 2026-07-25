@@ -5,7 +5,7 @@
 
 #include "Kernel/FilePath.h"
 
-#include "Figma/Figma.h"
+#include "figma/figma.hpp"
 
 namespace Mengine
 {
@@ -22,8 +22,8 @@ namespace Mengine
         virtual void release() = 0;
 
     public:
-        virtual ::Figma::RuntimeInterface * getFigmaRuntime() const = 0;
-        virtual ::Figma::DocumentInterface * getFigmaDocument() const = 0;
+        virtual figma_runtime_t * getFigmaRuntime() const = 0;
+        virtual figma_document_t * getFigmaDocument() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<FigmaDataInterface, DataInterface> FigmaDataInterfacePtr;

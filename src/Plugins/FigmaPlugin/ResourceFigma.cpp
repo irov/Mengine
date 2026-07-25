@@ -48,21 +48,21 @@ namespace Mengine
 
         if( m_data != nullptr )
         {
-            ::Figma::DocumentInterface * document = m_data->getFigmaDocument();
-            ::Figma::Rectf frameRect{};
+            figma_document_t * document = m_data->getFigmaDocument();
+            figma_rectf_t frameRect{};
             bool found = false;
 
             if( document != nullptr )
             {
                 if( _startFrameId.empty() == false )
                 {
-                    const ::Figma::FigmaStringView frameId( _startFrameId.c_str(), _startFrameId.size() );
-                    found = document->getFrameRect( frameId, &frameRect );
+                    const figma_string_view_t frameId{_startFrameId.c_str(), _startFrameId.size()};
+                    found = figma_document_get_frame_rect( document, frameId, &frameRect ) == FIGMA_TRUE;
                 }
 
                 if( found == false )
                 {
-                    found = document->getPrototypeStartFrameRect( &frameRect );
+                    found = figma_document_get_prototype_start_frame_rect( document, &frameRect ) == FIGMA_TRUE;
                 }
 
                 if( found == true && frameRect.w > 0.f && frameRect.h > 0.f )

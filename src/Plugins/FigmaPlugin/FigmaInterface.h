@@ -5,12 +5,60 @@
 #include "Kernel/Resource.h"
 #include "Kernel/String.h"
 
-#include "Figma/ActionRouter.h"
+#include "figma/figma.hpp"
 
 #include "math/vec2.h"
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    enum class EFigmaActionInputKind
+    {
+        Pointer = FIGMA_ACTION_INPUT_POINTER,
+        Key = FIGMA_ACTION_INPUT_KEY,
+        Timer = FIGMA_ACTION_INPUT_TIMER,
+        Programmatic = FIGMA_ACTION_INPUT_PROGRAMMATIC
+    };
+    //////////////////////////////////////////////////////////////////////////
+    enum class EFigmaTriggerType
+    {
+        Click = FIGMA_TRIGGER_CLICK,
+        HoverEnter = FIGMA_TRIGGER_HOVER_ENTER,
+        HoverLeave = FIGMA_TRIGGER_HOVER_LEAVE,
+        Press = FIGMA_TRIGGER_PRESS,
+        PointerDown = FIGMA_TRIGGER_POINTER_DOWN,
+        PointerUp = FIGMA_TRIGGER_POINTER_UP,
+        AfterTimeout = FIGMA_TRIGGER_AFTER_TIMEOUT,
+        KeyDown = FIGMA_TRIGGER_KEY_DOWN,
+        Unsupported = FIGMA_TRIGGER_UNSUPPORTED
+    };
+    //////////////////////////////////////////////////////////////////////////
+    enum class EFigmaConnectionType
+    {
+        None = FIGMA_CONNECTION_NONE,
+        InternalNode = FIGMA_CONNECTION_INTERNAL_NODE,
+        Back = FIGMA_CONNECTION_BACK,
+        Close = FIGMA_CONNECTION_CLOSE,
+        Unsupported = FIGMA_CONNECTION_UNSUPPORTED
+    };
+    //////////////////////////////////////////////////////////////////////////
+    enum class EFigmaNavigationType
+    {
+        Navigate = FIGMA_NAVIGATION_NAVIGATE,
+        Overlay = FIGMA_NAVIGATION_OVERLAY,
+        Swap = FIGMA_NAVIGATION_SWAP,
+        ScrollTo = FIGMA_NAVIGATION_SCROLL_TO,
+        Unsupported = FIGMA_NAVIGATION_UNSUPPORTED
+    };
+    //////////////////////////////////////////////////////////////////////////
+    enum class EFigmaActionResult
+    {
+        AllowDefault = FIGMA_ACTION_RESULT_ALLOW_DEFAULT,
+        Consume = FIGMA_ACTION_RESULT_CONSUME,
+        NavigateFrame = FIGMA_ACTION_RESULT_NAVIGATE_FRAME,
+        OpenOverlay = FIGMA_ACTION_RESULT_OPEN_OVERLAY,
+        CloseOverlay = FIGMA_ACTION_RESULT_CLOSE_OVERLAY
+    };
     //////////////////////////////////////////////////////////////////////////
     enum class EFigmaBindingValueType
     {
@@ -30,8 +78,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct FigmaTriggerEvent
     {
-        ::Figma::EActionInputKind inputKind = ::Figma::EActionInputKind::Pointer;
-        ::Figma::ETriggerType triggerType = ::Figma::ETriggerType::Click;
+        EFigmaActionInputKind inputKind = EFigmaActionInputKind::Pointer;
+        EFigmaTriggerType triggerType = EFigmaTriggerType::Click;
         String interactionId;
         String sourceNodeId;
         String currentFrameId;
@@ -45,10 +93,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct FigmaActionEvent
     {
-        ::Figma::EActionInputKind inputKind = ::Figma::EActionInputKind::Pointer;
-        ::Figma::ETriggerType triggerType = ::Figma::ETriggerType::Click;
-        ::Figma::EConnectionType connectionType = ::Figma::EConnectionType::None;
-        ::Figma::ENavigationType navigationType = ::Figma::ENavigationType::Navigate;
+        EFigmaActionInputKind inputKind = EFigmaActionInputKind::Pointer;
+        EFigmaTriggerType triggerType = EFigmaTriggerType::Click;
+        EFigmaConnectionType connectionType = EFigmaConnectionType::None;
+        EFigmaNavigationType navigationType = EFigmaNavigationType::Navigate;
         String actionId;
         String interactionId;
         String sourceNodeId;
@@ -64,7 +112,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct FigmaActionResponse
     {
-        ::Figma::EActionResult result = ::Figma::EActionResult::AllowDefault;
+        EFigmaActionResult result = EFigmaActionResult::AllowDefault;
         String targetFrameId;
     };
     //////////////////////////////////////////////////////////////////////////

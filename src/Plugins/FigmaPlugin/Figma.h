@@ -22,7 +22,7 @@
 #include "Kernel/Vector.h"
 #include "Kernel/Map.h"
 
-#include "Figma/Figma.h"
+#include "figma/figma.hpp"
 
 namespace Mengine
 {
@@ -36,7 +36,6 @@ namespace Mengine
         : public Node
         , public UnknownFigmaInterface
         , public PickerInputHandlerInterface
-        , protected ::Figma::ActionRouterInterface
         , protected BaseUpdation
         , protected BaseRender
         , protected BaseTransformation
@@ -138,16 +137,23 @@ namespace Mengine
         void handleMouseLeave( const RenderContext * _context, const InputMouseLeaveEvent & _event ) override;
 
     protected:
-        ::Figma::EResult routeTrigger( const ::Figma::TriggerEvent & _event ) override;
-        ::Figma::EResult routeAction( const ::Figma::ActionEvent & _event, ::Figma::ActionResponse * const _response ) override;
-        void onFrameChanged( ::Figma::FigmaStringView _previousFrameId, ::Figma::FigmaStringView _currentFrameId ) override;
-        void onOverlayOpened( ::Figma::FigmaStringView _frameId ) override;
-        void onOverlayClosed( ::Figma::FigmaStringView _frameId ) override;
-        void onStateChanged( ::Figma::FigmaStringView _sourceNodeId, ::Figma::FigmaStringView _previousStateId, ::Figma::FigmaStringView _currentStateId ) override;
+        static figma_result_t FIGMA_CALL routeTriggerCallback_( void * _userData, const figma_trigger_event_t * _event );
+        static figma_result_t FIGMA_CALL routeActionCallback_( void * _userData, const figma_action_event_t * _event, figma_action_response_t * _response );
+        static void FIGMA_CALL onFrameChangedCallback_( void * _userData, figma_string_view_t _previousFrameId, figma_string_view_t _currentFrameId );
+        static void FIGMA_CALL onOverlayOpenedCallback_( void * _userData, figma_string_view_t _frameId );
+        static void FIGMA_CALL onOverlayClosedCallback_( void * _userData, figma_string_view_t _frameId );
+        static void FIGMA_CALL onStateChangedCallback_( void * _userData, figma_string_view_t _sourceNodeId, figma_string_view_t _previousStateId, figma_string_view_t _currentStateId );
+
+        figma_result_t routeTrigger_( const figma_trigger_event_t & _event );
+        figma_result_t routeAction_( const figma_action_event_t & _event, figma_action_response_t * const _response );
+        void onFrameChanged_( figma_string_view_t _previousFrameId, figma_string_view_t _currentFrameId );
+        void onOverlayOpened_( figma_string_view_t _frameId );
+        void onOverlayClosed_( figma_string_view_t _frameId );
+        void onStateChanged_( figma_string_view_t _sourceNodeId, figma_string_view_t _previousStateId, figma_string_view_t _currentStateId );
 
     protected:
-        bool inputPointer_( ::Figma::EPointerEventType _type, uint32_t _pointerId, float _x, float _y, ::Figma::EPointerButton _button, ::Figma::InputModifierFlags _modifiers, ::Figma::InputDispatchResult * const _dispatch );
-        bool inputKey_( ::Figma::EKeyEventType _type, uint32_t _keyCode, ::Figma::InputModifierFlags _modifiers, ::Figma::InputDispatchResult * const _dispatch );
+        bool inputPointer_( figma_pointer_event_type_t _type, uint32_t _pointerId, float _x, float _y, figma_pointer_button_t _button, figma_input_modifier_flags_t _modifiers, figma_input_dispatch_result_t * const _dispatch );
+        bool inputKey_( figma_key_event_type_t _type, uint32_t _keyCode, figma_input_modifier_flags_t _modifiers, figma_input_dispatch_result_t * const _dispatch );
         bool screenToLocal_( const RenderContext * _context, const mt::vec2f & _screenPoint, mt::vec2f * const _localPoint ) const;
         bool applyBindingValue_( const String & _key, const FigmaBindingValue & _value );
         bool updatePlayerViewport_();
@@ -177,9 +183,9 @@ namespace Mengine
         typedef Map<String, TextureCacheDesc> MapTextureCache;
         typedef Map<uint32_t, RenderLayerTargetDesc> MapRenderLayerTarget;
 
-        RenderTextureInterfacePtr getBatchTexture_( const ::Figma::RenderListInterface * _renderList, const ::Figma::RenderBatchDesc & _batch, uint32_t _batchIndex ) const;
-        RenderTextureInterfacePtr createAssetTexture_( ::Figma::DocumentInterface * _document, const ::Figma::RenderBatchDesc & _batch ) const;
-        RenderTextureInterfacePtr createGeneratedTexture_( const ::Figma::RenderListInterface * _renderList, uint32_t _batchIndex, const ::Figma::RenderGeneratedTextureDesc & _desc ) const;
+        RenderTextureInterfacePtr getBatchTexture_( const figma_render_list_t * _renderList, const figma_render_batch_desc_t & _batch, uint32_t _batchIndex ) const;
+        RenderTextureInterfacePtr createAssetTexture_( figma_document_t * _document, const figma_render_batch_desc_t & _batch ) const;
+        RenderTextureInterfacePtr createGeneratedTexture_( const figma_render_list_t * _renderList, uint32_t _batchIndex, const figma_render_generated_texture_desc_t & _desc ) const;
         RenderTextureInterfacePtr createTextureFromPixels_( uint32_t _width, uint32_t _height, const void * _pixels, size_t _pitch ) const;
         void clearTextureCache_() const;
         RenderLayerTargetDesc * ensureRenderLayerTarget_( uint32_t _layerId, uint32_t _width, uint32_t _height, float _contentWidth, float _contentHeight ) const;
@@ -188,7 +194,7 @@ namespace Mengine
 
     protected:
         ResourceFigmaPtr m_resourceFigma;
-        ::Figma::PlayerInterface * m_player;
+        figma_player_t * m_player;
         mt::vec2f m_viewportSize;
         float m_viewportScale;
         float m_playbackRate;

@@ -23,13 +23,13 @@ namespace Mengine
         void release() override;
 
     public:
-        ::Figma::RuntimeInterface * getFigmaRuntime() const override;
-        ::Figma::DocumentInterface * getFigmaDocument() const override;
+        figma_runtime_t * getFigmaRuntime() const override;
+        figma_document_t * getFigmaDocument() const override;
 
     protected:
         MemoryInterfacePtr m_memory;
-        ::Figma::RuntimeInterface * m_runtime;
-        ::Figma::DocumentInterface * m_document;
+        figma_runtime_t * m_runtime;
+        figma_document_t * m_document;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<FigmaData, FigmaDataInterface> FigmaDataPtr;

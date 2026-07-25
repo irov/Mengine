@@ -9,36 +9,36 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static const Char * getFigmaResultMessage( ::Figma::EResult _result )
+        static const Char * getFigmaResultMessage( figma_result_t _result )
         {
             switch( _result )
             {
-            case ::Figma::EResult::Ok:
+            case FIGMA_RESULT_OK:
                 return "Ok";
-            case ::Figma::EResult::InvalidArgument:
+            case FIGMA_RESULT_INVALID_ARGUMENT:
                 return "InvalidArgument";
-            case ::Figma::EResult::OutOfMemory:
+            case FIGMA_RESULT_OUT_OF_MEMORY:
                 return "OutOfMemory";
-            case ::Figma::EResult::IoFailed:
+            case FIGMA_RESULT_IO_FAILED:
                 return "IoFailed";
-            case ::Figma::EResult::ParseFailed:
+            case FIGMA_RESULT_PARSE_FAILED:
                 return "ParseFailed";
-            case ::Figma::EResult::UnsupportedFormat:
+            case FIGMA_RESULT_UNSUPPORTED_FORMAT:
                 return "UnsupportedFormat";
-            case ::Figma::EResult::MissingEntry:
+            case FIGMA_RESULT_MISSING_ENTRY:
                 return "MissingEntry";
-            case ::Figma::EResult::NotFound:
+            case FIGMA_RESULT_NOT_FOUND:
                 return "NotFound";
-            case ::Figma::EResult::InvalidState:
+            case FIGMA_RESULT_INVALID_STATE:
                 return "InvalidState";
-            case ::Figma::EResult::VersionMismatch:
+            case FIGMA_RESULT_VERSION_MISMATCH:
                 return "VersionMismatch";
             }
 
             return "Unknown";
         }
         //////////////////////////////////////////////////////////////////////////
-        static void * figmaAlloc( size_t _size, void * _userData )
+        static void * FIGMA_CALL figmaAlloc( size_t _size, void * _userData )
         {
             MENGINE_UNUSED( _userData );
 
@@ -47,7 +47,7 @@ namespace Mengine
             return p;
         }
         //////////////////////////////////////////////////////////////////////////
-        static void * figmaRealloc( void * _ptr, size_t _size, void * _userData )
+        static void * FIGMA_CALL figmaRealloc( void * _ptr, size_t _size, void * _userData )
         {
             MENGINE_UNUSED( _userData );
 
@@ -56,7 +56,7 @@ namespace Mengine
             return p;
         }
         //////////////////////////////////////////////////////////////////////////
-        static void figmaFree( void * _ptr, void * _userData )
+        static void FIGMA_CALL figmaFree( void * _ptr, void * _userData )
         {
             MENGINE_UNUSED( _userData );
 
@@ -78,16 +78,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FigmaData::loadDocument( const MemoryInterfacePtr & _memory, const FilePath & _sourceName )
     {
-        ::Figma::RuntimeDesc runtimeDesc;
+        figma_runtime_desc_t runtimeDesc{};
         runtimeDesc.allocator.alloc = &Detail::figmaAlloc;
         runtimeDesc.allocator.realloc = &Detail::figmaRealloc;
         runtimeDesc.allocator.free = &Detail::figmaFree;
-        runtimeDesc.allocator.userData = nullptr;
+        runtimeDesc.allocator.user_data = nullptr;
 
-        ::Figma::RuntimeInterface * runtime = nullptr;
-        ::Figma::EResult createRuntimeResult = ::Figma::createRuntime( ::Figma::FIGMA_SDK_VERSION, runtimeDesc, &runtime );
+        figma_runtime_t * runtime = nullptr;
+        figma_result_t createRuntimeResult = figma_runtime_create( FIGMA_SDK_VERSION, &runtimeDesc, &runtime );
 
-        if( createRuntimeResult != ::Figma::EResult::Ok )
+        if( createRuntimeResult != FIGMA_RESULT_OK )
         {
             LOGGER_ERROR( "invalid create figma runtime result '%s'"
                 , Detail::getFigmaResultMessage( createRuntimeResult )
@@ -99,22 +99,22 @@ namespace Mengine
         void * memory = _memory->getBuffer();
         size_t size = _memory->getSize();
 
-        ::Figma::LoadOptions loadOptions;
-        loadOptions.sourceName = ::Figma::FigmaStringView( _sourceName.c_str() );
-        loadOptions.extractImageAssets = true;
-        loadOptions.keepCanvasBytes = false;
+        figma_load_options_t loadOptions{};
+        loadOptions.source_name = {_sourceName.c_str(), _sourceName.size()};
+        loadOptions.extract_image_assets = FIGMA_TRUE;
+        loadOptions.keep_canvas_bytes = FIGMA_FALSE;
 
-        ::Figma::DocumentInterface * document = nullptr;
-        ::Figma::EResult loadResult = runtime->loadDocumentFromFigData( memory, size, loadOptions, &document );
+        figma_document_t * document = nullptr;
+        figma_result_t loadResult = figma_runtime_load_document_from_fig_data( runtime, memory, size, &loadOptions, &document );
 
-        if( loadResult != ::Figma::EResult::Ok )
+        if( loadResult != FIGMA_RESULT_OK )
         {
             LOGGER_ERROR( "invalid load figma document '%s' result '%s'"
                 , _sourceName.c_str()
                 , Detail::getFigmaResultMessage( loadResult )
             );
 
-            runtime->destroy();
+            figma_runtime_destroy( runtime );
 
             return false;
         }
@@ -133,10 +133,10 @@ namespace Mengine
             return false;
         }
 
-        ::Figma::FigmaStringView ux( static_cast<const ::Figma::Char *>(_memory), _size );
-        ::Figma::EResult result = m_document->loadUX( ux );
+        figma_string_view_t ux{static_cast<const char *>(_memory), _size};
+        figma_result_t result = figma_document_load_ux( m_document, ux );
 
-        if( result != ::Figma::EResult::Ok )
+        if( result != FIGMA_RESULT_OK )
         {
             LOGGER_ERROR( "invalid load figma UX result '%s'"
                 , Detail::getFigmaResultMessage( result )
@@ -157,25 +157,25 @@ namespace Mengine
     {
         if( m_document != nullptr )
         {
-            m_document->destroy();
+            figma_document_destroy( m_document );
             m_document = nullptr;
         }
 
         if( m_runtime != nullptr )
         {
-            m_runtime->destroy();
+            figma_runtime_destroy( m_runtime );
             m_runtime = nullptr;
         }
 
         m_memory = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    ::Figma::RuntimeInterface * FigmaData::getFigmaRuntime() const
+    figma_runtime_t * FigmaData::getFigmaRuntime() const
     {
         return m_runtime;
     }
     //////////////////////////////////////////////////////////////////////////
-    ::Figma::DocumentInterface * FigmaData::getFigmaDocument() const
+    figma_document_t * FigmaData::getFigmaDocument() const
     {
         return m_document;
     }

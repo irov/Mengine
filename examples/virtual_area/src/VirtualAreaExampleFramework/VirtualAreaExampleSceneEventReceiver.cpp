@@ -222,6 +222,8 @@ namespace Mengine
         this->clearNodes_( &m_contentNodes );
 
         m_virtualArea->setContentSize( m_contentInput[0], m_contentInput[1], m_contentInput[2], m_contentInput[3] );
+        m_virtualArea->clearSnappingPoints();
+        m_virtualArea->setSnappingBoundsPoint( mt::vec2f( 0.f, 0.f ) );
 
         const float left = m_contentInput[0];
         const float top = m_contentInput[1];
@@ -285,6 +287,7 @@ namespace Mengine
             NodePtr marker = this->makeSolidQuad_( mt::vec2f( left + 18.f, y - 8.f ), mt::vec2f( 16.f, 16.f ), 0.20f, 0.78f, 0.52f, 1.f );
             m_virtualArea->addContentNode( marker, false );
             m_contentNodes.emplace_back( marker );
+            m_virtualArea->addSnappingPoint( y );
         }
 
         const RandomizerInterfacePtr & randomizer = PLAYER_SERVICE()
@@ -412,6 +415,7 @@ namespace Mengine
 
         bool scaleEnable = m_virtualArea->getScaleEnable();
         bool frozen = m_virtualArea->isFrozen();
+        bool scrollLocked = m_virtualArea->isScrollLocked();
         bool allowOut = m_virtualArea->getAllowOutOfBounds();
         bool disableInvalid = m_virtualArea->getDisableDragIfInvalid();
         bool defaultHandle = m_virtualArea->getDefaultHandle();
@@ -424,6 +428,11 @@ namespace Mengine
         if( ImGui::Checkbox( "Frozen", &frozen ) == true )
         {
             m_virtualArea->freeze( frozen );
+        }
+
+        if( ImGui::Checkbox( "Scroll locked", &scrollLocked ) == true )
+        {
+            m_virtualArea->setScrollLocked( scrollLocked );
         }
 
         if( ImGui::Checkbox( "Allow out of bounds", &allowOut ) == true )
@@ -447,6 +456,14 @@ namespace Mengine
         if( ImGui::Combo( "Dragging mode", &mode, modes, 4 ) == true )
         {
             m_virtualArea->setDraggingMode( (EVirtualAreaDragMode)mode );
+        }
+
+        const char * snappingModes[] = {"none", "horizontal", "vertical"};
+        int snappingMode = (int)m_virtualArea->getSnappingMode();
+
+        if( ImGui::Combo( "Snapping mode", &snappingMode, snappingModes, 3 ) == true )
+        {
+            m_virtualArea->setSnappingMode( (EVirtualAreaSnappingMode)snappingMode );
         }
 
         ImGui::Separator();
@@ -507,6 +524,18 @@ namespace Mengine
         if( ImGui::SliderFloat( "Friction", &friction, 0.f, 1.f ) == true )
         {
             m_virtualArea->setFriction( friction );
+        }
+
+        float frictionBase = m_virtualArea->getFrictionBase();
+        if( ImGui::InputFloat( "Friction base", &frictionBase, 0.0001f, 0.001f, "%.6f" ) == true )
+        {
+            m_virtualArea->setFrictionBase( frictionBase );
+        }
+
+        float frictionFactor = m_virtualArea->getFrictionFactor();
+        if( ImGui::InputFloat( "Friction factor", &frictionFactor, 0.001f, 0.01f, "%.6f" ) == true )
+        {
+            m_virtualArea->setFrictionFactor( frictionFactor );
         }
 
         float rigidity = m_virtualArea->getRigidity();

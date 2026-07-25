@@ -14,6 +14,8 @@
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/PrototypeHelper.h"
 
+#include "Config/StdMath.h"
+
 #include "math/utils.h"
 
 namespace Mengine
@@ -21,6 +23,8 @@ namespace Mengine
     namespace
     {
         constexpr float VIRTUAL_AREA_DEFAULT_MAX_SCALE_FACTOR = 24.f;
+        constexpr float VIRTUAL_AREA_DEFAULT_FRICTION_BASE = 0.0005f;
+        constexpr float VIRTUAL_AREA_DEFAULT_FRICTION_FACTOR = 0.015f;
     }
     //////////////////////////////////////////////////////////////////////////
     VirtualArea::VirtualArea()
@@ -33,23 +37,30 @@ namespace Mengine
         , m_velocity( 0.f, 0.f )
         , m_returnStart( 0.f, 0.f )
         , m_returnTarget( 0.f, 0.f )
+        , m_snappingBoundsPoint( 0.f, 0.f )
         , m_scaleFactor( 1.f )
         , m_maxScaleFactor( VIRTUAL_AREA_DEFAULT_MAX_SCALE_FACTOR )
         , m_wheelScaleFactor( 0.375f )
         , m_friction( 0.5f )
+        , m_frictionBase( VIRTUAL_AREA_DEFAULT_FRICTION_BASE )
+        , m_frictionFactor( VIRTUAL_AREA_DEFAULT_FRICTION_FACTOR )
         , m_rigidity( 0.5f )
         , m_dragStartThreshold( 50.f )
         , m_lastPinchDistance( 0.f )
         , m_returnTime( 0.f )
         , m_returnDuration( 0.f )
+        , m_snappingCoefficient( 0.0001f )
+        , m_snappingEpsilon( 2.f )
         , m_draggingMode( EVADM_FREE )
         , m_draggingModeName( STRINGIZE_STRING_LOCAL( "free" ) )
+        , m_snappingMode( EVASM_NONE )
         , m_globalHandlerId( INVALID_UNIQUE_ID )
         , m_hasViewport( false )
         , m_enableScale( true )
         , m_allowOutOfBounds( true )
         , m_disableDragIfInvalid( true )
         , m_defaultHandle( true )
+        , m_scrollLocked( false )
         , m_frozen( false )
         , m_dragging( false )
         , m_pinchActive( false )
@@ -193,14 +204,14 @@ namespace Mengine
         this->stopElasticReturn_();
 
         const float contentWidth = mt::abs_f( m_contentSize.z - m_contentSize.x );
-        const float gap = m_bounds.getWidth() - contentWidth;
-
         m_velocity.x = 0.f;
 
-        if( mt::abs_f( gap ) < 0.0001f )
+        if( contentWidth <= m_bounds.getWidth() )
         {
             return;
         }
+
+        const float gap = m_bounds.getWidth() - contentWidth;
 
         mt::vec2f position = m_position;
         position.x = m_localBounds.begin.x + gap * _percentage;
@@ -213,14 +224,14 @@ namespace Mengine
         this->stopElasticReturn_();
 
         const float contentHeight = mt::abs_f( m_contentSize.w - m_contentSize.y );
-        const float gap = m_bounds.getHeight() - contentHeight;
-
         m_velocity.y = 0.f;
 
-        if( mt::abs_f( gap ) < 0.0001f )
+        if( contentHeight <= m_bounds.getHeight() )
         {
             return;
         }
+
+        const float gap = m_bounds.getHeight() - contentHeight;
 
         mt::vec2f position = m_position;
         position.y = m_localBounds.begin.y + gap * _percentage;
@@ -238,12 +249,12 @@ namespace Mengine
 
         mt::vec2f percentage( 0.f, 0.f );
 
-        if( mt::abs_f( horizontalGap ) > 0.0001f )
+        if( contentWidth > m_bounds.getWidth() )
         {
             percentage.x = mt::clamp( -1.f, (m_position.x - m_localBounds.begin.x) / horizontalGap, 1.f );
         }
 
-        if( mt::abs_f( verticalGap ) > 0.0001f )
+        if( contentHeight > m_bounds.getHeight() )
         {
             percentage.y = mt::clamp( -1.f, (m_position.y - m_localBounds.begin.y) / verticalGap, 1.f );
         }
@@ -283,7 +294,7 @@ namespace Mengine
         m_bounds.getCenter( &center );
 
         const mt::vec2f size = m_bounds.size();
-        const mt::vec2f scaledSize = size / _factor;
+        const mt::vec2f scaledSize = size * _factor;
         const mt::vec2f halfSize = scaledSize * 0.5f;
 
         m_bounds.setRectangle( center - halfSize, center + halfSize );
@@ -414,6 +425,26 @@ namespace Mengine
         return m_friction;
     }
     //////////////////////////////////////////////////////////////////////////
+    void VirtualArea::setFrictionBase( float _frictionBase )
+    {
+        m_frictionBase = _frictionBase < 0.f ? 0.f : _frictionBase;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float VirtualArea::getFrictionBase() const
+    {
+        return m_frictionBase;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void VirtualArea::setFrictionFactor( float _frictionFactor )
+    {
+        m_frictionFactor = _frictionFactor < 0.f ? 0.f : _frictionFactor;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float VirtualArea::getFrictionFactor() const
+    {
+        return m_frictionFactor;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void VirtualArea::setRigidity( float _rigidity )
     {
         m_rigidity = mt::clamp( 0.f, _rigidity, 1.f );
@@ -474,6 +505,26 @@ namespace Mengine
         return m_defaultHandle;
     }
     //////////////////////////////////////////////////////////////////////////
+    void VirtualArea::setScrollLocked( bool _locked )
+    {
+        if( m_scrollLocked == _locked )
+        {
+            return;
+        }
+
+        m_scrollLocked = _locked;
+
+        if( m_scrollLocked == true )
+        {
+            this->stopDrag_();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool VirtualArea::isScrollLocked() const
+    {
+        return m_scrollLocked;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void VirtualArea::freeze( bool _value )
     {
         Node::freeze( _value );
@@ -482,6 +533,61 @@ namespace Mengine
     bool VirtualArea::isFrozen() const
     {
         return m_frozen;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void VirtualArea::setSnappingMode( EVirtualAreaSnappingMode _mode )
+    {
+        m_snappingMode = _mode;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    EVirtualAreaSnappingMode VirtualArea::getSnappingMode() const
+    {
+        return m_snappingMode;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void VirtualArea::setSnappingBoundsPoint( const mt::vec2f & _point )
+    {
+        m_snappingBoundsPoint = _point;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const mt::vec2f & VirtualArea::getSnappingBoundsPoint() const
+    {
+        return m_snappingBoundsPoint;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void VirtualArea::clearSnappingPoints()
+    {
+        m_snappingPoints.clear();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void VirtualArea::addSnappingPoint( float _point )
+    {
+        m_snappingPoints.emplace_back( _point );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t VirtualArea::getSnappingPointCount() const
+    {
+        return (uint32_t)m_snappingPoints.size();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void VirtualArea::setSnappingCoefficient( float _coefficient )
+    {
+        m_snappingCoefficient = _coefficient < 0.f ? 0.f : _coefficient;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float VirtualArea::getSnappingCoefficient() const
+    {
+        return m_snappingCoefficient;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void VirtualArea::setSnappingEpsilon( float _epsilon )
+    {
+        m_snappingEpsilon = _epsilon < 0.f ? 0.f : _epsilon;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float VirtualArea::getSnappingEpsilon() const
+    {
+        return m_snappingEpsilon;
     }
     //////////////////////////////////////////////////////////////////////////
     const mt::vec2f & VirtualArea::getVelocity() const
@@ -517,6 +623,11 @@ namespace Mengine
     mt::vec2f VirtualArea::getContentSizeValue() const
     {
         return mt::vec2f( mt::abs_f( m_contentSize.z - m_contentSize.x ), mt::abs_f( m_contentSize.w - m_contentSize.y ) );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const Viewport & VirtualArea::getLocalBounds() const
+    {
+        return m_localBounds;
     }
     //////////////////////////////////////////////////////////////////////////
     const RenderCameraOrthogonalPtr & VirtualArea::getRenderCameraNode() const
@@ -577,6 +688,7 @@ namespace Mengine
         m_renderCamera = nullptr;
         m_renderViewport = nullptr;
         m_renderScissor = nullptr;
+        m_snappingPoints.clear();
         m_globalHandler = nullptr;
 
         Node::_dispose();
@@ -594,7 +706,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void VirtualArea::update( const UpdateContext * _context )
     {
-        if( m_frozen == true || m_dragging == true )
+        if( m_frozen == true || m_scrollLocked == true || m_dragging == true )
         {
             return;
         }
@@ -645,34 +757,95 @@ namespace Mengine
             }
         }
 
+        float snappingTarget = 0.f;
+        const bool snappingActive = this->getSnappingTarget_( &snappingTarget );
+        bool snappingSettled = false;
+
+        if( this->isZero_( m_velocity ) == false )
+        {
+            const float velocityLength = mt::length_v2( m_velocity );
+            const float friction = m_frictionBase + m_friction * m_frictionFactor;
+            const float deceleration = friction * StdMath::sqrtf( velocityLength ) * m_scaleFactor;
+            const float newLength = velocityLength - deceleration * dt;
+
+            if( velocityLength <= 0.01f || newLength <= 0.f )
+            {
+                m_velocity = mt::vec2f( 0.f, 0.f );
+            }
+            else
+            {
+                const float k = newLength / velocityLength;
+                m_velocity *= k;
+            }
+        }
+
+        if( snappingActive == true )
+        {
+            const float current = m_snappingMode == EVASM_HORIZONTAL
+                ? m_position.x
+                : m_position.y;
+            float & velocity = m_snappingMode == EVASM_HORIZONTAL
+                ? m_velocity.x
+                : m_velocity.y;
+            const float distance = snappingTarget - current;
+
+            if( mt::abs_f( distance ) <= m_snappingEpsilon )
+            {
+                velocity = 0.f;
+                snappingSettled = true;
+            }
+            else
+            {
+                velocity += distance * m_snappingCoefficient * dt;
+            }
+        }
+
         if( this->isZero_( m_velocity ) == true )
         {
-            return;
-        }
+            if( snappingSettled == true )
+            {
+                mt::vec2f position = m_position;
 
-        const float friction = 0.0005f + m_friction * 0.015f;
-        const float velocityLength = mt::length_v2( m_velocity );
+                if( m_snappingMode == EVASM_HORIZONTAL )
+                {
+                    position.x = snappingTarget;
+                }
+                else
+                {
+                    position.y = snappingTarget;
+                }
 
-        if( velocityLength <= 0.01f )
-        {
-            m_velocity = mt::vec2f( 0.f, 0.f );
-
-            return;
-        }
-
-        const float newLength = velocityLength - friction * dt;
-
-        if( newLength <= 0.f )
-        {
-            m_velocity = mt::vec2f( 0.f, 0.f );
+                this->setPositionInternal_( position, false );
+            }
 
             return;
         }
-
-        const float k = newLength / velocityLength;
-        m_velocity *= k;
 
         mt::vec2f nextPosition = m_position + m_velocity * dt;
+
+        if( snappingActive == true )
+        {
+            const float current = m_snappingMode == EVASM_HORIZONTAL
+                ? m_position.x
+                : m_position.y;
+            float & next = m_snappingMode == EVASM_HORIZONTAL
+                ? nextPosition.x
+                : nextPosition.y;
+            float & velocity = m_snappingMode == EVASM_HORIZONTAL
+                ? m_velocity.x
+                : m_velocity.y;
+
+            const float currentDistance = snappingTarget - current;
+            const float nextDistance = snappingTarget - next;
+
+            if( snappingSettled == true
+                || mt::abs_f( nextDistance ) <= m_snappingEpsilon
+                || currentDistance * nextDistance < 0.f )
+            {
+                next = snappingTarget;
+                velocity = 0.f;
+            }
+        }
 
         if( m_allowOutOfBounds == false )
         {
@@ -784,6 +957,11 @@ namespace Mengine
             return false;
         }
 
+        if( m_scrollLocked == true )
+        {
+            return m_defaultHandle;
+        }
+
         if( _event.isDown == true )
         {
             this->beginTouch_( _context, _event );
@@ -824,7 +1002,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _context );
 
-        if( m_frozen == true || m_enableScale == false )
+        if( m_frozen == true || m_scrollLocked == true || m_enableScale == false )
         {
             return false;
         }
@@ -1078,7 +1256,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool VirtualArea::moveTouch_( const InputMouseMoveEvent & _event )
     {
-        if( m_frozen == true )
+        if( m_frozen == true || m_scrollLocked == true )
         {
             return false;
         }
@@ -1157,7 +1335,7 @@ namespace Mengine
 
             if( dot < 0.f )
             {
-                const float limit = 100.f;
+                const float limit = 100.f + 900.f * (1.f - m_rigidity);
                 const float kx = (limit - mt::abs_f( offset.x )) / limit;
                 const float ky = (limit - mt::abs_f( offset.y )) / limit;
 
@@ -1355,8 +1533,26 @@ namespace Mengine
         const float topOffset = m_localBounds.begin.y - (_position.y + m_contentSize.y);
         const float bottomOffset = m_localBounds.end.y - (_position.y + m_contentSize.w);
 
-        offset.x = rightOffset < 0.f ? rightOffset : leftOffset > 0.f ? leftOffset : 0.f;
-        offset.y = topOffset < 0.f ? topOffset : bottomOffset > 0.f ? bottomOffset : 0.f;
+        const float contentWidth = mt::abs_f( m_contentSize.z - m_contentSize.x );
+        const float contentHeight = mt::abs_f( m_contentSize.w - m_contentSize.y );
+
+        if( contentWidth < m_bounds.getWidth() )
+        {
+            offset.x = m_localBounds.begin.x - _position.x;
+        }
+        else
+        {
+            offset.x = rightOffset < 0.f ? rightOffset : leftOffset > 0.f ? leftOffset : 0.f;
+        }
+
+        if( contentHeight < m_bounds.getHeight() )
+        {
+            offset.y = m_localBounds.begin.y - _position.y;
+        }
+        else
+        {
+            offset.y = topOffset < 0.f ? topOffset : bottomOffset > 0.f ? bottomOffset : 0.f;
+        }
 
         return offset;
     }
@@ -1416,6 +1612,67 @@ namespace Mengine
     bool VirtualArea::isZero_( const mt::vec2f & _value ) const
     {
         return mt::abs_f( _value.x ) < 0.0001f && mt::abs_f( _value.y ) < 0.0001f;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool VirtualArea::getSnappingTarget_( float * const _target ) const
+    {
+        if( m_snappingMode == EVASM_NONE || m_snappingPoints.empty() == true )
+        {
+            return false;
+        }
+
+        float boundsPoint;
+        float anchor;
+        float position;
+
+        if( m_snappingMode == EVASM_HORIZONTAL )
+        {
+            boundsPoint = m_bounds.begin.x + m_snappingBoundsPoint.x;
+            anchor = m_anchor.x;
+            position = m_position.x;
+        }
+        else
+        {
+            boundsPoint = m_bounds.begin.y + m_snappingBoundsPoint.y;
+            anchor = m_anchor.y;
+            position = m_position.y;
+        }
+
+        float target = boundsPoint - (anchor + m_snappingPoints.front());
+        float nearestDistance = mt::abs_f( target - position );
+
+        for( const float point : m_snappingPoints )
+        {
+            const float candidate = boundsPoint - (anchor + point);
+            const float distance = mt::abs_f( candidate - position );
+
+            if( distance < nearestDistance )
+            {
+                target = candidate;
+                nearestDistance = distance;
+            }
+        }
+
+        mt::vec2f targetPosition = m_position;
+
+        if( m_snappingMode == EVASM_HORIZONTAL )
+        {
+            targetPosition.x = target;
+        }
+        else
+        {
+            targetPosition.y = target;
+        }
+
+        this->clampPositionToBounds_( &targetPosition );
+
+        target = m_snappingMode == EVASM_HORIZONTAL
+            ? targetPosition.x
+            : targetPosition.y;
+
+        *_target = target;
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool VirtualArea::startElasticReturn_( const mt::vec2f & _offset )

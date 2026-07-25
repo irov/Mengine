@@ -36,6 +36,13 @@ namespace Mengine
         EVADM_VERTICAL,
     };
     //////////////////////////////////////////////////////////////////////////
+    enum EVirtualAreaSnappingMode
+    {
+        EVASM_NONE = 0,
+        EVASM_HORIZONTAL,
+        EVASM_VERTICAL,
+    };
+    //////////////////////////////////////////////////////////////////////////
     class VirtualArea
         : public Node
         , public PickerInputHandlerInterface
@@ -107,6 +114,12 @@ namespace Mengine
         void setFriction( float _friction );
         float getFriction() const;
 
+        void setFrictionBase( float _frictionBase );
+        float getFrictionBase() const;
+
+        void setFrictionFactor( float _frictionFactor );
+        float getFrictionFactor() const;
+
         void setRigidity( float _rigidity );
         float getRigidity() const;
 
@@ -122,8 +135,28 @@ namespace Mengine
         void setDefaultHandle( bool _handle );
         bool getDefaultHandle() const;
 
+        void setScrollLocked( bool _locked );
+        bool isScrollLocked() const;
+
         void freeze( bool _value );
         bool isFrozen() const;
+
+    public:
+        void setSnappingMode( EVirtualAreaSnappingMode _mode );
+        EVirtualAreaSnappingMode getSnappingMode() const;
+
+        void setSnappingBoundsPoint( const mt::vec2f & _point );
+        const mt::vec2f & getSnappingBoundsPoint() const;
+
+        void clearSnappingPoints();
+        void addSnappingPoint( float _point );
+        uint32_t getSnappingPointCount() const;
+
+        void setSnappingCoefficient( float _coefficient );
+        float getSnappingCoefficient() const;
+
+        void setSnappingEpsilon( float _epsilon );
+        float getSnappingEpsilon() const;
 
     public:
         const mt::vec2f & getVelocity() const;
@@ -131,6 +164,7 @@ namespace Mengine
         uint32_t getTouchCount() const;
         mt::vec2f getViewportSize() const;
         mt::vec2f getContentSizeValue() const;
+        const Viewport & getLocalBounds() const;
 
     public:
         const RenderCameraOrthogonalPtr & getRenderCameraNode() const;
@@ -204,6 +238,7 @@ namespace Mengine
         bool clampPositionToBounds_( mt::vec2f * const _position ) const;
         bool isValidDrag_() const;
         bool isZero_( const mt::vec2f & _value ) const;
+        bool getSnappingTarget_( float * const _target ) const;
         bool startElasticReturn_( const mt::vec2f & _offset );
         bool updateElasticReturn_( float _dt );
         void stopElasticReturn_();
@@ -242,25 +277,32 @@ namespace Mengine
         mt::vec2f m_velocity;
         mt::vec2f m_returnStart;
         mt::vec2f m_returnTarget;
+        mt::vec2f m_snappingBoundsPoint;
 
         float m_scaleFactor;
         float m_maxScaleFactor;
         float m_wheelScaleFactor;
         float m_friction;
+        float m_frictionBase;
+        float m_frictionFactor;
         float m_rigidity;
         float m_dragStartThreshold;
         float m_lastPinchDistance;
         float m_returnTime;
         float m_returnDuration;
+        float m_snappingCoefficient;
+        float m_snappingEpsilon;
 
         EVirtualAreaDragMode m_draggingMode;
         ConstString m_draggingModeName;
+        EVirtualAreaSnappingMode m_snappingMode;
 
         RenderCameraOrthogonalPtr m_renderCamera;
         RenderViewportPtr m_renderViewport;
         RenderScissorPtr m_renderScissor;
 
         Vector<TouchDesc> m_touches;
+        Vector<float> m_snappingPoints;
 
         InputHandlerInterfacePtr m_globalHandler;
         UniqueId m_globalHandlerId;
@@ -270,6 +312,7 @@ namespace Mengine
         bool m_allowOutOfBounds;
         bool m_disableDragIfInvalid;
         bool m_defaultHandle;
+        bool m_scrollLocked;
         bool m_frozen;
         bool m_dragging;
         bool m_pinchActive;

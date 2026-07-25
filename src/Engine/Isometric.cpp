@@ -2,6 +2,8 @@
 
 #include "Interface/TransformationInterface.h"
 
+#include <cmath>
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -26,8 +28,15 @@ namespace Mengine
                 const mt::vec3f & l = leftTransformation->getLocalPosition();
                 const mt::vec3f & r = rigthTransformation->getLocalPosition();
 
-                float less_y = l.y - r.y;
-                if( less_y < 0.1f && less_y > -0.1f )
+                float l_y_bucket = std::floor( l.y * 10.f );
+                float r_y_bucket = std::floor( r.y * 10.f );
+
+                if( l_y_bucket != r_y_bucket )
+                {
+                    return l_y_bucket < r_y_bucket;
+                }
+
+                if( l.x != r.x )
                 {
                     return l.x < r.x;
                 }

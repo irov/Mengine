@@ -68,6 +68,7 @@ namespace Mengine
         );
 
         IntrusiveSlugListHierarchyChild::iterator it_after( NodePtr::from( _after ) );
+        ++it_after;
 
         this->addChild_( it_after, _node, EHierarchyInsert::EHI_UNKNOWN );
 

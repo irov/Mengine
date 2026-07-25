@@ -121,9 +121,6 @@ namespace Mengine
         bool OPTION_pythoncyclediag = HAS_OPTION( "pythoncyclediag" );
 
         config.cycle_diagnostics = OPTION_pythoncyclediag;
-        config.cycle_diagnostic_handler = config.cycle_diagnostics == true
-            ? &Detail::reportTinypyCycleDiagnostic
-            : nullptr;
 
         pybind::kernel_interface * kernel = pybind::initialize( allocator, config );
 
@@ -152,6 +149,7 @@ namespace Mengine
     {
         pybind::allocator_interface * allocator = m_kernel->get_allocator();
 
+        m_kernel->cycle_diagnostics( &Detail::reportTinypyCycleDiagnostic, nullptr );
         m_kernel->destroy();
         m_kernel = nullptr;
 

@@ -75,6 +75,16 @@ namespace Mengine
             return PythonScript_Debug;
         }
         //////////////////////////////////////////////////////////////////////////
+        static void reportTinypyCycleDiagnostic( void * _userData, const char * _message, size_t _messageSize )
+        {
+            (void)_userData;
+
+            LOGGER_ERROR( "%.*s"
+                , (int32_t)_messageSize
+                , _message
+            );
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     PythonScriptProviderService::PythonScriptProviderService()
@@ -102,6 +112,14 @@ namespace Mengine
         config.debug = Detail::getPythonDebugMode();
         config.install_signals = false;
         config.no_site = true;
+
+        bool OPTION_pythoncyclediag = HAS_OPTION( "pythoncyclediag" );
+
+        if( OPTION_pythoncyclediag == true )
+        {
+            config.cycle_diagnostic_handler = &Detail::reportTinypyCycleDiagnostic;
+        }
+
         pybind::kernel_interface * kernel = pybind::initialize( allocator, config );
 
 #if defined(MENGINE_WINDOWS_DEBUG) && !defined(MENGINE_TOOLCHAIN_MINGW)

@@ -3112,7 +3112,7 @@ namespace Mengine
             return false;
         }
 
-        return dispatch.hit == true || dispatch.handled == true || dispatch.captured == true;
+        return dispatch.hit == FIGMA_TRUE || dispatch.handled == FIGMA_TRUE || dispatch.captured == FIGMA_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Figma::handleMouseButtonEventBegin( const RenderContext * _context, const InputMouseButtonEvent & _event )
@@ -3145,7 +3145,7 @@ namespace Mengine
             return false;
         }
 
-        return dispatch.hit == true || dispatch.handled == true || dispatch.captured == true;
+        return dispatch.hit == FIGMA_TRUE || dispatch.handled == FIGMA_TRUE || dispatch.captured == FIGMA_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Figma::handleMouseWheel( const RenderContext * _context, const InputMouseWheelEvent & _event )
@@ -3170,7 +3170,7 @@ namespace Mengine
             return false;
         }
 
-        return dispatch.hit == true || dispatch.handled == true;
+        return dispatch.hit == FIGMA_TRUE || dispatch.handled == FIGMA_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
     void Figma::handleMouseLeave( const RenderContext * _context, const InputMouseLeaveEvent & _event )

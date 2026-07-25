@@ -1,3 +1,7 @@
-#! /bin/bash
+#!/usr/bin/env bash
 
-sh ./make_solution_xcode_macos.sh Debug $1 $2 $3
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+exec "${SCRIPT_DIR}/make_solution_xcode_macos.sh" Debug "$@"

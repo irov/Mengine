@@ -29,9 +29,9 @@ namespace Mengine
             return false;
         }
         //////////////////////////////////////////////////////////////////////////
-        static const Char * ConstString_repr( ConstString * _cs )
+        static const Char * ConstString_repr( const ConstString * _t )
         {
-            const Char * str_repr = _cs->c_str();
+            const Char * str_repr = _t->c_str();
 
             return str_repr;
         }
@@ -64,9 +64,9 @@ namespace Mengine
             return false;
         }
         //////////////////////////////////////////////////////////////////////////
-        static const Char * FilePath_repr( FilePath * _cs )
+        static const Char * FilePath_repr( const FilePath * _t )
         {
-            const Char * str_repr = _cs->c_str();
+            const Char * str_repr = _t->c_str();
 
             return str_repr;
         }
@@ -143,4 +143,3 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
 }
-

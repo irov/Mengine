@@ -31,44 +31,44 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static String vec2f_repr( mt::vec2f * _v )
+        static String vec2f_repr( const mt::vec2f * _t )
         {
             Stringstream ss;
-            ss << "<vec2f: " << _v->x << ", " << _v->y << ">";
+            ss << "<vec2f: " << _t->x << ", " << _t->y << ">";
 
             String repr = ss.str();
 
             return repr;
         }
         //////////////////////////////////////////////////////////////////////////
-        static String vec3f_repr( mt::vec3f * _v )
+        static String vec3f_repr( const mt::vec3f * _t )
         {
             Stringstream ss;
-            ss << "<vec3f: " << _v->x << ", " << _v->y << ", " << _v->z << ">";
+            ss << "<vec3f: " << _t->x << ", " << _t->y << ", " << _t->z << ">";
 
             String repr = ss.str();
 
             return repr;
         }
         //////////////////////////////////////////////////////////////////////////
-        static String vec4f_repr( mt::vec4f * _v )
+        static String vec4f_repr( const mt::vec4f * _t )
         {
             Stringstream ss;
-            ss << "<vec4f: " << _v->x << ", " << _v->y << ", " << _v->z << ", " << _v->w << ">";
+            ss << "<vec4f: " << _t->x << ", " << _t->y << ", " << _t->z << ", " << _t->w << ">";
 
             String repr = ss.str();
 
             return repr;
         }
         //////////////////////////////////////////////////////////////////////////
-        static String mat4f_repr( mt::mat4f * _v )
+        static String mat4f_repr( const mt::mat4f * _t )
         {
             Stringstream ss;
             ss << "<mat4f: "
-                << _v->v0.x << ", " << _v->v0.y << ", " << _v->v0.z << ", " << _v->v0.w
-                << _v->v1.x << ", " << _v->v1.y << ", " << _v->v1.z << ", " << _v->v1.w
-                << _v->v2.x << ", " << _v->v2.y << ", " << _v->v2.z << ", " << _v->v2.w
-                << _v->v3.x << ", " << _v->v3.y << ", " << _v->v3.z << ", " << _v->v3.w
+                << _t->v0.x << ", " << _t->v0.y << ", " << _t->v0.z << ", " << _t->v0.w
+                << _t->v1.x << ", " << _t->v1.y << ", " << _t->v1.z << ", " << _t->v1.w
+                << _t->v2.x << ", " << _t->v2.y << ", " << _t->v2.z << ", " << _t->v2.w
+                << _t->v3.x << ", " << _t->v3.y << ", " << _t->v3.z << ", " << _t->v3.w
                 << ">";
 
             String repr = ss.str();
@@ -76,14 +76,14 @@ namespace Mengine
             return repr;
         }
         //////////////////////////////////////////////////////////////////////////
-        static String uv4f_repr( mt::uv4f * _v )
+        static String uv4f_repr( const mt::uv4f * _t )
         {
             Stringstream ss;
             ss << "<uv4f: "
-                << "(" << _v->p0.x << ", " << _v->p0.y << ")"
-                << ", (" << _v->p1.x << ", " << _v->p1.y << ")"
-                << ", (" << _v->p2.x << ", " << _v->p2.y << ")"
-                << ", (" << _v->p3.x << ", " << _v->p3.y << ")"
+                << "(" << _t->p0.x << ", " << _t->p0.y << ")"
+                << ", (" << _t->p1.x << ", " << _t->p1.y << ")"
+                << ", (" << _t->p2.x << ", " << _t->p2.y << ")"
+                << ", (" << _t->p3.x << ", " << _t->p3.y << ")"
                 << ">";
 
             String repr = ss.str();
@@ -331,10 +331,10 @@ namespace Mengine
             return false;
         }
         //////////////////////////////////////////////////////////////////////////
-        static String box2f_repr( mt::box2f * _v )
+        static String box2f_repr( const mt::box2f * _t )
         {
             Stringstream ss;
-            ss << "<box2f: " << _v->minimum.x << ", " << _v->minimum.y << ", " << _v->maximum.x << ", " << _v->maximum.y << ">";
+            ss << "<box2f: " << _t->minimum.x << ", " << _t->minimum.y << ", " << _t->maximum.x << ", " << _t->maximum.y << ">";
 
             String repr = ss.str();
 
@@ -395,10 +395,10 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        static String color_repr( Color * _v )
+        static String color_repr( const Color * _t )
         {
             Stringstream ss;
-            ss << "<color: " << _v->getA() << ", " << _v->getR() << ", " << _v->getG() << ", " << _v->getB() << ">";
+            ss << "<color: " << _t->getA() << ", " << _t->getR() << ", " << _t->getG() << ", " << _t->getB() << ">";
 
             String repr = ss.str();
 
@@ -504,10 +504,10 @@ namespace Mengine
             return false;
         }
         //////////////////////////////////////////////////////////////////////////
-        static String Resolution_repr( Resolution * _v )
+        static String Resolution_repr( const Resolution * _t )
         {
             Stringstream ss;
-            ss << "<Resolution: " << _v->getWidth() << ", " << _v->getHeight() << ">";
+            ss << "<Resolution: " << _t->getWidth() << ", " << _t->getHeight() << ">";
 
             String repr = ss.str();
 
@@ -564,10 +564,10 @@ namespace Mengine
             return false;
         }
         //////////////////////////////////////////////////////////////////////////
-        static String Viewport_repr( Viewport * _v )
+        static String Viewport_repr( const Viewport * _t )
         {
             Stringstream ss;
-            ss << "<Viewport: " << _v->begin.x << ", " << _v->begin.y << ", " << _v->end.x << ", " << _v->end.y << ", " << ">";
+            ss << "<Viewport: " << _t->begin.x << ", " << _t->begin.y << ", " << _t->end.x << ", " << _t->end.y << ", " << ">";
 
             String repr = ss.str();
 

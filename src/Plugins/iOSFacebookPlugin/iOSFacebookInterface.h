@@ -30,6 +30,7 @@
 - (BOOL)isLoggedIn;
 - (NSString *)getAccessToken;
 - (NSString *)getUserId;
+- (NSDictionary<NSString *, NSString *> *)getUser;
 - (void)shareLink:(NSString *)link picture:(NSString *)picture;
 - (void)getProfilePictureLink;
 

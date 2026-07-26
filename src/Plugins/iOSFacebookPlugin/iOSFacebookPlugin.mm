@@ -223,6 +223,46 @@
     return nil;
 }
 
+- (NSDictionary<NSString *, NSString *> *)getUser {
+    FBSDKProfile * profile = [FBSDKProfile currentProfile];
+
+    if( profile == nil )
+    {
+        return nil;
+    }
+
+    NSMutableDictionary<NSString *, NSString *> * user = [NSMutableDictionary dictionary];
+
+    if( profile.userID != nil )
+    {
+        self.m_userId = profile.userID;
+
+        [user setObject:profile.userID forKey:@"id"];
+    }
+
+    if( profile.name != nil )
+    {
+        [user setObject:profile.name forKey:@"name"];
+    }
+
+    if( profile.email != nil )
+    {
+        [user setObject:profile.email forKey:@"email"];
+    }
+
+    if( profile.imageURL != nil )
+    {
+        NSURL * imageURL = profile.imageURL.absoluteURL;
+
+        if( imageURL != nil && imageURL.absoluteString != nil )
+        {
+            [user setObject:imageURL.absoluteString forKey:@"pictureURL"];
+        }
+    }
+
+    return user;
+}
+
 - (void)shareLink:(NSString *)link picture:(NSString *)picture {
     id<iOSFacebookProviderInterface> provider = self.m_provider;
 

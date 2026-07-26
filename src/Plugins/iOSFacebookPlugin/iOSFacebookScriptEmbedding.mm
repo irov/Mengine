@@ -160,6 +160,13 @@ namespace Mengine
             return pybind::ptr( _kernel, userId.UTF8String );
         }
         //////////////////////////////////////////////////////////////////////////
+        static NSDictionary * iOSFacebook_getUser()
+        {
+            NSDictionary * user = [[iOSFacebookPlugin sharedInstance] getUser];
+
+            return user;
+        }
+        //////////////////////////////////////////////////////////////////////////
         static void iOSFacebook_shareLink( const Char * _link, const Char * _picture )
         {
             NSString * link = _link != nullptr ? [NSString stringWithUTF8String:_link] : @"";
@@ -201,6 +208,7 @@ namespace Mengine
         pybind::def_function( _kernel, "iOSFacebookIsLoggedIn", &Detail::iOSFacebook_isLoggedIn );
         pybind::def_function_kernel( _kernel, "iOSFacebookGetAccessToken", &Detail::iOSFacebook_getAccessToken );
         pybind::def_function_kernel( _kernel, "iOSFacebookGetUserId", &Detail::iOSFacebook_getUserId );
+        pybind::def_function( _kernel, "iOSFacebookGetUser", &Detail::iOSFacebook_getUser );
         pybind::def_function( _kernel, "iOSFacebookShareLink", &Detail::iOSFacebook_shareLink );
         pybind::def_function( _kernel, "iOSFacebookGetProfilePictureLink", &Detail::iOSFacebook_getProfilePictureLink );
 
@@ -215,6 +223,7 @@ namespace Mengine
         _kernel->remove_from_module( "iOSFacebookIsLoggedIn", nullptr );
         _kernel->remove_from_module( "iOSFacebookGetAccessToken", nullptr );
         _kernel->remove_from_module( "iOSFacebookGetUserId", nullptr );
+        _kernel->remove_from_module( "iOSFacebookGetUser", nullptr );
         _kernel->remove_from_module( "iOSFacebookShareLink", nullptr );
         _kernel->remove_from_module( "iOSFacebookGetProfilePictureLink", nullptr );
     }

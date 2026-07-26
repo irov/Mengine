@@ -3122,7 +3122,7 @@ namespace Mengine
                                 float dv = resource_image->base_height / resource_image->trim_height * v;
 
                                 float uvsl[4] = {-ou, -ov, 1.f / du, 1.f / dv};
-                                programVariable->setPixelVariables( "uvsl", 0, uvsl, 4, 1 );
+                                programVariable->updatePixelVariables( 0, uvsl, 4, 1 );
                             }
                         }
 
@@ -3354,7 +3354,7 @@ namespace Mengine
                             }
                         }
 
-                        programVariable->setPixelVariables( "uvbb", 0, uvbb, 4, 1 );
+                        programVariable->updatePixelVariables( 0, uvbb, 4, 1 );
 
                         const RenderMaterialInterfacePtr & material = surfaceTrackMatte->getMaterial();
 
@@ -3479,7 +3479,7 @@ namespace Mengine
                             }
                         }
 
-                        programVariable->setPixelVariables( "uvbb", 0, uvbb, 4, 1 );
+                        programVariable->updatePixelVariables( 0, uvbb, 4, 1 );
 
                         const RenderMaterialInterfacePtr & material = surfaceTrackMatte->getMaterial();
 

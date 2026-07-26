@@ -29,6 +29,9 @@ namespace Mengine
             , this->getName().c_str()
         );
 
+        float uvbb[4] = {0.f, 0.f, 0.f, 0.f};
+        programVariable->setPixelVariables( "uvbb", 0, uvbb, 4, 1 );
+
         m_programVariable = programVariable;
 
         return true;

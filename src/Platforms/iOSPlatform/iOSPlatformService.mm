@@ -405,6 +405,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool iOSPlatformService::_runService()
     {
+        m_iOSInput->startAccelerometer();
+
         PlatformDateTime dateTime;
         DATETIME_SYSTEM()
             ->getLocalDateTime( &dateTime );
@@ -447,6 +449,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::_stopService()
     {
+        m_iOSInput->stopAccelerometer();
+
         PlatformDateTime dateTime;
         DATETIME_SYSTEM()
             ->getLocalDateTime( &dateTime );
@@ -1383,6 +1387,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::handleApplicationDidBecomeActive()
     {
+        m_iOSInput->startAccelerometer();
+
         this->setActive_( true );
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_BECOME_ACTIVE );
@@ -1400,6 +1406,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::handleApplicationWillResignActive()
     {
+        m_iOSInput->stopAccelerometer();
+
         this->setActive_( false );
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_WILL_RESIGN_ACTIVE );

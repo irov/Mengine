@@ -128,24 +128,24 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool iOSGameCenterScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
-        pybind::def_function_args( _kernel, "appleGameCenterConnect", &Detail::iOSGameCenter_connect );
-        pybind::def_function( _kernel, "appleGameCenterIsConnect", &Detail::iOSGameCenter_isConnect );
-        pybind::def_function_args( _kernel, "appleGameCenterReportAchievement", &Detail::iOSGameCenter_reportAchievement );
-        pybind::def_function( _kernel, "appleGameCenterCheckAchievement", &Detail::iOSGameCenter_checkAchievement );
-        pybind::def_function_args( _kernel, "appleGameCenterResetAchievements", &Detail::iOSGameCenter_resetAchievements );
-        pybind::def_function_args( _kernel, "appleGameCenterReportScore", &Detail::iOSGameCenter_reportScore );
+        pybind::def_function_args( _kernel, "iOSGameCenterConnect", &Detail::iOSGameCenter_connect );
+        pybind::def_function( _kernel, "iOSGameCenterIsConnect", &Detail::iOSGameCenter_isConnect );
+        pybind::def_function_args( _kernel, "iOSGameCenterReportAchievement", &Detail::iOSGameCenter_reportAchievement );
+        pybind::def_function( _kernel, "iOSGameCenterCheckAchievement", &Detail::iOSGameCenter_checkAchievement );
+        pybind::def_function_args( _kernel, "iOSGameCenterResetAchievements", &Detail::iOSGameCenter_resetAchievements );
+        pybind::def_function_args( _kernel, "iOSGameCenterReportScore", &Detail::iOSGameCenter_reportScore );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSGameCenterScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
-        _kernel->remove_from_module( "appleGameCenterConnect", nullptr );
-        _kernel->remove_from_module( "appleGameCenterIsConnect", nullptr );
-        _kernel->remove_from_module( "appleGameCenterReportAchievement", nullptr );
-        _kernel->remove_from_module( "appleGameCenterCheckAchievement", nullptr );
-        _kernel->remove_from_module( "appleGameCenterResetAchievements", nullptr );
-        _kernel->remove_from_module( "appleGameCenterReportScore", nullptr );
+        _kernel->remove_from_module( "iOSGameCenterConnect", nullptr );
+        _kernel->remove_from_module( "iOSGameCenterIsConnect", nullptr );
+        _kernel->remove_from_module( "iOSGameCenterReportAchievement", nullptr );
+        _kernel->remove_from_module( "iOSGameCenterCheckAchievement", nullptr );
+        _kernel->remove_from_module( "iOSGameCenterResetAchievements", nullptr );
+        _kernel->remove_from_module( "iOSGameCenterReportScore", nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
 }

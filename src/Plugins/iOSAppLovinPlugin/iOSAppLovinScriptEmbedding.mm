@@ -47,7 +47,7 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static bool appleAppLovin_hasSupportedCMP()
+        static bool iOSAppLovin_hasSupportedCMP()
         {
             if( [[iOSAppLovinPlugin sharedInstance] hasSupportedCMP] == NO )
             {
@@ -57,7 +57,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool appleAppLovin_isConsentFlowUserGeographyGDPR()
+        static bool iOSAppLovin_isConsentFlowUserGeographyGDPR()
         {
             if( [[iOSAppLovinPlugin sharedInstance] isConsentFlowUserGeographyGDPR] == NO )
             {
@@ -67,7 +67,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        static void appleAppLovin_loadAndShowCMPFlow( const pybind::dict & _cbs, const pybind::args & _args )
+        static void iOSAppLovin_loadAndShowCMPFlow( const pybind::dict & _cbs, const pybind::args & _args )
         {
             id<iOSAppLovinConsentFlowProviderInterface> callback
                 = [[PythoniOSAppLovinConsentFlowProvider alloc] initWithCbs:_cbs args:_args];
@@ -75,7 +75,7 @@ namespace Mengine
             [[iOSAppLovinPlugin sharedInstance] loadAndShowCMPFlow:callback];
         }
         //////////////////////////////////////////////////////////////////////////
-        static void appleAppLovin_showMediationDebugger()
+        static void iOSAppLovin_showMediationDebugger()
         {
             [[iOSAppLovinPlugin sharedInstance] showMediationDebugger];
         }
@@ -92,20 +92,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool iOSAppLovinScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
-        pybind::def_function( _kernel, "appleAppLovinHasSupportedCMP", &Detail::appleAppLovin_hasSupportedCMP );
-        pybind::def_function( _kernel, "appleAppLovinIsConsentFlowUserGeographyGDPR", &Detail::appleAppLovin_isConsentFlowUserGeographyGDPR );
-        pybind::def_function_args( _kernel, "appleAppLovinLoadAndShowCMPFlow", &Detail::appleAppLovin_loadAndShowCMPFlow );
-        pybind::def_function( _kernel, "appleAppLovinShowMediationDebugger", &Detail::appleAppLovin_showMediationDebugger );
+        pybind::def_function( _kernel, "iOSAppLovinHasSupportedCMP", &Detail::iOSAppLovin_hasSupportedCMP );
+        pybind::def_function( _kernel, "iOSAppLovinIsConsentFlowUserGeographyGDPR", &Detail::iOSAppLovin_isConsentFlowUserGeographyGDPR );
+        pybind::def_function_args( _kernel, "iOSAppLovinLoadAndShowCMPFlow", &Detail::iOSAppLovin_loadAndShowCMPFlow );
+        pybind::def_function( _kernel, "iOSAppLovinShowMediationDebugger", &Detail::iOSAppLovin_showMediationDebugger );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSAppLovinScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
-        _kernel->remove_from_module( "appleAppLovinHasSupportedCMP", nullptr );
-        _kernel->remove_from_module( "appleAppLovinIsConsentFlowUserGeographyGDPR", nullptr );
-        _kernel->remove_from_module( "appleAppLovinLoadAndShowCMPFlow", nullptr );
-        _kernel->remove_from_module( "appleAppLovinShowMediationDebugger", nullptr );
+        _kernel->remove_from_module( "iOSAppLovinHasSupportedCMP", nullptr );
+        _kernel->remove_from_module( "iOSAppLovinIsConsentFlowUserGeographyGDPR", nullptr );
+        _kernel->remove_from_module( "iOSAppLovinLoadAndShowCMPFlow", nullptr );
+        _kernel->remove_from_module( "iOSAppLovinShowMediationDebugger", nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
 }

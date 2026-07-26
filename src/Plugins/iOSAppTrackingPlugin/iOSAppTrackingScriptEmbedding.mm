@@ -17,7 +17,7 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static void iOSAppTracking_authorization()
+        static void iOSAppTracking_requestAuthorization()
         {
             [[iOSAppTrackingPlugin sharedInstance] authorization];
         };
@@ -41,14 +41,14 @@ namespace Mengine
             .def( "EAATA_NOT_DETERMINED", EAATA_NOT_DETERMINED )
             ;
 
-        pybind::def_function( _kernel, "appleAppTrackingAuthorization", &Detail::iOSAppTracking_authorization );
+        pybind::def_function( _kernel, "iOSAppTrackingRequestAuthorization", &Detail::iOSAppTracking_requestAuthorization );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSAppTrackingScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
-        _kernel->remove_from_module( "appleAppTrackingAuthorization", nullptr );
+        _kernel->remove_from_module( "iOSAppTrackingRequestAuthorization", nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -49,8 +49,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool iOSAdjustScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
-        pybind::def_function( _kernel, "appleAdjustEventTraking", &Detail::iOSAdjust_eventTraking );
-        pybind::def_function( _kernel, "appleAdjustRevenueTracking",
+        pybind::def_function( _kernel, "iOSAdjustEventTraking", &Detail::iOSAdjust_eventTraking );
+        pybind::def_function( _kernel, "iOSAdjustRevenueTracking",
                               &Detail::iOSAdjust_revenueTracking );
 
         return true;
@@ -58,8 +58,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void iOSAdjustScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
-        _kernel->remove_from_module( "appleAdjustEventTraking", nullptr );
-        _kernel->remove_from_module( "appleAdjustRevenueTracking", nullptr );
+        _kernel->remove_from_module( "iOSAdjustEventTraking", nullptr );
+        _kernel->remove_from_module( "iOSAdjustRevenueTracking", nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
 }

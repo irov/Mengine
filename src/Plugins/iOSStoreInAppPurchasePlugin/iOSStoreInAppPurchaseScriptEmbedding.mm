@@ -145,14 +145,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool iOSStoreInAppPurchaseScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
-        pybind::def_function_args( _kernel, "appleStoreInAppPurchaseSetPaymentTransactionProvider", &Detail::iOSStoreInAppPurchase_setPaymentTransactionProvider );
-        pybind::def_function( _kernel, "appleStoreInAppPurchaseRemovePaymentTransactionProvider", &Detail::iOSStoreInAppPurchase_removePaymentTransactionProvider );
+        pybind::def_function_args( _kernel, "iOSStoreInAppPurchaseSetPaymentTransactionProvider", &Detail::iOSStoreInAppPurchase_setPaymentTransactionProvider );
+        pybind::def_function( _kernel, "iOSStoreInAppPurchaseRemovePaymentTransactionProvider", &Detail::iOSStoreInAppPurchase_removePaymentTransactionProvider );
 
-        pybind::def_function( _kernel, "appleStoreInAppPurchaseCanMakePayments", &Detail::iOSStoreInAppPurchase_canMakePayments );
-        pybind::def_function_args( _kernel, "appleStoreInAppPurchaseRequestProducts", &Detail::iOSStoreInAppPurchase_requestProducts );
-        pybind::def_function( _kernel, "appleStoreInAppPurchaseIsOwnedProduct", &Detail::iOSStoreInAppPurchase_isOwnedProduct );
-        pybind::def_function( _kernel, "appleStoreInAppPurchasePurchaseProduct", &Detail::iOSStoreInAppPurchase_purchaseProduct );
-        pybind::def_function( _kernel, "appleStoreInAppPurchaseRestoreCompletedTransactions", &Detail::iOSStoreInAppPurchase_restoreCompletedTransactions );
+        pybind::def_function( _kernel, "iOSStoreInAppPurchaseCanMakePayments", &Detail::iOSStoreInAppPurchase_canMakePayments );
+        pybind::def_function_args( _kernel, "iOSStoreInAppPurchaseRequestProducts", &Detail::iOSStoreInAppPurchase_requestProducts );
+        pybind::def_function( _kernel, "iOSStoreInAppPurchaseIsOwnedProduct", &Detail::iOSStoreInAppPurchase_isOwnedProduct );
+        pybind::def_function( _kernel, "iOSStoreInAppPurchasePurchaseProduct", &Detail::iOSStoreInAppPurchase_purchaseProduct );
+        pybind::def_function( _kernel, "iOSStoreInAppPurchaseRestoreCompletedTransactions", &Detail::iOSStoreInAppPurchase_restoreCompletedTransactions );
 
         pybind::interface_<iOSStoreInAppPurchasePaymentTransactionInterface, pybind::bases<Factorable>>( _kernel, "iOSStoreInAppPurchasePaymentTransactionInterface", true )
             .def( "getProductIdentifier", &iOSStoreInAppPurchasePaymentTransactionInterface::getProductIdentifier )
@@ -193,6 +193,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void iOSStoreInAppPurchaseScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
+        _kernel->remove_from_module( "iOSStoreInAppPurchaseSetPaymentTransactionProvider", nullptr );
+        _kernel->remove_from_module( "iOSStoreInAppPurchaseRemovePaymentTransactionProvider", nullptr );
+        _kernel->remove_from_module( "iOSStoreInAppPurchaseCanMakePayments", nullptr );
+        _kernel->remove_from_module( "iOSStoreInAppPurchaseRequestProducts", nullptr );
+        _kernel->remove_from_module( "iOSStoreInAppPurchaseIsOwnedProduct", nullptr );
+        _kernel->remove_from_module( "iOSStoreInAppPurchasePurchaseProduct", nullptr );
+        _kernel->remove_from_module( "iOSStoreInAppPurchaseRestoreCompletedTransactions", nullptr );
+
         pybind::unregistration_stl_vector_type_cast<VectoriOSStoreInAppPurchaseProducts>( _kernel );
 
         _kernel->remove_scope<iOSStoreInAppPurchasePaymentTransactionInterface>();

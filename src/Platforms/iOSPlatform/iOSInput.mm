@@ -2,13 +2,18 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/InputServiceHelper.h"
+#include "Kernel/TimestampHelper.h"
 
 #include "Config/StdAlgorithm.h"
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
+        //////////////////////////////////////////////////////////////////////////
+        static constexpr NSTimeInterval IOS_ACCELEROMETER_UPDATE_INTERVAL = 0.02;
+        //////////////////////////////////////////////////////////////////////////
         static Timestamp getTouchTimestamp( const UITouch * _touch )
         {
             NSTimeInterval touchTimestamp = _touch.timestamp;
@@ -17,10 +22,20 @@ namespace Mengine
 
             return timestamp;
         }
+        //////////////////////////////////////////////////////////////////////////
+        static Timestamp getAccelerometerTimestamp( const CMAccelerometerData * _data )
+        {
+            NSTimeInterval accelerometerTimestamp = _data.timestamp;
+
+            Timestamp timestamp = static_cast<Timestamp>(accelerometerTimestamp * 1000000000.0);
+
+            return timestamp;
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////
     iOSInput::iOSInput()
+        : m_motionManager( nil )
     {
         StdAlgorithm::fill_n( m_keyDown, MENGINE_INPUT_MAX_KEY_CODE, false );
         StdAlgorithm::fill_n( m_fingers, MENGINE_INPUT_MAX_TOUCH, (UITouch *)nil );
@@ -34,11 +49,65 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool iOSInput::initialize()
     {
+        m_motionManager = [[CMMotionManager alloc] init];
+
+        m_motionManager.accelerometerUpdateInterval = Detail::IOS_ACCELEROMETER_UPDATE_INTERVAL;
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSInput::finalize()
     {
+        this->stopAccelerometer();
+
+        m_motionManager = nil;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void iOSInput::startAccelerometer()
+    {
+        if( m_motionManager.accelerometerAvailable == NO )
+        {
+            return;
+        }
+
+        if( m_motionManager.accelerometerActive == YES )
+        {
+            return;
+        }
+
+        [m_motionManager startAccelerometerUpdatesToQueue:[NSOperationQueue mainQueue]
+                                             withHandler:^(CMAccelerometerData * data, NSError * error) {
+            MENGINE_UNUSED( error );
+
+            if( data == nil )
+            {
+                return;
+            }
+
+            Timestamp timestampSensor = Detail::getAccelerometerTimestamp( data );
+            Timestamp timestampSensorMs = Helper::convertTimestampNanosecondsToMilliseconds( timestampSensor );
+            Timestamp bootTimestamp = Helper::getBootTimestamp();
+            Timestamp platformTimestamp = Helper::getPlatformTimestamp();
+            Timestamp timestamp = Helper::convertTimestampTimebase( timestampSensorMs, bootTimestamp, platformTimestamp );
+
+            CMAcceleration acceleration = data.acceleration;
+
+            Helper::pushAccelerometerEvent( timestamp, timestampSensor
+                , static_cast<float>(acceleration.x)
+                , static_cast<float>(acceleration.y)
+                , static_cast<float>(acceleration.z)
+            );
+        }];
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void iOSInput::stopAccelerometer()
+    {
+        if( m_motionManager.accelerometerActive == NO )
+        {
+            return;
+        }
+
+        [m_motionManager stopAccelerometerUpdates];
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSInput::calcCursorPosition_( UIView * _view, CGPoint _location, mt::vec2f * const _point ) const

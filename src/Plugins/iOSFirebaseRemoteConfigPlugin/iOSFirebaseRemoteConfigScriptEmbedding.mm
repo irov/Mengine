@@ -49,16 +49,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool iOSFirebaseRemoteConfigScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
-        pybind::def_function( _kernel, "appleFirebaseRemoteConfigHasValue", &Detail::iOSFirebaseRemoteConfigService_hasRemoteConfig );
-        pybind::def_function( _kernel, "appleFirebaseRemoteConfigGetValue", &Detail::iOSFirebaseRemoteConfigService_getRemoteConfigValue );
+        pybind::def_function( _kernel, "iOSFirebaseRemoteConfigHasValue", &Detail::iOSFirebaseRemoteConfigService_hasRemoteConfig );
+        pybind::def_function( _kernel, "iOSFirebaseRemoteConfigGetValue", &Detail::iOSFirebaseRemoteConfigService_getRemoteConfigValue );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSFirebaseRemoteConfigScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
-        _kernel->remove_from_module( "appleFirebaseRemoteConfigHasValue", nullptr );
-        _kernel->remove_from_module( "appleFirebaseRemoteConfigGetValue", nullptr );
+        _kernel->remove_from_module( "iOSFirebaseRemoteConfigHasValue", nullptr );
+        _kernel->remove_from_module( "iOSFirebaseRemoteConfigGetValue", nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
 }

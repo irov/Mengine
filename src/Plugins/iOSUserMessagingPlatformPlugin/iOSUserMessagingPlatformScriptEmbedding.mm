@@ -10,12 +10,12 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static void appleUserMessagingPlatform_showConsentFlow()
+        static void iOSUserMessagingPlatform_showConsentFlow()
         {
             [[iOSUserMessagingPlatformPlugin sharedInstance] showConsentFlow];
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool appleUserMessagingPlatform_isConsentFlowUserGeographyGDPR()
+        static bool iOSUserMessagingPlatform_isConsentFlowUserGeographyGDPR()
         {
             return [[iOSUserMessagingPlatformPlugin sharedInstance] isConsentFlowUserGeographyGDPR];
         }
@@ -32,16 +32,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool iOSUserMessagingPlatformScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
-        pybind::def_function( _kernel, "appleUserMessagingPlatformShowConsentFlow", &Detail::appleUserMessagingPlatform_showConsentFlow );
-        pybind::def_function( _kernel, "appleUserMessagingPlatformIsConsentFlowUserGeographyGDPR", &Detail::appleUserMessagingPlatform_isConsentFlowUserGeographyGDPR );
+        pybind::def_function( _kernel, "iOSUserMessagingPlatformShowConsentFlow", &Detail::iOSUserMessagingPlatform_showConsentFlow );
+        pybind::def_function( _kernel, "iOSUserMessagingPlatformIsConsentFlowUserGeographyGDPR", &Detail::iOSUserMessagingPlatform_isConsentFlowUserGeographyGDPR );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSUserMessagingPlatformScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
-        _kernel->remove_from_module( "appleUserMessagingPlatformShowConsentFlow", nullptr );
-        _kernel->remove_from_module( "appleUserMessagingPlatformIsConsentFlowUserGeographyGDPR", nullptr );
+        _kernel->remove_from_module( "iOSUserMessagingPlatformShowConsentFlow", nullptr );
+        _kernel->remove_from_module( "iOSUserMessagingPlatformIsConsentFlowUserGeographyGDPR", nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
 }

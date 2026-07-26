@@ -202,6 +202,12 @@
             return;
         }
 
+        if (localPlayer.isAuthenticated == NO) {
+            self.m_authenticateSuccess = NO;
+
+            return;
+        }
+
         self.m_authenticateSuccess = YES;
 
         [AppleDetail addMainQueueOperation:^{

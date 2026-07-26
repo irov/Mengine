@@ -313,32 +313,32 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool iOSMARSDKScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
-        pybind::def_function_args( _kernel, "appleMARSDKSetProvider", &Detail::iOSMARSDK_setProvider );
-        pybind::def_function( _kernel, "appleMARSDKLogin", &Detail::iOSMARSDK_login );
-        pybind::def_function( _kernel, "appleMARSDKLogout", &Detail::iOSMARSDK_logout );
-        pybind::def_function( _kernel, "appleMARSDKSwitchAccount", &Detail::iOSMARSDK_switchAccount );
-        pybind::def_function( _kernel, "appleMARSDKRequestNonConsumablePurchased", &Detail::iOSMARSDK_requestNonConsumablePurchased );
-        pybind::def_function( _kernel, "appleMARSDKSubmitExtendedData", &Detail::iOSMARSDK_submitExtendedData );
-        pybind::def_function( _kernel, "appleMARSDKSubmitPaymentData", &Detail::iOSMARSDK_submitPaymentData );
-        pybind::def_function( _kernel, "appleMARSDKPropComplete", &Detail::iOSMARSDK_propComplete );
-        pybind::def_function( _kernel, "appleMARSDKShowRewardVideoAd", &Detail::iOSMARSDK_showRewardVideoAd );
-        pybind::def_function( _kernel, "appleMARSDKGetInternetDate", &Detail::iOSMARSDK_getInternetDate );
+        pybind::def_function_args( _kernel, "iOSMARSDKSetProvider", &Detail::iOSMARSDK_setProvider );
+        pybind::def_function( _kernel, "iOSMARSDKLogin", &Detail::iOSMARSDK_login );
+        pybind::def_function( _kernel, "iOSMARSDKLogout", &Detail::iOSMARSDK_logout );
+        pybind::def_function( _kernel, "iOSMARSDKSwitchAccount", &Detail::iOSMARSDK_switchAccount );
+        pybind::def_function( _kernel, "iOSMARSDKRequestNonConsumablePurchased", &Detail::iOSMARSDK_requestNonConsumablePurchased );
+        pybind::def_function( _kernel, "iOSMARSDKSubmitExtendedData", &Detail::iOSMARSDK_submitExtendedData );
+        pybind::def_function( _kernel, "iOSMARSDKSubmitPaymentData", &Detail::iOSMARSDK_submitPaymentData );
+        pybind::def_function( _kernel, "iOSMARSDKPropComplete", &Detail::iOSMARSDK_propComplete );
+        pybind::def_function( _kernel, "iOSMARSDKShowRewardVideoAd", &Detail::iOSMARSDK_showRewardVideoAd );
+        pybind::def_function( _kernel, "iOSMARSDKGetInternetDate", &Detail::iOSMARSDK_getInternetDate );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSMARSDKScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
-        _kernel->remove_from_module( "appleMARSDKSetProvider", nullptr );
-        _kernel->remove_from_module( "appleMARSDKLogin", nullptr );
-        _kernel->remove_from_module( "appleMARSDKLogout", nullptr );
-        _kernel->remove_from_module( "appleMARSDKSwitchAccount", nullptr );
-        _kernel->remove_from_module( "appleMARSDKRequestNonConsumablePurchased", nullptr );
-        _kernel->remove_from_module( "appleMARSDKSubmitExtendedData", nullptr );
-        _kernel->remove_from_module( "appleMARSDKSubmitPaymentData", nullptr );
-        _kernel->remove_from_module( "appleMARSDKPropComplete", nullptr );
-        _kernel->remove_from_module( "appleMARSDKShowRewardVideoAd", nullptr );
-        _kernel->remove_from_module( "appleMARSDKGetInternetDate", nullptr );
+        _kernel->remove_from_module( "iOSMARSDKSetProvider", nullptr );
+        _kernel->remove_from_module( "iOSMARSDKLogin", nullptr );
+        _kernel->remove_from_module( "iOSMARSDKLogout", nullptr );
+        _kernel->remove_from_module( "iOSMARSDKSwitchAccount", nullptr );
+        _kernel->remove_from_module( "iOSMARSDKRequestNonConsumablePurchased", nullptr );
+        _kernel->remove_from_module( "iOSMARSDKSubmitExtendedData", nullptr );
+        _kernel->remove_from_module( "iOSMARSDKSubmitPaymentData", nullptr );
+        _kernel->remove_from_module( "iOSMARSDKPropComplete", nullptr );
+        _kernel->remove_from_module( "iOSMARSDKShowRewardVideoAd", nullptr );
+        _kernel->remove_from_module( "iOSMARSDKGetInternetDate", nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
 }

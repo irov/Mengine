@@ -25,7 +25,7 @@
         return;
     }
 
-    py_cb.call_args( params, self.m_args );
+    py_cb.call_args( (NSDictionary *)params, self.m_args );
 }
 
 - (void)onFacebookLoginCancel {
@@ -195,28 +195,28 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool iOSFacebookScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
-        pybind::def_function_args( _kernel, "appleFacebookSetProvider", &Detail::iOSFacebook_setProvider );
-        pybind::def_function( _kernel, "appleFacebookLogin", &Detail::iOSFacebook_login );
-        pybind::def_function( _kernel, "appleFacebookLogout", &Detail::iOSFacebook_logout );
-        pybind::def_function( _kernel, "appleFacebookIsLoggedIn", &Detail::iOSFacebook_isLoggedIn );
-        pybind::def_function_kernel( _kernel, "appleFacebookGetAccessToken", &Detail::iOSFacebook_getAccessToken );
-        pybind::def_function_kernel( _kernel, "appleFacebookGetUserId", &Detail::iOSFacebook_getUserId );
-        pybind::def_function( _kernel, "appleFacebookShareLink", &Detail::iOSFacebook_shareLink );
-        pybind::def_function( _kernel, "appleFacebookGetProfilePictureLink", &Detail::iOSFacebook_getProfilePictureLink );
+        pybind::def_function_args( _kernel, "iOSFacebookSetProvider", &Detail::iOSFacebook_setProvider );
+        pybind::def_function( _kernel, "iOSFacebookLogin", &Detail::iOSFacebook_login );
+        pybind::def_function( _kernel, "iOSFacebookLogout", &Detail::iOSFacebook_logout );
+        pybind::def_function( _kernel, "iOSFacebookIsLoggedIn", &Detail::iOSFacebook_isLoggedIn );
+        pybind::def_function_kernel( _kernel, "iOSFacebookGetAccessToken", &Detail::iOSFacebook_getAccessToken );
+        pybind::def_function_kernel( _kernel, "iOSFacebookGetUserId", &Detail::iOSFacebook_getUserId );
+        pybind::def_function( _kernel, "iOSFacebookShareLink", &Detail::iOSFacebook_shareLink );
+        pybind::def_function( _kernel, "iOSFacebookGetProfilePictureLink", &Detail::iOSFacebook_getProfilePictureLink );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSFacebookScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
-        _kernel->remove_from_module( "appleFacebookSetProvider", nullptr );
-        _kernel->remove_from_module( "appleFacebookLogin", nullptr );
-        _kernel->remove_from_module( "appleFacebookLogout", nullptr );
-        _kernel->remove_from_module( "appleFacebookIsLoggedIn", nullptr );
-        _kernel->remove_from_module( "appleFacebookGetAccessToken", nullptr );
-        _kernel->remove_from_module( "appleFacebookGetUserId", nullptr );
-        _kernel->remove_from_module( "appleFacebookShareLink", nullptr );
-        _kernel->remove_from_module( "appleFacebookGetProfilePictureLink", nullptr );
+        _kernel->remove_from_module( "iOSFacebookSetProvider", nullptr );
+        _kernel->remove_from_module( "iOSFacebookLogin", nullptr );
+        _kernel->remove_from_module( "iOSFacebookLogout", nullptr );
+        _kernel->remove_from_module( "iOSFacebookIsLoggedIn", nullptr );
+        _kernel->remove_from_module( "iOSFacebookGetAccessToken", nullptr );
+        _kernel->remove_from_module( "iOSFacebookGetUserId", nullptr );
+        _kernel->remove_from_module( "iOSFacebookShareLink", nullptr );
+        _kernel->remove_from_module( "iOSFacebookGetProfilePictureLink", nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
 }

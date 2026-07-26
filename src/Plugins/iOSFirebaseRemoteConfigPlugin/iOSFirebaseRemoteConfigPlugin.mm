@@ -135,7 +135,7 @@
         FIRRemoteConfigValue * value = [remoteConfig configValueForKey:key];
 
         if (value == nil) {
-            IOS_LOGGER_MESSAGE(@"Apple firebase remote config not value: %@", key);
+            IOS_LOGGER_MESSAGE(@"iOS Firebase Remote Config has no value: %@", key);
 
             continue;
         }
@@ -143,7 +143,7 @@
         NSDictionary * json = [value JSONValue];
 
         if (json == nil) {
-            IOS_LOGGER_ERROR(@"[ERROR] Apple firebase remote config not JSON: %@", key);
+            IOS_LOGGER_ERROR(@"[ERROR] iOS Firebase Remote Config value is not JSON: %@", key);
 
             continue;
         }

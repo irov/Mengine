@@ -27,14 +27,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool iOSStoreReviewScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
-        pybind::def_function( _kernel, "appleStoreReviewLaunchTheInAppReview", &Detail::iOSStoreReviewPlugin_launchTheInAppReview );
+        pybind::def_function( _kernel, "iOSStoreReviewLaunchTheInAppReview", &Detail::iOSStoreReviewPlugin_launchTheInAppReview );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSStoreReviewScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
-        _kernel->remove_from_module( "appleStoreReviewLaunchTheInAppReview", nullptr );
+        _kernel->remove_from_module( "iOSStoreReviewLaunchTheInAppReview", nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -7,6 +7,7 @@
 
 #include "math/vec2.h"
 
+#import <CoreMotion/CoreMotion.h>
 #import <UIKit/UIKit.h>
 
 namespace Mengine
@@ -22,6 +23,10 @@ namespace Mengine
     public:
         bool initialize();
         void finalize();
+
+    public:
+        void startAccelerometer();
+        void stopAccelerometer();
 
     public:
         void handleTouchBegan( NSSet<UITouch *> * _touches, UIView * _view );
@@ -50,6 +55,8 @@ namespace Mengine
         UITouch * m_fingers[MENGINE_INPUT_MAX_TOUCH];
 
         mt::vec2f m_lastCursorPosition;
+
+        CMMotionManager * m_motionManager;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<iOSInput> iOSInputPtr;

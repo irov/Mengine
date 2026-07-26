@@ -114,7 +114,7 @@ typedef NSMutableDictionary<NSString *, iOSNativePythonMethods *> iOSNativePytho
 
     if( pluginMethods == nil )
     {
-        LOGGER_ERROR( "invalid remove apple callback plugin '%s' method '%s' not found"
+        LOGGER_ERROR( "invalid remove iOS callback plugin '%s' method '%s' not found"
             , [plugin UTF8String]
             , [method UTF8String]
         );
@@ -126,7 +126,7 @@ typedef NSMutableDictionary<NSString *, iOSNativePythonMethods *> iOSNativePytho
 
     if( callbacks == nil )
     {
-        LOGGER_ERROR( "invalid remove apple callback plugin '%s' method '%s' not found"
+        LOGGER_ERROR( "invalid remove iOS callback plugin '%s' method '%s' not found"
             , [plugin UTF8String]
             , [method UTF8String]
         );
@@ -148,7 +148,7 @@ typedef NSMutableDictionary<NSString *, iOSNativePythonMethods *> iOSNativePytho
 
     if( index == NSNotFound )
     {
-        LOGGER_ERROR( "invalid remove apple callback plugin '%s' method '%s' not found [cb]"
+        LOGGER_ERROR( "invalid remove iOS callback plugin '%s' method '%s' not found [cb]"
             , [plugin UTF8String]
             , [method UTF8String]
         );
@@ -175,7 +175,7 @@ typedef NSMutableDictionary<NSString *, iOSNativePythonMethods *> iOSNativePytho
         name = @"";
     }
 
-    LOGGER_INFO( "apple", "activate semaphore '%s'"
+    LOGGER_INFO( "ios", "activate semaphore '%s'"
         , [name UTF8String]
     );
 
@@ -189,7 +189,7 @@ typedef NSMutableDictionary<NSString *, iOSNativePythonMethods *> iOSNativePytho
         name = @"";
     }
 
-    LOGGER_INFO( "apple", "wait semaphore '%s'"
+    LOGGER_INFO( "ios", "wait semaphore '%s'"
         , [name UTF8String]
     );
 

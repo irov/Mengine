@@ -725,29 +725,6 @@ namespace Mengine
             return StdMath::log10( _x );
         }
         //////////////////////////////////////////////////////////////////////////
-        static float dot_v2_v2( const mt::vec2f & _a, const mt::vec2f & _b )
-        {
-            float d = mt::dot_v2_v2( _a, _b );
-
-            return d;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static mt::vec2f direction_v2_v2( const mt::vec2f & _from, const mt::vec2f & _to )
-        {
-            mt::vec2f direction;
-            mt::dir_v2_v2( &direction, _to, _from );
-
-            return direction;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static mt::vec3f direction_v3_v3( const mt::vec3f & _from, const mt::vec3f & _to )
-        {
-            mt::vec3f direction;
-            mt::dir_v3_v3( &direction, _from, _to );
-
-            return direction;
-        }
-        //////////////////////////////////////////////////////////////////////////
         static float angle_from_v2_v2( const mt::vec2f & _from, const mt::vec2f & _to )
         {
             mt::vec2f direction;
@@ -759,30 +736,6 @@ namespace Mengine
             float angle = mt::signed_angle( direction_n );
 
             return angle;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static mt::vec2f norm_v2( const mt::vec2f & _vec )
-        {
-            mt::vec2f v_n;
-            mt::norm_v2_v2( &v_n, _vec );
-
-            return v_n;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static mt::vec3f norm_v3( const mt::vec3f & _vec )
-        {
-            mt::vec3f v_n;
-            mt::norm_v3_v3( &v_n, _vec );
-
-            return v_n;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static mt::vec4f norm_v4( const mt::vec4f & _vec )
-        {
-            mt::vec4f v_n;
-            mt::norm_v4_v4( &v_n, _vec );
-
-            return v_n;
         }
         //////////////////////////////////////////////////////////////////////////
     }
@@ -1056,13 +1009,13 @@ namespace Mengine
         pybind::def_function( _kernel, "logf", &Detail::logf );
         pybind::def_function( _kernel, "log10f", &Detail::log10f );
         pybind::def_function( _kernel, "log10", &Detail::log10 );
-        pybind::def_function( _kernel, "dot_v2_v2", &Detail::dot_v2_v2 );
-        pybind::def_function( _kernel, "direction_v2_v2", &Detail::direction_v2_v2 );
-        pybind::def_function( _kernel, "direction_v3_v3", &Detail::direction_v3_v3 );
+        pybind::def_function( _kernel, "dot_v2_v2", &mt::dot_v2_v2 );
+        pybind::def_function_out( _kernel, "direction_v2_v2", &mt::dir_v2_v2 );
+        pybind::def_function_out( _kernel, "direction_v3_v3", &mt::dir_v3_v3 );
         pybind::def_function( _kernel, "angle_from_v2_v2", &Detail::angle_from_v2_v2 );
-        pybind::def_function( _kernel, "norm_v2", &Detail::norm_v2 );
-        pybind::def_function( _kernel, "norm_v3", &Detail::norm_v3 );
-        pybind::def_function( _kernel, "norm_v4", &Detail::norm_v4 );
+        pybind::def_function_out( _kernel, "norm_v2", &mt::norm_v2_v2 );
+        pybind::def_function_out( _kernel, "norm_v3", &mt::norm_v3_v3 );
+        pybind::def_function_out( _kernel, "norm_v4", &mt::norm_v4_v4 );
 
         pybind::def_function( _kernel, "angle_norm", &mt::angle_norm );
         pybind::def_function( _kernel, "angle_delta_deg", &mt::angle_delta_deg );

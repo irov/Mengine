@@ -572,12 +572,12 @@ namespace Mengine
                 _shape->stopAffectors( EAFFECTORTYPE_VISIBILITY );
             }
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_Animation_play( AnimationInterface * _animation )
+            UniqueId s_Animation_play( AnimationInterface * _animation )
             {
                 float time = TIMELINE_SERVICE()
                     ->getTotalTime();
 
-                uint32_t id = _animation->play( time );
+                UniqueId id = _animation->play( time );
 
                 return id;
             }

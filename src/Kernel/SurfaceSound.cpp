@@ -482,7 +482,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _identity );
 
-        uint32_t id = this->getPlayId();
+        UniqueId id = this->getPlayId();
         float playTime = this->getPlayTime();
 
         EVENTABLE_METHOD( EVENT_ANIMATION_PLAY )
@@ -493,7 +493,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _identity );
 
-        uint32_t id = this->getPlayId();
+        UniqueId id = this->getPlayId();
 
         EVENTABLE_METHOD( EVENT_ANIMATION_PAUSE )
             ->onAnimationPause( id );
@@ -503,7 +503,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _identity );
 
-        uint32_t id = this->getPlayId();
+        UniqueId id = this->getPlayId();
         float playTime = this->getPlayTime();
 
         EVENTABLE_METHOD( EVENT_ANIMATION_RESUME )

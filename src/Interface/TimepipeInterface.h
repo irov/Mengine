@@ -10,7 +10,7 @@ namespace Mengine
         : public Mixin
     {
     public:
-         virtual void onTimepipe( const UpdateContext * _contet ) = 0;
+        virtual void onTimepipe( const UpdateContext * _context ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<TimepipeInterface> TimepipeInterfacePtr;

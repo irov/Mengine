@@ -15,36 +15,10 @@ namespace Mengine
                 ->addTimepipe( _timepipe, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
-        namespace Detail
+        TimepipeInterfacePtr addTimepipe( const LambdaTimepipeEvent & _lambda, const DocumentInterfacePtr & _doc )
         {
-            class MyTimepipe
-                : public Factorable
-                , public TimepipeInterface
-            {
-            public:
-                MyTimepipe( const LambdaTimepipe & _lambda )
-                    : m_lambda( _lambda )
-                {
-                }
-
-                ~MyTimepipe() override
-                {
-                }
-
-            protected:
-                void onTimepipe( const UpdateContext * _contet ) override
-                {
-                    m_lambda( _contet );
-                }
-
-            protected:
-                LambdaTimepipe m_lambda;
-            };
-        }
-        //////////////////////////////////////////////////////////////////////////
-        TimepipeInterfacePtr addTimepipe( const LambdaTimepipe & _lambda, const DocumentInterfacePtr & _doc )
-        {
-            TimepipeInterfacePtr timepipe = Helper::makeFactorableUnique<Detail::MyTimepipe>( _doc, _lambda );
+            LambdaTimepipePtr timepipe = Helper::makeFactorableUnique<Mengine::LambdaTimepipe>( _doc );
+            timepipe->initialize( _lambda );
 
             TIMEPIPE_SERVICE()
                 ->addTimepipe( timepipe, _doc );

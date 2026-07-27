@@ -90,22 +90,22 @@ namespace Mengine
             };
         }
         //////////////////////////////////////////////////////////////////////////
-        uint32_t schedulerEvent( const SchedulerInterfacePtr & _scheduler, float _delay, const LambdaScheduleEvent & _event, const DocumentInterfacePtr & _doc )
+        UniqueId schedulerEvent( const SchedulerInterfacePtr & _scheduler, float _delay, const LambdaScheduleEvent & _event, const DocumentInterfacePtr & _doc )
         {
             SchedulerEventInterfacePtr event = Helper::makeFactorableUnique<Detail::HelperScheduleEvent>( _doc, _event );
 
-            uint32_t id = _scheduler->event( _delay, event, _doc );
+            UniqueId id = _scheduler->event( _delay, event, _doc );
 
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        uint32_t schedulerTiming( const SchedulerInterfacePtr & _scheduler, const LambdaSchedulePipe & _pipe, const LambdaScheduleTiming & _timing, const LambdaScheduleEvent & _event, const DocumentInterfacePtr & _doc )
+        UniqueId schedulerTiming( const SchedulerInterfacePtr & _scheduler, const LambdaSchedulePipe & _pipe, const LambdaScheduleTiming & _timing, const LambdaScheduleEvent & _event, const DocumentInterfacePtr & _doc )
         {
             SchedulerPipeInterfacePtr pipe = Helper::makeFactorableUnique<Detail::HelperSchedulePipe>( _doc, _pipe );
             SchedulerTimingInterfacePtr timing = Helper::makeFactorableUnique<Detail::HelperScheduleTiming>( _doc, _timing );
             SchedulerEventInterfacePtr event = _event != nullptr ? Helper::makeFactorableUnique<Detail::HelperScheduleEvent>( _doc, _event ) : nullptr;
 
-            uint32_t id = _scheduler->timing( pipe, timing, event, _doc );
+            UniqueId id = _scheduler->timing( pipe, timing, event, _doc );
 
             return id;
         }

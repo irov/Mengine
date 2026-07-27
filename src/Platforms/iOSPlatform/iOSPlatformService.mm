@@ -48,6 +48,7 @@
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/VocabularyHelper.h"
 #include "Kernel/EnumeratorHelper.h"
+#include "Kernel/UniqueHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
@@ -1476,10 +1477,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::removeIOSTouchHandler( UniqueId _id )
     {
-        VectoriOSTouchHandlers::iterator it_found = StdAlgorithm::find_if( m_touchHandlers.begin(), m_touchHandlers.end(), [_id]( const iOSTouchHandlerDesc & _desc )
-        {
-            return _desc.id == _id;
-        } );
+        VectoriOSTouchHandlers::iterator it_found = Helper::findUnique( m_touchHandlers, _id );
 
         MENGINE_ASSERTION_FATAL( it_found != m_touchHandlers.end(), "not found iOS touch handler '%u'"
             , _id

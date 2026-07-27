@@ -33,6 +33,7 @@
 #import "Kernel/NotificationHelper.h"
 #import "Kernel/VocabularyHelper.h"
 #import "Kernel/EnumeratorHelper.h"
+#import "Kernel/UniqueHelper.h"
 
 #import "Config/StdString.h"
 #import "Config/StdIO.h"
@@ -1152,10 +1153,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MacOSPlatformService::removeMacOSEventHandler( UniqueId _id )
     {
-        VectorMacOSEventHandlers::iterator it_found = StdAlgorithm::find_if( m_eventHandlers.begin(), m_eventHandlers.end(), [_id]( const MacOSEventHandlerDesc & _desc )
-        {
-            return _desc.id == _id;
-        } );
+        VectorMacOSEventHandlers::iterator it_found = Helper::findUnique( m_eventHandlers, _id );
 
         MENGINE_ASSERTION_FATAL( it_found != m_eventHandlers.end(), "not found macOS event handler '%u'"
             , _id

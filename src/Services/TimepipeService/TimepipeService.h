@@ -27,6 +27,12 @@ namespace Mengine
         void removeTimepipe( const TimepipeInterfacePtr & _timepipe ) override;
 
     public:
+        UniqueId addTimebeginCallback( const LambdaTimepipeCallback & _callback, const DocumentInterfacePtr & _doc ) override;
+        bool removeTimebeginCallback( UniqueId _id ) override;
+        UniqueId addTimeendCallback( const LambdaTimepipeCallback & _callback, const DocumentInterfacePtr & _doc ) override;
+        bool removeTimeendCallback( UniqueId _id ) override;
+
+    public:
         void tick( const UpdateContext * _context ) override;
 
     protected:
@@ -42,5 +48,23 @@ namespace Mengine
         typedef Vector<TimepipeDesc> VectorTimepipe;
         VectorTimepipe m_timepipeAdd;
         VectorTimepipe m_timepipe;
+
+        struct TimepipeCallbackDesc
+        {
+            UniqueId id;
+            LambdaTimepipeCallback callback;
+
+#if defined(MENGINE_DOCUMENT_ENABLE)
+            DocumentInterfacePtr doc;
+#endif
+        };
+
+        typedef Vector<TimepipeCallbackDesc> VectorTimepipeCallbacks;
+
+    protected:
+        VectorTimepipeCallbacks m_timebeginCallbacks;
+        VectorTimepipeCallbacks m_timebeginCallbacksAux;
+        VectorTimepipeCallbacks m_timeendCallbacks;
+        VectorTimepipeCallbacks m_timeendCallbacksAux;
     };
 };

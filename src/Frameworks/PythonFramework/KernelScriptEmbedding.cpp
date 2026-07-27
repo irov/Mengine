@@ -289,12 +289,12 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             FactoryInterfacePtr m_factoryPythonScheduleEvent;
             //////////////////////////////////////////////////////////////////////////
-            uint32_t ScheduleInterface_schedule( SchedulerInterface * _scheduleManager, float _timing, const pybind::object & _script, const pybind::args & _args )
+            UniqueId ScheduleInterface_schedule( SchedulerInterface * _scheduleManager, float _timing, const pybind::object & _script, const pybind::args & _args )
             {
                 PythonScheduleEventPtr sl = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYTHON );
                 sl->initialize( _script, _args );
 
-                uint32_t id = _scheduleManager->event( _timing, sl, MENGINE_DOCUMENT_PYTHON );
+                UniqueId id = _scheduleManager->event( _timing, sl, MENGINE_DOCUMENT_PYTHON );
 
                 return id;
             }
@@ -302,7 +302,7 @@ namespace Mengine
             FactoryInterfacePtr m_factoryDelaySchedulePipe;
             FactoryInterfacePtr m_factoryPythonScheduleTiming;
             //////////////////////////////////////////////////////////////////////////
-            uint32_t ScheduleInterface_timing( SchedulerInterface * _scheduleManager, float _delay, const pybind::object & _timing, const pybind::object & _event, const pybind::args & _args )
+            UniqueId ScheduleInterface_timing( SchedulerInterface * _scheduleManager, float _delay, const pybind::object & _timing, const pybind::object & _event, const pybind::args & _args )
             {
                 DelaySchedulePipePtr pipe = m_factoryDelaySchedulePipe->createObject( MENGINE_DOCUMENT_PYTHON );
                 pipe->initialize( _delay );
@@ -313,14 +313,14 @@ namespace Mengine
                 PythonScheduleEventPtr py_event = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYTHON );
                 py_event->initialize( _event, _args );
 
-                uint32_t id = _scheduleManager->timing( pipe, py_timing, py_event, MENGINE_DOCUMENT_PYTHON );
+                UniqueId id = _scheduleManager->timing( pipe, py_timing, py_event, MENGINE_DOCUMENT_PYTHON );
 
                 return id;
             }
             //////////////////////////////////////////////////////////////////////////
             FactoryInterfacePtr m_factoryPythonSchedulePipe;
             //////////////////////////////////////////////////////////////////////////
-            uint32_t ScheduleInterface_pipe( SchedulerInterface * _scheduleManager, const pybind::object & _pipe, const pybind::object & _timing, const pybind::object & _event, const pybind::args & _args )
+            UniqueId ScheduleInterface_pipe( SchedulerInterface * _scheduleManager, const pybind::object & _pipe, const pybind::object & _timing, const pybind::object & _event, const pybind::args & _args )
             {
                 PythonSchedulePipePtr py_pipe = m_factoryPythonSchedulePipe->createObject( MENGINE_DOCUMENT_PYTHON );
                 py_pipe->initialize( _pipe, _args );
@@ -336,7 +336,7 @@ namespace Mengine
                     py_event->initialize( _event, _args );
                 }
 
-                uint32_t id = _scheduleManager->timing( py_pipe, py_timing, py_event, MENGINE_DOCUMENT_PYTHON );
+                UniqueId id = _scheduleManager->timing( py_pipe, py_timing, py_event, MENGINE_DOCUMENT_PYTHON );
 
                 return id;
             }
@@ -376,12 +376,12 @@ namespace Mengine
                 _layout->addSubLayout( _type, _subLayout, py_getter, py_setter, MENGINE_DOCUMENT_PYTHON );
             }
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_Animation_play( AnimationInterface * _animation )
+            UniqueId s_Animation_play( AnimationInterface * _animation )
             {
                 float time = TIMELINE_SERVICE()
                     ->getTotalTime();
 
-                uint32_t id = _animation->play( time );
+                UniqueId id = _animation->play( time );
 
                 return id;
             }

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Kernel/UniqueHelper.h"
 #include "Kernel/Vector.h"
 
 #include "Config/Lambda.h"
@@ -62,10 +63,7 @@ namespace Mengine
 
         LambdaEvent remove( UniqueId _id )
         {
-            typename VectorEvents::iterator it_found = StdAlgorithm::find_if( m_events.begin(), m_events.end(), [_id]( const EventDesc & _desc )
-            {
-                return _desc.id == _id;
-            } );
+            typename VectorEvents::iterator it_found = Helper::findUnique( m_events, _id );
 
             MENGINE_ASSERTION_FATAL( it_found != m_events.end() );
 

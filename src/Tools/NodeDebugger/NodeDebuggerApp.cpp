@@ -10,6 +10,7 @@
 #include "Kernel/RenderContext.h"
 #include "Kernel/Stringstream.h"
 #include "Kernel/Assertion.h"
+#include "Kernel/UniqueHelper.h"
 
 #include "Config/StdIO.h"
 #include "Config/StdString.h"
@@ -865,10 +866,7 @@ namespace Mengine
             for( Vector<uint32_t>::reverse_iterator iter = path.rbegin() + 1; iter != path.rend(); ++iter )
             {
                 uint32_t value = *iter;
-                Vector<DebuggerNode *>::iterator childrenForUid = std::find_if( childrens.begin(), childrens.end(), [value]( const DebuggerNode * _node )
-                {
-                    return _node->uid == value;
-                } );
+                Vector<DebuggerNode *>::iterator childrenForUid = Helper::findUnique( childrens, value, &DebuggerNode::uid );
 
                 if( childrenForUid == childrens.end() )
                 {
@@ -1089,10 +1087,7 @@ namespace Mengine
         for( ; it != end; ++it )
         {
             const uint32_t nextUid = *it;
-            Vector<DebuggerNode *>::const_iterator found = std::find_if( node->children.begin(), node->children.end(), [nextUid]( const DebuggerNode * _n )->bool
-            {
-                return _n->uid == nextUid;
-            } );
+            Vector<DebuggerNode *>::const_iterator found = Helper::findUnique( node->children, nextUid, &DebuggerNode::uid );
 
             if( found != node->children.end() )
             {

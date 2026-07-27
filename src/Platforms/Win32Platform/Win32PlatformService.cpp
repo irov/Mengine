@@ -29,6 +29,7 @@
 #endif
 
 #include "Kernel/EnumeratorHelper.h"
+#include "Kernel/UniqueHelper.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/PathHelper.h"
@@ -4110,10 +4111,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32PlatformService::removeWin32ProcessHandler( UniqueId _id )
     {
-        VectorWin32ProcessHandler::iterator it_found = StdAlgorithm::find_if( m_win32ProcessHandlers.begin(), m_win32ProcessHandlers.end(), [_id]( const Win32ProcessDesc & _desc )
-        {
-            return _desc.id == _id;
-        } );
+        VectorWin32ProcessHandler::iterator it_found = Helper::findUnique( m_win32ProcessHandlers, _id );
 
         MENGINE_ASSERTION_FATAL( it_found != m_win32ProcessHandlers.end(), "not found process handler '%u'"
             , _id

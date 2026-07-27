@@ -1,6 +1,7 @@
 #include "PlayerGlobalInputHandler.h"
 
 #include "Kernel/EnumeratorHelper.h"
+#include "Kernel/UniqueHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Assertion.h"
@@ -287,10 +288,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     InputHandlerInterfacePtr PlayerGlobalInputHandler::removeGlobalHandler( UniqueId _id )
     {
-        VectorGlobalHandler::iterator it_found_add = StdAlgorithm::find_if( m_handlersAdd.begin(), m_handlersAdd.end(), [_id]( const GlobalHandlerDesc & _handle )
-        {
-            return _handle.id == _id;
-        } );
+        VectorGlobalHandler::iterator it_found_add = Helper::findUnique( m_handlersAdd, _id );
 
         if( it_found_add != m_handlersAdd.end() )
         {
@@ -302,10 +300,7 @@ namespace Mengine
             return handler;
         }
 
-        VectorGlobalHandler::iterator it_found = StdAlgorithm::find_if( m_handlers.begin(), m_handlers.end(), [_id]( const GlobalHandlerDesc & _handle )
-        {
-            return _handle.id == _id;
-        } );
+        VectorGlobalHandler::iterator it_found = Helper::findUnique( m_handlers, _id );
 
         if( it_found == m_handlers.end() )
         {
@@ -326,10 +321,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PlayerGlobalInputHandler::enableGlobalHandler( UniqueId _id, bool _value )
     {
-        VectorGlobalHandler::iterator it_found_add = StdAlgorithm::find_if( m_handlersAdd.begin(), m_handlersAdd.end(), [_id]( const GlobalHandlerDesc & _handle )
-        {
-            return _handle.id == _id;
-        } );
+        VectorGlobalHandler::iterator it_found_add = Helper::findUnique( m_handlersAdd, _id );
 
         if( it_found_add != m_handlersAdd.end() )
         {
@@ -338,10 +330,7 @@ namespace Mengine
             return true;
         }
 
-        VectorGlobalHandler::iterator it_found = StdAlgorithm::find_if( m_handlers.begin(), m_handlers.end(), [_id]( const GlobalHandlerDesc & _handle )
-        {
-            return _handle.id == _id;
-        } );
+        VectorGlobalHandler::iterator it_found = Helper::findUnique( m_handlers, _id );
 
         if( it_found == m_handlers.end() )
         {

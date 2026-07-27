@@ -23,6 +23,7 @@
 #include "Kernel/OptionHelper.h"
 #include "Kernel/PathHelper.h"
 #include "Kernel/TimestampHelper.h"
+#include "Kernel/UniqueHelper.h"
 #include "Kernel/VocabularyHelper.h"
 
 #include "Config/Path.h"
@@ -2151,15 +2152,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void UnixPlatformService::removeUnixEventHandler( UniqueId _id )
     {
-        VectorUnixEventHandlers::iterator it = StdAlgorithm::find_if( m_eventHandlers.begin(), m_eventHandlers.end(), [_id]( const UnixEventHandlerDesc & _desc )
-        {
-            if( _desc.id == _id )
-            {
-                return true;
-            }
-
-            return false;
-        } );
+        VectorUnixEventHandlers::iterator it = Helper::findUnique( m_eventHandlers, _id );
 
         MENGINE_ASSERTION_FATAL( it != m_eventHandlers.end(), "Unix event handler '%u' was not found"
             , _id

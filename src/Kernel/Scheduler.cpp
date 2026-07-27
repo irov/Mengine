@@ -8,6 +8,7 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionContainer.h"
 #include "Kernel/EnumeratorHelper.h"
+#include "Kernel/UniqueHelper.h"
 
 #include "Config/StdAlgorithm.h"
 
@@ -149,22 +150,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Scheduler::exist( UniqueId _id ) const
     {
-        VectorSchedulers::const_iterator it_find =
-            StdAlgorithm::find_if( m_schedulers.begin(), m_schedulers.end(), [_id]( const SchedulerEventDesc & _event )
-        {
-            return _event.id == _id;
-        } );
+        VectorSchedulers::const_iterator it_find = Helper::findUnique( m_schedulers, _id );
 
         if( it_find != m_schedulers.end() )
         {
             return true;
         }
 
-        VectorSchedulers::const_iterator it_find_add =
-            StdAlgorithm::find_if( m_schedulersAdd.begin(), m_schedulersAdd.end(), [_id]( const SchedulerEventDesc & _event )
-        {
-            return _event.id == _id;
-        } );
+        VectorSchedulers::const_iterator it_find_add = Helper::findUnique( m_schedulersAdd, _id );
 
         if( it_find_add != m_schedulersAdd.end() )
         {
@@ -559,11 +552,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Scheduler::findSchedulerEvent_( UniqueId _id, SchedulerEventDesc ** const _desc )
     {
-        VectorSchedulers::iterator it_find =
-            StdAlgorithm::find_if( m_schedulers.begin(), m_schedulers.end(), [_id]( const SchedulerEventDesc & _event )
-        {
-            return _event.id == _id;
-        } );
+        VectorSchedulers::iterator it_find = Helper::findUnique( m_schedulers, _id );
 
         if( it_find != m_schedulers.end() )
         {
@@ -574,11 +563,7 @@ namespace Mengine
             return true;
         }
 
-        VectorSchedulers::iterator it_find_add =
-            StdAlgorithm::find_if( m_schedulersAdd.begin(), m_schedulersAdd.end(), [_id]( const SchedulerEventDesc & _event )
-        {
-            return _event.id == _id;
-        } );
+        VectorSchedulers::iterator it_find_add = Helper::findUnique( m_schedulersAdd, _id );
 
         if( it_find_add != m_schedulersAdd.end() )
         {
@@ -594,11 +579,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Scheduler::findSchedulerEvent_( UniqueId _id, const SchedulerEventDesc ** const _desc ) const
     {
-        VectorSchedulers::const_iterator it_find =
-            StdAlgorithm::find_if( m_schedulers.begin(), m_schedulers.end(), [_id]( const SchedulerEventDesc & _event )
-        {
-            return _event.id == _id;
-        } );
+        VectorSchedulers::const_iterator it_find = Helper::findUnique( m_schedulers, _id );
 
         if( it_find != m_schedulers.end() )
         {
@@ -609,11 +590,7 @@ namespace Mengine
             return true;
         }
 
-        VectorSchedulers::const_iterator it_find_add =
-            StdAlgorithm::find_if( m_schedulersAdd.begin(), m_schedulersAdd.end(), [_id]( const SchedulerEventDesc & _event )
-        {
-            return _event.id == _id;
-        } );
+        VectorSchedulers::const_iterator it_find_add = Helper::findUnique( m_schedulersAdd, _id );
 
         if( it_find_add != m_schedulersAdd.end() )
         {

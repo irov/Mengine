@@ -29,6 +29,7 @@
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/AnalyticsServiceInterface.h"
 #include "Interface/TimerServiceInterface.h"
+#include "Interface/TimepipeServiceInterface.h"
 #include "Interface/ArrowServiceInterface.h"
 #include "Interface/SettingsServiceInterface.h"
 
@@ -343,7 +344,37 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             FactoryInterfacePtr m_factoryPythonScheduleEvent;
             //////////////////////////////////////////////////////////////////////////
-            uint32_t s_timing( float _delay, const pybind::object & _timing, const pybind::object & _event, const pybind::args & _args )
+            UniqueId s_addTimebeginCallback( const pybind::object & _callback, const pybind::args & _args )
+            {
+                return TIMEPIPE_SERVICE()
+                    ->addTimebeginCallback( [_callback, _args]( const UpdateContext * )
+                    {
+                        _callback.call_args( _args );
+                    }, MENGINE_DOCUMENT_PYTHON );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            bool s_removeTimebeginCallback( UniqueId _id )
+            {
+                return TIMEPIPE_SERVICE()
+                    ->removeTimebeginCallback( _id );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            UniqueId s_addTimeendCallback( const pybind::object & _callback, const pybind::args & _args )
+            {
+                return TIMEPIPE_SERVICE()
+                    ->addTimeendCallback( [_callback, _args]( const UpdateContext * )
+                    {
+                        _callback.call_args( _args );
+                    }, MENGINE_DOCUMENT_PYTHON );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            bool s_removeTimeendCallback( UniqueId _id )
+            {
+                return TIMEPIPE_SERVICE()
+                    ->removeTimeendCallback( _id );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            UniqueId s_timing( float _delay, const pybind::object & _timing, const pybind::object & _event, const pybind::args & _args )
             {
                 const SchedulerInterfacePtr & tm = PLAYER_SERVICE()
                     ->getLocalScheduler();
@@ -357,7 +388,7 @@ namespace Mengine
                 PythonScheduleEventPtr py_event = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYTHON );
                 py_event->initialize( _event, _args );
 
-                uint32_t id = tm->timing( py_pipe, py_timing, py_event, MENGINE_DOCUMENT_PYTHON );
+                UniqueId id = tm->timing( py_pipe, py_timing, py_event, MENGINE_DOCUMENT_PYTHON );
 
                 return id;
             }
@@ -4326,6 +4357,11 @@ namespace Mengine
 
         pybind::def_functor_args( _kernel, "addTimer", nodeScriptMethod, &EngineScriptMethod::s_addTimer );
         pybind::def_functor( _kernel, "removeTimer", nodeScriptMethod, &EngineScriptMethod::s_removeTimer );
+
+        pybind::def_functor_args( _kernel, "addTimebeginCallback", nodeScriptMethod, &EngineScriptMethod::s_addTimebeginCallback );
+        pybind::def_functor( _kernel, "removeTimebeginCallback", nodeScriptMethod, &EngineScriptMethod::s_removeTimebeginCallback );
+        pybind::def_functor_args( _kernel, "addTimeendCallback", nodeScriptMethod, &EngineScriptMethod::s_addTimeendCallback );
+        pybind::def_functor( _kernel, "removeTimeendCallback", nodeScriptMethod, &EngineScriptMethod::s_removeTimeendCallback );
 
         pybind::def_functor_args( _kernel, "timing", nodeScriptMethod, &EngineScriptMethod::s_timing );
         pybind::def_functor( _kernel, "timingRemove", nodeScriptMethod, &EngineScriptMethod::s_timingRemove );

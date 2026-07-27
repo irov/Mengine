@@ -1,6 +1,7 @@
 #include "TimerService.h"
 
 #include "Kernel/EnumeratorHelper.h"
+#include "Kernel/UniqueHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/TimestampHelper.h"
 #include "Kernel/DocumentHelper.h"
@@ -71,10 +72,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TimerService::removeTimer( UniqueId _id )
     {
-        VectorTimers::iterator it_found = StdAlgorithm::find_if( m_timers.begin(), m_timers.end(), [_id]( const TimerDesc & _desc )
-        {
-            return _desc.id == _id;
-        } );
+        VectorTimers::iterator it_found = Helper::findUnique( m_timers, _id );
 
         MENGINE_ASSERTION_FATAL( it_found != m_timers.end(), "not found timer '%u'"
             , _id

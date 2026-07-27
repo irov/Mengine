@@ -612,6 +612,8 @@ Core
     PathHelper.h
     PathHelper.cpp
 
+    LambdaTimepipe.h
+    LambdaTimepipe.cpp
     TimepipeHelper.h
     TimepipeHelper.cpp
 
@@ -1023,6 +1025,8 @@ Core
 
     EnumeratorHelper.cpp
     EnumeratorHelper.h
+
+    UniqueHelper.h
 
     CharacterHelper.cpp
     CharacterHelper.h

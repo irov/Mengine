@@ -278,9 +278,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MoviePlugin::_finalizePlugin()
     {
-        ae_delete_movie_instance( m_movieInstance );
-        m_movieInstance = nullptr;
-
         Helper::removeNodePrototype<Movie2>();
         Helper::removeNodePrototype<Movie2Slot>();
         Helper::removeNodePrototype<Movie2SubComposition>();
@@ -291,6 +288,12 @@ namespace Mengine
 #if defined(MENGINE_PLUGIN_JSON)
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "JSONLoader" ), ResourceMovie2::getFactorableType() );
 #endif
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MoviePlugin::_destroyPlugin()
+    {
+        ae_delete_movie_instance( m_movieInstance );
+        m_movieInstance = nullptr;
 
         MENGINE_ASSERTION_ALLOCATOR( "movie" );
     }

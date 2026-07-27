@@ -2038,7 +2038,7 @@ namespace Mengine
     {
         AE_UNUSED( _ud );
 
-        TrackMatteDesc * desc = reinterpret_cast<TrackMatteDesc *>(_callbackData->element_userdata);
+        TrackMatteDesc * desc = reinterpret_cast<TrackMatteDesc *>(_callbackData->track_matte_userdata);
 
         Helper::deleteMemoryT( desc, "movie" );
     }

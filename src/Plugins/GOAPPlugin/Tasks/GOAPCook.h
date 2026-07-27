@@ -64,6 +64,7 @@ namespace Mengine
         void addDelay( const GOAP::SourceInterfacePtr & _source, const SchedulerInterfacePtr & _scheduler, float _time, const DocumentInterfacePtr & _doc );
         void addGlobalDelay( const GOAP::SourceInterfacePtr & _source, float _time, const DocumentInterfacePtr & _doc );
         void addLocalDelay( const GOAP::SourceInterfacePtr & _source, float _time, const DocumentInterfacePtr & _doc );
+        void addNextFrame( const GOAP::SourceInterfacePtr & _source, const DocumentInterfacePtr & _doc );
         //////////////////////////////////////////////////////////////////////////
         template<class ID, class ... Args>
         void addNotify( const GOAP::SourceInterfacePtr & _source, Args && ... _args )

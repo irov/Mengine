@@ -6,6 +6,7 @@
 #include "TaskDelay.h"
 #include "TaskLocalDelay.h"
 #include "TaskGlobalDelay.h"
+#include "TaskNextFrame.h"
 #include "TaskPrint.h"
 #include "TaskReleasePrint.h"
 #include "TaskPickerableMouseButton.h"
@@ -204,6 +205,11 @@ namespace Mengine
         void addLocalDelay( const GOAP::SourceInterfacePtr & _source, float _time, const DocumentInterfacePtr & _doc )
         {
             Cook::addTask<TaskLocalDelay>( _source, _time, _doc );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void addNextFrame( const GOAP::SourceInterfacePtr & _source, const DocumentInterfacePtr & _doc )
+        {
+            Cook::addTask<TaskNextFrame>( _source, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
         void addGlobalKeyPress( const GOAP::SourceInterfacePtr & _source, EKeyCode _code, bool _isDown, const LambdaInputKeyFilter & _filter, const LambdaInputKeyComplete & _cb, const DocumentInterfacePtr & _doc )

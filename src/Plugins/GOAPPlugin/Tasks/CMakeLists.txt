@@ -21,6 +21,8 @@ Tasks
     TaskLocalDelay.cpp
     TaskGlobalDelay.h
     TaskGlobalDelay.cpp
+    TaskNextFrame.h
+    TaskNextFrame.cpp
     TaskPrint.cpp
     TaskPrint.h
     TaskReleasePrint.cpp

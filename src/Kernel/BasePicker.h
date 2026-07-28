@@ -11,7 +11,7 @@ namespace Mengine
         : public PickerInterface
     {
     public:
-        BasePicker();
+        explicit BasePicker( bool _pickerOverChildren = false );
         ~BasePicker() override;
 
     public:
@@ -27,6 +27,10 @@ namespace Mengine
     public:
         void foreachPickerChildren( const LambdaPicker & _lambda ) override final;
         void foreachPickerChildrenEnabled( const LambdaPicker & _lambda ) override final;
+
+    public:
+        void setPickerOverChildren( bool _overChildren ) override final;
+        MENGINE_INLINE bool isPickerOverChildren() const override final;
 
     public:
         void updatePickers() override final;
@@ -76,6 +80,7 @@ namespace Mengine
         typedef Vector<BasePicker *> VectorBasePicker;
         VectorBasePicker m_pickerChildren;
 
+        bool m_pickerOverChildren;
         bool m_pickerEnable;
         bool m_pickerFreeze;
 
@@ -93,6 +98,11 @@ namespace Mengine
     MENGINE_INLINE bool BasePicker::isPickerEnable() const
     {
         return m_pickerEnable;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_INLINE bool BasePicker::isPickerOverChildren() const
+    {
+        return m_pickerOverChildren;
     }
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE bool BasePicker::isPickerFreeze() const

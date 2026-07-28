@@ -9,8 +9,9 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    BasePicker::BasePicker()
+    BasePicker::BasePicker( bool _pickerOverChildren )
         : m_relationPicker( nullptr )
+        , m_pickerOverChildren( _pickerOverChildren )
         , m_pickerEnable( false )
         , m_pickerFreeze( false )
         , m_pickerPicked( false )
@@ -99,6 +100,19 @@ namespace Mengine
 
             _lambda( child );
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BasePicker::setPickerOverChildren( bool _overChildren )
+    {
+        if( m_pickerOverChildren == _overChildren )
+        {
+            return;
+        }
+
+        m_pickerOverChildren = _overChildren;
+
+        PICKER_SERVICE()
+            ->invalidateTraps();
     }
     //////////////////////////////////////////////////////////////////////////
     void BasePicker::updatePickers()

@@ -28,7 +28,8 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     VirtualArea::VirtualArea()
-        : m_viewport( 0.f, 0.f, 0.f, 0.f )
+        : BasePicker( true )
+        , m_viewport( 0.f, 0.f, 0.f, 0.f )
         , m_bounds( 0.f, 0.f, 0.f, 0.f )
         , m_localBounds( 0.f, 0.f, 0.f, 0.f )
         , m_contentSize( 0.f, 0.f, 2736.f, 1536.f )
@@ -717,7 +718,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void VirtualArea::update( const UpdateContext * _context )
     {
-        if( m_frozen == true || m_scrollLocked == true || m_dragging == true )
+        if( m_frozen == true || m_scrollLocked == true || m_dragging == true || this->getTouchCount() != 0 )
         {
             return;
         }
@@ -975,7 +976,12 @@ namespace Mengine
 
         if( _event.isDown == true )
         {
-            this->beginTouch_( _context, _event );
+            TouchDesc * touch = this->getTouch_( _event.touchId );
+
+            if( touch != nullptr && touch->active == false )
+            {
+                this->beginTouch_( _context, _event );
+            }
         }
         else
         {
@@ -987,8 +993,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool VirtualArea::handleMouseButtonEventBegin( const RenderContext * _context, const InputMouseButtonEvent & _event )
     {
-        MENGINE_UNUSED( _context );
-        MENGINE_UNUSED( _event );
+        if( m_frozen == true || m_scrollLocked == true || _event.isDown == false )
+        {
+            return false;
+        }
+
+        TouchDesc * touch = this->getTouch_( _event.touchId );
+
+        if( touch == nullptr || touch->active == true )
+        {
+            return false;
+        }
+
+        this->beginTouch_( _context, _event );
 
         return false;
     }
@@ -1305,7 +1322,7 @@ namespace Mengine
             mt::vec2f startContentDelta = this->getScreenContentDelta_( startScreenDelta, &touch->context );
             mt::vec2f testDelta = this->getDragModeDelta_( startContentDelta );
 
-            if( mt::length_v2( testDelta ) < m_dragStartThreshold )
+            if( mt::length_v2( testDelta ) <= m_dragStartThreshold )
             {
                 return false;
             }

@@ -125,15 +125,26 @@ namespace Mengine
                 desc.context.zGroup = _context.zGroup;
                 desc.context.zIndex = _context.zIndex;
 
+                if( _picker->isPickerOverChildren() == true )
+                {
+                    _picker->foreachPickerChildrenEnabled( [this, desc]( PickerInterface * _childPicker )
+                    {
+                        this->visit( _childPicker, desc.context );
+                    } );
+                }
+
                 if( _picker->isPickerDummy() == false )
                 {
                     m_states->emplace_back( desc );
                 }
 
-                _picker->foreachPickerChildrenEnabled( [this, desc]( PickerInterface * _picker )
+                if( _picker->isPickerOverChildren() == false )
                 {
-                    this->visit( _picker, desc.context );
-                } );
+                    _picker->foreachPickerChildrenEnabled( [this, desc]( PickerInterface * _childPicker )
+                    {
+                        this->visit( _childPicker, desc.context );
+                    } );
+                }
             }
 
         protected:

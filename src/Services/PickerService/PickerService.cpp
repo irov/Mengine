@@ -7,15 +7,18 @@
 #include "Kernel/Scene.h"
 #include "Kernel/VectorAuxScope.h"
 #include "Kernel/Logger.h"
-#include "Kernel/VectorAuxScope.h"
 #include "Kernel/IntrusivePtrView.h"
 #include "Kernel/Assertion.h"
+#include "Kernel/RenderCameraHelper.h"
 #include "Kernel/RenderContextHelper.h"
 #include "Kernel/MixinDebug.h"
 #include "Kernel/ProfilerHelper.h"
 #include "Kernel/ResolutionHelper.h"
 
 #include "Config/StdAlgorithm.h"
+#include "Config/StdMath.h"
+
+#include "math/utils.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( PickerService, Mengine::PickerService );
@@ -28,9 +31,8 @@ namespace Mengine
         class PickerVisitor
         {
         public:
-            PickerVisitor( VectorPickerStates * _states, bool _exclusive )
+            PickerVisitor( VectorPickerStates * _states )
                 : m_states( _states )
-                , m_exclusive( _exclusive )
             {
             }
 
@@ -44,11 +46,6 @@ namespace Mengine
         public:
             void visit( PickerInterface * _picker, const RenderContext & _context )
             {
-                if( m_exclusive == true && _picker->isPickerExclusive() == false )
-                {
-                    return;
-                }
-
                 PickerStateDesc desc;
 
                 desc.picker = _picker;
@@ -125,9 +122,11 @@ namespace Mengine
                 desc.context.zGroup = _context.zGroup;
                 desc.context.zIndex = _context.zIndex;
 
-                if( _picker->isPickerOverChildren() == true )
+                bool pickerOverChildren = _picker->isPickerOverChildren();
+
+                if( pickerOverChildren == true )
                 {
-                    _picker->foreachPickerChildrenEnabled( [this, desc]( PickerInterface * _childPicker )
+                    _picker->foreachPickerChildrenEnabled( [this, &desc]( PickerInterface * _childPicker )
                     {
                         this->visit( _childPicker, desc.context );
                     } );
@@ -138,9 +137,9 @@ namespace Mengine
                     m_states->emplace_back( desc );
                 }
 
-                if( _picker->isPickerOverChildren() == false )
+                if( pickerOverChildren == false )
                 {
-                    _picker->foreachPickerChildrenEnabled( [this, desc]( PickerInterface * _childPicker )
+                    _picker->foreachPickerChildrenEnabled( [this, &desc]( PickerInterface * _childPicker )
                     {
                         this->visit( _childPicker, desc.context );
                     } );
@@ -149,9 +148,20 @@ namespace Mengine
 
         protected:
             VectorPickerStates * m_states;
-
-            bool m_exclusive;
         };
+        //////////////////////////////////////////////////////////////////////////
+        bool hasExclusivePicker( const VectorPickerStates & _states )
+        {
+            for( const PickerStateDesc & desc : _states )
+            {
+                if( desc.picker->isPickerExclusive() == true )
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     PickerService::PickerService()
@@ -176,6 +186,7 @@ namespace Mengine
     {
         m_scene = nullptr;
 
+        m_resolution = nullptr;
         m_viewport = nullptr;
         m_camera = nullptr;
         m_transformation = nullptr;
@@ -354,6 +365,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PickerService::updateTraps_()
     {
+        MENGINE_VECTOR_AUX( m_states );
+
         ETouchCode touchId = TC_TOUCH0;
 
         const mt::vec2f & position = INPUT_SERVICE()
@@ -366,8 +379,7 @@ namespace Mengine
         INPUT_SERVICE()
             ->getSpecial( &special );
 
-        VectorPickerStates statesAux;
-        this->pickStates_( position, touchId, pressure, special, &statesAux );
+        this->pickStates_( position, touchId, pressure, special, &m_states );
     }
     //////////////////////////////////////////////////////////////////////////
     void PickerService::invalidateTraps()
@@ -744,7 +756,6 @@ namespace Mengine
 
             this->calculateInputPositionWorld_( desc, &ne.position );
 
-            mt::vec2f wd;
             ARROW_SERVICE()
                 ->calcMouseWorldDelta( &desc.context, ne.screenDelta, &ne.worldDelta );
 
@@ -891,15 +902,17 @@ namespace Mengine
                 , ne.position.world.y
             );
 
-            inputHandler->handleMouseLeave( &desc.context, _event );
+            inputHandler->handleMouseLeave( &desc.context, ne );
         }
     }
     //////////////////////////////////////////////////////////////////////////
     void PickerService::fillStates_( VectorPickerStates * const _states ) const
     {
+        MENGINE_PROFILER_CATEGORY();
+
         PickerInterface * picker = m_scene->getPicker();
 
-        Detail::PickerVisitor visitor( _states, false );
+        Detail::PickerVisitor visitor( _states );
 
         RenderContext context;
         Helper::clearRenderContext( &context );
@@ -907,7 +920,9 @@ namespace Mengine
         context.resolution = m_resolution.get();
         context.viewport = m_viewport.get();
         context.camera = m_camera.get();
+        context.transformation = m_transformation.get();
         context.scissor = m_scissor.get();
+        context.target = m_target.get();
 
         visitor.visit( picker, context );
     }
@@ -933,6 +948,8 @@ namespace Mengine
         mt::vec2f adaptScreenPosition;
         Helper::adaptScreenPosition( _screenPosition, &adaptScreenPosition );
 
+        bool exclusive = Detail::hasExclusivePicker( *_states );
+
         bool handle = false;
 
         for( VectorPickerStates::reverse_iterator
@@ -950,73 +967,48 @@ namespace Mengine
                 continue;
             }
 
-            if( handle == false || m_handleValue == false )
+            bool pickerExclusive = exclusive == false || picker->isPickerExclusive() == true;
+            bool pickerHandle = handle == false || m_handleValue == false;
+
+            bool picked = false;
+
+            if( pickerExclusive == true && pickerHandle == true && this->testPickerScissor_( desc, adaptScreenPosition ) == true )
             {
-                bool picked = picker->pick( adaptScreenPosition, &desc.context );
+                picked = picker->pick( adaptScreenPosition, &desc.context );
+            }
 
-                if( m_block == false && picked == true )
+            if( m_block == false && picked == true )
+            {
+                if( picker->isPickerPicked() == false )
                 {
-                    if( picker->isPickerPicked() == false )
-                    {
-                        picker->setPickerPicked( true );
+                    picker->setPickerPicked( true );
 
-                        PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
+                    PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
-                        InputMouseEnterEvent ne;
-                        
-                        ne.special = _special;
-                        ne.touchId = _touchId;
-                        ne.position.screen = _screenPosition;
-                        ne.pressure = _pressure;
+                    InputMouseEnterEvent ne;
 
-                        this->calculateInputPositionWorld_( desc, &ne.position );
+                    ne.special = _special;
+                    ne.touchId = _touchId;
+                    ne.position.screen = _screenPosition;
+                    ne.pressure = _pressure;
 
-                        LOGGER_INFO( "picker", "handle type '%s' name '%s' UID [%u] pos [%.4f;%.4f] [mouse enter]"
-                            , MENGINE_MIXIN_DEBUG_TYPE( inputHandler )
-                            , MENGINE_MIXIN_DEBUG_NAME( inputHandler )
-                            , MENGINE_MIXIN_DEBUG_UID( inputHandler )
-                            , ne.position.world.x
-                            , ne.position.world.y
-                        );
+                    this->calculateInputPositionWorld_( desc, &ne.position );
 
-                        handle = inputHandler->handleMouseEnter( &desc.context, ne );
+                    LOGGER_INFO( "picker", "handle type '%s' name '%s' UID [%u] pos [%.4f;%.4f] [mouse enter]"
+                        , MENGINE_MIXIN_DEBUG_TYPE( inputHandler )
+                        , MENGINE_MIXIN_DEBUG_NAME( inputHandler )
+                        , MENGINE_MIXIN_DEBUG_UID( inputHandler )
+                        , ne.position.world.x
+                        , ne.position.world.y
+                    );
 
-                        picker->setPickerHandle( handle );
-                    }
-                    else
-                    {
-                        bool pickerHandle = picker->isPickerHandle();
+                    handle = inputHandler->handleMouseEnter( &desc.context, ne );
 
-                        handle = pickerHandle;
-                    }
+                    picker->setPickerHandle( handle );
                 }
                 else
                 {
-                    if( picker->isPickerPicked() == true )
-                    {
-                        picker->setPickerPicked( false );
-
-                        PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
-
-                        InputMouseLeaveEvent ne;
-                        
-                        ne.special = _special;
-                        ne.touchId = _touchId;
-                        ne.position.screen = _screenPosition;
-                        ne.pressure = _pressure;
-
-                        this->calculateInputPositionWorld_( desc, &ne.position );
-
-                        LOGGER_INFO( "picker", "handle type '%s' name '%s' UID [%u] pos [%.4f;%.4f] [mouse leave]"
-                            , MENGINE_MIXIN_DEBUG_TYPE( inputHandler )
-                            , MENGINE_MIXIN_DEBUG_NAME( inputHandler )
-                            , MENGINE_MIXIN_DEBUG_UID( inputHandler )
-                            , ne.position.world.x
-                            , ne.position.world.y
-                        );
-
-                        inputHandler->handleMouseLeave( &desc.context, ne );
-                    }
+                    handle = picker->isPickerHandle();
                 }
             }
             else
@@ -1071,14 +1063,23 @@ namespace Mengine
             return true;
         }
 
-        VectorPickerStates statesAux;
-        this->fillStates_( &statesAux );
+        this->fillStates_( _states );
 
         mt::vec2f adaptScreenPosition;
         Helper::adaptScreenPosition( _screenPosition, &adaptScreenPosition );
 
-        for( const PickerStateDesc & desc : statesAux )
+        bool exclusive = Detail::hasExclusivePicker( *_states );
+
+        VectorPickerStates::iterator it_write = _states->begin();
+
+        for( VectorPickerStates::const_iterator
+            it = _states->begin(),
+            it_end = _states->end();
+            it != it_end;
+            ++it )
         {
+            const PickerStateDesc & desc = *it;
+
             PickerInterface * picker = desc.picker;
 
             if( picker->isPickerEnable() == false )
@@ -1086,17 +1087,112 @@ namespace Mengine
                 continue;
             }
 
-            bool picked = picker->pick( adaptScreenPosition, &desc.context );
-
-            if( picked == false )
+            if( exclusive == true && picker->isPickerExclusive() == false )
             {
                 continue;
             }
 
-            _states->push_back( desc );
+            if( this->testPickerScissor_( desc, adaptScreenPosition ) == false )
+            {
+                continue;
+            }
+
+            if( picker->pick( adaptScreenPosition, &desc.context ) == false )
+            {
+                continue;
+            }
+
+            if( it_write != it )
+            {
+                *it_write = desc;
+            }
+
+            ++it_write;
         }
 
+        _states->erase( it_write, _states->end() );
+
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PickerService::testPickerScissor_( const PickerStateDesc & _desc, const mt::vec2f & _screenPosition ) const
+    {
+        const RenderScissorInterface * scissor = _desc.context.scissor;
+
+        if( scissor == nullptr )
+        {
+            return true;
+        }
+
+        const RenderResolutionInterface * resolution = _desc.context.resolution;
+
+        if( resolution == nullptr )
+        {
+            return false;
+        }
+
+        const Viewport & scissorViewport = scissor->getScissorViewportWM();
+
+        mt::vec2f contentPosition;
+        resolution->fromScreenToContentPosition( _screenPosition, &contentPosition );
+
+        EArrowType arrowType = ARROW_SERVICE()
+            ->getArrowType();
+
+        switch( arrowType )
+        {
+        case EAT_POINT:
+            {
+                return scissorViewport.testPoint( contentPosition );
+            }break;
+        case EAT_RADIUS:
+            {
+                if( _desc.context.camera == nullptr || _desc.context.viewport == nullptr )
+                {
+                    return false;
+                }
+
+                float radius = ARROW_SERVICE()
+                    ->getArrowTypeRadius();
+
+                mt::vec2f screenRadius;
+                Helper::worldToScreenDelta( &_desc.context, mt::vec2f( radius, radius ), &screenRadius );
+
+                mt::vec2f contentRadius;
+                resolution->fromScreenToContentPosition( screenRadius, &contentRadius );
+
+                contentRadius.x = mt::abs_f( contentRadius.x );
+                contentRadius.y = mt::abs_f( contentRadius.y );
+
+                return scissorViewport.testRectangle( contentPosition - contentRadius, contentPosition + contentRadius );
+            }break;
+        case EAT_POLYGON:
+            {
+                const Polygon & polygon = ARROW_SERVICE()
+                    ->getArrowTypePolygon();
+
+                if( polygon.empty() == true )
+                {
+                    return false;
+                }
+
+                mt::box2f polygonBox;
+                polygon.to_box2f( &polygonBox );
+
+                mt::vec2f screenMinimum = _screenPosition + polygonBox.minimum;
+                mt::vec2f screenMaximum = _screenPosition + polygonBox.maximum;
+
+                mt::vec2f contentMinimum;
+                resolution->fromScreenToContentPosition( screenMinimum, &contentMinimum );
+
+                mt::vec2f contentMaximum;
+                resolution->fromScreenToContentPosition( screenMaximum, &contentMaximum );
+
+                return scissorViewport.testRectangle( contentMinimum, contentMaximum );
+            }break;
+        }
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     void PickerService::calculateInputPositionWorld_( const PickerStateDesc & _desc, InputPositionData * const _position ) const

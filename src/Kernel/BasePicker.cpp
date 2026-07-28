@@ -182,7 +182,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BasePicker::setPickerExclusive( bool _exclusive )
     {
+        if( m_pickerExclusive == _exclusive )
+        {
+            return;
+        }
+
         m_pickerExclusive = _exclusive;
+
+        PICKER_SERVICE()
+            ->invalidateTraps();
     }
     //////////////////////////////////////////////////////////////////////////
     const RenderResolutionInterfacePtr & BasePicker::getPickerResolution() const

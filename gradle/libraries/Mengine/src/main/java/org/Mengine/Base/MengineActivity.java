@@ -1166,6 +1166,16 @@ public class MengineActivity extends AppCompatActivity {
         MengineUI.showOkAlertDialog(this, null, caption, message);
     }
 
+    public boolean showSystemDialog(String title, String message, @NonNull MengineNativeRunnable callback) {
+        if (MengineUI.showOkAlertDialog(this, callback, title, message) == false) {
+            callback.close();
+
+            return false;
+        }
+
+        return true;
+    }
+
     /***********************************************************************************************
      * Keyboard Methods
      **********************************************************************************************/

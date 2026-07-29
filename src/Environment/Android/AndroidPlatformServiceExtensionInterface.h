@@ -4,6 +4,8 @@
 
 #include "Environment/Android/AndroidIncluder.h"
 
+#include "Config/Lambda.h"
+
 namespace Mengine
 {
     class AndroidPlatformServiceExtensionInterface
@@ -34,6 +36,12 @@ namespace Mengine
         virtual void androidNativeFreezeEvent( const ConstString & _owner, bool _freeze ) = 0;
         virtual void androidNativeClipboardChangedEvent() = 0;
         virtual void androidNativeWindowFocusChangedEvent( jboolean _focus ) = 0;
+
+    public:
+        typedef Lambda<void()> LambdaNativeRunnable;
+        virtual jobject createNativeRunnable( JNIEnv * _jenv, const LambdaNativeRunnable & _callback ) = 0;
+        virtual void androidNativeInvokeRunnable( JNIEnv * _jenv, jobject _buffer ) = 0;
+        virtual void androidNativeReleaseRunnable( JNIEnv * _jenv, jobject _buffer ) = 0;
 
     public:
         virtual void lockActivity() = 0;

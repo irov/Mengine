@@ -4,6 +4,9 @@ ADD_FILTER(
 src
     AndroidPlatformService.h
     AndroidPlatformService.cpp
+
+    AndroidNativeRunnable.h
+    AndroidNativeRunnable.cpp
     
     AndroidPlatformSystem.h
     AndroidPlatformSystem.cpp

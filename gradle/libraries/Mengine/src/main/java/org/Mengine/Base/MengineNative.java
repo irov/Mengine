@@ -4,6 +4,7 @@ import android.view.Surface;
 
 import java.io.File;
 import java.io.Writer;
+import java.nio.ByteBuffer;
 
 public class MengineNative {
     public static final MengineTag TAG = MengineTag.of("MNGNative");
@@ -49,6 +50,8 @@ public class MengineNative {
     public static native void AndroidPlatform_freezeEvent(String owner, boolean freeze);
     public static native void AndroidPlatform_clipboardChangedEvent();
     public static native void AndroidPlatform_windowFocusChangedEvent(boolean focus);
+    public static native void AndroidPlatform_invokeNativeRunnable(ByteBuffer nativeRunnable);
+    public static native void AndroidPlatform_releaseNativeRunnable(ByteBuffer nativeRunnable);
     public static native void AndroidPlatform_quitEvent();
     public static native void AndroidPlatform_lowMemory();
     public static native void AndroidPlatform_trimMemory(int level);

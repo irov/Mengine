@@ -4006,6 +4006,43 @@ namespace Mengine
         ::MessageBoxA( NULL, str, _caption, MB_OK );
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Win32PlatformService::showSystemDialog( const Char * _title, const Char * _message, const LambdaSystemDialog & _callback )
+    {
+        if( m_hWnd == NULL )
+        {
+            return false;
+        }
+
+        if( Helper::isSilentDialog() == true )
+        {
+            LOGGER_MESSAGE( "[systemDialog] %s: %s"
+                , _title
+                , _message
+            );
+
+            return false;
+        }
+
+        int result = ::MessageBoxA( m_hWnd
+            , _message != nullptr ? _message : ""
+            , _title != nullptr ? _title : ""
+            , MB_OK | MB_ICONINFORMATION
+        );
+
+        if( result != IDOK )
+        {
+            LOGGER_ERROR( "system dialog returned invalid result [%d]"
+                , result
+            );
+
+            return false;
+        }
+
+        _callback();
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Win32PlatformService::setClipboardText( const Char * _value ) const
     {
         size_t len = StdString::strlen( _value );

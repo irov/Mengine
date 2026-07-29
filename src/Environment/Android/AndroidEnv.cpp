@@ -979,11 +979,25 @@ namespace Mengine
         return address;
     }
     //////////////////////////////////////////////////////////////////////////
+    jlong Mengine_JNI_GetDirectBufferCapacity( JNIEnv * _jenv, jobject _jbuffer )
+    {
+        jlong capacity = _jenv->GetDirectBufferCapacity( _jbuffer );
+
+        return capacity;
+    }
+    //////////////////////////////////////////////////////////////////////////
     jclass Mengine_JNI_GetClassMengineCallback( JNIEnv * _jenv )
     {
         jclass jclass_MengineCallback = Mengine_JNI_LoadClass( _jenv, "org/Mengine/Base/MengineCallback" );
 
         return jclass_MengineCallback;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    jclass Mengine_JNI_GetClassMengineNativeRunnable( JNIEnv * _jenv )
+    {
+        jclass jclass_MengineNativeRunnable = Mengine_JNI_LoadClass( _jenv, "org/Mengine/Base/MengineNativeRunnable" );
+
+        return jclass_MengineNativeRunnable;
     }
     //////////////////////////////////////////////////////////////////////////
     jclass Mengine_JNI_GetClassApplication( JNIEnv * _jenv )

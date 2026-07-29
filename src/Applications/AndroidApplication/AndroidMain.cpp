@@ -98,7 +98,7 @@ extern "C"
 
         __android_log_print( ANDROID_LOG_INFO, "Mengine", "Android bootstrap application initialized succeeded" );
 
-        jobject jobject_application = _env->NewDirectByteBuffer( application, sizeof(void *) );
+        jobject jobject_application = _env->NewDirectByteBuffer( application, sizeof(Mengine::AndroidApplication) );
 
         if ( jobject_application == nullptr)
         {

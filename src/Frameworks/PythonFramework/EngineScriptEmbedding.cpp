@@ -3438,6 +3438,15 @@ namespace Mengine
                 return touchpad;
             }
             //////////////////////////////////////////////////////////////////////////
+            bool s_showSystemDialog( const String & _title, const String & _message, const pybind::object & _cb, const pybind::args & _args )
+            {
+                return PLATFORM_SERVICE()
+                    ->showSystemDialog( _title.c_str(), _message.c_str(), [_cb, _args]()
+                {
+                    _cb.call_args( _args );
+                } );
+            }
+            //////////////////////////////////////////////////////////////////////////
             const RenderCameraInterfacePtr & s_getRenderCamera2D()
             {
                 const RenderCameraInterfacePtr & renderCamera = PLAYER_SERVICE()
@@ -4470,6 +4479,7 @@ namespace Mengine
         pybind::def_functor( _kernel, "showKeyboard", nodeScriptMethod, &EngineScriptMethod::s_showKeyboard );
         pybind::def_functor( _kernel, "hideKeyboard", nodeScriptMethod, &EngineScriptMethod::s_hideKeyboard );
         pybind::def_functor( _kernel, "isShowKeyboard", nodeScriptMethod, &EngineScriptMethod::s_isShowKeyboard );
+        pybind::def_functor_args( _kernel, "showSystemDialog", nodeScriptMethod, &EngineScriptMethod::s_showSystemDialog );
 
         pybind::def_functor( _kernel, "hasResource", nodeScriptMethod, &EngineScriptMethod::s_hasResource );
 

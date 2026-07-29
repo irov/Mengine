@@ -22,10 +22,13 @@
 #include "Environment/Android/AndroidIncluder.h"
 #include "Environment/Android/AndroidPlatformServiceExtensionInterface.h"
 
+#include "AndroidNativeRunnable.h"
+
 #include "Kernel/ServiceBase.h"
 #include "Kernel/SHA1.h"
 #include "Kernel/Unknowable.h"
 #include "Kernel/StaticString.h"
+#include "Kernel/IntrusiveList.h"
 
 #include "Config/Timestamp.h"
 
@@ -151,6 +154,7 @@ namespace Mengine
 
     protected:
         void messageBox( const Char * _caption, const Char * _format, ... ) const override;
+        bool showSystemDialog( const Char * _title, const Char * _message, const LambdaSystemDialog & _callback ) override;
 
     protected:
         bool setClipboardText( const Char * _value ) const override;
@@ -190,6 +194,9 @@ namespace Mengine
         void androidNativeFreezeEvent( const ConstString & _owner, bool _freeze ) override;
         void androidNativeClipboardChangedEvent() override;
         void androidNativeWindowFocusChangedEvent( jboolean _focus ) override;
+        jobject createNativeRunnable( JNIEnv * _jenv, const LambdaNativeRunnable & _callback ) override;
+        void androidNativeInvokeRunnable( JNIEnv * _jenv, jobject _buffer ) override;
+        void androidNativeReleaseRunnable( JNIEnv * _jenv, jobject _buffer ) override;
         void androidNativeQuitEvent() override;
         void androidNativeLowMemoryEvent() override;
         void androidNativeTrimMemoryEvent( jint _level ) override;
@@ -207,6 +214,8 @@ namespace Mengine
     protected:
         void setActive_( float _x, float _y, bool _active );
 
+    protected:
+        AndroidNativeRunnable * getNativeRunnable_( JNIEnv * _jenv, jobject _buffer ) const;
 
     protected:
         Timestamp m_beginTime;
@@ -220,6 +229,9 @@ namespace Mengine
         LoggerInterfacePtr m_proxyLogger;
 
         ThreadMutexInterfacePtr m_activityMutex;
+
+        typedef IntrusiveList<AndroidNativeRunnable> IntrusiveListAndroidNativeRunnables;
+        IntrusiveListAndroidNativeRunnables m_nativeRunnables;
 
         enum EActivityState
         {

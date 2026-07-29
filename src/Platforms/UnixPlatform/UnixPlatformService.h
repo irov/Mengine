@@ -113,6 +113,7 @@ namespace Mengine
 
     public:
         void messageBox( const Char * _caption, const Char * _format, ... ) const override;
+        bool showSystemDialog( const Char * _title, const Char * _message, const LambdaSystemDialog & _callback ) override;
         bool setClipboardText( const Char * _value ) const override;
         bool getClipboardText( Char * _value, size_t _capacity ) const override;
 

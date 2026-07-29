@@ -381,6 +381,49 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        static bool launchAndWait( const Char * _executable, const Char * const * _arguments, int * const _exitCode )
+        {
+            pid_t child = ::fork();
+
+            if( child < 0 )
+            {
+                return false;
+            }
+
+            if( child == 0 )
+            {
+                ::execvp( _executable, const_cast<Char * const *>(_arguments) );
+
+                ::_exit( 127 );
+            }
+
+            int status = 0;
+
+            while( ::waitpid( child, &status, 0 ) < 0 )
+            {
+                if( errno != EINTR )
+                {
+                    return false;
+                }
+            }
+
+            if( WIFEXITED( status ) == 0 )
+            {
+                return false;
+            }
+
+            int exitCode = WEXITSTATUS( status );
+
+            if( exitCode == 127 )
+            {
+                return false;
+            }
+
+            *_exitCode = exitCode;
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
         static void appendUrlEncoded( String * const _uri, const Char * _value )
         {
             static const Char hex[] = "0123456789ABCDEF";
@@ -1700,6 +1743,42 @@ namespace Mengine
                 , message
             );
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool UnixPlatformService::showSystemDialog( const Char * _title, const Char * _message, const LambdaSystemDialog & _callback )
+    {
+        if( Helper::isSilentDialog() == true )
+        {
+            LOGGER_MESSAGE( "[systemDialog] %s: %s"
+                , _title
+                , _message
+            );
+
+            return false;
+        }
+
+        const Char * arguments[] = {"xmessage", "-center", "-title", _title, "-buttons", "OK:10", _message, nullptr};
+
+        int exitCode;
+        if( Detail::launchAndWait( "xmessage", arguments, &exitCode ) == false )
+        {
+            LOGGER_ERROR( "system dialog failed to execute xmessage" );
+
+            return false;
+        }
+
+        if( exitCode != 10 )
+        {
+            LOGGER_ERROR( "system dialog xmessage returned invalid exit code [%d]"
+                , exitCode
+            );
+
+            return false;
+        }
+
+        _callback();
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool UnixPlatformService::setClipboardText( const Char * _value ) const

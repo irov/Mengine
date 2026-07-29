@@ -48,6 +48,7 @@
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/VocabularyHelper.h"
 #include "Kernel/EnumeratorHelper.h"
+#include "Kernel/ThreadHelper.h"
 #include "Kernel/UniqueHelper.h"
 
 #include "Config/StdString.h"
@@ -1361,6 +1362,33 @@ namespace Mengine
                                     message:nsMessage
                                          ok:^{}];
         });
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool iOSPlatformService::showSystemDialog( const Char * _title, const Char * _message, const LambdaSystemDialog & _callback )
+    {
+        if( Helper::isSilentDialog() == true )
+        {
+            LOGGER_MESSAGE( "[systemDialog] %s: %s"
+                , _title
+                , _message
+            );
+
+            return false;
+        }
+
+        NSString * title = _title != nullptr ? @(_title) : @"";
+        NSString * message = _message != nullptr ? @(_message) : @"";
+        LambdaSystemDialog callback = _callback;
+
+        [iOSDetail showOkAlertWithTitle:title
+                                message:message
+                                     ok:^{
+            Helper::dispatchMainThreadEvent([callback]() {
+                callback();
+            });
+        }];
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool iOSPlatformService::setClipboardText( const Char * _value ) const

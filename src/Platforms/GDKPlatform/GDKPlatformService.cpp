@@ -1171,6 +1171,47 @@ namespace Mengine
         ::MessageBox( NULL, unicode_message, unicode_caption, MB_OK | MB_ICONINFORMATION );
     }
     //////////////////////////////////////////////////////////////////////////
+    bool GDKPlatformService::showSystemDialog( const Char * _title, const Char * _message, const LambdaSystemDialog & _callback )
+    {
+        if( m_hWnd == NULL )
+        {
+            return false;
+        }
+
+        if( Helper::isSilentDialog() == true )
+        {
+            LOGGER_MESSAGE( "[systemDialog] %s: %s"
+                , _title
+                , _message
+            );
+
+            return false;
+        }
+
+        WPath unicode_title = {L'\0'};
+        if( Helper::utf8ToUnicode( _title != nullptr ? _title : "", unicode_title, MENGINE_MAX_PATH ) == false )
+        {
+            return false;
+        }
+
+        WPath unicode_message = {L'\0'};
+        if( Helper::utf8ToUnicode( _message != nullptr ? _message : "", unicode_message, MENGINE_MAX_PATH ) == false )
+        {
+            return false;
+        }
+
+        int result = ::MessageBox( m_hWnd, unicode_message, unicode_title, MB_OK | MB_ICONINFORMATION );
+
+        if( result != IDOK )
+        {
+            return false;
+        }
+
+        _callback();
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool GDKPlatformService::setClipboardText( const Char * _value ) const
     {
         if( ::OpenClipboard( NULL ) == FALSE )

@@ -134,8 +134,10 @@ namespace Mengine
 
     jobject Mengine_JNI_NewDirectByteBuffer( JNIEnv * _jenv, void * _address, jlong _capacity );
     void * Mengine_JNI_GetDirectBufferAddress( JNIEnv * _jenv, jobject _jbuffer );
+    jlong Mengine_JNI_GetDirectBufferCapacity( JNIEnv * _jenv, jobject _jbuffer );
 
     jclass Mengine_JNI_GetClassMengineCallback( JNIEnv * _jenv );
+    jclass Mengine_JNI_GetClassMengineNativeRunnable( JNIEnv * _jenv );
 
     jclass Mengine_JNI_GetClassApplication( JNIEnv * _jenv );
     jobject Mengine_JNI_GetObjectApplication( JNIEnv * _jenv );

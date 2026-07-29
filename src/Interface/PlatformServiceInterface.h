@@ -16,6 +16,7 @@
 #include "Kernel/LambdaFilePath.h"
 #include "Kernel/Unknowable.h"
 
+#include "Config/Lambda.h"
 #include "Config/UniqueId.h"
 #include "Config/Timestamp.h"
 #include "Config/ThreadId.h"
@@ -131,6 +132,9 @@ namespace Mengine
 
     public:
         virtual void messageBox( const Char * _caption, const Char * _format, ... ) const = 0;
+
+        typedef Lambda<void()> LambdaSystemDialog;
+        virtual bool showSystemDialog( const Char * _title, const Char * _message, const LambdaSystemDialog & _callback ) = 0;
 
     public:
         virtual bool setClipboardText( const Char * _value ) const = 0;

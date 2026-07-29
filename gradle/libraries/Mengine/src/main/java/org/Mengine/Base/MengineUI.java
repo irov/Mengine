@@ -55,7 +55,7 @@ public class MengineUI {
         MengineUI.showToast(activity, format);
     }
 
-    public static void showOkAlertDialog(@NonNull MengineActivity activity, Runnable ok, @NonNull String title, @NonNull String format, Object ... args) {
+    public static boolean showOkAlertDialog(@NonNull MengineActivity activity, Runnable ok, @NonNull String title, @NonNull String format, Object ... args) {
         if (activity == null) {
             MengineLog.logError(TAG, "[ERROR] showOkAlertDialog activity is null title: %s format: %s args: %s"
                 , title
@@ -63,7 +63,17 @@ public class MengineUI {
                 , Arrays.toString(args)
             );
 
-            return;
+            return false;
+        }
+
+        if (activity.isFinishing() == true || activity.isDestroyed() == true) {
+            MengineLog.logError(TAG, "[ERROR] showOkAlertDialog activity is finishing or destroyed title: %s format: %s args: %s"
+                , title
+                , format
+                , Arrays.toString(args)
+            );
+
+            return false;
         }
 
         activity.runOnUiThread(() -> {
@@ -93,6 +103,8 @@ public class MengineUI {
 
             alert.show();
         });
+
+        return true;
     }
 
     public static void showOkAlertDialogRes(@NonNull MengineActivity activity, Runnable ok, @StringRes int titleId, @StringRes int formatId, Object ... args) {

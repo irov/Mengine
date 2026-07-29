@@ -478,6 +478,32 @@ extern "C"
         platformExtension->androidNativeWindowFocusChangedEvent( _focus );
     }
     ///////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1invokeNativeRunnable )(JNIEnv * env, jclass cls, jobject _buffer)
+    {
+        if( g_androidPlatformActived == false )
+        {
+            return;
+        }
+
+        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        platformExtension->androidNativeInvokeRunnable( env, _buffer );
+    }
+    ///////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1releaseNativeRunnable )(JNIEnv * env, jclass cls, jobject _buffer)
+    {
+        if( g_androidPlatformActived == false )
+        {
+            return;
+        }
+
+        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        platformExtension->androidNativeReleaseRunnable( env, _buffer );
+    }
+    ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1quitEvent )(JNIEnv * env, jclass cls)
     {
         if( g_androidPlatformActived == false )
@@ -873,6 +899,15 @@ namespace Mengine
         this->destroyWindow_();
 
         m_platformTags.clear();
+
+        while( m_nativeRunnables.empty() == false )
+        {
+            AndroidNativeRunnable * nativeRunnable = m_nativeRunnables.front();
+
+            nativeRunnable->release();
+
+            AndroidNativeRunnablePtr::release( nativeRunnable );
+        }
 
         m_activityMutex = nullptr;
     }
@@ -1599,6 +1634,46 @@ namespace Mengine
 
         Mengine_JNI_DeleteLocalRef( jenv, jstring_caption );
         Mengine_JNI_DeleteLocalRef( jenv, jstring_message );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AndroidPlatformService::showSystemDialog( const Char * _title, const Char * _message, const LambdaSystemDialog & _callback )
+    {
+        if( Helper::isSilentDialog() == true )
+        {
+            LOGGER_MESSAGE( "[systemDialog] %s: %s"
+                , _title
+                , _message
+            );
+
+            return false;
+        }
+
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        jstring jstring_title = Mengine_JNI_NewStringUTF( jenv, _title != nullptr ? _title : "" );
+        jstring jstring_message = Mengine_JNI_NewStringUTF( jenv, _message != nullptr ? _message : "" );
+
+        jobject jobject_callback = this->createNativeRunnable( jenv, _callback );
+
+        if( jobject_callback == nullptr )
+        {
+            Mengine_JNI_DeleteLocalRef( jenv, jstring_title );
+            Mengine_JNI_DeleteLocalRef( jenv, jstring_message );
+
+            return false;
+        }
+
+        jboolean successful = Helper::AndroidCallBooleanActivityMethod( jenv, "showSystemDialog", "(Ljava/lang/String;Ljava/lang/String;Lorg/Mengine/Base/MengineNativeRunnable;)Z"
+            , jstring_title
+            , jstring_message
+            , jobject_callback
+        );
+
+        Mengine_JNI_DeleteLocalRef( jenv, jstring_title );
+        Mengine_JNI_DeleteLocalRef( jenv, jstring_message );
+        Mengine_JNI_DeleteLocalRef( jenv, jobject_callback );
+
+        return successful == JNI_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::setClipboardText( const Char * _value ) const
@@ -2780,6 +2855,132 @@ namespace Mengine
         MENGINE_UNUSED( _focus );
 
         //ToDo
+    }
+    //////////////////////////////////////////////////////////////////////////
+    jobject AndroidPlatformService::createNativeRunnable( JNIEnv * _jenv, const LambdaNativeRunnable & _callback )
+    {
+        if( _callback == nullptr )
+        {
+            LOGGER_ERROR( "invalid create native runnable with empty callback" );
+
+            return nullptr;
+        }
+
+        AndroidNativeRunnablePtr nativeRunnable = Helper::makeFactorableUnique<AndroidNativeRunnable>( MENGINE_DOCUMENT_FACTORABLE, _callback );
+
+        jobject jobject_buffer = Mengine_JNI_NewDirectByteBuffer( _jenv, nativeRunnable.get(), sizeof( AndroidNativeRunnable ) );
+
+        if( jobject_buffer == nullptr )
+        {
+            LOGGER_ERROR( "invalid create native runnable direct byte buffer" );
+
+            return nullptr;
+        }
+
+        jclass jclass_MengineNativeRunnable = Mengine_JNI_GetClassMengineNativeRunnable( _jenv );
+
+        if( jclass_MengineNativeRunnable == nullptr )
+        {
+            LOGGER_ERROR( "invalid get MengineNativeRunnable class" );
+
+            Mengine_JNI_DeleteLocalRef( _jenv, jobject_buffer );
+
+            return nullptr;
+        }
+
+        jmethodID jmethod_MengineNativeRunnable_constructor = Mengine_JNI_GetMethodID( _jenv, jclass_MengineNativeRunnable, "<init>", "(Ljava/nio/ByteBuffer;)V" );
+
+        if( jmethod_MengineNativeRunnable_constructor == nullptr )
+        {
+            LOGGER_ERROR( "invalid get MengineNativeRunnable constructor" );
+
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_MengineNativeRunnable );
+            Mengine_JNI_DeleteLocalRef( _jenv, jobject_buffer );
+
+            return nullptr;
+        }
+
+        jobject jobject_nativeRunnable = Mengine_JNI_NewObject( _jenv, jclass_MengineNativeRunnable, jmethod_MengineNativeRunnable_constructor, jobject_buffer );
+
+        Mengine_JNI_DeleteLocalRef( _jenv, jclass_MengineNativeRunnable );
+        Mengine_JNI_DeleteLocalRef( _jenv, jobject_buffer );
+
+        if( jobject_nativeRunnable == nullptr )
+        {
+            LOGGER_ERROR( "invalid create MengineNativeRunnable object" );
+
+            return nullptr;
+        }
+
+        AndroidNativeRunnable * nativeRunnableRaw = nativeRunnable.acquire();
+
+        m_nativeRunnables.push_back( nativeRunnableRaw );
+
+        return jobject_nativeRunnable;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::androidNativeInvokeRunnable( JNIEnv * _jenv, jobject _buffer )
+    {
+        AndroidNativeRunnable * nativeRunnable = this->getNativeRunnable_( _jenv, _buffer );
+
+        if( nativeRunnable == nullptr )
+        {
+            return;
+        }
+
+        Helper::dispatchMainThreadEvent([nativeRunnable]() {
+            nativeRunnable->invoke();
+
+            AndroidNativeRunnablePtr::release( nativeRunnable );
+        });
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::androidNativeReleaseRunnable( JNIEnv * _jenv, jobject _buffer )
+    {
+        AndroidNativeRunnable * nativeRunnable = this->getNativeRunnable_( _jenv, _buffer );
+
+        if( nativeRunnable == nullptr )
+        {
+            return;
+        }
+
+        Helper::dispatchMainThreadEvent([nativeRunnable]() {
+            nativeRunnable->release();
+
+            AndroidNativeRunnablePtr::release( nativeRunnable );
+        });
+    }
+    //////////////////////////////////////////////////////////////////////////
+    AndroidNativeRunnable * AndroidPlatformService::getNativeRunnable_( JNIEnv * _jenv, jobject _buffer ) const
+    {
+        if( _buffer == nullptr )
+        {
+            LOGGER_ERROR( "invalid native runnable null buffer" );
+
+            return nullptr;
+        }
+
+        jlong capacity = Mengine_JNI_GetDirectBufferCapacity( _jenv, _buffer );
+
+        if( capacity != sizeof( AndroidNativeRunnable ) )
+        {
+            LOGGER_ERROR( "invalid native runnable buffer capacity [%" MENGINE_PRId64 "]"
+                , capacity
+            );
+
+            return nullptr;
+        }
+
+        AndroidNativeRunnable * nativeRunnable = static_cast<AndroidNativeRunnable *>(Mengine_JNI_GetDirectBufferAddress( _jenv, _buffer ));
+
+        if( nativeRunnable == nullptr )
+        {
+            LOGGER_ERROR( "invalid native runnable buffer address" );
+
+            return nullptr;
+        }
+
+        return nativeRunnable;
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeQuitEvent()

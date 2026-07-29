@@ -33,6 +33,7 @@
 #import "Kernel/NotificationHelper.h"
 #import "Kernel/VocabularyHelper.h"
 #import "Kernel/EnumeratorHelper.h"
+#import "Kernel/ThreadHelper.h"
 #import "Kernel/UniqueHelper.h"
 
 #import "Config/StdString.h"
@@ -1047,6 +1048,55 @@ namespace Mengine
         }
 
         Helper::MacOSShowAlert( _caption, str );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool MacOSPlatformService::showSystemDialog( const Char * _title, const Char * _message, const LambdaSystemDialog & _callback )
+    {
+        if( m_window == nil )
+        {
+            return false;
+        }
+
+        if( Helper::isSilentDialog() == true )
+        {
+            LOGGER_MESSAGE( "[systemDialog] %s: %s"
+                , _title
+                , _message
+            );
+
+            return false;
+        }
+
+        NSString * title = _title != nullptr ? @(_title) : @"";
+        NSString * message = _message != nullptr ? @(_message) : @"";
+        LambdaSystemDialog callback = _callback;
+        NSWindow * window = m_window;
+
+        dispatch_async( dispatch_get_main_queue(), ^{
+            NSAlert * alert = [[NSAlert alloc] init];
+            alert.messageText = title;
+            alert.informativeText = message;
+            alert.alertStyle = NSAlertStyleInformational;
+
+            [alert addButtonWithTitle:@"OK"];
+
+            [alert beginSheetModalForWindow:window completionHandler:^(NSModalResponse returnCode) {
+                if( returnCode != NSAlertFirstButtonReturn )
+                {
+                    LOGGER_ERROR( "system dialog returned invalid response [%ld]"
+                        , (long)returnCode
+                    );
+
+                    return;
+                }
+
+                Helper::dispatchMainThreadEvent([callback]() {
+                    callback();
+                });
+            }];
+        });
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool MacOSPlatformService::setClipboardText( const Char * _value ) const

@@ -142,13 +142,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PythonScriptProviderService::_finalizeService()
     {
-        //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void PythonScriptProviderService::_destroyService()
-    {
-        pybind::allocator_interface * allocator = m_kernel->get_allocator();
-
         if( m_kernel->is_cycle_diagnostics_enabled() == true )
         {
             const size_t cycleCount = m_kernel->cycle_diagnostics( &Detail::reportTinypyCycleDiagnostic, nullptr );
@@ -156,13 +149,18 @@ namespace Mengine
             if( cycleCount == 0U )
             {
                 LOGGER_CATEGORY_VERBOSE_LEVEL(
-                    Mengine::LM_INFO,
+                    Mengine::LM_MESSAGE,
                     Mengine::LFILTER_NONE,
                     Mengine::LCOLOR_GREEN,
                     Mengine::LFLAG_SHORT
                 )( "[tinypy cycle] diagnostics OK: no unreachable owning cycles found" );
             }
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PythonScriptProviderService::_destroyService()
+    {
+        pybind::allocator_interface * allocator = m_kernel->get_allocator();
 
         m_kernel->destroy();
         m_kernel = nullptr;

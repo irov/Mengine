@@ -401,6 +401,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint64_t AppleFileSystem::getFileTime( const Char * _filePath ) const
     {
+#if defined(MENGINE_PLATFORM_IOS)
+        MENGINE_UNUSED( _filePath );
+
+        return 0U;
+#else
         Path correctFilePath = {'\0'};
         Helper::pathCorrectBackslashToA( correctFilePath, _filePath );
 
@@ -421,6 +426,7 @@ namespace Mengine
         NSTimeInterval time = [modificationDate timeIntervalSince1970];
         
         return (uint64_t)time;
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
 }

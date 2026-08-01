@@ -1691,6 +1691,9 @@ namespace Mengine
         , m_viewportSize( 1024.f, 768.f )
         , m_viewportScale( 1.f )
         , m_playbackRate( 1.f )
+        , m_backgroundTransparent( false )
+        , m_inputPassthroughEnabled( false )
+        , m_inputPassthroughTriggerPending( false )
         , m_textRasterizer( Helper::makeFactorableUnique<Detail::FigmaTextRasterizer>( MENGINE_DOCUMENT_FACTORABLE ) )
     {
     }
@@ -1759,6 +1762,38 @@ namespace Mengine
     float Figma::getViewportScale() const
     {
         return m_viewportScale;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Figma::setBackgroundTransparent( bool _transparent )
+    {
+        m_backgroundTransparent = _transparent;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Figma::isBackgroundTransparent() const
+    {
+        return m_backgroundTransparent;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Figma::setInputPassthroughRect( float _left, float _top, float _right, float _bottom )
+    {
+        m_inputPassthroughBegin.set( _left, _top );
+        m_inputPassthroughEnd.set( _right, _bottom );
+        m_inputPassthroughEnabled = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Figma::clearInputPassthroughRect()
+    {
+        m_inputPassthroughEnabled = false;
+        m_inputPassthroughTriggerPending = false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Figma::isInputPassthroughPoint_( const mt::vec2f & _localPoint ) const
+    {
+        return m_inputPassthroughEnabled == true
+            && _localPoint.x >= m_inputPassthroughBegin.x
+            && _localPoint.x <= m_inputPassthroughEnd.x
+            && _localPoint.y >= m_inputPassthroughBegin.y
+            && _localPoint.y <= m_inputPassthroughEnd.y;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Figma::updatePlayerViewport_()
@@ -2188,6 +2223,7 @@ namespace Mengine
     {
         m_resourceFigma = nullptr;
         m_bindingValues.clear();
+        m_inputPassthroughTriggerPending = false;
 
         Node::_dispose();
     }
@@ -2238,6 +2274,14 @@ namespace Mengine
                 , m_resourceFigma->getName().c_str()
                 , Detail::getFigmaResultMessage( result )
             );
+        }
+
+        if( m_inputPassthroughTriggerPending == true )
+        {
+            m_inputPassthroughTriggerPending = false;
+
+            EVENTABLE_METHOD( EVENT_FIGMA_TRIGGER )
+                ->onFigmaTrigger( m_inputPassthroughTriggerEvent );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -2762,6 +2806,7 @@ namespace Mengine
         uint32_t renderLayerSegmentIndex = 0;
         float activeRenderLayerOpacity = 1.f;
         RenderLayerTargetDesc * activeRenderLayerTarget = nullptr;
+        bool rootClipStarted = false;
 
         auto finishRenderLayer = [&]()
         {
@@ -2832,6 +2877,8 @@ namespace Mengine
 
             if( batch.batch_type == FIGMA_RENDER_BATCH_CLIP_BEGIN )
             {
+                rootClipStarted = true;
+
                 Detail::FigmaRenderScissorPtr scissor = Helper::makeFactorableUnique<Detail::FigmaRenderScissor>( MENGINE_DOCUMENT_FORWARD );
                 scissor->setScissorViewport( wm, batch.clip_rect, context.scissor );
 
@@ -2854,6 +2901,11 @@ namespace Mengine
             }
 
             if( batch.batch_type != FIGMA_RENDER_BATCH_GEOMETRY )
+            {
+                continue;
+            }
+
+            if( m_backgroundTransparent == true && rootClipStarted == false )
             {
                 continue;
             }
@@ -3048,6 +3100,11 @@ namespace Mengine
             return false;
         }
 
+        if( this->isInputPassthroughPoint_( localPoint ) == true )
+        {
+            return true;
+        }
+
         figma_bool_t hit = FIGMA_FALSE;
         const figma_result_t result = figma_player_hit_test( m_player, localPoint.x, localPoint.y, &hit );
         if( result != FIGMA_RESULT_OK )
@@ -3105,6 +3162,24 @@ namespace Mengine
             return false;
         }
 
+        if( this->isInputPassthroughPoint_( localPoint ) == true )
+        {
+            if( _event.isDown == true )
+            {
+                m_inputPassthroughTriggerEvent.inputKind = EFigmaActionInputKind::Pointer;
+                m_inputPassthroughTriggerEvent.triggerType = EFigmaTriggerType::PointerDown;
+                m_inputPassthroughTriggerEvent.interactionId = "mengine.input_passthrough";
+                m_inputPassthroughTriggerEvent.pointerId = _event.touchId;
+                m_inputPassthroughTriggerEvent.x = _event.position.screen.x;
+                m_inputPassthroughTriggerEvent.y = _event.position.screen.y;
+                m_inputPassthroughTriggerEvent.button = static_cast<uint32_t>(_event.button);
+                m_inputPassthroughTriggerEvent.modifiers = static_cast<uint32_t>(Detail::getFigmaInputModifiers( _event.special ));
+                m_inputPassthroughTriggerPending = true;
+            }
+
+            return false;
+        }
+
         figma_input_dispatch_result_t dispatch{};
         const figma_pointer_event_type_t type = _event.isDown == true ? FIGMA_POINTER_EVENT_DOWN : FIGMA_POINTER_EVENT_UP;
         if( this->inputPointer_( type, _event.touchId, localPoint.x, localPoint.y, Detail::getFigmaPointerButton( static_cast<uint32_t>(_event.button) ), Detail::getFigmaInputModifiers( _event.special ), &dispatch ) == false )
@@ -3139,6 +3214,11 @@ namespace Mengine
             return false;
         }
 
+        if( this->isInputPassthroughPoint_( localPoint ) == true )
+        {
+            return false;
+        }
+
         figma_input_dispatch_result_t dispatch{};
         if( this->inputPointer_( FIGMA_POINTER_EVENT_MOVE, _event.touchId, localPoint.x, localPoint.y, FIGMA_POINTER_BUTTON_NONE, Detail::getFigmaInputModifiers( _event.special ), &dispatch ) == false )
         {
@@ -3160,6 +3240,11 @@ namespace Mengine
     {
         mt::vec2f localPoint;
         if( this->screenToLocal_( _context, _event.position.screen, &localPoint ) == false )
+        {
+            return false;
+        }
+
+        if( this->isInputPassthroughPoint_( localPoint ) == true )
         {
             return false;
         }

@@ -388,6 +388,9 @@ public class MengineActivity extends AppCompatActivity {
             );
         }
 
+        Intent intent = this.getIntent();
+        MenginePlatformEventQueue.pushIntentStartEvent(intent);
+
         application.setState("activity.init", "end");
 
         application.setState("activity.lifecycle", "created");
@@ -918,6 +921,8 @@ public class MengineActivity extends AppCompatActivity {
         }
 
         application.setState("activity.intent_action", intent.getAction() );
+
+        MenginePlatformEventQueue.pushIntentNewEvent(intent);
 
         List<MengineListenerActivity> listeners = this.getActivityListeners();
 

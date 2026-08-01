@@ -1035,6 +1035,12 @@ namespace Mengine
             }
 
             [m_frameContext.commandBuffer commit];
+
+            // Dynamic vertex and index buffers are reused by the next frame.
+            // Wait until Metal has consumed them before the CPU overwrites
+            // their shared storage.
+            [m_frameContext.commandBuffer waitUntilCompleted];
+
             m_frameContext.commandBuffer = nil;
         }
 

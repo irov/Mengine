@@ -18,6 +18,7 @@
 #import "Kernel/StringArguments.h"
 #import "Kernel/FactorableUnique.h"
 #import "Kernel/Logger.h"
+#import "Kernel/OptionHelper.h"
 #import "Kernel/StdioLogger.h"
 
 #import "Config/StdString.h"
@@ -262,7 +263,12 @@ namespace Mengine
             return false;
         }
 
-        [NSApp activateIgnoringOtherApps:YES];
+        [NSApp finishLaunching];
+
+        if( HAS_OPTION( "windowhidden" ) == false && HAS_OPTION( "norender" ) == false )
+        {
+            [NSApp activateIgnoringOtherApps:YES];
+        }
 
         return true;
     }

@@ -5,6 +5,18 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
+        void readUint16( const void * _buffer, uint16_t * const _value )
+        {
+            const uint8_t * buffer = static_cast<const uint8_t *>(_buffer);
+
+            uint16_t value = 0;
+
+            value |= (uint16_t)buffer[0] << 0;
+            value |= (uint16_t)buffer[1] << 8;
+
+            *_value = value;
+        }
+        //////////////////////////////////////////////////////////////////////////
         void readUint32( const void * _buffer, uint32_t * const _value )
         {
             const uint8_t * buffer = static_cast<const uint8_t *>(_buffer);

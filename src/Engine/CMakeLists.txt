@@ -91,6 +91,12 @@ Object\\\\Landscape2D
 )
 
 ADD_FILTER(
+Object\\\\TileMap2D
+    TileMap2D.cpp
+    TileMap2D.h
+)
+
+ADD_FILTER(
 Object\\\\Meshget
     Meshget.cpp
     Meshget.h

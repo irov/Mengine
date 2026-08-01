@@ -12,6 +12,9 @@
 #include "Kernel/Logger.h"
 #include "Kernel/StatisticHelper.h"
 #include "Kernel/PixelFormatHelper.h"
+#include "Kernel/Data.h"
+
+#include "Config/StdString.h"
 
 namespace Mengine
 {
@@ -255,10 +258,53 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderTargetTexture::getData( void * const _buffer, size_t _pitch ) const
     {
-        MENGINE_UNUSED( _buffer );
-        MENGINE_UNUSED( _pitch );
+        const size_t rowBytes = (size_t)m_hwWidth * 4;
+        if( m_fuid == 0 || _buffer == nullptr || _pitch < rowBytes )
+        {
+            return false;
+        }
 
-        return false;
+        GLint oldFBO = 0;
+        GLint oldPackAlignment = 0;
+        glGetIntegerv( GL_FRAMEBUFFER_BINDING, &oldFBO );
+        glGetIntegerv( GL_PACK_ALIGNMENT, &oldPackAlignment );
+
+        Data readback;
+        readback.resize( rowBytes * m_hwHeight );
+
+        while( glGetError() != GL_NO_ERROR )
+        {
+        }
+
+        glBindFramebuffer( GL_FRAMEBUFFER, m_fuid );
+        glPixelStorei( GL_PACK_ALIGNMENT, 1 );
+        glReadPixels( 0, 0, m_hwWidth, m_hwHeight, GL_RGBA, GL_UNSIGNED_BYTE, readback.data() );
+        GLenum error = glGetError();
+        glPixelStorei( GL_PACK_ALIGNMENT, oldPackAlignment );
+        glBindFramebuffer( GL_FRAMEBUFFER, oldFBO );
+
+        if( error != GL_NO_ERROR )
+        {
+            return false;
+        }
+
+        uint8_t * destination = (uint8_t *)_buffer;
+        for( uint32_t row = 0; row != m_hwHeight; ++row )
+        {
+            uint32_t sourceRow = row < m_height ? m_height - row - 1 : row;
+            const uint8_t * source = readback.data() + (size_t)sourceRow * rowBytes;
+            uint8_t * output = destination + (size_t)row * _pitch;
+
+            for( uint32_t column = 0; column != m_hwWidth; ++column )
+            {
+                output[column * 4 + 0] = source[column * 4 + 2];
+                output[column * 4 + 1] = source[column * 4 + 1];
+                output[column * 4 + 2] = source[column * 4 + 0];
+                output[column * 4 + 3] = source[column * 4 + 3];
+            }
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     GLuint OpenGLRenderTargetTexture::getUID() const

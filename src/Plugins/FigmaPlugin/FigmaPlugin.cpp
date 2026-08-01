@@ -1,5 +1,7 @@
 #include "FigmaPlugin.h"
 
+#include "Configuration/Configurations.h"
+
 #include "DataflowFigma.h"
 #include "Figma.h"
 #include "ResourceFigma.h"

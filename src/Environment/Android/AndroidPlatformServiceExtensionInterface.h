@@ -4,6 +4,9 @@
 
 #include "Environment/Android/AndroidIncluder.h"
 
+#include "Kernel/Params.h"
+#include "Kernel/String.h"
+
 #include "Config/Lambda.h"
 
 namespace Mengine
@@ -27,6 +30,8 @@ namespace Mengine
         virtual void androidNativeTextEvent( jlong _eventTime, jint unicode ) = 0;
         virtual void androidNativeTouchEvent( jlong _eventTime, jint _action, jint _pointerId, jfloat _x, jfloat _y, jfloat _pressure ) = 0;
         virtual void androidNativeAccelerationEvent( jlong _eventTime, jfloat _x, jfloat _y, jfloat _z ) = 0;
+        virtual void androidNativeIntentStartEvent( const String & _action, const String & _data, const String & _type, uint32_t _flags, const Params & _extras ) = 0;
+        virtual void androidNativeIntentNewEvent( const String & _action, const String & _data, const String & _type, uint32_t _flags, const Params & _extras ) = 0;
         virtual void androidNativePauseEvent( jfloat _x, jfloat _y ) = 0;
         virtual void androidNativeResumeEvent( jfloat _x, jfloat _y ) = 0;
         virtual void androidNativeStopEvent() = 0;

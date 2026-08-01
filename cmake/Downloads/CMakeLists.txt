@@ -15,14 +15,6 @@ DOWNLOAD_FILE(stb_image https://raw.githubusercontent.com/nothings/stb/master/st
 DOWNLOAD_FILE(stb_image https://raw.githubusercontent.com/nothings/stb/master/stb_image_write.h stb_image_write.h)
 
 IF(WIN32)
-    DOWNLOAD_URL(astralax http://www.astralax.ru/download/programm/dev/magic_win.zip)
-ENDIF()
-
-IF(APPLE)
-    DOWNLOAD_URL(astralax_mac http://astralax.ru/download/programm/dev/magic_mac.zip)
-ENDIF()
-
-IF(WIN32)
     DOWNLOAD_URL(marsdk-android https://marsdkserver-1300810349.file.myqcloud.com/marsdk/MARSDK_v2.6.27.zip)
 endif()
 

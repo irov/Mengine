@@ -34,6 +34,7 @@
 #include "ResourceAstralaxValidator.h"
 
 #include "Kernel/ConfigHelper.h"
+#include "Kernel/AllocatorHelper.h"
 #include "Kernel/NodePrototypeGenerator.h"
 #include "Kernel/ResourcePrototypeGenerator.h"
 #include "Kernel/NotificationHelper.h"
@@ -54,6 +55,29 @@ PLUGIN_FACTORY( Astralax, Mengine::AstralaxPlugin );
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+        static void * EXP_DECL Magic_Allocate(size_t _size, void * _userdata)
+        {
+            (void)_userdata;
+            return Helper::allocateMemory( _size, "astralax" );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void * EXP_DECL Magic_Reallocate(void * _memory, size_t _size, void * _userdata)
+        {
+            (void)_userdata;
+            return Helper::reallocateMemory( _memory, _size, "astralax" );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void EXP_DECL Magic_Free(void * _memory, void * _userdata)
+        {
+            (void)_userdata;
+            Helper::deallocateMemory( _memory, "astralax" );
+        }
+        //////////////////////////////////////////////////////////////////////////
+    }
+    //////////////////////////////////////////////////////////////////////////
     AstralaxPlugin::AstralaxPlugin()
     {
     }
@@ -71,6 +95,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxPlugin::_initializePlugin()
     {
+        MAGIC_ALLOCATOR allocator;
+        allocator.alloc = &Detail::Magic_Allocate;
+        allocator.realloc = &Detail::Magic_Reallocate;
+        allocator.free = &Detail::Magic_Free;
+        allocator.userdata = nullptr;
+
+        if( Magic_SetAllocator( &allocator ) != MAGIC_SUCCESS )
+        {
+            LOGGER_ERROR( "Astralax allocator initialization failed" );
+
+            return false;
+        }
+
         const char * version = Magic_GetVersion();
 
 #if !defined(MENGINE_TOOLCHAIN_MINGW64) && !defined(MENGINE_VENDOR_APPLE)
@@ -191,6 +228,13 @@ namespace Mengine
     void AstralaxPlugin::_destroyPlugin()
     {
         SERVICE_DESTROY( AstralaxService );
+
+        Magic_DestroyAll();
+
+        if( Magic_SetAllocator( nullptr ) != MAGIC_SUCCESS )
+        {
+            LOGGER_ERROR( "Astralax allocator finalization failed: live allocations remain" );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
 }

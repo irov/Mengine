@@ -617,6 +617,13 @@ namespace Mengine
         m_hWnd = _hWnd;
         m_fullscreen = _fullscreen;
 
+        if( HAS_OPTION( "windowhidden" ) == true )
+        {
+            ::ShowWindow( m_hWnd, SW_HIDE );
+
+            return true;
+        }
+
         HWND hWndFgnd = ::GetForegroundWindow();
 
         if( hWndFgnd != m_hWnd )

@@ -8,6 +8,8 @@
 #include "Kernel/StatisticHelper.h"
 #include "Kernel/PixelFormatHelper.h"
 
+#include "Config/StdString.h"
+
 #import <Metal/Metal.h>
 
 namespace Mengine
@@ -299,10 +301,77 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MetalRenderTargetTexture::getData( void * const _buffer, size_t _pitch ) const
     {
-        MENGINE_UNUSED( _buffer );
-        MENGINE_UNUSED( _pitch );
+        if( m_texture == nil || _buffer == nullptr )
+        {
+            return false;
+        }
 
-        return false;
+        const size_t pixelCount = (size_t)m_hwWidth * m_hwHeight;
+        const size_t textureSize = Helper::getTextureMemorySize( m_hwWidth, m_hwHeight, m_hwPixelFormat );
+        const size_t bytesPerPixel = pixelCount == 0 ? 0 : textureSize / pixelCount;
+        const size_t rowBytes = (size_t)m_hwWidth * bytesPerPixel;
+        if( bytesPerPixel == 0 || _pitch < rowBytes )
+        {
+            return false;
+        }
+
+        const size_t alignedRowBytes = (rowBytes + 255) & ~(size_t)255;
+        const size_t bufferSize = alignedRowBytes * m_hwHeight;
+
+        id<MTLBuffer> readbackBuffer = [m_device newBufferWithLength:bufferSize options:MTLResourceStorageModeShared];
+        if( readbackBuffer == nil )
+        {
+            return false;
+        }
+
+        id<MTLCommandQueue> commandQueue = [m_device newCommandQueue];
+        id<MTLCommandBuffer> commandBuffer = [commandQueue commandBuffer];
+        id<MTLBlitCommandEncoder> blitEncoder = [commandBuffer blitCommandEncoder];
+        if( commandQueue == nil || commandBuffer == nil || blitEncoder == nil )
+        {
+            return false;
+        }
+
+        [blitEncoder copyFromTexture:m_texture
+            sourceSlice:0
+            sourceLevel:0
+            sourceOrigin:MTLOriginMake( 0, 0, 0 )
+            sourceSize:MTLSizeMake( m_hwWidth, m_hwHeight, 1 )
+            toBuffer:readbackBuffer
+            destinationOffset:0
+            destinationBytesPerRow:alignedRowBytes
+            destinationBytesPerImage:bufferSize];
+        [blitEncoder endEncoding];
+        [commandBuffer commit];
+        [commandBuffer waitUntilCompleted];
+
+        if( commandBuffer.status != MTLCommandBufferStatusCompleted )
+        {
+            return false;
+        }
+
+        const uint8_t * source = (const uint8_t *)readbackBuffer.contents;
+        uint8_t * destination = (uint8_t *)_buffer;
+        for( uint32_t row = 0; row != m_hwHeight; ++row )
+        {
+            StdString::memcpy( destination + (size_t)row * _pitch, source + (size_t)row * alignedRowBytes, rowBytes );
+        }
+
+        if( m_texture.pixelFormat == MTLPixelFormatRGBA8Unorm )
+        {
+            for( uint32_t row = 0; row != m_height; ++row )
+            {
+                uint8_t * pixels = destination + (size_t)row * _pitch;
+                for( uint32_t column = 0; column != m_width; ++column )
+                {
+                    uint8_t red = pixels[column * 4 + 0];
+                    pixels[column * 4 + 0] = pixels[column * 4 + 2];
+                    pixels[column * 4 + 2] = red;
+                }
+            }
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     id<MTLTexture> MetalRenderTargetTexture::getMetalTexture() const

@@ -786,12 +786,6 @@ namespace Mengine
             m_alreadyRunningMonitor = nullptr;
         }
 
-        if( m_messagePipeBridge != nullptr )
-        {
-            m_messagePipeBridge->finalize();
-            m_messagePipeBridge = nullptr;
-        }
-
         m_mouseEvent.stop();
 
         this->detachWindow();
@@ -2394,26 +2388,6 @@ namespace Mengine
             else
             {
                 ::ShowWindow( m_hWnd, SW_SHOW );
-            }
-        }
-
-        // Optional named-pipe -> PostMessage bridge for automated agents
-        // (CI runners, headless DnD probes, ...). Independent of CLI:
-        // perfectly usable in normal interactive builds when the host
-        // launches the engine with `--messagepipe[=<suffix>]`.
-        if( HAS_OPTION( "messagepipe" ) == true )
-        {
-            const Char * OPTION_messagepipe = GET_OPTION_VALUE( "messagepipe", "" );
-
-            m_messagePipeBridge = Helper::makeFactorableUnique<Win32MessagePipeBridge>( MENGINE_DOCUMENT_FACTORABLE );
-
-            if( m_messagePipeBridge->initialize( m_hWnd, OPTION_messagepipe ) == false )
-            {
-                LOGGER_ERROR( "invalid initialize message pipe bridge (suffix '%s')"
-                    , OPTION_messagepipe
-                );
-
-                m_messagePipeBridge = nullptr;
             }
         }
 

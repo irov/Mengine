@@ -5,10 +5,12 @@
 #include "Interface/TimeSystemInterface.h"
 
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/ReadHelper.h"
 #include "Kernel/StatisticHelper.h"
 #include "Kernel/ThreadHelper.h"
 #include "Kernel/ThreadMutexHelper.h"
 #include "Kernel/ThreadMutexScope.h"
+#include "Kernel/WriteHelper.h"
 
 #include "Config/StdAlgorithm.h"
 #include "Config/StdString.h"
@@ -53,34 +55,6 @@ namespace Mengine
             PacketAckOnly = 1 << 3,
             PacketData = 1 << 4
         };
-        //////////////////////////////////////////////////////////////////////////
-        static void writeU16( uint8_t * _buffer, size_t _offset, uint16_t _value )
-        {
-            _buffer[_offset + 0] = static_cast<uint8_t>(_value);
-            _buffer[_offset + 1] = static_cast<uint8_t>(_value >> 8);
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static void writeU32( uint8_t * _buffer, size_t _offset, uint32_t _value )
-        {
-            _buffer[_offset + 0] = static_cast<uint8_t>(_value);
-            _buffer[_offset + 1] = static_cast<uint8_t>(_value >> 8);
-            _buffer[_offset + 2] = static_cast<uint8_t>(_value >> 16);
-            _buffer[_offset + 3] = static_cast<uint8_t>(_value >> 24);
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static uint16_t readU16( const uint8_t * _buffer, size_t _offset )
-        {
-            return static_cast<uint16_t>(_buffer[_offset + 0]) |
-                static_cast<uint16_t>(static_cast<uint16_t>(_buffer[_offset + 1]) << 8);
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static uint32_t readU32( const uint8_t * _buffer, size_t _offset )
-        {
-            return static_cast<uint32_t>(_buffer[_offset + 0]) |
-                (static_cast<uint32_t>(_buffer[_offset + 1]) << 8) |
-                (static_cast<uint32_t>(_buffer[_offset + 2]) << 16) |
-                (static_cast<uint32_t>(_buffer[_offset + 3]) << 24);
-        }
         //////////////////////////////////////////////////////////////////////////
         static bool isLoopbackAddress( const SocketAddress & _address )
         {
@@ -711,19 +685,19 @@ namespace Mengine
         {
             sequence = _peer->nextPacketSequence++;
         }
-        Detail::writeU32( packet.data(), 0, Detail::SocketMagic );
-        Detail::writeU16( packet.data(), 4, Detail::SocketVersion );
-        Detail::writeU16( packet.data(), 6, _flags );
-        Detail::writeU32( packet.data(), 8, _peer->connectionId );
-        Detail::writeU32( packet.data(), 12, sequence );
-        Detail::writeU32( packet.data(), 16, _peer->receiveInitialized == true ? _peer->receiveSequence : 0 );
-        Detail::writeU32( packet.data(), 20, _peer->receiveMask );
-        Detail::writeU32( packet.data(), 24, _messageId );
-        Detail::writeU32( packet.data(), 28, _channelSequence );
-        Detail::writeU32( packet.data(), 32, _totalSize );
-        Detail::writeU16( packet.data(), 36, static_cast<uint16_t>(_payloadSize) );
-        Detail::writeU16( packet.data(), 38, _fragmentIndex );
-        Detail::writeU16( packet.data(), 40, _fragmentCount );
+        Helper::writeUint32( packet.data(), Detail::SocketMagic );
+        Helper::writeUint16( packet.data() + 4, Detail::SocketVersion );
+        Helper::writeUint16( packet.data() + 6, _flags );
+        Helper::writeUint32( packet.data() + 8, _peer->connectionId );
+        Helper::writeUint32( packet.data() + 12, sequence );
+        Helper::writeUint32( packet.data() + 16, _peer->receiveInitialized == true ? _peer->receiveSequence : 0 );
+        Helper::writeUint32( packet.data() + 20, _peer->receiveMask );
+        Helper::writeUint32( packet.data() + 24, _messageId );
+        Helper::writeUint32( packet.data() + 28, _channelSequence );
+        Helper::writeUint32( packet.data() + 32, _totalSize );
+        Helper::writeUint16( packet.data() + 36, static_cast<uint16_t>(_payloadSize) );
+        Helper::writeUint16( packet.data() + 38, _fragmentIndex );
+        Helper::writeUint16( packet.data() + 40, _fragmentCount );
         packet[42] = _channel;
         packet[43] = static_cast<uint8_t>(_delivery);
         if( _payloadSize != 0 )
@@ -776,21 +750,55 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SocketService::processPacket_( const SocketAddress & _address, const uint8_t * _packet, size_t _size, uint64_t _now )
     {
-        if( _size < Detail::SocketHeaderSize || Detail::readU32( _packet, 0 ) != Detail::SocketMagic || Detail::readU16( _packet, 4 ) != Detail::SocketVersion )
+        if( _size < Detail::SocketHeaderSize )
         {
             return;
         }
-        uint16_t flags = Detail::readU16( _packet, 6 );
-        uint32_t connectionId = Detail::readU32( _packet, 8 );
-        uint32_t sequence = Detail::readU32( _packet, 12 );
-        uint32_t ack = Detail::readU32( _packet, 16 );
-        uint32_t ackBits = Detail::readU32( _packet, 20 );
-        uint32_t messageId = Detail::readU32( _packet, 24 );
-        uint32_t channelSequence = Detail::readU32( _packet, 28 );
-        uint32_t totalSize = Detail::readU32( _packet, 32 );
-        uint16_t payloadSize = Detail::readU16( _packet, 36 );
-        uint16_t fragmentIndex = Detail::readU16( _packet, 38 );
-        uint16_t fragmentCount = Detail::readU16( _packet, 40 );
+
+        uint32_t magic;
+        Helper::readUint32( _packet, &magic );
+
+        uint16_t version;
+        Helper::readUint16( _packet + 4, &version );
+
+        if( magic != Detail::SocketMagic || version != Detail::SocketVersion )
+        {
+            return;
+        }
+
+        uint16_t flags;
+        Helper::readUint16( _packet + 6, &flags );
+
+        uint32_t connectionId;
+        Helper::readUint32( _packet + 8, &connectionId );
+
+        uint32_t sequence;
+        Helper::readUint32( _packet + 12, &sequence );
+
+        uint32_t ack;
+        Helper::readUint32( _packet + 16, &ack );
+
+        uint32_t ackBits;
+        Helper::readUint32( _packet + 20, &ackBits );
+
+        uint32_t messageId;
+        Helper::readUint32( _packet + 24, &messageId );
+
+        uint32_t channelSequence;
+        Helper::readUint32( _packet + 28, &channelSequence );
+
+        uint32_t totalSize;
+        Helper::readUint32( _packet + 32, &totalSize );
+
+        uint16_t payloadSize;
+        Helper::readUint16( _packet + 36, &payloadSize );
+
+        uint16_t fragmentIndex;
+        Helper::readUint16( _packet + 38, &fragmentIndex );
+
+        uint16_t fragmentCount;
+        Helper::readUint16( _packet + 40, &fragmentCount );
+
         uint8_t channel = _packet[42];
         uint8_t deliveryValue = _packet[43];
         if( connectionId == 0 || sequence == 0 || Detail::SocketHeaderSize + payloadSize != _size || channel >= 4 || deliveryValue > static_cast<uint8_t>(ESocketDelivery::UnreliableSequenced) )

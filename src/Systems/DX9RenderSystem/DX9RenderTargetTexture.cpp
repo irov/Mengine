@@ -10,6 +10,8 @@
 #include "Kernel/PixelFormatHelper.h"
 #include "Kernel/Assertion.h"
 
+#include "Config/StdString.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -234,10 +236,62 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderTargetTexture::getData( void * const _buffer, size_t _pitch ) const
     {
-        MENGINE_UNUSED( _buffer );
-        MENGINE_UNUSED( _pitch );
+        const size_t rowBytes = (size_t)m_hwWidth * 4;
+        if( m_pD3DTexture == nullptr || _buffer == nullptr || _pitch < rowBytes )
+        {
+            return false;
+        }
 
-        return false;
+        IDirect3DSurface9 * sourceSurface = nullptr;
+        if( FAILED( m_pD3DTexture->GetSurfaceLevel( 0, &sourceSurface ) ) )
+        {
+            return false;
+        }
+
+        D3DSURFACE_DESC desc;
+        if( FAILED( sourceSurface->GetDesc( &desc ) ) )
+        {
+            MENGINE_DX9_RELEASE( sourceSurface );
+
+            return false;
+        }
+
+        IDirect3DSurface9 * stagingSurface = nullptr;
+        if( FAILED( m_pD3DDevice->CreateOffscreenPlainSurface( desc.Width, desc.Height, desc.Format, D3DPOOL_SYSTEMMEM, &stagingSurface, nullptr ) ) )
+        {
+            MENGINE_DX9_RELEASE( sourceSurface );
+
+            return false;
+        }
+
+        HRESULT copyResult = m_pD3DDevice->GetRenderTargetData( sourceSurface, stagingSurface );
+        MENGINE_DX9_RELEASE( sourceSurface );
+        if( FAILED( copyResult ) )
+        {
+            MENGINE_DX9_RELEASE( stagingSurface );
+
+            return false;
+        }
+
+        D3DLOCKED_RECT lockedRect;
+        if( FAILED( stagingSurface->LockRect( &lockedRect, nullptr, D3DLOCK_READONLY ) ) )
+        {
+            MENGINE_DX9_RELEASE( stagingSurface );
+
+            return false;
+        }
+
+        uint8_t * destination = (uint8_t *)_buffer;
+        const uint8_t * source = (const uint8_t *)lockedRect.pBits;
+        for( uint32_t row = 0; row != m_hwHeight; ++row )
+        {
+            StdString::memcpy( destination + (size_t)row * _pitch, source + (size_t)row * lockedRect.Pitch, rowBytes );
+        }
+
+        stagingSurface->UnlockRect();
+        MENGINE_DX9_RELEASE( stagingSurface );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     IDirect3DDevice9 * DX9RenderTargetTexture::getDirect3dDevice9() const

@@ -5,6 +5,7 @@ import android.view.Surface;
 import java.io.File;
 import java.io.Writer;
 import java.nio.ByteBuffer;
+import java.util.Map;
 
 public class MengineNative {
     public static final MengineTag TAG = MengineTag.of("MNGNative");
@@ -56,6 +57,8 @@ public class MengineNative {
     public static native void AndroidPlatform_lowMemory();
     public static native void AndroidPlatform_trimMemory(int level);
     public static native void AndroidPlatform_changeLocale(String locale);
+    public static native void AndroidPlatform_intentStart(String action, String data, String type, int flags, Map<String, Object> extras);
+    public static native void AndroidPlatform_intentNew(String action, String data, String type, int flags, Map<String, Object> extras);
 
     public static native void AndroidPlatform_lockActivity();
     public static native void AndroidPlatform_unlockActivity();

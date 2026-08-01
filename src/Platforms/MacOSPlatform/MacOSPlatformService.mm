@@ -642,6 +642,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MacOSPlatformService::createWindow( const Resolution & _windowResolution, bool _fullscreen )
     {
+        if( HAS_OPTION( "norender" ) == true )
+        {
+            LOGGER_INFO( "platform", "macOS platform without window" );
+
+            return true;
+        }
+
         LOGGER_INFO( "platform", "create window size %u:%u fullscreen %d"
             , _windowResolution.getWidth()
             , _windowResolution.getHeight()
@@ -896,14 +903,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MacOSPlatformService::notifyCursorModeChanged( bool _mode )
     {
-        if( m_cursorVisible == _mode )
+        const bool cursorVisible = HAS_OPTION( "systemcursoralwaysvisible" ) == true ? true : _mode;
+
+        if( m_cursorVisible == cursorVisible )
         {
             return;
         }
 
-        m_cursorVisible = _mode;
+        m_cursorVisible = cursorVisible;
 
-        if( _mode == true )
+        if( cursorVisible == true )
         {
             [NSCursor unhide];
         }
@@ -1351,7 +1360,17 @@ namespace Mengine
         [metalView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
         [m_window setContentView:metalView];
         [m_window makeFirstResponder:metalView];
-        [m_window makeKeyAndOrderFront:nil];
+
+        if( HAS_OPTION( "windowhidden" ) == true )
+        {
+            [m_window setAlphaValue:0.0];
+            [m_window setIgnoresMouseEvents:YES];
+            [m_window orderFront:nil];
+        }
+        else
+        {
+            [m_window makeKeyAndOrderFront:nil];
+        }
 
         m_metalView = metalView;
 

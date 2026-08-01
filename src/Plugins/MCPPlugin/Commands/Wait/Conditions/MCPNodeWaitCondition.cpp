@@ -1,0 +1,74 @@
+#include "MCPNodeWaitCondition.h"
+
+#include "../../../Contexts/MCPSceneContext.h"
+
+#include "Interface/SceneServiceInterface.h"
+
+#include "Kernel/ConstStringHelper.h"
+
+namespace Mengine
+{
+    //////////////////////////////////////////////////////////////////////////
+    MCPNodeWaitCondition::MCPNodeWaitCondition( MCPSceneContext * _context )
+        : m_context( _context )
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool MCPNodeWaitCondition::evaluate( const MCPWaitConditionRequest & _request, MCPWaitConditionResponse * const _response )
+    {
+        m_context->refreshGeneration();
+        m_context->clearNodes();
+
+        const ScenePtr & scene = SCENE_SERVICE()->getCurrentScene();
+
+        if( scene == nullptr )
+        {
+            _response->errorMessage = "there is no current scene";
+
+            return false;
+        }
+
+        jpp::object root = m_context->makeNodeJSON( scene, 0, 256, true );
+        MENGINE_UNUSED( root );
+
+        jpp::object query;
+
+        if( _request.condition.exist( "query", &query ) == false || query.is_type_object() == false )
+        {
+            query = jpp::make_object();
+        }
+
+        const Char * name = query.get( "name", "" );
+        const Char * type = query.get( "type", "" );
+        ConstString queryName = Helper::stringizeString( name );
+        ConstString queryType = Helper::stringizeString( type );
+        uint32_t count = 0;
+        const Map<UniqueId, NodePtr> & nodes = m_context->getNodes();
+
+        for( const Map<UniqueId, NodePtr>::value_type & value : nodes )
+        {
+            const NodePtr & node = value.second;
+            const ConstString & nodeName = node->getName();
+            const ConstString & nodeType = node->getType();
+
+            if( queryName.empty() == false && queryName != nodeName )
+            {
+                continue;
+            }
+
+            if( queryType.empty() == false && queryType != nodeType )
+            {
+                continue;
+            }
+
+            count = 1;
+            break;
+        }
+
+        _response->satisfied = count != 0;
+        _response->details.set( "count", count );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+}

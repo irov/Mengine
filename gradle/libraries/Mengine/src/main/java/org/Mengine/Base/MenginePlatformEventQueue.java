@@ -1,5 +1,7 @@
 package org.Mengine.Base;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.Surface;
 
 import androidx.annotation.NonNull;
@@ -7,6 +9,7 @@ import androidx.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class MenginePlatformEventQueue {
     private static final MengineTag TAG = MengineTag.of("MNGPlatformEventQueue");
@@ -14,7 +17,8 @@ public class MenginePlatformEventQueue {
     public sealed interface PlatformEvent permits
         QuitEvent, PauseEvent, ResumeEvent, StopEvent, StartEvent, RestartEvent, DestroyEvent,
         FreezeEvent, SurfaceCreateEvent, SurfaceDestroyEvent, SurfaceChangedEvent,
-        ClipboardChangedEvent, WindowFocusChangedEvent, LowMemoryEvent, TrimMemoryEvent, ChangeLocaleEvent {
+        ClipboardChangedEvent, WindowFocusChangedEvent, LowMemoryEvent, TrimMemoryEvent, ChangeLocaleEvent,
+        IntentStartEvent, IntentNewEvent {
     }
 
     record QuitEvent() implements PlatformEvent {}
@@ -33,6 +37,34 @@ public class MenginePlatformEventQueue {
     record LowMemoryEvent() implements PlatformEvent {}
     record TrimMemoryEvent(int level) implements PlatformEvent {}
     record ChangeLocaleEvent(String locale) implements PlatformEvent {}
+    record IntentStartEvent(String action, String data, String type, int flags, Map<String, Object> extras) implements PlatformEvent {
+        // The generated record toString exposes extras values, which may contain sensitive data.
+        @Override
+        public String toString() {
+            String description = "IntentStartEvent{action='" + action + '\''
+                + ", data='" + data + '\''
+                + ", type='" + type + '\''
+                + ", flags=" + flags
+                + ", extras=" + extras.size()
+                + '}';
+
+            return description;
+        }
+    }
+    record IntentNewEvent(String action, String data, String type, int flags, Map<String, Object> extras) implements PlatformEvent {
+        // The generated record toString exposes extras values, which may contain sensitive data.
+        @Override
+        public String toString() {
+            String description = "IntentNewEvent{action='" + action + '\''
+                + ", data='" + data + '\''
+                + ", type='" + type + '\''
+                + ", flags=" + flags
+                + ", extras=" + extras.size()
+                + '}';
+
+            return description;
+        }
+    }
 
     private static final Object m_syncEvents = new Object();
     private static final List<PlatformEvent> m_events = new ArrayList<>();
@@ -112,6 +144,107 @@ public class MenginePlatformEventQueue {
         MenginePlatformEventQueue.pushEvent(new ChangeLocaleEvent(locale));
     }
 
+    private static boolean meaningfulIntent(@NonNull Intent intent) {
+        Bundle bundle = intent.getExtras();
+        String action = intent.getAction();
+        String data = intent.getDataString();
+        String type = intent.getType();
+
+        boolean meaningful = false;
+
+        if (bundle != null) {
+            if (bundle.isEmpty() == false) {
+                meaningful = true;
+
+                return meaningful;
+            }
+        }
+
+        if (data != null) {
+            meaningful = true;
+
+            return meaningful;
+        }
+
+        if (type != null) {
+            meaningful = true;
+
+            return meaningful;
+        }
+
+        if (action != null) {
+            if (Intent.ACTION_MAIN.equals(action) == false) {
+                meaningful = true;
+
+                return meaningful;
+            }
+        }
+
+        return meaningful;
+    }
+
+    public static void pushIntentStartEvent(@NonNull Intent intent) {
+        boolean meaningfulIntentStart = MenginePlatformEventQueue.meaningfulIntent(intent);
+
+        if (meaningfulIntentStart == false) {
+            return;
+        }
+
+        Bundle bundle = intent.getExtras();
+        String action = intent.getAction();
+        String data = intent.getDataString();
+        String type = intent.getType();
+
+        Map<String, Object> extras = MengineUtils.bundleToMap(bundle);
+
+        if (action == null) {
+            action = "";
+        }
+
+        if (data == null) {
+            data = "";
+        }
+
+        if (type == null) {
+            type = "";
+        }
+
+        int flags = intent.getFlags();
+
+        MenginePlatformEventQueue.pushEvent(new IntentStartEvent(action, data, type, flags, extras));
+    }
+
+    public static void pushIntentNewEvent(@NonNull Intent intent) {
+        boolean meaningfulIntentNew = MenginePlatformEventQueue.meaningfulIntent(intent);
+
+        if (meaningfulIntentNew == false) {
+            return;
+        }
+
+        Bundle bundle = intent.getExtras();
+        String action = intent.getAction();
+        String data = intent.getDataString();
+        String type = intent.getType();
+
+        Map<String, Object> extras = MengineUtils.bundleToMap(bundle);
+
+        if (action == null) {
+            action = "";
+        }
+
+        if (data == null) {
+            data = "";
+        }
+
+        if (type == null) {
+            type = "";
+        }
+
+        int flags = intent.getFlags();
+
+        MenginePlatformEventQueue.pushEvent(new IntentNewEvent(action, data, type, flags, extras));
+    }
+
     public static void pushSurfaceCreatedEvent(Surface surface) {
         MengineNative.AndroidPlatform_lockActivity();
         MenginePlatformEventQueue.pushEvent(new SurfaceCreateEvent(surface));
@@ -182,6 +315,32 @@ public class MenginePlatformEventQueue {
             } else if (event instanceof ChangeLocaleEvent localeEvent) {
                 String localeValue = localeEvent.locale();
                 MengineNative.AndroidPlatform_changeLocale(localeValue);
+            } else if (event instanceof IntentStartEvent intentStartEvent) {
+                String intentAction = intentStartEvent.action();
+                String intentData = intentStartEvent.data();
+                String intentType = intentStartEvent.type();
+                int intentFlags = intentStartEvent.flags();
+                Map<String, Object> intentExtras = intentStartEvent.extras();
+                MengineNative.AndroidPlatform_intentStart(
+                    intentAction,
+                    intentData,
+                    intentType,
+                    intentFlags,
+                    intentExtras
+                );
+            } else if (event instanceof IntentNewEvent intentNewEvent) {
+                String intentAction = intentNewEvent.action();
+                String intentData = intentNewEvent.data();
+                String intentType = intentNewEvent.type();
+                int intentFlags = intentNewEvent.flags();
+                Map<String, Object> intentExtras = intentNewEvent.extras();
+                MengineNative.AndroidPlatform_intentNew(
+                    intentAction,
+                    intentData,
+                    intentType,
+                    intentFlags,
+                    intentExtras
+                );
             } else if (event instanceof SurfaceCreateEvent surfaceCreateEvent) {
                 Surface surfaceCreated = surfaceCreateEvent.surface();
                 MengineNative.AndroidPlatform_surfaceCreatedEvent(surfaceCreated);

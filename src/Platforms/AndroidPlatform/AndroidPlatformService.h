@@ -183,6 +183,8 @@ namespace Mengine
     protected:
         void androidNativeTouchEvent( jlong _eventTime, jint _action, jint _pointerId, jfloat _x, jfloat _y, jfloat _pressure ) override;
         void androidNativeAccelerationEvent( jlong _eventTimestamp, jfloat _x, jfloat _y, jfloat _z ) override;
+        void androidNativeIntentStartEvent( const String & _action, const String & _data, const String & _type, uint32_t _flags, const Params & _extras ) override;
+        void androidNativeIntentNewEvent( const String & _action, const String & _data, const String & _type, uint32_t _flags, const Params & _extras ) override;
         void androidNativeKeyEvent( jlong _eventTime, jboolean _isDown, jint _keyCode, jint _repeatCount ) override;
         void androidNativeTextEvent( jlong _eventTime, jint _unicode ) override;
         void androidNativePauseEvent( jfloat _x, jfloat _y ) override;

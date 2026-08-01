@@ -112,6 +112,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct FigmaActionResponse
     {
+        uint32_t getResult() const
+        {
+            return static_cast<uint32_t>(result);
+        }
+
+        void setResult( uint32_t _result )
+        {
+            result = static_cast<EFigmaActionResult>(_result);
+        }
+
         EFigmaActionResult result = EFigmaActionResult::AllowDefault;
         String targetFrameId;
     };
@@ -129,6 +139,12 @@ namespace Mengine
 
         virtual void setViewportScale( float _scale ) = 0;
         virtual float getViewportScale() const = 0;
+
+        virtual void setBackgroundTransparent( bool _transparent ) = 0;
+        virtual bool isBackgroundTransparent() const = 0;
+
+        virtual void setInputPassthroughRect( float _left, float _top, float _right, float _bottom ) = 0;
+        virtual void clearInputPassthroughRect() = 0;
 
     public:
         virtual void setStartFrameId( const String & _startFrameId ) = 0;

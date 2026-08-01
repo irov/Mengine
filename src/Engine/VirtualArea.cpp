@@ -41,6 +41,7 @@ namespace Mengine
         , m_snappingBoundsPoint( 0.f, 0.f )
         , m_scaleFactor( 1.f )
         , m_maxScaleFactor( VIRTUAL_AREA_DEFAULT_MAX_SCALE_FACTOR )
+        , m_maxScaleOutFactor( 1.f )
         , m_wheelScaleFactor( 0.375f )
         , m_friction( 0.5f )
         , m_frictionBase( VIRTUAL_AREA_DEFAULT_FRICTION_BASE )
@@ -291,10 +292,10 @@ namespace Mengine
         const float minScale = 1.f / m_maxScaleFactor;
         float nextScale = m_scaleFactor * _factor;
 
-        if( nextScale > 1.f )
+        if( nextScale > m_maxScaleOutFactor )
         {
-            _factor = 1.f / m_scaleFactor;
-            nextScale = 1.f;
+            _factor = m_maxScaleOutFactor / m_scaleFactor;
+            nextScale = m_maxScaleOutFactor;
         }
         else if( nextScale < minScale )
         {
@@ -354,6 +355,21 @@ namespace Mengine
     float VirtualArea::getMaxScaleFactor() const
     {
         return m_maxScaleFactor;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void VirtualArea::setMaxScaleOutFactor( float _maxScaleOutFactor )
+    {
+        m_maxScaleOutFactor = _maxScaleOutFactor < 1.f ? 1.f : _maxScaleOutFactor;
+
+        if( m_scaleFactor > m_maxScaleOutFactor )
+        {
+            this->setScale( m_maxScaleOutFactor );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float VirtualArea::getMaxScaleOutFactor() const
+    {
+        return m_maxScaleOutFactor;
     }
     //////////////////////////////////////////////////////////////////////////
     void VirtualArea::setScaleEnable( bool _enable )

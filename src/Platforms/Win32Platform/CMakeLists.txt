@@ -12,8 +12,6 @@ src
     Win32MouseEvent.cpp
     Win32AlreadyRunningMonitor.h
     Win32AlreadyRunningMonitor.cpp
-    Win32MessagePipeBridge.h
-    Win32MessagePipeBridge.cpp
     Win32CPUInfo.h
     Win32CPUInfo.cpp
 )

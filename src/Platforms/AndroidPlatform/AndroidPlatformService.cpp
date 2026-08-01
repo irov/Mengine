@@ -359,6 +359,48 @@ extern "C"
         platformExtension->androidNativeAccelerationEvent( eventTimestamp, x, y, z );
     }
     ///////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1intentStart )( JNIEnv * env, jclass cls, jstring action, jstring data, jstring type, jint flags, jobject extras )
+    {
+        if( g_androidPlatformActived == false )
+        {
+            return;
+        }
+
+        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        Mengine::String actionValue = Mengine::Helper::AndroidMakeStringFromJString( env, action );
+        Mengine::String dataValue = Mengine::Helper::AndroidMakeStringFromJString( env, data );
+        Mengine::String typeValue = Mengine::Helper::AndroidMakeStringFromJString( env, type );
+        uint32_t flagsValue = (uint32_t)flags;
+
+        Mengine::Params params;
+        Mengine::Helper::AndroidMakeParamsFromJObjectMap( env, extras, &params );
+
+        platformExtension->androidNativeIntentStartEvent( actionValue, dataValue, typeValue, flagsValue, params );
+    }
+    ///////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1intentNew )( JNIEnv * env, jclass cls, jstring action, jstring data, jstring type, jint flags, jobject extras )
+    {
+        if( g_androidPlatformActived == false )
+        {
+            return;
+        }
+
+        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        Mengine::String actionValue = Mengine::Helper::AndroidMakeStringFromJString( env, action );
+        Mengine::String dataValue = Mengine::Helper::AndroidMakeStringFromJString( env, data );
+        Mengine::String typeValue = Mengine::Helper::AndroidMakeStringFromJString( env, type );
+        uint32_t flagsValue = (uint32_t)flags;
+
+        Mengine::Params params;
+        Mengine::Helper::AndroidMakeParamsFromJObjectMap( env, extras, &params );
+
+        platformExtension->androidNativeIntentNewEvent( actionValue, dataValue, typeValue, flagsValue, params );
+    }
+    ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1pauseEvent )(JNIEnv * env, jclass cls, jfloat x, jfloat y)
     {
         if( g_androidPlatformActived == false )
@@ -2427,6 +2469,24 @@ namespace Mengine
         Timestamp timestamp = Helper::convertTimestampTimebase( timestampSensorMs, bootTimestamp, platformTimestamp );
 
         Helper::pushAccelerometerEvent( timestamp, timestampSensor, _dx, _dy, _dz );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::androidNativeIntentStartEvent( const String & _action, const String & _data, const String & _type, uint32_t _flags, const Params & _extras )
+    {
+        LOGGER_INFO( "platform", "application intent start event extras: %zu"
+            , _extras.size()
+        );
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_INTENT_START, _action, _data, _type, _flags, _extras );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::androidNativeIntentNewEvent( const String & _action, const String & _data, const String & _type, uint32_t _flags, const Params & _extras )
+    {
+        LOGGER_INFO( "platform", "application intent new event extras: %zu"
+            , _extras.size()
+        );
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_INTENT_NEW, _action, _data, _type, _flags, _extras );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeKeyEvent( jlong _eventTime, jboolean _isDown, jint _keyCode, jint _repeatCount )

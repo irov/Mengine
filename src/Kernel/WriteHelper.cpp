@@ -5,6 +5,14 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
+        void writeUint16( void * _buffer, uint16_t _value )
+        {
+            uint8_t * buffer = reinterpret_cast<uint8_t *>(_buffer);
+
+            buffer[0] = (_value >> 0) & 0xFF;
+            buffer[1] = (_value >> 8) & 0xFF;
+        }
+        //////////////////////////////////////////////////////////////////////////
         void writeUint32( void * _buffer, uint32_t _value )
         {
             uint8_t * buffer = reinterpret_cast<uint8_t *>(_buffer);

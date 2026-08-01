@@ -11,6 +11,7 @@
 #include "Kernel/Viewport.h"
 #include "Kernel/Polygon.h"
 #include "Kernel/Rect.h"
+#include "Kernel/BezierHelper.h"
 
 #include "Config/StdMath.h"
 
@@ -738,6 +739,30 @@ namespace Mengine
             return angle;
         }
         //////////////////////////////////////////////////////////////////////////
+        struct Vec2Length
+        {
+            float operator () ( const mt::vec2f & _value ) const
+            {
+                return mt::length_v2( _value );
+            }
+        };
+        //////////////////////////////////////////////////////////////////////////
+        static float length_bezier2( const mt::vec2f & _p0, const mt::vec2f & _p1, const mt::vec2f & _p2 )
+        {
+            constexpr uint32_t bezierQuality = 32;
+
+            return Helper::calculateBezierLength<mt::vec2f, 1, Vec2Length>( _p0, _p2, &_p1, bezierQuality );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static float length_bezier3( const mt::vec2f & _p0, const mt::vec2f & _p1, const mt::vec2f & _p2, const mt::vec2f & _p3 )
+        {
+            constexpr uint32_t bezierQuality = 32;
+
+            const mt::vec2f controlPoints[] = {_p1, _p2};
+
+            return Helper::calculateBezierLength<mt::vec2f, 2, Vec2Length>( _p0, _p3, controlPoints, bezierQuality );
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     MathScriptEmbedding::MathScriptEmbedding()
@@ -1023,6 +1048,8 @@ namespace Mengine
         pybind::def_function( _kernel, "length_v2", &mt::length_v2 );
 
         pybind::def_function( _kernel, "length_v2_v2", &mt::length_v2_v2 );
+        pybind::def_function( _kernel, "length_bezier2", &Detail::length_bezier2 );
+        pybind::def_function( _kernel, "length_bezier3", &Detail::length_bezier3 );
         pybind::def_function( _kernel, "sqrlength_v2_v2", &mt::sqrlength_v2_v2 );
 
         pybind::def_function( _kernel, "length_v3_v3", &mt::length_v3_v3 );

@@ -52,8 +52,6 @@
     {
         APPLICATION_SERVICE()
             ->quit();
-
-        return NSTerminateCancel;
     }
 
     return NSTerminateNow;

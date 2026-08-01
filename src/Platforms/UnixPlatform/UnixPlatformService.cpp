@@ -490,17 +490,21 @@ namespace Mengine
     {
         m_beginTime = Helper::getSystemTimestamp();
 
-        ::setlocale( LC_ALL, "" );
-        ::XSetLocaleModifiers( "" );
+        const bool headless = HAS_OPTION( "norender" );
 
-        m_display = ::XOpenDisplay( nullptr );
-
-        if( m_display == nullptr )
+        if( headless == false )
         {
-            LOGGER_ERROR( "XOpenDisplay failed; check DISPLAY" );
+            ::setlocale( LC_ALL, "" );
+            ::XSetLocaleModifiers( "" );
 
-            return false;
-        }
+            m_display = ::XOpenDisplay( nullptr );
+
+            if( m_display == nullptr )
+            {
+                LOGGER_ERROR( "XOpenDisplay failed; check DISPLAY" );
+
+                return false;
+            }
 
         m_screen = DefaultScreen( m_display );
 
@@ -540,18 +544,19 @@ namespace Mengine
         const int displayWidth = DisplayWidth( m_display, m_screen );
         const int displayWidthMM = DisplayWidthMM( m_display, m_screen );
 
-        if( displayWidth > 0 && displayWidthMM > 0 )
-        {
-            const float dpi = (float)displayWidth * 25.4f / (float)displayWidthMM;
-            m_displayScale = dpi / 96.f;
+            if( displayWidth > 0 && displayWidthMM > 0 )
+            {
+                const float dpi = (float)displayWidth * 25.4f / (float)displayWidthMM;
+                m_displayScale = dpi / 96.f;
 
-            if( m_displayScale < 1.f )
-            {
-                m_displayScale = 1.f;
-            }
-            else if( m_displayScale > 4.f )
-            {
-                m_displayScale = 4.f;
+                if( m_displayScale < 1.f )
+                {
+                    m_displayScale = 1.f;
+                }
+                else if( m_displayScale > 4.f )
+                {
+                    m_displayScale = 4.f;
+                }
             }
         }
 
@@ -1115,6 +1120,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool UnixPlatformService::createWindow( const Resolution & _resolution, bool _fullscreen )
     {
+        if( HAS_OPTION( "norender" ) == true )
+        {
+            LOGGER_INFO( "platform", "Unix platform without window" );
+
+            return true;
+        }
+
         LOGGER_INFO( "platform", "create X11 window size %u:%u fullscreen %s"
             , _resolution.getWidth()
             , _resolution.getHeight()
@@ -1253,7 +1265,11 @@ namespace Mengine
         m_windowExposed = true;
 
         ::XDefineCursor( m_display, m_window, m_cursorVisible == true ? m_defaultCursor : m_hiddenCursor );
-        ::XMapRaised( m_display, m_window );
+
+        if( HAS_OPTION( "windowhidden" ) == false )
+        {
+            ::XMapRaised( m_display, m_window );
+        }
 
         if( _fullscreen == true )
         {

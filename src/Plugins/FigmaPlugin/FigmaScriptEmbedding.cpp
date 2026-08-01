@@ -174,7 +174,7 @@ namespace Mengine
 
         pybind::struct_<FigmaActionResponse>( _kernel, "FigmaActionResponse" )
             .def_constructor( pybind::init<>() )
-            .def_member( "result", &FigmaActionResponse::result )
+            .def_property( "result", &FigmaActionResponse::getResult, &FigmaActionResponse::setResult )
             .def_member( "targetFrameId", &FigmaActionResponse::targetFrameId )
             ;
 
@@ -182,6 +182,23 @@ namespace Mengine
             ;
 
         pybind::interface_<Figma, pybind::bases<Node>>( _kernel, "Figma", false )
+            .def( "setResourceFigma", &Figma::setResourceFigma )
+            .def( "getResourceFigma", &Figma::getResourceFigma )
+            .def( "setViewportSize", &Figma::setViewportSize )
+            .def( "getViewportSize", &Figma::getViewportSize )
+            .def( "setViewportScale", &Figma::setViewportScale )
+            .def( "getViewportScale", &Figma::getViewportScale )
+            .def( "setBackgroundTransparent", &Figma::setBackgroundTransparent )
+            .def( "isBackgroundTransparent", &Figma::isBackgroundTransparent )
+            .def( "setInputPassthroughRect", &Figma::setInputPassthroughRect )
+            .def( "clearInputPassthroughRect", &Figma::clearInputPassthroughRect )
+            .def( "setStartFrameId", &Figma::setStartFrameId )
+            .def( "getStartFrameId", &Figma::getStartFrameId )
+            .def( "setFontSearchPath", &Figma::setFontSearchPath )
+            .def( "getFontSearchPath", &Figma::getFontSearchPath )
+            .def( "setPlaybackRate", &Figma::setPlaybackRate )
+            .def( "getPlaybackRate", &Figma::getPlaybackRate )
+            .def( "replay", &Figma::replay )
             .def( "setBindingText", &Figma::setBindingText )
             .def( "setBindingNumber", &Figma::setBindingNumber )
             .def( "setBindingVisible", &Figma::setBindingVisible )

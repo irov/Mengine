@@ -61,6 +61,7 @@
 #include "VirtualArea.h"
 #include "Window.h"
 #include "Landscape2D.h"
+#include "TileMap2D.h"
 #include "ResourceMusic.h"
 #include "ResourceFile.h"
 #include "ResourceWindow.h"
@@ -558,6 +559,7 @@ namespace Mengine
         NODE_FACTORY( Layer2D );
         NODE_FACTORY( VirtualArea );
         NODE_FACTORY( Landscape2D );
+        NODE_FACTORY( TileMap2D );
         NODE_FACTORY( RenderViewport );
         NODE_FACTORY( RenderViewportDefault );
         NODE_FACTORY( RenderScissor );
@@ -625,6 +627,7 @@ namespace Mengine
         NODE_FACTORY( Layer2D );
         NODE_FACTORY( VirtualArea );
         NODE_FACTORY( Landscape2D );
+        NODE_FACTORY( TileMap2D );
         NODE_FACTORY( RenderViewport );
         NODE_FACTORY( RenderViewportDefault );
         NODE_FACTORY( RenderScissor );

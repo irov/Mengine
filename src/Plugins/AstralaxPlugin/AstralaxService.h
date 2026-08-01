@@ -11,7 +11,6 @@
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/String.h"
-#include "Kernel/Stringstream.h"
 #include "Kernel/Vector.h"
 #include "Kernel/Map.h"
 
@@ -114,11 +113,6 @@ namespace Mengine
         mutable VectorRenderFragmentShaderCache m_renderFragmentShaderCache;
 
     protected:
-        void createFragmentShaderDX9Source_( Stringstream & ss, const MAGIC_MATERIAL * m ) const;
-        void createFragmentShaderDX11Source_( Stringstream & ss, const MAGIC_MATERIAL * m ) const;
-        void createFragmentShaderGLSource_( Stringstream & ss, const MAGIC_MATERIAL * m ) const;
-        void createFragmentShaderGLESSource_( Stringstream & ss, const MAGIC_MATERIAL * m ) const;
-
         RenderFragmentShaderInterfacePtr cacheFragmentShader_( const MAGIC_MATERIAL * m ) const;
     };
 }

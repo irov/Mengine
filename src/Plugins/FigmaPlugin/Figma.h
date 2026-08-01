@@ -66,6 +66,12 @@ namespace Mengine
         void setViewportScale( float _scale ) override;
         float getViewportScale() const override;
 
+        void setBackgroundTransparent( bool _transparent ) override;
+        bool isBackgroundTransparent() const override;
+
+        void setInputPassthroughRect( float _left, float _top, float _right, float _bottom ) override;
+        void clearInputPassthroughRect() override;
+
     public:
         void setStartFrameId( const String & _startFrameId ) override;
         const String & getStartFrameId() const override;
@@ -155,6 +161,7 @@ namespace Mengine
         bool inputPointer_( figma_pointer_event_type_t _type, uint32_t _pointerId, float _x, float _y, figma_pointer_button_t _button, figma_input_modifier_flags_t _modifiers, figma_input_dispatch_result_t * const _dispatch );
         bool inputKey_( figma_key_event_type_t _type, uint32_t _keyCode, figma_input_modifier_flags_t _modifiers, figma_input_dispatch_result_t * const _dispatch );
         bool screenToLocal_( const RenderContext * _context, const mt::vec2f & _screenPoint, mt::vec2f * const _localPoint ) const;
+        bool isInputPassthroughPoint_( const mt::vec2f & _localPoint ) const;
         bool applyBindingValue_( const String & _key, const FigmaBindingValue & _value );
         bool updatePlayerViewport_();
 
@@ -198,6 +205,12 @@ namespace Mengine
         mt::vec2f m_viewportSize;
         float m_viewportScale;
         float m_playbackRate;
+        bool m_backgroundTransparent;
+        bool m_inputPassthroughEnabled;
+        bool m_inputPassthroughTriggerPending;
+        mt::vec2f m_inputPassthroughBegin;
+        mt::vec2f m_inputPassthroughEnd;
+        FigmaTriggerEvent m_inputPassthroughTriggerEvent;
         String m_startFrameId;
         String m_fontSearchPath;
         String m_actionTargetFrameId;

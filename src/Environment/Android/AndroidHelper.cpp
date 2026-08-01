@@ -11,6 +11,7 @@
 #include "Kernel/StringSlice.h"
 #include "Kernel/Logger.h"
 #include "Kernel/PathHelper.h"
+#include "Kernel/ParamsHelper.h"
 
 #include "Config/StdIntTypes.h"
 #include "Config/StdString.h"
@@ -359,6 +360,89 @@ namespace Mengine
             }
 
             return jmap;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void AndroidMakeParamsFromJObjectMap( JNIEnv * _jenv, jobject _jmap, Params * const _params )
+        {
+            jclass jclass_Map = Mengine_JNI_GetClassMap( _jenv );
+            jclass jclass_Boolean = Mengine_JNI_GetClassBoolean( _jenv );
+            jclass jclass_Integer = Mengine_JNI_GetClassInteger( _jenv );
+            jclass jclass_Long = Mengine_JNI_GetClassLong( _jenv );
+            jclass jclass_Float = Mengine_JNI_GetClassFloat( _jenv );
+            jclass jclass_Double = Mengine_JNI_GetClassDouble( _jenv );
+            jclass jclass_String = Mengine_JNI_GetClassString( _jenv );
+
+            Helper::AndroidForeachJavaMap( _jenv, jclass_Map, _jmap, [_jenv, _params, jclass_Boolean, jclass_Integer, jclass_Long, jclass_Float, jclass_Double, jclass_String]( jobject _jkey, jobject _jvalue )
+            {
+                if( Mengine_JNI_IsInstanceOf( _jenv, _jkey, jclass_String ) == JNI_FALSE )
+                {
+                    jclass jclass_Key = Mengine_JNI_GetObjectClass( _jenv, _jkey );
+                    StaticString<1024> keyClassName = Helper::AndroidGetJavaClassName( _jenv, jclass_Key );
+                    Mengine_JNI_DeleteLocalRef( _jenv, jclass_Key );
+
+                    LOGGER_WARNING( "unsupported Android params key type '%s'"
+                        , keyClassName.c_str()
+                    );
+
+                    return;
+                }
+
+                ConstString key = Helper::AndroidMakeConstStringFromJString( _jenv, (jstring)_jkey );
+
+                if( _jvalue == nullptr )
+                {
+                    (*_params)[key] = nullptr;
+                }
+                else if( Mengine_JNI_IsInstanceOf( _jenv, _jvalue, jclass_Boolean ) == JNI_TRUE )
+                {
+                    jboolean value = Helper::AndroidGetJavaObjectValueBoolean( _jenv, jclass_Boolean, _jvalue );
+                    Helper::setParam( *_params, key, value == JNI_TRUE );
+                }
+                else if( Mengine_JNI_IsInstanceOf( _jenv, _jvalue, jclass_Integer ) == JNI_TRUE )
+                {
+                    jint value = Helper::AndroidGetJavaObjectValueInteger( _jenv, jclass_Integer, _jvalue );
+                    Helper::setParam( *_params, key, (ParamInteger)value );
+                }
+                else if( Mengine_JNI_IsInstanceOf( _jenv, _jvalue, jclass_Long ) == JNI_TRUE )
+                {
+                    jlong value = Helper::AndroidGetJavaObjectValueLong( _jenv, jclass_Long, _jvalue );
+                    Helper::setParam( *_params, key, (ParamInteger)value );
+                }
+                else if( Mengine_JNI_IsInstanceOf( _jenv, _jvalue, jclass_Float ) == JNI_TRUE )
+                {
+                    jfloat value = Helper::AndroidGetJavaObjectValueFloat( _jenv, jclass_Float, _jvalue );
+                    Helper::setParam( *_params, key, (ParamDouble)value );
+                }
+                else if( Mengine_JNI_IsInstanceOf( _jenv, _jvalue, jclass_Double ) == JNI_TRUE )
+                {
+                    jdouble value = Helper::AndroidGetJavaObjectValueDouble( _jenv, jclass_Double, _jvalue );
+                    Helper::setParam( *_params, key, (ParamDouble)value );
+                }
+                else if( Mengine_JNI_IsInstanceOf( _jenv, _jvalue, jclass_String ) == JNI_TRUE )
+                {
+                    String value = Helper::AndroidMakeStringFromJString( _jenv, (jstring)_jvalue );
+                    Helper::setParam( *_params, key, value );
+                }
+                else
+                {
+                    jclass jclass_Value = Mengine_JNI_GetObjectClass( _jenv, _jvalue );
+                    StaticString<1024> valueClassName = Helper::AndroidGetJavaClassName( _jenv, jclass_Value );
+                    Mengine_JNI_DeleteLocalRef( _jenv, jclass_Value );
+
+                    LOGGER_WARNING( "unsupported Android params value key '%s' type '%s'"
+                        , key.c_str()
+                        , valueClassName.c_str()
+                    );
+                }
+            } );
+
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_String );
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_Double );
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_Float );
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_Long );
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_Integer );
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_Boolean );
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_Map );
         }
         //////////////////////////////////////////////////////////////////////////
         jobject AndroidGetJObjectEnum( JNIEnv * _jenv, const Char * _className, const Char * _enumName )

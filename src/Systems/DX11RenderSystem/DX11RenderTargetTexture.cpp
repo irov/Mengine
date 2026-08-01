@@ -6,6 +6,8 @@
 #include "Kernel/TextureHelper.h"
 #include "Kernel/Assertion.h"
 
+#include "Config/StdString.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -202,10 +204,47 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderTargetTexture::getData( void * const _buffer, size_t _pitch ) const
     {
-        MENGINE_UNUSED( _buffer );
-        MENGINE_UNUSED( _pitch );
+        const size_t rowBytes = (size_t)m_textureDesc.Width * 4;
+        if( m_pD3DTexture == nullptr || _buffer == nullptr || _pitch < rowBytes )
+        {
+            return false;
+        }
 
-        return false;
+        D3D11_TEXTURE2D_DESC stagingDesc = m_textureDesc;
+        stagingDesc.BindFlags = 0;
+        stagingDesc.Usage = D3D11_USAGE_STAGING;
+        stagingDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+        stagingDesc.MiscFlags = 0;
+
+        const ID3D11DevicePtr & device = this->getDirect3D11Device();
+        ID3D11Texture2D * stagingTextureRaw = nullptr;
+        if( FAILED( device->CreateTexture2D( &stagingDesc, nullptr, &stagingTextureRaw ) ) )
+        {
+            return false;
+        }
+
+        ID3D11Texture2DPtr stagingTexture;
+        stagingTexture.Attach( stagingTextureRaw );
+
+        ID3D11DeviceContextPtr context = this->getDirect3D11ImmediateContext();
+        context->CopyResource( stagingTexture.Get(), m_pD3DTexture.Get() );
+
+        D3D11_MAPPED_SUBRESOURCE mapped;
+        if( FAILED( context->Map( stagingTexture.Get(), 0, D3D11_MAP_READ, 0, &mapped ) ) )
+        {
+            return false;
+        }
+
+        uint8_t * destination = (uint8_t *)_buffer;
+        const uint8_t * source = (const uint8_t *)mapped.pData;
+        for( uint32_t row = 0; row != m_textureDesc.Height; ++row )
+        {
+            StdString::memcpy( destination + (size_t)row * _pitch, source + (size_t)row * mapped.RowPitch, rowBytes );
+        }
+
+        context->Unmap( stagingTexture.Get(), 0 );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     const ID3D11DevicePtr & DX11RenderTargetTexture::getDirect3dDevice11() const

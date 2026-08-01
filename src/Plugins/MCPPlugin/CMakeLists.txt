@@ -1,0 +1,204 @@
+MENGINE_PROJECT(MCPPlugin)
+
+ADD_FILTER(
+src
+    MCPInterface.h
+    MCPHandlerInterface.h
+    MCPProtocol.h
+    MCPProtocol.cpp
+    MCPMemoryOutputStream.h
+    MCPMemoryOutputStream.cpp
+    MCPLogger.h
+    MCPLogger.cpp
+    MCPFileGroup.h
+    MCPFileGroup.cpp
+    MCPService.h
+    MCPService.cpp
+    MCPPlugin.h
+    MCPPlugin.cpp
+    MCPPlugin.def
+)
+
+ADD_FILTER(
+commands
+    Commands/MCPCommandInterface.h
+    Commands/MCPCommandInterface.cpp
+    Commands/MCPCommandRegistry.h
+    Commands/MCPCommandRegistry.cpp
+    Commands/MCPCommandComposition.h
+    Commands/MCPCommandComposition.cpp
+)
+
+ADD_FILTER(
+commands_application
+    Commands/Application/MCPAppStopCommand.h
+    Commands/Application/MCPAppStopCommand.cpp
+)
+
+ADD_FILTER(
+commands_runtime
+    Commands/Runtime/MCPLogsReadCommand.h
+    Commands/Runtime/MCPLogsReadCommand.cpp
+    Commands/Runtime/MCPRuntimeControlCommand.h
+    Commands/Runtime/MCPRuntimeControlCommand.cpp
+    Commands/Runtime/MCPFrameCaptureCommand.h
+    Commands/Runtime/MCPFrameCaptureCommand.cpp
+    Commands/Runtime/MCPWaitForCommand.h
+    Commands/Runtime/MCPWaitForCommand.cpp
+    Commands/Runtime/MCPDiagnosticsGetCommand.h
+    Commands/Runtime/MCPDiagnosticsGetCommand.cpp
+)
+
+ADD_FILTER(
+commands_wait
+    Commands/Wait/MCPWaitConditionInterface.h
+    Commands/Wait/MCPWaitConditionInterface.cpp
+    Commands/Wait/Conditions/MCPFramesWaitCondition.h
+    Commands/Wait/Conditions/MCPFramesWaitCondition.cpp
+    Commands/Wait/Conditions/MCPRuntimeWaitCondition.h
+    Commands/Wait/Conditions/MCPRuntimeWaitCondition.cpp
+    Commands/Wait/Conditions/MCPSceneWaitCondition.h
+    Commands/Wait/Conditions/MCPSceneWaitCondition.cpp
+    Commands/Wait/Conditions/MCPNodeWaitCondition.h
+    Commands/Wait/Conditions/MCPNodeWaitCondition.cpp
+    Commands/Wait/Conditions/MCPLogWaitCondition.h
+    Commands/Wait/Conditions/MCPLogWaitCondition.cpp
+)
+
+ADD_FILTER(
+commands_scene
+    Commands/Scene/MCPSceneSnapshotCommand.h
+    Commands/Scene/MCPSceneSnapshotCommand.cpp
+    Commands/Scene/MCPSceneFindCommand.h
+    Commands/Scene/MCPSceneFindCommand.cpp
+    Commands/Scene/MCPSceneGetCommand.h
+    Commands/Scene/MCPSceneGetCommand.cpp
+    Commands/Scene/MCPSceneSetCommand.h
+    Commands/Scene/MCPSceneSetCommand.cpp
+)
+
+ADD_FILTER(
+commands_input
+    Commands/Input/MCPInputMouseCommand.h
+    Commands/Input/MCPInputMouseCommand.cpp
+    Commands/Input/MCPInputKeyboardCommand.h
+    Commands/Input/MCPInputKeyboardCommand.cpp
+    Commands/Input/MCPInputTouchCommand.h
+    Commands/Input/MCPInputTouchCommand.cpp
+    Commands/Input/MCPInputSequenceCommand.h
+    Commands/Input/MCPInputSequenceCommand.cpp
+    Commands/Input/Steps/MCPInputSequenceStepInterface.h
+    Commands/Input/Steps/MCPInputSequenceStepInterface.cpp
+    Commands/Input/Steps/MCPDelayInputSequenceStep.h
+    Commands/Input/Steps/MCPDelayInputSequenceStep.cpp
+    Commands/Input/Steps/MCPFramesInputSequenceStep.h
+    Commands/Input/Steps/MCPFramesInputSequenceStep.cpp
+    Commands/Input/Steps/MCPMouseInputSequenceStep.h
+    Commands/Input/Steps/MCPMouseInputSequenceStep.cpp
+    Commands/Input/Steps/MCPKeyboardInputSequenceStep.h
+    Commands/Input/Steps/MCPKeyboardInputSequenceStep.cpp
+    Commands/Input/Steps/MCPTouchInputSequenceStep.h
+    Commands/Input/Steps/MCPTouchInputSequenceStep.cpp
+    Commands/Input/Steps/MCPWaitInputSequenceStep.h
+    Commands/Input/Steps/MCPWaitInputSequenceStep.cpp
+)
+
+ADD_FILTER(
+commands_resource
+    Commands/Resource/MCPResourceReloadCommand.h
+    Commands/Resource/MCPResourceReloadCommand.cpp
+    Commands/Resource/MCPResourceRevertCommand.h
+    Commands/Resource/MCPResourceRevertCommand.cpp
+)
+
+ADD_FILTER(
+contexts
+    Contexts/MCPRuntimeContext.h
+    Contexts/MCPRuntimeContext.cpp
+    Contexts/MCPSceneContext.h
+    Contexts/MCPSceneContext.cpp
+    Contexts/MCPInputContext.h
+    Contexts/MCPInputContext.cpp
+    Contexts/MCPHandlerRegistry.h
+    Contexts/MCPHandlerRegistry.cpp
+    Contexts/MCPResourceContext.h
+    Contexts/MCPResourceContext.cpp
+    Contexts/MCPScriptContext.h
+    Contexts/MCPScriptContext.cpp
+    Contexts/MCPDebuggerContext.h
+    Contexts/MCPDebuggerContext.cpp
+)
+
+if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+    ADD_FILTER(
+    commands_wait_script
+        Commands/Wait/Conditions/MCPDebuggerWaitCondition.h
+        Commands/Wait/Conditions/MCPDebuggerWaitCondition.cpp
+        Commands/Wait/Conditions/MCPScriptWaitCondition.h
+        Commands/Wait/Conditions/MCPScriptWaitCondition.cpp
+    )
+
+    ADD_FILTER(
+    commands_script
+        Commands/Script/MCPScriptReloadModuleCommand.h
+        Commands/Script/MCPScriptReloadModuleCommand.cpp
+        Commands/Script/MCPScriptModulesCommand.h
+        Commands/Script/MCPScriptModulesCommand.cpp
+        Commands/Script/MCPScriptSourceCommand.h
+        Commands/Script/MCPScriptSourceCommand.cpp
+        Commands/Script/MCPScriptInspectCommand.h
+        Commands/Script/MCPScriptInspectCommand.cpp
+        Commands/Script/MCPScriptGetCommand.h
+        Commands/Script/MCPScriptGetCommand.cpp
+        Commands/Script/MCPScriptSetCommand.h
+        Commands/Script/MCPScriptSetCommand.cpp
+        Commands/Script/MCPScriptCallCommand.h
+        Commands/Script/MCPScriptCallCommand.cpp
+        Commands/Script/MCPScriptReleaseCommand.h
+        Commands/Script/MCPScriptReleaseCommand.cpp
+        Commands/Script/MCPScriptEvalCommand.h
+        Commands/Script/MCPScriptEvalCommand.cpp
+        Commands/Script/MCPScriptExecCommand.h
+        Commands/Script/MCPScriptExecCommand.cpp
+    )
+
+    ADD_FILTER(
+    commands_debugger
+        Commands/Debugger/MCPDebugSetBreakpointsCommand.h
+        Commands/Debugger/MCPDebugSetBreakpointsCommand.cpp
+        Commands/Debugger/MCPDebugSetExceptionPolicyCommand.h
+        Commands/Debugger/MCPDebugSetExceptionPolicyCommand.cpp
+        Commands/Debugger/MCPDebugPauseCommand.h
+        Commands/Debugger/MCPDebugPauseCommand.cpp
+        Commands/Debugger/MCPDebugContinueCommand.h
+        Commands/Debugger/MCPDebugContinueCommand.cpp
+        Commands/Debugger/MCPDebugStepCommand.h
+        Commands/Debugger/MCPDebugStepCommand.cpp
+        Commands/Debugger/MCPDebugStackCommand.h
+        Commands/Debugger/MCPDebugStackCommand.cpp
+        Commands/Debugger/MCPDebugScopesCommand.h
+        Commands/Debugger/MCPDebugScopesCommand.cpp
+        Commands/Debugger/MCPDebugVariablesCommand.h
+        Commands/Debugger/MCPDebugVariablesCommand.cpp
+        Commands/Debugger/MCPDebugEvaluateCommand.h
+        Commands/Debugger/MCPDebugEvaluateCommand.cpp
+        Commands/Debugger/MCPDebugSetVariableCommand.h
+        Commands/Debugger/MCPDebugSetVariableCommand.cpp
+    )
+
+    ADD_FILTER(
+    script
+        MCPPythonHandler.h
+        MCPPythonHandler.cpp
+        MCPScriptEmbedding.h
+        MCPScriptEmbedding.cpp
+    )
+
+    INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)
+endif()
+
+ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_MCP)
+
+INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/jpp/include)
+
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)

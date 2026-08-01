@@ -99,6 +99,9 @@ namespace Mengine
         void setMaxScaleFactor( float _maxScaleFactor );
         float getMaxScaleFactor() const;
 
+        void setMaxScaleOutFactor( float _maxScaleOutFactor );
+        float getMaxScaleOutFactor() const;
+
         void setScaleEnable( bool _enable );
         bool getScaleEnable() const;
 
@@ -281,6 +284,7 @@ namespace Mengine
 
         float m_scaleFactor;
         float m_maxScaleFactor;
+        float m_maxScaleOutFactor;
         float m_wheelScaleFactor;
         float m_friction;
         float m_frictionBase;

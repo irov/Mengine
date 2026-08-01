@@ -243,6 +243,10 @@ PLUGIN_EXPORT( LayoutEditor );
 PLUGIN_EXPORT( ResourcePrefetcher );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_PLUGIN_DEVELOPMENTCONVERTER_STATIC)
+PLUGIN_EXPORT( DevelopmentConverter );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLUGIN_RESOURCECONVERT_STATIC)
 PLUGIN_EXPORT( ResourceConvert );
 #endif
@@ -313,6 +317,10 @@ PLUGIN_EXPORT( FE );
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLUGIN_NODEDEBUGGER_STATIC)
 PLUGIN_EXPORT( NodeDebugger );
+#endif
+//////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_PLUGIN_MCP_STATIC)
+PLUGIN_EXPORT( MCP );
 #endif
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLUGIN_OZZ_ANIMATION_STATIC)
@@ -1560,6 +1568,10 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( ResourcePrefetcher, "plugin ResourcePrefetcher...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
+#if defined(MENGINE_PLUGIN_DEVELOPMENTCONVERTER_STATIC)
+        MENGINE_ADD_PLUGIN( DevelopmentConverter, "plugin DevelopmentConverter...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
 #if defined(MENGINE_PLUGIN_RESOURCECONVERT_STATIC)
         MENGINE_ADD_PLUGIN( ResourceConvert, "plugin ResourceConvert...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
@@ -1574,6 +1586,10 @@ namespace Mengine
 
 #if defined(MENGINE_PLUGIN_NODEDEBUGGER_STATIC)
         MENGINE_ADD_PLUGIN( NodeDebugger, "plugin NodeDebugger...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#if defined(MENGINE_PLUGIN_MCP_STATIC)
+        MENGINE_ADD_PLUGIN( MCP, "plugin MCP...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #if defined(MENGINE_PLUGIN_OZZ_ANIMATION_STATIC)

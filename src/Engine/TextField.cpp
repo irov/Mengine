@@ -1253,17 +1253,19 @@ namespace Mengine
         float fontHeight = _font->getFontHeight();
         //float fontAscent = _font->getFontAscent();
 
-        if( m_cacheLayoutCount == 0 )
+        uint32_t layoutCount = (uint32_t)layouts.size();
+
+        if( layoutCount == 0 )
         {
             textSize.y = 0.f;
         }
-        else if( m_cacheLayoutCount == 1 )
+        else if( layoutCount == 1 )
         {
             textSize.y = fontHeight + m_extraThickness * 2.f;
         }
         else
         {
-            textSize.y = (lineOffset + fontHeight) * (m_cacheLayoutCount - 1) + fontHeight + m_extraThickness * 2.f;
+            textSize.y = (lineOffset + fontHeight) * (layoutCount - 1) + fontHeight + m_extraThickness * 2.f;
         }
 
         float lines_offset = this->calcLinesOffset( lineOffset, _font );
@@ -1272,7 +1274,7 @@ namespace Mengine
         textOffset.x = text_offset;
         textOffset.y = lines_offset * m_autoScaleFactor;
 
-        *_layoutCount = (uint32_t)layouts.size();
+        *_layoutCount = layoutCount;
         *_charCount = charCount;
         *_textSize = textSize;
         *_textOffset = textOffset;

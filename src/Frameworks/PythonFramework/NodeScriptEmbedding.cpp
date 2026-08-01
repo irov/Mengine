@@ -47,6 +47,7 @@
 #include "Engine/HotSpotResourceShape.h"
 #include "Engine/HotSpotSurface.h"
 #include "Engine/Landscape2D.h"
+#include "Engine/TileMap2D.h"
 #include "Engine/Grid2D.h"
 #include "Engine/Gyroscope.h"
 #include "Engine/TextField.h"
@@ -1181,6 +1182,29 @@ namespace Mengine
                 .def( "setBackParts", &Landscape2D::setBackParts )
                 ;
 
+            pybind::interface_<TileMap2D, pybind::bases<Node>>( _kernel, "TileMap2D", false )
+                .def( "setupTileMap", &TileMap2D::setupTileMap )
+                .def( "setTileResource", &TileMap2D::setTileResource )
+                .def( "getTileResource", &TileMap2D::getTileResource )
+                .def( "clearTileResource", &TileMap2D::clearTileResource )
+                .def( "setTileActive", &TileMap2D::setTileActive )
+                .def( "isTileActive", &TileMap2D::isTileActive )
+                .def( "isTileResident", &TileMap2D::isTileResident )
+                .def( "setMaterialName", &TileMap2D::setMaterialName )
+                .def( "getMaterialName", &TileMap2D::getMaterialName )
+                .def( "getColumnCount", &TileMap2D::getColumnCount )
+                .def( "getRowCount", &TileMap2D::getRowCount )
+                .def( "getTileSize", &TileMap2D::getTileSize )
+                .def( "getTileCount", &TileMap2D::getTileCount )
+                .def( "getResidentTileCount", &TileMap2D::getResidentTileCount )
+                .def( "getVertexCount", &TileMap2D::getVertexCount )
+                .def( "getIndexCount", &TileMap2D::getIndexCount )
+                .def( "getVertexBufferUploadCount", &TileMap2D::getVertexBufferUploadCount )
+                .def( "getIndexBufferUploadCount", &TileMap2D::getIndexBufferUploadCount )
+                .def( "getResidentTextureMemoryBytes", &TileMap2D::getResidentTextureMemoryBytes )
+                .def( "validateSeams", &TileMap2D::validateSeams )
+                ;
+
             pybind::interface_<Grid2D, pybind::bases<Node, Materialable>>( _kernel, "Grid2D", false )
                 .def( "setResourceImage", &Grid2D::setResourceImage )
                 .def( "getResourceImage", &Grid2D::getResourceImage )
@@ -1304,6 +1328,8 @@ namespace Mengine
                 .def( "getVirtualAreaScaleFactor", &VirtualArea::getScaleFactor )
                 .def( "setVirtualAreaMaxScaleFactor", &VirtualArea::setMaxScaleFactor )
                 .def( "getVirtualAreaMaxScaleFactor", &VirtualArea::getMaxScaleFactor )
+                .def( "setVirtualAreaMaxScaleOutFactor", &VirtualArea::setMaxScaleOutFactor )
+                .def( "getVirtualAreaMaxScaleOutFactor", &VirtualArea::getMaxScaleOutFactor )
                 .def( "setVirtualAreaScaleEnable", &VirtualArea::setScaleEnable )
                 .def( "getVirtualAreaScaleEnable", &VirtualArea::getScaleEnable )
                 .def( "setVirtualAreaWheelScaleFactor", &VirtualArea::setWheelScaleFactor )
@@ -1408,6 +1434,7 @@ namespace Mengine
         SCRIPT_CLASS_WRAPPING( Point );
         SCRIPT_CLASS_WRAPPING( Line );
         SCRIPT_CLASS_WRAPPING( Landscape2D );
+        SCRIPT_CLASS_WRAPPING( TileMap2D );
         SCRIPT_CLASS_WRAPPING( Grid2D );
         SCRIPT_CLASS_WRAPPING( Mesh3D );
         SCRIPT_CLASS_WRAPPING( SkinnedMesh3D );
@@ -1475,6 +1502,7 @@ namespace Mengine
         UNSCRIPT_CLASS_WRAPPING( Point );
         UNSCRIPT_CLASS_WRAPPING( Line );
         UNSCRIPT_CLASS_WRAPPING( Landscape2D );
+        UNSCRIPT_CLASS_WRAPPING( TileMap2D );
         UNSCRIPT_CLASS_WRAPPING( Grid2D );
         UNSCRIPT_CLASS_WRAPPING( Mesh3D );
         UNSCRIPT_CLASS_WRAPPING( SkinnedMesh3D );

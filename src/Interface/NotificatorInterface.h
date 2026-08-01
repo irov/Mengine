@@ -15,6 +15,7 @@
 #include "Kernel/LoggerMessage.h"
 #include "Kernel/HttpRequestId.h"
 #include "Kernel/URLString.h"
+#include "Kernel/Params.h"
 
 #include "Config/Typedef.h"
 #include "Config/Char.h"
@@ -153,6 +154,8 @@ namespace Mengine
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_APPLICATION_WILL_TERMINATE );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_APPLICATION_DID_RECEIVE_MEMORY_WARNING );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_APPLICATION_DID_RECEIVE_TRIM_MEMORY, int32_t );
+    MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_APPLICATION_INTENT_START, const String &, const String &, const String &, uint32_t, const Params & );
+    MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_APPLICATION_INTENT_NEW, const String &, const String &, const String &, uint32_t, const Params & );
     //////////////////////////////////////////////////////////////////////////
     MENGINE_NOTIFICATOR_DECLARE_END();
     //////////////////////////////////////////////////////////////////////////

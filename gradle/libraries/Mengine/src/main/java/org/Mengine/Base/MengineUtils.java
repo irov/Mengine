@@ -1066,6 +1066,50 @@ public class MengineUtils {
         return list;
     }
 
+    public static Map<String, Object> bundleToMap(@Nullable Bundle bundle) {
+        Map<String, Object> map = new HashMap<>();
+
+        if (bundle == null) {
+            return map;
+        }
+
+        for (String key : bundle.keySet()) {
+            Object value;
+
+            try {
+                value = bundle.get(key);
+            } catch (RuntimeException e) {
+                MengineLog.logWarning(TAG, "invalid bundle value key: %s error: %s"
+                    , key
+                    , e.getClass().getName()
+                );
+
+                continue;
+            }
+
+            if (value == null) {
+                map.put(key, null);
+            } else if (value instanceof Boolean) {
+                map.put(key, value);
+            } else if (value instanceof Byte || value instanceof Short || value instanceof Integer || value instanceof Long) {
+                Number number = (Number)value;
+                map.put(key, number.longValue());
+            } else if (value instanceof Float || value instanceof Double) {
+                Number number = (Number)value;
+                map.put(key, number.doubleValue());
+            } else if (value instanceof Character || value instanceof CharSequence) {
+                map.put(key, value.toString());
+            } else {
+                MengineLog.logWarning(TAG, "unsupported bundle value key: %s type: %s"
+                    , key
+                    , value.getClass().getName()
+                );
+            }
+        }
+
+        return map;
+    }
+
     public static Bundle bundleFromJSONObject(@NonNull JSONObject value) {
         Bundle bundle = new Bundle();
         MengineUtils.copyBundleFromJSONObject(bundle, value);

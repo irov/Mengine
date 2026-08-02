@@ -126,6 +126,11 @@ namespace Mengine
         return required;
     }
     //////////////////////////////////////////////////////////////////////////
+    void MCPService::_dependencyService()
+    {
+        SERVICE_DEPENDENCY( MCPService, ApplicationInterface );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool MCPService::_initializeService()
     {
         if( Detail::s_launchConfig.configured == true )

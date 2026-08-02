@@ -3079,6 +3079,11 @@ namespace Mengine
 
             FilePath filePath = Helper::stringizeFilePath( utf8_filePath );
 
+            if( fileGroup->existFile( filePath, true ) == false )
+            {
+                return _kernel->ret_none();
+            }
+
             InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, false, MENGINE_DOCUMENT_FUNCTION );
 
             if( stream == nullptr )

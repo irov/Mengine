@@ -7,12 +7,33 @@
 
 #import "MacOSApplication.h"
 
+#import "Kernel/Configuration.h"
+
+#import "Config/StdString.h"
+
 #import <AppKit/AppKit.h>
 
+//////////////////////////////////////////////////////////////////////////
+static bool hasCLILaunchArgument( int _argc, char * _argv[] )
+{
+    for( int index = 1; index != _argc; ++index )
+    {
+        if( Mengine::StdString::strcmp( _argv[index], "--cli" ) == 0 )
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+//////////////////////////////////////////////////////////////////////////
 int main( int argc, char * argv[] )
 {
     @autoreleasepool
     {
+        Mengine::Configuration configuration;
+        configuration.silentDialog = hasCLILaunchArgument( argc, argv );
+
         [NSApplication sharedApplication];
         MacOSApplicationDelegate * applicationDelegate = [[MacOSApplicationDelegate alloc] init];
         [NSApp setDelegate:applicationDelegate];
@@ -32,7 +53,10 @@ int main( int argc, char * argv[] )
                 );
 
                 NSString * message = [NSString stringWithFormat:@"Invalid found application delegate: %@", className];
-                Mengine::Helper::MacOSShowFatalAlert( "Mengine initialize", [message UTF8String] );
+                if( configuration.silentDialog == false )
+                {
+                    Mengine::Helper::MacOSShowFatalAlert( "Mengine initialize", [message UTF8String] );
+                }
 
                 return EXIT_FAILURE;
             }
@@ -46,7 +70,10 @@ int main( int argc, char * argv[] )
                 );
 
                 NSString * message = [NSString stringWithFormat:@"Invalid initialize application delegate: %@", className];
-                Mengine::Helper::MacOSShowFatalAlert( "Mengine initialize", [message UTF8String] );
+                if( configuration.silentDialog == false )
+                {
+                    Mengine::Helper::MacOSShowFatalAlert( "Mengine initialize", [message UTF8String] );
+                }
 
                 return EXIT_FAILURE;
             }
@@ -54,9 +81,12 @@ int main( int argc, char * argv[] )
 
         Mengine::MacOSApplication application;
 
-        if( application.bootstrap( argc, argv ) == false )
+        if( application.bootstrap( argc, argv, configuration ) == false )
         {
-            Mengine::Helper::MacOSShowFatalAlert( "Mengine initialize", "Mengine invalid bootstrap" );
+            if( configuration.silentDialog == false )
+            {
+                Mengine::Helper::MacOSShowFatalAlert( "Mengine initialize", "Mengine invalid bootstrap" );
+            }
 
             application.finalize();
 
@@ -65,7 +95,10 @@ int main( int argc, char * argv[] )
 
         if( application.initialize() == false )
         {
-            Mengine::Helper::MacOSShowFatalAlert( "Mengine initialize", "Mengine invalid initialize" );
+            if( configuration.silentDialog == false )
+            {
+                Mengine::Helper::MacOSShowFatalAlert( "Mengine initialize", "Mengine invalid initialize" );
+            }
 
             application.finalize();
 

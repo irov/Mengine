@@ -1,15 +1,11 @@
-#include "Environment/Windows/WindowsIncluder.h"
-
 #include "ToolUtils/ToolUtils.h"
 
 #include "Config/Config.h"
 
-#include <Shlwapi.h>
-#include <shellapi.h>
-
 #include <vector>
 #include <string>
 #include <sstream>
+#include <cstdlib>
 
 #include <stdint.h>
 //////////////////////////////////////////////////////////////////////////
@@ -74,28 +70,8 @@ int main( int argc, char * argv[] )
     MENGINE_UNUSED( argc );
     MENGINE_UNUSED( argv );
 
-    PWSTR pwCmdLine = ::GetCommandLineW();
-
-    int cmd_num;
-    LPWSTR * cmd_args = ::CommandLineToArgvW( pwCmdLine, &cmd_num );
-
-    std::wstring in;
-    std::wstring out;
-
-    for( int i = 0; i < cmd_num; i += 2 )
-    {
-        LPWSTR arg = cmd_args[i + 0];
-        LPWSTR value = cmd_args[i + 1];
-
-        if( wcscmp( arg, L"-in" ) == 0 )
-        {
-            in = value;
-        }
-        else if( wcscmp( arg, L"-out" ) == 0 )
-        {
-            out = value;
-        }
-    }
+    const std::wstring in = parse_kwds( L"-in", std::wstring() );
+    const std::wstring out = parse_kwds( L"-out", std::wstring() );
 
     if( in.empty() == true )
     {
@@ -116,6 +92,12 @@ int main( int argc, char * argv[] )
     ::PathUnquoteSpaces( inCanonicalizeQuote );
 
     FILE * file_in = _wfopen( inCanonicalizeQuote, L"rb" );
+
+    if( file_in == nullptr )
+    {
+        message_error( "in file not found %ls", inCanonicalizeQuote );
+        return EXIT_FAILURE;
+    }
 
     uint32_t magic;
     fread( &magic, sizeof( magic ), 1, file_in );
@@ -170,7 +152,17 @@ int main( int argc, char * argv[] )
 
     size_t size = w * h * 1 * 8;
 
-    uint8_t * dxt1_byte = new uint8_t[size];
+    uint8_t * dxt1_byte = static_cast<uint8_t *>(::malloc( size ));
+
+    if( dxt1_byte == nullptr )
+    {
+        fclose( file_in );
+
+        message_error( "unable to allocate dxt1 buffer" );
+
+        return EXIT_FAILURE;
+    }
+
     fread( dxt1_byte, 1, size, file_in );
     fclose( file_in );
 
@@ -180,10 +172,18 @@ int main( int argc, char * argv[] )
 
     FILE * file_out = _wfopen( outCanonicalizeQuote, L"wb" );
 
+    if( file_out == nullptr )
+    {
+        message_error( "unable to open output file %ls", outCanonicalizeQuote );
+        ::free( dxt1_byte );
+
+        return EXIT_FAILURE;
+    }
+
     fwrite( dxt1_byte, 1, size, file_out );
     fclose( file_out );
 
-    delete[] dxt1_byte;
+    ::free( dxt1_byte );
 
     return EXIT_SUCCESS;
 }

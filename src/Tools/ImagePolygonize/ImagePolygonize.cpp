@@ -37,99 +37,45 @@ int main( int argc, char * argv[] )
         return EXIT_FAILURE;
     }
 
-    std::wstring system_cmd;
+    const std::wstring outputPath = path_join( get_temporary_directory(), L"aemovie_temp_texturepacker_sheet.xml" );
+    const std::vector<std::wstring> processArguments = {
+        L"--shape-padding", L"0",
+        L"--border-padding", L"0",
+        L"--padding", L"0",
+        L"--disable-rotation",
+        L"--extrude", L"0",
+        L"--trim-mode", L"Polygon",
+        L"--trim-threshold", L"0",
+        L"--tracer-tolerance", std::to_wstring( tolerance ),
+        L"--max-width", L"8192",
+        L"--max-height", L"8192",
+        L"--max-size", L"8192",
+        in_path,
+        L"--data", outputPath,
+        L"--format", L"xml",
+        L"--quiet"
+    };
 
-    system_cmd += L" --shape-padding 0 ";
-    system_cmd += L" --border-padding 0 ";
-    system_cmd += L" --padding 0 ";
-    system_cmd += L" --disable-rotation ";
-    system_cmd += L" --extrude 0 ";
-    system_cmd += L" --trim-mode Polygon ";
-    system_cmd += L" --trim-threshold 0 ";
-    system_cmd += L" --tracer-tolerance ";
-    system_cmd += L" --max-width 8192 ";
-    system_cmd += L" --max-height 8192 ";
-    system_cmd += L" --max-size 8192 ";
+    int exit_code = EXIT_FAILURE;
 
-    std::wstringstream ss;
-    ss << tolerance;
-    system_cmd += ss.str();
-    system_cmd += L" ";
-
-    WCHAR ImagePathCanonicalizeQuote[MAX_PATH];
-    ForcePathQuoteSpaces( ImagePathCanonicalizeQuote, in_path );
-
-    system_cmd += ImagePathCanonicalizeQuote;
-
-    WCHAR tempPath[MAX_PATH];
-    GetTempPath( MAX_PATH, tempPath );
-
-    WCHAR outCanonicalize[MAX_PATH];
-    PathCombine( outCanonicalize, tempPath, L"aemovie_temp_texturepacker_sheet.xml" );
-
-    system_cmd += L" --data ";
-    system_cmd += outCanonicalize;
-    system_cmd += L" --format xml ";
-    system_cmd += L" --quiet ";
-
-    STARTUPINFO lpStartupInfo;
-    ZeroMemory( &lpStartupInfo, sizeof( STARTUPINFOW ) );
-    lpStartupInfo.cb = sizeof( lpStartupInfo );
-
-    PROCESS_INFORMATION lpProcessInformation;
-    ZeroMemory( &lpProcessInformation, sizeof( PROCESS_INFORMATION ) );
-
-    WCHAR lpCommandLine[32768];
-    wcscpy_s( lpCommandLine, system_cmd.c_str() );
-
-    WCHAR TexturePathCanonicalizeQuote[MAX_PATH];
-    ForcePathQuoteSpaces( TexturePathCanonicalizeQuote, texturepacker_path );
-    PathUnquoteSpaces( TexturePathCanonicalizeQuote );
-
-    if( CreateProcess( TexturePathCanonicalizeQuote
-        , lpCommandLine
-        , NULL
-        , NULL
-        , FALSE
-        , CREATE_NO_WINDOW
-        , NULL
-        , NULL
-        , &lpStartupInfo
-        , &lpProcessInformation ) == FALSE )
+    if( execute_process( texturepacker_path, processArguments, std::wstring(), &exit_code ) == false )
     {
-        message_error( "invalid CreateProcess %ls %ls"
-            , TexturePathCanonicalizeQuote
-            , lpCommandLine
-        );
-
+        message_error( "invalid start TexturePacker %ls", texturepacker_path.c_str() );
         return EXIT_FAILURE;
     }
-
-    CloseHandle( lpProcessInformation.hThread );
-
-    WaitForSingleObject( lpProcessInformation.hProcess, INFINITE );
-
-    DWORD exit_code;
-    GetExitCodeProcess( lpProcessInformation.hProcess, &exit_code );
-
-    CloseHandle( lpProcessInformation.hProcess );
 
     if( exit_code != 0 )
     {
-        message_error( "invalid Process %ls exit_code %d"
-            , TexturePathCanonicalizeQuote
-            , exit_code
-        );
-
+        message_error( "invalid TexturePacker process %ls exit_code %d", texturepacker_path.c_str(), exit_code );
         return EXIT_FAILURE;
     }
 
-    FILE * f = _wfopen( outCanonicalize, L"rb" );
+    FILE * f = _wfopen( outputPath.c_str(), L"rb" );
 
     if( f == NULL )
     {
         message_error( "invalid _wfopen %ls"
-            , outCanonicalize
+            , outputPath.c_str()
         );
 
         return EXIT_FAILURE;

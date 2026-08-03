@@ -2,6 +2,8 @@
 
 #include "Interface/LoggerInterface.h"
 
+#include "Kernel/Configuration.h"
+
 #include "Config/Char.h"
 
 namespace Mengine
@@ -13,7 +15,7 @@ namespace Mengine
         ~UnixApplication();
 
     public:
-        bool bootstrap( int32_t _argc, Char ** const _argv );
+        bool bootstrap( int32_t _argc, Char ** const _argv, const Configuration & _configuration );
         bool initialize();
         void loop();
         void finalize();

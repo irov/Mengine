@@ -3,7 +3,7 @@
 #include "ToolUtils/ToolUtils.h"
 #include "ToolUtils/ToolPNG.h"
 
-#include <malloc.h>
+#include <cstdlib>
 
 //////////////////////////////////////////////////////////////////////////
 int main( int argc, char * argv[] )

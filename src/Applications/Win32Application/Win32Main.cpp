@@ -71,7 +71,7 @@ namespace
             return false;
         }
 
-        if( Mengine::StdString::strstr( _lpCmdLine, "cli" ) == nullptr )
+        if( Mengine::StdString::strstr( _lpCmdLine, "--cli" ) == nullptr )
         {
             return false;
         }

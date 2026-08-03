@@ -1,8 +1,7 @@
 #include "SoundConverterFFMPEGToOGG.h"
+#include "DevelopmentConverterProcess.h"
 
 #include "Interface/PlatformServiceInterface.h"
-
-#include "Environment/Windows/Win32CreateProcess.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
@@ -52,51 +51,55 @@ namespace Mengine
         String full_output = outputFolderPath.c_str();
         full_output += outputFilePath.c_str();
 
-        String ac = Helper::getParam( m_options.params, STRINGIZE_STRING_LOCAL( "ac" ), "2" );
+        const String ac = Helper::getParam( m_options.params, STRINGIZE_STRING_LOCAL( "ac" ), "2" );
+        const String ar = Helper::getParam( m_options.params, STRINGIZE_STRING_LOCAL( "ar" ), "44100" );
+        const String aq = Helper::getParam( m_options.params, STRINGIZE_STRING_LOCAL( "aq" ), "" );
+
+        std::vector<String> arguments = {
+            "-loglevel", "error",
+            "-y",
+            "-threads", "8",
+            "-i", full_input,
+            "-map_metadata", "-1"
+        };
 
         if( ac.empty() == false )
         {
-            ac = " -ac " + ac;
+            arguments.emplace_back( "-ac" );
+            arguments.emplace_back( ac );
         }
-
-        String ar = Helper::getParam( m_options.params, STRINGIZE_STRING_LOCAL( "ar" ), "44100" );
 
         if( ar.empty() == false )
         {
-            ar = " -ar " + ar;
+            arguments.emplace_back( "-ar" );
+            arguments.emplace_back( ar );
         }
-
-        String aq = Helper::getParam( m_options.params, STRINGIZE_STRING_LOCAL( "aq" ), "" );
 
         if( aq.empty() == false )
         {
-            aq = " -aq " + aq;
+            arguments.emplace_back( "-aq" );
+            arguments.emplace_back( aq );
         }
 
-        WChar command[MENGINE_MAX_COMMAND_LENGTH + 1] = {'\0'};
-        MENGINE_SWPRINTF( command, MENGINE_MAX_COMMAND_LENGTH, L"-loglevel error -y -threads 8 -i \"%S\" -map_metadata -1%S%S%S -acodec libvorbis -max_muxing_queue_size 1024 \"%S\""
-            , full_input.c_str()
-            , ac.c_str()
-            , ar.c_str()
-            , aq.c_str()
-            , full_output.c_str()
-        );
+        arguments.insert( arguments.end(), {"-acodec", "libvorbis", "-max_muxing_queue_size", "1024", full_output} );
 
         LOGGER_INFO( "convert", "converting file '%s' to '%s'"
             , full_input.c_str()
             , full_output.c_str()
         );
 
+#if defined(MENGINE_PLATFORM_WINDOWS)
         FilePath ffmpegPath = CONFIG_VALUE_FILEPATH( "Engine", "FFMPEGPath", STRINGIZE_FILEPATH_LOCAL( "ffmpeg.exe" ) );
+#else
+        FilePath ffmpegPath = CONFIG_VALUE_FILEPATH( "Engine", "FFMPEGPath", STRINGIZE_FILEPATH_LOCAL( "ffmpeg" ) );
+#endif
 
         FilePath ffmpegPath2 = Helper::getParam( m_options.params, STRINGIZE_STRING_LOCAL( "ffmpeg" ), ffmpegPath );
 
         uint32_t exitCode;
-        if( Helper::Win32CreateProcessA( ffmpegPath2.c_str(), command, true, &exitCode ) == false )
+        if( Helper::executeDevelopmentConverterProcess( ffmpegPath2, arguments, &exitCode ) == false )
         {
-            LOGGER_ERROR( "invalid convert:\n%ls"
-                , command
-            );
+            LOGGER_ERROR( "invalid execute ffmpeg '%s'", ffmpegPath2.c_str() );
 
             return false;
         }

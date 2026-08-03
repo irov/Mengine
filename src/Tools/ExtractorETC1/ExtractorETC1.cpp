@@ -1,15 +1,11 @@
-#include "Environment/Windows/WindowsIncluder.h"
-
 #include "ToolUtils/ToolUtils.h"
 
 #include "Config/Config.h"
 
-#include <Shlwapi.h>
-#include <shellapi.h>
-
 #include <vector>
 #include <string>
 #include <sstream>
+#include <cstdlib>
 
 #include <stdint.h>
 //////////////////////////////////////////////////////////////////////////
@@ -48,28 +44,8 @@ int main( int argc, char * argv[] )
     MENGINE_UNUSED( argc );
     MENGINE_UNUSED( argv );
 
-    PWSTR pwCmdLine = ::GetCommandLineW();
-
-    int cmd_num;
-    LPWSTR * cmd_args = ::CommandLineToArgvW( pwCmdLine, &cmd_num );
-
-    std::wstring in;
-    std::wstring out;
-
-    for( int i = 0; i < cmd_num; i += 2 )
-    {
-        LPWSTR arg = cmd_args[i + 0];
-        LPWSTR value = cmd_args[i + 1];
-
-        if( wcscmp( arg, L"-in" ) == 0 )
-        {
-            in = value;
-        }
-        else if( wcscmp( arg, L"-out" ) == 0 )
-        {
-            out = value;
-        }
-    }
+    const std::wstring in = parse_kwds( L"-in", std::wstring() );
+    const std::wstring out = parse_kwds( L"-out", std::wstring() );
 
     if( in.empty() == true )
     {
@@ -110,7 +86,17 @@ int main( int argc, char * argv[] )
 
     size_t size = w * h * 1 * 8;
 
-    uint8_t * etc1_byte = new uint8_t[size];
+    uint8_t * etc1_byte = static_cast<uint8_t *>(::malloc( size ));
+
+    if( etc1_byte == nullptr )
+    {
+        fclose( file_in );
+
+        message_error( "unable to allocate etc1 buffer" );
+
+        return EXIT_FAILURE;
+    }
+
     fread( etc1_byte, 1, size, file_in );
     fclose( file_in );
 
@@ -126,13 +112,15 @@ int main( int argc, char * argv[] )
             , inCanonicalizeQuote
         );
 
+        ::free( etc1_byte );
+
         return EXIT_FAILURE;
     }
 
     fwrite( etc1_byte, 1, size, file_out );
     fclose( file_out );
 
-    delete[] etc1_byte;
+    ::free( etc1_byte );
 
     return EXIT_SUCCESS;
 }

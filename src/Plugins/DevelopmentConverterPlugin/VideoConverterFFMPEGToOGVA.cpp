@@ -1,8 +1,7 @@
 #include "VideoConverterFFMPEGToOGVA.h"
+#include "DevelopmentConverterProcess.h"
 
 #include "Interface/PlatformServiceInterface.h"
-
-#include "Environment/Windows/Win32CreateProcess.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
@@ -56,35 +55,43 @@ namespace Mengine
 
         String quality = Helper::getParam( m_options.params, STRINGIZE_STRING_LOCAL( "quality" ), "" );
 
-        String quality_cmd;
+        std::vector<String> arguments = {
+            "-loglevel", "error",
+            "-y",
+            "-threads", "8",
+            "-i", String( full_input.c_str() ),
+            "-vf", "split [a], pad=iw:ih*2 [b], [a] alphaextract, [b] overlay=0:h",
+            "-vcodec", "libtheora",
+            "-f", "ogg",
+            "-map_metadata", "-1",
+            "-an"
+        };
+
         if( quality.empty() == false )
         {
-            quality_cmd = " -q " + quality;
+            arguments.emplace_back( "-q" );
+            arguments.emplace_back( quality );
         }
 
-        WChar command[MENGINE_MAX_COMMAND_LENGTH + 1] = {'\0'};
-        MENGINE_SWPRINTF( command, MENGINE_MAX_COMMAND_LENGTH, L"-loglevel error -y -threads 8 -i \"%S\" -vf \"split [a], pad=iw:ih*2 [b], [a] alphaextract, [b] overlay=0:h\" -vcodec libtheora -f ogg -map_metadata -1 -an%S -pix_fmt yuv420p -max_muxing_queue_size 1024 \"%S\""
+        arguments.insert( arguments.end(), {"-pix_fmt", "yuv420p", "-max_muxing_queue_size", "1024", String( full_output.c_str() )} );
+
+        LOGGER_INFO( "convert", "converting file '%s' to '%s'"
             , full_input.c_str()
-            , quality_cmd.c_str()
             , full_output.c_str()
         );
 
-        LOGGER_INFO( "convert", "converting file '%s' to '%s'\n%ls"
-            , full_input.c_str()
-            , full_output.c_str()
-            , command
-        );
-
+#if defined(MENGINE_PLATFORM_WINDOWS)
         FilePath ffmpegPath = CONFIG_VALUE_FILEPATH( "Engine", "FFMPEGPath", STRINGIZE_FILEPATH_LOCAL( "ffmpeg.exe" ) );
+#else
+        FilePath ffmpegPath = CONFIG_VALUE_FILEPATH( "Engine", "FFMPEGPath", STRINGIZE_FILEPATH_LOCAL( "ffmpeg" ) );
+#endif
 
         FilePath ffmpegPath2 = Helper::getParam( m_options.params, STRINGIZE_STRING_LOCAL( "ffmpeg" ), ffmpegPath );
 
         uint32_t exitCode;
-        if( Helper::Win32CreateProcessA( ffmpegPath2.c_str(), command, true, &exitCode ) == false )
+        if( Helper::executeDevelopmentConverterProcess( ffmpegPath2, arguments, &exitCode ) == false )
         {
-            LOGGER_ERROR( "invalid convert:\n%ls"
-                , command
-            );
+            LOGGER_ERROR( "invalid execute ffmpeg '%s'", ffmpegPath2.c_str() );
 
             return false;
         }

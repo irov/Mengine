@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 #include <stdint.h>
 
 bool is_png_buffer( const uint8_t * buffer, size_t size );

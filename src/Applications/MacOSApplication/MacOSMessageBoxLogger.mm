@@ -1,6 +1,7 @@
 #import "MacOSMessageBoxLogger.h"
 
 #import "Kernel/DebugBreak.h"
+#import "Kernel/ConfigurationHelper.h"
 
 #import <AppKit/AppKit.h>
 
@@ -17,6 +18,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MacOSMessageBoxLogger::_log( const LoggerRecordInterfacePtr & _record )
     {
+        if( Helper::isSilentDialog() == true )
+        {
+            return;
+        }
+
         LoggerMessage message;
         _record->getMessage( &message );
 

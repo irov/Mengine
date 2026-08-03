@@ -1,0 +1,11 @@
+MENGINE_PROJECT(POSIX)
+
+ADD_FILTER(
+src
+    POSIXCreateProcess.h
+    POSIXCreateProcess.cpp
+)
+
+ADD_MENGINE_LIBRARY(Environment)
+
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)

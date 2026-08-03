@@ -185,10 +185,10 @@ public class MengineAppMetricaPlugin extends MengineService implements MengineLi
 
         switch (message.MESSAGE_LEVEL) {
             case MengineLog.LM_ERROR:
-                AppMetrica.reportError(message.MESSAGE_CATEGORY, message.MESSAGE_DATA);
+                AppMetrica.reportError(message.MESSAGE_CATEGORY.toString(), message.MESSAGE_DATA);
                 break;
             case MengineLog.LM_FATAL:
-                AppMetrica.reportError(message.MESSAGE_CATEGORY, message.MESSAGE_DATA);
+                AppMetrica.reportError(message.MESSAGE_CATEGORY.toString(), message.MESSAGE_DATA);
                 break;
         }
     }

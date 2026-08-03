@@ -1,11 +1,12 @@
 #include "NodeDebuggerApp.h"
 
-#include "Interface/ServiceProviderInterface.h"
 #include "Interface/DocumentServiceInterface.h"
+#include "Interface/ServiceProviderInterface.h"
 
-#include "Kernel/String.h"
+#include "ToolUtils/ToolUtils.h"
 
-#include "Environment/Windows/WindowsIncluder.h"
+#include <cstdlib>
+#include <string>
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
@@ -15,81 +16,91 @@ SERVICE_EXTERN( EnumeratorService );
 SERVICE_EXTERN( StringizeService );
 SERVICE_EXTERN( DocumentService );
 //////////////////////////////////////////////////////////////////////////
-int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd )
+static int runNodeDebugger()
 {
-    MENGINE_UNUSED( hInstance );
-    MENGINE_UNUSED( hPrevInstance );
-    MENGINE_UNUSED( lpCmdLine );
-    MENGINE_UNUSED( nShowCmd );
+    Mengine::ServiceProviderInterface * serviceProvider = nullptr;
 
+    if( SERVICE_PROVIDER_CREATE( ServiceProvider, &serviceProvider ) == false )
     {
-        Mengine::ServiceProviderInterface * serviceProvider;
-        if( SERVICE_PROVIDER_CREATE( ServiceProvider, &serviceProvider ) == false )
-        {
-            return false;
-        }
-
-        SERVICE_PROVIDER_SETUP( serviceProvider );
-
-        SERVICE_CREATE( AllocatorSystem, nullptr );
-        SERVICE_CREATE( EnumeratorService, nullptr );
-        SERVICE_CREATE( StringizeService, nullptr );
-        SERVICE_CREATE( DocumentService, nullptr );
-
-        {
-            PWSTR pwCmdLine = ::GetCommandLineW();
-
-            int32_t pNumArgs;
-            LPWSTR * szArglist = ::CommandLineToArgvW( pwCmdLine, &pNumArgs );
-
-            Mengine::String address;
-            uint16_t port = 0;
-
-            for( int32_t i = 1; i != pNumArgs; ++i )
-            {
-                LPWSTR arg = szArglist[i];
-
-                LPWSTR arg_ip = Mengine::StdString::wcsstr( arg, L"ip=" );
-
-                if( arg_ip != nullptr )
-                {
-                    LPWSTR arg_port = Mengine::StdString::wcsstr( arg, L":" );
-
-                    if( arg_port != nullptr )
-                    {
-                        address.assign( arg + Mengine::StdString::wcslen( L"ip=" ), arg_port );
-
-                        LPWSTR ptr;
-                        port = Mengine::StdString::wcstol( arg_port + Mengine::StdString::wcslen( L":" ), &ptr, 10 ) & 0xFFFF;
-                    }
-                    else
-                    {
-                        address.assign( arg + Mengine::StdString::wcslen( L"ip=" ), arg_ip );
-                    }
-                }
-            }
-
-            Mengine::NodeDebuggerApp app;
-
-            if( app.Initialize( address, port ) )
-            {
-                app.Loop();
-                app.Shutdown();
-            }
-        }
-
-        SERVICE_FINALIZE( DocumentService );
-        SERVICE_FINALIZE( StringizeService );
-        SERVICE_FINALIZE( EnumeratorService );
-        SERVICE_FINALIZE( AllocatorSystem );
-
-        SERVICE_DESTROY( DocumentService );
-        SERVICE_DESTROY( StringizeService );
-        SERVICE_DESTROY( EnumeratorService );
-        SERVICE_DESTROY( AllocatorSystem );
-
-        SERVICE_PROVIDER_FINALIZE( serviceProvider );
+        return EXIT_FAILURE;
     }
 
-    return 0;
+    SERVICE_PROVIDER_SETUP( serviceProvider );
+
+    SERVICE_CREATE( AllocatorSystem, nullptr );
+    SERVICE_CREATE( EnumeratorService, nullptr );
+    SERVICE_CREATE( StringizeService, nullptr );
+    SERVICE_CREATE( DocumentService, nullptr );
+
+    Mengine::String address;
+    uint16_t port = 0;
+
+    const std::vector<std::wstring> & arguments = get_command_line_arguments();
+
+    for( size_t index = 1; index != arguments.size(); ++index )
+    {
+        const std::wstring & argument = arguments[index];
+
+        if( argument.rfind( L"ip=", 0 ) != 0 )
+        {
+            continue;
+        }
+
+        const size_t colon = argument.find( L':', 3 );
+        const std::wstring wideAddress = argument.substr( 3, colon == std::wstring::npos ? std::wstring::npos : colon - 3 );
+        address = unicode_to_utf8( wideAddress );
+
+        if( colon != std::wstring::npos )
+        {
+            port = static_cast<uint16_t>( std::wcstoul( argument.c_str() + colon + 1, nullptr, 10 ) & 0xFFFF );
+        }
+    }
+
+    Mengine::NodeDebuggerApp app;
+
+    if( app.Initialize( address, port ) == true )
+    {
+        app.Loop();
+        app.Shutdown();
+    }
+
+    SERVICE_FINALIZE( DocumentService );
+    SERVICE_FINALIZE( StringizeService );
+    SERVICE_FINALIZE( EnumeratorService );
+    SERVICE_FINALIZE( AllocatorSystem );
+
+    SERVICE_DESTROY( DocumentService );
+    SERVICE_DESTROY( StringizeService );
+    SERVICE_DESTROY( EnumeratorService );
+    SERVICE_DESTROY( AllocatorSystem );
+
+    SERVICE_PROVIDER_FINALIZE( serviceProvider );
+
+    return EXIT_SUCCESS;
 }
+//////////////////////////////////////////////////////////////////////////
+#if defined(_WIN32)
+#include "Environment/Windows/WindowsIncluder.h"
+
+//////////////////////////////////////////////////////////////////////////
+int APIENTRY WinMain( HINSTANCE _instance, HINSTANCE _previousInstance, LPSTR _commandLine, int _showCommand )
+{
+    (void)_instance;
+    (void)_previousInstance;
+    (void)_commandLine;
+    (void)_showCommand;
+
+    return runNodeDebugger();
+}
+//////////////////////////////////////////////////////////////////////////
+#else
+//////////////////////////////////////////////////////////////////////////
+int main( int argc, char * argv[] )
+{
+    (void)argc;
+    (void)argv;
+
+    return runNodeDebugger();
+}
+//////////////////////////////////////////////////////////////////////////
+#endif

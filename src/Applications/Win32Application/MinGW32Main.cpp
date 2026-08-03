@@ -5,19 +5,32 @@
 #include "Win32Application.h"
 
 #include "Config/Config.h"
+#include "Config/StdString.h"
 
+//////////////////////////////////////////////////////////////////////////
+static bool hasCLILaunchArgument( int _argc, char * _argv[] )
+{
+    for( int index = 1; index != _argc; ++index )
+    {
+        if( Mengine::StdString::strcmp( _argv[index], "--cli" ) == 0 )
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
 //////////////////////////////////////////////////////////////////////////
 //                          Entry point                                 //
 //////////////////////////////////////////////////////////////////////////
 int main( int argc, char * argv[] )
 {
-    MENGINE_UNUSED( argc );
-    MENGINE_UNUSED( argv );
     MENGINE_UNUSED( environ );
 
     Mengine::Win32Application app;
 
     Mengine::Configuration configuration;
+    configuration.silentDialog = hasCLILaunchArgument( argc, argv );
 
     bool initialize = app.initialize( configuration );
 

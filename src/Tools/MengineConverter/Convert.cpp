@@ -11,10 +11,9 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     bool convert( const WChar * _fromPath, const WChar * _toPath, const WChar * _convertType, const Params & _params )
     {
-        MENGINE_UNUSED( _params );
-
         String utf8_fromPath;
         Helper::unicodeToUtf8( _fromPath, &utf8_fromPath );
 
@@ -37,8 +36,19 @@ namespace Mengine
         options.outputContent = outputContent;
         options.params = _params;
 
+        const ConstString converterType = Helper::stringizeString( utf8_convertType );
+
+        if( VOCABULARY_HAS( STRINGIZE_STRING_LOCAL( "ConverterFactory" ), converterType ) == false )
+        {
+            LOGGER_ERROR( "converter '%s' is not registered"
+                , utf8_convertType.c_str()
+            );
+
+            return false;
+        }
+
         ConverterInterfacePtr converter = CONVERTER_SERVICE()
-            ->createConverter( Helper::stringizeString( utf8_convertType ), MENGINE_DOCUMENT_FUNCTION );
+            ->createConverter( converterType, MENGINE_DOCUMENT_FUNCTION );
 
         if( converter == nullptr )
         {
@@ -66,4 +76,5 @@ namespace Mengine
 
         return true;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

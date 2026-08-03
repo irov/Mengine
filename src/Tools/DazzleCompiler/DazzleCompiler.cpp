@@ -10,6 +10,7 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <cstdlib>
 
 //////////////////////////////////////////////////////////////////////////
 extern "C"
@@ -100,7 +101,18 @@ static bool writeCompress( const std::wstring & _filepath, const std::vector<uin
 
     int lz_size = ::LZ4_compressBound( buffer_size );
 
-    char * lz4_memory = new char[lz_size];
+    char * lz4_memory = static_cast<char *>(::malloc( lz_size ));
+
+    if( lz4_memory == nullptr )
+    {
+        ::fclose( fz );
+
+        message_error( "invalid allocate compress buffer '%ls'"
+            , _filepath.c_str()
+        );
+
+        return false;
+    }
 
     char * dst_buffer = (char *)lz4_memory;
     const char * src_buffer = (const char *)&_buffer[0];
@@ -109,6 +121,7 @@ static bool writeCompress( const std::wstring & _filepath, const std::vector<uin
 
     if( compressSize < 0 )
     {
+        ::free( lz4_memory );
         ::fclose( fz );
 
         message_error( "invalid compress '%ls'"
@@ -124,7 +137,7 @@ static bool writeCompress( const std::wstring & _filepath, const std::vector<uin
     ::fwrite( dst_buffer, compressSize, 1, fz );
     ::fclose( fz );
 
-    delete [] lz4_memory;
+    ::free( lz4_memory );
 
     return true;
 }

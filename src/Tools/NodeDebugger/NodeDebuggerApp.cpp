@@ -63,14 +63,20 @@ namespace Mengine
     static bool zed_net_ext_tcp_wait_for_data( zed_net_socket_t * _socket, const int _timeoutMs )
     {
         fd_set socketsSet;
-        socketsSet.fd_count = 1;
-        socketsSet.fd_array[0] = _socket->handle;
+        FD_ZERO( &socketsSet );
+        FD_SET( _socket->handle, &socketsSet );
 
         timeval tv;
         tv.tv_sec = static_cast<long>(_timeoutMs / 1000);
         tv.tv_usec = static_cast<long>((_timeoutMs - static_cast<int>(tv.tv_sec * 1000)) * 1000);
 
-        const int result = ::select( 0, &socketsSet, nullptr, nullptr, (_timeoutMs == 0) ? nullptr : &tv );
+#if defined(_WIN32)
+        const int descriptorCount = 0;
+#else
+        const int descriptorCount = _socket->handle + 1;
+#endif
+
+        const int result = ::select( descriptorCount, &socketsSet, nullptr, nullptr, (_timeoutMs == 0) ? nullptr : &tv );
 
         return (1 == result);
     }
@@ -1185,7 +1191,7 @@ namespace Mengine
     void NodeDebuggerApp::LoadIconsAtlas()
     {
         pugi::xml_document doc;
-        pugi::xml_parse_result result = doc.load_file( TEXT( "Icons.xml" ) );
+        pugi::xml_parse_result result = doc.load_file( "Icons.xml" );
         if( !result )
         {
             return;

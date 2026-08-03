@@ -21,7 +21,7 @@ namespace
             return false;
         }
 
-        if( Mengine::StdString::strstr( _lpCmdLine, "cli" ) == nullptr )
+        if( Mengine::StdString::strstr( _lpCmdLine, "--cli" ) == nullptr )
         {
             return false;
         }
@@ -37,7 +37,6 @@ int APIENTRY WinMain( _In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _I
 {
     MENGINE_UNUSED( hInstance );
     MENGINE_UNUSED( hPrevInstance );
-    MENGINE_UNUSED( lpCmdLine );
     MENGINE_UNUSED( nShowCmd );
 
     Mengine::Configuration configuration;

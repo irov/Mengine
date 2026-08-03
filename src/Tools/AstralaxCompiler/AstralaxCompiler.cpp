@@ -14,6 +14,7 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <cstdlib>
 
 //////////////////////////////////////////////////////////////////////////
 extern "C"
@@ -59,13 +60,18 @@ int main( int argc, char * argv[] )
         return EXIT_FAILURE;
     }
 
+#if defined(_WIN32)
     if( csa_path.empty() == true )
     {
         message_error( "not found 'csa' param" );
 
         return EXIT_FAILURE;
     }
+#else
+    (void)csa_path;
+#endif
 
+#if defined(_WIN32)
     WCHAR szBuffer[MAX_PATH];
     if( astralax_path.empty() == true )
     {
@@ -179,6 +185,39 @@ int main( int argc, char * argv[] )
 
         return EXIT_FAILURE;
     }
+#else
+    if( astralax_path.empty() == false )
+    {
+        message_error( "launching the Magic Particles editor is unsupported on macOS; provide an existing particle file" );
+        return EXIT_FAILURE;
+    }
+
+    if( out_path.empty() == true )
+    {
+        out_path = in_path;
+        convert.clear();
+    }
+    else if( out_path != in_path )
+    {
+        uint8_t * input_buffer = nullptr;
+        size_t input_size = 0;
+
+        if( read_file_memory( in_path.c_str(), &input_buffer, &input_size ) == false )
+        {
+            message_error( "invalid read existing particle file %ls", in_path.c_str() );
+            return EXIT_FAILURE;
+        }
+
+        const bool copied = write_file_memory( out_path.c_str(), input_buffer, input_size );
+        free( input_buffer );
+
+        if( copied == false )
+        {
+            message_error( "invalid write particle file %ls", out_path.c_str() );
+            return EXIT_FAILURE;
+        }
+    }
+#endif
 
     WCHAR outCanonicalize[MAX_PATH];
     PathCanonicalize( outCanonicalize, out_path.c_str() );
@@ -335,7 +374,18 @@ int main( int argc, char * argv[] )
 
         int lz_size = ::LZ4_compressBound( f_size );
 
-        char * lz4_memory = new char[lz_size];
+        char * lz4_memory = static_cast<char *>(::malloc( lz_size ));
+
+        if( lz4_memory == nullptr )
+        {
+            fclose( fz );
+
+            message_error( "invalid allocate compress buffer %ls"
+                , outCanonicalize
+            );
+
+            return EXIT_FAILURE;
+        }
 
         char * dst_buffer = (char *)lz4_memory;
         const char * src_buffer = (const char *)mf_buffer;
@@ -344,6 +394,9 @@ int main( int argc, char * argv[] )
 
         if( compressSize < 0 )
         {
+            ::free( lz4_memory );
+            fclose( fz );
+
             message_error( "invalid compress %ls"
                 , outCanonicalize
             );
@@ -357,7 +410,7 @@ int main( int argc, char * argv[] )
         fwrite( dst_buffer, compressSize, 1, fz );
         fclose( fz );
 
-        delete [] lz4_memory;
+        ::free( lz4_memory );
 
         _wremove( outCanonicalize );
     }

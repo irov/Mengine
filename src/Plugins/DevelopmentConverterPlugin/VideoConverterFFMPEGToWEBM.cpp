@@ -1,8 +1,7 @@
 #include "VideoConverterFFMPEGToWEBM.h"
+#include "DevelopmentConverterProcess.h"
 
 #include "Interface/PlatformServiceInterface.h"
-
-#include "Environment/Windows/Win32CreateProcess.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
@@ -52,28 +51,36 @@ namespace Mengine
         String full_output = outputFolderPath.c_str();
         full_output += outputFilePath.c_str();
 
-        WChar command[MENGINE_MAX_COMMAND_LENGTH + 1] = {'\0'};
-        MENGINE_SWPRINTF( command, MENGINE_MAX_COMMAND_LENGTH, L"-loglevel error -y -i \"%S\" -codec:v libvpx -f webm -qmin 5 -qmax 15 -threads 8 -max_muxing_queue_size 1024 \"%S\""
+        const std::vector<String> arguments = {
+            "-loglevel", "error",
+            "-y",
+            "-i", full_input,
+            "-codec:v", "libvpx",
+            "-f", "webm",
+            "-qmin", "5",
+            "-qmax", "15",
+            "-threads", "8",
+            "-max_muxing_queue_size", "1024",
+            full_output
+        };
+
+        LOGGER_INFO( "convert", "converting file '%s' to '%s'"
             , full_input.c_str()
             , full_output.c_str()
         );
 
-        LOGGER_INFO( "convert", "converting file '%s' to '%s'\n%ls"
-            , full_input.c_str()
-            , full_output.c_str()
-            , command
-        );
-
+#if defined(MENGINE_PLATFORM_WINDOWS)
         FilePath ffmpegPath = CONFIG_VALUE_FILEPATH( "Engine", "FFMPEGPath", STRINGIZE_FILEPATH_LOCAL( "ffmpeg.exe" ) );
+#else
+        FilePath ffmpegPath = CONFIG_VALUE_FILEPATH( "Engine", "FFMPEGPath", STRINGIZE_FILEPATH_LOCAL( "ffmpeg" ) );
+#endif
 
         FilePath ffmpegPath2 = Helper::getParam( m_options.params, STRINGIZE_STRING_LOCAL( "ffmpeg" ), ffmpegPath );
 
         uint32_t exitCode;
-        if( Helper::Win32CreateProcessA( ffmpegPath2.c_str(), command, true, &exitCode ) == false )
+        if( Helper::executeDevelopmentConverterProcess( ffmpegPath2, arguments, &exitCode ) == false )
         {
-            LOGGER_ERROR( "invalid convert:\n%ls"
-                , command
-            );
+            LOGGER_ERROR( "invalid execute ffmpeg '%s'", ffmpegPath2.c_str() );
 
             return false;
         }

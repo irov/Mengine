@@ -4,7 +4,7 @@
 #include "ToolUtils/ToolPNG.h"
 
 #include <stdio.h>
-#include <malloc.h>
+#include <cstdlib>
 
 //////////////////////////////////////////////////////////////////////////
 static bool write_result( const std::wstring & _path, bool _transparent, int32_t _width, int32_t _height, int32_t _new_width, int32_t _new_height, int32_t _offset_i, int32_t _offset_j, bool _copy_only )

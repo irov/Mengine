@@ -114,12 +114,12 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MacOSApplication::bootstrap( int32_t _argc, Char ** const _argv )
+    bool MacOSApplication::bootstrap( int32_t _argc, Char ** const _argv, const Configuration & _configuration )
     {
 #if defined(MENGINE_PLUGIN_MENGINE_SHARED)
 #   error "MENGINE_PLUGIN_MENGINE_SHARED for MacOS not implemented"
 #elif defined(MENGINE_PLUGIN_MENGINE_STATIC)
-        ServiceProviderInterface * serviceProvider = ::API_MengineCreate( nullptr );
+        ServiceProviderInterface * serviceProvider = ::API_MengineCreate( &_configuration );
 #else
         ServiceProviderInterface * serviceProvider = nullptr;
 #endif

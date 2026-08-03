@@ -10,11 +10,15 @@
 #include "VideoConverterFFMPEGToWEBM.h"
 #include "VideoConverterFFMPEGToOGV.h"
 #include "VideoConverterFFMPEGToOGVA.h"
-#include "ShaderConverterTextToVSO.h"
-#include "ShaderConverterTextToVSO3.h"
-#include "ShaderConverterTextToPSO.h"
-#include "ShaderConverterTextToVSO11.h"
-#include "ShaderConverterTextToPSO11.h"
+#include "MovieKeyConverterXMLToAEK.h"
+
+#if defined(MENGINE_PLATFORM_WINDOWS)
+#   include "ShaderConverterTextToVSO.h"
+#   include "ShaderConverterTextToVSO3.h"
+#   include "ShaderConverterTextToPSO.h"
+#   include "ShaderConverterTextToVSO11.h"
+#   include "ShaderConverterTextToPSO11.h"
+#endif
 
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
@@ -45,17 +49,29 @@ namespace Mengine
         Helper::registerConverter<ImageConverterPVRToHTF>( STRINGIZE_STRING_LOCAL( "pvr2htf" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerConverter<ImageConverterDDSToHTF>( STRINGIZE_STRING_LOCAL( "dds2htf" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerConverter<ImageConverterPNGToACF>( STRINGIZE_STRING_LOCAL( "png2acf" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerConverter<MovieKeyConverterXMLToAEK>( STRINGIZE_STRING_LOCAL( "xmlToAekMovie" ), MENGINE_DOCUMENT_FACTORABLE );
+
+#if defined(MENGINE_PLATFORM_WINDOWS)
         Helper::registerConverter<ShaderConverterTextToVSO>( STRINGIZE_STRING_LOCAL( "text2vso" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerConverter<ShaderConverterTextToVSO3>( STRINGIZE_STRING_LOCAL( "text2vso3" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerConverter<ShaderConverterTextToPSO>( STRINGIZE_STRING_LOCAL( "text2pso" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerConverter<ShaderConverterTextToVSO11>( STRINGIZE_STRING_LOCAL( "text2vso11" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerConverter<ShaderConverterTextToPSO11>( STRINGIZE_STRING_LOCAL( "text2pso11" ), MENGINE_DOCUMENT_FACTORABLE );
+#endif
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DevelopmentConverterPlugin::_finalizePlugin()
     {
+#if defined(MENGINE_PLATFORM_WINDOWS)
+        Helper::unregisterConverter( STRINGIZE_STRING_LOCAL( "text2vso" ) );
+        Helper::unregisterConverter( STRINGIZE_STRING_LOCAL( "text2vso3" ) );
+        Helper::unregisterConverter( STRINGIZE_STRING_LOCAL( "text2pso" ) );
+        Helper::unregisterConverter( STRINGIZE_STRING_LOCAL( "text2vso11" ) );
+        Helper::unregisterConverter( STRINGIZE_STRING_LOCAL( "text2pso11" ) );
+#endif
+
         Helper::unregisterConverter( STRINGIZE_STRING_LOCAL( "png2hit") );
         Helper::unregisterConverter( STRINGIZE_STRING_LOCAL( "ffmpegToOggSound") );
         Helper::unregisterConverter( STRINGIZE_STRING_LOCAL( "ffmpegToWebM") );
@@ -64,11 +80,7 @@ namespace Mengine
         Helper::unregisterConverter( STRINGIZE_STRING_LOCAL( "pvr2htf") );
         Helper::unregisterConverter( STRINGIZE_STRING_LOCAL( "dds2htf") );
         Helper::unregisterConverter( STRINGIZE_STRING_LOCAL( "png2acf") );
-        Helper::unregisterConverter( STRINGIZE_STRING_LOCAL( "text2vso") );
-        Helper::unregisterConverter( STRINGIZE_STRING_LOCAL( "text2vso3") );
-        Helper::unregisterConverter( STRINGIZE_STRING_LOCAL( "text2pso") );
-        Helper::unregisterConverter( STRINGIZE_STRING_LOCAL( "text2vso11") );
-        Helper::unregisterConverter( STRINGIZE_STRING_LOCAL( "text2pso11" ) );
+        Helper::unregisterConverter( STRINGIZE_STRING_LOCAL( "xmlToAekMovie" ) );
     }
     //////////////////////////////////////////////////////////////////////////
 }

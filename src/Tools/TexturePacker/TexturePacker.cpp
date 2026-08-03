@@ -65,160 +65,54 @@ int main( int argc, char * argv[] )
         return EXIT_FAILURE;
     }
 
-    std::wstring system_cmd;
+    const std::wstring libmovieTempDir = path_join( get_temporary_directory(), L".libmovie/TexturePacker" );
+    const std::wstring dataTempDir = path_join( libmovieTempDir, L"data" );
+    const std::wstring dataFormat = path_join( dataTempDir, L"atlas_{n}.json" );
+    const std::wstring sheetFormat = path_join( out_path, L"atlas_{n}.png" );
 
-    system_cmd += L" --multipack ";
-    system_cmd += L" --enable-rotation ";
-    system_cmd += L" --trim-mode Trim ";
-    system_cmd += L" --size-constraints POT ";
+    ::ForceRemoveDirectory( libmovieTempDir.c_str() );
 
-    WCHAR tempPath[MAX_PATH];
-    GetTempPath( MAX_PATH, tempPath );
-
-    WCHAR libmovieTempDir[MAX_PATH];
-    PathCombine( libmovieTempDir, tempPath, L".libmovie\\TexturePacker\\" );
-
-    WCHAR dataTempDir[MAX_PATH];
-    PathCombine( dataTempDir, libmovieTempDir, L"data\\" );
-
-    WCHAR dataFormat[MAX_PATH];
-    PathCombine( dataFormat, dataTempDir, L"atlas_{n}.json" );
-
-    WCHAR dataFormatQuote[MAX_PATH];
-    ForcePathQuoteSpaces( dataFormatQuote, dataFormat );
-
-    WCHAR sheetFormat[MAX_PATH];
-    PathCombine( sheetFormat, out_path.c_str(), L"atlas_{n}.png" );
-
-    WCHAR sheetFormatQuote[MAX_PATH];
-    ForcePathQuoteSpaces( sheetFormatQuote, sheetFormat );
-
-    system_cmd += L" --data ";
-    system_cmd += dataFormatQuote;
-    system_cmd += L" ";
-
-    system_cmd += L" --sheet ";
-    system_cmd += sheetFormatQuote;
-    system_cmd += L" ";
-
-    system_cmd += L" --format json-array ";
-    system_cmd += L" --texture-format png ";
-    system_cmd += L" --alpha-handling PremultiplyAlpha ";
-    system_cmd += L" --max-width 2048 ";
-    system_cmd += L" --max-height 2048 ";
-    system_cmd += L" --max-size 2048 ";
-
-    for( const std::wstring & image_path : images_path )
+    if( create_directories( dataTempDir ) == false )
     {
-        system_cmd += L" ";
-
-        WCHAR ImagePathCanonicalizeQuote[MAX_PATH];
-        ::ForcePathQuoteSpaces( ImagePathCanonicalizeQuote, image_path.c_str() );
-
-        system_cmd += ImagePathCanonicalizeQuote;
-    }
-
-    ::ForceRemoveDirectory( libmovieTempDir );
-
-    HANDLE hLogFile = INVALID_HANDLE_VALUE;
-
-    if( log_path.empty() == false )
-    {
-        SECURITY_ATTRIBUTES sa;
-        sa.nLength = sizeof( sa );
-        sa.lpSecurityDescriptor = NULL;
-        sa.bInheritHandle = TRUE;
-
-        hLogFile = CreateFile( log_path.c_str(),
-            FILE_APPEND_DATA,
-            FILE_SHARE_WRITE | FILE_SHARE_READ,
-            &sa,
-            OPEN_ALWAYS,
-            FILE_ATTRIBUTE_NORMAL,
-            NULL );
-    }
-
-    STARTUPINFO lpStartupInfo;
-    ZeroMemory( &lpStartupInfo, sizeof( STARTUPINFOW ) );
-    lpStartupInfo.cb = sizeof( lpStartupInfo );
-    lpStartupInfo.wShowWindow = SW_HIDE;
-
-    if( hLogFile != INVALID_HANDLE_VALUE )
-    {
-        lpStartupInfo.dwFlags |= STARTF_USESTDHANDLES;
-        lpStartupInfo.hStdInput = NULL;
-        lpStartupInfo.hStdError = hLogFile;
-        lpStartupInfo.hStdOutput = hLogFile;
-    }
-
-    PROCESS_INFORMATION lpProcessInformation;
-    ZeroMemory( &lpProcessInformation, sizeof( PROCESS_INFORMATION ) );
-
-    WCHAR lpCommandLine[32768];
-    wcscpy_s( lpCommandLine, system_cmd.c_str() );
-
-    WCHAR TexturePathCanonicalizeQuote[MAX_PATH];
-    ::ForcePathQuoteSpaces( TexturePathCanonicalizeQuote, texturepacker_path );
-    ::PathUnquoteSpaces( TexturePathCanonicalizeQuote );
-
-    if( ::CreateProcess( TexturePathCanonicalizeQuote
-        , lpCommandLine
-        , NULL
-        , NULL
-        , (hLogFile != INVALID_HANDLE_VALUE) ? TRUE : FALSE
-        , CREATE_NO_WINDOW
-        , NULL
-        , NULL
-        , &lpStartupInfo
-        , &lpProcessInformation ) == FALSE )
-    {
-        message_error( "invalid CreateProcess %ls %ls"
-            , TexturePathCanonicalizeQuote
-            , lpCommandLine
-        );
-
-        if( hLogFile != INVALID_HANDLE_VALUE )
-        {
-            CloseHandle( hLogFile );
-        }
-
+        message_error( "invalid create temporary directory %ls", dataTempDir.c_str() );
         return EXIT_FAILURE;
     }
 
-    CloseHandle( lpProcessInformation.hThread );
+    std::vector<std::wstring> processArguments = {
+        L"--multipack",
+        L"--enable-rotation",
+        L"--trim-mode", L"Trim",
+        L"--size-constraints", L"POT",
+        L"--data", dataFormat,
+        L"--sheet", sheetFormat,
+        L"--format", L"json-array",
+        L"--texture-format", L"png",
+        L"--alpha-handling", L"PremultiplyAlpha",
+        L"--max-width", L"2048",
+        L"--max-height", L"2048",
+        L"--max-size", L"2048"
+    };
 
-    WaitForSingleObject( lpProcessInformation.hProcess, INFINITE );
+    processArguments.insert( processArguments.end(), images_path.begin(), images_path.end() );
 
-    DWORD exit_code;
-    GetExitCodeProcess( lpProcessInformation.hProcess, &exit_code );
+    int exit_code = EXIT_FAILURE;
 
-    CloseHandle( lpProcessInformation.hProcess );
+    if( execute_process( texturepacker_path, processArguments, log_path, &exit_code ) == false )
+    {
+        message_error( "invalid start TexturePacker %ls", texturepacker_path.c_str() );
+        return EXIT_FAILURE;
+    }
 
     if( exit_code != 0 )
     {
-        message_error( "invalid Process %ls exit_code %d"
-            , TexturePathCanonicalizeQuote
-            , exit_code
-        );
-
-        if( hLogFile != INVALID_HANDLE_VALUE )
-        {
-            CloseHandle( hLogFile );
-        }
-
+        message_error( "invalid TexturePacker process %ls exit_code %d", texturepacker_path.c_str(), exit_code );
         return EXIT_FAILURE;
     }
 
-    if( hLogFile != INVALID_HANDLE_VALUE )
-    {
-        CloseHandle( hLogFile );
-    }
-
-    WCHAR dataPath[MAX_PATH];
-    PathCombine( dataPath, dataTempDir, L"*.json" );
+    const std::wstring dataPath = path_join( dataTempDir, L"*.json" );
 
     std::vector<std::wstring> files;
-    SelectFile( dataPath, files );
+    SelectFile( dataPath.c_str(), files );
 
     struct AtlasImageDesc
     {
@@ -253,15 +147,14 @@ int main( int argc, char * argv[] )
 
     for( const std::wstring & path : files )
     {
-        WCHAR sheetPath[MAX_PATH];
-        PathCombine( sheetPath, dataTempDir, path.c_str() );
+        const std::wstring sheetPath = path_join( dataTempDir, path );
 
-        FILE * f = _wfopen( sheetPath, L"rb" );
+        FILE * f = _wfopen( sheetPath.c_str(), L"rb" );
 
         if( f == NULL )
         {
             message_error( "invalid _wfopen %ls"
-                , sheetPath
+                , sheetPath.c_str()
             );
 
             return EXIT_FAILURE;

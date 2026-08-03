@@ -9,18 +9,26 @@ src
     iOSInput.h
     iOSInput.mm
     
-    iOSOpenGLView.h
-    iOSOpenGLView.mm
-    
-    iOSMetalView.h
-    iOSMetalView.mm
-    
     iOSMailComposeDelegate.h
     iOSMailComposeDelegate.mm
     
     iOSAnalyticsEventProvider.h
     iOSAnalyticsEventProvider.mm
 )
+
+if(MENGINE_RENDER_OPENGL)
+    ADD_FILTER(
+    src
+        iOSOpenGLView.h
+        iOSOpenGLView.mm
+    )
+elseif(MENGINE_RENDER_METAL)
+    ADD_FILTER(
+    src
+        iOSMetalView.h
+        iOSMetalView.mm
+    )
+endif()
 
 ADD_MENGINE_LIBRARY(Platforms)
 

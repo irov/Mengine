@@ -101,9 +101,9 @@ namespace Mengine
         allocator.free = &Detail::Magic_Free;
         allocator.userdata = nullptr;
 
-        if( Magic_SetAllocator( &allocator ) != MAGIC_SUCCESS )
+        if( Magic_Initialize( &allocator ) != MAGIC_SUCCESS )
         {
-            LOGGER_ERROR( "Astralax allocator initialization failed" );
+            LOGGER_ERROR( "Astralax runtime initialization failed" );
 
             return false;
         }
@@ -229,12 +229,7 @@ namespace Mengine
     {
         SERVICE_DESTROY( AstralaxService );
 
-        Magic_DestroyAll();
-
-        if( Magic_SetAllocator( nullptr ) != MAGIC_SUCCESS )
-        {
-            LOGGER_ERROR( "Astralax allocator finalization failed: live allocations remain" );
-        }
+        Magic_Finalize();
     }
     //////////////////////////////////////////////////////////////////////////
 }

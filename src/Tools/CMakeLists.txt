@@ -29,7 +29,6 @@ macro(ADD_MENGINE_TOOL_EXECUTABLE_GUI)
     endif()
 endmacro()
 
-ADD_SUBDIRECTORY(AekCompiler)
 ADD_SUBDIRECTORY(MengineConverter)
 ADD_SUBDIRECTORY(Metawrite)
 ADD_SUBDIRECTORY(ExtractorDXT1)

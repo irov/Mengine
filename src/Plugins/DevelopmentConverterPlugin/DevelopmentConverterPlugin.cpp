@@ -10,8 +10,6 @@
 #include "VideoConverterFFMPEGToWEBM.h"
 #include "VideoConverterFFMPEGToOGV.h"
 #include "VideoConverterFFMPEGToOGVA.h"
-#include "MovieKeyConverterXMLToAEK.h"
-
 #if defined(MENGINE_PLATFORM_WINDOWS)
 #   include "ShaderConverterTextToVSO.h"
 #   include "ShaderConverterTextToVSO3.h"
@@ -49,8 +47,6 @@ namespace Mengine
         Helper::registerConverter<ImageConverterPVRToHTF>( STRINGIZE_STRING_LOCAL( "pvr2htf" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerConverter<ImageConverterDDSToHTF>( STRINGIZE_STRING_LOCAL( "dds2htf" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerConverter<ImageConverterPNGToACF>( STRINGIZE_STRING_LOCAL( "png2acf" ), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerConverter<MovieKeyConverterXMLToAEK>( STRINGIZE_STRING_LOCAL( "xmlToAekMovie" ), MENGINE_DOCUMENT_FACTORABLE );
-
 #if defined(MENGINE_PLATFORM_WINDOWS)
         Helper::registerConverter<ShaderConverterTextToVSO>( STRINGIZE_STRING_LOCAL( "text2vso" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerConverter<ShaderConverterTextToVSO3>( STRINGIZE_STRING_LOCAL( "text2vso3" ), MENGINE_DOCUMENT_FACTORABLE );
@@ -80,7 +76,6 @@ namespace Mengine
         Helper::unregisterConverter( STRINGIZE_STRING_LOCAL( "pvr2htf") );
         Helper::unregisterConverter( STRINGIZE_STRING_LOCAL( "dds2htf") );
         Helper::unregisterConverter( STRINGIZE_STRING_LOCAL( "png2acf") );
-        Helper::unregisterConverter( STRINGIZE_STRING_LOCAL( "xmlToAekMovie" ) );
     }
     //////////////////////////////////////////////////////////////////////////
 }

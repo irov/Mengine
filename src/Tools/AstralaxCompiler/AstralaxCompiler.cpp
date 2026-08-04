@@ -41,6 +41,32 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
 }
 //////////////////////////////////////////////////////////////////////////
+namespace Detail
+{
+    //////////////////////////////////////////////////////////////////////////
+    static void * EXP_DECL Astralax_Allocate(size_t _size, void * _userdata)
+    {
+        (void)_userdata;
+
+        return ::malloc( _size );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static void * EXP_DECL Astralax_Reallocate(void * _memory, size_t _size, void * _userdata)
+    {
+        (void)_userdata;
+
+        return ::realloc( _memory, _size );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static void EXP_DECL Astralax_Free(void * _memory, void * _userdata)
+    {
+        (void)_userdata;
+
+        ::free( _memory );
+    }
+    //////////////////////////////////////////////////////////////////////////
+}
+//////////////////////////////////////////////////////////////////////////
 int main( int argc, char * argv[] )
 {
     MENGINE_UNUSED( argc );
@@ -255,6 +281,19 @@ int main( int argc, char * argv[] )
     fread( mf_buffer, 1, f_size, f );
     fclose( f );
 
+    MAGIC_ALLOCATOR allocator;
+    allocator.alloc = &Detail::Astralax_Allocate;
+    allocator.realloc = &Detail::Astralax_Reallocate;
+    allocator.free = &Detail::Astralax_Free;
+    allocator.userdata = nullptr;
+
+    if( Magic_Initialize( &allocator ) != MAGIC_SUCCESS )
+    {
+        message_error( "Astralax runtime initialization failed" );
+
+        return EXIT_FAILURE;
+    }
+
     HM_FILE mf = Magic_OpenFileInMemory( mf_buffer );
 
     if( mf == MAGIC_ERROR )
@@ -262,6 +301,8 @@ int main( int argc, char * argv[] )
         message_error( "invalid mf %ls MAGIC_ERROR"
             , outCanonicalize
         );
+
+        Magic_Finalize();
 
         return EXIT_FAILURE;
     }
@@ -271,6 +312,8 @@ int main( int argc, char * argv[] )
         message_error( "invalid mf %ls MAGIC_UNKNOWN"
             , outCanonicalize
         );
+
+        Magic_Finalize();
 
         return EXIT_FAILURE;
     }
@@ -321,6 +364,8 @@ int main( int argc, char * argv[] )
                 , err
             );
 
+            Magic_Finalize();
+
             return EXIT_FAILURE;
         }
 
@@ -357,6 +402,8 @@ int main( int argc, char * argv[] )
                 , outzCanonicalize
             );
 
+            Magic_Finalize();
+
             return EXIT_FAILURE;
         }
 
@@ -384,6 +431,8 @@ int main( int argc, char * argv[] )
                 , outCanonicalize
             );
 
+            Magic_Finalize();
+
             return EXIT_FAILURE;
         }
 
@@ -401,6 +450,8 @@ int main( int argc, char * argv[] )
                 , outCanonicalize
             );
 
+            Magic_Finalize();
+
             return EXIT_FAILURE;
         }
 
@@ -414,6 +465,8 @@ int main( int argc, char * argv[] )
 
         _wremove( outCanonicalize );
     }
+
+    Magic_Finalize();
 
     return EXIT_SUCCESS;
 }

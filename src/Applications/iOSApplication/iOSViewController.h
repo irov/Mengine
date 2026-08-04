@@ -4,4 +4,7 @@
 
 @interface iOSViewController : UIViewController
 
+- (void)showLaunchScreen;
+- (BOOL)dismissLaunchScreen;
+
 @end

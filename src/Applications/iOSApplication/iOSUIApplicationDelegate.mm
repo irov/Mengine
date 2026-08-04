@@ -27,6 +27,8 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
 @property (nonatomic, strong) UIWindow * m_window;
 @property (nonatomic, strong) CADisplayLink * m_displayLink;
 @property (nonatomic, assign) CFTimeInterval m_prevTimestamp;
+@property (nonatomic, assign) BOOL m_hasRenderedFirstFrame;
+@property (nonatomic, assign) BOOL m_hasDismissedLaunchScreen;
 @property (nonatomic, assign) void * m_application;
 
 @property (nonatomic, strong) NSMutableArray<id> * m_pluginDelegates;
@@ -48,6 +50,7 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
 - (void)startEngineLoop;
 - (void)stopEngineLoop;
 - (void)engineFrame:(CADisplayLink *)displayLink;
+- (BOOL)dismissLaunchScreen;
 - (void)finishApplication;
 - (void)reportFatalLaunchFailure:(NSString *)format, ... NS_FORMAT_FUNCTION(1, 2);
 
@@ -60,6 +63,8 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
         self.m_application = nullptr;
         self.m_displayLink = nil;
         self.m_prevTimestamp = 0.0;
+        self.m_hasRenderedFirstFrame = NO;
+        self.m_hasDismissedLaunchScreen = NO;
         self.m_pluginDelegates = [NSMutableArray<id> array];
         self.m_plugins = [NSMutableArray<iOSPluginInterface> array];
         self.m_pluginLoggerDelegates = [NSMutableArray<iOSPluginLoggerDelegateInterface> array];
@@ -680,11 +685,29 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
     self.m_prevTimestamp = 0.0;
 }
 
+- (BOOL)dismissLaunchScreen {
+    UIViewController * rootViewController = [iOSDetail getRootViewController];
+
+    if ([rootViewController isKindOfClass:[iOSViewController class]] == NO) {
+        rootViewController = self.m_window.rootViewController;
+    }
+
+    if ([rootViewController isKindOfClass:[iOSViewController class]] == NO) {
+        return NO;
+    }
+
+    return [(iOSViewController *)rootViewController dismissLaunchScreen];
+}
+
 - (void)engineFrame:(CADisplayLink *)displayLink {
     if (self.m_application == nullptr) {
         [self stopEngineLoop];
 
         return;
+    }
+
+    if (self.m_hasRenderedFirstFrame == YES && self.m_hasDismissedLaunchScreen == NO) {
+        self.m_hasDismissedLaunchScreen = [self dismissLaunchScreen];
     }
 
     NOTIFICATION_NOTIFY( Mengine::NOTIFICATOR_PLATFORM_UPDATE );
@@ -708,8 +731,12 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
     PLATFORM_SERVICE()
         ->tickPlatform( frameTimeF );
 
-    PLATFORM_SERVICE()
+    bool rendered = PLATFORM_SERVICE()
         ->renderPlatform();
+
+    if (rendered == true && self.m_hasRenderedFirstFrame == NO) {
+        self.m_hasRenderedFirstFrame = YES;
+    }
 }
 
 - (void)finishApplication {

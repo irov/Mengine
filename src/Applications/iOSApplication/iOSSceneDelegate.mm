@@ -13,6 +13,7 @@
 
     UIWindow * window = [[UIWindow alloc] initWithWindowScene:windowScene];
     iOSViewController * viewController = [[iOSViewController alloc] init];
+    [viewController showLaunchScreen];
     window.rootViewController = viewController;
 
     [window makeKeyAndVisible];

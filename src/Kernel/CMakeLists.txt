@@ -985,6 +985,8 @@ Core
 
     DevelopmentConverter.cpp
     DevelopmentConverter.h
+    ArchiveDevelopmentConverter.cpp
+    ArchiveDevelopmentConverter.h
 
     ResourcePointer.h
     UnknownPointer.h

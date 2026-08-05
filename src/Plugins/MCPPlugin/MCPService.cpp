@@ -21,12 +21,10 @@
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/JSONHelper.h"
 #include "Kernel/Logger.h"
-#include "Kernel/OptionHelper.h"
 #include "Kernel/ThreadHelper.h"
 #include "Kernel/ThreadMutexHelper.h"
 #include "Kernel/ThreadMutexScope.h"
 
-#include "Config/StdLib.h"
 #include "Config/StdUtility.h"
 
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
@@ -45,31 +43,6 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static const uint32_t MCP_HANDSHAKE_REQUEST_ID = 1;
         //////////////////////////////////////////////////////////////////////////
-        struct MCPLaunchConfig
-        {
-            String host;
-            String port;
-            String token;
-            String mode;
-            bool configured = false;
-        };
-        //////////////////////////////////////////////////////////////////////////
-        static MCPLaunchConfig s_launchConfig;
-        //////////////////////////////////////////////////////////////////////////
-        static const Char * getMCPSetting_( const Char * _environment, const Char * _option, const Char * _default )
-        {
-            const Char * value = StdLib::getenv( _environment );
-
-            if( value != nullptr && value[0] != '\0' )
-            {
-                return value;
-            }
-
-            const Char * optionValue = GET_OPTION_VALUE( _option, _default );
-
-            return optionValue;
-        }
-        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     MCPService::MCPService()
@@ -78,26 +51,13 @@ namespace Mengine
         , m_debuggerPaused( false )
         , m_revertOverlays( false )
         , m_disconnectCommands( false )
+        , m_running( false )
         , m_updateGeneration( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
     MCPService::~MCPService()
     {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MCPService::setLaunchConfig( const Char * _host, const Char * _port, const Char * _token, const Char * _mode )
-    {
-        Detail::s_launchConfig.host = _host;
-        Detail::s_launchConfig.port = _port;
-        Detail::s_launchConfig.token = _token;
-        Detail::s_launchConfig.mode = _mode;
-        Detail::s_launchConfig.configured = true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MCPService::clearLaunchConfig()
-    {
-        Detail::s_launchConfig = Detail::MCPLaunchConfig();
     }
     //////////////////////////////////////////////////////////////////////////
     const ServiceRequiredList & MCPService::requiredServices() const
@@ -133,28 +93,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MCPService::_initializeService()
     {
-        if( Detail::s_launchConfig.configured == true )
-        {
-            m_host = Detail::s_launchConfig.host;
-            m_port = Detail::s_launchConfig.port;
-            m_token = Detail::s_launchConfig.token;
-            m_mode = Detail::s_launchConfig.mode;
-        }
-        else
-        {
-            m_host = Detail::getMCPSetting_( "MENGINE_MCP_HOST", "mcp-host", "127.0.0.1" );
-            m_port = Detail::getMCPSetting_( "MENGINE_MCP_PORT", "mcp-port", "" );
-            m_token = Detail::getMCPSetting_( "MENGINE_MCP_TOKEN", "mcp-token", "" );
-            m_mode = Detail::getMCPSetting_( "MENGINE_MCP_MODE", "mcp-mode", "visible" );
-        }
-
-        if( m_port.empty() == true || m_token.size() != 64 )
-        {
-            LOGGER_ERROR( "MCP requires a TCP port and a 256-bit hexadecimal session token" );
-
-            return false;
-        }
-
         m_incomingMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
         m_outgoingMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -187,6 +125,35 @@ namespace Mengine
 
         m_runtimeLogger = runtimeLogger;
 
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool MCPService::run( const String & _host, const String & _port, const String & _token, const String & _mode )
+    {
+        m_host = _host;
+        m_port = _port;
+        m_token = _token;
+        m_mode = _mode;
+
+        if( m_token.size() != 64 )
+        {
+            LOGGER_ERROR( "MCP requires a 256-bit hexadecimal session token" );
+
+            m_host.clear();
+            m_port.clear();
+            m_token.clear();
+            m_mode.clear();
+
+            return false;
+        }
+
+        m_socketConnected = false;
+        m_connected = false;
+        m_debuggerPaused = false;
+        m_revertOverlays = false;
+        m_disconnectCommands = false;
+        m_updateGeneration = 0;
+
         m_thread = Helper::createThreadIdentity( MENGINE_THREAD_DESCRIPTION( "MNGMCP" ), ETP_ABOVE_NORMAL, [this]( const ThreadIdentityRunnerInterfacePtr & _runner )
         {
             bool successful = this->processSocket_( _runner );
@@ -196,8 +163,15 @@ namespace Mengine
 
         if( m_thread == nullptr )
         {
+            m_host.clear();
+            m_port.clear();
+            m_token.clear();
+            m_mode.clear();
+
             return false;
         }
+
+        m_running = true;
 
         const Char * host = m_host.c_str();
         const Char * port = m_port.c_str();
@@ -211,16 +185,54 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MCPService::_finalizeService()
+    void MCPService::stop()
     {
-        m_debuggerContext.disconnect();
+        if( m_running == false )
+        {
+            return;
+        }
+
+        m_running = false;
+
+        if( m_thread != nullptr )
+        {
+            m_thread->join( true );
+            m_thread = nullptr;
+        }
+
+        this->disconnectSocket_();
+
         m_commandRegistry.disconnect();
-        m_commandRegistry.clear();
-        m_waitConditionRegistry.clear();
-        m_inputSequenceStepRegistry.clear();
+        m_debuggerContext.disconnect();
+        m_runtimeContext.restoreRuntime();
+        m_resourceContext.revertAllOverlays();
+        m_scriptContext.finalize();
+        m_sceneContext.finalize();
 
         ConstString freezeName = STRINGIZE_STRING_LOCAL( "MCP" );
         APPLICATION_SERVICE()->setUpdateFreeze( freezeName, false );
+
+        m_incomingRequests.clear();
+        m_outgoingFrames.clear();
+        m_cancelledRequests.clear();
+        m_incomingAssemblies.clear();
+
+        m_revertOverlays = false;
+        m_disconnectCommands = false;
+
+        m_host.clear();
+        m_port.clear();
+        m_token.clear();
+        m_mode.clear();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MCPService::_finalizeService()
+    {
+        this->stop();
+
+        m_commandRegistry.clear();
+        m_waitConditionRegistry.clear();
+        m_inputSequenceStepRegistry.clear();
 
         if( m_runtimeLogger != nullptr )
         {
@@ -230,20 +242,6 @@ namespace Mengine
             LOGGER_SERVICE()->unregisterLogger( m_runtimeLogger );
             m_runtimeLogger = nullptr;
         }
-
-        if( m_thread != nullptr )
-        {
-            m_thread->join( true );
-            m_thread = nullptr;
-        }
-
-        this->disconnectSocket_();
-        m_resourceContext.revertAllOverlays();
-
-        m_incomingRequests.clear();
-        m_outgoingFrames.clear();
-        m_cancelledRequests.clear();
-        m_incomingAssemblies.clear();
 
         m_incomingMutex = nullptr;
         m_outgoingMutex = nullptr;
@@ -342,6 +340,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MCPService::_update()
     {
+        if( m_running == false )
+        {
+            return;
+        }
+
         this->processRequests_();
     }
     //////////////////////////////////////////////////////////////////////////

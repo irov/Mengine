@@ -27,7 +27,6 @@
 #include "Config/StdAlgorithm.h"
 #include "Config/StdCType.h"
 #include "Config/StdIO.h"
-#include "Config/StdLib.h"
 #include "Config/StdMath.h"
 #include "Config/StdString.h"
 
@@ -682,27 +681,6 @@ namespace Mengine
                 m_directories.clear();
 
                 Detail::addUniqueDirectory( &m_directories, _path.c_str() );
-
-                const Char * env = StdLib::getenv( "FIGMA_VIEWER_FONT_DIRS" );
-                if( env != nullptr )
-                {
-                    String value = env;
-                    String::size_type begin = 0;
-
-                    for( ;; )
-                    {
-                        String::size_type end = value.find( ':', begin );
-                        String part = end == String::npos ? value.substr( begin ) : value.substr( begin, end - begin );
-                        Detail::addUniqueDirectory( &m_directories, part.c_str() );
-
-                        if( end == String::npos )
-                        {
-                            break;
-                        }
-
-                        begin = end + 1;
-                    }
-                }
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
                 Detail::addUniqueDirectory( &m_directories, "C:/Windows/Fonts/" );

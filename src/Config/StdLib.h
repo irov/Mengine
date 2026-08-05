@@ -21,7 +21,6 @@ namespace Mengine
         using std::realloc;
         using std::strtoul;
         using std::strtoull;
-        using std::getenv;
     }
 }
 //////////////////////////////////////////////////////////////////////////

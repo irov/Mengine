@@ -24,16 +24,10 @@ namespace Mengine
         void _finalizePlugin() override;
         void _destroyPlugin() override;
 
-    protected:
-        bool hasLaunchConfig_() const;
-        bool initializeMCPService_();
-
 #if defined(MENGINE_PLATFORM_ANDROID)
+    protected:
         void notifyApplicationIntent_( const String & _action, const String & _data, const String & _type, uint32_t _flags, const Params & _extras );
 #endif
-
-    protected:
-        bool m_serviceCreated;
     };
     //////////////////////////////////////////////////////////////////////////
 }

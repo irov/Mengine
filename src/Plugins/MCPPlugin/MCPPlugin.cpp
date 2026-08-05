@@ -19,8 +19,6 @@
 #   include "Kernel/ScriptEmbeddingHelper.h"
 #endif
 
-#include "Config/StdLib.h"
-
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( MCPService );
 //////////////////////////////////////////////////////////////////////////
@@ -30,7 +28,6 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     MCPPlugin::MCPPlugin()
-        : m_serviceCreated( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -40,9 +37,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MCPPlugin::_unimportantPlugin() const
     {
-        bool unimportant = true;
+#if defined(MENGINE_PLATFORM_WINDOWS) || defined(MENGINE_PLATFORM_MACOS) || defined(MENGINE_PLATFORM_LINUX) || defined(MENGINE_PLATFORM_IOS)
+        if( HAS_OPTION( "mcp" ) == false )
+        {
+            return false;
+        }
+#endif
 
-        return unimportant;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     const ServiceRequiredList & MCPPlugin::requiredServices() const
@@ -74,8 +76,8 @@ namespace Mengine
 
 #if defined(MENGINE_PLATFORM_ANDROID)
         available = true;
-#else
-        available = this->hasLaunchConfig_();
+#elif defined(MENGINE_PLATFORM_WINDOWS) || defined(MENGINE_PLATFORM_MACOS) || defined(MENGINE_PLATFORM_LINUX) || defined(MENGINE_PLATFORM_IOS)
+        available = true;
 #endif
 
         return available;
@@ -83,19 +85,49 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MCPPlugin::_initializePlugin()
     {
-        bool successful = true;
+        if( SERVICE_CREATE( MCPService, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
+
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+        if( Helper::addScriptEmbedding<MCPScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            SERVICE_FINALIZE( MCPService );
+            SERVICE_DESTROY( MCPService );
+
+            return false;
+        }
+#endif
 
 #if defined(MENGINE_PLATFORM_ANDROID)
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_INTENT_START, &MCPPlugin::notifyApplicationIntent_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_INTENT_NEW, &MCPPlugin::notifyApplicationIntent_, MENGINE_DOCUMENT_FACTORABLE );
-#else
-        if( this->hasLaunchConfig_() == true )
+#elif defined(MENGINE_PLATFORM_WINDOWS) || defined(MENGINE_PLATFORM_MACOS) || defined(MENGINE_PLATFORM_LINUX) || defined(MENGINE_PLATFORM_IOS)
+        if( HAS_OPTION( "mcp" ) == true )
         {
-            successful = this->initializeMCPService_();
+            const String host = GET_OPTION_VALUE( "mcp-host", "127.0.0.1" );
+            const String port = GET_OPTION_VALUE( "mcp-port", "" );
+            const String token = GET_OPTION_VALUE( "mcp-token", "" );
+            const String mode = GET_OPTION_VALUE( "mcp-mode", "visible" );
+
+            if( MCP_SERVICE()->run( host, port, token, mode ) == false )
+            {
+                LOGGER_ERROR( "MCP activation failed" );
+
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+                Helper::removeScriptEmbedding<MCPScriptEmbedding>();
+#endif
+
+                SERVICE_FINALIZE( MCPService );
+                SERVICE_DESTROY( MCPService );
+
+                return false;
+            }
         }
 #endif
 
-        return successful;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void MCPPlugin::_finalizePlugin()
@@ -105,9 +137,9 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_INTENT_NEW );
 #endif
 
-        if( m_serviceCreated == false )
+        if( SERVICE_IS_INITIALIZE( MCPServiceInterface ) == true )
         {
-            return;
+            MCP_SERVICE()->stop();
         }
 
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
@@ -119,62 +151,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MCPPlugin::_destroyPlugin()
     {
-        if( m_serviceCreated == true )
-        {
-            SERVICE_DESTROY( MCPService );
-            m_serviceCreated = false;
-        }
-
-        MCPService::clearLaunchConfig();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool MCPPlugin::hasLaunchConfig_() const
-    {
-        const Char * host = StdLib::getenv( "MENGINE_MCP_HOST" );
-        const Char * port = StdLib::getenv( "MENGINE_MCP_PORT" );
-        const Char * token = StdLib::getenv( "MENGINE_MCP_TOKEN" );
-
-        bool hasEnvironment = host != nullptr && host[0] != '\0'
-            && port != nullptr && port[0] != '\0'
-            && token != nullptr && token[0] != '\0';
-
-        bool hasOptions = HAS_OPTION( "mcp-host" ) == true
-            && HAS_OPTION( "mcp-port" ) == true
-            && HAS_OPTION( "mcp-token" ) == true;
-
-        bool hasLaunchConfig = hasEnvironment == true || hasOptions == true;
-
-        return hasLaunchConfig;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool MCPPlugin::initializeMCPService_()
-    {
-        bool successful = false;
-
-        if( m_serviceCreated == true )
-        {
-            return successful;
-        }
-
-        if( SERVICE_CREATE( MCPService, MENGINE_DOCUMENT_FACTORABLE ) == false )
-        {
-            return successful;
-        }
-
-#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-        if( Helper::addScriptEmbedding<MCPScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) == false )
-        {
-            SERVICE_FINALIZE( MCPService );
-            SERVICE_DESTROY( MCPService );
-
-            return successful;
-        }
-#endif
-
-        m_serviceCreated = true;
-        successful = true;
-
-        return successful;
+        SERVICE_DESTROY( MCPService );
     }
     //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLATFORM_ANDROID)
@@ -190,28 +167,15 @@ namespace Mengine
         String token = Helper::getParam( _extras, STRINGIZE_STRING_LOCAL( "mengine.mcp.token" ), "" );
         String mode = Helper::getParam( _extras, STRINGIZE_STRING_LOCAL( "mengine.mcp.mode" ), "" );
 
-        if( host.empty() == true || port.empty() == true || token.empty() == true || mode.empty() == true )
+        if( host.empty() == true || port.empty() == true || token.size() != 64 || mode.empty() == true )
         {
             return;
         }
 
-        if( m_serviceCreated == true )
+        MCP_SERVICE()->stop();
+
+        if( MCP_SERVICE()->run( host, port, token, mode ) == false )
         {
-            LOGGER_WARNING( "MCP ignored repeated Android intent activation" );
-
-            return;
-        }
-
-        const Char * hostValue = host.c_str();
-        const Char * portValue = port.c_str();
-        const Char * tokenValue = token.c_str();
-        const Char * modeValue = mode.c_str();
-        MCPService::setLaunchConfig( hostValue, portValue, tokenValue, modeValue );
-
-        if( this->initializeMCPService_() == false )
-        {
-            MCPService::clearLaunchConfig();
-
             LOGGER_ERROR( "MCP Android intent activation failed" );
         }
     }

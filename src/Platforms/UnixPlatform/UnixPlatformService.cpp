@@ -48,6 +48,7 @@
 
 #include <dlfcn.h>
 #include <fcntl.h>
+#include <pwd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/utsname.h>
@@ -129,6 +130,25 @@ namespace Mengine
             {
                 return false;
             }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool getHomeDirectory( Char * const _home )
+        {
+            struct passwd pw;
+            struct passwd * pwResult = nullptr;
+            Char pwBuffer[4096];
+
+            if( ::getpwuid_r( ::getuid(), &pw, pwBuffer, sizeof( pwBuffer ), &pwResult ) != 0
+                || pwResult == nullptr
+                || pw.pw_dir == nullptr
+                || pw.pw_dir[0] == '\0' )
+            {
+                return false;
+            }
+
+            StdString::strcpy_safe( _home, pw.pw_dir, MENGINE_MAX_PATH );
 
             return true;
         }
@@ -1037,23 +1057,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t UnixPlatformService::getUserPath( Char * const _userPath ) const
     {
-        const Char * dataHome = ::getenv( "XDG_DATA_HOME" );
-        const Char * home = ::getenv( "HOME" );
-
-        Path base = {'\0'};
-
-        if( dataHome != nullptr && dataHome[0] == '/' )
-        {
-            StdString::strcpy_safe( base, dataHome, MENGINE_MAX_PATH );
-        }
-        else if( home != nullptr && home[0] != '\0' )
-        {
-            MENGINE_SNPRINTF( base, MENGINE_MAX_PATH, "%s/.local/share", home );
-        }
-        else
+        Path home = {'\0'};
+        if( Detail::getHomeDirectory( home ) == false )
         {
             return 0;
         }
+
+        Path base = {'\0'};
+        MENGINE_SNPRINTF( base, MENGINE_MAX_PATH, "%s/.local/share", home );
 
         PathString company = CONFIG_VALUE_PATHSTRING( "Project", "Company", "UNKNOWN" );
         PathString project = CONFIG_VALUE_PATHSTRING( "Project", "Name", "UNKNOWN" );
@@ -1084,22 +1095,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool UnixPlatformService::getUserLocaleLanguage( Char * const _userLocaleLanguage ) const
     {
-        const Char * locale = ::getenv( "LANGUAGE" );
-
-        if( locale == nullptr || locale[0] == '\0' )
-        {
-            locale = ::getenv( "LC_ALL" );
-        }
-
-        if( locale == nullptr || locale[0] == '\0' )
-        {
-            locale = ::getenv( "LC_MESSAGES" );
-        }
-
-        if( locale == nullptr || locale[0] == '\0' )
-        {
-            locale = ::getenv( "LANG" );
-        }
+        const Char * locale = ::setlocale( LC_MESSAGES, nullptr );
 
         if( locale == nullptr || locale[0] == '\0' || (locale[0] == 'C' && (locale[1] == '\0' || locale[1] == '.' || locale[1] == '_')) || StdString::strcmp( locale, "POSIX" ) == 0 )
         {
@@ -1665,9 +1661,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool UnixPlatformService::writeUserFile_( const Char * _baseFolder, const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size ) const
     {
-        const Char * home = ::getenv( "HOME" );
-
-        if( home == nullptr || home[0] == '\0' )
+        Path home = {'\0'};
+        if( Detail::getHomeDirectory( home ) == false )
         {
             return false;
         }

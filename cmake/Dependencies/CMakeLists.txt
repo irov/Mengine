@@ -705,7 +705,7 @@ if(MENGINE_TARGET_WINDOWS OR MENGINE_TARGET_UNIX OR MENGINE_TARGET_MACOS)
         ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/glad/cmake ${THIRDPARTY_CONFIG_DIR}/glad)
 
         set(GG_LOCATION "${THIRDPARTY_CONFIG_DIR}/glad_gl_core_33/" CACHE STRING "GG_LOCATION" FORCE)
-        glad_add_library(glad_gl_core_33 STATIC API gl:core=3.3)
+        glad_add_library(glad_gl_core_33 STATIC REPRODUCIBLE API gl:core=3.3)
     endif()
 endif()
 

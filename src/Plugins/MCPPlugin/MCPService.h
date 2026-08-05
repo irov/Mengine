@@ -45,8 +45,8 @@ namespace Mengine
         ~MCPService() override;
 
     public:
-        static void setLaunchConfig( const Char * _host, const Char * _port, const Char * _token, const Char * _mode );
-        static void clearLaunchConfig();
+        bool run( const String & _host, const String & _port, const String & _token, const String & _mode ) override;
+        void stop() override;
 
     public:
         const ServiceRequiredList & requiredServices() const override;
@@ -133,6 +133,7 @@ namespace Mengine
         AtomicBool m_revertOverlays;
         AtomicBool m_disconnectCommands;
 
+        bool m_running;
         String m_host;
         String m_port;
         String m_token;

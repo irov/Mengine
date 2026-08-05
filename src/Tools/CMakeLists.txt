@@ -8,11 +8,6 @@ macro(ADD_MENGINE_TOOL_EXECUTABLE)
         ADD_MENGINE_EXECUTABLE_UNIX()
     endif()
 
-    if(APPLE)
-        SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES
-            BUILD_RPATH "${THIRDPARTY_DIR}/astralax_macos/lib;@loader_path"
-        )
-    endif()
 endmacro()
 
 macro(ADD_MENGINE_TOOL_EXECUTABLE_GUI)
@@ -22,11 +17,6 @@ macro(ADD_MENGINE_TOOL_EXECUTABLE_GUI)
         ADD_MENGINE_EXECUTABLE_UNIX()
     endif()
 
-    if(APPLE)
-        SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES
-            BUILD_RPATH "${THIRDPARTY_DIR}/astralax_macos/lib;@loader_path"
-        )
-    endif()
 endmacro()
 
 ADD_SUBDIRECTORY(MengineConverter)
@@ -37,11 +27,8 @@ ADD_SUBDIRECTORY(NodeDebugger)
 ADD_SUBDIRECTORY(Ravinggen)
 
 ADD_SUBDIRECTORY(MovieResource)
-ADD_SUBDIRECTORY(MovieCompiler)
-ADD_SUBDIRECTORY(DazzleCompiler)
 ADD_SUBDIRECTORY(AlphaSpreading)
 ADD_SUBDIRECTORY(AlphaPremultiplier)
-ADD_SUBDIRECTORY(AstralaxCompiler)
 ADD_SUBDIRECTORY(ImagePolygonize)
 ADD_SUBDIRECTORY(ImageTrimmer)
 ADD_SUBDIRECTORY(TexturePacker)

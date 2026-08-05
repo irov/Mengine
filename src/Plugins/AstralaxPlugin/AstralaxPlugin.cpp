@@ -27,10 +27,6 @@
 #include "AstralaxIncluder.h"
 #include "AstralaxEmitter.h"
 
-#if defined(MENGINE_PLUGIN_METABUF)
-#   include "ParticleConverterPTCToPTZ.h"
-#endif
-
 #include "ResourceAstralaxValidator.h"
 
 #include "Kernel/ConfigHelper.h"
@@ -187,7 +183,6 @@ namespace Mengine
         VOCABULARY_SET( MetabufLoaderInterface, STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceAstralax::getFactorableType(), Helper::makeFactorableUnique<MetabufLoaderResourceAstralax>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
         VOCABULARY_SET( MetabufLoaderInterface, STRINGIZE_STRING_LOCAL( "MetabufLoader" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ), Helper::makeFactorableUnique<MetabufLoaderResourceAstralax>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
-        Helper::registerConverter<ParticleConverterPTCToPTZ>( STRINGIZE_STRING_LOCAL( "ptc2ptz" ), MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #if defined(MENGINE_PLUGIN_JSON)
@@ -214,7 +209,6 @@ namespace Mengine
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceAstralax::getFactorableType() );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "MetabufLoader" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ) );
 
-        Helper::unregisterConverter( STRINGIZE_STRING_LOCAL( "ptc2ptz" ) );
 #endif
 
 #if defined(MENGINE_PLUGIN_JSON)

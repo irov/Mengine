@@ -130,10 +130,6 @@ android {
             applicationId ANDROID_APP_ID
 
             println "ANDROID_APP_ID: $applicationId"
-        } else if (System.getenv('ANDROID_APP_ID')) {
-            applicationId System.getenv('ANDROID_APP_ID')
-
-            println "ANDROID_APP_ID: $applicationId"
         } else {
             applicationId "org.Mengine.ANDROID_APP_ID"
 

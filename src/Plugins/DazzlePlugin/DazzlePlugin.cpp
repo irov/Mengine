@@ -11,19 +11,15 @@
 #include "ResourceDazzleEffect.h"
 #include "DazzleEffectPrototypeGenerator.h"
 
-#if defined(MENGINE_MASTER_RELEASE_DISABLE)
-#   include "DazzleEffectConverterDZBToDZZ.h"
-#endif
-
 #include "Kernel/Logger.h"
 #include "Kernel/ModuleFactory.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/NodePrototypeGenerator.h"
 #include "Kernel/ResourcePrototypeGenerator.h"
 #include "Kernel/AssertionAllocator.h"
-#include "Kernel/ConverterFactory.h"
 #include "Kernel/PluginHelper.h"
 #include "Kernel/PrototypeHelper.h"
+#include "Kernel/VocabularyHelper.h"
 
 #include "Config/StdMath.h"
 
@@ -135,10 +131,6 @@ namespace Mengine
         CODEC_SERVICE()
             ->registerCodecExt( STRINGIZE_STRING_LOCAL( "dzz" ), STRINGIZE_STRING_LOCAL( "dazzle" ) );
 
-#if defined(MENGINE_MASTER_RELEASE_DISABLE)
-        Helper::registerConverter<DazzleEffectConverterDZBToDZZ>( STRINGIZE_STRING_LOCAL( "dzb2dzz" ), MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
         PLUGIN_SERVICE_WAIT( DataServiceInterface, [this]()
         {
             DataflowDZZPtr dataflowDazzle = Helper::makeFactorableUnique<DataflowDZZ>( MENGINE_DOCUMENT_FACTORABLE );
@@ -171,10 +163,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DazzlePlugin::_finalizePlugin()
     {
-#if defined(MENGINE_MASTER_RELEASE_DISABLE)
-        Helper::unregisterConverter( STRINGIZE_STRING_LOCAL( "dzb2dzz" ) );
-#endif
-
         CODEC_SERVICE()
             ->removeCodecExt( STRINGIZE_STRING_LOCAL( "dzz" ) );
 

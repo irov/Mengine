@@ -24,8 +24,6 @@ src
     ResourceAstralaxValidator.cpp
     ResourceAstralaxValidator.h
 
-    ParticleConverterPTCToPTZ.cpp
-    ParticleConverterPTCToPTZ.h
 )
 
 if(MENGINE_PLUGIN_METABUF)

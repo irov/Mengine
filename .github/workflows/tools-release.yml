@@ -1,0 +1,389 @@
+name: Build Mengine tools release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "tools-v*"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mengine-tools-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  ASTRALAX_VERSION: v1.0.0
+  ASTRALAX_WINDOWS_SHA256: fc785090d87c1181df858cc4d6fe1c3bdc61ad484983519c50fcd739a98a1710
+  ASTRALAX_MACOS_SHA256: 1d704504a0d393785fae4ebc4269bf7418185d0b3b7e930a01beeb8ad83cf0d9
+
+jobs:
+  windows:
+    name: Windows x64 tools
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Download Mengine dependencies
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          cmake -S cmake/Downloads -B solutions/downloads -DMENGINE_DOWNLOADS_SILENT=ON
+          cmake --build solutions/downloads --parallel 4
+
+      - name: Download pinned Astralax SDK
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $url = "https://github.com/irov/astralax/releases/download/$env:ASTRALAX_VERSION/astralax_win32.zip"
+          $archive = Join-Path $env:RUNNER_TEMP "astralax_win32.zip"
+          Invoke-WebRequest -Uri $url -OutFile $archive
+          $actual = (Get-FileHash -Algorithm SHA256 $archive).Hash.ToLowerInvariant()
+          if ($actual -ne $env:ASTRALAX_WINDOWS_SHA256) {
+            throw "Astralax Windows SHA-256 mismatch: $actual"
+          }
+          Expand-Archive -Path $archive -DestinationPath dependencies -Force
+
+      - name: Build Release dependencies and tools
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          cmake -S cmake/Depends_WIN64 -B solutions/release-deps-windows `
+            -G "Visual Studio 17 2022" -A x64 `
+            -DCMAKE_CONFIGURATION_TYPES:STRING=Release `
+            -DCMAKE_BUILD_TYPE:STRING=Release `
+            -DMENGINE_DEPENDENCE_PILOT:BOOL=OFF `
+            -DMENGINE_DEPENDENCE_TINYPY:BOOL=OFF `
+            -DMENGINE_DEPENDENCE_PYBIND:BOOL=OFF
+          cmake --build solutions/release-deps-windows --config Release --parallel 8
+
+          $install = Join-Path $PWD "artifacts/windows"
+          cmake -S cmake/Tools_Win64 -B solutions/release-tools-windows `
+            -G "Visual Studio 17 2022" -A x64 `
+            -DCMAKE_CONFIGURATION_TYPES:STRING=Release `
+            -DCMAKE_BUILD_TYPE:STRING=Release `
+            -DMENGINE_DEPENDENCIES_PROJECT:STRING=Depends_WIN64 `
+            -DMENGINE_INSTALL_PATH:PATH="$install"
+          cmake --build solutions/release-tools-windows --config Release --parallel 8
+
+      - name: Audit and package Windows bundle
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $toolNames = @(
+            "AlphaPremultiplier", "AlphaSpreading", "AstralaxCompiler",
+            "DazzleCompiler", "ExtractorDXT1", "ExtractorETC1",
+            "ImagePolygonize", "ImageTrimmer", "MengineConverter", "Metawrite",
+            "MovieCompiler", "MovieResource", "NodeDebugger", "Ravinggen",
+            "TexturePacker"
+          )
+          $converter = Get-ChildItem artifacts/windows -Filter MengineConverter.exe -Recurse | Select-Object -First 1
+          if ($null -eq $converter) { throw "MengineConverter.exe was not built" }
+          $output = $converter.Directory.FullName
+          $stage = Join-Path $PWD "dist/mengine-tools-windows-x64"
+          New-Item -ItemType Directory -Path $stage -Force | Out-Null
+
+          foreach ($name in $toolNames) {
+            $source = Join-Path $output "$name.exe"
+            if (-not (Test-Path $source -PathType Leaf)) { throw "Missing tool: $source" }
+            Copy-Item $source $stage
+          }
+          Copy-Item dependencies/astralax_win32/mingw64/bin/astralax.dll $stage
+
+          $dumpbin = Get-ChildItem "${env:ProgramFiles}/Microsoft Visual Studio/2022" `
+            -Filter dumpbin.exe -Recurse | Sort-Object FullName -Descending | Select-Object -First 1
+          if ($null -eq $dumpbin) { throw "dumpbin.exe was not found" }
+
+          foreach ($executable in Get-ChildItem $stage -Filter *.exe) {
+            $headers = (& $dumpbin.FullName /headers $executable.FullName 2>&1 | Out-String)
+            if ($headers -notmatch "8664 machine \(x64\)") {
+              throw "$($executable.Name) is not PE x64"
+            }
+
+            $dependents = (& $dumpbin.FullName /dependents $executable.FullName 2>&1 | Out-String)
+            foreach ($match in [regex]::Matches($dependents, "(?im)^\s+([A-Za-z0-9_.-]+\.dll)\s*$")) {
+              $dll = $match.Groups[1].Value
+              if (-not (Test-Path (Join-Path $stage $dll)) -and
+                  -not (Test-Path (Join-Path "$env:WINDIR/System32" $dll))) {
+                throw "$($executable.Name) has unresolved runtime import $dll"
+              }
+            }
+          }
+
+          & (Join-Path $stage "MengineConverter.exe") --help
+          if ($LASTEXITCODE -ne 0) { throw "MengineConverter --help failed" }
+          $astralaxOutput = (& (Join-Path $stage "AstralaxCompiler.exe") 2>&1 | Out-String)
+          if ($LASTEXITCODE -eq 0 -or $astralaxOutput -notmatch "not found 'in' param") {
+            throw "AstralaxCompiler startup audit failed: $astralaxOutput"
+          }
+
+          $provenance = [ordered]@{
+            platform = "windows-x64"
+            commit = $env:GITHUB_SHA
+            runner = "windows-2022"
+            generator = "Visual Studio 17 2022"
+            configuration = "Release"
+            astralax = [ordered]@{
+              version = $env:ASTRALAX_VERSION
+              url = "https://github.com/irov/astralax/releases/download/$env:ASTRALAX_VERSION/astralax_win32.zip"
+              sha256 = $env:ASTRALAX_WINDOWS_SHA256
+            }
+          }
+          $provenance | ConvertTo-Json -Depth 5 | Set-Content -Encoding utf8 dist/provenance-windows-x64.json
+          Compress-Archive -Path "$stage/*" -DestinationPath dist/mengine-tools-windows-x64.zip
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: mengine-tools-windows-x64
+          path: |
+            dist/mengine-tools-windows-x64.zip
+            dist/provenance-windows-x64.json
+          if-no-files-found: error
+
+  macos:
+    name: macOS arm64 tools
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Require Apple Silicon runner
+        shell: bash
+        run: test "$(uname -m)" = arm64
+
+      - name: Download Mengine dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          cmake -S cmake/Downloads -B solutions/downloads -DMENGINE_DOWNLOADS_SILENT=ON
+          cmake --build solutions/downloads --parallel 4
+
+      - name: Download pinned Astralax SDK
+        shell: bash
+        run: |
+          set -euo pipefail
+          url="https://github.com/irov/astralax/releases/download/${ASTRALAX_VERSION}/astralax_macos.zip"
+          archive="${RUNNER_TEMP}/astralax_macos.zip"
+          curl --fail --location --retry 3 --connect-timeout 30 "${url}" --output "${archive}"
+          echo "${ASTRALAX_MACOS_SHA256}  ${archive}" | shasum -a 256 --check
+          ditto -x -k "${archive}" dependencies
+
+      - name: Build Release dependencies and tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          cmake -S cmake/Depends_Xcode_MacOS -B solutions/release-deps-macos \
+            -G Xcode \
+            -DCMAKE_CONFIGURATION_TYPES:STRING=Release \
+            -DCMAKE_BUILD_TYPE:STRING=Release \
+            -DCMAKE_OSX_ARCHITECTURES:STRING=arm64 \
+            -DMENGINE_DEPENDENCE_PILOT:BOOL=OFF \
+            -DMENGINE_DEPENDENCE_TINYPY:BOOL=OFF \
+            -DMENGINE_DEPENDENCE_PYBIND:BOOL=OFF
+          cmake --build solutions/release-deps-macos --config Release --parallel 8
+
+          cmake -S cmake/Tools_Xcode_MacOS -B solutions/release-tools-macos \
+            -G Xcode \
+            -DCMAKE_CONFIGURATION_TYPES:STRING=Release \
+            -DCMAKE_BUILD_TYPE:STRING=Release \
+            -DCMAKE_OSX_ARCHITECTURES:STRING=arm64 \
+            -DMENGINE_DEPENDENCIES_PROJECT:STRING=Depends_Xcode_MacOS \
+            -DMENGINE_INSTALL_PATH:PATH="${PWD}/artifacts/macos"
+          cmake --build solutions/release-tools-macos --config Release --parallel 8
+
+      - name: Audit and package macOS bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          tools=(
+            AlphaPremultiplier AlphaSpreading AstralaxCompiler DazzleCompiler
+            ExtractorDXT1 ExtractorETC1 ImagePolygonize ImageTrimmer
+            MengineConverter Metawrite MovieCompiler MovieResource NodeDebugger
+            Ravinggen TexturePacker
+          )
+          converter=$(find artifacts/macos -type f -name MengineConverter -perm -111 -print -quit)
+          test -n "${converter}"
+          output=$(dirname "${converter}")
+          stage="${PWD}/dist/mengine-tools-macos-arm64"
+          mkdir -p "${stage}"
+
+          for name in "${tools[@]}"; do
+            test -f "${output}/${name}"
+            cp "${output}/${name}" "${stage}/"
+          done
+          cp dependencies/astralax_macos/lib/libastralax.dylib "${stage}/"
+
+          for executable in "${tools[@]}"; do
+            path="${stage}/${executable}"
+            lipo "${path}" -verify_arch arm64
+            file "${path}" | grep -q "Mach-O 64-bit executable arm64"
+
+            while IFS= read -r rpath; do
+              if [[ "${rpath}" == "${GITHUB_WORKSPACE}"/* ]]; then
+                install_name_tool -delete_rpath "${rpath}" "${path}"
+              fi
+            done < <(otool -l "${path}" | awk '$1 == "cmd" && $2 == "LC_RPATH" {getline; getline; print $2}')
+
+            if ! otool -l "${path}" | awk '$1 == "cmd" && $2 == "LC_RPATH" {getline; getline; print $2}' | grep -qx '@loader_path'; then
+              install_name_tool -add_rpath @loader_path "${path}"
+            fi
+
+            unexpected=$(otool -L "${path}" | awk 'NR > 1 {print $1}' \
+              | grep -Ev '^(/usr/lib/|/System/Library/|@rpath/libastralax\.dylib$|@loader_path/libastralax\.dylib$)' || true)
+            if [[ -n "${unexpected}" ]]; then
+              echo "Unexpected runtime imports for ${executable}:"
+              echo "${unexpected}"
+              exit 1
+            fi
+          done
+
+          lipo "${stage}/libastralax.dylib" -verify_arch arm64
+          dylib_unexpected=$(otool -L "${stage}/libastralax.dylib" | awk 'NR > 1 {print $1}' \
+            | grep -Ev '^(@rpath/libastralax\.dylib|/usr/lib/|/System/Library/)' || true)
+          test -z "${dylib_unexpected}"
+
+          codesign --force --sign - "${stage}/libastralax.dylib"
+          for executable in "${tools[@]}"; do
+            codesign --force --sign - "${stage}/${executable}"
+            codesign --verify --strict --verbose=2 "${stage}/${executable}"
+          done
+          codesign --verify --strict --verbose=2 "${stage}/libastralax.dylib"
+
+          "${stage}/MengineConverter" --help
+          set +e
+          astralax_output=$("${stage}/AstralaxCompiler" 2>&1)
+          astralax_status=$?
+          set -e
+          if [[ ${astralax_status} -eq 0 ]] || ! grep -q "not found 'in' param" <<<"${astralax_output}"; then
+            echo "AstralaxCompiler startup audit failed: ${astralax_output}"
+            exit 1
+          fi
+
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          provenance = {
+              "platform": "macos-arm64",
+              "commit": os.environ["GITHUB_SHA"],
+              "runner": "macos-15",
+              "generator": "Xcode",
+              "configuration": "Release",
+              "astralax": {
+                  "version": os.environ["ASTRALAX_VERSION"],
+                  "url": "https://github.com/irov/astralax/releases/download/%s/astralax_macos.zip"
+                         % os.environ["ASTRALAX_VERSION"],
+                  "sha256": os.environ["ASTRALAX_MACOS_SHA256"],
+              },
+          }
+          Path("dist/provenance-macos-arm64.json").write_text(
+              json.dumps(provenance, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          PY
+          tar -C "${stage}" -czf dist/mengine-tools-macos-arm64.tar.gz .
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: mengine-tools-macos-arm64
+          path: |
+            dist/mengine-tools-macos-arm64.tar.gz
+            dist/provenance-macos-arm64.json
+          if-no-files-found: error
+
+  release:
+    name: Publish immutable release assets
+    if: startsWith(github.ref, 'refs/tags/tools-v')
+    needs: [windows, macos]
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: mengine-tools-*
+          path: dist
+          merge-multiple: true
+
+      - name: Generate checksums and metadata
+        shell: bash
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          cd dist
+          sha256sum mengine-tools-windows-x64.zip mengine-tools-macos-arm64.tar.gz > SHA256SUMS
+          python3 - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+
+          def sha256(path):
+              digest = hashlib.sha256()
+              with Path(path).open("rb") as stream:
+                  for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+                      digest.update(chunk)
+              return digest.hexdigest()
+
+          windows = json.loads(Path("provenance-windows-x64.json").read_text(encoding="utf-8-sig"))
+          macos = json.loads(Path("provenance-macos-arm64.json").read_text(encoding="utf-8"))
+          provenance = {
+              "schema_version": 1,
+              "tag": os.environ["RELEASE_TAG"],
+              "source_commit": os.environ["GITHUB_SHA"],
+              "builds": [windows, macos],
+          }
+          Path("tool-build-provenance.json").write_text(
+              json.dumps(provenance, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+
+          base = "https://github.com/irov/Mengine/releases/download/%s" % os.environ["RELEASE_TAG"]
+          fragment = {
+              "schema_version": 1,
+              "package": "mengine-tools",
+              "version": os.environ["RELEASE_TAG"],
+              "platforms": {
+                  "windows-x64": {
+                      "url": base + "/mengine-tools-windows-x64.zip",
+                      "sha256": sha256("mengine-tools-windows-x64.zip"),
+                      "archive": "zip",
+                  },
+                  "macos-arm64": {
+                      "url": base + "/mengine-tools-macos-arm64.tar.gz",
+                      "sha256": sha256("mengine-tools-macos-arm64.tar.gz"),
+                      "archive": "tar.gz",
+                  },
+              },
+          }
+          Path("manifest-fragment.json").write_text(
+              json.dumps(fragment, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          PY
+
+      - name: Publish release once
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if gh release view "${GITHUB_REF_NAME}" >/dev/null 2>&1; then
+            echo "Release ${GITHUB_REF_NAME} already exists; assets are immutable" >&2
+            exit 1
+          fi
+          gh release create "${GITHUB_REF_NAME}" \
+            --verify-tag \
+            --title "Mengine tools ${GITHUB_REF_NAME}" \
+            --generate-notes \
+            dist/mengine-tools-windows-x64.zip \
+            dist/mengine-tools-macos-arm64.tar.gz \
+            dist/SHA256SUMS \
+            dist/tool-build-provenance.json \
+            dist/manifest-fragment.json

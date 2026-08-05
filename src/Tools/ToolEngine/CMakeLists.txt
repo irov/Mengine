@@ -55,6 +55,7 @@ if(WIN32)
     TARGET_LINK_LIBRARIES(${PROJECT_NAME} PUBLIC
         Win32AllocatorSystem
         Win32ThreadSystem
+        Win32TimeSystem
         Win32DateTimeSystem
         Win32FileSystem
         Win32Platform

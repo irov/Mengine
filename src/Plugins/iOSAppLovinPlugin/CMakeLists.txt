@@ -87,7 +87,7 @@ if(MENGINE_PLUGIN_IOS_APPLOVIN_CONSENT_FLOW)
 endif()
 
 ADD_MENGINE_COCOAPOD_GOOGLE_UTILITIES()
-ADD_MENGINE_COCOAPOD("AppLovinSDK" "NO-GIT" "13.6.3")
+ADD_MENGINE_COCOAPOD("AppLovinSDK" "NO-GIT" "13.6.4")
 
 macro(ADD_APPLOVIN_MEDIATION MEDIATION POD VERSION)
     if(MENGINE_PLUGIN_IOS_APPLOVIN_MEDIATION_${MEDIATION})
@@ -101,20 +101,20 @@ ADD_APPLOVIN_MEDIATION(BIDMACHINE "AppLovinMediationBidMachineAdapter" "3.7.1.0.
 ADD_APPLOVIN_MEDIATION(BIGO "AppLovinMediationBigoAdsAdapter" "5.3.0.0")
 ADD_APPLOVIN_MEDIATION(CHARTBOOST "AppLovinMediationChartboostAdapter" "9.13.0.0")
 ADD_APPLOVIN_MEDIATION(CSJ "AppLovinMediationCSJAdapter" "6.7.1.6.0")
-ADD_APPLOVIN_MEDIATION(DTEXCHANGE "AppLovinMediationFyberAdapter" "8.4.9.0") #DT Exchange
+ADD_APPLOVIN_MEDIATION(DTEXCHANGE "AppLovinMediationFyberAdapter" "8.4.10.0") #DT Exchange
 ADD_APPLOVIN_MEDIATION(GOOGLEADMANAGER "AppLovinMediationGoogleAdManagerAdapter" "13.7.0.0")
 ADD_APPLOVIN_MEDIATION(HYPRMX "AppLovinMediationHyprMXAdapter" "6.4.2.0.0")
-ADD_APPLOVIN_MEDIATION(INMOBI "AppLovinMediationInMobiAdapter" "11.4.0.0")
+ADD_APPLOVIN_MEDIATION(INMOBI "AppLovinMediationInMobiAdapter" "11.4.1.0")
 ADD_APPLOVIN_MEDIATION(IRONSOURCE "AppLovinMediationIronSourceAdapter" "9.5.0.0.0")
 ADD_APPLOVIN_MEDIATION(LIFTOFF "AppLovinMediationVungleAdapter" "7.7.6.1")
 ADD_APPLOVIN_MEDIATION(LINE "AppLovinMediationLineAdapter" "3.0.1.0")
 ADD_APPLOVIN_MEDIATION(MAIO "AppLovinMediationMaioAdapter" "2.1.6.0")
-ADD_APPLOVIN_MEDIATION(META "AppLovinMediationFacebookAdapter" "6.21.1.0") #Meta
-ADD_APPLOVIN_MEDIATION(MINTEGRAL "AppLovinMediationMintegralAdapter" "8.1.5.0.0")
+ADD_APPLOVIN_MEDIATION(META "AppLovinMediationFacebookAdapter" "6.22.0.1") #Meta
+ADD_APPLOVIN_MEDIATION(MINTEGRAL "AppLovinMediationMintegralAdapter" "8.1.6.0.0")
 ADD_APPLOVIN_MEDIATION(MOBILEFUSE "AppLovinMediationMobileFuseAdapter" "1.11.1.0")
 ADD_APPLOVIN_MEDIATION(MOLOCO "AppLovinMediationMolocoAdapter" "4.9.0.0")
 ADD_APPLOVIN_MEDIATION(OGURY "AppLovinMediationOguryPresageAdapter" "5.2.3.0")
-ADD_APPLOVIN_MEDIATION(PANGLE "AppLovinMediationByteDanceAdapter" "8.2.0.7.0") #Pangle
+ADD_APPLOVIN_MEDIATION(PANGLE "AppLovinMediationByteDanceAdapter" "8.2.0.9.0") #Pangle
 ADD_APPLOVIN_MEDIATION(SMAATO "AppLovinMediationSmaatoAdapter" "23.2.0.0")
 ADD_APPLOVIN_MEDIATION(UNITYADS "AppLovinMediationUnityAdsAdapter" "4.19.0.1")
 ADD_APPLOVIN_MEDIATION(VERVE "AppLovinMediationVerveAdapter" "3.9.0.0")

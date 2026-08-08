@@ -85,8 +85,8 @@ namespace Arena3D
             }
             const kf_ray_t ray{start, delta, length};
             kf_hit_t hit{};
-            if( kf_world_raycast( Arena3DGenerated::CollisionBoxes,
-                Arena3DGenerated::CollisionBoxCount, &ray, &hit ) == KF_FALSE ) return false;
+            if( kf_world_raycast( Arena3DGenerated::CollisionColliders,
+                Arena3DGenerated::CollisionColliderCount, &ray, &hit ) == KF_FALSE ) return false;
             return hit.fraction > kf_fixed_from_ratio( 1, 100 ) && hit.fraction < kf_fixed_from_ratio( 99, 100 );
         }
         //////////////////////////////////////////////////////////////////////////
@@ -273,8 +273,8 @@ namespace Arena3D
         const kf_fixed_t maximumDistance = kf_fixed_from_int( 80 );
         const kf_ray_t ray{origin, direction, maximumDistance};
         kf_hit_t worldHit{};
-        const bool hitWorld = kf_world_raycast( Arena3DGenerated::CollisionBoxes,
-            Arena3DGenerated::CollisionBoxCount, &ray, &worldHit ) == KF_TRUE;
+        const bool hitWorld = kf_world_raycast( Arena3DGenerated::CollisionColliders,
+            Arena3DGenerated::CollisionColliderCount, &ray, &worldHit ) == KF_TRUE;
         const kf_fixed_t worldDistance = hitWorld == true ? worldHit.distance : maximumDistance;
 
         struct RailTarget
@@ -502,8 +502,8 @@ namespace Arena3D
 
             const kf_sphere_t movingSphere{previous, projectile.radius};
             kf_hit_t worldHit{};
-            const bool hitWorld = kf_world_sweep_sphere_hit( Arena3DGenerated::CollisionBoxes,
-                Arena3DGenerated::CollisionBoxCount, &movingSphere, displacement, &worldHit ) == KF_TRUE;
+            const bool hitWorld = kf_world_sweep_sphere_hit( Arena3DGenerated::CollisionColliders,
+                Arena3DGenerated::CollisionColliderCount, &movingSphere, displacement, &worldHit ) == KF_TRUE;
 
             kf_hit_t actorHit{};
             bool hitActor = false;

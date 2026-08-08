@@ -78,14 +78,14 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static const kf_aabb_t * findCollisionBrush( uint32_t _brushId )
         {
-            for( size_t index = 0; index != Arena3DGenerated::CollisionBoxCount; ++index )
+            for( size_t index = 0; index != Arena3DGenerated::CollisionColliderCount; ++index )
             {
-                const kf_aabb_t & candidate = Arena3DGenerated::CollisionBoxes[index];
+                const kf_collider_t & candidate = Arena3DGenerated::CollisionColliders[index];
                 if( candidate.id != _brushId )
                 {
                     continue;
                 }
-                return &candidate;
+                return &candidate.bounds;
             }
 
             return nullptr;
@@ -147,13 +147,13 @@ namespace Mengine
             {
                 const float inverseScale = 1.f / static_cast<float>(KF_FIXED_SCALE);
                 const mt::vec3f minimum(
-                    static_cast<float>(brush->minimum[0]) * inverseScale,
-                    static_cast<float>(brush->minimum[1]) * inverseScale,
-                    static_cast<float>(brush->minimum[2]) * inverseScale );
+                    static_cast<float>(brush->minimum.x) * inverseScale,
+                    static_cast<float>(brush->minimum.y) * inverseScale,
+                    static_cast<float>(brush->minimum.z) * inverseScale );
                 const mt::vec3f maximum(
-                    static_cast<float>(brush->maximum[0]) * inverseScale,
-                    static_cast<float>(brush->maximum[1]) * inverseScale,
-                    static_cast<float>(brush->maximum[2]) * inverseScale );
+                    static_cast<float>(brush->maximum.x) * inverseScale,
+                    static_cast<float>(brush->maximum.y) * inverseScale,
+                    static_cast<float>(brush->maximum.z) * inverseScale );
                 const mt::vec3f center = (minimum + maximum) * 0.5f;
                 const mt::vec3f extent = (maximum - minimum) * 0.5f;
                 const float projectedCenterU = dot3( center, tangentU );

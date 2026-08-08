@@ -954,8 +954,6 @@ def write_collision_header(path: Path, brushes: Sequence[tuple[int, Sequence[flo
         "",
         "namespace Arena3DGenerated",
         "{",
-        "    using CollisionBoxRaw = kf_aabb_t;",
-        "",
         "    struct WeaponConfigRaw",
         "    {",
         "        int32_t damage; uint32_t cooldownTicks; kf_fixed_t speed; kf_fixed_t launchUpwardSpeed; kf_fixed_t gravity; uint32_t lifetimeTicks;",
@@ -967,14 +965,15 @@ def write_collision_header(path: Path, brushes: Sequence[tuple[int, Sequence[flo
         "    struct JumpPadRaw { uint32_t id; kf_fixed_t position[3]; kf_fixed_t halfSize[3]; kf_fixed_t velocity[3]; };",
         "    struct HazardRaw { uint32_t id; uint32_t type; kf_fixed_t position[3]; kf_fixed_t halfSize[3]; int32_t damage; uint32_t intervalTicks; };",
         "",
-        "    inline constexpr CollisionBoxRaw CollisionBoxes[] =",
+        "    inline constexpr kf_collider_t CollisionColliders[] =",
         "    {",
     ]
     for brush_id, center, size in brushes:
         minimum = [fixed(str(center[index] - size[index] * 0.5)) for index in range(3)]
         maximum = [fixed(str(center[index] + size[index] * 0.5)) for index in range(3)]
-        values = ", ".join(int32_literal(value) for value in minimum + maximum)
-        lines.append(f"        {{{brush_id}u, {{{values.split(', ', 3)[0]}, {values.split(', ', 3)[1]}, {values.split(', ', 3)[2]}}}, {{{', '.join(values.split(', ')[3:])}}}}},")
+        minimum_values = ", ".join(int32_literal(value) for value in minimum)
+        maximum_values = ", ".join(int32_literal(value) for value in maximum)
+        lines.append("        {" + f"{brush_id}u, " + "{{" + minimum_values + "}, {" + maximum_values + "}}},")
     movement = source["movement"]
     movement_names = {
         "GroundAcceleration": "ground_acceleration", "AirAcceleration": "air_acceleration", "Friction": "friction",
@@ -986,7 +985,7 @@ def write_collision_header(path: Path, brushes: Sequence[tuple[int, Sequence[flo
     }
     lines.extend([
         "    };",
-        "    inline constexpr size_t CollisionBoxCount = sizeof(CollisionBoxes) / sizeof(CollisionBoxes[0]);",
+        "    inline constexpr size_t CollisionColliderCount = sizeof(CollisionColliders) / sizeof(CollisionColliders[0]);",
     ])
     for cpp_name, json_name in movement_names.items():
         lines.append(f"    inline constexpr kf_fixed_t {cpp_name} = {int32_literal(fixed(movement[json_name]))};")

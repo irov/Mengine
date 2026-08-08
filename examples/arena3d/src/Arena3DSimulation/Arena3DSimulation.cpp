@@ -29,8 +29,8 @@ namespace Arena3D
         static bool collidesPlayer( const kf_vec3_t & position, kf_fixed_t radius, kf_fixed_t height )
         {
             const kf_capsule_t capsule{position, radius, height};
-            return kf_world_overlap_capsule( Arena3DGenerated::CollisionBoxes,
-                Arena3DGenerated::CollisionBoxCount, &capsule, nullptr ) == KF_TRUE;
+            return kf_world_overlap_capsule( Arena3DGenerated::CollisionColliders,
+                Arena3DGenerated::CollisionColliderCount, &capsule, nullptr ) == KF_TRUE;
         }
         //////////////////////////////////////////////////////////////////////////
         static void accelerateQuake( kf_vec3_t * velocity, const kf_vec3_t & wishDirection, kf_fixed_t wishSpeed, kf_fixed_t acceleration, kf_fixed_t tickSeconds )
@@ -575,8 +575,8 @@ namespace Arena3D
             m_config.playerRadius, height, m_config.stepHeight, m_config.gravity,
             tickSeconds, kf_fixed_from_ratio( 2, 100 ), m_config.arenaHalfExtent};
         kf_character_result_t result{};
-        kf_character_step( &body, &characterConfig, Arena3DGenerated::CollisionBoxes,
-            Arena3DGenerated::CollisionBoxCount, &result );
+        kf_character_step( &body, &characterConfig, Arena3DGenerated::CollisionColliders,
+            Arena3DGenerated::CollisionColliderCount, &result );
         player.position = body.position;
         player.velocity = body.velocity;
         player.grounded = body.grounded == KF_TRUE;
@@ -639,7 +639,7 @@ namespace Arena3D
             const kf_vec3_t halfSize{hazard.halfSize[0], hazard.halfSize[1], hazard.halfSize[2]};
             const kf_vec3_t minimum = kf_vec3_sub( center, halfSize );
             const kf_vec3_t maximum = kf_vec3_add( center, halfSize );
-            const kf_aabb_t volume{hazard.id, {minimum.x, minimum.y, minimum.z}, {maximum.x, maximum.y, maximum.z}};
+            const kf_aabb_t volume{minimum, maximum};
             if( kf_overlap_capsule_aabb( &playerCapsule, &volume ) == KF_FALSE )
             {
                 continue;

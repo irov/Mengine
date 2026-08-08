@@ -1358,7 +1358,7 @@ namespace Mengine
             return false;
         }
 
-        m_velocity = delta;
+        m_velocity = -delta;
 
         if( m_allowOutOfBounds == false )
         {

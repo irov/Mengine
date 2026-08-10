@@ -1,13 +1,16 @@
 #include "JSONScriptEmbedding.h"
 
 #include "Interface/PluginServiceInterface.h"
+#include "Interface/FileServiceInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
+#include "Environment/Python/PythonDocument.h"
 #include "Environment/Python/PythonScriptWrapper.h"
 
 #include "ResourceJSON.h"
 
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/JSONHelper.h"
 #include "Kernel/String.h"
 #include "Kernel/Vector.h"
 
@@ -616,6 +619,34 @@ namespace Mengine
             return pybind::object( _kernel, py_json, pybind::borrowed );
         }
         //////////////////////////////////////////////////////////////////////////
+        static pybind::object __load_json_file( pybind::kernel_interface * _kernel, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
+        {
+            if( _fileGroup == nullptr )
+            {
+                _kernel->set_error( pybind::error_type_e::Value, "loadJSONFile requires a valid file group" );
+
+                return pybind::make_invalid_object_t();
+            }
+
+            jpp::object json = Helper::loadJSONFile( _fileGroup, _filePath, MENGINE_DOCUMENT_PYTHON );
+
+            if( json.invalid() == true )
+            {
+                _kernel->set_error( pybind::error_type_e::Value, "loadJSONFile could not decode the file" );
+
+                return pybind::make_invalid_object_t();
+            }
+
+            PyObject * py_json = __jpp_to_pybind( _kernel, json );
+
+            if( py_json == nullptr )
+            {
+                return pybind::make_invalid_object_t();
+            }
+
+            return pybind::object( _kernel, py_json, pybind::borrowed );
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     JSONScriptEmbedding::JSONScriptEmbedding()
@@ -630,6 +661,7 @@ namespace Mengine
     {
         pybind::def_function_native( _kernel, "encodeJSON", &Helper::__encode_json );
         pybind::def_function_native( _kernel, "decodeJSON", &Helper::__decode_json );
+        pybind::def_function_kernel( _kernel, "loadJSONFile", &Helper::__load_json_file );
 
         pybind::interface_<ResourceJSON, pybind::bases<Resource>>( _kernel, "ResourceJSON", false )
             .def_static_kernel( "getJSON", &Helper::__get_json )
@@ -644,6 +676,7 @@ namespace Mengine
     {
         _kernel->remove_from_module( "encodeJSON", nullptr );
         _kernel->remove_from_module( "decodeJSON", nullptr );
+        _kernel->remove_from_module( "loadJSONFile", nullptr );
 
         _kernel->remove_scope<ResourceJSON>();
 

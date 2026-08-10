@@ -28,6 +28,9 @@ namespace Mengine
         bool initialize( const mt::vec2f & _gravity, float _scaler );
         void finalize();
 
+    public:
+        bool isValid() const override;
+
     protected:
         void onTimepipe( const UpdateContext * _contet ) override;
 
@@ -37,6 +40,9 @@ namespace Mengine
 
     public:
         void setTimeStep( float _timeStep, uint32_t _subStepCount ) override;
+        void setGravity( const mt::vec2f & _gravity ) override;
+        mt::vec2f getGravity() const override;
+        void setContactListener( const Box2DContactListenerInterfacePtr & _listener ) override;
 
     public:
         uint32_t overlapCircle( const mt::vec2f & _pos, float _radius, uint32_t _categoryBits, uint32_t _maskBits, Box2DBodyInterface ** _bodies, uint32_t _capacity ) const override;
@@ -50,6 +56,17 @@ namespace Mengine
             , bool _allowSleep
             , bool _isBullet
             , bool _fixedRotation
+            , const DocumentInterfacePtr & _doc ) override;
+
+        Box2DBodyInterfacePtr createBodyType( EBox2DBodyType _type
+            , const mt::vec2f & _pos
+            , float _angle
+            , float _linearDamping
+            , float _angularDamping
+            , bool _allowSleep
+            , bool _isBullet
+            , bool _fixedRotation
+            , float _gravityScale
             , const DocumentInterfacePtr & _doc ) override;
 
     public:
@@ -102,7 +119,7 @@ namespace Mengine
 
         Box2DJointInterfacePtr createRevoluteJoint( const Box2DBodyInterfacePtr & _body1
             , const Box2DBodyInterfacePtr & _body2
-            , const mt::vec2f & _localAnchor
+            , const mt::vec2f & _worldAnchor
             , bool _enableLimit
             , float _lowerAngle
             , float _upperAngle
@@ -111,11 +128,20 @@ namespace Mengine
             , float _maxMotorTorque
             , const DocumentInterfacePtr & _doc ) override;
 
+        Box2DJointInterfacePtr createMouseJoint( const Box2DBodyInterfacePtr & _groundBody
+            , const Box2DBodyInterfacePtr & _body
+            , const mt::vec2f & _target
+            , float _hertz
+            , float _dampingRatio
+            , float _maxForce
+            , const DocumentInterfacePtr & _doc ) override;
+
     public:
         void rayCast( const mt::vec2f & _point1, const mt::vec2f & _point2, const Box2DRayCastInterfacePtr & _response ) const override;
 
     protected:
         Box2DJointInterfacePtr createJoint_( b2JointId jointId, const DocumentInterfacePtr & _doc );
+        void processEvents_();
 
     protected:
         bool m_dead;
@@ -128,6 +154,7 @@ namespace Mengine
         uint32_t m_subStepCount;
 
         Box2DScaler m_scaler;
+        Box2DContactListenerInterfacePtr m_contactListener;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Box2DWorld, Box2DWorldInterface> Box2DWorldPtr;

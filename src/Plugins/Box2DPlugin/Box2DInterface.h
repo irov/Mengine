@@ -15,6 +15,22 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    enum EBox2DBodyType
+    {
+        EBOX2D_BODY_STATIC = 0,
+        EBOX2D_BODY_KINEMATIC,
+        EBOX2D_BODY_DYNAMIC,
+    };
+    //////////////////////////////////////////////////////////////////////////
+    enum EBox2DContactEventType
+    {
+        EBOX2D_CONTACT_BEGIN = 0,
+        EBOX2D_CONTACT_END,
+        EBOX2D_SENSOR_BEGIN,
+        EBOX2D_SENSOR_END,
+        EBOX2D_CONTACT_HIT,
+    };
+    //////////////////////////////////////////////////////////////////////////
     enum EBox2DManifoldType
     {
         EVENT_BOX2DMANIFOLD_NONE,
@@ -81,13 +97,17 @@ namespace Mengine
         : public ServantInterface
     {
     public:
+        virtual bool isValid() const = 0;
+
+    public:
         virtual void setNode( const NodePtr & _node ) = 0;
         virtual const NodePtr & getNode() const = 0;
 
     public:
-        virtual bool addShapeConvex( const Polygon & _vertices, float _density, float _friction, float _restitution, bool _isSensor, uint32_t _collisionMask, uint32_t _categoryBits, int32_t _groupIndex ) = 0;
-        virtual bool addShapeCircle( float _radius, const mt::vec2f & _localPos, float _density, float _friction, float _restitution, bool _isSensor, uint32_t _collisionMask, uint32_t _categoryBits, int32_t _groupIndex ) = 0;
-        virtual bool addShapeBox( float _width, float _height, const mt::vec2f & _localPos, float _angle, float _density, float _friction, float _restitution, bool _isSensor, uint32_t _collisionMask, uint32_t _categoryBits, int32_t _groupIndex ) = 0;
+        virtual bool addShapeConvex( const Polygon & _vertices, float _density, float _friction, float _restitution, bool _isSensor, uint32_t _categoryBits, uint32_t _collisionMask, int32_t _groupIndex ) = 0;
+        virtual bool addShapeCircle( float _radius, const mt::vec2f & _localPos, float _density, float _friction, float _restitution, bool _isSensor, uint32_t _categoryBits, uint32_t _collisionMask, int32_t _groupIndex ) = 0;
+        virtual bool addShapeBox( float _width, float _height, const mt::vec2f & _localPos, float _angle, float _density, float _friction, float _restitution, bool _isSensor, uint32_t _categoryBits, uint32_t _collisionMask, int32_t _groupIndex ) = 0;
+        virtual void clearShapes() = 0;
 
     public:
         virtual mt::vec2f getBodyPosition() const = 0;
@@ -125,6 +145,8 @@ namespace Mengine
         virtual float getBodyLinearDamping() const = 0;
         virtual void setBodyAngularDamping( float _dumping ) = 0;
         virtual float getBodyAngularDamping() const = 0;
+        virtual void setBodyGravityScale( float _gravityScale ) = 0;
+        virtual float getBodyGravityScale() const = 0;
         virtual void setBodyFixedRotation( bool _rotation ) = 0;
         virtual bool isBodyFixedRotation() const = 0;
         virtual void setBodyBulletMode( bool _isBullet ) = 0;
@@ -140,9 +162,27 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Box2DBodyInterface> Box2DBodyInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
+    class Box2DContactListenerInterface
+        : public ServantInterface
+    {
+    public:
+        virtual void onBox2DContactEvent( EBox2DContactEventType _type
+            , const Box2DBodyInterfacePtr & _bodyA
+            , const Box2DBodyInterfacePtr & _bodyB
+            , const mt::vec2f & _point
+            , const mt::vec2f & _normal
+            , float _value ) = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<Box2DContactListenerInterface> Box2DContactListenerInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
     class Box2DJointInterface
         : public ServantInterface
     {
+    public:
+        virtual bool isValid() const = 0;
+        virtual bool setMouseTarget( const mt::vec2f & _target ) = 0;
+        virtual mt::vec2f getMouseTarget() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Box2DJointInterface> Box2DJointInterfacePtr;
@@ -170,7 +210,13 @@ namespace Mengine
         : public ServantInterface
     {
     public:
+        virtual bool isValid() const = 0;
+
+    public:
         virtual void setTimeStep( float _timeStep, uint32_t _subStepCount ) = 0;
+        virtual void setGravity( const mt::vec2f & _gravity ) = 0;
+        virtual mt::vec2f getGravity() const = 0;
+        virtual void setContactListener( const Box2DContactListenerInterfacePtr & _listener ) = 0;
 
     public:
         virtual uint32_t overlapCircle( const mt::vec2f & _pos, float _radius, uint32_t _categoryBits, uint32_t _maskBits, Box2DBodyInterface ** _bodies, uint32_t _capacity ) const = 0;
@@ -184,6 +230,17 @@ namespace Mengine
             , bool _allowSleep
             , bool _isBullet
             , bool _fixedRotation
+            , const DocumentInterfacePtr & _doc ) = 0;
+
+        virtual Box2DBodyInterfacePtr createBodyType( EBox2DBodyType _type
+            , const mt::vec2f & _pos
+            , float _angle
+            , float _linearDamping
+            , float _angularDamping
+            , bool _allowSleep
+            , bool _isBullet
+            , bool _fixedRotation
+            , float _gravityScale
             , const DocumentInterfacePtr & _doc ) = 0;
 
     public:
@@ -236,13 +293,21 @@ namespace Mengine
 
         virtual Box2DJointInterfacePtr createRevoluteJoint( const Box2DBodyInterfacePtr & _body1
             , const Box2DBodyInterfacePtr & _body2
-            , const mt::vec2f & _localAnchor
+            , const mt::vec2f & _worldAnchor
             , bool _enableLimit
             , float _lowerAngle
             , float _upperAngle
             , bool _enableMotor
             , float _motorSpeed
             , float _maxMotorTorque
+            , const DocumentInterfacePtr & _doc ) = 0;
+
+        virtual Box2DJointInterfacePtr createMouseJoint( const Box2DBodyInterfacePtr & _groundBody
+            , const Box2DBodyInterfacePtr & _body
+            , const mt::vec2f & _target
+            , float _hertz
+            , float _dampingRatio
+            , float _maxForce
             , const DocumentInterfacePtr & _doc ) = 0;
 
     public:

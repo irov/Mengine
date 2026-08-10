@@ -21,6 +21,9 @@ namespace Mengine
         bool initialize( const Box2DScaler & _scaler, b2BodyId _bodyId );
 
     public:
+        bool isValid() const override;
+
+    public:
         void setNode( const NodePtr & _node ) override;
         const NodePtr & getNode() const override;
 
@@ -31,6 +34,7 @@ namespace Mengine
         bool addShapeConvex( const Polygon & _polygon, float _density, float _friction, float _restitution, bool _isSensor, uint32_t _categoryBits, uint32_t _collisionMask, int32_t _groupIndex ) override;
         bool addShapeCircle( float _radius, const mt::vec2f & _localPos, float _density, float _friction, float _restitution, bool _isSensor, uint32_t _categoryBits, uint32_t _collisionMask, int32_t _groupIndex ) override;
         bool addShapeBox( float _width, float _height, const mt::vec2f & _localPos, float _angle, float _density, float _friction, float _restitution, bool _isSensor, uint32_t _categoryBits, uint32_t _collisionMask, int32_t _groupIndex ) override;
+        void clearShapes() override;
 
     public:
         mt::vec2f getBodyPosition() const override;
@@ -69,6 +73,8 @@ namespace Mengine
         float getBodyLinearDamping() const override;
         void setBodyAngularDamping( float _dumping ) override;
         float getBodyAngularDamping() const override;
+        void setBodyGravityScale( float _gravityScale ) override;
+        float getBodyGravityScale() const override;
         void setBodyFixedRotation( bool _rotation ) override;
         bool isBodyFixedRotation() const override;
         void setBodyBulletMode( bool _bulletMode ) override;

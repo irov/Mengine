@@ -3,6 +3,7 @@
 
 #include "Kernel/EventableHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/Vector.h"
 
 namespace Mengine
 {
@@ -14,7 +15,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Box2DBody::~Box2DBody()
     {
-        if( B2_IS_NON_NULL( m_bodyId ) )
+        if( this->isValid() == true )
         {
             ::b2DestroyBody( m_bodyId );
         }
@@ -28,6 +29,11 @@ namespace Mengine
         ::b2Body_SetUserData( m_bodyId, (Box2DBodyInterface *)this );
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Box2DBody::isValid() const
+    {
+        return B2_IS_NON_NULL( m_bodyId ) && ::b2Body_IsValid( m_bodyId );
     }
     //////////////////////////////////////////////////////////////////////////
     void Box2DBody::setNode( const NodePtr & _node )
@@ -83,6 +89,9 @@ namespace Mengine
         shapeDef.material.friction = _friction;
         shapeDef.material.restitution = _restitution;
         shapeDef.isSensor = _isSensor;
+        shapeDef.enableSensorEvents = true;
+        shapeDef.enableContactEvents = true;
+        shapeDef.enableHitEvents = true;
         shapeDef.filter.categoryBits = _categoryBits;
         shapeDef.filter.maskBits = _collisionMask;
         shapeDef.filter.groupIndex = _groupIndex;
@@ -119,6 +128,9 @@ namespace Mengine
         shapeDef.material.friction = _friction;
         shapeDef.material.restitution = _restitution;
         shapeDef.isSensor = _isSensor;
+        shapeDef.enableSensorEvents = true;
+        shapeDef.enableContactEvents = true;
+        shapeDef.enableHitEvents = true;
         shapeDef.filter.categoryBits = _categoryBits;
         shapeDef.filter.maskBits = _collisionMask;
         shapeDef.filter.groupIndex = _groupIndex;
@@ -157,6 +169,9 @@ namespace Mengine
         shapeDef.material.friction = _friction;
         shapeDef.material.restitution = _restitution;
         shapeDef.isSensor = _isSensor;
+        shapeDef.enableSensorEvents = true;
+        shapeDef.enableContactEvents = true;
+        shapeDef.enableHitEvents = true;
         shapeDef.filter.categoryBits = _categoryBits;
         shapeDef.filter.maskBits = _collisionMask;
         shapeDef.filter.groupIndex = _groupIndex;
@@ -169,6 +184,19 @@ namespace Mengine
         }
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Box2DBody::clearShapes()
+    {
+        int shapeCount = ::b2Body_GetShapeCount( m_bodyId );
+        Vector<b2ShapeId> shapes( shapeCount );
+
+        ::b2Body_GetShapes( m_bodyId, shapes.data(), shapeCount );
+
+        for( int index = 0; index != shapeCount; ++index )
+        {
+            ::b2DestroyShape( shapes[index], true );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     mt::vec2f Box2DBody::getBodyPosition() const
@@ -295,6 +323,16 @@ namespace Mengine
         return b2_dumping;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Box2DBody::setBodyGravityScale( float _gravityScale )
+    {
+        ::b2Body_SetGravityScale( m_bodyId, _gravityScale );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float Box2DBody::getBodyGravityScale() const
+    {
+        return ::b2Body_GetGravityScale( m_bodyId );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Box2DBody::setBodyFixedRotation( bool _rotation )
     {
         ::b2Body_SetFixedRotation( m_bodyId, _rotation );
@@ -331,7 +369,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Box2DBody::isSleeping() const
     {
-        bool result = ::b2Body_IsSleepEnabled( m_bodyId );
+        bool result = ::b2Body_IsAwake( m_bodyId ) == false;
 
         return result;
     }
@@ -382,7 +420,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Box2DBody::sleep()
     {
-        ::b2Body_EnableSleep( m_bodyId, true );
+        ::b2Body_SetAwake( m_bodyId, false );
     }
     //////////////////////////////////////////////////////////////////////////
     void Box2DBody::wakeUp()
@@ -403,8 +441,10 @@ namespace Mengine
         filter.maskBits = _collisionMask;
         filter.groupIndex = _groupIndex;
 
-        b2ShapeId shapes[64];
-        int shapeCount = ::b2Body_GetShapes( m_bodyId, shapes, 64 );
+        int shapeCount = ::b2Body_GetShapeCount( m_bodyId );
+        Vector<b2ShapeId> shapes( shapeCount );
+
+        ::b2Body_GetShapes( m_bodyId, shapes.data(), shapeCount );
 
         for( int i = 0; i != shapeCount; ++i )
         {

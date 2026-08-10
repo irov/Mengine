@@ -81,11 +81,16 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool checkRenderPlatform( const jpp::object & _json, const ConstString & _renderPlatformName, bool _required )
+        static bool checkRenderPlatform( const jpp::object & _json, const ConstString & _renderPlatformName, const ConstString & _inheritedRenderPlatform, bool _required )
         {
             ConstString renderPlatform;
             if( Helper::getJSONConstString( _json, "RenderPlatform", &renderPlatform ) == false )
             {
+                if( _inheritedRenderPlatform.empty() == false )
+                {
+                    return _inheritedRenderPlatform == _renderPlatformName;
+                }
+
                 return _required == false;
             }
 
@@ -450,7 +455,7 @@ namespace Mengine
         {
             for( const jpp::object & shaderDesc : fragmentShaders )
             {
-                if( Detail::checkRenderPlatform( shaderDesc, renderPlatformName, true ) == false )
+                if( Detail::checkRenderPlatform( shaderDesc, renderPlatformName, _desc.renderPlatform, true ) == false )
                 {
                     continue;
                 }
@@ -493,7 +498,7 @@ namespace Mengine
         {
             for( const jpp::object & shaderDesc : vertexShaders )
             {
-                if( Detail::checkRenderPlatform( shaderDesc, renderPlatformName, true ) == false )
+                if( Detail::checkRenderPlatform( shaderDesc, renderPlatformName, _desc.renderPlatform, true ) == false )
                 {
                     continue;
                 }
@@ -536,7 +541,7 @@ namespace Mengine
         {
             for( const jpp::object & attributeDesc : vertexAttributes )
             {
-                if( Detail::checkRenderPlatform( attributeDesc, renderPlatformName, true ) == false )
+                if( Detail::checkRenderPlatform( attributeDesc, renderPlatformName, _desc.renderPlatform, true ) == false )
                 {
                     continue;
                 }
@@ -588,7 +593,7 @@ namespace Mengine
         {
             for( const jpp::object & programDesc : programs )
             {
-                if( Detail::checkRenderPlatform( programDesc, renderPlatformName, false ) == false )
+                if( Detail::checkRenderPlatform( programDesc, renderPlatformName, _desc.renderPlatform, false ) == false )
                 {
                     continue;
                 }
@@ -653,7 +658,7 @@ namespace Mengine
         {
             for( const jpp::object & materialDesc : materials )
             {
-                if( Detail::checkRenderPlatform( materialDesc, renderPlatformName, false ) == false )
+                if( Detail::checkRenderPlatform( materialDesc, renderPlatformName, _desc.renderPlatform, false ) == false )
                 {
                     continue;
                 }
@@ -789,7 +794,7 @@ namespace Mengine
         {
             for( const jpp::object & shaderDesc : fragmentShaders )
             {
-                if( Detail::checkRenderPlatform( shaderDesc, renderPlatformName, true ) == false )
+                if( Detail::checkRenderPlatform( shaderDesc, renderPlatformName, _desc.renderPlatform, true ) == false )
                 {
                     continue;
                 }
@@ -810,7 +815,7 @@ namespace Mengine
         {
             for( const jpp::object & shaderDesc : vertexShaders )
             {
-                if( Detail::checkRenderPlatform( shaderDesc, renderPlatformName, true ) == false )
+                if( Detail::checkRenderPlatform( shaderDesc, renderPlatformName, _desc.renderPlatform, true ) == false )
                 {
                     continue;
                 }
@@ -831,7 +836,7 @@ namespace Mengine
         {
             for( const jpp::object & programDesc : programs )
             {
-                if( Detail::checkRenderPlatform( programDesc, renderPlatformName, false ) == false )
+                if( Detail::checkRenderPlatform( programDesc, renderPlatformName, _desc.renderPlatform, false ) == false )
                 {
                     continue;
                 }
@@ -852,6 +857,11 @@ namespace Mengine
         {
             for( const jpp::object & materialDesc : materials )
             {
+                if( Detail::checkRenderPlatform( materialDesc, renderPlatformName, _desc.renderPlatform, false ) == false )
+                {
+                    continue;
+                }
+
                 ConstString name;
                 if( Detail::getRequiredConstString( materialDesc, "Name", &name ) == false )
                 {

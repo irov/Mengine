@@ -3,6 +3,8 @@
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 
+#include <cerrno>
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

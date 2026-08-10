@@ -41,6 +41,26 @@ namespace Mengine
             0.000000000931322574615478515625f, 0.0000000004656612873077392578125f, 0.00000000023283064365386962890625f
         };
 
+#if defined(MENGINE_PLATFORM_LINUX)
+        using ::floorf;
+        using ::acosf;
+        using ::asinf;
+        using ::atan2f;
+        using ::atanf;
+        using ::sqrtf;
+        using ::powf;
+        using ::cosf;
+        using ::sinf;
+        using ::tanf;
+        using ::fabsf;
+        using ::logf;
+        using ::log10f;
+        using ::expf;
+        using ::roundf;
+        using ::ceilf;
+        using ::modff;
+        using ::fmodf;
+#else
         using std::floorf;
         using std::acosf;
         using std::asinf;
@@ -59,6 +79,7 @@ namespace Mengine
         using std::ceilf;
         using std::modff;
         using std::fmodf;
+#endif
         using std::abs;
         using std::floor;
         using std::acos;

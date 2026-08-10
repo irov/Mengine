@@ -1352,6 +1352,8 @@ namespace Mengine
                 .def( "getVirtualAreaDisableDragIfInvalid", &VirtualArea::getDisableDragIfInvalid )
                 .def( "setVirtualAreaDragStartThreshold", &VirtualArea::setDragStartThreshold )
                 .def( "getVirtualAreaDragStartThreshold", &VirtualArea::getDragStartThreshold )
+                .def( "setVirtualAreaDragInverted", &VirtualArea::setDragInverted )
+                .def( "getVirtualAreaDragInverted", &VirtualArea::getDragInverted )
                 .def( "setVirtualAreaDefaultHandle", &VirtualArea::setDefaultHandle )
                 .def( "getVirtualAreaDefaultHandle", &VirtualArea::getDefaultHandle )
                 .def( "setVirtualAreaScrollLocked", &VirtualArea::setScrollLocked )

@@ -106,10 +106,7 @@ namespace Mengine
         providers.f_sinf = &Detail::dz_sinf;
 
         dz_service_t * service;
-        if( dz_service_create( &service, &providers, DZ_NULLPTR ) == DZ_FAILURE )
-        {
-            return false;
-        }
+        dz_service_create( &service, &providers, DZ_NULLPTR );
 
         m_service = service;
 

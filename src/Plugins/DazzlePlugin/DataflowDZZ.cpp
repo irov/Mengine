@@ -21,15 +21,15 @@ namespace Mengine
     struct dz_stream_t
     {
         const void * data;
+        dz_size_t position;
     };
     //////////////////////////////////////////////////////////////////////////
     static dz_result_t s_dz_stream_read( void * const _data, dz_size_t _size, dz_userdata_t _ud )
     {
         dz_stream_t * stream = reinterpret_cast<dz_stream_t *>(_ud);
 
-        Helper::memoryCopy( _data, 0, stream->data, 0, _size );
-
-        stream->data = (const dz_uint8_t *)stream->data + _size;
+        Helper::memoryCopy( _data, 0, stream->data, stream->position, _size );
+        stream->position += _size;
 
         return DZ_SUCCESSFUL;
     }
@@ -109,25 +109,17 @@ namespace Mengine
 
         DazzleData * data = _data.getT<DazzleData *>();
 
-        void * memory_buffer = _memory->getBuffer();
-
         dz_stream_t stream;
-        stream.data = memory_buffer;
+        stream.data = _memory->getBuffer();
+        stream.position = 0;
 
-        dz_effect_read_status_e status;
-        if( dz_header_read( &s_dz_stream_read, &stream, &status ) == DZ_FAILURE )
-        {
-            return false;
-        }
+        dz_effect_t * effect = nullptr;
+        dz_result_t result = dz_effect_read( m_service, &effect, &s_dz_stream_read, &stream );
 
-        if( status != DZ_EFFECT_LOAD_STATUS_SUCCESSFUL )
+        if( result != DZ_SUCCESSFUL )
         {
-            return false;
-        }
+            LOGGER_ERROR( "invalid dazzle data result '%u' size '%zu'", (uint32_t)result, _memory->getSize() );
 
-        dz_effect_t * effect;
-        if( dz_effect_read( m_service, &effect, &s_dz_stream_read, &stream ) == DZ_FAILURE )
-        {
             return false;
         }
 

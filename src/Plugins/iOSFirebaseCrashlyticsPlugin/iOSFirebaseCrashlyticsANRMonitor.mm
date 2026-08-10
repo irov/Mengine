@@ -93,6 +93,7 @@ static void RunLoopObserverCallback(CFRunLoopObserverRef observer, CFRunLoopActi
     }];
 }
 
+#if defined(__aarch64__)
 static BOOL is_valid_frame_pointer( void ** _frame, uintptr_t _stackLow, uintptr_t _stackHigh ) {
     if( _frame == NULL )
     {
@@ -148,6 +149,7 @@ static size_t my_backtrace_from_fp( _STRUCT_ARM_THREAD_STATE64 _state, void ** _
 
     return i;
 }
+#endif
 
 + (BOOL)backtraceOfMachPort:(pthread_t)thread withName:(NSString *)name {
 #if defined(__aarch64__)

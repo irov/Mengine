@@ -1,9 +1,12 @@
 #include "DazzleEffect.h"
 
-#include "Kernel/Materialable.h"
-#include "Kernel/Logger.h"
-#include "Kernel/ColorHelper.h"
+#include "Interface/RenderBatchInterface.h"
+#include "Interface/RenderMaterialServiceInterface.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ColorHelper.h"
+#include "Kernel/ConstStringHelper.h"
+#include "Kernel/Logger.h"
+#include "Kernel/Materialable.h"
 #include "Kernel/MemoryAllocator.h"
 
 #include "Config/StdString.h"
@@ -15,9 +18,17 @@ namespace Mengine
         : m_service( nullptr )
         , m_instance( nullptr )
         , m_renderVertices( nullptr )
-        , m_renderVertexCount( MENGINE_UINT32_C(0) )
+        , m_renderNormals( nullptr )
+        , m_renderTangents( nullptr )
+        , m_renderColors( nullptr )
+        , m_renderVertexCount( MENGINE_UINT32_C( 0 ) )
+        , m_dazzleIndices( nullptr )
+        , m_dazzleIndexSize( 0 )
+        , m_renderChunks( nullptr )
+        , m_renderChunkCount( MENGINE_UINT32_C( 0 ) )
+        , m_submitVertices( nullptr )
         , m_renderIndicies( nullptr )
-        , m_renderIndexCount( MENGINE_UINT32_C(0) )
+        , m_renderIndexCount( MENGINE_UINT32_C( 0 ) )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -57,25 +68,31 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DazzleEffect::_play( UniqueId _enumerator, float _time )
     {
-        MENGINE_UNUSED( _enumerator );
-        MENGINE_UNUSED( _time );
-
-        return true;
+        return this->_restart( _enumerator, _time );
     }
     //////////////////////////////////////////////////////////////////////////
     bool DazzleEffect::_restart( UniqueId _enumerator, float _time )
     {
         MENGINE_UNUSED( _enumerator );
-        MENGINE_UNUSED( _time );
-
         if( this->isCompile() == false )
         {
             return true;
         }
 
-        dz_instance_set_time( m_instance, _time * 0.001f );
+        dz_instance_restart( m_instance );
 
-        dz_instance_emit_resume( m_instance );
+        float time = _time * 0.001f;
+
+        if( time > 0.f )
+        {
+            dz_result_t result = dz_instance_seek( m_service, m_instance, time, dz_instance_get_fixed_step( m_instance ) );
+            if( result != DZ_SUCCESSFUL )
+            {
+                LOGGER_ERROR( "dazzle '%s' seek to '%f' failed result '%u'", this->getName().c_str(), time, (uint32_t)result );
+
+                return false;
+            }
+        }
 
         return true;
     }
@@ -84,6 +101,10 @@ namespace Mengine
     {
         MENGINE_UNUSED( _enumerator );
 
+        if( m_instance != nullptr )
+        {
+            dz_instance_pause( m_instance );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void DazzleEffect::_resume( uint32_t _enumerator, float _time )
@@ -91,11 +112,20 @@ namespace Mengine
         MENGINE_UNUSED( _enumerator );
         MENGINE_UNUSED( _time );
 
+        if( m_instance != nullptr )
+        {
+            dz_instance_resume( m_instance );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool DazzleEffect::_stop( uint32_t _enumerator )
     {
         MENGINE_UNUSED( _enumerator );
+
+        if( m_instance != nullptr )
+        {
+            dz_instance_stop( m_instance );
+        }
 
         return true;
     }
@@ -103,25 +133,39 @@ namespace Mengine
     void DazzleEffect::_end( uint32_t _enumerator )
     {
         MENGINE_UNUSED( _enumerator );
+
+        if( m_instance != nullptr )
+        {
+            dz_instance_stop( m_instance );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool DazzleEffect::_interrupt( uint32_t _enumerator )
     {
         MENGINE_UNUSED( _enumerator );
 
-        dz_instance_emit_pause( m_instance );
+        if( m_instance != nullptr )
+        {
+            dz_instance_emit_pause( m_instance );
+        }
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     RenderMaterialInterfacePtr DazzleEffect::_updateMaterial() const
     {
-        RenderMaterialInterfacePtr material = this->makeImageMaterial( m_resourceImage, false, MENGINE_DOCUMENT_FACTORABLE );
+        RenderMaterialInterfacePtr material;
 
-        MENGINE_ASSERTION_MEMORY_PANIC( material, "'%s' resource '%s' m_material is nullptr"
-            , this->getName().c_str()
-            , m_resourceImage->getName().c_str()
-        );
+        if( m_resourceImage != nullptr )
+        {
+            material = this->makeImageMaterial( m_resourceImage, false, MENGINE_DOCUMENT_FACTORABLE );
+        }
+        else
+        {
+            material = this->makeSolidMaterial( false, MENGINE_DOCUMENT_FACTORABLE );
+        }
+
+        MENGINE_ASSERTION_MEMORY_PANIC( material, "'%s' dazzle material is nullptr", this->getName().c_str() );
 
         return material;
     }
@@ -188,6 +232,8 @@ namespace Mengine
                     , m_resourceImage->getName().c_str()
                 );
 
+                m_resourceDazzleEffect->release();
+
                 return false;
             }
         }
@@ -203,21 +249,20 @@ namespace Mengine
                 , m_resourceDazzleEffect->getName().c_str()
             );
 
+            m_resourceDazzleEffect->release();
+
+            if( m_resourceImage != nullptr )
+            {
+                m_resourceImage->release();
+            }
+
             return false;
         }
 
         const dz_effect_t * effect = data->getDazzleEffect();
 
         dz_instance_t * instance;
-        if( dz_instance_create( m_service, &instance, effect, DZ_NULLPTR ) == DZ_FAILURE )
-        {
-            LOGGER_ERROR( "dazzle '%s' resource '%s' invalid instance create"
-                , this->getName().c_str()
-                , m_resourceDazzleEffect->getName().c_str()
-            );
-
-            return false;
-        }
+        dz_instance_create( m_service, &instance, effect, DZ_NULLPTR );
 
         m_instance = instance;
 
@@ -227,7 +272,28 @@ namespace Mengine
 
         float time = this->getTime();
 
-        dz_instance_set_time( m_instance, time * 0.001f );
+        if( time > 0.f )
+        {
+            dz_result_t seekResult = dz_instance_seek( m_service, m_instance, time * 0.001f, dz_instance_get_fixed_step( m_instance ) );
+            if( seekResult != DZ_SUCCESSFUL )
+            {
+                LOGGER_ERROR( "dazzle '%s' resource '%s' invalid initial seek result '%u'", this->getName().c_str(), m_resourceDazzleEffect->getName().c_str(),
+                              (uint32_t)seekResult );
+
+                dz_instance_destroy( m_service, m_instance );
+                m_instance = nullptr;
+
+                data->release();
+                m_resourceDazzleEffect->release();
+
+                if( m_resourceImage != nullptr )
+                {
+                    m_resourceImage->release();
+                }
+
+                return false;
+            }
+        }
 
         return true;
     }
@@ -253,7 +319,46 @@ namespace Mengine
         {
             Helper::freeArrayT( m_renderVertices );
             m_renderVertices = nullptr;
-            m_renderVertexCount = 0;
+        }
+
+        if( m_renderNormals != nullptr )
+        {
+            Helper::freeArrayT( m_renderNormals );
+            m_renderNormals = nullptr;
+        }
+
+        if( m_renderTangents != nullptr )
+        {
+            Helper::freeArrayT( m_renderTangents );
+            m_renderTangents = nullptr;
+        }
+
+        if( m_renderColors != nullptr )
+        {
+            Helper::freeArrayT( m_renderColors );
+            m_renderColors = nullptr;
+        }
+
+        m_renderVertexCount = 0;
+
+        if( m_dazzleIndices != nullptr )
+        {
+            Helper::freeArrayT( m_dazzleIndices );
+            m_dazzleIndices = nullptr;
+            m_dazzleIndexSize = 0;
+        }
+
+        if( m_renderChunks != nullptr )
+        {
+            Helper::freeArrayT( m_renderChunks );
+            m_renderChunks = nullptr;
+            m_renderChunkCount = 0;
+        }
+
+        if( m_submitVertices != nullptr )
+        {
+            Helper::freeArrayT( m_submitVertices );
+            m_submitVertices = nullptr;
         }
 
         if( m_renderIndicies != nullptr )
@@ -288,132 +393,416 @@ namespace Mengine
 
         float totalTimeMilliseconds = totalTime * 0.001f;
 
-        dz_instance_update( m_service, m_instance, totalTimeMilliseconds );
+        dz_result_t result = dz_instance_update( m_service, m_instance, totalTimeMilliseconds );
+
+        if( result != DZ_SUCCESSFUL )
+        {
+            LOGGER_ERROR( "dazzle '%s' update failed result '%u'", this->getName().c_str(), (uint32_t)result );
+
+            return;
+        }
+
+        this->invalidateBoundingBox();
     }
     //////////////////////////////////////////////////////////////////////////
     void DazzleEffect::render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const
     {
-        uint16_t vertexCount;
-        uint16_t indexCount;
-        dz_instance_compute_bounds( m_instance, &vertexCount, &indexCount );
-
-        if( m_renderVertexCount < vertexCount )
+        if( m_instance == nullptr )
         {
-            m_renderVertexCount = vertexCount;
-
-            m_renderVertices = Helper::reallocateArrayT<RenderVertex2D>( m_renderVertices, m_renderVertexCount );
-
-            StdString::memset( m_renderVertices, 0x00, m_renderVertexCount * sizeof( RenderVertex2D ) );
+            return;
         }
 
-        if( m_renderIndexCount < indexCount )
-        {
-            m_renderIndexCount = indexCount;
+        dz_camera_state_t camera;
+        const dz_camera_state_t * cameraOverride = this->makeCameraState_( _context, &camera ) == true ? &camera : DZ_NULLPTR;
 
+        dz_render_requirements_t requirements;
+        dz_instance_prepare_render( m_instance, cameraOverride, &requirements );
+
+        if( requirements.vertex_count == 0 || requirements.index_count == 0 || requirements.chunk_count == 0 )
+        {
+            return;
+        }
+
+        if( m_renderVertexCount < requirements.vertex_count )
+        {
+            m_renderVertexCount = requirements.vertex_count;
+
+            m_renderVertices = Helper::reallocateArrayT<RenderVertex2D>( m_renderVertices, m_renderVertexCount );
+            m_renderNormals = Helper::reallocateArrayT<dz_vec3_t>( m_renderNormals, m_renderVertexCount );
+            m_renderTangents = Helper::reallocateArrayT<dz_vec4_t>( m_renderTangents, m_renderVertexCount );
+            m_renderColors = Helper::reallocateArrayT<dz_vec4_t>( m_renderColors, m_renderVertexCount );
+        }
+
+        size_t dazzleIndexElementSize = requirements.index_type == DZ_INDEX_UINT32 ? sizeof( dz_uint32_t ) : sizeof( dz_uint16_t );
+        size_t dazzleIndexSize = (size_t)requirements.index_count * dazzleIndexElementSize;
+
+        if( m_dazzleIndexSize < dazzleIndexSize )
+        {
+            m_dazzleIndexSize = dazzleIndexSize;
+            m_dazzleIndices = Helper::reallocateArrayT<uint8_t>( m_dazzleIndices, m_dazzleIndexSize );
+        }
+
+        if( m_renderChunkCount < requirements.chunk_count )
+        {
+            m_renderChunkCount = requirements.chunk_count;
+            m_renderChunks = Helper::reallocateArrayT<dz_render_chunk_t>( m_renderChunks, m_renderChunkCount );
+        }
+
+        dz_render_buffers_t buffers;
+        buffers.positions.buffer = m_renderVertices;
+        buffers.positions.size = (size_t)m_renderVertexCount * sizeof( RenderVertex2D );
+        buffers.positions.offset = MENGINE_OFFSETOF( RenderVertex2D, position );
+        buffers.positions.stride = sizeof( RenderVertex2D );
+
+        buffers.normals.buffer = m_renderNormals;
+        buffers.normals.size = (size_t)m_renderVertexCount * sizeof( dz_vec3_t );
+        buffers.normals.offset = 0;
+        buffers.normals.stride = sizeof( dz_vec3_t );
+
+        buffers.tangents.buffer = m_renderTangents;
+        buffers.tangents.size = (size_t)m_renderVertexCount * sizeof( dz_vec4_t );
+        buffers.tangents.offset = 0;
+        buffers.tangents.stride = sizeof( dz_vec4_t );
+
+        buffers.colors.buffer = m_renderColors;
+        buffers.colors.size = (size_t)m_renderVertexCount * sizeof( dz_vec4_t );
+        buffers.colors.offset = 0;
+        buffers.colors.stride = sizeof( dz_vec4_t );
+
+        buffers.uv0.buffer = m_renderVertices;
+        buffers.uv0.size = (size_t)m_renderVertexCount * sizeof( RenderVertex2D );
+        buffers.uv0.offset = MENGINE_OFFSETOF( RenderVertex2D, uv );
+        buffers.uv0.stride = sizeof( RenderVertex2D );
+
+        buffers.uv1.buffer = m_renderVertices;
+        buffers.uv1.size = (size_t)m_renderVertexCount * sizeof( RenderVertex2D );
+        buffers.uv1.offset = MENGINE_OFFSETOF( RenderVertex2D, uv ) + sizeof( mt::vec2f );
+        buffers.uv1.stride = sizeof( RenderVertex2D );
+
+        buffers.indices = m_dazzleIndices;
+        buffers.indices_size = m_dazzleIndexSize;
+        buffers.index_type = requirements.index_type;
+
+        uint32_t chunkCount = 0;
+        dz_result_t fillResult = dz_instance_fill_render( m_instance, cameraOverride, &buffers, m_renderChunks, m_renderChunkCount, &chunkCount );
+        if( fillResult != DZ_SUCCESSFUL )
+        {
+            LOGGER_ERROR( "dazzle '%s' fill render failed result '%u'", this->getName().c_str(), (uint32_t)fillResult );
+
+            return;
+        }
+
+        size_t submitIndexCount = 0;
+
+        for( uint32_t index = 0; index != chunkCount; ++index )
+        {
+            const dz_render_chunk_t & chunk = m_renderChunks[index];
+
+            if( chunk.index_offset > requirements.index_count || chunk.index_count > requirements.index_count - chunk.index_offset ||
+                chunk.vertex_offset > requirements.vertex_count || chunk.vertex_count > requirements.vertex_count - chunk.vertex_offset )
+            {
+                LOGGER_ERROR( "dazzle '%s' invalid render chunk '%u' range", this->getName().c_str(), index );
+
+                return;
+            }
+
+            if( chunk.index_count > (size_t)MENGINE_UINT32_C( 0xFFFFFFFF ) - submitIndexCount )
+            {
+                LOGGER_ERROR( "dazzle '%s' render submission exceeds uint32 limit", this->getName().c_str() );
+
+                return;
+            }
+
+            submitIndexCount += chunk.index_count;
+        }
+
+        if( m_renderIndexCount < (uint32_t)submitIndexCount )
+        {
+            m_renderIndexCount = (uint32_t)submitIndexCount;
+            m_submitVertices = Helper::reallocateArrayT<RenderVertex2D>( m_submitVertices, m_renderIndexCount );
             m_renderIndicies = Helper::reallocateArrayT<RenderIndex>( m_renderIndicies, m_renderIndexCount );
         }
 
-        dz_instance_mesh_t mesh;
-        mesh.position_buffer = m_renderVertices;
-        mesh.position_offset = MENGINE_OFFSETOF( RenderVertex2D, position );
-        mesh.position_stride = sizeof( RenderVertex2D );
-
-        mesh.color_buffer = m_renderVertices;
-        mesh.color_offset = MENGINE_OFFSETOF( RenderVertex2D, color );
-        mesh.color_stride = sizeof( RenderVertex2D );
-
-        mesh.uv_buffer = m_renderVertices;
-        mesh.uv_offset = MENGINE_OFFSETOF( RenderVertex2D, uv );
-        mesh.uv_stride = sizeof( RenderVertex2D );
-
-        mesh.index_buffer = m_renderIndicies;
-
-        mesh.flags = DZ_EFFECT_MESH_FLAG_NONE;
-        mesh.r = 1.f;
-        mesh.g = 1.f;
-        mesh.b = 1.f;
-        mesh.a = 1.f;
-
-        dz_instance_mesh_chunk_t chunks[16];
-        uint32_t chunk_count;
-
-        dz_instance_compute_mesh( m_instance, &mesh, chunks, 16, &chunk_count );
-
-        this->updateVertexUV_( m_renderVertices, vertexCount );
-        this->updateVertexColor_( m_renderVertices, vertexCount );
-        this->updateVertexWM_( m_renderVertices, vertexCount );
-
-        const RenderMaterialInterfacePtr & material = this->getMaterial();
+        this->updateVertexUV_( m_renderVertices, requirements.vertex_count );
+        this->updateVertexColor_( m_renderVertices, requirements.vertex_count );
+        this->updateVertexWM_( m_renderVertices, requirements.vertex_count );
 
         const mt::box2f * bb = this->getBoundingBox();
+        uint32_t submitOffset = 0;
 
-        for( uint32_t
-            it_chunk = 0,
-            it_mesh_end = chunk_count;
-            it_chunk != it_mesh_end;
-            ++it_chunk )
+        for( uint32_t index = 0; index != chunkCount; ++index )
         {
-            const dz_instance_mesh_chunk_t & chunk = chunks[it_chunk];
+            const dz_render_chunk_t & chunk = m_renderChunks[index];
 
-            _renderPipeline->addRenderObject( _context, material, nullptr, m_renderVertices + chunk.vertex_offset, chunk.vertex_count, m_renderIndicies + chunk.index_offset, chunk.index_count, bb, false, MENGINE_DOCUMENT_FORWARD );
+            uint32_t primitiveIndexCount = chunk.primitive == DZ_PRIMITIVE_LINES ? 2U : 3U;
+            if( chunk.primitive != DZ_PRIMITIVE_TRIANGLES && chunk.primitive != DZ_PRIMITIVE_LINES )
+            {
+                LOGGER_ERROR( "dazzle '%s' render chunk '%u' has unsupported primitive '%u'", this->getName().c_str(), index, (uint32_t)chunk.primitive );
+
+                return;
+            }
+
+            if( chunk.index_count % primitiveIndexCount != 0 )
+            {
+                LOGGER_ERROR( "dazzle '%s' render chunk '%u' has invalid index count '%u'", this->getName().c_str(), index, chunk.index_count );
+
+                return;
+            }
+
+            RenderMaterialInterfacePtr material = this->makeMaterialPass_( chunk.pass, chunk.primitive );
+            if( material == nullptr )
+            {
+                LOGGER_ERROR( "dazzle '%s' render chunk '%u' technique '%s' has no material", this->getName().c_str(), index, chunk.pass.technique_id );
+
+                return;
+            }
+
+            uint32_t chunkIndexOffset = 0;
+
+            while( chunkIndexOffset != chunk.index_count )
+            {
+                uint32_t batchIndexCount = chunk.index_count - chunkIndexOffset;
+
+                if( batchIndexCount >= MENGINE_RENDER_VERTEX_MAX_BATCH )
+                {
+                    batchIndexCount = MENGINE_RENDER_VERTEX_MAX_BATCH - 1U;
+                    batchIndexCount -= batchIndexCount % primitiveIndexCount;
+                }
+
+                for( uint32_t batchIndex = 0; batchIndex != batchIndexCount; ++batchIndex )
+                {
+                    uint32_t sourceIndex = this->getRenderIndex_( requirements.index_type, chunk.index_offset + chunkIndexOffset + batchIndex );
+                    if( sourceIndex >= requirements.vertex_count )
+                    {
+                        LOGGER_ERROR( "dazzle '%s' render chunk '%u' has invalid vertex index '%u'", this->getName().c_str(), index, sourceIndex );
+
+                        return;
+                    }
+
+                    m_submitVertices[submitOffset + batchIndex] = m_renderVertices[sourceIndex];
+                    m_renderIndicies[submitOffset + batchIndex] = (RenderIndex)batchIndex;
+                }
+
+                _renderPipeline->addRenderObject( _context, material, nullptr, m_submitVertices + submitOffset, batchIndexCount, m_renderIndicies + submitOffset, batchIndexCount,
+                                                  bb, false, MENGINE_DOCUMENT_FORWARD );
+
+                submitOffset += batchIndexCount;
+                chunkIndexOffset += batchIndexCount;
+            }
         }
     }
     //////////////////////////////////////////////////////////////////////////
     void DazzleEffect::_updateBoundingBox( mt::box2f * const _boundingBox, mt::box2f ** const _boundingBoxCurrent ) const
     {
-        MENGINE_UNUSED( _boundingBox );
-        MENGINE_UNUSED( _boundingBoxCurrent );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DazzleEffect::updateVertexColor_( RenderVertex2D * const _vertices, uint16_t _verticesCount ) const
-    {
-        Color color;
-        this->calcTotalColor( &color );
-
-        if( color.isIdentity() == true )
+        if( m_instance == nullptr )
         {
+            *_boundingBoxCurrent = nullptr;
+
             return;
         }
 
-        ColorValue_ARGB color_argb = color.getAsARGB();
-
-        for( uint16_t
-            it = 0,
-            it_end = _verticesCount;
-            it != it_end;
-            ++it )
+        dz_aabb_t aabb;
+        dz_instance_get_aabb( m_instance, &aabb );
+        if( aabb.valid == DZ_FALSE )
         {
-            RenderVertex2D & p = _vertices[it];
+            *_boundingBoxCurrent = nullptr;
 
-            if( p.color == Detail::COLOR_IDENTITY_VALUE )
-            {
-                p.color = color_argb;
-            }
-            else
-            {
-                Color cv = Helper::makeColorARGB( p.color );
-                cv *= color;
-                p.color = cv.getAsARGB();
-            }
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DazzleEffect::updateVertexWM_( RenderVertex2D * const _vertices, uint16_t _verticesCount ) const
-    {
-        if( this->isIdentityWorldMatrix() == true )
-        {
             return;
         }
 
         const mt::mat4f & wm = this->getWorldMatrix();
+        bool initialized = false;
 
-        for( uint16_t
-            it = 0,
-            it_end = _verticesCount;
-            it != it_end;
-            ++it )
+        for( uint32_t index = 0; index != 8; ++index )
+        {
+            mt::vec3f localPoint( ( index & 1U ) != 0 ? aabb.maximum.x : aabb.minimum.x, ( index & 2U ) != 0 ? aabb.maximum.y : aabb.minimum.y,
+                                  -( ( index & 4U ) != 0 ? aabb.maximum.z : aabb.minimum.z ) );
+
+            mt::vec3f worldPoint;
+            mt::mul_v3_v3_m4( &worldPoint, localPoint, wm );
+
+            if( initialized == false )
+            {
+                mt::box2_reset( _boundingBox, worldPoint.x, worldPoint.y );
+                initialized = true;
+            }
+            else
+            {
+                mt::box2_add_internal_point( _boundingBox, worldPoint.x, worldPoint.y );
+            }
+        }
+
+        *_boundingBoxCurrent = _boundingBox;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DazzleEffect::makeCameraState_( const RenderContext * _context, dz_camera_state_t * const _camera ) const
+    {
+        const dz_effect_t * effect = dz_instance_get_effect( m_instance );
+
+        dz_project_profile_t profile;
+        dz_effect_get_project_profile( effect, &profile );
+
+        float viewportWidth = 1.f;
+        float viewportHeight = 1.f;
+
+        if( _context != nullptr && _context->viewport != nullptr )
+        {
+            const Viewport & viewport = _context->viewport->getViewportWM();
+            viewportWidth = viewport.getWidth();
+            viewportHeight = viewport.getHeight();
+        }
+        else if( _context != nullptr && _context->resolution != nullptr )
+        {
+            const Resolution & resolution = _context->resolution->getContentResolution();
+            viewportWidth = resolution.getWidthF();
+            viewportHeight = resolution.getHeightF();
+        }
+
+        dz_camera_state_from_profile( &profile, viewportWidth, viewportHeight, _camera );
+
+        if( _context == nullptr || _context->camera == nullptr )
+        {
+            return true;
+        }
+
+        const mt::mat4f & cameraWorldMatrix = _context->camera->getCameraViewMatrixInv();
+
+        mt::vec3f worldPosition( cameraWorldMatrix.v3.x, cameraWorldMatrix.v3.y, cameraWorldMatrix.v3.z );
+        mt::vec3f worldForward( cameraWorldMatrix.v2.x, cameraWorldMatrix.v2.y, cameraWorldMatrix.v2.z );
+        mt::vec3f worldUp( cameraWorldMatrix.v1.x, cameraWorldMatrix.v1.y, cameraWorldMatrix.v1.z );
+
+        mt::mat4f worldMatrixInv;
+        mt::inv_m4_m4( &worldMatrixInv, this->getWorldMatrix() );
+
+        mt::vec3f localPosition;
+        mt::mul_v3_v3_m4( &localPosition, worldPosition, worldMatrixInv );
+
+        mt::vec3f localForward;
+        mt::mul_v3_v3_m4_r( &localForward, worldForward, worldMatrixInv );
+        mt::norm_v3_v3( &localForward, localForward );
+
+        mt::vec3f localUp;
+        mt::mul_v3_v3_m4_r( &localUp, worldUp, worldMatrixInv );
+        mt::norm_v3_v3( &localUp, localUp );
+
+        _camera->position.x = localPosition.x;
+        _camera->position.y = localPosition.y;
+        _camera->position.z = -localPosition.z;
+        _camera->forward.x = localForward.x;
+        _camera->forward.y = localForward.y;
+        _camera->forward.z = -localForward.z;
+        _camera->up.x = localUp.x;
+        _camera->up.y = localUp.y;
+        _camera->up.z = -localUp.z;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    RenderMaterialInterfacePtr DazzleEffect::makeMaterialPass_( const dz_material_pass_desc_t & _pass, dz_primitive_type_e _primitive ) const
+    {
+        if( _primitive == DZ_PRIMITIVE_LINES )
+        {
+            return RENDERMATERIAL_SERVICE()->getDebugLineMaterial();
+        }
+
+        EMaterialBlendMode blendMode = EMB_NORMAL;
+
+        switch( _pass.blend )
+        {
+        case DZ_BLEND_ADD:
+            blendMode = EMB_ADD;
+            break;
+        case DZ_BLEND_MULTIPLY:
+            blendMode = EMB_MULTIPLY;
+            break;
+        case DZ_BLEND_SCREEN:
+            blendMode = EMB_SCREEN;
+            break;
+        case DZ_BLEND_NORMAL:
+        default:
+            blendMode = EMB_NORMAL;
+            break;
+        }
+
+        bool colorTechnique = StdString::strcmp( _pass.technique_id, "dazzle.color" ) == 0;
+        bool standardTechnique =
+            colorTechnique == true || StdString::strcmp( _pass.technique_id, "dazzle.textured" ) == 0 || StdString::strcmp( _pass.technique_id, "dazzle.lit" ) == 0;
+
+        ConstString materialName = standardTechnique == true ? ConstString::none() : Helper::stringizeString( _pass.technique_id );
+
+        RenderMaterialInterfacePtr material;
+
+        if( colorTechnique == false && m_resourceImage != nullptr )
+        {
+            material = Helper::makeImageMaterial( m_resourceImage, materialName, blendMode, false, false, MENGINE_DOCUMENT_FACTORABLE );
+        }
+        else
+        {
+            material = Helper::makeSolidMaterial( materialName, blendMode, false, MENGINE_DOCUMENT_FACTORABLE );
+        }
+
+        if( material == nullptr && standardTechnique == false )
+        {
+            LOGGER_WARNING( "dazzle '%s' technique '%s' is not registered, use standard fallback", this->getName().c_str(), _pass.technique_id );
+
+            if( m_resourceImage != nullptr )
+            {
+                material = Helper::makeImageMaterial( m_resourceImage, ConstString::none(), blendMode, false, false, MENGINE_DOCUMENT_FACTORABLE );
+            }
+            else
+            {
+                material = Helper::makeSolidMaterial( ConstString::none(), blendMode, false, MENGINE_DOCUMENT_FACTORABLE );
+            }
+        }
+
+        return material;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t DazzleEffect::getRenderIndex_( dz_index_type_e _indexType, uint32_t _index ) const
+    {
+        if( _indexType == DZ_INDEX_UINT32 )
+        {
+            const dz_uint32_t * indices = (const dz_uint32_t *)m_dazzleIndices;
+
+            return indices[_index];
+        }
+
+        const dz_uint16_t * indices = (const dz_uint16_t *)m_dazzleIndices;
+
+        return indices[_index];
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DazzleEffect::updateVertexColor_( RenderVertex2D * const _vertices, uint32_t _verticesCount ) const
+    {
+        Color color;
+        this->calcTotalColor( &color );
+
+        for( uint32_t it = 0, it_end = _verticesCount; it != it_end; ++it )
+        {
+            RenderVertex2D & p = _vertices[it];
+            const dz_vec4_t & particleColor = m_renderColors[it];
+
+            Color vertexColor( particleColor.x, particleColor.y, particleColor.z, particleColor.w );
+            vertexColor *= color;
+            p.color = vertexColor.getAsARGB();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DazzleEffect::updateVertexWM_( RenderVertex2D * const _vertices, uint32_t _verticesCount ) const
+    {
+        const mt::mat4f & wm = this->getWorldMatrix();
+        bool identityWorldMatrix = this->isIdentityWorldMatrix();
+
+        for( uint32_t it = 0, it_end = _verticesCount; it != it_end; ++it )
         {
             RenderVertex2D & r = _vertices[it];
+
+            r.position.z = -r.position.z;
+
+            if( identityWorldMatrix == true )
+            {
+                continue;
+            }
 
             mt::vec3f wm_pos;
             mt::mul_v3_v3_m4( &wm_pos, r.position, wm );
@@ -422,17 +811,19 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void DazzleEffect::updateVertexUV_( RenderVertex2D * const _vertices, uint16_t _verticesCount ) const
+    void DazzleEffect::updateVertexUV_( RenderVertex2D * const _vertices, uint32_t _verticesCount ) const
     {
-        for( uint16_t
-            it = 0,
-            it_end = _verticesCount;
-            it != it_end;
-            ++it )
+        if( m_resourceImage == nullptr )
+        {
+            return;
+        }
+
+        for( uint32_t it = 0, it_end = _verticesCount; it != it_end; ++it )
         {
             RenderVertex2D & r = _vertices[it];
 
             m_resourceImage->correctUV( 0, r.uv[0], &(r.uv[0]) );
+            m_resourceImage->correctUV( 1, r.uv[1], &( r.uv[1] ) );
         }
     }
     //////////////////////////////////////////////////////////////////////////

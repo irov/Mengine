@@ -135,6 +135,9 @@ namespace Mengine
         void setDragStartThreshold( float _threshold );
         float getDragStartThreshold() const;
 
+        void setDragInverted( bool _inverted );
+        bool getDragInverted() const;
+
         void setDefaultHandle( bool _handle );
         bool getDefaultHandle() const;
 
@@ -315,6 +318,7 @@ namespace Mengine
         bool m_enableScale;
         bool m_allowOutOfBounds;
         bool m_disableDragIfInvalid;
+        bool m_dragInverted;
         bool m_defaultHandle;
         bool m_scrollLocked;
         bool m_frozen;

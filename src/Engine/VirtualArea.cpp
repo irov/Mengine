@@ -61,6 +61,7 @@ namespace Mengine
         , m_enableScale( true )
         , m_allowOutOfBounds( true )
         , m_disableDragIfInvalid( true )
+        , m_dragInverted( false )
         , m_defaultHandle( true )
         , m_scrollLocked( false )
         , m_frozen( false )
@@ -521,6 +522,16 @@ namespace Mengine
     float VirtualArea::getDragStartThreshold() const
     {
         return m_dragStartThreshold;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void VirtualArea::setDragInverted( bool _inverted )
+    {
+        m_dragInverted = _inverted;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool VirtualArea::getDragInverted() const
+    {
+        return m_dragInverted;
     }
     //////////////////////////////////////////////////////////////////////////
     void VirtualArea::setDefaultHandle( bool _handle )
@@ -1358,7 +1369,7 @@ namespace Mengine
             return false;
         }
 
-        m_velocity = -delta;
+        m_velocity = m_dragInverted == true ? delta : -delta;
 
         if( m_allowOutOfBounds == false )
         {

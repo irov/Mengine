@@ -35,9 +35,9 @@
 #define ZIP_END_HEADER_SIGNATURE (0x06054b50)
 #define ZIP_END_HEADER_SIGNATURE_64 (0x06064b50)
 #define ZIP_END_LOCAL_HEADER_SIGNATURE_64 (0x07064b50)
+#define ZIP_EXTRA_FIELD_ZIP64_ID (0x0001)
 #define ZIP_MAX_FILEPATH 1024
 #define ZIP_END_CENTRAL_DIR_SIZE 22
-#define ZIP_LOCAL_HEADER_SIZE 30
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
@@ -367,37 +367,81 @@ namespace Mengine
             uint64_t compressedSize = header.compressedSize;
             uint64_t relativeOffset = header.relativeOffset;
 
-            if( header.extraFieldLen != 0 )
+            uint16_t extraFieldRemaining = header.extraFieldLen;
+
+            while( extraFieldRemaining != 0 )
             {
+                if( extraFieldRemaining < sizeof( uint16_t ) * 2 )
+                {
+                    LOGGER_ERROR( "zip '%s' file extra field invalid remaining size [%u]"
+                        , _folderPath.c_str()
+                        , extraFieldRemaining
+                    );
+
+                    return false;
+                }
+
                 uint16_t headerId;
                 uint16_t dataSize;
 
-                stream->read( &headerId, sizeof( headerId ) );
-                stream->read( &dataSize, sizeof( dataSize ) );
-
-                if( header.uncompressedSize == 0xffffffffU )
+                if( stream->read( &headerId, sizeof( headerId ) ) != sizeof( headerId ) ||
+                    stream->read( &dataSize, sizeof( dataSize ) ) != sizeof( dataSize ) )
                 {
-                    uint64_t dataValue;
-                    stream->read( &dataValue, sizeof( dataValue ) );
-
-                    uncompressedSize = dataValue;
+                    return false;
                 }
 
-                if( header.compressedSize == 0xffffffffU )
-                {
-                    uint64_t dataValue;
-                    stream->read( &dataValue, sizeof( dataValue ) );
+                extraFieldRemaining -= sizeof( uint16_t ) * 2;
 
-                    compressedSize = dataValue;
+                if( dataSize > extraFieldRemaining )
+                {
+                    LOGGER_ERROR( "zip '%s' file extra field [%#06x] invalid data size [%u] remaining [%u]"
+                        , _folderPath.c_str()
+                        , headerId
+                        , dataSize
+                        , extraFieldRemaining
+                    );
+
+                    return false;
                 }
 
-                if( header.relativeOffset == 0xffffffffU )
-                {
-                    uint64_t dataValue;
-                    stream->read( &dataValue, sizeof( dataValue ) );
+                uint16_t dataRemaining = dataSize;
 
-                    relativeOffset = dataValue;
+                if( headerId == ZIP_EXTRA_FIELD_ZIP64_ID )
+                {
+                    const auto readZip64Value = [&stream, &dataRemaining]( uint64_t * const _value ) -> bool
+                    {
+                        if( dataRemaining < sizeof( uint64_t ) || stream->read( _value, sizeof( uint64_t ) ) != sizeof( uint64_t ) )
+                        {
+                            return false;
+                        }
+
+                        dataRemaining -= sizeof( uint64_t );
+
+                        return true;
+                    };
+
+                    if( header.uncompressedSize == 0xffffffffU && readZip64Value( &uncompressedSize ) == false )
+                    {
+                        return false;
+                    }
+
+                    if( header.compressedSize == 0xffffffffU && readZip64Value( &compressedSize ) == false )
+                    {
+                        return false;
+                    }
+
+                    if( header.relativeOffset == 0xffffffffU && readZip64Value( &relativeOffset ) == false )
+                    {
+                        return false;
+                    }
                 }
+
+                if( stream->skip( dataRemaining ) == false )
+                {
+                    return false;
+                }
+
+                extraFieldRemaining -= dataSize;
             }
 
             stream->skip( header.commentLen );
@@ -410,8 +454,43 @@ namespace Mengine
                 , header.compressionMethod
             );
 
+            if( proxyStream->seek( (size_t)relativeOffset ) == false )
+            {
+                return false;
+            }
+
+            uint32_t localSignature = 0;
+            size_t readLocalSignature = proxyStream->read( &localSignature, sizeof( localSignature ) );
+
+            if( readLocalSignature != sizeof( localSignature ) || localSignature != ZIP_LOCAL_HEADER_SIGNATURE )
+            {
+                LOGGER_ERROR( "zip '%s' file '%s' invalid local header signature [%#010x] read [%zu]"
+                    , _folderPath.c_str()
+                    , filePath.c_str()
+                    , localSignature
+                    , readLocalSignature
+                );
+
+                return false;
+            }
+
+            Detail::ZipLocalFileHeader localHeader;
+            size_t readLocalHeader = proxyStream->read( &localHeader, sizeof( localHeader ) );
+
+            if( readLocalHeader != sizeof( localHeader ) )
+            {
+                LOGGER_ERROR( "zip '%s' file '%s' invalid local header read [%zu] need [%zu]"
+                    , _folderPath.c_str()
+                    , filePath.c_str()
+                    , readLocalHeader
+                    , sizeof( localHeader )
+                );
+
+                return false;
+            }
+
             FileInfo fi;
-            fi.seek_carriage = (size_t)relativeOffset + ZIP_LOCAL_HEADER_SIZE + header.fileNameLen + header.commentLen;
+            fi.seek_carriage = proxyStream->tell() + localHeader.fileNameLen + localHeader.extraFieldLen;
             fi.file_size = (size_t)compressedSize;
             fi.unz_size = (size_t)uncompressedSize;
             fi.compr_method = header.compressionMethod;

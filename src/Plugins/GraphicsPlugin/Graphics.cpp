@@ -6,6 +6,7 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/MemoryAllocator.h"
+#include "Kernel/RenderHelper.h"
 
 #include "Config/StdAlgorithm.h"
 
@@ -51,6 +52,8 @@ namespace Mengine
         , m_invalidateLocalVertex2D( false )
     {
         GP_CALL( gp_canvas_create, (&m_canvas, &gp_malloc, &gp_realloc, &gp_free, nullptr) );
+
+        mt::box2_reset( &m_renderBoundingBox, 0.f, 0.f );
     }
     //////////////////////////////////////////////////////////////////////////
     Graphics::~Graphics()
@@ -161,6 +164,66 @@ namespace Mengine
         return Color( c.r, c.g, c.b, c.a );
     }
     //////////////////////////////////////////////////////////////////////////
+    void Graphics::setLineCap( EGraphicsLineCap _cap )
+    {
+        GP_CALL( gp_set_line_cap, (m_canvas, static_cast<gp_line_cap_t>(_cap)) );
+
+        m_invalidateLocalVertex2D = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    EGraphicsLineCap Graphics::getLineCap() const
+    {
+        gp_line_cap_t cap;
+        GP_CALL( gp_get_line_cap, (m_canvas, &cap) );
+
+        return static_cast<EGraphicsLineCap>(cap);
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Graphics::setLineJoin( EGraphicsLineJoin _join )
+    {
+        GP_CALL( gp_set_line_join, (m_canvas, static_cast<gp_line_join_t>(_join)) );
+
+        m_invalidateLocalVertex2D = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    EGraphicsLineJoin Graphics::getLineJoin() const
+    {
+        gp_line_join_t join;
+        GP_CALL( gp_get_line_join, (m_canvas, &join) );
+
+        return static_cast<EGraphicsLineJoin>(join);
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Graphics::setMiterLimit( float _limit )
+    {
+        GP_CALL( gp_set_miter_limit, (m_canvas, _limit) );
+
+        m_invalidateLocalVertex2D = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float Graphics::getMiterLimit() const
+    {
+        float limit;
+        GP_CALL( gp_get_miter_limit, (m_canvas, &limit) );
+
+        return limit;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Graphics::setFillRule( EGraphicsFillRule _rule )
+    {
+        GP_CALL( gp_set_fill_rule, (m_canvas, static_cast<gp_fill_rule_t>(_rule)) );
+
+        m_invalidateLocalVertex2D = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    EGraphicsFillRule Graphics::getFillRule() const
+    {
+        gp_fill_rule_t rule;
+        GP_CALL( gp_get_fill_rule, (m_canvas, &rule) );
+
+        return static_cast<EGraphicsFillRule>(rule);
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Graphics::setCurveQuality( uint8_t _quality )
     {
         GP_CALL( gp_set_curve_quality, (m_canvas, _quality) );
@@ -234,6 +297,20 @@ namespace Mengine
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Graphics::beginCompoundFill( EGraphicsFillRule _rule )
+    {
+        GP_CALL( gp_begin_compound_fill, (m_canvas, static_cast<gp_fill_rule_t>(_rule)) );
+
+        m_invalidateLocalVertex2D = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Graphics::endCompoundFill()
+    {
+        GP_CALL( gp_end_compound_fill, (m_canvas) );
+
+        m_invalidateLocalVertex2D = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Graphics::pointMoveTo( const mt::vec2f & _point )
     {
         GP_CALL( gp_point_move_to, (m_canvas, _point.x, _point.y) );
@@ -260,6 +337,20 @@ namespace Mengine
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Graphics::pointClose()
+    {
+        GP_CALL( gp_point_close, (m_canvas) );
+
+        m_invalidateLocalVertex2D = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Graphics::pointArcTo( const mt::vec2f & _p0, const mt::vec2f & _p1, float _radius )
+    {
+        GP_CALL( gp_point_tangent_arc_to, (m_canvas, _p0.x, _p0.y, _p1.x, _p1.y, _radius) );
+
+        m_invalidateLocalVertex2D = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Graphics::drawRect( const mt::vec2f & _point, float _width, float _height )
     {
         GP_CALL( gp_rect, (m_canvas, _point.x, _point.y, _width, _height) );
@@ -270,6 +361,24 @@ namespace Mengine
     void Graphics::drawRoundedRect( const mt::vec2f & _point, float _width, float _height, float _radius )
     {
         GP_CALL( gp_rounded_rect, (m_canvas, _point.x, _point.y, _width, _height, _radius) );
+
+        m_invalidateLocalVertex2D = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Graphics::drawRoundedPolygon( const Polygon & _polygon, float _radius )
+    {
+        const VectorPoints & points = _polygon.getPoints();
+
+        GP_CALL( gp_rounded_polygon, (m_canvas, points.data(), points.size(), sizeof( VectorPoints::value_type ), _radius) );
+
+        m_invalidateLocalVertex2D = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Graphics::drawPolyline( const Polygon & _polygon, bool _closed )
+    {
+        const VectorPoints & points = _polygon.getPoints();
+
+        GP_CALL( gp_polyline, (m_canvas, points.data(), points.size(), sizeof( VectorPoints::value_type ), _closed == true ? GP_TRUE : GP_FALSE) );
 
         m_invalidateLocalVertex2D = true;
     }
@@ -288,12 +397,51 @@ namespace Mengine
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Graphics::drawArc( const mt::vec2f & _point, float _radius, float _angleFrom, float _angleTo )
+    {
+        GP_CALL( gp_arc, (m_canvas, _point.x, _point.y, _radius, _angleFrom, _angleTo) );
+
+        m_invalidateLocalVertex2D = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Graphics::drawEllipseArc( const mt::vec2f & _point, float _width, float _height, float _angleFrom, float _angleTo )
+    {
+        GP_CALL( gp_ellipse_arc, (m_canvas, _point.x, _point.y, _width, _height, _angleFrom, _angleTo) );
+
+        m_invalidateLocalVertex2D = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Graphics::drawSector( const mt::vec2f & _point, float _radius, float _angleFrom, float _angleTo )
+    {
+        GP_CALL( gp_sector, (m_canvas, _point.x, _point.y, _radius, _angleFrom, _angleTo) );
+
+        m_invalidateLocalVertex2D = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Graphics::drawRing( const mt::vec2f & _point, float _innerRadius, float _outerRadius, float _angleFrom, float _angleTo )
+    {
+        GP_CALL( gp_ring, (m_canvas, _point.x, _point.y, _innerRadius, _outerRadius, _angleFrom, _angleTo) );
+
+        m_invalidateLocalVertex2D = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    mt::box2f Graphics::getBounds() const
+    {
+        if( m_invalidateLocalVertex2D == true )
+        {
+            this->updateLocalVertex2D_();
+        }
+
+        return m_renderBoundingBox;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Graphics::clear()
     {
         GP_CALL( gp_canvas_clear, (m_canvas) );
 
         m_renderVertex2D.clear();
         m_renderIndices.clear();
+        mt::box2_reset( &m_renderBoundingBox, 0.f, 0.f );
 
         m_invalidateLocalVertex2D = true;
     }
@@ -316,7 +464,7 @@ namespace Mengine
         VectorRenderIndex::value_type * indexData = m_renderIndices.data();
         VectorRenderIndex::size_type indexSize = m_renderIndices.size();
 
-        _renderPipeline->addRenderObject( _context, m_material, nullptr, vertexData, (uint32_t)vertexSize, indexData, (uint32_t)indexSize, nullptr, false, MENGINE_DOCUMENT_FORWARD );
+        _renderPipeline->addRenderObject( _context, m_material, nullptr, vertexData, (uint32_t)vertexSize, indexData, (uint32_t)indexSize, &m_renderBoundingBox, false, MENGINE_DOCUMENT_FORWARD );
     }
     //////////////////////////////////////////////////////////////////////////
     void Graphics::_invalidateWorldMatrix() const
@@ -375,11 +523,23 @@ namespace Mengine
 
         for( RenderVertex2D & vertex : m_renderVertex2D )
         {
+#if defined(MENGINE_RENDER_COLOR_RGBA)
+            // graphics packs colors as 0xAARRGGBB. RGBA render backends read
+            // the uint32 bytes as R, G, B, A, so swap red and blue before the
+            // vertex buffer is submitted.
+            uint32_t argb = vertex.color;
+            vertex.color = (argb & 0xFF00FF00U)
+                | ((argb & 0x00FF0000U) >> 16U)
+                | ((argb & 0x000000FFU) << 16U);
+#endif
+
             mt::vec3f pwm;
             mt::mul_v3_v3_m4( &pwm, vertex.position, wm );
 
             vertex.position = pwm;
         }
+
+        Helper::makeRenderBoundingBox( &m_renderBoundingBox, m_renderVertex2D.data(), (uint32_t)m_renderVertex2D.size() );
     }
     //////////////////////////////////////////////////////////////////////////
 }

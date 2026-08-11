@@ -1,5 +1,7 @@
 #import "iOSUserMessagingPlatformPlugin.h"
 
+#import "Environment/Apple/AppleDetail.h"
+
 #import "Environment/iOS/iOSDetail.h"
 #import "Environment/iOS/iOSLog.h"
 #import "Environment/iOS/iOSTransparencyConsentParam.h"
@@ -29,6 +31,7 @@
 
     if (self) {
         self.m_completed = NO;
+        self.m_completionHandlers = [NSMutableArray array];
     }
 
     return self;
@@ -40,8 +43,27 @@
     self.m_completed = YES;
 
     iOSTransparencyConsentParam * consent = [[iOSTransparencyConsentParam alloc] initFromUserDefaults];
+    consent.TRANSPARENCYCONSENT_CANREQUESTADS = UMPConsentInformation.sharedInstance.canRequestAds;
 
     [iOSDetail transparencyConsent:consent];
+
+    NSArray<void (^)(void)> * completionHandlers = [self.m_completionHandlers copy];
+    [self.m_completionHandlers removeAllObjects];
+
+    [AppleDetail addMainQueueOperation:^{
+        for (void (^ completion)(void) in completionHandlers) {
+            completion();
+        }
+    }];
+}
+
+- (void)waitForConsentCompletion:(void (^ _Nonnull)(void))completion {
+    if (self.m_completed == YES) {
+        [AppleDetail addMainQueueOperation:completion];
+        return;
+    }
+
+    [self.m_completionHandlers addObject:[completion copy]];
 }
 
 - (void)showConsentFlow {
@@ -65,6 +87,7 @@
 
             // UMP writes IABTCF_* values to NSUserDefaults after dismissal.
             iOSTransparencyConsentParam * consent = [[iOSTransparencyConsentParam alloc] initFromUserDefaults];
+            consent.TRANSPARENCYCONSENT_CANREQUESTADS = UMPConsentInformation.sharedInstance.canRequestAds;
 
             [iOSDetail transparencyConsent:consent];
 

@@ -23,12 +23,23 @@
 }
 
 - (void)sendEvent:(NSString *)eventName parameters:(NSDictionary<NSString *, id> *)parameters {
+    if (self.m_analyticsEnabled == NO) {
+        return;
+    }
+
     [FIRAnalytics logEventWithName:eventName parameters:parameters];
 }
 
 #pragma mark - iOSPluginInterface
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    self.m_analyticsEnabled = NO;
+    [FIRAnalytics setAnalyticsCollectionEnabled:NO];
+
+    return YES;
+}
+
+- (void)setupUserProperties {
     NSString * userId = [iOSApplication.sharedInstance getUserId];
 
     [FIRAnalytics setUserID:userId];
@@ -54,10 +65,13 @@
 
     [FIRAnalytics setUserPropertyString:[NSString stringWithFormat:@"%ld", (long)lifeTime] forName:@"life_time"];
 
-    return YES;
 }
 
 - (void)onUserId:(iOSUserParam *)user {
+    if (self.m_analyticsEnabled == NO) {
+        return;
+    }
+
     [FIRAnalytics setUserID:user.USER_ID];
 }
 
@@ -69,6 +83,10 @@
 #pragma mark - iOSPluginAdRevenueDelegateInterface
 
 - (void)onAdRevenue:(iOSAdRevenueParam *)revenue {
+    if (self.m_analyticsEnabled == NO) {
+        return;
+    }
+
     [FIRAnalytics logEventWithName:kFIREventAdImpression
                         parameters:@{
                             kFIRParameterAdPlatform:revenue.REVENUE_PLATFORM,
@@ -93,11 +111,25 @@
         FIRConsentTypeAdPersonalization : AD_PERSONALIZATION ? FIRConsentStatusGranted : FIRConsentStatusDenied,
         FIRConsentTypeAdUserData : AD_USER_DATA ? FIRConsentStatusGranted : FIRConsentStatusDenied,
     }];
+
+    self.m_analyticsEnabled = NO;
+    [FIRAnalytics setAnalyticsCollectionEnabled:NO];
+
+    if (ANALYTICS_STORAGE == YES) {
+        [self setupUserProperties];
+
+        self.m_analyticsEnabled = YES;
+        [FIRAnalytics setAnalyticsCollectionEnabled:YES];
+    }
 }
 
 #pragma mark - iOSPluginAnalyticDelegateInterface
 
 - (void)onAnalyticEvent:(NSString *)event category:(iOSAnalyticsEventCategory)category params:(NSDictionary *)params {
+    if (self.m_analyticsEnabled == NO) {
+        return;
+    }
+
     if (category == iOSAnalyticsEventCategory_System) {
         return;
     }
@@ -106,6 +138,10 @@
 }
 
 - (void)onAnalyticScreen:(NSString *)screen type:(NSString *)type {
+    if (self.m_analyticsEnabled == NO) {
+        return;
+    }
+
     [FIRAnalytics logEventWithName:kFIREventScreenView
                         parameters:@{
                             kFIRParameterScreenClass: type,

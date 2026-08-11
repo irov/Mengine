@@ -12,4 +12,6 @@
 
 - (void)sendEvent:(NSString *)name parameters:(NSDictionary<NSString *, id> *)parameters;
 
+@property (nonatomic, assign) BOOL m_analyticsEnabled;
+
 @end

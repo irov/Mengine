@@ -48,6 +48,7 @@ static iOSConsentFlowUserGeography TRANSPARENCYCONSENT_USERGEOGRAPHY = iOSConsen
     TRANSPARENCYCONSENT_USERGEOGRAPHY = (iOSConsentFlowUserGeography)[AppleKeyChain getIntegerForKey:@"mengine.consent.user_geography" defaultValue:iOSConsentFlowUserGeographyUnknown];
 
     self.TRANSPARENCYCONSENT_PENDING = [iOSTransparencyConsentParam computeTransparencyConsentPending];
+    self.TRANSPARENCYCONSENT_CANREQUESTADS = NO;
     
     self.TRANSPARENCYCONSENT_CMPSDKID = [defaults integerForKey:@"IABTCF_CmpSdkID"];
     self.TRANSPARENCYCONSENT_CMPSDKVERSION = [defaults integerForKey:@"IABTCF_CmpSdkVersion"];
@@ -77,6 +78,10 @@ static iOSConsentFlowUserGeography TRANSPARENCYCONSENT_USERGEOGRAPHY = iOSConsen
     }
     
     return self.TRANSPARENCYCONSENT_PENDING;
+}
+
+- (BOOL)canRequestAds {
+    return self.TRANSPARENCYCONSENT_CANREQUESTADS;
 }
 
 - (BOOL)isEEA {
@@ -126,9 +131,7 @@ static iOSConsentFlowUserGeography TRANSPARENCYCONSENT_USERGEOGRAPHY = iOSConsen
         return YES;
     }
 
-    //ToDo
-
-    return YES;
+    return [self getPurposeConsentArgument:0];
 }
 
 - (BOOL)getConsentAdPersonalization {

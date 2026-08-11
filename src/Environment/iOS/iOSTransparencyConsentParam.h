@@ -10,6 +10,7 @@
 - (instancetype _Nonnull)initFromUserDefaults;
 
 - (BOOL)isPending;
+- (BOOL)canRequestAds;
 - (BOOL)getPurposeConsentArgument:(NSInteger)index;
 - (BOOL)isEEA;
 - (BOOL)getConsentAdStorage;
@@ -18,6 +19,7 @@
 - (BOOL)getConsentAdUserData;
 
 @property (nonatomic) BOOL TRANSPARENCYCONSENT_PENDING;
+@property (nonatomic) BOOL TRANSPARENCYCONSENT_CANREQUESTADS;
 @property (nonatomic) NSInteger TRANSPARENCYCONSENT_CMPSDKID;
 @property (nonatomic) NSInteger TRANSPARENCYCONSENT_CMPSDKVERSION;
 @property (nonatomic) NSInteger TRANSPARENCYCONSENT_POLICYVERSION;

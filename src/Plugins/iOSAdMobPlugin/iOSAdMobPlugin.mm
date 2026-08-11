@@ -5,6 +5,7 @@
 #import "Environment/Apple/AppleDetail.h"
 
 #import "Environment/iOS/iOSAppTrackingTransparencyParam.h"
+#import "Environment/iOS/iOSTransparencyConsentParam.h"
 #import "Environment/iOS/iOSApplication.h"
 #import "Environment/iOS/iOSDetail.h"
 #import "Environment/iOS/iOSNetwork.h"
@@ -30,6 +31,9 @@
         self.m_interstitialAd = nil;
         self.m_rewardedAd = nil;
         self.m_initialized = NO;
+        self.m_consentCompleted = NO;
+        self.m_canRequestAds = NO;
+        self.m_appTrackingCompleted = NO;
     }
 
     return self;
@@ -85,11 +89,31 @@
 #pragma mark - iOSPluginAppTrackingTransparencyDelegateInterface
 
 - (void)onAppTrackingTransparency:(iOSAppTrackingTransparencyParam *)param {
-    if (self.m_initialized == YES) {
+    self.m_appTrackingCompleted = YES;
+
+    [self tryInitializeAdMob];
+}
+
+#pragma mark - iOSPluginTransparencyConsentDelegateInterface
+
+- (void)onTransparencyConsent:(iOSTransparencyConsentParam *)consent {
+    self.m_consentCompleted = YES;
+    self.m_canRequestAds = [consent canRequestAds];
+
+    [self tryInitializeAdMob];
+}
+
+- (void)tryInitializeAdMob {
+    if (self.m_initialized == YES || self.m_consentCompleted == NO || self.m_appTrackingCompleted == NO) {
         return;
     }
 
-    IOS_LOGGER_MESSAGE(@"[AdMob] ATT completed, initializing AdMob");
+    if (self.m_canRequestAds == NO) {
+        IOS_LOGGER_MESSAGE(@"[AdMob] consent does not allow ad requests, skipping initialization");
+        return;
+    }
+
+    IOS_LOGGER_MESSAGE(@"[AdMob] consent and ATT flow completed, initializing AdMob");
 
     [self initializeAdMob];
 }

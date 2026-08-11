@@ -6,6 +6,9 @@ src
 
     Graphics.h
     Graphics.cpp
+
+    GraphicsPath.h
+    GraphicsPath.cpp
     
     GraphicsPlugin.h
     GraphicsPlugin.cpp

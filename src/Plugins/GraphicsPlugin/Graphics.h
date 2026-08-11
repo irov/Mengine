@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GraphicsInterface.h"
+#include "GraphicsPath.h"
 
 #include "Kernel/Node.h"
 #include "Kernel/BaseRender.h"
@@ -65,6 +66,14 @@ namespace Mengine
         void setFillRule( EGraphicsFillRule _rule ) override;
         EGraphicsFillRule getFillRule() const override;
 
+        void setLineDash( const Vector<float> & _pattern, float _offset ) override;
+        void clearLineDash() override;
+        void setPathTrim( float _from, float _to ) override;
+        void setPathMarkers( const GraphicsPathMarker & _start, const GraphicsPathMarker & _end ) override;
+        void setStrokeAlignment( EGraphicsStrokeAlignment _alignment ) override;
+        EGraphicsStrokeAlignment getStrokeAlignment() const override;
+        void setUVMode( EGraphicsUVMode _mode ) override;
+        EGraphicsUVMode getUVMode() const override;
         void setCurveQuality( uint8_t _quality ) override;
         uint8_t getCurveQuality() const override;
 
@@ -81,28 +90,30 @@ namespace Mengine
     public:
         void beginFill() override;
         void endFill() override;
-        void beginCompoundFill( EGraphicsFillRule _rule ) override;
-        void endCompoundFill() override;
 
     public:
-        void pointMoveTo( const mt::vec2f & _point ) override;
-        void pointLineTo( const mt::vec2f & _point ) override;
-        void pointQuadraticCurveTo( const mt::vec2f & _p0, const mt::vec2f & _point ) override;
-        void pointBezierCurveTo( const mt::vec2f & _p0, const mt::vec2f & _p1, const mt::vec2f & _point ) override;
-        void pointClose() override;
-        void pointArcTo( const mt::vec2f & _p0, const mt::vec2f & _p1, float _radius ) override;
+        GraphicsPathPtr createPath() override;
+        void drawPath( const GraphicsPathPtr & _path ) override;
 
     public:
         void drawRect( const mt::vec2f & _point, float _width, float _height ) override;
         void drawRoundedRect( const mt::vec2f & _point, float _width, float _height, float _radius ) override;
+        void drawRoundedRectVarying( const mt::vec2f & _point, float _width, float _height, const mt::vec4f & _radii ) override;
         void drawRoundedPolygon( const Polygon & _polygon, float _radius ) override;
         void drawPolyline( const Polygon & _polygon, bool _closed ) override;
+        void drawStyledPolyline( const VectorGraphicsPathPoints & _points, bool _closed ) override;
+        void drawRoundedPolyline( const VectorGraphicsPathPoints & _points, float _radius, bool _closed ) override;
+        void drawPolygonOffset( const Polygon & _polygon, float _offset, EGraphicsLineJoin _join ) override;
         void drawCircle( const mt::vec2f & _point, float _radius ) override;
         void drawEllipse( const mt::vec2f & _point, float _width, float _height ) override;
         void drawArc( const mt::vec2f & _point, float _radius, float _angleFrom, float _angleTo ) override;
         void drawEllipseArc( const mt::vec2f & _point, float _width, float _height, float _angleFrom, float _angleTo ) override;
-        void drawSector( const mt::vec2f & _point, float _radius, float _angleFrom, float _angleTo ) override;
         void drawRing( const mt::vec2f & _point, float _innerRadius, float _outerRadius, float _angleFrom, float _angleTo ) override;
+        void drawRoundedRing( const mt::vec2f & _point, float _innerRadius, float _outerRadius, float _angleFrom, float _angleTo ) override;
+        void drawCapsule( const mt::vec2f & _point, float _width, float _height ) override;
+        void drawRegularPolygon( const mt::vec2f & _point, float _radius, uint32_t _vertexCount, float _rotation ) override;
+        void drawStar( const mt::vec2f & _point, float _innerRadius, float _outerRadius, uint32_t _rayCount, float _rotation ) override;
+        void drawSuperellipse( const mt::vec2f & _point, float _width, float _height, float _exponent, float _rotation ) override;
 
     public:
         mt::box2f getBounds() const override;
@@ -127,6 +138,8 @@ namespace Mengine
 
         mutable VectorRenderVertex2D m_renderVertex2D;
         mutable VectorRenderIndex m_renderIndices;
+        mutable Vector<gp_render_batch_t> m_renderBatches;
+        mutable Vector<mt::box2f> m_renderBatchBoundingBoxes;
         mutable mt::box2f m_renderBoundingBox;
 
         mutable bool m_invalidateLocalVertex2D;

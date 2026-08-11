@@ -35,4 +35,4 @@ lighting actually bounce off geometry, drop a `.gltf` asset into
 `resources/.downloads/assets/` and uncomment the Mesh3D block in
 [`Crimsonland3DSceneEventReceiver.cpp`](src/Crimsonland3DFramework/Crimsonland3DSceneEventReceiver.cpp).
 The `Material_OpaqueLit` / `Material_SkinnedOpaqueLit` materials are
-already declared in `Standart.xml`.
+already declared in `Standart.json`.

@@ -1,5 +1,7 @@
 #include "Graphics.h"
 
+#include <cstddef>
+
 #include "Interface/RenderMaterialServiceInterface.h"
 
 #include "Kernel/BezierHelper.h"
@@ -7,6 +9,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/MemoryAllocator.h"
 #include "Kernel/RenderHelper.h"
+#include "Kernel/FactorableUnique.h"
 
 #include "Config/StdAlgorithm.h"
 
@@ -224,6 +227,58 @@ namespace Mengine
         return static_cast<EGraphicsFillRule>(rule);
     }
     //////////////////////////////////////////////////////////////////////////
+    void Graphics::setLineDash( const Vector<float> & _pattern, float _offset )
+    {
+        GP_CALL( gp_set_line_dash, (m_canvas, _pattern.data(), (gp_uint8_t)_pattern.size(), _offset) );
+        m_invalidateLocalVertex2D = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Graphics::clearLineDash()
+    {
+        GP_CALL( gp_clear_line_dash, (m_canvas) );
+        m_invalidateLocalVertex2D = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Graphics::setPathTrim( float _from, float _to )
+    {
+        GP_CALL( gp_set_path_trim, (m_canvas, _from, _to) );
+        m_invalidateLocalVertex2D = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Graphics::setPathMarkers( const GraphicsPathMarker & _start, const GraphicsPathMarker & _end )
+    {
+        gp_path_marker_t start = {static_cast<gp_path_marker_type_t>(_start.type), _start.length, _start.width, _start.inset};
+        gp_path_marker_t end = {static_cast<gp_path_marker_type_t>(_end.type), _end.length, _end.width, _end.inset};
+        GP_CALL( gp_set_path_markers, (m_canvas, &start, &end) );
+        m_invalidateLocalVertex2D = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Graphics::setStrokeAlignment( EGraphicsStrokeAlignment _alignment )
+    {
+        GP_CALL( gp_set_stroke_alignment, (m_canvas, static_cast<gp_stroke_alignment_t>(_alignment)) );
+        m_invalidateLocalVertex2D = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    EGraphicsStrokeAlignment Graphics::getStrokeAlignment() const
+    {
+        gp_stroke_alignment_t alignment;
+        GP_CALL( gp_get_stroke_alignment, (m_canvas, &alignment) );
+        return static_cast<EGraphicsStrokeAlignment>(alignment);
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Graphics::setUVMode( EGraphicsUVMode _mode )
+    {
+        GP_CALL( gp_set_uv_mode, (m_canvas, static_cast<gp_uv_mode_t>(_mode)) );
+        m_invalidateLocalVertex2D = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    EGraphicsUVMode Graphics::getUVMode() const
+    {
+        gp_uv_mode_t mode;
+        GP_CALL( gp_get_uv_mode, (m_canvas, &mode) );
+        return static_cast<EGraphicsUVMode>(mode);
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Graphics::setCurveQuality( uint8_t _quality )
     {
         GP_CALL( gp_set_curve_quality, (m_canvas, _quality) );
@@ -297,57 +352,16 @@ namespace Mengine
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Graphics::beginCompoundFill( EGraphicsFillRule _rule )
+    GraphicsPathPtr Graphics::createPath()
     {
-        GP_CALL( gp_begin_compound_fill, (m_canvas, static_cast<gp_fill_rule_t>(_rule)) );
-
-        m_invalidateLocalVertex2D = true;
+        GraphicsPathPtr path = Helper::makeFactorableUnique<GraphicsPath>( MENGINE_DOCUMENT_FACTORABLE,
+            this->getCurveQuality(), this->getEllipseQuality() );
+        return path;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Graphics::endCompoundFill()
+    void Graphics::drawPath( const GraphicsPathPtr & _path )
     {
-        GP_CALL( gp_end_compound_fill, (m_canvas) );
-
-        m_invalidateLocalVertex2D = true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Graphics::pointMoveTo( const mt::vec2f & _point )
-    {
-        GP_CALL( gp_point_move_to, (m_canvas, _point.x, _point.y) );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Graphics::pointLineTo( const mt::vec2f & _point )
-    {
-        GP_CALL( gp_point_line_to, (m_canvas, _point.x, _point.y) );
-
-        m_invalidateLocalVertex2D = true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Graphics::pointQuadraticCurveTo( const mt::vec2f & _p0, const mt::vec2f & _point )
-    {
-        GP_CALL( gp_point_quadratic_curve_to, (m_canvas, _p0.x, _p0.y, _point.x, _point.y) );
-
-        m_invalidateLocalVertex2D = true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Graphics::pointBezierCurveTo( const mt::vec2f & _p0, const mt::vec2f & _p1, const mt::vec2f & _point )
-    {
-        GP_CALL( gp_point_bezier_curve_to, (m_canvas, _p0.x, _p0.y, _p1.x, _p1.y, _point.x, _point.y) );
-
-        m_invalidateLocalVertex2D = true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Graphics::pointClose()
-    {
-        GP_CALL( gp_point_close, (m_canvas) );
-
-        m_invalidateLocalVertex2D = true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Graphics::pointArcTo( const mt::vec2f & _p0, const mt::vec2f & _p1, float _radius )
-    {
-        GP_CALL( gp_point_tangent_arc_to, (m_canvas, _p0.x, _p0.y, _p1.x, _p1.y, _radius) );
-
+        GP_CALL( gp_draw_path, (m_canvas, _path->getPath()) );
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -365,6 +379,12 @@ namespace Mengine
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Graphics::drawRoundedRectVarying( const mt::vec2f & _point, float _width, float _height, const mt::vec4f & _radii )
+    {
+        GP_CALL( gp_rounded_rect_varying, (m_canvas, _point.x, _point.y, _width, _height, _radii.x, _radii.y, _radii.z, _radii.w) );
+        m_invalidateLocalVertex2D = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Graphics::drawRoundedPolygon( const Polygon & _polygon, float _radius )
     {
         const VectorPoints & points = _polygon.getPoints();
@@ -378,8 +398,41 @@ namespace Mengine
     {
         const VectorPoints & points = _polygon.getPoints();
 
-        GP_CALL( gp_polyline, (m_canvas, points.data(), points.size(), sizeof( VectorPoints::value_type ), _closed == true ? GP_TRUE : GP_FALSE) );
+        GP_CALL( gp_polyline, (m_canvas, points.data(), points.size(), sizeof( VectorPoints::value_type ), GP_NULLPTR, _closed == true ? GP_TRUE : GP_FALSE) );
 
+        m_invalidateLocalVertex2D = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Graphics::drawStyledPolyline( const VectorGraphicsPathPoints & _points, bool _closed )
+    {
+        static_assert( offsetof( GraphicsPathPoint, position ) == 0, "GraphicsPathPoint position must be first" );
+        static_assert( sizeof( mt::vec2f ) == sizeof( float ) * 2, "GraphicsPathPoint position must contain two floats" );
+
+        gp_path_layout_t layout;
+        layout.width_offset = offsetof( GraphicsPathPoint, width );
+        layout.color_offset = offsetof( GraphicsPathPoint, color );
+        layout.outline_color_offset = offsetof( GraphicsPathPoint, outlineColor );
+
+        GP_CALL( gp_polyline, (m_canvas, _points.data(), _points.size(), sizeof( VectorGraphicsPathPoints::value_type ), &layout, _closed == true ? GP_TRUE : GP_FALSE) );
+
+        m_invalidateLocalVertex2D = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Graphics::drawRoundedPolyline( const VectorGraphicsPathPoints & _points, float _radius, bool _closed )
+    {
+        gp_path_layout_t layout;
+        layout.width_offset = offsetof( GraphicsPathPoint, width );
+        layout.color_offset = offsetof( GraphicsPathPoint, color );
+        layout.outline_color_offset = offsetof( GraphicsPathPoint, outlineColor );
+
+        GP_CALL( gp_rounded_polyline, (m_canvas, _points.data(), _points.size(), sizeof( VectorGraphicsPathPoints::value_type ), &layout, _radius, _closed == true ? GP_TRUE : GP_FALSE) );
+        m_invalidateLocalVertex2D = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Graphics::drawPolygonOffset( const Polygon & _polygon, float _offset, EGraphicsLineJoin _join )
+    {
+        const VectorPoints & points = _polygon.getPoints();
+        GP_CALL( gp_polygon_offset, (m_canvas, points.data(), points.size(), sizeof( VectorPoints::value_type ), _offset, static_cast<gp_line_join_t>(_join)) );
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -411,17 +464,41 @@ namespace Mengine
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Graphics::drawSector( const mt::vec2f & _point, float _radius, float _angleFrom, float _angleTo )
-    {
-        GP_CALL( gp_sector, (m_canvas, _point.x, _point.y, _radius, _angleFrom, _angleTo) );
-
-        m_invalidateLocalVertex2D = true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void Graphics::drawRing( const mt::vec2f & _point, float _innerRadius, float _outerRadius, float _angleFrom, float _angleTo )
     {
         GP_CALL( gp_ring, (m_canvas, _point.x, _point.y, _innerRadius, _outerRadius, _angleFrom, _angleTo) );
 
+        m_invalidateLocalVertex2D = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Graphics::drawRoundedRing( const mt::vec2f & _point, float _innerRadius, float _outerRadius, float _angleFrom, float _angleTo )
+    {
+        GP_CALL( gp_rounded_ring, (m_canvas, _point.x, _point.y, _innerRadius, _outerRadius, _angleFrom, _angleTo) );
+
+        m_invalidateLocalVertex2D = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Graphics::drawCapsule( const mt::vec2f & _point, float _width, float _height )
+    {
+        GP_CALL( gp_capsule, (m_canvas, _point.x, _point.y, _width, _height) );
+        m_invalidateLocalVertex2D = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Graphics::drawRegularPolygon( const mt::vec2f & _point, float _radius, uint32_t _vertexCount, float _rotation )
+    {
+        GP_CALL( gp_regular_polygon, (m_canvas, _point.x, _point.y, _radius, _vertexCount, _rotation) );
+        m_invalidateLocalVertex2D = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Graphics::drawStar( const mt::vec2f & _point, float _innerRadius, float _outerRadius, uint32_t _rayCount, float _rotation )
+    {
+        GP_CALL( gp_star, (m_canvas, _point.x, _point.y, _innerRadius, _outerRadius, _rayCount, _rotation) );
+        m_invalidateLocalVertex2D = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Graphics::drawSuperellipse( const mt::vec2f & _point, float _width, float _height, float _exponent, float _rotation )
+    {
+        GP_CALL( gp_superellipse, (m_canvas, _point.x, _point.y, _width, _height, _exponent, _rotation) );
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -441,6 +518,8 @@ namespace Mengine
 
         m_renderVertex2D.clear();
         m_renderIndices.clear();
+        m_renderBatches.clear();
+        m_renderBatchBoundingBoxes.clear();
         mt::box2_reset( &m_renderBoundingBox, 0.f, 0.f );
 
         m_invalidateLocalVertex2D = true;
@@ -458,13 +537,16 @@ namespace Mengine
             return;
         }
 
-        VectorRenderVertex2D::value_type * vertexData = m_renderVertex2D.data();
-        VectorRenderVertex2D::size_type vertexSize = m_renderVertex2D.size();
+        for( size_t index = 0; index != m_renderBatches.size(); ++index )
+        {
+            const gp_render_batch_t & batch = m_renderBatches[index];
+            const RenderVertex2D * vertexData = m_renderVertex2D.data() + batch.vertex_offset;
+            const RenderIndex * indexData = m_renderIndices.data() + batch.index_offset;
 
-        VectorRenderIndex::value_type * indexData = m_renderIndices.data();
-        VectorRenderIndex::size_type indexSize = m_renderIndices.size();
-
-        _renderPipeline->addRenderObject( _context, m_material, nullptr, vertexData, (uint32_t)vertexSize, indexData, (uint32_t)indexSize, &m_renderBoundingBox, false, MENGINE_DOCUMENT_FORWARD );
+            _renderPipeline->addRenderObject( _context, m_material, nullptr
+                , vertexData, batch.vertex_count, indexData, batch.index_count
+                , &m_renderBatchBoundingBoxes[index], false, MENGINE_DOCUMENT_FORWARD );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void Graphics::_invalidateWorldMatrix() const
@@ -491,6 +573,8 @@ namespace Mengine
 
         m_renderVertex2D.resize( mesh.vertex_count );
         m_renderIndices.resize( mesh.index_count );
+        m_renderBatches.resize( mesh.batch_count );
+        m_renderBatchBoundingBoxes.resize( mesh.batch_count );
 
         mesh.color.r = color.getR();
         mesh.color.g = color.getG();
@@ -507,15 +591,19 @@ namespace Mengine
         mesh.colors_offset = MENGINE_OFFSETOF( VectorRenderVertex2D::value_type, color );
         mesh.colors_stride = sizeof( VectorRenderVertex2D::value_type );
 
-        mesh.uv_buffer = GP_NULLPTR;
-        mesh.uv_offset = 0;
-        mesh.uv_stride = 0;
+        mesh.uv_buffer = vertices;
+        mesh.uv_offset = MENGINE_OFFSETOF( VectorRenderVertex2D::value_type, uv[0] );
+        mesh.uv_stride = sizeof( VectorRenderVertex2D::value_type );
 
         VectorRenderIndex::value_type * indices = m_renderIndices.data();
 
         mesh.indices_buffer = indices;
         mesh.indices_offset = 0;
         mesh.indices_stride = sizeof( VectorRenderIndex::value_type );
+
+        mesh.batches_buffer = m_renderBatches.data();
+        mesh.batches_offset = 0;
+        mesh.batches_stride = sizeof( gp_render_batch_t );
 
         GP_CALL( gp_render, (m_canvas, &mesh) );
 
@@ -540,6 +628,13 @@ namespace Mengine
         }
 
         Helper::makeRenderBoundingBox( &m_renderBoundingBox, m_renderVertex2D.data(), (uint32_t)m_renderVertex2D.size() );
+
+        for( size_t batchIndex = 0; batchIndex != m_renderBatches.size(); ++batchIndex )
+        {
+            const gp_render_batch_t & batch = m_renderBatches[batchIndex];
+            Helper::makeRenderBoundingBox( &m_renderBatchBoundingBoxes[batchIndex]
+                , m_renderVertex2D.data() + batch.vertex_offset, batch.vertex_count );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
 }

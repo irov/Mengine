@@ -25,7 +25,9 @@ static bool hasCLILaunchArgument( int _argc, char * _argv[] )
 int main( int argc, char * argv[] )
 {
     Mengine::Configuration configuration;
-    configuration.silentDialog = hasCLILaunchArgument( argc, argv );
+    bool CLI = hasCLILaunchArgument( argc, argv );
+    configuration.silentDialog = CLI;
+    configuration.muteSound = CLI;
 
     Mengine::UnixApplication application;
 

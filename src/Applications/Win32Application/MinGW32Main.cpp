@@ -30,7 +30,9 @@ int main( int argc, char * argv[] )
     Mengine::Win32Application app;
 
     Mengine::Configuration configuration;
-    configuration.silentDialog = hasCLILaunchArgument( argc, argv );
+    bool CLI = hasCLILaunchArgument( argc, argv );
+    configuration.silentDialog = CLI;
+    configuration.muteSound = CLI;
 
     bool initialize = app.initialize( configuration );
 

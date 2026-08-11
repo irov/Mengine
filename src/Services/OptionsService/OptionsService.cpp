@@ -1,23 +1,19 @@
 #include "OptionsService.h"
 
-#include "Interface/LoggerServiceInterface.h"
-
 #include "Kernel/Logger.h"
 #include "Kernel/Stringalized.h"
 #include "Kernel/Assertion.h"
-#include "Kernel/Stringstream.h"
 #include "Kernel/AssertionCharacter.h"
+#include "Kernel/AssertionFactory.h"
+#include "Kernel/FactoryPool.h"
 
 #include "Config/StdString.h"
-
-#include "Config/StdAlgorithm.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( OptionsService, Mengine::OptionsService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     OptionsService::OptionsService()
     {
     }
@@ -28,7 +24,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OptionsService::_initializeService()
     {
-        SERVICE_WAIT_METHOD( LoggerServiceInterface, this, OptionsService::logOptions_ );
+        m_factoryOption = Helper::makeFactoryPool<Option, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -36,6 +32,9 @@ namespace Mengine
     void OptionsService::_finalizeService()
     {
         m_options.clear();
+
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryOption );
+        m_factoryOption = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool OptionsService::setArguments( const ArgumentsInterfacePtr & _arguments )
@@ -62,7 +61,7 @@ namespace Mengine
 
             const Char * option_value_str = StdString::strchr( option_key_str, ':' );
 
-            Option op;
+            OptionPtr op = m_factoryOption->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
             if( option_value_str == nullptr )
             {
@@ -72,10 +71,7 @@ namespace Mengine
                     , MENGINE_OPTIONS_KEY_SIZE
                 );
 
-                op.key.assign( option_key_str );
-
-                op.value[0].clear();
-                op.value_count = 0;
+                op->setKey( option_key_str );
             }
             else
             {
@@ -87,7 +83,7 @@ namespace Mengine
                     , MENGINE_OPTIONS_KEY_SIZE
                 );
 
-                op.key.assign( option_key_str, key_size );
+                op->setKey( option_key_str, key_size );
 
                 const Char * option_delim_str = StdString::strchr( option_key_str, '|' );
 
@@ -101,13 +97,10 @@ namespace Mengine
                         , MENGINE_OPTIONS_VALUE_SIZE
                     );
 
-                    op.value[0].append( op_value );
-                    op.value_count = 1;
+                    op->addValue( op_value );
                 }
                 else
                 {
-                    op.value_count = 0;
-
                     for( ;;)
                     {
                         size_t value_size = option_delim_str - (option_value_str + 1);
@@ -118,8 +111,7 @@ namespace Mengine
                             , MENGINE_OPTIONS_VALUE_SIZE
                         );
 
-                        op.value[op.value_count].append( option_value_str + 1, value_size );
-                        ++op.value_count;
+                        op->addValue( option_value_str + 1, value_size );
 
                         const Char * option_delim_test_str = StdString::strchr( option_delim_str + 1, '|' );
 
@@ -138,25 +130,36 @@ namespace Mengine
                             , MENGINE_OPTIONS_VALUE_SIZE
                         );
 
-                        op.value[op.value_count].append( op_value );
-                        ++op.value_count;
+                        op->addValue( op_value );
 
                         break;
                     }
                 }
             }
 
-            MENGINE_ASSERTION_LOWER_CHARACTER_SET( op.key.c_str(), op.key.size() );
+            const Char * optionKey = op->getKey();
+            size_t optionKeySize = StdString::strlen( optionKey );
+
+            MENGINE_ASSERTION_LOWER_CHARACTER_SET( optionKey, optionKeySize );
 
 #if defined(MENGINE_ASSERTION_DEBUG_ENABLE)
-            for( uint32_t value_index = 0; value_index != op.value_count; ++value_index )
+            uint32_t valueCount = op->getValueCount();
+
+            for( uint32_t value_index = 0; value_index != valueCount; ++value_index )
             {
-                const Char * value_str = op.value[value_index].c_str();
-                size_t value_size = op.value[value_index].size();
+                const Char * value_str = op->getValue( value_index );
+                size_t value_size = StdString::strlen( value_str );
 
                 MENGINE_ASSERTION_LOWER_CHARACTER_SET( value_str, value_size );
             }
 #endif
+
+            constexpr size_t protectedSuffixSize = sizeof( "-token" ) - 1;
+
+            bool protectedValue = optionKeySize >= protectedSuffixSize
+                && StdString::strcmp( optionKey + optionKeySize - protectedSuffixSize, "-token" ) == 0;
+
+            op->setProtected( protectedValue );
 
             m_options.push_back( op );
         }
@@ -168,14 +171,14 @@ namespace Mengine
     {
         MENGINE_ASSERTION_LOWER_CHARACTER_SET( _key, StdString::strlen( _key ) );
 
-        for( const Option & op : m_options )
+        for( const OptionInterfacePtr & op : m_options )
         {
-            if( op.key.compare( _key ) != 0 )
+            if( StdString::strcmp( op->getKey(), _key ) != 0 )
             {
                 continue;
             }
 
-            if( _withValue == true && op.value_count == 0 )
+            if( _withValue == true && op->getValueCount() == 0 )
             {
                 return false;
             }
@@ -203,27 +206,31 @@ namespace Mengine
         MENGINE_ASSERTION_LOWER_CHARACTER_SET( _key, StdString::strlen( _key ) );
         MENGINE_ASSERTION_LOWER_CHARACTER_SET( _value, StdString::strlen( _value ) );
 
-        for( const Option & op : m_options )
+        for( const OptionInterfacePtr & op : m_options )
         {
-            if( op.key.compare( _key ) == 0 )
+            if( StdString::strcmp( op->getKey(), _key ) == 0 )
             {
                 return false;
             }
         }
 
-        Option op;
-        op.key.assign( _key );
+        OptionPtr op = m_factoryOption->createObject( MENGINE_DOCUMENT_FACTORABLE );
+        op->setKey( _key );
 
-        if( StdString::strlen( _value ) == 0 )
+        size_t valueSize = StdString::strlen( _value );
+
+        if( valueSize != 0 )
         {
-            op.value[0].clear();
-            op.value_count = 0;
+            op->addValue( _value );
         }
-        else
-        {
-            op.value[0].append( _value );
-            op.value_count = 1;
-        }
+
+        constexpr size_t protectedSuffixSize = sizeof( "-token" ) - 1;
+
+        size_t keySize = StdString::strlen( _key );
+        bool protectedValue = keySize >= protectedSuffixSize
+            && StdString::strcmp( _key + keySize - protectedSuffixSize, "-token" ) == 0;
+
+        op->setProtected( protectedValue );
 
         m_options.push_back( op );
 
@@ -234,14 +241,14 @@ namespace Mengine
     {
         MENGINE_ASSERTION_LOWER_CHARACTER_SET( _key, StdString::strlen( _key ) );
 
-        for( const Option & op : m_options )
+        for( const OptionInterfacePtr & op : m_options )
         {
-            if( op.key.compare( _key ) != 0 )
+            if( StdString::strcmp( op->getKey(), _key ) != 0 )
             {
                 continue;
             }
 
-            const Char * value_str = op.value[0].c_str();
+            const Char * value_str = op->getValue( 0 );
 
             return value_str;
         }
@@ -253,19 +260,21 @@ namespace Mengine
     {
         MENGINE_ASSERTION_LOWER_CHARACTER_SET( _key, StdString::strlen( _key ) );
 
-        for( const Option & op : m_options )
+        for( const OptionInterfacePtr & op : m_options )
         {
-            if( op.key.compare( _key ) != 0 )
+            if( StdString::strcmp( op->getKey(), _key ) != 0 )
             {
                 continue;
             }
 
-            for( uint32_t index = 0; index != op.value_count; ++index )
+            uint32_t valueCount = op->getValueCount();
+
+            for( uint32_t index = 0; index != valueCount; ++index )
             {
-                _values[index] = op.value[index].c_str();
+                _values[index] = op->getValue( index );
             }
 
-            *_count = op.value_count;
+            *_count = valueCount;
 
             return true;
         }
@@ -277,19 +286,21 @@ namespace Mengine
     {
         MENGINE_ASSERTION_LOWER_CHARACTER_SET( _key, StdString::strlen( _key ) );
 
-        for( const Option & op : m_options )
+        for( const OptionInterfacePtr & op : m_options )
         {
-            if( op.key.compare( _key ) != 0 )
+            if( StdString::strcmp( op->getKey(), _key ) != 0 )
             {
                 continue;
             }
 
+            const Char * value = op->getValue( 0 );
+
             int32_t value_int32;
-            if( Helper::stringalized( op.value[0].c_str(), &value_int32 ) == false )
+            if( Helper::stringalized( value, &value_int32 ) == false )
             {
                 LOGGER_ERROR( "option '%s' invalid cast to int32_t value '%s'"
                     , _key
-                    , op.value[0].c_str()
+                    , value
                 );
 
                 return 0;
@@ -305,19 +316,21 @@ namespace Mengine
     {
         MENGINE_ASSERTION_LOWER_CHARACTER_SET( _key, StdString::strlen( _key ) );
 
-        for( const Option & op : m_options )
+        for( const OptionInterfacePtr & op : m_options )
         {
-            if( op.key.compare( _key ) != 0 )
+            if( StdString::strcmp( op->getKey(), _key ) != 0 )
             {
                 continue;
             }
 
+            const Char * value = op->getValue( 0 );
+
             uint32_t value_uint32;
-            if( Helper::stringalized( op.value[0].c_str(), &value_uint32 ) == false )
+            if( Helper::stringalized( value, &value_uint32 ) == false )
             {
                 LOGGER_ERROR( "option '%s' invalid cast to uint32_t value '%s'"
                     , _key
-                    , op.value[0].c_str()
+                    , value
                 );
 
                 return MENGINE_UINT32_C(0);
@@ -349,46 +362,12 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OptionsService::logOptions_()
+    void OptionsService::foreachOptions( const LambdaOption & _lambda ) const
     {
-        Stringstream ss;
-
-        ss << "options:";
-
-        if( m_options.empty() == true )
+        for( const OptionInterfacePtr & option : m_options )
         {
-            ss << " [none]";
+            _lambda( option );
         }
-
-        for( const Option & option : m_options )
-        {
-            if( option.value_count == 0 )
-            {
-                ss << " -" << option.key.c_str();
-            }
-            else
-            {
-                if( option.value_count == 1 )
-                {
-                    ss << " -" << option.key.c_str() << "=" << option.value[0].c_str();
-                }
-                else
-                {
-                    ss << " -" << option.key.c_str() << "=";
-
-                    for( uint32_t index = 0; index != option.value_count; ++index )
-                    {
-                        ss << option.value[index].c_str() << "|";
-                    }
-                }
-            }
-        }
-
-        LOGGER_MESSAGE( "%s"
-            , ss.str().c_str()
-        );
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
 }

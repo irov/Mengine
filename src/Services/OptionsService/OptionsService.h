@@ -1,19 +1,12 @@
 #pragma once
 
+#include "Option.h"
+
+#include "Interface/FactoryInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/StaticString.h"
 #include "Kernel/Vector.h"
-
-//////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_OPTIONS_KEY_SIZE
-#define MENGINE_OPTIONS_KEY_SIZE 128
-#endif
-//////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_OPTIONS_VALUE_SIZE
-#define MENGINE_OPTIONS_VALUE_SIZE 128
-#endif
 //////////////////////////////////////////////////////////////////////////
 
 namespace Mengine
@@ -43,18 +36,13 @@ namespace Mengine
         uint32_t getOptionUInt32( const Char * _key, uint32_t _default ) const override;
         bool testOptionValue( const Char * _key, const Char * _value ) const override;
 
-    protected:
-        bool logOptions_();
+    public:
+        void foreachOptions( const LambdaOption & _lambda ) const override;
 
     protected:
-        struct Option
-        {
-            StaticString<MENGINE_OPTIONS_KEY_SIZE> key;
-            StaticString<MENGINE_OPTIONS_VALUE_SIZE> value[MENGINE_OPTIONS_VALUES_MAX];
-            uint32_t value_count;
-        };
+        FactoryInterfacePtr m_factoryOption;
 
-        typedef Vector<Option> VectorOptions;
+        typedef Vector<OptionInterfacePtr> VectorOptions;
         VectorOptions m_options;
     };
 }

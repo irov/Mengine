@@ -53,6 +53,7 @@ namespace Mengine
         void stopDevModules_();
 
     protected:
+        void logOptions_() const;
         bool loadApplicationConfig_();
         bool mountUserFileGroup_();
         bool initializeFileLogger_();

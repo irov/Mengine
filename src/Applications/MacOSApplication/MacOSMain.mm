@@ -32,7 +32,9 @@ int main( int argc, char * argv[] )
     @autoreleasepool
     {
         Mengine::Configuration configuration;
-        configuration.silentDialog = hasCLILaunchArgument( argc, argv );
+        bool CLI = hasCLILaunchArgument( argc, argv );
+        configuration.silentDialog = CLI;
+        configuration.muteSound = CLI;
 
         [NSApplication sharedApplication];
         MacOSApplicationDelegate * applicationDelegate = [[MacOSApplicationDelegate alloc] init];

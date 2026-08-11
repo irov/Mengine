@@ -45,5 +45,10 @@ namespace Mengine
         // independently even when a normal user-facing instance is already
         // running.
         bool noAlreadyRunning = false;
+
+        // Replace the platform sound system with SilentSoundSystem. The host
+        // executable enables this for CLI / headless / automated runs while
+        // the existing `--mute` option can still request it independently.
+        bool muteSound = false;
     };
 }

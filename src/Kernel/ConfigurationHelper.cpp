@@ -139,5 +139,29 @@ namespace Mengine
             return s_noAlreadyRunning;
         }
         //////////////////////////////////////////////////////////////////////////
+        bool isMuteSound()
+        {
+            static bool s_cached = false;
+            static bool s_muteSound = false;
+
+            if( s_cached == true )
+            {
+                return s_muteSound;
+            }
+
+            if( SERVICE_PROVIDER_EXIST() == false )
+            {
+                return false;
+            }
+
+            const Configuration & configuration = SERVICE_PROVIDER_GET()
+                ->getConfiguration();
+
+            s_muteSound = configuration.muteSound;
+            s_cached = true;
+
+            return s_muteSound;
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
 }

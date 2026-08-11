@@ -1257,6 +1257,60 @@ namespace Mengine
             }\
         }
     //////////////////////////////////////////////////////////////////////////
+    void Bootstrapper::logOptions_() const
+    {
+        Stringstream ss;
+
+        ss << "options:";
+
+        bool empty = true;
+
+        OPTIONS_SERVICE()
+            ->foreachOptions( [&ss, &empty]( const OptionInterfacePtr & _option )
+        {
+            empty = false;
+
+            ss << " -" << _option->getKey();
+
+            uint32_t valueCount = _option->getValueCount();
+
+            if( valueCount == 0 )
+            {
+                return;
+            }
+
+            ss << "=";
+
+            if( _option->isProtected() == true )
+            {
+                ss << "<redacted>";
+
+                return;
+            }
+
+            if( valueCount == 1 )
+            {
+                ss << _option->getValue( 0 );
+
+                return;
+            }
+
+            for( uint32_t index = 0; index != valueCount; ++index )
+            {
+                ss << _option->getValue( index ) << "|";
+            }
+        } );
+
+        if( empty == true )
+        {
+            ss << " [none]";
+        }
+
+        LOGGER_MESSAGE( "%s"
+            , ss.str().c_str()
+        );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Bootstrapper::createServices_()
     {
         MENGINE_ADD_SERVICE( PlatformSystem, MENGINE_DOCUMENT_FACTORABLE );
@@ -1290,6 +1344,9 @@ namespace Mengine
         MENGINE_ADD_SERVICE( PrototypeService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( MemoryService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( LoggerService, MENGINE_DOCUMENT_FACTORABLE );
+
+        this->logOptions_();
+
         MENGINE_ADD_SERVICE( SecureService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( AnalyticsService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( StatisticService, MENGINE_DOCUMENT_FACTORABLE );
@@ -1447,8 +1504,9 @@ namespace Mengine
 
 #if defined(MENGINE_SYSTEM_SOUND)
         bool OPTION_mute = HAS_OPTION( "mute" );
+        bool CONFIG_muteSound = Helper::isMuteSound();
 
-        if( OPTION_mute == true )
+        if( OPTION_mute == true || CONFIG_muteSound == true )
         {
             BOOTSTRAPPER_SERVICE_CREATE( SilentSoundSystem, MENGINE_DOCUMENT_FACTORABLE );
         }

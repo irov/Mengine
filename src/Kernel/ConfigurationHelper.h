@@ -40,5 +40,10 @@ namespace Mengine
         // successful read because the engine-wide Configuration is immutable
         // for the lifetime of the ServiceProvider.
         bool isNoAlreadyRunning();
+
+        // Convenience accessor used by Bootstrapper to select
+        // SilentSoundSystem for CLI / headless / automated runs. Returns
+        // false when ServiceProvider is not available yet.
+        bool isMuteSound();
     }
 }

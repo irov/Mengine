@@ -117,6 +117,10 @@ int APIENTRY WinMain( _In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _I
         // pipe, even while the user keeps a normal game window open.
         configuration.noAlreadyRunning = true;
 
+        // CLI runs do not need a platform audio device and must not produce
+        // sound while running unattended.
+        configuration.muteSound = true;
+
         // Suppress CRT/SEH/WER popups for this EXE module BEFORE the
         // Mengine DLL/static lib is touched. The DLL gets the same
         // configuration through ServiceProvider once Win32Application::

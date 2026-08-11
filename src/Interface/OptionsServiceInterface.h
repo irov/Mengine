@@ -1,13 +1,10 @@
 #pragma once
 
+#include "Interface/OptionInterface.h"
 #include "Interface/ServiceInterface.h"
 #include "Interface/ArgumentsInterface.h"
 
-#include "Config/Char.h"
-
-#ifndef MENGINE_OPTIONS_VALUES_MAX
-#define MENGINE_OPTIONS_VALUES_MAX 16
-#endif
+#include "Config/Lambda.h"
 
 namespace Mengine
 {
@@ -15,6 +12,9 @@ namespace Mengine
         : public ServiceInterface
     {
         SERVICE_DECLARE( "OptionsService" )
+
+    public:
+        typedef Lambda<void( const OptionInterfacePtr & )> LambdaOption;
 
     public:
         virtual bool setArguments( const ArgumentsInterfacePtr & _arguments ) = 0;
@@ -27,6 +27,9 @@ namespace Mengine
         virtual int32_t getOptionInt32( const Char * _key, int32_t _default ) const = 0;
         virtual uint32_t getOptionUInt32( const Char * _key, uint32_t _default ) const = 0;
         virtual bool testOptionValue( const Char * _key, const Char * _value ) const = 0;
+
+    public:
+        virtual void foreachOptions( const LambdaOption & _lambda ) const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

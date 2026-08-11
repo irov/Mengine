@@ -66,6 +66,10 @@ int APIENTRY WinMain( _In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _I
         // the agent needs an independent hidden process with its own message
         // pipe, even while the user keeps a normal game window open.
         configuration.noAlreadyRunning = true;
+
+        // CLI runs do not need a platform audio device and must not produce
+        // sound while running unattended.
+        configuration.muteSound = true;
     }
 
     Mengine::GDKApplication app;

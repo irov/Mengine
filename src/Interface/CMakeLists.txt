@@ -78,6 +78,7 @@ Common
     PackageInterface.h
     PackageServiceInterface.h
     UserdataServiceInterface.h
+    OptionInterface.h
     OptionsServiceInterface.h
     TimelineServiceInterface.h
     TimepipeInterface.h

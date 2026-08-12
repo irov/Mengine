@@ -3,6 +3,8 @@
 #import "Environment/Apple/AppleIncluder.h"
 #import "Environment/Apple/AppleSemaphoreListenerInterface.h"
 #import "Environment/Apple/AppleDetail.h"
+#import "Environment/iOS/iOSApplication.h"
+#import "Environment/iOS/iOSDetail.h"
 #import "Environment/Python/PythonScriptWrapper.h"
 #import "Environment/Python/PythonCallbackProvider.h"
 
@@ -285,6 +287,40 @@ namespace Mengine
             [[iOSNativePythonPlugin sharedInstance] waitSemaphore:_name listener:listener];
         }
         ///////////////////////////////////////////////////////////////////////
+        void iOSNativePython_showAreYouSureAlertDialog( NSString * _title, NSString * _message, double _delay, const pybind::object & _yesCb, const pybind::object & _cancelCb, const pybind::args & _args )
+        {
+            pybind::object yesCb = _yesCb;
+            pybind::object cancelCb = _cancelCb;
+            pybind::args args = _args;
+
+            [iOSDetail showAreYouSureAlertDialogWithTitle:_title
+                                                  message:_message
+                                                    delay:_delay
+                                                      yes:^() {
+                yesCb.call_args( args );
+            }
+                                                   cancel:^() {
+                cancelCb.call_args( args );
+            }];
+        }
+        ///////////////////////////////////////////////////////////////////////
+        void iOSNativePython_showOkAlert( NSString * _title, NSString * _message, const pybind::object & _okCb, const pybind::args & _args )
+        {
+            pybind::object okCb = _okCb;
+            pybind::args args = _args;
+
+            [iOSDetail showOkAlertWithTitle:_title
+                                    message:_message
+                                         ok:^() {
+                okCb.call_args( args );
+            }];
+        }
+        ///////////////////////////////////////////////////////////////////////
+        void iOSNativePython_removeUserData()
+        {
+            [iOSApplication.sharedInstance removeUserData];
+        }
+        ///////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     iOSNativePythonScriptEmbedding::iOSNativePythonScriptEmbedding()
@@ -302,6 +338,9 @@ namespace Mengine
         pybind::registration_type_cast<NSSet *>(_kernel, pybind::make_type_cast<Detail::extract_NSSet_type>(_kernel));
 
         pybind::def_function_args( _kernel, "waitSemaphore", &Detail::iOSNativePython_waitSemaphore );
+        pybind::def_function_args( _kernel, "iOSNativePythonShowAreYouSureAlertDialog", &Detail::iOSNativePython_showAreYouSureAlertDialog );
+        pybind::def_function_args( _kernel, "iOSNativePythonShowOkAlert", &Detail::iOSNativePython_showOkAlert );
+        pybind::def_function( _kernel, "iOSNativePythonRemoveUserData", &Detail::iOSNativePython_removeUserData );
 
         return true;
     }

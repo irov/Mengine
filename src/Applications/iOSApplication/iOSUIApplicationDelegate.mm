@@ -748,6 +748,8 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
 
     [self stopEngineLoop];
 
+    [AppleDetail cancelAllQueueOperations];
+
     Mengine::iOSApplication * application = static_cast<Mengine::iOSApplication *>(self.m_application);
 
     @autoreleasepool {
@@ -797,8 +799,6 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
     self.m_application = nullptr;
 
     [AppleLog withFormat:@"Mengine application finish"];
-
-    [AppleDetail cancelAllQueueOperations];
 
     ::exit( EXIT_SUCCESS );
 }

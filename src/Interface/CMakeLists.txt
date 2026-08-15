@@ -143,7 +143,6 @@ Common
     AmplifierServiceInterface.h
     MetabufLoaderInterface.h
     MetabufLoaderServiceInterface.h
-    JSONLoaderInterface.h
 )
 
 ADD_FILTER(

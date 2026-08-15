@@ -16,8 +16,7 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/Entity.h"
 #include "Kernel/FilePathHelper.h"
-#include "Kernel/FileStreamHelper.h"
-#include "Kernel/MemoryStreamHelper.h"
+#include "Kernel/JSONHelper.h"
 #include "Kernel/NodeCast.h"
 #include "Kernel/VocabularyHelper.h"
 
@@ -26,7 +25,6 @@
 #include "imgui.h"
 
 #include <algorithm>
-#include <cstdlib>
 
 namespace Mengine
 {
@@ -229,96 +227,6 @@ namespace Mengine
             ImGui::PopID();
 
             return changed;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static bool s_findSettingValue( const String & _settings, const Char * _key, String * const _value )
-        {
-            String prefix = _key;
-            prefix += '=';
-
-            String::size_type lineBegin = 0;
-
-            while( lineBegin < _settings.size() )
-            {
-                String::size_type lineEnd = _settings.find( '\n', lineBegin );
-
-                if( lineEnd == String::npos )
-                {
-                    lineEnd = _settings.size();
-                }
-
-                String::size_type valueBegin = lineBegin + prefix.size();
-
-                if( lineEnd >= valueBegin && _settings.compare( lineBegin, prefix.size(), prefix ) == 0 )
-                {
-                    *_value = _settings.substr( valueBegin, lineEnd - valueBegin );
-
-                    if( _value->empty() == false && (*_value)[_value->size() - 1] == '\r' )
-                    {
-                        _value->pop_back();
-                    }
-
-                    return true;
-                }
-
-                lineBegin = lineEnd + 1;
-            }
-
-            return false;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static bool s_parseSettingInt32( const String & _value, int32_t * const _result )
-        {
-            Char * end = nullptr;
-            long value = std::strtol( _value.c_str(), &end, 10 );
-
-            if( end == _value.c_str() )
-            {
-                return false;
-            }
-
-            *_result = (int32_t)value;
-
-            return true;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static bool s_parseSettingFloat( const String & _value, float * const _result )
-        {
-            Char * end = nullptr;
-            float value = std::strtof( _value.c_str(), &end );
-
-            if( end == _value.c_str() )
-            {
-                return false;
-            }
-
-            *_result = value;
-
-            return true;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static void s_appendSettingValue( String * const _settings, const Char * _key, const Char * _value )
-        {
-            *_settings += _key;
-            *_settings += '=';
-            *_settings += _value == nullptr ? "" : _value;
-            *_settings += '\n';
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static void s_appendSettingInt32( String * const _settings, const Char * _key, int32_t _value )
-        {
-            Char buffer[64] = {'\0'};
-            MENGINE_SNPRINTF( buffer, 64, "%d", _value );
-
-            s_appendSettingValue( _settings, _key, buffer );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static void s_appendSettingFloat( String * const _settings, const Char * _key, float _value )
-        {
-            Char buffer[64] = {'\0'};
-            MENGINE_SNPRINTF( buffer, 64, "%.9g", _value );
-
-            s_appendSettingValue( _settings, _key, buffer );
         }
         //////////////////////////////////////////////////////////////////////////
         static float s_calcAutoOutputScale( float _contentWidth, float _contentHeight, float _viewportWidth, float _viewportHeight )
@@ -615,95 +523,32 @@ namespace Mengine
             return;
         }
 
-        const FilePath settingsPath = STRINGIZE_FILEPATH_LOCAL( "figma_viewer.ini" );
+        const FilePath settingsPath = STRINGIZE_FILEPATH_LOCAL( "figma_viewer.json" );
 
         if( userFileGroup->existFile( settingsPath, false ) == false )
         {
             return;
         }
 
-        MemoryInterfacePtr memory = Helper::createMemoryFileString( userFileGroup, settingsPath, false, false, MENGINE_DOCUMENT_FACTORABLE );
+        jpp::object settings = Helper::loadJSONFile( userFileGroup, settingsPath, MENGINE_DOCUMENT_FACTORABLE );
 
-        if( memory == nullptr || memory->empty() == true )
+        if( settings.invalid() == true )
         {
             return;
         }
 
-        const Char * buffer = memory->getBuffer();
-        size_t size = memory->getSize();
-
-        if( size != 0 && buffer[size - 1] == '\0' )
-        {
-            --size;
-        }
-
-        String settings( buffer, size );
-        String value;
-
-        if( s_findSettingValue( settings, "figma_file", &value ) == true )
-        {
-            s_copyPathInput( m_figPathInput, sizeof( m_figPathInput ), value.c_str() );
-        }
-
-        if( s_findSettingValue( settings, "fonts_folder", &value ) == true )
-        {
-            s_copyPathInput( m_fontsPathInput, sizeof( m_fontsPathInput ), value.c_str() );
-        }
-
-        if( s_findSettingValue( settings, "start_frame_id", &value ) == true )
-        {
-            s_copyPathInput( m_startFrameIdInput, sizeof( m_startFrameIdInput ), value.c_str() );
-        }
-
-        if( s_findSettingValue( settings, "file_index", &value ) == true )
-        {
-            s_parseSettingInt32( value, &m_fileIndex );
-        }
-
-        if( s_findSettingValue( settings, "entry_index", &value ) == true )
-        {
-            s_parseSettingInt32( value, &m_entryIndex );
-        }
-
-        if( s_findSettingValue( settings, "auto_viewport", &value ) == true )
-        {
-            int32_t autoViewport = 0;
-
-            if( s_parseSettingInt32( value, &autoViewport ) == true )
-            {
-                m_autoViewportInput = autoViewport != 0;
-            }
-        }
-
-        if( s_findSettingValue( settings, "viewport_x", &value ) == true )
-        {
-            s_parseSettingFloat( value, &m_viewportInput[0] );
-        }
-
-        if( s_findSettingValue( settings, "viewport_y", &value ) == true )
-        {
-            s_parseSettingFloat( value, &m_viewportInput[1] );
-        }
-
-        if( s_findSettingValue( settings, "position_x", &value ) == true )
-        {
-            s_parseSettingFloat( value, &m_positionInput[0] );
-        }
-
-        if( s_findSettingValue( settings, "position_y", &value ) == true )
-        {
-            s_parseSettingFloat( value, &m_positionInput[1] );
-        }
-
-        if( s_findSettingValue( settings, "scale", &value ) == true )
-        {
-            s_parseSettingFloat( value, &m_scaleInput );
-        }
-
-        if( s_findSettingValue( settings, "playback_rate_index", &value ) == true )
-        {
-            s_parseSettingInt32( value, &m_playbackRateIndex );
-        }
+        s_copyPathInput( m_figPathInput, sizeof( m_figPathInput ), settings.get( "figma_file", "" ) );
+        s_copyPathInput( m_fontsPathInput, sizeof( m_fontsPathInput ), settings.get( "fonts_folder", "" ) );
+        s_copyPathInput( m_startFrameIdInput, sizeof( m_startFrameIdInput ), settings.get( "start_frame_id", "" ) );
+        m_fileIndex = settings.get( "file_index", m_fileIndex );
+        m_entryIndex = settings.get( "entry_index", m_entryIndex );
+        m_autoViewportInput = settings.get( "auto_viewport", m_autoViewportInput );
+        m_viewportInput[0] = settings.get( "viewport_x", m_viewportInput[0] );
+        m_viewportInput[1] = settings.get( "viewport_y", m_viewportInput[1] );
+        m_positionInput[0] = settings.get( "position_x", m_positionInput[0] );
+        m_positionInput[1] = settings.get( "position_y", m_positionInput[1] );
+        m_scaleInput = settings.get( "scale", m_scaleInput );
+        m_playbackRateIndex = settings.get( "playback_rate_index", m_playbackRateIndex );
     }
     //////////////////////////////////////////////////////////////////////////
     void FigmaViewerExampleSceneEventReceiver::saveSettings_() const
@@ -716,31 +561,21 @@ namespace Mengine
             return;
         }
 
-        String settings;
-        s_appendSettingValue( &settings, "figma_file", m_figPathInput );
-        s_appendSettingValue( &settings, "fonts_folder", m_fontsPathInput );
-        s_appendSettingValue( &settings, "start_frame_id", m_startFrameIdInput );
-        s_appendSettingInt32( &settings, "file_index", m_fileIndex );
-        s_appendSettingInt32( &settings, "entry_index", m_entryIndex );
-        s_appendSettingInt32( &settings, "auto_viewport", m_autoViewportInput == true ? 1 : 0 );
-        s_appendSettingFloat( &settings, "viewport_x", m_viewportInput[0] );
-        s_appendSettingFloat( &settings, "viewport_y", m_viewportInput[1] );
-        s_appendSettingFloat( &settings, "position_x", m_positionInput[0] );
-        s_appendSettingFloat( &settings, "position_y", m_positionInput[1] );
-        s_appendSettingFloat( &settings, "scale", m_scaleInput );
-        s_appendSettingInt32( &settings, "playback_rate_index", m_playbackRateIndex );
+        jpp::object settings = jpp::make_object();
+        settings.set( "figma_file", m_figPathInput );
+        settings.set( "fonts_folder", m_fontsPathInput );
+        settings.set( "start_frame_id", m_startFrameIdInput );
+        settings.set( "file_index", m_fileIndex );
+        settings.set( "entry_index", m_entryIndex );
+        settings.set( "auto_viewport", m_autoViewportInput );
+        settings.set( "viewport_x", m_viewportInput[0] );
+        settings.set( "viewport_y", m_viewportInput[1] );
+        settings.set( "position_x", m_positionInput[0] );
+        settings.set( "position_y", m_positionInput[1] );
+        settings.set( "scale", m_scaleInput );
+        settings.set( "playback_rate_index", m_playbackRateIndex );
 
-        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( userFileGroup, STRINGIZE_FILEPATH_LOCAL( "figma_viewer.ini" ), true, MENGINE_DOCUMENT_FACTORABLE );
-
-        if( stream == nullptr )
-        {
-            return;
-        }
-
-        stream->write( settings.data(), settings.size() );
-        stream->flush();
-
-        Helper::closeOutputStreamFile( userFileGroup, stream );
+        Helper::writeJSONFile( settings, userFileGroup, STRINGIZE_FILEPATH_LOCAL( "figma_viewer.json" ), true, MENGINE_DOCUMENT_FACTORABLE );
     }
     //////////////////////////////////////////////////////////////////////////
     void FigmaViewerExampleSceneEventReceiver::applySelection_()

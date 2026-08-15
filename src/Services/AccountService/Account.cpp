@@ -6,7 +6,6 @@
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/StreamHelper.h"
-#include "Kernel/IniHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/FileStreamHelper.h"
@@ -23,10 +22,6 @@
 
 #ifndef MENGINE_ACCOUNT_SETTINGS_JSON_PATH
 #define MENGINE_ACCOUNT_SETTINGS_JSON_PATH "settings.json"
-#endif
-
-#ifndef MENGINE_ACCOUNT_SETTINGS_INI_PATH
-#define MENGINE_ACCOUNT_SETTINGS_INI_PATH "settings.ini"
 #endif
 
 namespace Mengine
@@ -59,16 +54,6 @@ namespace Mengine
 
         m_settingsJSONContent = settingsJSONContent;
 
-        PathString settingsINIPath;
-        settingsINIPath += m_folderName;
-        settingsINIPath += MENGINE_ACCOUNT_SETTINGS_INI_PATH;
-
-        FilePath settingsINIPath_f = Helper::stringizeFilePath( settingsINIPath );
-
-        ContentInterfacePtr settingsINIContent = Helper::makeFileContent( m_fileGroup, settingsINIPath_f, MENGINE_DOCUMENT_FACTORABLE );
-
-        m_settingsINIContent = settingsINIContent;
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -78,7 +63,6 @@ namespace Mengine
         m_fileGroup = nullptr;
 
         m_settingsJSONContent = nullptr;
-        m_settingsINIContent = nullptr;        
 
         m_settings.clear();
     }
@@ -291,27 +275,9 @@ namespace Mengine
             return config;
         }
 
-        if( m_settingsINIContent->exist( true ) == true )
-        {
-            ConfigInterfacePtr config = Helper::loadConfig( m_settingsINIContent, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
-
-            if( config == nullptr )
-            {
-                LOGGER_ERROR( "get account '%s' settings failed load '%s'"
-                    , m_accountId.c_str()
-                    , Helper::getContentFullPath( m_settingsINIContent ).c_str()
-                );
-
-                return nullptr;
-            }
-
-            return config;
-        }
-
-        LOGGER_ERROR( "account '%s' settings not found any config '%s' or '%s'"
+        LOGGER_ERROR( "account '%s' settings config not found '%s'"
             , m_accountId.c_str()
             , Helper::getContentFullPath( m_settingsJSONContent ).c_str()
-            , Helper::getContentFullPath( m_settingsINIContent ).c_str()
         );
 
         return nullptr;

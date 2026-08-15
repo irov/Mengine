@@ -16,12 +16,10 @@
     },
     
     "Engine": {
-        "ProtocolPath": "../../src/Metacode/protocol.xml"
     },
     
     "DevPlugins-PC": {
         "Name": [
-            "XmlToBinPlugin.dll",
             "DevelopmentConverterPlugin.dll"
         ]
     },

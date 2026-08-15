@@ -1,3 +1,0 @@
-LIBRARY "INIPlugin"
-EXPORTS
-   dllMengineCreatePlugin @1

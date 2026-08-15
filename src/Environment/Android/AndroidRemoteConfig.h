@@ -7,7 +7,7 @@ namespace Mengine
     class AndroidRemoteConfig
         : public ConfigInterface
     {
-        DECLARE_FACTORABLE( INIConfig );
+        DECLARE_FACTORABLE( AndroidRemoteConfig );
 
     public:
         AndroidRemoteConfig();

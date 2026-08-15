@@ -25,12 +25,6 @@
 #include "MetabufLoaderResourceSpineSkeleton.h"
 #endif
 
-#if defined(MENGINE_PLUGIN_JSON)
-#include "JSONLoaderResourceSpineAtlasDefault.h"
-#include "JSONLoaderResourceSpineAtlasTexturepacker.h"
-#include "JSONLoaderResourceSpineSkeleton.h"
-#endif
-
 #include "Kernel/AllocatorHelper.h"
 #include "Kernel/ResourcePrototypeGenerator.h"
 #include "Kernel/NodePrototypeGenerator.h"
@@ -136,12 +130,6 @@ namespace Mengine
         } );
 #endif
 
-#if defined(MENGINE_PLUGIN_JSON)
-        VOCABULARY_SET( JSONLoaderInterface, STRINGIZE_STRING_LOCAL( "JSONLoader" ), ResourceSpineAtlasDefault::getFactorableType(), Helper::makeFactorableUnique<JSONLoaderResourceSpineAtlasDefault>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
-        VOCABULARY_SET( JSONLoaderInterface, STRINGIZE_STRING_LOCAL( "JSONLoader" ), ResourceSpineAtlasTexturepacker::getFactorableType(), Helper::makeFactorableUnique<JSONLoaderResourceSpineAtlasTexturepacker>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
-        VOCABULARY_SET( JSONLoaderInterface, STRINGIZE_STRING_LOCAL( "JSONLoader" ), ResourceSpineSkeleton::getFactorableType(), Helper::makeFactorableUnique<JSONLoaderResourceSpineSkeleton>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
         VOCABULARY_SET( DebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ), Spine::getFactorableType(), Helper::makeFactorableUnique<SpineDebuggerBoundingBox>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
         _spSetMalloc( &Detail::my_spine_malloc );
@@ -155,12 +143,6 @@ namespace Mengine
     void SpinePlugin::_finalizePlugin()
     {
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ), Spine::getFactorableType() );
-
-#if defined(MENGINE_PLUGIN_JSON)
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "JSONLoader" ), ResourceSpineAtlasDefault::getFactorableType() );
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "JSONLoader" ), ResourceSpineAtlasTexturepacker::getFactorableType() );
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "JSONLoader" ), ResourceSpineSkeleton::getFactorableType() );
-#endif
 
         Helper::removeResourcePrototype<ResourceSpineAtlasDefault>();
         Helper::removeResourcePrototype<ResourceSpineAtlasTexturepacker>();

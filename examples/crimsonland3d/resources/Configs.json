@@ -20,13 +20,11 @@
     },
 
     "Engine": {
-        "ProtocolPath": "../../../src/Metacode/protocol.xml",
         "RenderEnableAutoDepthStencil": true
     },
 
     "DevPlugins-PC": {
         "Name": [
-            "XmlToBinPlugin.dll",
             "DevelopmentConverterPlugin.dll"
         ]
     },

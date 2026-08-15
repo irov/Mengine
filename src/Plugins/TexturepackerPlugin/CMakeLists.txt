@@ -21,19 +21,9 @@ if(MENGINE_PLUGIN_METABUF)
         MetabufLoaderResourceTexturepacker.h
     )
 
-    add_definitions(-DMETABUF_EXTERNAL_CONFIG)
+    add_definitions(-DMETABUF_EXTERNAL_ALLOCATOR)
 
     INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/metabuf/include)
-endif()
-
-if(MENGINE_PLUGIN_JSON)
-    ADD_FILTER(
-    JSONLoader
-        JSONLoaderResourceTexturepacker.cpp
-        JSONLoaderResourceTexturepacker.h
-    )
-
-    INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/jpp/include)
 endif()
 
 if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)

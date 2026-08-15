@@ -54,9 +54,6 @@ PLUGIN_EXPORT( Metabuf );
 #if defined(MENGINE_PLUGIN_DEVELOPMENTCONVERTER_STATIC)
 PLUGIN_EXPORT( DevelopmentConverter );
 #endif
-#if defined(MENGINE_PLUGIN_XMLTOBIN_STATIC)
-PLUGIN_EXPORT( XmlToBin );
-#endif
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 //////////////////////////////////////////////////////////////////////////
@@ -166,9 +163,6 @@ namespace Mengine
 #endif
 #if defined(MENGINE_PLUGIN_DEVELOPMENTCONVERTER_STATIC)
         PLUGIN_CREATE( DevelopmentConverter, false, MENGINE_DOCUMENT_FUNCTION );
-#endif
-#if defined(MENGINE_PLUGIN_XMLTOBIN_STATIC)
-        PLUGIN_CREATE( XmlToBin, false, MENGINE_DOCUMENT_FUNCTION );
 #endif
 
         FileGroupInterfacePtr fileGroup;

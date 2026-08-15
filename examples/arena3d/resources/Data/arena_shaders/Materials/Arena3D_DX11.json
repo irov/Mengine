@@ -3,7 +3,6 @@
     "VertexAttribute": [
         {
             "Name": "Arena3D_Vertex3D_Static",
-            "RenderPlatform": "DX11",
             "Element": { "Size": 64 },
             "Attribute": [
                 { "Uniform": "POSITION", "Index": 0, "Size": 3, "Type": "FLOAT", "Normalized": false, "Stride": 64, "Offset": 0 },
@@ -16,7 +15,6 @@
         },
         {
             "Name": "Arena3D_Vertex2D_UV1",
-            "RenderPlatform": "DX11",
             "Element": { "Size": 32 },
             "Attribute": [
                 { "Uniform": "POSITION", "Index": 0, "Size": 3, "Type": "FLOAT", "Normalized": false, "Stride": 32, "Offset": 0 },
@@ -26,17 +24,17 @@
         }
     ],
     "VertexShader": [
-        { "Name": "Arena3D_Vertex_Lit", "RenderPlatform": "DX11", "File": { "Path": "Materials/DX11_Vertex_Lit.hlsl", "Converter": "text2vso11", "Compile": true } },
-        { "Name": "Arena3D_Vertex_Unlit", "RenderPlatform": "DX11", "File": { "Path": "Materials/DX11_Vertex_Unlit.hlsl", "Converter": "text2vso11", "Compile": true } },
-        { "Name": "Arena3D_Vertex_Post", "RenderPlatform": "DX11", "File": { "Path": "Materials/DX11_Vertex_Post.hlsl", "Converter": "text2vso11", "Compile": true } }
+        { "Name": "Arena3D_Vertex_Lit", "File": { "Path": "Materials/DX11_Vertex_Lit.hlsl", "Converter": "text2vso11", "Compile": true } },
+        { "Name": "Arena3D_Vertex_Unlit", "File": { "Path": "Materials/DX11_Vertex_Unlit.hlsl", "Converter": "text2vso11", "Compile": true } },
+        { "Name": "Arena3D_Vertex_Post", "File": { "Path": "Materials/DX11_Vertex_Post.hlsl", "Converter": "text2vso11", "Compile": true } }
     ],
     "FragmentShader": [
-        { "Name": "Arena3D_Fragment_Lit2", "RenderPlatform": "DX11", "File": { "Path": "Materials/DX11_Fragment_Lit2.hlsl", "Converter": "text2pso11", "Compile": true } },
-        { "Name": "Arena3D_Fragment_Lit4", "RenderPlatform": "DX11", "File": { "Path": "Materials/DX11_Fragment_Lit4.hlsl", "Converter": "text2pso11", "Compile": true } },
-        { "Name": "Arena3D_Fragment_Lit8", "RenderPlatform": "DX11", "File": { "Path": "Materials/DX11_Fragment_Lit8.hlsl", "Converter": "text2pso11", "Compile": true } },
-        { "Name": "Arena3D_Fragment_LitContinuous", "RenderPlatform": "DX11", "File": { "Path": "Materials/DX11_Fragment_LitContinuous.hlsl", "Converter": "text2pso11", "Compile": true } },
-        { "Name": "Arena3D_Fragment_Unlit", "RenderPlatform": "DX11", "File": { "Path": "Materials/DX11_Fragment_Unlit.hlsl", "Converter": "text2pso11", "Compile": true } },
-        { "Name": "Arena3D_Fragment_Post", "RenderPlatform": "DX11", "File": { "Path": "Materials/DX11_Fragment_Post.hlsl", "Converter": "text2pso11", "Compile": true } }
+        { "Name": "Arena3D_Fragment_Lit2", "File": { "Path": "Materials/DX11_Fragment_Lit2.hlsl", "Converter": "text2pso11", "Compile": true } },
+        { "Name": "Arena3D_Fragment_Lit4", "File": { "Path": "Materials/DX11_Fragment_Lit4.hlsl", "Converter": "text2pso11", "Compile": true } },
+        { "Name": "Arena3D_Fragment_Lit8", "File": { "Path": "Materials/DX11_Fragment_Lit8.hlsl", "Converter": "text2pso11", "Compile": true } },
+        { "Name": "Arena3D_Fragment_LitContinuous", "File": { "Path": "Materials/DX11_Fragment_LitContinuous.hlsl", "Converter": "text2pso11", "Compile": true } },
+        { "Name": "Arena3D_Fragment_Unlit", "File": { "Path": "Materials/DX11_Fragment_Unlit.hlsl", "Converter": "text2pso11", "Compile": true } },
+        { "Name": "Arena3D_Fragment_Post", "File": { "Path": "Materials/DX11_Fragment_Post.hlsl", "Converter": "text2pso11", "Compile": true } }
     ],
     "Program": [
         { "Name": "Arena3D_Program_Lit2", "VertexShader": { "Name": "Arena3D_Vertex_Lit" }, "FragmentShader": { "Name": "Arena3D_Fragment_Lit2" }, "VertexAttribute": { "Name": "Arena3D_Vertex3D_Static" }, "Sampler": { "Count": 1 } },

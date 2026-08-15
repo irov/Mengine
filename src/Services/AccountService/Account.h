@@ -71,7 +71,6 @@ namespace Mengine
         FilePath m_folderName;
 
         ContentInterfacePtr m_settingsJSONContent;
-        ContentInterfacePtr m_settingsINIContent;        
 
         struct Setting
         {

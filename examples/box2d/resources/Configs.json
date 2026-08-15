@@ -36,7 +36,6 @@
 
     "DevPlugins-PC": {
         "Name": [
-            "XmlToBinPlugin.dll",
             "DevelopmentConverterPlugin.dll"
         ]
     },
@@ -48,8 +47,7 @@
         "RenderMaxObject": 16000,
         "RenderMaxQuadBatch": 4000,
         "FxcPath": "fxc.exe",
-        "AntifreezeMonitorSeconds": 10,
-        "ProtocolPath": "../../../src/Metacode/protocol.xml"
+        "AntifreezeMonitorSeconds": 10
     },
     
     "Win32AntifreezeMonitorPlugin": {

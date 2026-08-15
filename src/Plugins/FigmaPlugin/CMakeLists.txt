@@ -22,14 +22,15 @@ src
     ResourceFigmaValidator.h
 )
 
-if(MENGINE_PLUGIN_JSON)
+if(MENGINE_PLUGIN_METABUF)
     ADD_FILTER(
-    JSONLoader
-        JSONLoaderResourceFigma.cpp
-        JSONLoaderResourceFigma.h
+    Metabuf
+        MetabufLoaderResourceFigma.cpp
+        MetabufLoaderResourceFigma.h
     )
 
-    INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/jpp/include)
+    add_definitions(-DMETABUF_EXTERNAL_ALLOCATOR)
+    INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/metabuf/include)
 endif()
 
 if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
@@ -67,3 +68,8 @@ else()
 endif()
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)
+
+if(MENGINE_PLUGIN_METABUF)
+    TARGET_LINK_LIBRARIES(${PROJECT_NAME} Metacode)
+    TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}metabuf${MENGINE_LIB_SUFFIX})
+endif()

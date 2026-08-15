@@ -19,10 +19,6 @@
 #include "MetabufLoaderResourceAstralax.h"
 #endif
 
-#if defined(MENGINE_PLUGIN_JSON)
-#include "JSONLoaderResourceAstralax.h"
-#endif
-
 #include "AstralaxInterface.h"
 #include "AstralaxIncluder.h"
 #include "AstralaxEmitter.h"
@@ -127,19 +123,7 @@ namespace Mengine
             return false;
         }
 
-        if( PROTOTYPE_SERVICE()
-            ->addPrototype( Node::getFactorableType(), STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), Helper::makeFactorableUnique<NodePrototypeGenerator<AstralaxEmitter, 128>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
-        {
-            return false;
-        }
-
         if( Helper::addNodePrototype<AstralaxEmitter, 128>( MENGINE_DOCUMENT_FACTORABLE ) == false )
-        {
-            return false;
-        }
-
-        if( PROTOTYPE_SERVICE()
-            ->addPrototype( Resource::getFactorableType(), STRINGIZE_STRING_LOCAL( "ResourceParticle" ), Helper::makeFactorableUnique<ResourcePrototypeGenerator<ResourceAstralax, 128>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
@@ -152,7 +136,6 @@ namespace Mengine
         PLUGIN_SERVICE_WAIT( ResourceValidateServiceInterface, [this]()
         {
             VOCABULARY_SET( ValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), ResourceAstralax::getFactorableType(), Helper::makeFactorableUnique<ResourceAstralaxValidator>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
-            VOCABULARY_SET( ValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ), Helper::makeFactorableUnique<ResourceAstralaxValidator>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
             return true;
         } );
@@ -160,14 +143,12 @@ namespace Mengine
         PLUGIN_SERVICE_LEAVE( ResourceValidateServiceInterface, [this]()
         {
             VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), ResourceAstralax::getFactorableType() );
-            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ) );
         } );
 
         PLUGIN_SERVICE_WAIT( ResourcePrefetcherServiceInterface, [this]()
         {
             ResourcePrefetcherInterfacePtr archivePrefetcherLZ4 = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "ResourcePrefetcherType" ), STRINGIZE_STRING_LOCAL( "ArchiveLZ4" ) );
 
-            VOCABULARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ), archivePrefetcherLZ4, MENGINE_DOCUMENT_FACTORABLE );
             VOCABULARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), ResourceAstralax::getFactorableType(), archivePrefetcherLZ4, MENGINE_DOCUMENT_FACTORABLE );
 
             return true;
@@ -175,19 +156,12 @@ namespace Mengine
 
         PLUGIN_SERVICE_LEAVE( ResourcePrefetcherServiceInterface, [this]()
         {
-            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ) );
             VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), ResourceAstralax::getFactorableType() );
         } );
 
 #if defined(MENGINE_PLUGIN_METABUF)
         VOCABULARY_SET( MetabufLoaderInterface, STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceAstralax::getFactorableType(), Helper::makeFactorableUnique<MetabufLoaderResourceAstralax>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
-        VOCABULARY_SET( MetabufLoaderInterface, STRINGIZE_STRING_LOCAL( "MetabufLoader" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ), Helper::makeFactorableUnique<MetabufLoaderResourceAstralax>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
-#endif
-
-#if defined(MENGINE_PLUGIN_JSON)
-        VOCABULARY_SET( JSONLoaderInterface, STRINGIZE_STRING_LOCAL( "JSONLoader" ), ResourceAstralax::getFactorableType(), Helper::makeFactorableUnique<JSONLoaderResourceAstralax>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
-        VOCABULARY_SET( JSONLoaderInterface, STRINGIZE_STRING_LOCAL( "JSONLoader" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ), Helper::makeFactorableUnique<JSONLoaderResourceAstralax>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
         return true;
@@ -195,25 +169,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AstralaxPlugin::_finalizePlugin()
     {
-        PROTOTYPE_SERVICE()
-            ->removePrototype( Node::getFactorableType(), STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), nullptr );
-
         Helper::removeNodePrototype<AstralaxEmitter>();
-
-        PROTOTYPE_SERVICE()
-            ->removePrototype( Resource::getFactorableType(), STRINGIZE_STRING_LOCAL( "ResourceParticle" ), nullptr );
 
         Helper::removeResourcePrototype<ResourceAstralax>();
 
 #if defined(MENGINE_PLUGIN_METABUF)
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceAstralax::getFactorableType() );
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "MetabufLoader" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ) );
 
-#endif
-
-#if defined(MENGINE_PLUGIN_JSON)
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "JSONLoader" ), ResourceAstralax::getFactorableType() );
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "JSONLoader" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ) );
 #endif
 
         SERVICE_FINALIZE( AstralaxService );

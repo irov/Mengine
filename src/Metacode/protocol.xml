@@ -1,4 +1,4 @@
-<Protocol Version = "153">
+<Protocol Version = "155">
   <Type Name="Mengine::String" Evict="string"/>
   <Type Name="Mengine::WString" Evict="wstring"/>
   <Type Name="Mengine::ConstString" Evict="string"/>
@@ -89,7 +89,6 @@
         
         <Node Name="VertexAttribute">
           <Attribute Name="Name" Type="Mengine::ConstString" Required="1"/>
-          <Attribute Name="RenderPlatform" Type="Mengine::ConstString" Required="1"/>
           <Member Node="Element" Name="Size" Type="uint32_t" Required="1"/>
           
           <Node Name="Attribute">
@@ -105,7 +104,6 @@
 
         <Node Name="VertexShader">
           <Attribute Name="Name" Type="Mengine::ConstString" Required="1"/>
-          <Attribute Name="RenderPlatform" Type="Mengine::ConstString" Required="1"/>
 
           <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
           <Member Node="File" Name="Converter" Type="Mengine::ConstString"/>
@@ -114,7 +112,6 @@
 
         <Node Name="FragmentShader">
           <Attribute Name="Name" Type="Mengine::ConstString" Required="1"/>
-          <Attribute Name="RenderPlatform" Type="Mengine::ConstString" Required="1"/>
 
           <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
           <Member Node="File" Name="Converter" Type="Mengine::ConstString"/>
@@ -123,7 +120,6 @@
 
         <Node Name="Program">
           <Attribute Name="Name" Type="Mengine::ConstString" Required="1"/>
-          <Attribute Name="RenderPlatform" Type="Mengine::ConstString"/>
 
           <Member Node="VertexShader" Name="Name" Type="Mengine::ConstString" Required="1"/>
           <Member Node="FragmentShader" Name="Name" Type="Mengine::ConstString" Required="1"/>
@@ -134,7 +130,6 @@
 
         <Node Name="Material">
           <Attribute Name="Name" Type="Mengine::ConstString" Required="1"/>
-          <Attribute Name="RenderPlatform" Type="Mengine::ConstString"/>
           <Attribute Name="Debug" Type="bool"/>
 
           <Member Node="BlendFactor" Name="Source" Type="Mengine::EBlendFactor"/>
@@ -223,19 +218,6 @@
           <Member Node="Image" Name="MaxSize" Type="mt::vec2f" Required="1"/>
           <Member Node="Image" Name="Size" Type="mt::vec2f"/>
           <Member Node="Image" Name="Offset" Type="mt::vec2f"/>
-        </Node>
-
-        <Node Name="ResourceParticle" Inheritance="Resource">
-          <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
-          <Member Node="File" Name="Converter" Type="Mengine::ConstString"/>
-          <Member Node="File" Name="NoExist" Type="bool"/>
-
-          <Member Node="AtlasCount" Name="Value" Type="uint32_t" Required="1"/>
-
-          <Node Name="Atlas">
-            <Attribute Name="Index" Type="uint32_t" Required="1"/>
-            <Attribute Name="ResourceName" Type="Mengine::ConstString" Required="1"/>
-          </Node>
         </Node>
 
         <Node Name="ResourceAstralax" Inheritance="Resource">
@@ -509,6 +491,13 @@
           <Member Node="Atlas" Name="Name" Type="Mengine::ConstString"/>
         </Node>
 
+        <Node Name="ResourceFigma" Inheritance="Resource">
+          <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
+          <Member Node="File" Name="NoExist" Type="bool"/>
+          <Member Node="File" Name="Dataflow" Type="Mengine::ConstString"/>
+          <Member Node="Sidecar" Name="Path" Type="Mengine::FilePath"/>
+        </Node>
+
         <Node Name="ResourceExternal" Inheritance="Resource" NoWrite="1"/>
       </Node>
 
@@ -574,6 +563,7 @@
           
           <Node Name="Material">
             <Attribute Name="Path" Type="Mengine::FilePath" Required="1"/>
+            <Attribute Name="RenderPlatform" Type="Mengine::ConstString"/>
           </Node>
         </Node>
         

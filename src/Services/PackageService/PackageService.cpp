@@ -88,16 +88,7 @@ namespace Mengine
 
             if( format.empty() == true )
             {
-                ConstString descriptionExt = Helper::getFilePathExt( _pack->descriptionPath );
-
-                if( descriptionExt == STRINGIZE_STRING_LOCAL( "bin" ) )
-                {
-                    format = STRINGIZE_STRING_LOCAL( "xml" );
-                } 
-                else if( descriptionExt == STRINGIZE_STRING_LOCAL( "json" ) )
-                {
-                    format = STRINGIZE_STRING_LOCAL( "json" );
-                }
+                format = Helper::getFilePathExt( _pack->descriptionPath );
             }
 
             _pack->format = format;

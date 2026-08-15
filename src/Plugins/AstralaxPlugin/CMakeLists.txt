@@ -33,19 +33,9 @@ if(MENGINE_PLUGIN_METABUF)
         MetabufLoaderResourceAstralax.h
     )
 
-    add_definitions(-DMETABUF_EXTERNAL_CONFIG)
+    add_definitions(-DMETABUF_EXTERNAL_ALLOCATOR)
 
     INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/metabuf/include)
-endif()
-
-if(MENGINE_PLUGIN_JSON)
-    ADD_FILTER(
-    JSONLoader
-        JSONLoaderResourceAstralax.cpp
-        JSONLoaderResourceAstralax.h
-    )
-
-    INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/jpp/include)
 endif()
 
 if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)

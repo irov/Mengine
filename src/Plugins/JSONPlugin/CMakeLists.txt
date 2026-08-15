@@ -11,46 +11,6 @@ src
     JSONService.h
     JSONService.cpp
 
-    JSONPackageLoader.h
-    JSONPackageLoader.cpp
-    JSONPackageContentLoader.h
-    JSONPackageContentLoader.cpp
-
-    JSONLoaderResourceHelper.cpp
-    JSONLoaderResourceHelper.h
-    JSONLoaderResourceCursorICO.cpp
-    JSONLoaderResourceCursorICO.h
-    JSONLoaderResourceCursorSystem.cpp
-    JSONLoaderResourceCursorSystem.h
-    JSONLoaderResourceFile.cpp
-    JSONLoaderResourceFile.h
-    JSONLoaderResourceHIT.cpp
-    JSONLoaderResourceHIT.h
-    JSONLoaderResourceImageData.cpp
-    JSONLoaderResourceImageData.h
-    JSONLoaderResourceImageDefault.cpp
-    JSONLoaderResourceImageDefault.h
-    JSONLoaderResourceImageEmpty.cpp
-    JSONLoaderResourceImageEmpty.h
-    JSONLoaderResourceImageSequence.cpp
-    JSONLoaderResourceImageSequence.h
-    JSONLoaderResourceImageSolid.cpp
-    JSONLoaderResourceImageSolid.h
-    JSONLoaderResourceImageSubstract.cpp
-    JSONLoaderResourceImageSubstract.h
-    JSONLoaderResourceImageSubstractRGBAndAlpha.cpp
-    JSONLoaderResourceImageSubstractRGBAndAlpha.h
-    JSONLoaderResourceJSON.cpp
-    JSONLoaderResourceJSON.h
-    JSONLoaderResourceMusic.cpp
-    JSONLoaderResourceMusic.h
-    JSONLoaderResourceShape.cpp
-    JSONLoaderResourceShape.h
-    JSONLoaderResourceSound.cpp
-    JSONLoaderResourceSound.h
-    JSONLoaderResourceWindow.cpp
-    JSONLoaderResourceWindow.h
-
     ResourceJSON.cpp
     ResourceJSON.h
 
@@ -70,7 +30,7 @@ if(MENGINE_PLUGIN_METABUF)
         MetabufLoaderResourceJSON.h
     )
 
-    add_definitions(-DMETABUF_EXTERNAL_CONFIG)
+    add_definitions(-DMETABUF_EXTERNAL_ALLOCATOR)
 
     INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/metabuf/include)
 endif()

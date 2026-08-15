@@ -27,6 +27,7 @@ namespace Mengine
         const ContentInterfacePtr & content = resource->getContent();
 
         metadata->getm_File_Path( content.get(), &ContentInterface::setFilePath );
+        metadata->getm_File_NoExist( content.get(), &ContentInterface::setValidNoExist );
         metadata->getm_File_Converter( content.get(), &ContentInterface::setConverterType );
 
         return true;

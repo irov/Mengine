@@ -9,7 +9,6 @@
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
-#include "Kernel/IniHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/FileStreamHelper.h"
@@ -28,10 +27,6 @@
 
 #ifndef MENGINE_ACCOUNTS_SETTINGS_JSON_PATH
 #define MENGINE_ACCOUNTS_SETTINGS_JSON_PATH "accounts.json"
-#endif
-
-#ifndef MENGINE_ACCOUNTS_SETTINGS_INI_PATH
-#define MENGINE_ACCOUNTS_SETTINGS_INI_PATH "accounts.ini"
 #endif
 
 //////////////////////////////////////////////////////////////////////////
@@ -730,29 +725,8 @@ namespace Mengine
             return config;
         }
 
-        FilePath settingsINIPath = Helper::stringizeFilePath( MENGINE_ACCOUNTS_SETTINGS_INI_PATH );
-
-        if( m_fileGroup->existFile( settingsINIPath, true ) == true )
-        {
-            ContentInterfacePtr settingsINIContent = Helper::makeFileContent( m_fileGroup, settingsINIPath, MENGINE_DOCUMENT_FACTORABLE );
-
-            ConfigInterfacePtr config = Helper::loadConfig( settingsINIContent, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
-
-            if( config == nullptr )
-            {
-                LOGGER_ERROR( "parsing accounts failed '%s'"
-                    , Helper::getContentFullPath( settingsINIContent ).c_str()
-                );
-
-                return nullptr;
-            }
-
-            return config;
-        }
-
-        LOGGER_MESSAGE( "not exist accounts '%s' or '%s'"
+        LOGGER_MESSAGE( "accounts config not found '%s'"
             , settingsJSONPath.c_str()
-            , settingsINIPath.c_str()
         );
 
         return nullptr;

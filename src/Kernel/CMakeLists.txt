@@ -590,9 +590,6 @@ Core
 
     GlyphCode.h
 
-    IniHelper.h
-    IniHelper.cpp
-
     PathString.h
     PathWString.h
 

@@ -1,0 +1,11 @@
+{
+    "GAME_SETTINGS": {
+        "Setting": [
+            "Game"
+        ]
+    },
+    "Game": {
+        "Name": "Game",
+        "Path": "game.json"
+    }
+}

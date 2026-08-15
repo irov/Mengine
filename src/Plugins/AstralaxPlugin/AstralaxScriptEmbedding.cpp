@@ -86,9 +86,6 @@ namespace Mengine
             .def_static_native_kernel( "setEventListener", &Detail::AstralaxEmitter_setEventListener )
             ;
 
-        Helper::registerScriptWrappingEx<AstralaxEmitter>( _kernel, STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerScriptWrappingEx<ResourceAstralax>( _kernel, STRINGIZE_STRING_LOCAL( "ResourceParticle" ), MENGINE_DOCUMENT_FACTORABLE );
-
         Helper::registerScriptWrapping<AstralaxEmitter>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerScriptWrapping<ResourceAstralax>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -99,9 +96,6 @@ namespace Mengine
     {
         _kernel->remove_scope<AstralaxEmitter>();
         _kernel->remove_scope<ResourceAstralax>();
-
-        Helper::unregisterScriptWrappingEx( STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ) );
-        Helper::unregisterScriptWrappingEx( STRINGIZE_STRING_LOCAL( "ResourceParticle" ) );
 
         Helper::unregisterScriptWrapping<AstralaxEmitter>();
         Helper::unregisterScriptWrapping<ResourceAstralax>();

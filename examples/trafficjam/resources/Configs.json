@@ -1,0 +1,43 @@
+{
+    "Project": {
+        "Name": "TrafficJam",
+        "Codename": "TrafficJam",
+        "Company": "Mengine"
+    },
+    "Game": {
+        "ContentResolution": [
+            715,
+            715
+        ],
+        "PersonalityModule": "Personality"
+    },
+    "Window": {
+        "Fullscreen": false,
+        "Size": [
+            715,
+            715
+        ]
+    },
+    "Platform": {
+        "Cursor": true
+    },
+    "Engine": {},
+    "DevPlugins-PC": {
+        "Name": [
+            "Win32ConsoleLogger.dll",
+            "DevelopmentConverterPlugin.dll",
+            "NodeDebuggerPlugin.dll",
+            "cURLPlugin.dll"
+        ]
+    },
+    "DevModules-PC": {
+        "Name": [
+            "ModuleNodeDebugger"
+        ]
+    },
+    "Frameworks": {
+        "Name": [
+            "TrafficJamFramework"
+        ]
+    }
+}

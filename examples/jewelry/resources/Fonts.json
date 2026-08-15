@@ -1,0 +1,22 @@
+{
+    "GAME_FONTS": {
+        "Font": [
+            "Stage",
+            "Time"
+        ]
+    },
+    "Stage": {
+        "Type": "TTF",
+        "Precompile": true,
+        "Path": ".downloads/fonts/Roboto-Black.ttf",
+        "Height": 32,
+        "DPI": 96
+    },
+    "Time": {
+        "Type": "TTF",
+        "Precompile": true,
+        "Path": ".downloads/fonts/Roboto-Black.ttf",
+        "Height": 28,
+        "DPI": 96
+    }
+}

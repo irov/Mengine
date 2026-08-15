@@ -17,30 +17,10 @@
 #include "MetabufLoaderResourceJSON.h"
 #endif
 
-#include "JSONLoaderResourceCursorICO.h"
-#include "JSONLoaderResourceCursorSystem.h"
-#include "JSONLoaderResourceFile.h"
-#include "JSONLoaderResourceHIT.h"
-#include "JSONLoaderResourceImageData.h"
-#include "JSONLoaderResourceImageDefault.h"
-#include "JSONLoaderResourceImageEmpty.h"
-#include "JSONLoaderResourceImageSequence.h"
-#include "JSONLoaderResourceImageSolid.h"
-#include "JSONLoaderResourceImageSubstract.h"
-#include "JSONLoaderResourceImageSubstractRGBAndAlpha.h"
-#include "JSONLoaderResourceJSON.h"
-#include "JSONLoaderResourceMusic.h"
-#include "JSONLoaderResourceShape.h"
-#include "JSONLoaderResourceSound.h"
-#include "JSONLoaderResourceWindow.h"
-
 #include "JSONConfig.h"
 
 #include "JSONSetting.h"
 #include "JSONSettingPrototypeGenerator.h"
-
-#include "JSONPackageContentLoader.h"
-#include "JSONPackageLoader.h"
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/ResourcePrototypeGenerator.h"
@@ -137,28 +117,6 @@ namespace Mengine
         } );
 #endif
 
-#define SET_JSON_LOADER(T)\
-        VOCABULARY_SET( JSONLoaderInterface, STRINGIZE_STRING_LOCAL( "JSONLoader" ), T::getFactorableType(), Helper::makeFactorableUnique<MENGINE_PP_CONCATENATE(JSONLoader, T)>(MENGINE_DOCUMENT_FACTORABLE), MENGINE_DOCUMENT_FACTORABLE )
-
-        SET_JSON_LOADER( ResourceCursorICO );
-        SET_JSON_LOADER( ResourceCursorSystem );
-        SET_JSON_LOADER( ResourceFile );
-        SET_JSON_LOADER( ResourceHIT );
-        SET_JSON_LOADER( ResourceImageData );
-        SET_JSON_LOADER( ResourceImageDefault );
-        SET_JSON_LOADER( ResourceImageEmpty );
-        SET_JSON_LOADER( ResourceImageSequence );
-        SET_JSON_LOADER( ResourceImageSolid );
-        SET_JSON_LOADER( ResourceImageSubstract );
-        SET_JSON_LOADER( ResourceImageSubstractRGBAndAlpha );
-        SET_JSON_LOADER( ResourceJSON );
-        SET_JSON_LOADER( ResourceMusic );
-        SET_JSON_LOADER( ResourceShape );
-        SET_JSON_LOADER( ResourceSound );
-        SET_JSON_LOADER( ResourceWindow );
-
-#undef SET_JSON_LOADER
-
         PLUGIN_SERVICE_WAIT( ResourcePrefetcherServiceInterface, [this]()
         {
             ResourcePrefetcherInterfacePtr resourcePrefetcherDefault = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "ResourcePrefetcherType" ), STRINGIZE_STRING_LOCAL( "Default" ) );
@@ -179,9 +137,6 @@ namespace Mengine
             return false;
         }
 
-        VOCABULARY_SET( PackageLoaderInterface, STRINGIZE_STRING_LOCAL( "PackageLoader" ), STRINGIZE_STRING_LOCAL( "json" ), Helper::makeFactorableUnique<JSONPackageLoader>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
-        VOCABULARY_SET( PackageContentLoaderInterface, STRINGIZE_STRING_LOCAL( "PackageContentLoader" ), STRINGIZE_STRING_LOCAL( "json" ), Helper::makeFactorableUnique<JSONPackageContentLoader>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -194,31 +149,6 @@ namespace Mengine
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Setting" ), STRINGIZE_STRING_LOCAL( "json" ), nullptr );
-
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "PackageContentLoader" ), STRINGIZE_STRING_LOCAL( "json" ) );
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "PackageLoader" ), STRINGIZE_STRING_LOCAL( "json" ) );
-
-#define REMOVE_JSON_LOADER(T)\
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "JSONLoader" ), T::getFactorableType() )
-
-        REMOVE_JSON_LOADER( ResourceCursorICO );
-        REMOVE_JSON_LOADER( ResourceCursorSystem );
-        REMOVE_JSON_LOADER( ResourceFile );
-        REMOVE_JSON_LOADER( ResourceHIT );
-        REMOVE_JSON_LOADER( ResourceImageData );
-        REMOVE_JSON_LOADER( ResourceImageDefault );
-        REMOVE_JSON_LOADER( ResourceImageEmpty );
-        REMOVE_JSON_LOADER( ResourceImageSequence );
-        REMOVE_JSON_LOADER( ResourceImageSolid );
-        REMOVE_JSON_LOADER( ResourceImageSubstract );
-        REMOVE_JSON_LOADER( ResourceImageSubstractRGBAndAlpha );
-        REMOVE_JSON_LOADER( ResourceJSON );
-        REMOVE_JSON_LOADER( ResourceMusic );
-        REMOVE_JSON_LOADER( ResourceShape );
-        REMOVE_JSON_LOADER( ResourceSound );
-        REMOVE_JSON_LOADER( ResourceWindow );
-
-#undef REMOVE_JSON_LOADER
 
         SERVICE_FINALIZE( JSONService );
     }

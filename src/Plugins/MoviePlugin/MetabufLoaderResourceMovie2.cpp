@@ -30,6 +30,7 @@ namespace Mengine
         const ContentInterfacePtr & content = resource->getContent();
 
         metadata->getm_File_Path( content.get(), &ContentInterface::setFilePath );
+        metadata->getm_File_NoExist( content.get(), &ContentInterface::setValidNoExist );
 
         ConstString dataflowType;
         if( metadata->get_File_Dataflow( &dataflowType ) == false )

@@ -1,29 +1,25 @@
 #include "MetabufLoaderService.h"
 
-#include "Interface/ConverterServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 
+#include "Metacode/Metacache.h"
+#include "Metacode/Metacode.h"
+
+#if defined(MENGINE_MASTER_RELEASE_DISABLE)
+#include "Metacode/Metaprotocol.h"
+#endif
+
 #include "Kernel/MemoryStreamHelper.h"
-#include "Kernel/FilePath.h"
-#include "Kernel/PathHelper.h"
+#include "Kernel/Data.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionVocabulary.h"
 #include "Kernel/AssertionAllocator.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
-#include "Kernel/FileStreamHelper.h"
-#include "Kernel/AllocatorHelper.h"
-#include "Kernel/PathString.h"
-#include "Kernel/Logger.h"
-#include "Kernel/FileGroupHelper.h"
-#include "Kernel/ConfigHelper.h"
 #include "Kernel/ContentHelper.h"
 #include "Kernel/VocabularyHelper.h"
-#include "Kernel/ParamsHelper.h"
-
-#include "metabuf/Metadata.hpp"
-#include "Metacode/Metacode.h"
+#include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( MetabufLoaderService, Mengine::MetabufLoaderService );
@@ -32,6 +28,10 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     MetabufLoaderService::MetabufLoaderService()
+#if defined(MENGINE_MASTER_RELEASE_DISABLE)
+        : m_xmlMetaconvert( nullptr )
+        , m_jsonMetaconvert( nullptr )
+#endif
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -41,7 +41,25 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MetabufLoaderService::_initializeService()
     {
-        m_protocolPath = CONFIG_VALUE_FILEPATH( "Engine", "ProtocolPath", STRINGIZE_FILEPATH_LOCAL( "protocol.xml" ) );
+#if defined(MENGINE_MASTER_RELEASE_DISABLE)
+        const Metacode::MetaprotocolGenerator generator;
+        m_xmlMetaconvert = Metabuf::createXmlMetaconvert( &generator );
+
+        if( m_xmlMetaconvert == nullptr )
+        {
+            return false;
+        }
+
+        m_jsonMetaconvert = Metabuf::createJsonMetaconvert( &generator );
+
+        if( m_jsonMetaconvert == nullptr )
+        {
+            Metabuf::destroyMetaconvert( m_xmlMetaconvert );
+            m_xmlMetaconvert = nullptr;
+
+            return false;
+        }
+#endif
 
         LOGGER_MESSAGE( "Metacode version: %u protocol: %u"
             , Metacode::get_metacode_version()
@@ -53,273 +71,305 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MetabufLoaderService::_finalizeService()
     {
-        m_loaders.clear();
-
-        m_metacache.strings.clear();
-
         MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "MetabufLoader" ) );
+
+#if defined(MENGINE_MASTER_RELEASE_DISABLE)
+        Metabuf::destroyMetaconvert( m_xmlMetaconvert );
+        m_xmlMetaconvert = nullptr;
+
+        Metabuf::destroyMetaconvert( m_jsonMetaconvert );
+        m_jsonMetaconvert = nullptr;
+#endif
 
         MENGINE_ASSERTION_ALLOCATOR( "metabuf" );
     }
     //////////////////////////////////////////////////////////////////////////
-    void MetabufLoaderService::setProtocolPath( const FilePath & _protocolPath )
+    bool MetabufLoaderService::load( const ContentInterfacePtr & _content, Metabuf::Metaparse * _metadata, bool * const _exist, const DocumentInterfacePtr & _doc ) const
     {
-        m_protocolPath = _protocolPath;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const FilePath & MetabufLoaderService::getProtocolPath() const
-    {
-        return m_protocolPath;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool MetabufLoaderService::load( const ContentInterfacePtr & _content, Metabuf::Metaparse * _metadata, uint32_t _metaVersion, bool * const _exist, const DocumentInterfacePtr & _doc ) const
-    {
-        LOGGER_INFO( "loader", "load bin '%s'"
-            , Helper::getContentFullPath( _content ).c_str()
-        );
+        MENGINE_ASSERTION_MEMORY_PANIC( _metadata, "invalid Metabuf metadata" );
 
-        const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
         const FilePath & filePath = _content->getFilePath();
 
         if( filePath.empty() == true )
         {
-            LOGGER_ERROR( "invalid open bin '%s' path is empty"
+            LOGGER_ERROR( "invalid Metabuf content '%s' path is empty"
                 , Helper::getContentFullPath( _content ).c_str()
             );
 
             return false;
         }
 
-        InputStreamInterfacePtr file_bin;
-        if( this->openBin_( _content, &file_bin, _exist, _doc ) == false )
+        if( _content->exist( true ) == false )
         {
-            LOGGER_ERROR( "invalid open bin '%s'"
-                , Helper::getContentFullPath( _content ).c_str()
-            );
+            if( _exist != nullptr )
+            {
+                *_exist = false;
+            }
 
             return false;
         }
 
-        MENGINE_ASSERTION_MEMORY_PANIC( file_bin, "invalid open bin '%s'"
+        if( _exist != nullptr )
+        {
+            *_exist = true;
+        }
+
+        InputStreamInterfacePtr stream = _content->openInputStreamFile( false, false, _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid open Metabuf content '%s'"
             , Helper::getContentFullPath( _content ).c_str()
         );
 
-        bool reimport = false;
-        bool done = this->importBin_( file_bin, _metadata, _metaVersion, &reimport, _doc );
+        const uint32_t metaVersion = _metadata->getMetaVersion();
 
-        _content->closeInputStreamFile( file_bin );
+#if defined(MENGINE_MASTER_RELEASE_ENABLE)
+        bool successful = this->importBin_( stream, _metadata, metaVersion, _doc );
+#else
+        bool successful = false;
 
-#if defined(MENGINE_MASTER_RELEASE_DISABLE)
-        if( reimport == true )
+        const ConstString extension = Helper::getFilePathExt( filePath );
+
+        if( extension == STRINGIZE_STRING_LOCAL( "bin" ) )
         {
-            file_bin = nullptr;
+            successful = this->importBin_( stream, _metadata, metaVersion, _doc );
+        }
+        else if( extension == STRINGIZE_STRING_LOCAL( "xml" ) || extension == STRINGIZE_STRING_LOCAL( "json" ) )
+        {
+            MemoryInterfacePtr source = Helper::createMemoryCacheStream( stream, _doc );
 
-            PathString cache_path_xml;
-            cache_path_xml += filePath;
-            cache_path_xml.replace_last( "xml" );
+            MENGINE_ASSERTION_MEMORY_PANIC( source, "invalid read Metabuf source '%s'"
+                , Helper::getContentFullPath( _content ).c_str()
+            );
 
-            FilePath c_cache_path_xml = Helper::stringizeFilePath( cache_path_xml );
+            const void * sourceBuffer = source->getBuffer();
+            const size_t sourceSize = source->getSize();
 
-            ContentInterfacePtr content_xml = Helper::makeFileContent( fileGroup, c_cache_path_xml, _doc );
+            Data raw;
+            std::string error;
+            const char * metaName = _metadata->getMetaName();
+            const char * nodeName = _metadata->getNodeName();
+            const Metabuf::MetaconvertInterface * metaconvert;
 
-            if( this->makeBin_( content_xml, filePath ) == false )
+            if( extension == STRINGIZE_STRING_LOCAL( "json" ) )
             {
-                LOGGER_ERROR( "invalid rebuild bin '%s' from xml '%s'"
+                metaconvert = m_jsonMetaconvert;
+            }
+            else
+            {
+                metaconvert = m_xmlMetaconvert;
+            }
+
+            const Metabuf::MetaInterface * meta = metaconvert->getMeta( metaName );
+
+            if( meta == nullptr )
+            {
+                LOGGER_ERROR( "invalid Metabuf meta '%s' for source '%s'"
+                    , metaName
                     , Helper::getContentFullPath( _content ).c_str()
-                    , Helper::getContentFullPath( content_xml ).c_str()
                 );
+
+                _content->closeInputStreamFile( stream );
 
                 return false;
             }
 
-            ContentInterfacePtr reimport_content_bin = Helper::makeFileContent( fileGroup, filePath, _doc );
+            const Metabuf::NodeInterface * node = meta->getNode( nodeName );
 
-            InputStreamInterfacePtr reimport_stream_bin = reimport_content_bin->openInputStreamFile( false, false, _doc );
+            if( node == nullptr )
+            {
+                LOGGER_ERROR( "invalid Metabuf node '%s' for meta '%s' source '%s'"
+                    , nodeName
+                    , metaName
+                    , Helper::getContentFullPath( _content ).c_str()
+                );
 
-            done = this->importBin_( reimport_stream_bin, _metadata, _metaVersion, nullptr, _doc );
+                _content->closeInputStreamFile( stream );
 
-            reimport_content_bin->closeInputStreamFile( reimport_stream_bin );
+                return false;
+            }
+
+            if( metaconvert->convert( sourceBuffer, sourceSize, meta, node, raw, error ) == false )
+            {
+                LOGGER_ERROR( "invalid convert Metabuf source '%s': %s"
+                    , Helper::getContentFullPath( _content ).c_str()
+                    , error.c_str()
+                );
+
+                _content->closeInputStreamFile( stream );
+
+                return false;
+            }
+
+            const void * rawBuffer = raw.data();
+            const size_t rawSize = raw.size();
+
+            successful = this->parseRaw_( rawBuffer, rawSize, _metadata );
+        }
+        else
+        {
+            LOGGER_ERROR( "unsupported Metabuf extension '%s' for '%s'"
+                , extension.c_str()
+                , Helper::getContentFullPath( _content ).c_str()
+            );
+
+            _content->closeInputStreamFile( stream );
+
+            return false;
         }
 #endif
-
-        return done;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool MetabufLoaderService::validation( const ContentInterfacePtr & _content, uint32_t _metaVersion ) const
-    {
-        InputStreamInterfacePtr stream = _content->openInputStreamFile( false, false, MENGINE_DOCUMENT_FACTORABLE );
-
-        if( stream == nullptr )
-        {
-            return false;
-        }
-
-        size_t size = stream->size();
-
-        if( size == 0 )
-        {
-            return false;
-        }
-
-        uint8_t header_buff[Metacode::header_size];
-        stream->read( header_buff, Metacode::header_size );
-
         _content->closeInputStreamFile( stream );
 
-        size_t header_read = 0;
-        uint32_t readVersion;
-        uint32_t needVersion;
-        uint32_t readProtocol;
-        uint32_t needProtocol;
-        uint32_t metaMetaVersion = _metaVersion;
-        uint32_t needMetaVersion;
-
-        Metabuf::HeaderError result = Metacode::readHeader( header_buff, Metacode::header_size, header_read, readVersion, needVersion, readProtocol, needProtocol, metaMetaVersion, needMetaVersion );
-
-        if( result != Metabuf::HEADER_SUCCESSFUL )
-        {
-            return false;
-        }
-
-        return true;
+        return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MetabufLoaderService::importBin_( const InputStreamInterfacePtr & _stream, Metabuf::Metaparse * _metadata, uint32_t _metaVersion, bool * const _reimport, const DocumentInterfacePtr & _doc ) const
+    bool MetabufLoaderService::importBin_( const InputStreamInterfacePtr & _stream, Metabuf::Metaparse * _metadata, uint32_t _metaVersion, const DocumentInterfacePtr & _doc ) const
     {
-        size_t size = _stream->size();
+        const size_t size = _stream->size();
 
-        if( size == 0 )
+        if( size < Metacode::header_size + sizeof( uint32_t ) * 2 )
         {
-            LOGGER_ERROR( "invalid size (empty)" );
+            LOGGER_ERROR( "invalid Metabuf BIN size [%zu]", size );
 
             return false;
         }
 
         uint8_t header_buff[Metacode::header_size];
-        _stream->read( header_buff, Metacode::header_size );
+
+        if( _stream->read( header_buff, Metacode::header_size ) != Metacode::header_size )
+        {
+            return false;
+        }
 
         size_t header_read = 0;
         uint32_t readVersion;
         uint32_t needVersion;
         uint32_t readProtocol;
         uint32_t needProtocol;
-        uint32_t metaMetaVersion = _metaVersion;
-        uint32_t needMetaVersion;
+        uint32_t readMetaVersion;
 
-        Metabuf::HeaderError result = Metacode::readHeader( header_buff, Metacode::header_size, header_read, readVersion, needVersion, readProtocol, needProtocol, metaMetaVersion, needMetaVersion );
+        Metabuf::HeaderError result = Metacode::readHeader( header_buff, Metacode::header_size, header_read, readVersion, needVersion, readProtocol, needProtocol, _metaVersion, readMetaVersion );
 
         if( result != Metabuf::HEADER_SUCCESSFUL )
         {
-            if( _reimport == nullptr )
-            {
-                LOGGER_ERROR( "error '%s' invalid version read [%u] need [%u] or protocol [%u] need [%u] (Update you protocol file)"
-                    , Metacode::getHeaderErrorMessage( result )
-                    , readVersion
-                    , needVersion
-                    , readProtocol
-                    , needProtocol
-                );
-            }
-            else
-            {
-                LOGGER_INFO( "loader", "error '%s' invalid version read [%u] need [%u] or protocol [%u] need [%u] (Update you protocol file)"
-                    , Metacode::getHeaderErrorMessage( result )
-                    , readVersion
-                    , needVersion
-                    , readProtocol
-                    , needProtocol
-                );
-
-                *_reimport = true;
-            }
+            LOGGER_ERROR( "error '%s' invalid version read [%u] need [%u] or protocol [%u] need [%u] meta [%u:%u]"
+                , Metacode::getHeaderErrorMessage( result )
+                , readVersion
+                , needVersion
+                , readProtocol
+                , needProtocol
+                , readMetaVersion
+                , _metaVersion
+            );
 
             return false;
         }
 
         uint32_t bin_size;
-        _stream->read( &bin_size, sizeof( bin_size ) );
-
         uint32_t compress_size;
-        _stream->read( &compress_size, sizeof( compress_size ) );
+
+        if( _stream->read( &bin_size, sizeof( bin_size ) ) != sizeof( bin_size ) )
+        {
+            return false;
+        }
+
+        if( _stream->read( &compress_size, sizeof( compress_size ) ) != sizeof( compress_size ) )
+        {
+            return false;
+        }
+
+        if( compress_size > size - Metacode::header_size - sizeof( uint32_t ) * 2 )
+        {
+            LOGGER_ERROR( "invalid Metabuf compressed size [%u]", compress_size );
+
+            return false;
+        }
 
         MemoryInterfacePtr binary_buffer = Helper::createMemoryCacheBuffer( bin_size, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( binary_buffer, "invalid create memory cache buffer" );
+        MENGINE_ASSERTION_MEMORY_PANIC( binary_buffer, "invalid create Metabuf memory cache buffer" );
 
-        uint8_t * binary_memory = binary_buffer->getBuffer();
+        void * binaryMemory = binary_buffer->getBuffer();
 
         ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( archivator, "invalid get archivator" );
+        MENGINE_ASSERTION_MEMORY_PANIC( archivator, "invalid get lz4 archivator" );
 
         size_t uncompress_size;
+
         if( ARCHIVE_SERVICE()
-            ->decompressStream( archivator, _stream, compress_size, binary_memory, bin_size, &uncompress_size ) == false )
+            ->decompressStream( archivator, _stream, compress_size, binaryMemory, bin_size, &uncompress_size ) == false )
         {
-            if( _reimport == nullptr )
-            {
-                LOGGER_ERROR( "invalid uncompress" );
-            }
-            else
-            {
-                *_reimport = true;
-            }
+            LOGGER_ERROR( "invalid uncompress Metabuf BIN" );
 
             return false;
         }
 
-        size_t read_size = 0;
+        if( uncompress_size != bin_size )
+        {
+            LOGGER_ERROR( "invalid uncompress Metabuf BIN [%zu:%u]", uncompress_size, bin_size );
 
-        uint32_t internalStringsCount = Metacode::getInternalStringsCount();
+            return false;
+        }
+
+        if( this->parseRaw_( binaryMemory, bin_size, _metadata ) == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool MetabufLoaderService::parseRaw_( const void * _buffer, size_t _size, Metabuf::Metaparse * _metadata ) const
+    {
+        size_t read_size = 0;
+        const uint32_t internalStringsCount = Metacode::getInternalStringsCount();
 
         uint32_t stringCount;
-        if( Metacode::readStrings( binary_memory, bin_size, read_size, stringCount ) == false )
+        if( Metacode::readStrings( _buffer, _size, read_size, stringCount ) == false )
         {
             return false;
         }
 
-        m_metacache.strings.resize( internalStringsCount + stringCount );
+        Metacache metacache;
+        metacache.strings.resize( internalStringsCount + stringCount );
 
         uint32_t index = 0;
 
-        for( ConstString & cstr : m_metacache.strings )
+        for( ConstString & cstr : metacache.strings )
         {
             uint32_t stringSize;
-            int64_t stringHash;
-            const char * stringBuffer = nullptr;
+            const char * stringBuffer;
 
             if( index < internalStringsCount )
             {
-                stringBuffer = Metacode::getInternalString( index, stringSize, stringHash );
+                stringBuffer = Metacode::getInternalString( index, stringSize );
             }
             else
             {
-                stringBuffer = Metacode::readString( binary_memory, bin_size, read_size, stringSize, stringHash );
+                stringBuffer = Metacode::readString( _buffer, _size, read_size, stringSize );
             }
 
-            MENGINE_ASSERTION_MEMORY_PANIC( stringBuffer, "invalid read string (error)" );
+            if( stringBuffer == nullptr )
+            {
+                return false;
+            }
 
             STRINGIZE_SERVICE()
-                ->stringize( stringBuffer, stringSize, stringHash, &cstr );
+                ->stringize( stringBuffer, stringSize, MENGINE_STRINGIZE_UNKNOWN_HASH, &cstr );
 
             ++index;
         }
 
-        if( read_size != bin_size )
+        if( read_size != _size && _metadata->parse( static_cast<const uint8_t *>(_buffer), _size, read_size, &metacache ) == false )
         {
-            if( _metadata->parse( binary_memory, bin_size, read_size, (void *)&m_metacache ) == false )
-            {
-                LOGGER_ERROR( "invalid parse (error)" );
+            LOGGER_ERROR( "invalid Metabuf parse" );
 
-                return false;
-            }
+            return false;
         }
 
-        m_metacache.strings.clear();
-
-        if( read_size != bin_size )
+        if( read_size != _size )
         {
-            LOGGER_ERROR( "invalid parse (read != archive)" );
+            LOGGER_ERROR( "invalid Metabuf parse read [%zu] archive [%zu]", read_size, _size );
 
             return false;
         }
@@ -327,156 +377,4 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_MASTER_RELEASE_DISABLE)
-    //////////////////////////////////////////////////////////////////////////
-    bool MetabufLoaderService::openBin_( const ContentInterfacePtr & _content, InputStreamInterfacePtr * const _stream, bool * const _exist, const DocumentInterfacePtr & _doc ) const
-    {
-        const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
-        const FilePath & filePath = _content->getFilePath();
-
-        PathString cache_path_xml;
-        cache_path_xml += filePath;
-        cache_path_xml.replace_last( "xml" );
-
-        FilePath c_cache_path_xml = Helper::stringizeFilePath( cache_path_xml );
-
-        if( fileGroup->existFile( c_cache_path_xml, true ) == false )
-        {
-            if( _content->exist( true ) == false )
-            {
-                *_exist = false;
-
-                return false;
-            }
-
-            InputStreamInterfacePtr file_bin = _content->openInputStreamFile( false, false, _doc );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( file_bin, "invalid open bin '%s'"
-                , Helper::getContentFullPath( _content ).c_str()
-            );
-
-            *_stream = file_bin;
-
-            return true;
-        }
-
-        *_exist = true;
-
-        if( _content->exist( true ) == false )
-        {
-            ContentInterfacePtr content_xml = Helper::makeFileContent( fileGroup, c_cache_path_xml, _doc );
-
-            if( this->makeBin_( content_xml, filePath ) == false )
-            {
-                return false;
-            }
-        }
-
-        InputStreamInterfacePtr file_bin = Helper::openInputStreamFile( fileGroup, filePath, false, false, _doc );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( file_bin, "invalid open bin '%s'"
-            , Helper::getContentFullPath( _content ).c_str()
-        );
-
-        InputStreamInterfacePtr file_xml = Helper::openInputStreamFile( fileGroup, c_cache_path_xml, false, false, _doc );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( file_xml, "invalid open xml '%s'"
-            , Helper::getContentFullPath( _content ).c_str()
-        );
-
-        uint64_t time_xml;
-        file_xml->time( &time_xml );
-
-        uint64_t time_bin;
-        file_bin->time( &time_bin );
-
-        file_xml = nullptr;
-
-        if( time_xml > time_bin )
-        {
-            //Rebuild bin file from xml
-            file_bin = nullptr;
-
-            ContentInterfacePtr content_xml = Helper::makeFileContent( fileGroup, c_cache_path_xml, _doc );
-
-            if( this->makeBin_( content_xml, filePath ) == false )
-            {
-                *_stream = nullptr;
-
-                return false;
-            }
-
-            file_bin = Helper::openInputStreamFile( fileGroup, filePath, false, false, _doc );
-        }
-
-        *_stream = file_bin;
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool MetabufLoaderService::makeBin_( const ContentInterfacePtr & _content, const FilePath & _pathBin ) const
-    {
-        ConverterInterfacePtr converter = CONVERTER_SERVICE()
-            ->createConverter( STRINGIZE_STRING_LOCAL( "xml2bin" ), MENGINE_DOCUMENT_FACTORABLE );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( converter, "invalid create converter xml2bin for '%s'"
-            , Helper::getContentFullPath( _content ).c_str()
-        );
-
-        ConverterOptions options;
-
-        const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
-
-        options.inputContent = _content;
-        options.outputContent = Helper::makeFileContent( fileGroup, _pathBin, MENGINE_DOCUMENT_FUNCTION );
-
-        FileGroupInterfacePtr fileGroupDev = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FileGroup" ), STRINGIZE_STRING_LOCAL( "dev" ) );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( fileGroupDev, "not found 'dev' file group" );
-
-        Mengine::ContentInterfacePtr protocolContent = Mengine::Helper::makeFileContent( fileGroupDev, m_protocolPath, MENGINE_DOCUMENT_FUNCTION );
-
-        uint32_t useProtocolVersion = Metacode::get_metacode_protocol_version();
-        uint32_t useProtocolCrc32 = Metacode::get_metacode_protocol_crc32();
-
-        Helper::setParam( options.params, STRINGIZE_STRING_LOCAL( "protocolContent" ), protocolContent );
-        Helper::setParam( options.params, STRINGIZE_STRING_LOCAL( "useProtocolVersion" ), (ParamInteger)useProtocolVersion );
-        Helper::setParam( options.params, STRINGIZE_STRING_LOCAL( "useProtocolCrc32" ), (ParamInteger)useProtocolCrc32 );
-
-        converter->setOptions( options );
-
-        if( converter->convert() == false )
-        {
-            LOGGER_ERROR( "invalid make bin for '%s'"
-                , Helper::getContentFullPath( _content ).c_str()
-            );
-
-            return false;
-        }
-
-        return true;
-    }
-#else
-    //////////////////////////////////////////////////////////////////////////
-    bool MetabufLoaderService::openBin_( const ContentInterfacePtr & _content, InputStreamInterfacePtr * const _stream, bool * const _exist, const DocumentInterfacePtr & _doc ) const
-    {
-        if( _content->exist( true ) == false )
-        {
-            *_exist = false;
-
-            return false;
-        }
-
-        InputStreamInterfacePtr file_bin = _content->openInputStreamFile( false, false, _doc );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( file_bin, "invalid open bin '%s'"
-            , Helper::getContentFullPath( _content ).c_str()
-        );
-
-        *_stream = file_bin;
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-#endif
 }

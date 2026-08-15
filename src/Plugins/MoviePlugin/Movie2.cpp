@@ -567,7 +567,7 @@ namespace Mengine
 
                 this->addMatrixProxy_( matrixProxy );
             }
-            else if( layer.type == STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ) || layer.type == STRINGIZE_STRING_LOCAL( "AstralaxEmitter" ) )
+            else if( layer.type == STRINGIZE_STRING_LOCAL( "AstralaxEmitter" ) )
             {
                 NodePtr node = PROTOTYPE_SERVICE()
                     ->generatePrototype( Node::getFactorableType(), STRINGIZE_STRING_LOCAL( "AstralaxEmitter" ), MENGINE_DOCUMENT_MESSAGE( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() ) );
@@ -1538,7 +1538,6 @@ namespace Mengine
                 {
                     unknownAstralaxEmitter->setEmitterPositionRelative( false );
                     unknownAstralaxEmitter->setEmitterCameraRelative( false );
-                    //unknownParticleEmitter2->setEmitterTranslateWithParticle( true );
                 }
 
                 Resource * resourceParticle = Helper::reinterpretResourceCast<Resource *>( ae_get_movie_layer_data_resource_userdata( _callbackData->layer_data ) );

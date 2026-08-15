@@ -1,0 +1,34 @@
+{
+    "GAME_FONTS": {
+        "Font": [
+            "Value",
+            "Value_Border"
+        ]
+    },
+    "Value": {
+        "Type": "TTF",
+        "Precompile": true,
+        "Path": ".downloads/fonts/Roboto-Black.ttf",
+        "Height": 50,
+        "DPI": 96,
+        "ColorFont": [
+            255,
+            0,
+            0,
+            255
+        ]
+    },
+    "Value_Border": {
+        "Type": "TTF",
+        "Precompile": true,
+        "Path": ".downloads/fonts/Roboto-Black.ttf",
+        "Height": 50,
+        "DPI": 96,
+        "ColorFont": [
+            255,
+            255,
+            255,
+            255
+        ]
+    }
+}

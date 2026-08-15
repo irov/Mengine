@@ -2,7 +2,6 @@
 
 #include "Interface/MetabufLoaderServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
-#include "Interface/RenderSystemInterface.h"
 #include "Interface/RenderMaterialServiceInterface.h"
 
 #include "Metacode/Metacode.h"
@@ -16,7 +15,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     MetabufPackageContentLoader::MetabufPackageContentLoader()
     {
     }
@@ -31,7 +29,7 @@ namespace Mengine
 
         bool exist = false;
         if( METABUF_LOADER_SERVICE()
-            ->load( _desc.content, &datablock, Metacode::Meta_Data::getVersion(), &exist, MENGINE_DOCUMENT_FACTORABLE ) == false )
+            ->load( _desc.content, &datablock, &exist, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             if( exist == false )
             {
@@ -202,7 +200,7 @@ namespace Mengine
 
         bool exist = false;
         if( METABUF_LOADER_SERVICE()
-            ->load( _desc.content, &datablock, Metacode::Meta_Data::getVersion(), &exist, MENGINE_DOCUMENT_FACTORABLE ) == false )
+            ->load( _desc.content, &datablock, &exist, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             if( exist == false )
             {
@@ -290,7 +288,7 @@ namespace Mengine
 
         bool exist = false;
         if( METABUF_LOADER_SERVICE()
-            ->load( _desc.content, &datablock, Metacode::Meta_Data::getVersion(), &exist, MENGINE_DOCUMENT_FACTORABLE ) == false )
+            ->load( _desc.content, &datablock, &exist, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             if( exist == false )
             {
@@ -308,21 +306,11 @@ namespace Mengine
             return false;
         }
 
-        const ConstString & renderPlatformName = RENDER_SYSTEM()
-            ->getRenderPlatformName();
-
         const Metacode::Meta_Data::Meta_DataBlock::VectorMeta_FragmentShader & includes_FragmentShader = datablock.get_Includes_FragmentShader();
 
         for( const Metacode::Meta_Data::Meta_DataBlock::Meta_FragmentShader & meta_FragmentShader : includes_FragmentShader )
         {
             const ConstString & name = meta_FragmentShader.get_Name();
-
-            const ConstString & renderPlatform = meta_FragmentShader.get_RenderPlatform();
-
-            if( renderPlatform != renderPlatformName )
-            {
-                continue;
-            }
 
             const FilePath & fragmentShaderFilePath = meta_FragmentShader.get_File_Path();
 
@@ -355,13 +343,6 @@ namespace Mengine
         {
             const ConstString & name = meta_VertexShader.get_Name();
 
-            const ConstString & renderPlatform = meta_VertexShader.get_RenderPlatform();
-
-            if( renderPlatform != renderPlatformName )
-            {
-                continue;
-            }
-
             const FilePath & vertexShaderFilePath = meta_VertexShader.get_File_Path();
 
             ConstString fileConverterType;
@@ -391,13 +372,6 @@ namespace Mengine
 
         for( const Metacode::Meta_Data::Meta_DataBlock::Meta_VertexAttribute & meta_VertexAttribute : includes_VertexAttribute )
         {
-            const ConstString & renderPlatform = meta_VertexAttribute.get_RenderPlatform();
-
-            if( renderPlatform != renderPlatformName )
-            {
-                continue;
-            }
-
             uint32_t elementSize = meta_VertexAttribute.get_Element_Size();
 
             const ConstString & name = meta_VertexAttribute.get_Name();
@@ -425,15 +399,6 @@ namespace Mengine
 
         for( const Metacode::Meta_Data::Meta_DataBlock::Meta_Program & meta_Program : includes_Program )
         {
-            ConstString renderPlatform;
-            if( meta_Program.get_RenderPlatform( &renderPlatform ) == true )
-            {
-                if( renderPlatform != renderPlatformName )
-                {
-                    continue;
-                }
-            }
-
             const ConstString & name = meta_Program.get_Name();
 
             const ConstString & vertexShaderName = meta_Program.get_VertexShader_Name();
@@ -486,15 +451,6 @@ namespace Mengine
         {
             const ConstString & name = meta_Material.get_Name();
 
-            ConstString renderPlatform;
-            if( meta_Material.get_RenderPlatform( &renderPlatform ) == true )
-            {
-                if( renderPlatform != renderPlatformName )
-                {
-                    continue;
-                }
-            }
-
             bool is_debug = false;
             meta_Material.get_Debug( &is_debug );
 
@@ -546,6 +502,17 @@ namespace Mengine
             {
                 uint32_t index = meta_TextureStages.get_Stage();
 
+                if( index >= MENGINE_MAX_TEXTURE_STAGES )
+                {
+                    LOGGER_ERROR( "material '%s' stage index [%u] exceeds maximum [%u]"
+                        , name.c_str()
+                        , index
+                        , MENGINE_MAX_TEXTURE_STAGES
+                    );
+
+                    return false;
+                }
+
                 RenderTextureStage & textureStage = stage.textureStages[index];
 
                 meta_TextureStages.get_AddressMode_U( &textureStage.addressU );
@@ -593,7 +560,7 @@ namespace Mengine
 
         bool exist = false;
         if( METABUF_LOADER_SERVICE()
-            ->load( _desc.content, &datablock, Metacode::Meta_Data::getVersion(), &exist, MENGINE_DOCUMENT_FACTORABLE ) == false )
+            ->load( _desc.content, &datablock, &exist, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             if( exist == false )
             {
@@ -611,20 +578,10 @@ namespace Mengine
             return false;
         }
 
-        const ConstString & renderPlatformName = RENDER_SYSTEM()
-            ->getRenderPlatformName();
-
         const Metacode::Meta_Data::Meta_DataBlock::VectorMeta_FragmentShader & includes_FragmentShader = datablock.get_Includes_FragmentShader();
 
         for( const Metacode::Meta_Data::Meta_DataBlock::Meta_FragmentShader & meta_FragmentShader : includes_FragmentShader )
         {
-            const ConstString & renderPlatform = meta_FragmentShader.get_RenderPlatform();
-
-            if( renderPlatform != renderPlatformName )
-            {
-                continue;
-            }
-
             const ConstString & name = meta_FragmentShader.get_Name();
 
             RENDERMATERIAL_SERVICE()
@@ -635,13 +592,6 @@ namespace Mengine
 
         for( const Metacode::Meta_Data::Meta_DataBlock::Meta_VertexShader & meta_VertexShader : includes_VertexShader )
         {
-            const ConstString & renderPlatform = meta_VertexShader.get_RenderPlatform();
-
-            if( renderPlatform != renderPlatformName )
-            {
-                continue;
-            }
-
             const ConstString & name = meta_VertexShader.get_Name();
 
             RENDERMATERIAL_SERVICE()
@@ -652,19 +602,20 @@ namespace Mengine
 
         for( const Metacode::Meta_Data::Meta_DataBlock::Meta_Program & meta_Program : includes_Program )
         {
-            ConstString renderPlatform;
-            if( meta_Program.get_RenderPlatform( &renderPlatform ) == true )
-            {
-                if( renderPlatform != renderPlatformName )
-                {
-                    continue;
-                }
-            }
-
             const ConstString & name = meta_Program.get_Name();
 
             RENDERMATERIAL_SERVICE()
                 ->removeProgram( name );
+        }
+
+        const Metacode::Meta_Data::Meta_DataBlock::VectorMeta_VertexAttribute & includes_VertexAttribute = datablock.get_Includes_VertexAttribute();
+
+        for( const Metacode::Meta_Data::Meta_DataBlock::Meta_VertexAttribute & meta_VertexAttribute : includes_VertexAttribute )
+        {
+            const ConstString & name = meta_VertexAttribute.get_Name();
+
+            RENDERMATERIAL_SERVICE()
+                ->removeVertexAttribute( name );
         }
 
         const Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Material & includes_Material = datablock.get_Includes_Material();

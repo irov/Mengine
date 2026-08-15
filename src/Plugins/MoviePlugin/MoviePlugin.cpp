@@ -29,10 +29,6 @@
 #include "MetabufLoaderResourceMovie2.h"
 #endif
 
-#if defined(MENGINE_PLUGIN_JSON)
-#include "JSONLoaderResourceMovie2.h"
-#endif
-
 #include "Movie2Slot.h"
 
 #include "ResourceMovie2Validator.h"
@@ -267,10 +263,6 @@ namespace Mengine
         } );
 #endif
 
-#if defined(MENGINE_PLUGIN_JSON)
-        VOCABULARY_SET( JSONLoaderInterface, STRINGIZE_STRING_LOCAL( "JSONLoader" ), ResourceMovie2::getFactorableType(), Helper::makeFactorableUnique<JSONLoaderResourceMovie2>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
         VOCABULARY_SET( DebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ), Movie2::getFactorableType(), Helper::makeFactorableUnique<Movie2DebuggerBoundingBox>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
@@ -285,9 +277,6 @@ namespace Mengine
 
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ), Movie2::getFactorableType() );
 
-#if defined(MENGINE_PLUGIN_JSON)
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "JSONLoader" ), ResourceMovie2::getFactorableType() );
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void MoviePlugin::_destroyPlugin()

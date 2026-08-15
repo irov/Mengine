@@ -13,7 +13,6 @@
 #include "MetabufLoaderResourceImageSolid.h"
 #include "MetabufLoaderResourceImageSubstract.h"
 #include "MetabufLoaderResourceImageSubstractRGBAndAlpha.h"
-#include "MetabufLoaderResourceImageSubstractRGBAndAlpha.h"
 #include "MetabufLoaderResourceMusic.h"
 #include "MetabufLoaderResourceShape.h"
 #include "MetabufLoaderResourceSound.h"
@@ -86,10 +85,12 @@ namespace Mengine
 #undef SET_LOADER
 
         VOCABULARY_SET( PackageLoaderInterface, STRINGIZE_STRING_LOCAL( "PackageLoader" ), STRINGIZE_STRING_LOCAL( "xml" ), Helper::makeFactorableUnique<MetabufPackageLoader>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+        VOCABULARY_SET( PackageLoaderInterface, STRINGIZE_STRING_LOCAL( "PackageLoader" ), STRINGIZE_STRING_LOCAL( "json" ), Helper::makeFactorableUnique<MetabufPackageLoader>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
         VOCABULARY_SET( PackageLoaderInterface, STRINGIZE_STRING_LOCAL( "PackageLoader" ), STRINGIZE_STRING_LOCAL( "bin" ), Helper::makeFactorableUnique<MetabufPackageLoader>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
         PackageContentLoaderInterfacePtr contentLoader = Helper::makeFactorableUnique<MetabufPackageContentLoader>( MENGINE_DOCUMENT_FACTORABLE );
         VOCABULARY_SET( PackageContentLoaderInterface, STRINGIZE_STRING_LOCAL( "PackageContentLoader" ), STRINGIZE_STRING_LOCAL( "xml" ), contentLoader, MENGINE_DOCUMENT_FACTORABLE );
+        VOCABULARY_SET( PackageContentLoaderInterface, STRINGIZE_STRING_LOCAL( "PackageContentLoader" ), STRINGIZE_STRING_LOCAL( "json" ), contentLoader, MENGINE_DOCUMENT_FACTORABLE );
         VOCABULARY_SET( PackageContentLoaderInterface, STRINGIZE_STRING_LOCAL( "PackageContentLoader" ), STRINGIZE_STRING_LOCAL( "bin" ), contentLoader, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
@@ -119,9 +120,11 @@ namespace Mengine
 #undef REMOVE_LOADER
 
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "PackageContentLoader" ), STRINGIZE_STRING_LOCAL( "xml" ) );
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "PackageContentLoader" ), STRINGIZE_STRING_LOCAL( "json" ) );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "PackageContentLoader" ), STRINGIZE_STRING_LOCAL( "bin" ) );
 
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "PackageLoader" ), STRINGIZE_STRING_LOCAL( "xml" ) );
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "PackageLoader" ), STRINGIZE_STRING_LOCAL( "json" ) );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "PackageLoader" ), STRINGIZE_STRING_LOCAL( "bin" ) );
 
         SERVICE_FINALIZE( MetabufLoaderService );

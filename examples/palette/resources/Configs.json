@@ -1,0 +1,36 @@
+{
+    "Project": {
+        "Name": "Palette",
+        "Codename": "Palette",
+        "Company": "Mengine"
+    },
+    "Game": {
+        "ContentResolution": [
+            1024,
+            768
+        ],
+        "PersonalityModule": "Personality"
+    },
+    "Window": {
+        "Fullscreen": false,
+        "Size": [
+            1024,
+            768
+        ]
+    },
+    "Platform": {
+        "Cursor": true
+    },
+    "Engine": {},
+    "DevPlugins-PC": {
+        "Name": [
+            "Win32ConsoleLogger.dll",
+            "DevelopmentConverterPlugin.dll"
+        ]
+    },
+    "Frameworks": {
+        "Name": [
+            "PaletteFramework"
+        ]
+    }
+}

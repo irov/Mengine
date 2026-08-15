@@ -1,0 +1,51 @@
+{
+    "Project": {
+        "Name": "Ozz",
+        "Codename": "Ozz",
+        "Company": "Mengine"
+    },
+    "Game": {
+        "ContentResolution": [
+            1024,
+            768
+        ],
+        "PersonalityModule": "Personality"
+    },
+    "Window": {
+        "Fullscreen": false,
+        "Size": [
+            1024,
+            768
+        ]
+    },
+    "Platform": {
+        "Cursor": true
+    },
+    "Engine": {
+        "RenderEnableAutoDepthStencil": true
+    },
+    "Plugins": {
+        "Name": [
+            "OzzAnimationPlugin.dll"
+        ]
+    },
+    "DevPlugins-PC": {
+        "Name": [
+            "Win32ConsoleLoggerPlugin.dll",
+            "DevelopmentConverterPlugin.dll"
+        ]
+    },
+    "Frameworks": {
+        "Name": [
+            "OzzFramework"
+        ]
+    },
+    "Settings": {
+        "Game": "game.json"
+    },
+    "DevModules-PC": {
+        "Name": [
+            "ModuleCameraDebugGizmo"
+        ]
+    }
+}

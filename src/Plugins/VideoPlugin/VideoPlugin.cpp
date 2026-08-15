@@ -20,10 +20,6 @@
 #include "MetabufLoaderResourceVideo.h"
 #endif
 
-#if defined(MENGINE_PLUGIN_JSON)
-#include "JSONLoaderResourceVideo.h"
-#endif
-
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/ResourcePrototypeGenerator.h"
 #include "Kernel/SurfacePrototypeGenerator.h"
@@ -96,10 +92,6 @@ namespace Mengine
         VOCABULARY_SET( MetabufLoaderInterface, STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceVideo::getFactorableType(), Helper::makeFactorableUnique<MetabufLoaderResourceVideo>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
-#if defined(MENGINE_PLUGIN_JSON)
-        VOCABULARY_SET( JSONLoaderInterface, STRINGIZE_STRING_LOCAL( "JSONLoader" ), ResourceVideo::getFactorableType(), Helper::makeFactorableUnique<JSONLoaderResourceVideo>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -111,9 +103,6 @@ namespace Mengine
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), ResourceVideo::getFactorableType() );
 #if defined(MENGINE_PLUGIN_METABUF)
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceVideo::getFactorableType() );
-#endif
-#if defined(MENGINE_PLUGIN_JSON)
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "JSONLoader" ), ResourceVideo::getFactorableType() );
 #endif
     }
     //////////////////////////////////////////////////////////////////////////

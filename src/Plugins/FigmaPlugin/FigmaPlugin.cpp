@@ -7,8 +7,9 @@
 #include "ResourceFigma.h"
 #include "ResourceFigmaValidator.h"
 
-#if defined(MENGINE_PLUGIN_JSON)
-#include "JSONLoaderResourceFigma.h"
+#if defined(MENGINE_PLUGIN_METABUF)
+#include "Interface/MetabufLoaderServiceInterface.h"
+#include "MetabufLoaderResourceFigma.h"
 #endif
 
 #include "Plugins/ResourcePrefetcherPlugin/ResourcePrefetcherServiceInterface.h"
@@ -117,8 +118,18 @@ namespace Mengine
             VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), ResourceFigma::getFactorableType() );
         } );
 
-#if defined(MENGINE_PLUGIN_JSON)
-        VOCABULARY_SET( JSONLoaderInterface, STRINGIZE_STRING_LOCAL( "JSONLoader" ), ResourceFigma::getFactorableType(), Helper::makeFactorableUnique<JSONLoaderResourceFigma>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+#if defined(MENGINE_PLUGIN_METABUF)
+        PLUGIN_SERVICE_WAIT( MetabufLoaderServiceInterface, [this]()
+        {
+            VOCABULARY_SET( MetabufLoaderInterface, STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceFigma::getFactorableType(), Helper::makeFactorableUnique<MetabufLoaderResourceFigma>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+
+            return true;
+        } );
+
+        PLUGIN_SERVICE_LEAVE( MetabufLoaderServiceInterface, []()
+        {
+            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceFigma::getFactorableType() );
+        } );
 #endif
 
         return true;
@@ -126,10 +137,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void FigmaPlugin::_finalizePlugin()
     {
-#if defined(MENGINE_PLUGIN_JSON)
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "JSONLoader" ), ResourceFigma::getFactorableType() );
-#endif
-
         Helper::removeResourcePrototype<ResourceFigma>();
         Helper::removeNodePrototype<Figma>();
     }

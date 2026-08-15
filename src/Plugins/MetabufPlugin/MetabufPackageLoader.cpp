@@ -29,7 +29,7 @@ namespace Mengine
 
         bool exist = false;
         if( METABUF_LOADER_SERVICE()
-            ->load( descriptionContent, &pak, Metacode::Meta_Data::getVersion(), &exist, _doc ) == false )
+            ->load( descriptionContent, &pak, &exist, _doc ) == false )
         {
             LOGGER_ERROR( "invalid resource file '%s' name '%s' description '%s'"
                 , desc.path.c_str()
@@ -174,7 +174,10 @@ namespace Mengine
             {
                 const FilePath & path = meta_material.get_Path();
 
-                _package->addPackageMaterial( path, platform );
+                ConstString renderPlatform;
+                meta_material.get_RenderPlatform( &renderPlatform );
+
+                _package->addPackageMaterial( path, platform, renderPlatform );
             }
         }
 

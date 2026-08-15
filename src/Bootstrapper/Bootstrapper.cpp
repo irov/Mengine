@@ -199,10 +199,6 @@ PLUGIN_EXPORT( LZ4 );
 PLUGIN_EXPORT( Zstd );
 #endif
 //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLUGIN_INI_STATIC)
-PLUGIN_EXPORT( INI );
-#endif
-//////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLUGIN_IMAGE_CODEC_STATIC)
 PLUGIN_EXPORT( ImageCodec );
 #endif
@@ -415,9 +411,6 @@ PLUGIN_EXPORT( Win32AntifreezeMonitor );
 PLUGIN_EXPORT( AndroidNativePython );
 #endif
 //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLUGIN_XMLTOBIN_STATIC)
-PLUGIN_EXPORT( XmlToBin );
-#endif
 /////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Bootstrapper, Mengine::Bootstrapper );
 //////////////////////////////////////////////////////////////////////////
@@ -1406,10 +1399,6 @@ namespace Mengine
         );
 #endif
 
-#if defined(MENGINE_PLUGIN_INI_STATIC)
-        MENGINE_ADD_PLUGIN( INI, "plugin INI...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
 #if defined(MENGINE_PLUGIN_JSON_STATIC)
         MENGINE_ADD_PLUGIN( JSON, "plugin JSON...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
@@ -1789,10 +1778,6 @@ namespace Mengine
 
 #if defined(MENGINE_PLUGIN_ANDROID_NATIVE_PYTHON_STATIC)
         MENGINE_ADD_PLUGIN( AndroidNativePython, "plugin AndroidNativePython...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
-#if defined(MENGINE_PLUGIN_XMLTOBIN_STATIC)
-        MENGINE_ADD_PLUGIN( XmlToBin, "plugin XmlToBin...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
         return true;

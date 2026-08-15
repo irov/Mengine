@@ -1,3 +1,0 @@
-LIBRARY "XmlToBinPlugin"
-EXPORTS 
-    dllMengineCreatePlugin @1

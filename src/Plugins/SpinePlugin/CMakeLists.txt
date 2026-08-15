@@ -37,23 +37,9 @@ if(MENGINE_PLUGIN_METABUF)
         MetabufLoaderResourceSpineSkeleton.cpp
     )
 
-    add_definitions(-DMETABUF_EXTERNAL_CONFIG)
+    add_definitions(-DMETABUF_EXTERNAL_ALLOCATOR)
 
     INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/metabuf/include)
-endif()
-
-if(MENGINE_PLUGIN_JSON)
-    ADD_FILTER(
-    JSONLoader
-        JSONLoaderResourceSpineAtlasDefault.h
-        JSONLoaderResourceSpineAtlasDefault.cpp
-        JSONLoaderResourceSpineAtlasTexturepacker.h
-        JSONLoaderResourceSpineAtlasTexturepacker.cpp
-        JSONLoaderResourceSpineSkeleton.h
-        JSONLoaderResourceSpineSkeleton.cpp
-    )
-
-    INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/jpp/include)
 endif()
 
 if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)

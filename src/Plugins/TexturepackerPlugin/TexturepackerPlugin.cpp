@@ -15,10 +15,6 @@
 #include "MetabufLoaderResourceTexturepacker.h"
 #endif
 
-#if defined(MENGINE_PLUGIN_JSON)
-#include "JSONLoaderResourceTexturepacker.h"
-#endif
-
 #include "Kernel/ResourcePrototypeGenerator.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/NotificationHelper.h"
@@ -66,10 +62,6 @@ namespace Mengine
         } );
 #endif
 
-#if defined(MENGINE_PLUGIN_JSON)
-        VOCABULARY_SET( JSONLoaderInterface, STRINGIZE_STRING_LOCAL( "JSONLoader" ), ResourceTexturepacker::getFactorableType(), Helper::makeFactorableUnique<JSONLoaderResourceTexturepacker>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -78,9 +70,6 @@ namespace Mengine
         Helper::removeResourcePrototype<ResourceTexturepacker>();
         Helper::removeResourcePrototype<ResourceMultiTexturepacker>();
 
-#if defined(MENGINE_PLUGIN_JSON)
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "JSONLoader" ), ResourceTexturepacker::getFactorableType() );
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
 }

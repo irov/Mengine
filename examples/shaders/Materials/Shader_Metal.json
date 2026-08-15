@@ -3,7 +3,6 @@
     "VertexAttribute": [
         {
             "Name": "Vertex2D_UV0",
-            "RenderPlatform": "Metal",
             "Element": {
                 "Size": 32
             },
@@ -30,7 +29,6 @@
         },
         {
             "Name": "Vertex2D_UV1",
-            "RenderPlatform": "Metal",
             "Element": {
                 "Size": 32
             },
@@ -66,7 +64,6 @@
         },
         {
             "Name": "Vertex2D_UV2",
-            "RenderPlatform": "Metal",
             "Element": {
                 "Size": 32
             },
@@ -113,21 +110,18 @@
     "VertexShader": [
         {
             "Name": "Vertex_Blend",
-            "RenderPlatform": "Metal",
             "File": {
                 "Path": "Materials/Metal_Vertex_Blend.txt"
             }
         },
         {
             "Name": "Vertex_Blend_ExternalAlpha",
-            "RenderPlatform": "Metal",
             "File": {
                 "Path": "Materials/Metal_Vertex_Blend_ExternalAlpha.txt"
             }
         },
         {
             "Name": "Vertex_Color",
-            "RenderPlatform": "Metal",
             "File": {
                 "Path": "Materials/Metal_Vertex_Color.txt"
             }
@@ -136,119 +130,102 @@
     "FragmentShader": [
         {
             "Name": "Fragment_Blend",
-            "RenderPlatform": "Metal",
             "File": {
                 "Path": "Materials/Metal_Fragment_Blend.txt"
             }
         },
         {
             "Name": "Fragment_Blend_Premultiply",
-            "RenderPlatform": "Metal",
             "File": {
                 "Path": "Materials/Metal_Fragment_Blend_Premultiply.txt"
             }
         },
         {
             "Name": "Fragment_Blend_ExternalAlpha",
-            "RenderPlatform": "Metal",
             "File": {
                 "Path": "Materials/Metal_Fragment_Blend_ExternalAlpha.txt"
             }
         },
         {
             "Name": "Fragment_Blend_ExternalAlpha_OnlyColor",
-            "RenderPlatform": "Metal",
             "File": {
                 "Path": "Materials/Metal_Fragment_Blend_ExternalAlpha_OnlyColor.txt"
             }
         },
         {
             "Name": "Fragment_Blend_OnlyColor",
-            "RenderPlatform": "Metal",
             "File": {
                 "Path": "Materials/Metal_Fragment_Blend_OnlyColor.txt"
             }
         },
         {
             "Name": "Fragment_Accumulator",
-            "RenderPlatform": "Metal",
             "File": {
                 "Path": "Materials/Metal_Fragment_Accumulator.txt"
             }
         },
         {
             "Name": "Fragment_TrackMatte",
-            "RenderPlatform": "Metal",
             "File": {
                 "Path": "Materials/Metal_Fragment_TrackMatte.txt"
             }
         },
         {
             "Name": "Fragment_TrackMatteInverted",
-            "RenderPlatform": "Metal",
             "File": {
                 "Path": "Materials/Metal_Fragment_TrackMatteInverted.txt"
             }
         },
         {
             "Name": "Fragment_TrackMatte_ExternalAlpha",
-            "RenderPlatform": "Metal",
             "File": {
                 "Path": "Materials/Metal_Fragment_TrackMatte_ExternalAlpha.txt"
             }
         },
         {
             "Name": "Fragment_TrackMatteInverted_ExternalAlpha",
-            "RenderPlatform": "Metal",
             "File": {
                 "Path": "Materials/Metal_Fragment_TrackMatteInverted_ExternalAlpha.txt"
             }
         },
         {
             "Name": "Fragment_AlphaMask",
-            "RenderPlatform": "Metal",
             "File": {
                 "Path": "Materials/Metal_Fragment_AlphaMask.txt"
             }
         },
         {
             "Name": "Fragment_Color",
-            "RenderPlatform": "Metal",
             "File": {
                 "Path": "Materials/Metal_Fragment_Color.txt"
             }
         },
         {
             "Name": "Fragment_Color_Premultiply",
-            "RenderPlatform": "Metal",
             "File": {
                 "Path": "Materials/Metal_Fragment_Color_Premultiply.txt"
             }
         },
         {
             "Name": "Fragment_Desaturate",
-            "RenderPlatform": "Metal",
             "File": {
                 "Path": "Materials/Metal_Fragment_Desaturate.txt"
             }
         },
         {
             "Name": "Fragment_Legendary",
-            "RenderPlatform": "Metal",
             "File": {
                 "Path": "Materials/Metal_Fragment_Legendary.txt"
             }
         },
         {
             "Name": "Fragment_Legendary_ExternalAlpha",
-            "RenderPlatform": "Metal",
             "File": {
                 "Path": "Materials/Metal_Fragment_Legendary_ExternalAlpha.txt"
             }
         },
         {
             "Name": "Ozz_Fragment_Blend",
-            "RenderPlatform": "Metal",
             "File": {
                 "Path": "Materials/Metal_Ozz_Fragment_Blend.txt"
             }

@@ -47,7 +47,6 @@ TARGET_LINK_LIBRARIES(${PROJECT_NAME} PUBLIC
     WebPPlugin
     TheoraPlugin
     OggVorbisPlugin
-    XmlToBinPlugin
 )
 
 if(WIN32)

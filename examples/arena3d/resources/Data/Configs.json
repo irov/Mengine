@@ -14,11 +14,9 @@
     },
     "Platform": { "Cursor": true },
     "Engine": {
-        "ProtocolPath": "../../../src/Metacode/protocol.xml",
         "RenderEnableAutoDepthStencil": true
     },
     "DevPlugins-PC": {
-        "Name": ["XmlToBinPlugin.dll", "DevelopmentConverterPlugin.dll"]
     },
     "Frameworks": { "Name": ["Arena3DFramework"] },
     "Arena3D": {

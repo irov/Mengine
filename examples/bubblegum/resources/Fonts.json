@@ -1,0 +1,14 @@
+{
+    "GAME_FONTS": {
+        "Font": [
+            "Score"
+        ]
+    },
+    "Score": {
+        "Type": "TTF",
+        "Precompile": true,
+        "Path": ".downloads/fonts/Roboto-Black.ttf",
+        "Height": 32,
+        "DPI": 96
+    }
+}

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ResourceSkinnedMesh3D.h"
-#include "Interface/Lighting3DServiceInterface.h"
 
 #include "Interface/RenderMaterialInterface.h"
 #include "Interface/RenderVertexBufferInterface.h"

@@ -1,5 +1,6 @@
 #include "SkinnedMesh3D.h"
 
+#include "Interface/RenderServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/RenderMaterialServiceInterface.h"
 
@@ -272,7 +273,7 @@ namespace Mengine
         this->uploadBonePalette_();
 
         constexpr uint32_t worldVec4 = 4u;
-        constexpr uint32_t lightingVec4 = Lighting3DServiceInterface::getUploadBlockVec4Count();
+        constexpr uint32_t lightingVec4 = MENGINE_LIGHTING3D_UPLOAD_BLOCK_VEC4_COUNT;
         constexpr uint32_t litVec4 = worldVec4 + lightingVec4;
         constexpr uint32_t litFloats = litVec4 * 4u;
 
@@ -283,8 +284,8 @@ namespace Mengine
         litBuffer[8] = m_renderWorldMatrix.v2.x; litBuffer[9] = m_renderWorldMatrix.v2.y; litBuffer[10] = m_renderWorldMatrix.v2.z; litBuffer[11] = m_renderWorldMatrix.v2.w;
         litBuffer[12] = m_renderWorldMatrix.v3.x; litBuffer[13] = m_renderWorldMatrix.v3.y; litBuffer[14] = m_renderWorldMatrix.v3.z; litBuffer[15] = m_renderWorldMatrix.v3.w;
 
-        LIGHTING3D_SERVICE()
-            ->packUploadBlock( litBuffer + worldVec4 * 4u );
+        RENDER_SERVICE()
+            ->packLighting3DUploadBlock( litBuffer + worldVec4 * 4u );
 
         m_programVariable->setVertexVariables( "SkinnedLit"
             , Detail::SKINNED_MESH3D_LIGHTING_REG_START

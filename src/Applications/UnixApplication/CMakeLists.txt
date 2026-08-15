@@ -23,7 +23,11 @@ endif()
 
 if(MENGINE_PLUGIN_MENGINE_STATIC)
     if(APPLICATION_LINK_LIBRARIES)
-        TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${APPLICATION_LINK_LIBRARIES})
+        TARGET_LINK_LIBRARIES(${PROJECT_NAME}
+            "-Wl,--start-group"
+            ${APPLICATION_LINK_LIBRARIES}
+            "-Wl,--end-group"
+        )
     endif()
 
     if(APPLICATION_DEPENDENCIES)

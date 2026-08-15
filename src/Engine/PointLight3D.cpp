@@ -1,6 +1,6 @@
 #include "PointLight3D.h"
 
-#include "Interface/Lighting3DServiceInterface.h"
+#include "Interface/RenderServiceInterface.h"
 #include "Interface/TransformationInterface.h"
 
 namespace Mengine
@@ -75,7 +75,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PointLight3D::_activate()
     {
-        m_slot = LIGHTING3D_SERVICE()
+        m_slot = RENDER_SERVICE()
             ->acquirePointLight();
 
         if( m_slot == UINT32_MAX )
@@ -95,7 +95,7 @@ namespace Mengine
             return;
         }
 
-        LIGHTING3D_SERVICE()
+        RENDER_SERVICE()
             ->releasePointLight( m_slot );
 
         m_slot = UINT32_MAX;
@@ -112,7 +112,7 @@ namespace Mengine
         const mt::mat4f & wm = transformation->getWorldMatrix();
         mt::vec3f worldPos( wm.v3.x, wm.v3.y, wm.v3.z );
 
-        LIGHTING3D_SERVICE()
+        RENDER_SERVICE()
             ->setPointLight( m_slot, worldPos, m_radius, m_color, m_intensity );
     }
     //////////////////////////////////////////////////////////////////////////

@@ -39,6 +39,12 @@ namespace Mengine
         , m_windowCreated( false )
         , m_vsync( false )
         , m_fullscreen( false )
+        , m_ambient( 0.f, 0.f, 0.f )
+        , m_hasDirectional( false )
+        , m_directionalEnabled( 0.f )
+        , m_directionalDir( 0.f, -1.f, 0.f )
+        , m_directionalColor( 1.f, 1.f, 1.f )
+        , m_directionalIntensity( 0.f )
         , m_maxVertexCount( 0 )
         , m_maxIndexCount( 0 )
         , m_currentRenderTextureStage( 0 )
@@ -56,6 +62,19 @@ namespace Mengine
         , m_currentDepthBufferWriteEnable( false )
     {
         StdAlgorithm::fill_n( m_currentTexturesId, MENGINE_MAX_TEXTURE_STAGES, MENGINE_UINT32_C(0) );
+
+        for( PointLightDesc & pointLight : m_pointLights )
+        {
+            pointLight.pos = mt::vec3f( 0.f, 0.f, 0.f );
+            pointLight.invRadius = 0.f;
+            pointLight.color = mt::vec3f( 0.f, 0.f, 0.f );
+            pointLight.intensity = 0.f;
+        }
+
+        for( uint32_t index = 0; index != MENGINE_LIGHTING3D_POINT_LIGHT_MAX; ++index )
+        {
+            m_pointLightSlots[index] = index;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     RenderService::~RenderService()
@@ -93,6 +112,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderService::_finalizeService()
     {
+        m_hasDirectional = false;
+        m_directionalEnabled = 0.f;
+        m_directionalIntensity = 0.f;
+
+        for( PointLightDesc & pointLight : m_pointLights )
+        {
+            pointLight.invRadius = 0.f;
+            pointLight.intensity = 0.f;
+        }
+
+        for( uint32_t index = 0; index != MENGINE_LIGHTING3D_POINT_LIGHT_MAX; ++index )
+        {
+            m_pointLightSlots[index] = index;
+        }
+
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "RenderPipeline" ), STRINGIZE_STRING_LOCAL( "Batch" ), nullptr );
 
@@ -361,6 +395,145 @@ namespace Mengine
     const RenderTextureInterfacePtr & RenderService::getWhiteTexture() const
     {
         return m_whiteTexture;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void RenderService::setAmbient( const mt::vec3f & _color )
+    {
+        m_ambient = _color;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const mt::vec3f & RenderService::getAmbient() const
+    {
+        return m_ambient;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void RenderService::setDirectionalLight( const mt::vec3f & _dir, const mt::vec3f & _color, float _intensity )
+    {
+        float lenSq = _dir.x * _dir.x + _dir.y * _dir.y + _dir.z * _dir.z;
+
+        if( lenSq > 1e-8f )
+        {
+            float inv = 1.f / StdMath::sqrtf( lenSq );
+            m_directionalDir = mt::vec3f( _dir.x * inv, _dir.y * inv, _dir.z * inv );
+        }
+        else
+        {
+            m_directionalDir = mt::vec3f( 0.f, -1.f, 0.f );
+        }
+
+        m_directionalColor = _color;
+        m_directionalIntensity = _intensity;
+        m_hasDirectional = true;
+        m_directionalEnabled = 1.f;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void RenderService::clearDirectionalLight()
+    {
+        m_hasDirectional = false;
+        m_directionalEnabled = 0.f;
+        m_directionalIntensity = 0.f;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool RenderService::hasDirectionalLight() const
+    {
+        return m_hasDirectional;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t RenderService::acquirePointLight()
+    {
+        for( uint32_t index = 0; index != MENGINE_LIGHTING3D_POINT_LIGHT_MAX; ++index )
+        {
+            uint32_t slot = m_pointLightSlots[index];
+
+            if( slot == UINT32_MAX )
+            {
+                continue;
+            }
+
+            m_pointLightSlots[index] = UINT32_MAX;
+
+            PointLightDesc & pointLight = m_pointLights[slot];
+            pointLight.invRadius = 0.f;
+            pointLight.intensity = 0.f;
+
+            return slot;
+        }
+
+        LOGGER_ERROR( "lighting3d: point light pool exhausted (max=%u)"
+            , (uint32_t)MENGINE_LIGHTING3D_POINT_LIGHT_MAX
+        );
+
+        return UINT32_MAX;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void RenderService::releasePointLight( uint32_t _slot )
+    {
+        MENGINE_ASSERTION_FATAL( _slot < MENGINE_LIGHTING3D_POINT_LIGHT_MAX, "point light slot '%u' out of range '%u'"
+            , _slot
+            , MENGINE_LIGHTING3D_POINT_LIGHT_MAX
+        );
+        MENGINE_ASSERTION_FATAL( m_pointLightSlots[_slot] == UINT32_MAX, "point light slot '%u' is already released"
+            , _slot
+        );
+
+        PointLightDesc & pointLight = m_pointLights[_slot];
+        pointLight.invRadius = 0.f;
+        pointLight.intensity = 0.f;
+
+        m_pointLightSlots[_slot] = _slot;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void RenderService::setPointLight( uint32_t _slot, const mt::vec3f & _pos, float _radius, const mt::vec3f & _color, float _intensity )
+    {
+        MENGINE_ASSERTION_FATAL( _slot < MENGINE_LIGHTING3D_POINT_LIGHT_MAX, "point light slot '%u' out of range '%u'"
+            , _slot
+            , MENGINE_LIGHTING3D_POINT_LIGHT_MAX
+        );
+        MENGINE_ASSERTION_FATAL( m_pointLightSlots[_slot] == UINT32_MAX, "point light slot '%u' is not acquired"
+            , _slot
+        );
+
+        PointLightDesc & p = m_pointLights[_slot];
+        p.pos = _pos;
+        p.invRadius = (_radius > 1e-4f) ? (1.f / _radius) : 0.f;
+        p.color = _color;
+        p.intensity = _intensity;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void RenderService::packLighting3DUploadBlock( float * _dst ) const
+    {
+        _dst[0] = m_ambient.x;
+        _dst[1] = m_ambient.y;
+        _dst[2] = m_ambient.z;
+        _dst[3] = 0.f;
+
+        _dst[4] = m_directionalDir.x;
+        _dst[5] = m_directionalDir.y;
+        _dst[6] = m_directionalDir.z;
+        _dst[7] = m_directionalEnabled;
+
+        _dst[8] = m_directionalColor.x;
+        _dst[9] = m_directionalColor.y;
+        _dst[10] = m_directionalColor.z;
+        _dst[11] = m_directionalIntensity;
+
+        float * pos = _dst + 12;
+        float * col = _dst + 12 + MENGINE_LIGHTING3D_POINT_LIGHT_MAX * 4;
+
+        for( const PointLightDesc & pointLight : m_pointLights )
+        {
+            pos[0] = pointLight.pos.x;
+            pos[1] = pointLight.pos.y;
+            pos[2] = pointLight.pos.z;
+            pos[3] = pointLight.invRadius;
+            pos += 4;
+
+            col[0] = pointLight.color.x;
+            col[1] = pointLight.color.y;
+            col[2] = pointLight.color.z;
+            col[3] = pointLight.intensity;
+            col += 4;
+        }
     }
     ////////////////////////////////////////////////////////////////////////////
     void RenderService::changeWindowMode( const Resolution & _resolution, const Viewport & _renderViewport, bool _fullscreen )

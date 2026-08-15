@@ -1,6 +1,6 @@
 #include "DirectionalLight3D.h"
 
-#include "Interface/Lighting3DServiceInterface.h"
+#include "Interface/RenderServiceInterface.h"
 
 namespace Mengine
 {
@@ -86,19 +86,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DirectionalLight3D::_deactivate()
     {
-        LIGHTING3D_SERVICE()
+        RENDER_SERVICE()
             ->clearDirectionalLight();
 
-        LIGHTING3D_SERVICE()
+        RENDER_SERVICE()
             ->setAmbient( mt::vec3f( 0.f, 0.f, 0.f ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void DirectionalLight3D::apply_()
     {
-        LIGHTING3D_SERVICE()
+        RENDER_SERVICE()
             ->setAmbient( m_ambient );
 
-        LIGHTING3D_SERVICE()
+        RENDER_SERVICE()
             ->setDirectionalLight( m_direction, m_color, m_intensity );
     }
     //////////////////////////////////////////////////////////////////////////

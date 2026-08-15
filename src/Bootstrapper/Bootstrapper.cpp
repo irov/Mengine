@@ -100,7 +100,6 @@ SERVICE_EXTERN( RenderMaterialService );
 SERVICE_EXTERN( RenderTextureService );
 SERVICE_EXTERN( ResourceService );
 SERVICE_EXTERN( SceneService );
-SERVICE_EXTERN( Lighting3DService );
 SERVICE_EXTERN( TextService );
 SERVICE_EXTERN( FontService );
 SERVICE_EXTERN( WatchdogService );
@@ -750,7 +749,6 @@ namespace Mengine
         SERVICE_DESTROY( FileSystem );
 
         SERVICE_DESTROY( HttpService );
-        SERVICE_DESTROY( Lighting3DService );
         SERVICE_DESTROY( SceneService );
         SERVICE_DESTROY( GameService );
         SERVICE_DESTROY( AmplifierService );
@@ -1534,7 +1532,6 @@ namespace Mengine
         BOOTSTRAPPER_SERVICE_CREATE( EasingService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( UpdateService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( SceneService, MENGINE_DOCUMENT_FACTORABLE );
-        BOOTSTRAPPER_SERVICE_CREATE( Lighting3DService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( ResourceService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( TextService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( FontService, MENGINE_DOCUMENT_FACTORABLE );
@@ -2245,7 +2242,6 @@ namespace Mengine
                 ->interruption();
         }
 
-        SERVICE_FINALIZE( Lighting3DService );
         SERVICE_FINALIZE( SceneService );
 
         if( SERVICE_IS_INITIALIZE( GameServiceInterface ) == true )

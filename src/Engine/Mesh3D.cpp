@@ -1,5 +1,6 @@
 #include "Mesh3D.h"
 
+#include "Interface/RenderServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/RenderMaterialServiceInterface.h"
 
@@ -139,7 +140,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( m_programVariable, "mesh3d failed to create program variable" );
 
-        m_uniformUpload.assign( (4 + Lighting3DServiceInterface::getUploadBlockVec4Count()) * 4u, 0.f );
+        m_uniformUpload.assign( (4 + MENGINE_LIGHTING3D_UPLOAD_BLOCK_VEC4_COUNT) * 4u, 0.f );
 
         return true;
     }
@@ -196,10 +197,10 @@ namespace Mengine
         dst[ 8] = m_renderWorldMatrix.v2.x; dst[ 9] = m_renderWorldMatrix.v2.y; dst[10] = m_renderWorldMatrix.v2.z; dst[11] = m_renderWorldMatrix.v2.w;
         dst[12] = m_renderWorldMatrix.v3.x; dst[13] = m_renderWorldMatrix.v3.y; dst[14] = m_renderWorldMatrix.v3.z; dst[15] = m_renderWorldMatrix.v3.w;
 
-        LIGHTING3D_SERVICE()
-            ->packUploadBlock( dst + 16 );
+        RENDER_SERVICE()
+            ->packLighting3DUploadBlock( dst + 16 );
 
-        const uint32_t totalVec4 = 4u + Lighting3DServiceInterface::getUploadBlockVec4Count();
+        const uint32_t totalVec4 = 4u + MENGINE_LIGHTING3D_UPLOAD_BLOCK_VEC4_COUNT;
 
         m_programVariable->setVertexVariables( "Mesh3DUniforms", 4u, dst, 4u, totalVec4 );
 

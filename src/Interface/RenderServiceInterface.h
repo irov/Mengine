@@ -42,6 +42,13 @@
 
 #include "math/mat4.h"
 #include "math/uv4.h"
+#include "math/vec3.h"
+
+#ifndef MENGINE_LIGHTING3D_POINT_LIGHT_MAX
+#define MENGINE_LIGHTING3D_POINT_LIGHT_MAX 4
+#endif
+
+#define MENGINE_LIGHTING3D_UPLOAD_BLOCK_VEC4_COUNT (3 + 2 * MENGINE_LIGHTING3D_POINT_LIGHT_MAX)
 
 namespace Mengine
 {
@@ -61,6 +68,23 @@ namespace Mengine
     public:
         virtual const RenderTextureInterfacePtr & getNullTexture() const = 0;
         virtual const RenderTextureInterfacePtr & getWhiteTexture() const = 0;
+
+    public:
+        virtual void setAmbient( const mt::vec3f & _color ) = 0;
+        virtual const mt::vec3f & getAmbient() const = 0;
+
+    public:
+        virtual void setDirectionalLight( const mt::vec3f & _dir, const mt::vec3f & _color, float _intensity ) = 0;
+        virtual void clearDirectionalLight() = 0;
+        virtual bool hasDirectionalLight() const = 0;
+
+    public:
+        virtual uint32_t acquirePointLight() = 0;
+        virtual void releasePointLight( uint32_t _slot ) = 0;
+        virtual void setPointLight( uint32_t _slot, const mt::vec3f & _pos, float _radius, const mt::vec3f & _color, float _intensity ) = 0;
+
+    public:
+        virtual void packLighting3DUploadBlock( float * _dst ) const = 0;
 
     public:
         virtual void changeWindowMode( const Resolution & _windowResolution, const Viewport & _renderViewport, bool _fullscreen ) = 0;

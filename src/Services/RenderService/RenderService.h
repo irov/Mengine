@@ -47,6 +47,23 @@ namespace Mengine
         const RenderTextureInterfacePtr & getWhiteTexture() const override;
 
     public:
+        void setAmbient( const mt::vec3f & _color ) override;
+        const mt::vec3f & getAmbient() const override;
+
+    public:
+        void setDirectionalLight( const mt::vec3f & _dir, const mt::vec3f & _color, float _intensity ) override;
+        void clearDirectionalLight() override;
+        bool hasDirectionalLight() const override;
+
+    public:
+        uint32_t acquirePointLight() override;
+        void releasePointLight( uint32_t _slot ) override;
+        void setPointLight( uint32_t _slot, const mt::vec3f & _pos, float _radius, const mt::vec3f & _color, float _intensity ) override;
+
+    public:
+        void packLighting3DUploadBlock( float * _dst ) const override;
+
+    public:
         void changeWindowMode( const Resolution & _windowResolution, const Viewport & _renderViewport, bool _fullscreen ) override;
 
     public:
@@ -116,11 +133,31 @@ namespace Mengine
         void updateStage_( const RenderMaterialStage * _stage );
 
     protected:
+        struct PointLightDesc
+        {
+            mt::vec3f pos;
+            float invRadius;
+            mt::vec3f color;
+            float intensity;
+        };
+
+    protected:
         RenderSystemInterface * m_renderSystem;
 
         bool m_windowCreated;
         bool m_vsync;
         bool m_fullscreen;
+
+        mt::vec3f m_ambient;
+
+        bool m_hasDirectional;
+        float m_directionalEnabled;
+        mt::vec3f m_directionalDir;
+        mt::vec3f m_directionalColor;
+        float m_directionalIntensity;
+
+        PointLightDesc m_pointLights[MENGINE_LIGHTING3D_POINT_LIGHT_MAX];
+        uint32_t m_pointLightSlots[MENGINE_LIGHTING3D_POINT_LIGHT_MAX];
 
         Resolution m_windowResolution;
 

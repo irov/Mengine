@@ -44,7 +44,6 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
 @property (nonatomic, strong) NSMutableArray<iOSDidBecomeActiveOperationBlock> * m_didBecomeActiveOperations;
 @property (nonatomic, assign) BOOL m_isProcessingDidBecomeActiveOperation;
 @property (nonatomic, assign) BOOL m_isApplicationForeground;
-@property (nonatomic, assign) BOOL m_isApplicationActive;
 @property (nonatomic, assign) BOOL m_isApplicationTerminating;
 
 - (void)startEngineLoop;
@@ -78,7 +77,6 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
         self.m_didBecomeActiveOperations = [NSMutableArray<iOSDidBecomeActiveOperationBlock> array];
         self.m_isProcessingDidBecomeActiveOperation = NO;
         self.m_isApplicationForeground = NO;
-        self.m_isApplicationActive = NO;
         self.m_isApplicationTerminating = NO;
 
         NSArray * proxysClassed = [iOSApplicationDelegates getApplicationDelegates];
@@ -464,12 +462,6 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
 }
 
 - (void)handleApplicationDidBecomeActive:(UIApplication *)application {
-    if (self.m_isApplicationActive == YES) {
-        return;
-    }
-
-    self.m_isApplicationActive = YES;
-
     [AppleLog withFormat:@"Mengine application applicationDidBecomeActive"];
 
     if (self.m_isApplicationTerminating == NO) {
@@ -555,12 +547,6 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
 }
 
 - (void)handleApplicationWillResignActive:(UIApplication *)application {
-    if (self.m_isApplicationActive == NO) {
-        return;
-    }
-
-    self.m_isApplicationActive = NO;
-
     [AppleLog withFormat:@"Mengine application applicationWillResignActive"];
 
     @autoreleasepool {
@@ -589,7 +575,6 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
     }
 
     self.m_isApplicationTerminating = YES;
-    self.m_isApplicationActive = NO;
     self.m_isApplicationForeground = NO;
 
     [AppleLog withFormat:@"Mengine application applicationWillTerminate"];

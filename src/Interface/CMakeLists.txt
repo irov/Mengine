@@ -46,6 +46,7 @@ Common
     ApplicationInterface.h
     InputMousePositionProviderInterface.h
     InputServiceInterface.h
+    ActionServiceInterface.h
     InputHandlerInterface.h
     EasingInterface.h
     EasingServiceInterface.h
@@ -127,6 +128,7 @@ Common
     ExecutorInterface.h
     StatisticInterface.h
     StatisticServiceInterface.h
+    MetricServiceInterface.h
     DateTimeSystemInterface.h
     HttpServiceInterface.h
     HttpSystemInterface.h

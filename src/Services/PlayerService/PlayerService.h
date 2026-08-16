@@ -111,6 +111,7 @@ namespace Mengine
         void render( const RenderPipelineInterfacePtr & _renderPipeline ) override;
 
     public:
+        void handleFocus( bool _focus ) override;
         bool handleKeyEvent( const InputKeyEvent & _event ) override;
         bool handleTextEvent( const InputTextEvent & _event ) override;
 

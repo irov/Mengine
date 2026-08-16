@@ -123,6 +123,16 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
+    void ModuleBase::handleFocus( bool _focus )
+    {
+        this->_handleFocus( _focus );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ModuleBase::_handleFocus( bool _focus )
+    {
+        MENGINE_UNUSED( _focus );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool ModuleBase::handleKeyEvent( const InputKeyEvent & _event )
     {
         bool handle = this->_handleKeyEvent( _event );

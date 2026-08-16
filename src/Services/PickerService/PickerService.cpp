@@ -387,6 +387,11 @@ namespace Mengine
         m_invalidateTraps = true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void PickerService::handleFocus( bool _focus )
+    {
+        MENGINE_UNUSED( _focus );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool PickerService::handleKeyEvent( const InputKeyEvent & _event )
     {
         MENGINE_VECTOR_AUX( m_states );

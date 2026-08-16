@@ -11,6 +11,7 @@
 #include "Interface/AccountServiceInterface.h"
 #include "Interface/WatchdogServiceInterface.h"
 #include "Interface/InputServiceInterface.h"
+#include "Interface/ActionServiceInterface.h"
 #include "Interface/ChronometerServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/PlayerServiceInterface.h"
@@ -413,6 +414,151 @@ namespace Mengine
         {
             return INPUT_SERVICE()
                 ->isMouseButtonDown( _button );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool s_addAction( const ConstString & _action, float _deadzone )
+        {
+            bool successful = ACTION_SERVICE()
+                ->addAction( _action, _deadzone );
+
+            return successful;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool s_removeAction( const ConstString & _action )
+        {
+            bool successful = ACTION_SERVICE()
+                ->removeAction( _action );
+
+            return successful;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool s_hasAction( const ConstString & _action )
+        {
+            bool exist = ACTION_SERVICE()
+                ->hasAction( _action );
+
+            return exist;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool s_setActionDeadzone( const ConstString & _action, float _deadzone )
+        {
+            bool successful = ACTION_SERVICE()
+                ->setActionDeadzone( _action, _deadzone );
+
+            return successful;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static float s_getActionDeadzone( const ConstString & _action )
+        {
+            float deadzone = ACTION_SERVICE()
+                ->getActionDeadzone( _action );
+
+            return deadzone;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool s_addActionKey( const ConstString & _action, EKeyCode _keyCode, float _strength )
+        {
+            bool successful = ACTION_SERVICE()
+                ->addKeyBinding( _action, _keyCode, _strength );
+
+            return successful;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool s_removeActionKey( const ConstString & _action, EKeyCode _keyCode )
+        {
+            bool successful = ACTION_SERVICE()
+                ->removeKeyBinding( _action, _keyCode );
+
+            return successful;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool s_addActionMouseButton( const ConstString & _action, EMouseButtonCode _button, float _strength )
+        {
+            bool successful = ACTION_SERVICE()
+                ->addMouseButtonBinding( _action, _button, _strength );
+
+            return successful;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool s_removeActionMouseButton( const ConstString & _action, EMouseButtonCode _button )
+        {
+            bool successful = ACTION_SERVICE()
+                ->removeMouseButtonBinding( _action, _button );
+
+            return successful;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool s_clearActionBindings( const ConstString & _action )
+        {
+            bool successful = ACTION_SERVICE()
+                ->clearBindings( _action );
+
+            return successful;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool s_setActionStrength( const ConstString & _action, float _strength )
+        {
+            bool successful = ACTION_SERVICE()
+                ->setActionStrength( _action, _strength );
+
+            return successful;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool s_releaseAction( const ConstString & _action )
+        {
+            bool successful = ACTION_SERVICE()
+                ->releaseAction( _action );
+
+            return successful;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool s_isActionPressed( const ConstString & _action )
+        {
+            bool pressed = ACTION_SERVICE()
+                ->isActionPressed( _action );
+
+            return pressed;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool s_isActionJustPressed( const ConstString & _action )
+        {
+            bool justPressed = ACTION_SERVICE()
+                ->isActionJustPressed( _action );
+
+            return justPressed;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool s_isActionJustReleased( const ConstString & _action )
+        {
+            bool justReleased = ACTION_SERVICE()
+                ->isActionJustReleased( _action );
+
+            return justReleased;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static float s_getActionStrength( const ConstString & _action )
+        {
+            float strength = ACTION_SERVICE()
+                ->getActionStrength( _action );
+
+            return strength;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static float s_getActionAxis( const ConstString & _negativeAction, const ConstString & _positiveAction )
+        {
+            float axis = ACTION_SERVICE()
+                ->getActionAxis( _negativeAction, _positiveAction );
+
+            return axis;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static mt::vec2f s_calcActionVector( const ConstString & _negativeX, const ConstString & _positiveX, const ConstString & _negativeY, const ConstString & _positiveY, float _deadzone )
+        {
+            mt::vec2f vector;
+            ACTION_SERVICE()
+                ->calcActionVector( _negativeX, _positiveX, _negativeY, _positiveY, _deadzone, &vector );
+
+            return vector;
         }
         //////////////////////////////////////////////////////////////////////////
         static void s_printChildren2( const NodePtr & _node, uint32_t _tab )
@@ -4319,6 +4465,25 @@ namespace Mengine
 
         pybind::def_function( _kernel, "isAnyMouseButtonDown", &Detail::s_isAnyMouseButtonDown );
         pybind::def_function( _kernel, "isMouseButtonDown", &Detail::s_isMouseButtonDown );
+
+        pybind::def_function( _kernel, "addAction", &Detail::s_addAction );
+        pybind::def_function( _kernel, "removeAction", &Detail::s_removeAction );
+        pybind::def_function( _kernel, "hasAction", &Detail::s_hasAction );
+        pybind::def_function( _kernel, "setActionDeadzone", &Detail::s_setActionDeadzone );
+        pybind::def_function( _kernel, "getActionDeadzone", &Detail::s_getActionDeadzone );
+        pybind::def_function( _kernel, "addActionKey", &Detail::s_addActionKey );
+        pybind::def_function( _kernel, "removeActionKey", &Detail::s_removeActionKey );
+        pybind::def_function( _kernel, "addActionMouseButton", &Detail::s_addActionMouseButton );
+        pybind::def_function( _kernel, "removeActionMouseButton", &Detail::s_removeActionMouseButton );
+        pybind::def_function( _kernel, "clearActionBindings", &Detail::s_clearActionBindings );
+        pybind::def_function( _kernel, "setActionStrength", &Detail::s_setActionStrength );
+        pybind::def_function( _kernel, "releaseAction", &Detail::s_releaseAction );
+        pybind::def_function( _kernel, "isActionPressed", &Detail::s_isActionPressed );
+        pybind::def_function( _kernel, "isActionJustPressed", &Detail::s_isActionJustPressed );
+        pybind::def_function( _kernel, "isActionJustReleased", &Detail::s_isActionJustReleased );
+        pybind::def_function( _kernel, "getActionStrength", &Detail::s_getActionStrength );
+        pybind::def_function( _kernel, "getActionAxis", &Detail::s_getActionAxis );
+        pybind::def_function( _kernel, "calcActionVector", &Detail::s_calcActionVector );
 
         pybind::def_function( _kernel, "printChildren", &Detail::s_printChildren );
 

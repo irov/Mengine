@@ -984,6 +984,21 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
+    void Application::handleFocus( bool _focus )
+    {
+        if( SERVICE_IS_INITIALIZE( ModuleServiceInterface ) == true )
+        {
+            MODULE_SERVICE()
+                ->handleFocus( _focus );
+        }
+
+        if( SERVICE_IS_INITIALIZE( GameServiceInterface ) == true )
+        {
+            GAME_SERVICE()
+                ->handleFocus( _focus );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Application::handleKeyEvent( const InputKeyEvent & _event )
     {
 #if defined(MENGINE_DEVICE_DESKTOP)
@@ -1684,11 +1699,7 @@ namespace Mengine
             return;
         }
 
-        if( SERVICE_IS_INITIALIZE( GameServiceInterface ) == true )
-        {
-            GAME_SERVICE()
-                ->setFocus( m_focus );
-        }
+        this->handleFocus( m_focus );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::isFocus() const

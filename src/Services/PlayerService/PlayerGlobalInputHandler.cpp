@@ -56,6 +56,24 @@ namespace Mengine
         m_handlersAdd.clear();
     }
     //////////////////////////////////////////////////////////////////////////
+    void PlayerGlobalInputHandler::handleFocus( bool _focus )
+    {
+        for( const GlobalHandlerDesc & desc : m_handlers )
+        {
+            if( desc.dead == true )
+            {
+                continue;
+            }
+
+            if( desc.enable == false )
+            {
+                continue;
+            }
+
+            desc.handler->handleFocus( _focus );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool PlayerGlobalInputHandler::handleKeyEvent( const InputKeyEvent & _event )
     {
         for( const GlobalHandlerDesc & desc : m_handlers )

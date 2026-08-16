@@ -90,6 +90,7 @@ SERVICE_EXTERN( MemoryService );
 SERVICE_EXTERN( ConverterService );
 #endif
 SERVICE_EXTERN( InputService );
+SERVICE_EXTERN( ActionService );
 SERVICE_EXTERN( PluginService );
 SERVICE_EXTERN( EasingService );
 SERVICE_EXTERN( PrototypeService );
@@ -116,6 +117,7 @@ SERVICE_EXTERN( TimerService );
 SERVICE_EXTERN( TimelineService );
 SERVICE_EXTERN( TimepipeService );
 SERVICE_EXTERN( StatisticService );
+SERVICE_EXTERN( MetricService );
 SERVICE_EXTERN( Application );
 SERVICE_EXTERN( ChronometerService );
 SERVICE_EXTERN( AmplifierService );
@@ -637,6 +639,7 @@ namespace Mengine
         SERVICE_FINALIZE( AmplifierService );
         SERVICE_FINALIZE( PickerService );
         SERVICE_FINALIZE( UpdateService );
+        SERVICE_FINALIZE( ActionService );
         SERVICE_FINALIZE( InputService );
         SERVICE_FINALIZE( CodecService );
         SERVICE_FINALIZE( SoundService );
@@ -720,6 +723,7 @@ namespace Mengine
         this->unregisterBaseTypes_();
 
         SERVICE_FINALIZE( AnalyticsService );
+        SERVICE_FINALIZE( MetricService );
         SERVICE_FINALIZE( StatisticService );
 
         SERVICE_FINALIZE( LoggerService );
@@ -771,6 +775,7 @@ namespace Mengine
         SERVICE_DESTROY( PlayerService );
         SERVICE_DESTROY( PickerService );
         SERVICE_DESTROY( UpdateService );
+        SERVICE_DESTROY( ActionService );
         SERVICE_DESTROY( InputService );
         SERVICE_DESTROY( CodecService );
         SERVICE_DESTROY( SoundService );
@@ -799,6 +804,7 @@ namespace Mengine
         SERVICE_DESTROY( TimeSystem );
         SERVICE_DESTROY( TimepipeService );
         SERVICE_DESTROY( AnalyticsService );
+        SERVICE_DESTROY( MetricService );
         SERVICE_DESTROY( StatisticService );
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
@@ -1341,6 +1347,7 @@ namespace Mengine
         MENGINE_ADD_SERVICE( SecureService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( AnalyticsService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( StatisticService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( MetricService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( TimerService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( TimelineService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( TimepipeService, MENGINE_DOCUMENT_FACTORABLE );
@@ -1527,6 +1534,7 @@ namespace Mengine
 #endif
 
         BOOTSTRAPPER_SERVICE_CREATE( InputService, MENGINE_DOCUMENT_FACTORABLE );
+        BOOTSTRAPPER_SERVICE_CREATE( ActionService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( ArrowService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( ChronometerService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( EasingService, MENGINE_DOCUMENT_FACTORABLE );

@@ -752,12 +752,25 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::onFocus( bool _focus )
     {
+        this->handleFocus( _focus );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PlayerService::handleFocus( bool _focus )
+    {
         if( m_focus == _focus )
         {
             return;
         }
 
         m_focus = _focus;
+
+        if( m_globalInputHandler != nullptr )
+        {
+            m_globalInputHandler->handleFocus( _focus );
+        }
+
+        PICKER_SERVICE()
+            ->handleFocus( _focus );
 
         const ScenePtr & scene = SCENE_SERVICE()
             ->getCurrentScene();

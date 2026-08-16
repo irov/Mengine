@@ -41,10 +41,12 @@ namespace Mengine
         virtual void _render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context );
 
     public:
+        void handleFocus( bool _focus ) override;
         bool handleKeyEvent( const InputKeyEvent & _event ) override;
         bool handleTextEvent( const InputTextEvent & _event ) override;
 
     protected:
+        virtual void _handleFocus( bool _focus );
         virtual bool _handleKeyEvent( const InputKeyEvent & _event );
         virtual bool _handleTextEvent( const InputTextEvent & _event );
 

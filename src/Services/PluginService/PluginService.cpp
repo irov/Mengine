@@ -45,6 +45,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PluginService::loadPlugin( const Char * _dynamicLibraryName, bool _frameworkMode, const DocumentInterfacePtr & _doc )
     {
+        MENGINE_UNUSED( _frameworkMode );
+
         DynamicLibraryInterfacePtr dynamicLibrary = PLATFORM_SERVICE()
             ->loadDynamicLibrary( _dynamicLibraryName, _doc );
 
@@ -71,12 +73,53 @@ namespace Mengine
             return false;
         }
 
-        TPluginCreate dllMengineCreatePlugin = (TPluginCreate)function_dllMengineCreatePlugin;
+        TPluginCreateDynamic dllMengineCreatePlugin = (TPluginCreateDynamic)function_dllMengineCreatePlugin;
 
-        if( this->createPlugin( dynamicLibrary, dllMengineCreatePlugin, true, _frameworkMode, _doc ) == false )
+        if( this->createPluginDynamic_( dynamicLibrary, dllMengineCreatePlugin, _doc ) == false )
         {
             LOGGER_ERROR( "can't load '%s' plugin [invalid create]"
                 , _dynamicLibraryName
+            );
+
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PluginService::createPluginDynamic_( const DynamicLibraryInterfacePtr & _dynamicLibrary, TPluginCreateDynamic _create, const DocumentInterfacePtr & _doc )
+    {
+        UniqueId id = Helper::generateUniqueIdentity();
+
+        ServiceProviderInterface * serviceProvider = SERVICE_PROVIDER_GET();
+
+        PluginInterface * plugin = nullptr;
+        if( _create( serviceProvider, &plugin, id ) == false )
+        {
+            LOGGER_ERROR( "can't create dynamic plugin [invalid create]" );
+
+            return false;
+        }
+
+        if( plugin == nullptr )
+        {
+            LOGGER_ERROR( "can't create dynamic plugin [plugin is nullptr]" );
+
+            return false;
+        }
+
+#if defined(MENGINE_DOCUMENT_ENABLE)
+        plugin->setDocument( _doc );
+#else
+        MENGINE_UNUSED( _doc );
+#endif
+
+        PluginInterfacePtr plugin_ptr = PluginInterfacePtr::from( plugin );
+
+        if( this->addPlugin( plugin_ptr, _dynamicLibrary ) == false )
+        {
+            LOGGER_ERROR( "invalid create dynamic plugin '%s'"
+                , plugin->getPluginName().c_str()
             );
 
             return false;
@@ -93,7 +136,7 @@ namespace Mengine
 
         ServiceProviderInterface * serviceProvider = SERVICE_PROVIDER_GET();
 
-        PluginInterface * plugin;
+        PluginInterface * plugin = nullptr;
         if( _create( serviceProvider, &plugin, id, _dynamicLoad, _frameworkMode ) == false )
         {
             LOGGER_ERROR( "can't create plugin [invalid create]" );

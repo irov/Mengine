@@ -20,6 +20,7 @@ namespace Mengine
         ~VirtualAreaGlobalInputHandler() override;
 
     protected:
+        void handleFocus( bool _focus ) override;
         bool handleKeyEvent( const InputKeyEvent & _event ) override;
         bool handleTextEvent( const InputTextEvent & _event ) override;
         bool handleAccelerometerEvent( const InputAccelerometerEvent & _event ) override;

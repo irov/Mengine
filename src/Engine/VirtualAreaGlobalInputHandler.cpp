@@ -14,6 +14,11 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    void VirtualAreaGlobalInputHandler::handleFocus( bool _focus )
+    {
+        MENGINE_UNUSED( _focus );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool VirtualAreaGlobalInputHandler::handleKeyEvent( const InputKeyEvent & _event )
     {
         MENGINE_UNUSED( _event );

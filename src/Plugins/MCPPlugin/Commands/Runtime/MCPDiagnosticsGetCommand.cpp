@@ -9,9 +9,42 @@
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/TimelineServiceInterface.h"
+#include "Interface/MetricServiceInterface.h"
 
 namespace Mengine
 {
+    namespace Detail
+    {
+        static const Char * getMetricTypeName( EMetricType _type )
+        {
+            switch( _type )
+            {
+            case EMetricType::Counter:
+                return "counter";
+            case EMetricType::Gauge:
+                return "gauge";
+            case EMetricType::Histogram:
+                return "histogram";
+            }
+
+            return "unknown";
+        }
+
+        static const Char * getMetricValueTypeName( EMetricValueType _type )
+        {
+            switch( _type )
+            {
+            case EMetricValueType::Integer:
+                return "integer";
+            case EMetricValueType::Double:
+                return "double";
+            case EMetricValueType::String:
+                return "string";
+            }
+
+            return "unknown";
+        }
+    }
     //////////////////////////////////////////////////////////////////////////
     MCPDiagnosticsGetCommand::MCPDiagnosticsGetCommand( MCPCommandHostInterface * _host, MCPRuntimeContext * _runtimeContext, MCPSceneContext * _sceneContext, MCPResourceContext * _resourceContext, MCPScriptContext * _scriptContext )
         : m_host( _host )
@@ -78,6 +111,52 @@ namespace Mengine
         window.set( "fullscreen", fullscreen );
         window.set( "focus", focus );
         _response->result.set( "window", window );
+
+        jpp::array metrics = jpp::make_array();
+
+        METRIC_SERVICE()->foreachMetrics( [&metrics]( const MetricSnapshot & _snapshot )
+        {
+            jpp::object metric = jpp::make_object();
+            metric.set( "name", _snapshot.desc.name );
+            metric.set( "owner", _snapshot.desc.owner );
+            metric.set( "unit", _snapshot.desc.unit );
+            metric.set( "type", Detail::getMetricTypeName( _snapshot.desc.type ) );
+            metric.set( "valueType", Detail::getMetricValueTypeName( _snapshot.desc.valueType ) );
+            metric.set( "enabled", _snapshot.desc.enabled );
+
+            if( _snapshot.desc.type == EMetricType::Histogram )
+            {
+                int64_t sampleCount = (int64_t)_snapshot.sampleCount;
+                metric.set( "samples", sampleCount );
+                metric.set( "sum", _snapshot.sampleSum );
+
+                if( _snapshot.sampleCount != 0 )
+                {
+                    metric.set( "min", _snapshot.sampleMin );
+                    metric.set( "max", _snapshot.sampleMax );
+                    metric.set( "mean", _snapshot.sampleSum / (double)_snapshot.sampleCount );
+                }
+            }
+            else
+            {
+                switch( _snapshot.desc.valueType )
+                {
+                case EMetricValueType::Integer:
+                    metric.set( "value", _snapshot.integerValue );
+                    break;
+                case EMetricValueType::Double:
+                    metric.set( "value", _snapshot.doubleValue );
+                    break;
+                case EMetricValueType::String:
+                    metric.set( "value", _snapshot.stringValue );
+                    break;
+                }
+            }
+
+            metrics.push_back( metric );
+        } );
+
+        _response->result.set( "metrics", metrics );
 
         return EMCPCommandStatus::SUCCESS;
     }

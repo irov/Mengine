@@ -10,6 +10,9 @@ namespace Mengine
         : public Mixin
     {
     public:
+        virtual void handleFocus( bool _focus ) = 0;
+
+    public:
         virtual bool handleKeyEvent( const InputKeyEvent & _event ) = 0;
         virtual bool handleTextEvent( const InputTextEvent & _event ) = 0;
 

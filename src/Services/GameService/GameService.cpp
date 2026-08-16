@@ -449,10 +449,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void GameService::setFocus( bool _focus )
     {
+        this->handleFocus( _focus );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void GameService::handleFocus( bool _focus )
+    {
         if( SERVICE_IS_INITIALIZE( PlayerServiceInterface ) == true )
         {
             PLAYER_SERVICE()
-                ->onFocus( _focus );
+                ->handleFocus( _focus );
         }
 
         EVENTABLE_METHOD( EVENT_GAME_FOCUS )

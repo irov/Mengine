@@ -39,6 +39,11 @@ namespace Mengine
         bool isAvailablePlugin( const ConstString & _pluginName ) const override;
 
     protected:
+        typedef bool(*TPluginCreateDynamic)(ServiceProviderInterface * _serviceProvider, PluginInterface ** const _plugin, UniqueId _uid);
+
+        bool createPluginDynamic_( const DynamicLibraryInterfacePtr & _dynamicLibrary, TPluginCreateDynamic _create, const DocumentInterfacePtr & _doc );
+
+    protected:
         bool autoPreRegistration_( const PluginInterfacePtr & _plugin ) const;
         bool autoPostRegistration_( const PluginInterfacePtr & _plugin ) const;
         void autoUnregisterPlugin_( const PluginInterfacePtr & _plugin ) const;

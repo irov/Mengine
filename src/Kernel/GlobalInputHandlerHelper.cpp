@@ -27,6 +27,12 @@ namespace Mengine
                 }
 
             protected:
+                void handleFocus( bool _focus ) override
+                {
+                    MENGINE_UNUSED( _focus );
+                }
+
+            protected:
                 bool handleKeyEvent( const InputKeyEvent & _event ) override
                 {
                     MENGINE_UNUSED( _event );

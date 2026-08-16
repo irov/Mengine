@@ -263,6 +263,14 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    void ModuleService::handleFocus( bool _focus )
+    {
+        for( const ModuleInterfacePtr & module : m_modules )
+        {
+            module->handleFocus( _focus );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool ModuleService::handleKeyEvent( const InputKeyEvent & _event )
     {
         for( const ModuleInterfacePtr & module : m_modules )

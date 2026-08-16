@@ -34,6 +34,7 @@ namespace Mengine
         void update() override;
 
     public:
+        void handleFocus( bool _focus ) override;
         bool handleKeyEvent( const InputKeyEvent & _event ) override;
         bool handleTextEvent( const InputTextEvent & _event ) override;
 

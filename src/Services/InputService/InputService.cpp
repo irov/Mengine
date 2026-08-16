@@ -1,6 +1,7 @@
 #include "InputService.h"
 
 #include "Interface/ApplicationInterface.h"
+#include "Interface/ActionServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/Assertion.h"
@@ -350,9 +351,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void InputService::onFocus( bool _focus )
     {
-        MENGINE_UNUSED( _focus );
-
         StdAlgorithm::fill( m_keyBuffer, m_keyBuffer + MENGINE_INPUT_MAX_KEY_CODE, false );
+        StdAlgorithm::fill( m_mouseBuffer, m_mouseBuffer + MENGINE_INPUT_MAX_MOUSE_BUTTON_CODE, false );
+
+        if( SERVICE_IS_INITIALIZE( ActionServiceInterface ) == true )
+        {
+            ACTION_SERVICE()
+                ->handleFocus( _focus );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void InputService::pushEvent( const InputVariantEvent & _event )
@@ -384,6 +390,12 @@ namespace Mengine
         );
 
         m_keyBuffer[_event.code] = _event.isDown;
+
+        if( SERVICE_IS_INITIALIZE( ActionServiceInterface ) == true )
+        {
+            ACTION_SERVICE()
+                ->handleKeyEvent( _event );
+        }
 
         APPLICATION_SERVICE()
             ->handleKeyEvent( _event );
@@ -437,6 +449,12 @@ namespace Mengine
         );
 
         m_mouseBuffer[_event.button] = _event.isDown;
+
+        if( SERVICE_IS_INITIALIZE( ActionServiceInterface ) == true )
+        {
+            ACTION_SERVICE()
+                ->handleMouseButtonEvent( _event );
+        }
 
         this->applyCursorPosition_( _event.touchId, _event.position.screen, _event.pressure );
 

@@ -28,6 +28,10 @@
 
 #include "Config/Atomic.h"
 
+#if defined(MENGINE_PLATFORM_ANDROID)
+#   include "Kernel/Params.h"
+#endif
+
 namespace Mengine
 {
     class MCPLogger;
@@ -52,6 +56,7 @@ namespace Mengine
         const ServiceRequiredList & requiredServices() const override;
         void _dependencyService() override;
         bool _initializeService() override;
+        bool _runService() override;
         void _finalizeService() override;
 
     protected:
@@ -77,6 +82,10 @@ namespace Mengine
     protected:
         void _update() override;
         void processRequests_();
+
+#if defined(MENGINE_PLATFORM_ANDROID)
+        void notifyApplicationIntent_( const String & _action, const String & _data, const String & _type, uint32_t _flags, const Params & _extras );
+#endif
 
     protected:
         struct IncomingRequest

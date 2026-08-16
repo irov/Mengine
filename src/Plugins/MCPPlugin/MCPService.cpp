@@ -1,7 +1,61 @@
 #include "MCPService.h"
 #include "MCPLogger.h"
 
-#include "Commands/MCPCommandComposition.h"
+#include "Commands/MCPCommandRegistry.h"
+#include "Commands/Application/MCPAppStopCommand.h"
+#include "Commands/Runtime/MCPLogsReadCommand.h"
+#include "Commands/Runtime/MCPRuntimeControlCommand.h"
+#include "Commands/Runtime/MCPFrameCaptureCommand.h"
+#include "Commands/Runtime/MCPWaitForCommand.h"
+#include "Commands/Runtime/MCPDiagnosticsGetCommand.h"
+#include "Commands/Scene/MCPSceneSnapshotCommand.h"
+#include "Commands/Scene/MCPSceneFindCommand.h"
+#include "Commands/Scene/MCPSceneGetCommand.h"
+#include "Commands/Scene/MCPSceneSetCommand.h"
+#include "Commands/Input/MCPInputMouseCommand.h"
+#include "Commands/Input/MCPInputKeyboardCommand.h"
+#include "Commands/Input/MCPInputTouchCommand.h"
+#include "Commands/Input/MCPInputAccelerometerCommand.h"
+#include "Commands/Input/MCPInputSequenceCommand.h"
+#include "Commands/Input/Steps/MCPDelayInputSequenceStep.h"
+#include "Commands/Input/Steps/MCPFramesInputSequenceStep.h"
+#include "Commands/Input/Steps/MCPMouseInputSequenceStep.h"
+#include "Commands/Input/Steps/MCPKeyboardInputSequenceStep.h"
+#include "Commands/Input/Steps/MCPTouchInputSequenceStep.h"
+#include "Commands/Input/Steps/MCPAccelerometerInputSequenceStep.h"
+#include "Commands/Input/Steps/MCPWaitInputSequenceStep.h"
+#include "Commands/Resource/MCPResourceReloadCommand.h"
+#include "Commands/Resource/MCPResourceRevertCommand.h"
+#include "Commands/Wait/Conditions/MCPFramesWaitCondition.h"
+#include "Commands/Wait/Conditions/MCPRuntimeWaitCondition.h"
+#include "Commands/Wait/Conditions/MCPSceneWaitCondition.h"
+#include "Commands/Wait/Conditions/MCPNodeWaitCondition.h"
+#include "Commands/Wait/Conditions/MCPLogWaitCondition.h"
+
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+#   include "Commands/Wait/Conditions/MCPDebuggerWaitCondition.h"
+#   include "Commands/Wait/Conditions/MCPScriptWaitCondition.h"
+#   include "Commands/Script/MCPScriptReloadModuleCommand.h"
+#   include "Commands/Script/MCPScriptModulesCommand.h"
+#   include "Commands/Script/MCPScriptSourceCommand.h"
+#   include "Commands/Script/MCPScriptInspectCommand.h"
+#   include "Commands/Script/MCPScriptGetCommand.h"
+#   include "Commands/Script/MCPScriptSetCommand.h"
+#   include "Commands/Script/MCPScriptCallCommand.h"
+#   include "Commands/Script/MCPScriptReleaseCommand.h"
+#   include "Commands/Script/MCPScriptEvalCommand.h"
+#   include "Commands/Script/MCPScriptExecCommand.h"
+#   include "Commands/Debugger/MCPDebugSetBreakpointsCommand.h"
+#   include "Commands/Debugger/MCPDebugSetExceptionPolicyCommand.h"
+#   include "Commands/Debugger/MCPDebugPauseCommand.h"
+#   include "Commands/Debugger/MCPDebugContinueCommand.h"
+#   include "Commands/Debugger/MCPDebugStepCommand.h"
+#   include "Commands/Debugger/MCPDebugStackCommand.h"
+#   include "Commands/Debugger/MCPDebugScopesCommand.h"
+#   include "Commands/Debugger/MCPDebugVariablesCommand.h"
+#   include "Commands/Debugger/MCPDebugEvaluateCommand.h"
+#   include "Commands/Debugger/MCPDebugSetVariableCommand.h"
+#endif
 
 #include "Interface/ApplicationInterface.h"
 #include "Interface/CodecServiceInterface.h"
@@ -21,11 +75,18 @@
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/JSONHelper.h"
 #include "Kernel/Logger.h"
+#include "Kernel/OptionHelper.h"
 #include "Kernel/ThreadHelper.h"
 #include "Kernel/ThreadMutexHelper.h"
 #include "Kernel/ThreadMutexScope.h"
 
 #include "Config/StdUtility.h"
+
+#if defined(MENGINE_PLATFORM_ANDROID)
+#   include "Interface/NotificationServiceInterface.h"
+#   include "Kernel/NotificationHelper.h"
+#   include "Kernel/ParamsHelper.h"
+#endif
 
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
 #   include "Interface/ScriptProviderServiceInterface.h"
@@ -69,6 +130,9 @@ namespace Mengine
             SERVICE_ID( LifecycleServiceInterface ),
             SERVICE_ID( LoggerServiceInterface ),
             SERVICE_ID( MemoryServiceInterface ),
+#if defined(MENGINE_PLATFORM_ANDROID)
+            SERVICE_ID( NotificationServiceInterface ),
+#endif
             SERVICE_ID( PlayerServiceInterface ),
             SERVICE_ID( PlatformServiceInterface ),
             SERVICE_ID( RenderSystemInterface ),
@@ -108,10 +172,272 @@ namespace Mengine
 
         m_debuggerContext.initialize( this );
 
-        if( Helper::composeMCPCommands( this, &m_runtimeContext, &m_sceneContext, &m_inputContext, &m_resourceContext, &m_handlerRegistry, &m_scriptContext, &m_debuggerContext, &m_waitConditionRegistry, &m_inputSequenceStepRegistry, &m_commandRegistry ) == false )
+        if( m_waitConditionRegistry.addCondition( STRINGIZE_STRING_LOCAL( "frames" ), Helper::makeFactorableUnique<MCPFramesWaitCondition>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
+
+        if( m_waitConditionRegistry.addCondition( STRINGIZE_STRING_LOCAL( "runtime" ), Helper::makeFactorableUnique<MCPRuntimeWaitCondition>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        {
+            return false;
+        }
+
+        if( m_waitConditionRegistry.addCondition( STRINGIZE_STRING_LOCAL( "scene" ), Helper::makeFactorableUnique<MCPSceneWaitCondition>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        {
+            return false;
+        }
+
+        if( m_waitConditionRegistry.addCondition( STRINGIZE_STRING_LOCAL( "node" ), Helper::makeFactorableUnique<MCPNodeWaitCondition>( MENGINE_DOCUMENT_FACTORABLE, &m_sceneContext ) ) == false )
+        {
+            return false;
+        }
+
+        if( m_waitConditionRegistry.addCondition( STRINGIZE_STRING_LOCAL( "log" ), Helper::makeFactorableUnique<MCPLogWaitCondition>( MENGINE_DOCUMENT_FACTORABLE, &m_runtimeContext ) ) == false )
+        {
+            return false;
+        }
+
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+        if( m_waitConditionRegistry.addCondition( STRINGIZE_STRING_LOCAL( "debugger" ), Helper::makeFactorableUnique<MCPDebuggerWaitCondition>( MENGINE_DOCUMENT_FACTORABLE, this ) ) == false )
+        {
+            return false;
+        }
+
+        if( m_waitConditionRegistry.addCondition( STRINGIZE_STRING_LOCAL( "script" ), Helper::makeFactorableUnique<MCPScriptWaitCondition>( MENGINE_DOCUMENT_FACTORABLE, &m_scriptContext ) ) == false )
+        {
+            return false;
+        }
+#endif
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "app_stop" ), Helper::makeFactorableUnique<MCPAppStopCommand>( MENGINE_DOCUMENT_FACTORABLE, this ) ) == false )
+        {
+            return false;
+        }
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "logs_read" ), Helper::makeFactorableUnique<MCPLogsReadCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_runtimeContext ) ) == false )
+        {
+            return false;
+        }
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "runtime_control" ), Helper::makeFactorableUnique<MCPRuntimeControlCommand>( MENGINE_DOCUMENT_FACTORABLE, this, &m_runtimeContext ) ) == false )
+        {
+            return false;
+        }
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "frame_capture" ), Helper::makeFactorableUnique<MCPFrameCaptureCommand>( MENGINE_DOCUMENT_FACTORABLE, this ) ) == false )
+        {
+            return false;
+        }
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "wait_for" ), Helper::makeFactorableUnique<MCPWaitForCommand>( MENGINE_DOCUMENT_FACTORABLE, this, &m_waitConditionRegistry ) ) == false )
+        {
+            return false;
+        }
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "diagnostics_get" ), Helper::makeFactorableUnique<MCPDiagnosticsGetCommand>( MENGINE_DOCUMENT_FACTORABLE, this, &m_runtimeContext, &m_sceneContext, &m_resourceContext, &m_scriptContext ) ) == false )
+        {
+            return false;
+        }
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "scene_snapshot" ), Helper::makeFactorableUnique<MCPSceneSnapshotCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_sceneContext ) ) == false )
+        {
+            return false;
+        }
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "scene_find" ), Helper::makeFactorableUnique<MCPSceneFindCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_sceneContext ) ) == false )
+        {
+            return false;
+        }
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "scene_get" ), Helper::makeFactorableUnique<MCPSceneGetCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_sceneContext ) ) == false )
+        {
+            return false;
+        }
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "scene_set" ), Helper::makeFactorableUnique<MCPSceneSetCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_sceneContext ) ) == false )
+        {
+            return false;
+        }
+
+        MCPInputMouseCommandPtr inputMouseCommand;
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "input_mouse" ), inputMouseCommand = Helper::makeFactorableUnique<MCPInputMouseCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_inputContext ) ) == false )
+        {
+            return false;
+        }
+
+        MCPInputKeyboardCommandPtr inputKeyboardCommand;
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "input_keyboard" ), inputKeyboardCommand = Helper::makeFactorableUnique<MCPInputKeyboardCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_inputContext ) ) == false )
+        {
+            return false;
+        }
+
+        MCPInputTouchCommandPtr inputTouchCommand;
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "input_touch" ), inputTouchCommand = Helper::makeFactorableUnique<MCPInputTouchCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_inputContext ) ) == false )
+        {
+            return false;
+        }
+
+        MCPInputAccelerometerCommandPtr inputAccelerometerCommand;
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "input_accelerometer" ), inputAccelerometerCommand = Helper::makeFactorableUnique<MCPInputAccelerometerCommand>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        {
+            return false;
+        }
+
+        if( m_inputSequenceStepRegistry.addStep( STRINGIZE_STRING_LOCAL( "delay" ), Helper::makeFactorableUnique<MCPDelayInputSequenceStep>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        {
+            return false;
+        }
+
+        if( m_inputSequenceStepRegistry.addStep( STRINGIZE_STRING_LOCAL( "frames" ), Helper::makeFactorableUnique<MCPFramesInputSequenceStep>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        {
+            return false;
+        }
+
+        if( m_inputSequenceStepRegistry.addStep( STRINGIZE_STRING_LOCAL( "mouse" ), Helper::makeFactorableUnique<MCPMouseInputSequenceStep>( MENGINE_DOCUMENT_FACTORABLE, inputMouseCommand ) ) == false )
+        {
+            return false;
+        }
+
+        if( m_inputSequenceStepRegistry.addStep( STRINGIZE_STRING_LOCAL( "keyboard" ), Helper::makeFactorableUnique<MCPKeyboardInputSequenceStep>( MENGINE_DOCUMENT_FACTORABLE, inputKeyboardCommand ) ) == false )
+        {
+            return false;
+        }
+
+        if( m_inputSequenceStepRegistry.addStep( STRINGIZE_STRING_LOCAL( "touch" ), Helper::makeFactorableUnique<MCPTouchInputSequenceStep>( MENGINE_DOCUMENT_FACTORABLE, inputTouchCommand ) ) == false )
+        {
+            return false;
+        }
+
+        if( m_inputSequenceStepRegistry.addStep( STRINGIZE_STRING_LOCAL( "accelerometer" ), Helper::makeFactorableUnique<MCPAccelerometerInputSequenceStep>( MENGINE_DOCUMENT_FACTORABLE, inputAccelerometerCommand ) ) == false )
+        {
+            return false;
+        }
+
+        if( m_inputSequenceStepRegistry.addStep( STRINGIZE_STRING_LOCAL( "wait" ), Helper::makeFactorableUnique<MCPWaitInputSequenceStep>( MENGINE_DOCUMENT_FACTORABLE, &m_waitConditionRegistry ) ) == false )
+        {
+            return false;
+        }
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "input_sequence" ), Helper::makeFactorableUnique<MCPInputSequenceCommand>( MENGINE_DOCUMENT_FACTORABLE, this, &m_inputSequenceStepRegistry ) ) == false )
+        {
+            return false;
+        }
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "resource_reload" ), Helper::makeFactorableUnique<MCPResourceReloadCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_resourceContext ) ) == false )
+        {
+            return false;
+        }
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "resource_revert" ), Helper::makeFactorableUnique<MCPResourceRevertCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_resourceContext ) ) == false )
+        {
+            return false;
+        }
+
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "script_reload_module" ), Helper::makeFactorableUnique<MCPScriptReloadModuleCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_scriptContext, &m_debuggerContext ) ) == false )
+        {
+            return false;
+        }
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "script_modules" ), Helper::makeFactorableUnique<MCPScriptModulesCommand>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        {
+            return false;
+        }
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "script_source" ), Helper::makeFactorableUnique<MCPScriptSourceCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_scriptContext ) ) == false )
+        {
+            return false;
+        }
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "script_inspect" ), Helper::makeFactorableUnique<MCPScriptInspectCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_scriptContext ) ) == false )
+        {
+            return false;
+        }
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "script_get" ), Helper::makeFactorableUnique<MCPScriptGetCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_scriptContext ) ) == false )
+        {
+            return false;
+        }
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "script_set" ), Helper::makeFactorableUnique<MCPScriptSetCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_scriptContext ) ) == false )
+        {
+            return false;
+        }
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "script_call" ), Helper::makeFactorableUnique<MCPScriptCallCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_handlerRegistry, &m_scriptContext ) ) == false )
+        {
+            return false;
+        }
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "script_release" ), Helper::makeFactorableUnique<MCPScriptReleaseCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_scriptContext ) ) == false )
+        {
+            return false;
+        }
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "script_eval" ), Helper::makeFactorableUnique<MCPScriptEvalCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_scriptContext, &m_debuggerContext ) ) == false )
+        {
+            return false;
+        }
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "script_exec" ), Helper::makeFactorableUnique<MCPScriptExecCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_scriptContext, &m_debuggerContext ) ) == false )
+        {
+            return false;
+        }
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "debug_set_breakpoints" ), Helper::makeFactorableUnique<MCPDebugSetBreakpointsCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_debuggerContext ) ) == false )
+        {
+            return false;
+        }
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "debug_set_exception_policy" ), Helper::makeFactorableUnique<MCPDebugSetExceptionPolicyCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_debuggerContext ) ) == false )
+        {
+            return false;
+        }
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "debug_pause" ), Helper::makeFactorableUnique<MCPDebugPauseCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_debuggerContext ) ) == false )
+        {
+            return false;
+        }
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "debug_continue" ), Helper::makeFactorableUnique<MCPDebugContinueCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_debuggerContext ) ) == false )
+        {
+            return false;
+        }
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "debug_step" ), Helper::makeFactorableUnique<MCPDebugStepCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_debuggerContext ) ) == false )
+        {
+            return false;
+        }
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "debug_stack" ), Helper::makeFactorableUnique<MCPDebugStackCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_debuggerContext ) ) == false )
+        {
+            return false;
+        }
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "debug_scopes" ), Helper::makeFactorableUnique<MCPDebugScopesCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_debuggerContext, &m_scriptContext ) ) == false )
+        {
+            return false;
+        }
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "debug_variables" ), Helper::makeFactorableUnique<MCPDebugVariablesCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_scriptContext ) ) == false )
+        {
+            return false;
+        }
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "debug_evaluate" ), Helper::makeFactorableUnique<MCPDebugEvaluateCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_debuggerContext, &m_scriptContext ) ) == false )
+        {
+            return false;
+        }
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "debug_set_variable" ), Helper::makeFactorableUnique<MCPDebugSetVariableCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_debuggerContext, &m_scriptContext ) ) == false )
+        {
+            return false;
+        }
+#endif
 
         MCPLoggerPtr runtimeLogger = Helper::makeFactorableUnique<MCPLogger>( MENGINE_DOCUMENT_FACTORABLE );
         runtimeLogger->setService( this );
@@ -124,6 +450,33 @@ namespace Mengine
         }
 
         m_runtimeLogger = runtimeLogger;
+
+#if defined(MENGINE_PLATFORM_ANDROID)
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_INTENT_START, &MCPService::notifyApplicationIntent_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_INTENT_NEW, &MCPService::notifyApplicationIntent_, MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool MCPService::_runService()
+    {
+#if defined(MENGINE_PLATFORM_WINDOWS) || defined(MENGINE_PLATFORM_MACOS) || defined(MENGINE_PLATFORM_LINUX) || defined(MENGINE_PLATFORM_IOS)
+        if( HAS_OPTION( "mcp" ) == true )
+        {
+            const String host = GET_OPTION_VALUE( "mcp-host", "127.0.0.1" );
+            const String port = GET_OPTION_VALUE( "mcp-port", "" );
+            const String token = GET_OPTION_VALUE( "mcp-token", "" );
+            const String mode = GET_OPTION_VALUE( "mcp-mode", "visible" );
+
+            if( this->run( host, port, token, mode ) == false )
+            {
+                LOGGER_ERROR( "MCP activation failed" );
+
+                return false;
+            }
+        }
+#endif
 
         return true;
     }
@@ -228,6 +581,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MCPService::_finalizeService()
     {
+#if defined(MENGINE_PLATFORM_ANDROID)
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_INTENT_START );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_INTENT_NEW );
+#endif
+
         this->stop();
 
         m_commandRegistry.clear();
@@ -251,6 +609,33 @@ namespace Mengine
         m_sceneContext.finalize();
         m_runtimeContext.finalize();
     }
+    //////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_PLATFORM_ANDROID)
+    void MCPService::notifyApplicationIntent_( const String & _action, const String & _data, const String & _type, uint32_t _flags, const Params & _extras )
+    {
+        MENGINE_UNUSED( _action );
+        MENGINE_UNUSED( _data );
+        MENGINE_UNUSED( _type );
+        MENGINE_UNUSED( _flags );
+
+        String host = Helper::getParam( _extras, STRINGIZE_STRING_LOCAL( "mengine.mcp.host" ), "" );
+        String port = Helper::getParam( _extras, STRINGIZE_STRING_LOCAL( "mengine.mcp.port" ), "" );
+        String token = Helper::getParam( _extras, STRINGIZE_STRING_LOCAL( "mengine.mcp.token" ), "" );
+        String mode = Helper::getParam( _extras, STRINGIZE_STRING_LOCAL( "mengine.mcp.mode" ), "" );
+
+        if( host.empty() == true || port.empty() == true || token.size() != 64 || mode.empty() == true )
+        {
+            return;
+        }
+
+        this->stop();
+
+        if( this->run( host, port, token, mode ) == false )
+        {
+            LOGGER_ERROR( "MCP Android intent activation failed" );
+        }
+    }
+#endif
     //////////////////////////////////////////////////////////////////////////
     bool MCPService::addHandler( const ConstString & _name, const MCPHandlerInterfacePtr & _handler )
     {

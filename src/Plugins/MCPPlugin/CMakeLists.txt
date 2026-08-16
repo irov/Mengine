@@ -25,8 +25,6 @@ commands
     Commands/MCPCommandInterface.cpp
     Commands/MCPCommandRegistry.h
     Commands/MCPCommandRegistry.cpp
-    Commands/MCPCommandComposition.h
-    Commands/MCPCommandComposition.cpp
 )
 
 ADD_FILTER(
@@ -85,6 +83,8 @@ commands_input
     Commands/Input/MCPInputKeyboardCommand.cpp
     Commands/Input/MCPInputTouchCommand.h
     Commands/Input/MCPInputTouchCommand.cpp
+    Commands/Input/MCPInputAccelerometerCommand.h
+    Commands/Input/MCPInputAccelerometerCommand.cpp
     Commands/Input/MCPInputSequenceCommand.h
     Commands/Input/MCPInputSequenceCommand.cpp
     Commands/Input/Steps/MCPInputSequenceStepInterface.h
@@ -99,6 +99,8 @@ commands_input
     Commands/Input/Steps/MCPKeyboardInputSequenceStep.cpp
     Commands/Input/Steps/MCPTouchInputSequenceStep.h
     Commands/Input/Steps/MCPTouchInputSequenceStep.cpp
+    Commands/Input/Steps/MCPAccelerometerInputSequenceStep.h
+    Commands/Input/Steps/MCPAccelerometerInputSequenceStep.cpp
     Commands/Input/Steps/MCPWaitInputSequenceStep.h
     Commands/Input/Steps/MCPWaitInputSequenceStep.cpp
 )

@@ -23,7 +23,16 @@ namespace Mengine
 
         jpp::object steps;
 
-        if( _request.params.exist( "steps", &steps ) == false || steps.is_type_array() == false || steps.empty() == true )
+        if( _request.params.exist( "steps", &steps ) == false || steps.is_type_array() == false )
+        {
+            _response->errorMessage = "input_sequence steps must be a non-empty array";
+
+            return EMCPCommandStatus::FAILURE;
+        }
+
+        jpp::array stepsArray( steps );
+
+        if( stepsArray.empty() == true )
         {
             _response->errorMessage = "input_sequence steps must be a non-empty array";
 

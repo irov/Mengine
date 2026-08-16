@@ -36,6 +36,8 @@
 
 #include "PythonLayoutElementGetter.h"
 #include "PythonLayoutElementSetter.h"
+#include "PythonLayoutBoxElementGetter.h"
+#include "PythonLayoutBoxElementSetter.h"
 
 #include "Engine/ResourceFile.h"
 #include "Engine/ResourceMusic.h"
@@ -124,6 +126,8 @@ namespace Mengine
                 m_factoryNodeAffectorCallback = Helper::makeFactoryPool<ScriptableAffectorCallback, 4>( MENGINE_DOCUMENT_FACTORABLE );
                 m_factoryPythonLayoutElementGetter = Helper::makeFactoryPool<PythonLayoutElementGetter, 4>( MENGINE_DOCUMENT_FACTORABLE );
                 m_factoryPythonLayoutElementSetter = Helper::makeFactoryPool<PythonLayoutElementSetter, 4>( MENGINE_DOCUMENT_FACTORABLE );
+                m_factoryPythonLayoutBoxElementGetter = Helper::makeFactoryPool<PythonLayoutBoxElementGetter, 4>( MENGINE_DOCUMENT_FACTORABLE );
+                m_factoryPythonLayoutBoxElementSetter = Helper::makeFactoryPool<PythonLayoutBoxElementSetter, 4>( MENGINE_DOCUMENT_FACTORABLE );
 
                 m_factoryAffectorVelocity2 = Helper::makeFactorableUnique<FactoryAffectorVelocity2>( MENGINE_DOCUMENT_FACTORABLE );
                 m_factoryAffectorVelocity2->initialize();
@@ -227,6 +231,8 @@ namespace Mengine
                 MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryNodeAffectorCallback );
                 MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonLayoutElementGetter );
                 MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonLayoutElementSetter );
+                MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonLayoutBoxElementGetter );
+                MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonLayoutBoxElementSetter );
 
                 m_factoryPythonScheduleEvent = nullptr;
                 m_factoryDelaySchedulePipe = nullptr;
@@ -235,6 +241,8 @@ namespace Mengine
                 m_factoryNodeAffectorCallback = nullptr;
                 m_factoryPythonLayoutElementGetter = nullptr;
                 m_factoryPythonLayoutElementSetter = nullptr;
+                m_factoryPythonLayoutBoxElementGetter = nullptr;
+                m_factoryPythonLayoutBoxElementSetter = nullptr;
             }
 
         public:
@@ -374,6 +382,44 @@ namespace Mengine
                 }
 
                 _layout->addSubLayout( _type, _subLayout, py_getter, py_setter, MENGINE_DOCUMENT_PYTHON );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            FactoryInterfacePtr m_factoryPythonLayoutBoxElementGetter;
+            FactoryInterfacePtr m_factoryPythonLayoutBoxElementSetter;
+            //////////////////////////////////////////////////////////////////////////
+            void LayoutBoxContainerInterface_addFixed( LayoutBoxContainerInterface * _container, const pybind::object & _getter, const pybind::object & _setter, const pybind::args & _args )
+            {
+                PythonLayoutBoxElementGetterPtr py_getter = m_factoryPythonLayoutBoxElementGetter->createObject( MENGINE_DOCUMENT_PYTHON );
+                py_getter->initialize( _getter, _args );
+
+                PythonLayoutBoxElementSetterPtr py_setter;
+
+                if( _setter.is_none() == false )
+                {
+                    py_setter = m_factoryPythonLayoutBoxElementSetter->createObject( MENGINE_DOCUMENT_PYTHON );
+                    py_setter->initialize( _setter, _args );
+                }
+
+                _container->addFixed( py_getter, py_setter, MENGINE_DOCUMENT_PYTHON );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void LayoutBoxContainerInterface_addPadding( LayoutBoxContainerInterface * _container, float _weight )
+            {
+                _container->addPadding( _weight, MENGINE_DOCUMENT_PYTHON );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            LayoutBoxContainerInterfacePtr LayoutBoxContainerInterface_addBox( LayoutBoxContainerInterface * _container, ELayoutBoxDirection _direction, float _size )
+            {
+                LayoutBoxContainerInterfacePtr box = _container->addBox( _direction, _size, MENGINE_DOCUMENT_PYTHON );
+
+                return box;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            LayoutBoxContainerInterfacePtr LayoutBoxInterface_createRoot( LayoutBoxInterface * _layoutBox, ELayoutBoxDirection _direction )
+            {
+                LayoutBoxContainerInterfacePtr root = _layoutBox->createRoot( _direction, MENGINE_DOCUMENT_PYTHON );
+
+                return root;
             }
             //////////////////////////////////////////////////////////////////////////
             UniqueId s_Animation_play( AnimationInterface * _animation )
@@ -2844,6 +2890,23 @@ namespace Mengine
             .def_proxy_static_args( "addElement", scriptMethod, &KernelScriptMethod::LayoutInterface_addElement )
             .def_proxy_static_args( "addSubLayout", scriptMethod, &KernelScriptMethod::LayoutInterface_addSubLayout )
             .def( "flush", &LayoutInterface::flush )
+            ;
+
+        pybind::enum_<ELayoutBoxDirection>( _kernel, "LayoutBoxDirection" )
+            .def( "ELBD_HORIZONTAL", ELayoutBoxDirection::ELBD_HORIZONTAL )
+            .def( "ELBD_VERTICAL", ELayoutBoxDirection::ELBD_VERTICAL )
+            ;
+
+        pybind::interface_<LayoutBoxContainerInterface, pybind::bases<Mixin>>( _kernel, "LayoutBoxContainerInterface", true )
+            .def_proxy_static_args( "addFixed", scriptMethod, &KernelScriptMethod::LayoutBoxContainerInterface_addFixed )
+            .def_proxy_static( "addPadding", scriptMethod, &KernelScriptMethod::LayoutBoxContainerInterface_addPadding )
+            .def_proxy_static( "addBox", scriptMethod, &KernelScriptMethod::LayoutBoxContainerInterface_addBox )
+            ;
+
+        pybind::interface_<LayoutBoxInterface, pybind::bases<Mixin>>( _kernel, "LayoutBoxInterface", true )
+            .def_proxy_static( "createRoot", scriptMethod, &KernelScriptMethod::LayoutBoxInterface_createRoot )
+            .def( "invalidate", &LayoutBoxInterface::invalidate )
+            .def( "flush", &LayoutBoxInterface::flush )
             ;
 
         pybind::enum_<EArrowType>( _kernel, "ArrowType" )

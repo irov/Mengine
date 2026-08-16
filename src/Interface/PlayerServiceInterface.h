@@ -3,6 +3,7 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/SchedulerInterface.h"
 #include "Interface/LayoutInterface.h"
+#include "Interface/LayoutBoxInterface.h"
 #include "Interface/PickerServiceInterface.h"
 #include "Interface/GlobalInputHandlerInterface.h"
 #include "Interface/UpdationInterface.h"
@@ -45,6 +46,9 @@ namespace Mengine
     public:
         virtual LayoutInterfacePtr createLayout( const DocumentInterfacePtr & _doc ) = 0;
         virtual void destroyLayout( const LayoutInterfacePtr & _layout ) = 0;
+
+        virtual LayoutBoxInterfacePtr createLayoutBox( const DocumentInterfacePtr & _doc ) = 0;
+        virtual void destroyLayoutBox( const LayoutBoxInterfacePtr & _layoutBox ) = 0;
 
     public:
         virtual const RenderCameraInterfacePtr & getDefaultSceneRenderCamera2D() const = 0;

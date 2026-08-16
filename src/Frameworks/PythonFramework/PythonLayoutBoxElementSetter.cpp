@@ -1,0 +1,19 @@
+#include "PythonLayoutBoxElementSetter.h"
+
+namespace Mengine
+{
+    //////////////////////////////////////////////////////////////////////////
+    PythonLayoutBoxElementSetter::PythonLayoutBoxElementSetter()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    PythonLayoutBoxElementSetter::~PythonLayoutBoxElementSetter()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PythonLayoutBoxElementSetter::onSetLayoutBoxElementPosition( const mt::vec2f & _offset, const mt::vec2f & _size )
+    {
+        this->call_cb( _offset, _size );
+    }
+    //////////////////////////////////////////////////////////////////////////
+}

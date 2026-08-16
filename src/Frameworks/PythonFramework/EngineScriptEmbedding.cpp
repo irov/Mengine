@@ -61,6 +61,7 @@
 #include "DelaySchedulePipe.h"
 #include "PythonFileLogger.h"
 #include "PythonLayoutSizer.h"
+#include "PythonLayoutBoxSizer.h"
 
 #include "Engine/ResourceFile.h"
 #include "Engine/ResourceTestPick.h"
@@ -190,6 +191,7 @@ namespace Mengine
                 m_factoryPyGlobalAccelerometerHandler = Helper::makeFactoryPool<PyGlobalAccelerometerHandler, 8>( MENGINE_DOCUMENT_FACTORABLE );
                 m_factoryPyInputMousePositionProvider = Helper::makeFactoryPool<PyInputMousePositionProvider, 8>( MENGINE_DOCUMENT_FACTORABLE );
                 m_factoryPythonLayourSizer = Helper::makeFactoryPool<PythonLayoutSizer, 4>( MENGINE_DOCUMENT_FACTORABLE );
+                m_factoryPythonLayoutBoxSizer = Helper::makeFactoryPool<PythonLayoutBoxSizer, 4>( MENGINE_DOCUMENT_FACTORABLE );
 
                 m_creatorAffectorNodeFollowerLocalAlpha = Helper::makeFactorableUnique<AffectorNodeFollowerCreator<Node, float>>( MENGINE_DOCUMENT_FACTORABLE );
                 m_creatorAffectorNodeFollowerLocalAlpha->initialize();
@@ -230,6 +232,7 @@ namespace Mengine
                 MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPyGlobalTextHandler );
                 MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPyInputMousePositionProvider );
                 MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonLayourSizer );
+                MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonLayoutBoxSizer );
 
                 m_factoryPythonScheduleTiming = nullptr;
                 m_factoryPythonSchedulePipe = nullptr;
@@ -250,6 +253,7 @@ namespace Mengine
                 m_factoryPyGlobalAccelerometerHandler = nullptr;
                 m_factoryPyInputMousePositionProvider = nullptr;
                 m_factoryPythonLayourSizer = nullptr;
+                m_factoryPythonLayoutBoxSizer = nullptr;
             }
 
         public:
@@ -440,6 +444,29 @@ namespace Mengine
 
                 PLAYER_SERVICE()
                     ->destroyLayout( _layout );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            FactoryInterfacePtr m_factoryPythonLayoutBoxSizer;
+            //////////////////////////////////////////////////////////////////////////
+            LayoutBoxInterfacePtr s_createLayoutBox( const pybind::object & _sizer, const pybind::args & _args )
+            {
+                LayoutBoxInterfacePtr layoutBox = PLAYER_SERVICE()
+                    ->createLayoutBox( MENGINE_DOCUMENT_PYTHON );
+
+                PythonLayoutBoxSizerPtr py_sizer = m_factoryPythonLayoutBoxSizer->createObject( MENGINE_DOCUMENT_PYTHON );
+                py_sizer->initialize( _sizer, _args );
+
+                layoutBox->setSizer( py_sizer );
+
+                return layoutBox;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_destroyLayoutBox( const LayoutBoxInterfacePtr & _layoutBox )
+            {
+                MENGINE_ASSERTION_MEMORY_PANIC( _layoutBox, "destroy layout box is nullptr" );
+
+                PLAYER_SERVICE()
+                    ->destroyLayoutBox( _layoutBox );
             }
             //////////////////////////////////////////////////////////////////////////
             UniqueId s_pipe( const pybind::object & _pipe, const pybind::object & _timing, const pybind::object & _event, const pybind::args & _args )
@@ -4380,6 +4407,9 @@ namespace Mengine
 
         pybind::def_functor_args( _kernel, "createLayout", nodeScriptMethod, &EngineScriptMethod::s_createLayout );
         pybind::def_functor( _kernel, "destroyLayout", nodeScriptMethod, &EngineScriptMethod::s_destroyLayout );
+
+        pybind::def_functor_args( _kernel, "createLayoutBox", nodeScriptMethod, &EngineScriptMethod::s_createLayoutBox );
+        pybind::def_functor( _kernel, "destroyLayoutBox", nodeScriptMethod, &EngineScriptMethod::s_destroyLayoutBox );
 
         pybind::def_functor_args( _kernel, "schedule", nodeScriptMethod, &EngineScriptMethod::s_schedule );
         pybind::def_functor_args( _kernel, "pipe", nodeScriptMethod, &EngineScriptMethod::s_pipe );

@@ -35,6 +35,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Scheduler.h"
 #include "Kernel/Layout.h"
+#include "Kernel/LayoutBox.h"
 #include "Kernel/FactoryDefault.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
@@ -76,6 +77,7 @@ namespace Mengine
 
         m_factoryScheduler = Helper::makeFactoryPool<Scheduler, 16>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryLayout = Helper::makeFactoryPool<Layout, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryLayoutBox = Helper::makeFactoryPool<LayoutBox, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         SchedulerInterfacePtr scheduler = m_factoryScheduler->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -158,9 +160,11 @@ namespace Mengine
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryScheduler );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryLayout );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryLayoutBox );
 
         m_factoryScheduler = nullptr;
         m_factoryLayout = nullptr;
+        m_factoryLayoutBox = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::_stopService()
@@ -264,6 +268,25 @@ namespace Mengine
     void PlayerService::destroyLayout( const LayoutInterfacePtr & _layout )
     {
         _layout->finalize();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    LayoutBoxInterfacePtr PlayerService::createLayoutBox( const DocumentInterfacePtr & _doc )
+    {
+        LayoutBoxInterfacePtr layoutBox = m_factoryLayoutBox->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( layoutBox, "invalid create layout box" );
+
+        if( layoutBox->initialize() == false )
+        {
+            return nullptr;
+        }
+
+        return layoutBox;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PlayerService::destroyLayoutBox( const LayoutBoxInterfacePtr & _layoutBox )
+    {
+        _layoutBox->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
     const GlobalInputHandlerInterfacePtr & PlayerService::getGlobalInputHandler() const

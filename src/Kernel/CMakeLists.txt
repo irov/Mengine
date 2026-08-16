@@ -483,6 +483,8 @@ ADD_FILTER(
 Layout
     Layout.cpp
     Layout.h
+    LayoutBox.cpp
+    LayoutBox.h
 )
 
 ADD_FILTER(

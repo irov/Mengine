@@ -66,6 +66,12 @@ PythonLayout
     PythonLayoutElementGetter.h
     PythonLayoutElementSetter.cpp
     PythonLayoutElementSetter.h
+    PythonLayoutBoxSizer.cpp
+    PythonLayoutBoxSizer.h
+    PythonLayoutBoxElementGetter.cpp
+    PythonLayoutBoxElementGetter.h
+    PythonLayoutBoxElementSetter.cpp
+    PythonLayoutBoxElementSetter.h
 )
 
 ADD_FILTER(

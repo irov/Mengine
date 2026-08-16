@@ -5,6 +5,7 @@
 #include "Interface/GlobalInputHandlerInterface.h"
 #include "Interface/SchedulerInterface.h"
 #include "Interface/LayoutInterface.h"
+#include "Interface/LayoutBoxInterface.h"
 #include "Interface/RenderTargetInterface.h"
 #include "Interface/RenderPipelineInterface.h"
 #include "Interface/FactoryInterface.h"
@@ -46,6 +47,9 @@ namespace Mengine
     public:
         LayoutInterfacePtr createLayout( const DocumentInterfacePtr & _doc ) override;
         void destroyLayout( const LayoutInterfacePtr & _layout ) override;
+
+        LayoutBoxInterfacePtr createLayoutBox( const DocumentInterfacePtr & _doc ) override;
+        void destroyLayoutBox( const LayoutBoxInterfacePtr & _layoutBox ) override;
 
     public:
         const GlobalInputHandlerInterfacePtr & getGlobalInputHandler() const override;
@@ -165,6 +169,7 @@ namespace Mengine
 
         FactoryInterfacePtr m_factoryScheduler;
         FactoryInterfacePtr m_factoryLayout;
+        FactoryInterfacePtr m_factoryLayoutBox;
 
         AffectorablePtr m_affectorable;
         AffectorablePtr m_affectorableGlobal;

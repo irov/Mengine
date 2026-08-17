@@ -26,6 +26,7 @@
 #include "TaskTransformationTranslate.h"
 #include "TaskTransformationTranslateTime.h"
 #include "TaskTransformationTranslateTimeWithSkip.h"
+#include "TaskTransformationPath.h"
 #include "TaskAnimatablePlay.h"
 #include "TaskAnimatablePlayWait.h"
 #include "TaskAnimatableStop.h"
@@ -153,6 +154,21 @@ namespace Mengine
         void addTransformationTranslateTimeWithSkip( const GOAP::SourceInterfacePtr & _source, const TransformablePtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time, const DocumentInterfacePtr & _doc )
         {
             Cook::addTask<TaskTransformationTranslateTimeWithSkip>( _source, _transformation, _affectorable, _easing, _to, _time, _doc );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void addTransformationFollowPath( const GOAP::SourceInterfacePtr & _source, const TransformablePtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const Vector<mt::vec3f> & _points, float _duration, const DocumentInterfacePtr & _doc )
+        {
+            Cook::addTask<TaskTransformationPath>( _source, _transformation, _affectorable, _easing, _points, _duration, ETPM_LINEAR, _doc );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void addTransformationBezier( const GOAP::SourceInterfacePtr & _source, const TransformablePtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const Vector<mt::vec3f> & _points, float _duration, const DocumentInterfacePtr & _doc )
+        {
+            Cook::addTask<TaskTransformationPath>( _source, _transformation, _affectorable, _easing, _points, _duration, ETPM_BEZIER, _doc );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void addTransformationCatmullRom( const GOAP::SourceInterfacePtr & _source, const TransformablePtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const Vector<mt::vec3f> & _points, float _duration, const DocumentInterfacePtr & _doc )
+        {
+            Cook::addTask<TaskTransformationPath>( _source, _transformation, _affectorable, _easing, _points, _duration, ETPM_CATMULL_ROM, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
         void addColorableAlphaTime( const GOAP::SourceInterfacePtr & _source, const ColorablePtr & _colorable, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time, const DocumentInterfacePtr & _doc )

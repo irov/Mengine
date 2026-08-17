@@ -43,6 +43,7 @@
 #include "Engine/ResourceWindow.h"
 #include "Engine/ResourceMesh3D.h"
 #include "Engine/ResourceSkinnedMesh3D.h"
+#include "Engine/ResourceTiledMap.h"
 
 #include "Kernel/Eventable.h"
 #include "Kernel/ThreadTask.h"
@@ -155,6 +156,9 @@ namespace Mengine
         pybind::interface_<ResourceFile, pybind::bases<Resource>>( _kernel, "ResourceFile", false )
             ;
 
+        pybind::interface_<ResourceTiledMap, pybind::bases<Resource>>( _kernel, "ResourceTiledMap", false )
+            ;
+
         pybind::interface_<ResourceShape, pybind::bases<Resource>>( _kernel, "ResourceShape", false )
             .def( "setPolygon", &ResourceShape::setPolygon )
             .def( "getPolygon", &ResourceShape::getPolygon )
@@ -202,6 +206,7 @@ namespace Mengine
         SCRIPT_CLASS_WRAPPING( ResourceImageSequence );
         SCRIPT_CLASS_WRAPPING( ResourceSound );
         SCRIPT_CLASS_WRAPPING( ResourceFile );
+        SCRIPT_CLASS_WRAPPING( ResourceTiledMap );
 
         SCRIPT_CLASS_WRAPPING( ResourceImageSolid );
         SCRIPT_CLASS_WRAPPING( ResourceShape );
@@ -237,6 +242,7 @@ namespace Mengine
         UNSCRIPT_CLASS_WRAPPING( ResourceImageSequence );
         UNSCRIPT_CLASS_WRAPPING( ResourceSound );
         UNSCRIPT_CLASS_WRAPPING( ResourceFile );
+        UNSCRIPT_CLASS_WRAPPING( ResourceTiledMap );
 
         UNSCRIPT_CLASS_WRAPPING( ResourceImageSolid );
         UNSCRIPT_CLASS_WRAPPING( ResourceShape );

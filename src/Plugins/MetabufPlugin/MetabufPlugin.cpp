@@ -16,6 +16,7 @@
 #include "MetabufLoaderResourceMusic.h"
 #include "MetabufLoaderResourceShape.h"
 #include "MetabufLoaderResourceSound.h"
+#include "MetabufLoaderResourceTiledMap.h"
 #include "MetabufLoaderResourceWindow.h"
 
 #include "MetabufLoaderService.h"
@@ -80,6 +81,7 @@ namespace Mengine
         SET_LOADER( ResourceMusic );
         SET_LOADER( ResourceShape );
         SET_LOADER( ResourceSound );
+        SET_LOADER( ResourceTiledMap );
         SET_LOADER( ResourceWindow );
 
 #undef SET_LOADER
@@ -115,6 +117,7 @@ namespace Mengine
         REMOVE_LOADER( ResourceMusic );
         REMOVE_LOADER( ResourceShape );
         REMOVE_LOADER( ResourceSound );
+        REMOVE_LOADER( ResourceTiledMap );
         REMOVE_LOADER( ResourceWindow );
 
 #undef REMOVE_LOADER

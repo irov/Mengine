@@ -4,9 +4,7 @@ endif()
 
 ADD_SUBDIRECTORY(Kernel)
 
-if(MENGINE_PLUGIN_METABUF)
-    ADD_SUBDIRECTORY(Metacode)
-endif()
+ADD_SUBDIRECTORY(Metacode)
 
 ADD_SUBDIRECTORY(Services)
 ADD_SUBDIRECTORY(Systems)

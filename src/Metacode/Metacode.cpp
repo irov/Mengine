@@ -15,12 +15,12 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_protocol_version()
     {
-        return 155;
+        return 157;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_protocol_crc32()
     {
-        return 3513258179;
+        return 3041487559;
     }
     //////////////////////////////////////////////////////////////////////////
     const char * getHeaderErrorMessage( Metabuf::HeaderError _error )
@@ -97,7 +97,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t getInternalStringsCount()
     {
-        return 31;
+        return 32;
     }
     //////////////////////////////////////////////////////////////////////////
     const char * getInternalString( uint32_t _index, uint32_t & _stringSize )
@@ -120,6 +120,7 @@ namespace Metacode
             {20, "ResourceCursorSystem"},
             {17, "ResourceCursorICO"},
             {12, "ResourceFile"},
+            {16, "ResourceTiledMap"},
             {13, "ResourceSound"},
             {13, "ResourceMusic"},
             {14, "ResourceWindow"},
@@ -432,21 +433,21 @@ namespace Metacode
 
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 32:
+            case 33:
                 {
                     Meta_DataBlock::Meta_ResourceCal3dAnimation * metadata = new Meta_DataBlock::Meta_ResourceCal3dAnimation ();
                     metadata->parse( _buff, _size, _read, _userData );
 
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 33:
+            case 34:
                 {
                     Meta_DataBlock::Meta_ResourceCal3dMesh * metadata = new Meta_DataBlock::Meta_ResourceCal3dMesh ();
                     metadata->parse( _buff, _size, _read, _userData );
 
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 31:
+            case 32:
                 {
                     Meta_DataBlock::Meta_ResourceCal3dSkeleton * metadata = new Meta_DataBlock::Meta_ResourceCal3dSkeleton ();
                     metadata->parse( _buff, _size, _read, _userData );
@@ -467,14 +468,14 @@ namespace Metacode
 
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 38:
+            case 39:
                 {
                     Meta_DataBlock::Meta_ResourceExternal * metadata = new Meta_DataBlock::Meta_ResourceExternal ();
                     metadata->parse( _buff, _size, _read, _userData );
 
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 37:
+            case 38:
                 {
                     Meta_DataBlock::Meta_ResourceFigma * metadata = new Meta_DataBlock::Meta_ResourceFigma ();
                     metadata->parse( _buff, _size, _read, _userData );
@@ -488,7 +489,7 @@ namespace Metacode
 
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 26:
+            case 27:
                 {
                     Meta_DataBlock::Meta_ResourceHIT * metadata = new Meta_DataBlock::Meta_ResourceHIT ();
                     metadata->parse( _buff, _size, _read, _userData );
@@ -516,14 +517,14 @@ namespace Metacode
 
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 25:
+            case 26:
                 {
                     Meta_DataBlock::Meta_ResourceImageSequence * metadata = new Meta_DataBlock::Meta_ResourceImageSequence ();
                     metadata->parse( _buff, _size, _read, _userData );
 
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 28:
+            case 29:
                 {
                     Meta_DataBlock::Meta_ResourceImageSolid * metadata = new Meta_DataBlock::Meta_ResourceImageSolid ();
                     metadata->parse( _buff, _size, _read, _userData );
@@ -544,7 +545,7 @@ namespace Metacode
 
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 29:
+            case 30:
                 {
                     Meta_DataBlock::Meta_ResourceInternalObject * metadata = new Meta_DataBlock::Meta_ResourceInternalObject ();
                     metadata->parse( _buff, _size, _read, _userData );
@@ -558,63 +559,63 @@ namespace Metacode
 
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 27:
+            case 28:
                 {
                     Meta_DataBlock::Meta_ResourceModel3D * metadata = new Meta_DataBlock::Meta_ResourceModel3D ();
                     metadata->parse( _buff, _size, _read, _userData );
 
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 23:
+            case 24:
                 {
                     Meta_DataBlock::Meta_ResourceMovie * metadata = new Meta_DataBlock::Meta_ResourceMovie ();
                     metadata->parse( _buff, _size, _read, _userData );
 
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 22:
+            case 23:
                 {
                     Meta_DataBlock::Meta_ResourceMovie2 * metadata = new Meta_DataBlock::Meta_ResourceMovie2 ();
                     metadata->parse( _buff, _size, _read, _userData );
 
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 20:
+            case 21:
                 {
                     Meta_DataBlock::Meta_ResourceMusic * metadata = new Meta_DataBlock::Meta_ResourceMusic ();
                     metadata->parse( _buff, _size, _read, _userData );
 
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 30:
+            case 31:
                 {
                     Meta_DataBlock::Meta_ResourceShape * metadata = new Meta_DataBlock::Meta_ResourceShape ();
                     metadata->parse( _buff, _size, _read, _userData );
 
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 19:
+            case 20:
                 {
                     Meta_DataBlock::Meta_ResourceSound * metadata = new Meta_DataBlock::Meta_ResourceSound ();
                     metadata->parse( _buff, _size, _read, _userData );
 
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 34:
+            case 35:
                 {
                     Meta_DataBlock::Meta_ResourceSpineAtlas * metadata = new Meta_DataBlock::Meta_ResourceSpineAtlas ();
                     metadata->parse( _buff, _size, _read, _userData );
 
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 35:
+            case 36:
                 {
                     Meta_DataBlock::Meta_ResourceSpineAtlasTexturepacker * metadata = new Meta_DataBlock::Meta_ResourceSpineAtlasTexturepacker ();
                     metadata->parse( _buff, _size, _read, _userData );
 
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 36:
+            case 37:
                 {
                     Meta_DataBlock::Meta_ResourceSpineSkeleton * metadata = new Meta_DataBlock::Meta_ResourceSpineSkeleton ();
                     metadata->parse( _buff, _size, _read, _userData );
@@ -628,14 +629,21 @@ namespace Metacode
 
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 24:
+            case 19:
+                {
+                    Meta_DataBlock::Meta_ResourceTiledMap * metadata = new Meta_DataBlock::Meta_ResourceTiledMap ();
+                    metadata->parse( _buff, _size, _read, _userData );
+
+                    includes_Meta_Resource.push_back(metadata);
+                }break;
+            case 25:
                 {
                     Meta_DataBlock::Meta_ResourceVideo * metadata = new Meta_DataBlock::Meta_ResourceVideo ();
                     metadata->parse( _buff, _size, _read, _userData );
 
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 21:
+            case 22:
                 {
                     Meta_DataBlock::Meta_ResourceWindow * metadata = new Meta_DataBlock::Meta_ResourceWindow ();
                     metadata->parse( _buff, _size, _read, _userData );
@@ -4812,6 +4820,90 @@ namespace Metacode
         }
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
+        Meta_DataBlock::Meta_ResourceTiledMap::Meta_ResourceTiledMap()
+            : Meta_Resource()
+        {
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const char * Meta_DataBlock::Meta_ResourceTiledMap::getMetaName() const
+        {
+            return "Data";
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const char * Meta_DataBlock::Meta_ResourceTiledMap::getNodeName() const
+        {
+            return "ResourceTiledMap";
+        }
+        //////////////////////////////////////////////////////////////////////////
+        uint32_t Meta_DataBlock::Meta_ResourceTiledMap::getMetaVersion() const
+        {
+            return 1U;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool Meta_DataBlock::Meta_ResourceTiledMap::parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            METABUF_UNUSED( _buff );
+            METABUF_UNUSED( _size );
+            METABUF_UNUSED( _read );
+            METABUF_UNUSED( _userData );
+            this->_parseData( _buff, _size, _read, _userData );
+
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
+
+            if( m_flagNoRequiredAttribute != 0 )
+            {
+                this->_parseArguments( _buff, _size, _read, _userData );
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_DataBlock::Meta_ResourceTiledMap::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            Meta_DataBlock::Meta_Resource::_parseData( _buff, _size, _read, _userData );
+
+            Metabuf::read( _buff, _size, _read, _userData, this->m_File_Path );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_DataBlock::Meta_ResourceTiledMap::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
+
+            if( (m_flagNoRequiredAttribute & EMETA_File_Converter) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_Converter );
+            }
+
+            if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_NoExist );
+            }
+
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_DataBlock::Meta_ResourceTiledMap::_preparationIncludes( uint32_t _id, uint32_t _count )
+        {
+            METABUF_UNUSED( _id );
+            METABUF_UNUSED( _count );
+            Meta_DataBlock::Meta_Resource::_preparationIncludes( _id, _count );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_DataBlock::Meta_ResourceTiledMap::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        {
+            METABUF_UNUSED( _buff );
+            METABUF_UNUSED( _size );
+            METABUF_UNUSED( _read );
+            METABUF_UNUSED( _id );
+            METABUF_UNUSED( _userData );
+            Meta_DataBlock::Meta_Resource::_parseIncludes( _buff, _size, _read, _id, _userData );
+
+        }
+        //////////////////////////////////////////////////////////////////////////
+        //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_ResourceVideo::Meta_ResourceVideo()
             : Meta_Resource()
         {
@@ -7486,6 +7578,1039 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         // cppcheck-suppress duplInheritedMember
         void Meta_Texts::Meta_Text::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        {
+            METABUF_UNUSED( _buff );
+            METABUF_UNUSED( _size );
+            METABUF_UNUSED( _read );
+            METABUF_UNUSED( _id );
+            METABUF_UNUSED( _userData );
+        }
+        //////////////////////////////////////////////////////////////////////////
+    }
+    namespace Meta_TiledMap
+    {
+        uint32_t getVersion()
+        {
+            return 1;
+        }
+
+        //////////////////////////////////////////////////////////////////////////
+        //cppcheck-suppress uninitMemberVar
+        Meta_TiledMap::Meta_TiledMap()
+        {
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const char * Meta_TiledMap::getMetaName() const
+        {
+            return "TiledMap";
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const char * Meta_TiledMap::getNodeName() const
+        {
+            return "TiledMap";
+        }
+        //////////////////////////////////////////////////////////////////////////
+        uint32_t Meta_TiledMap::getMetaVersion() const
+        {
+            return 1U;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool Meta_TiledMap::parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            METABUF_UNUSED( _buff );
+            METABUF_UNUSED( _size );
+            METABUF_UNUSED( _read );
+            METABUF_UNUSED( _userData );
+            this->_parseData( _buff, _size, _read, _userData );
+
+            uint32_t includeTypeCount;
+            Metabuf::readSize( _buff, _size, _read, includeTypeCount );
+
+            for( uint32_t i = 0; i != includeTypeCount; ++i )
+            {
+                uint32_t includeCount;
+                Metabuf::readSize( _buff, _size, _read, includeCount );
+
+                uint32_t id;
+                Metabuf::readSize( _buff, _size, _read, id );
+
+                switch( id )
+                {
+                case 4:
+                    {
+                        includes_Meta_ObjectLayer.resize( includeCount );
+
+                        for( Meta_TiledMap::Meta_ObjectLayer & metadata : includes_Meta_ObjectLayer )
+                        {
+                            metadata.parse( _buff, _size, _read, _userData );
+                        }
+                    }break;
+                case 1:
+                    {
+                        includes_Meta_Property.resize( includeCount );
+
+                        for( Meta_TiledMap::Meta_Property & metadata : includes_Meta_Property )
+                        {
+                            metadata.parse( _buff, _size, _read, _userData );
+                        }
+                    }break;
+                case 3:
+                    {
+                        includes_Meta_TileLayer.resize( includeCount );
+
+                        for( Meta_TiledMap::Meta_TileLayer & metadata : includes_Meta_TileLayer )
+                        {
+                            metadata.parse( _buff, _size, _read, _userData );
+                        }
+                    }break;
+                case 2:
+                    {
+                        includes_Meta_Tileset.resize( includeCount );
+
+                        for( Meta_TiledMap::Meta_Tileset & metadata : includes_Meta_Tileset )
+                        {
+                            metadata.parse( _buff, _size, _read, _userData );
+                        }
+                    }break;
+                }
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_TiledMap::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Height );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_HexSideLength );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Orientation );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_StaggerAxis );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_StaggerIndex );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_TileHeight );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_TileWidth );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Width );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_TiledMap::_preparationIncludes( uint32_t _id, uint32_t _count )
+        {
+            METABUF_UNUSED( _id );
+            METABUF_UNUSED( _count );
+            switch( _id )
+            {
+            case 4:
+                {
+                    includes_Meta_ObjectLayer.reserve( _count );
+                }break;
+            case 1:
+                {
+                    includes_Meta_Property.reserve( _count );
+                }break;
+            case 3:
+                {
+                    includes_Meta_TileLayer.reserve( _count );
+                }break;
+            case 2:
+                {
+                    includes_Meta_Tileset.reserve( _count );
+                }break;
+            default:
+                break;
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_TiledMap::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        {
+            METABUF_UNUSED( _buff );
+            METABUF_UNUSED( _size );
+            METABUF_UNUSED( _read );
+            METABUF_UNUSED( _id );
+            METABUF_UNUSED( _userData );
+            switch( _id )
+            {
+            case 4:
+                {
+                    includes_Meta_ObjectLayer.emplace_back( Meta_TiledMap::Meta_ObjectLayer() );
+                    Meta_TiledMap::Meta_ObjectLayer & metadata = includes_Meta_ObjectLayer.back();
+
+                    metadata.parse( _buff, _size, _read, _userData );
+                }break;
+            case 1:
+                {
+                    includes_Meta_Property.emplace_back( Meta_TiledMap::Meta_Property() );
+                    Meta_TiledMap::Meta_Property & metadata = includes_Meta_Property.back();
+
+                    metadata.parse( _buff, _size, _read, _userData );
+                }break;
+            case 3:
+                {
+                    includes_Meta_TileLayer.emplace_back( Meta_TiledMap::Meta_TileLayer() );
+                    Meta_TiledMap::Meta_TileLayer & metadata = includes_Meta_TileLayer.back();
+
+                    metadata.parse( _buff, _size, _read, _userData );
+                }break;
+            case 2:
+                {
+                    includes_Meta_Tileset.emplace_back( Meta_TiledMap::Meta_Tileset() );
+                    Meta_TiledMap::Meta_Tileset & metadata = includes_Meta_Tileset.back();
+
+                    metadata.parse( _buff, _size, _read, _userData );
+                }break;
+            default:
+                break;
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        //cppcheck-suppress uninitMemberVar
+        Meta_TiledMap::Meta_ObjectLayer::Meta_ObjectLayer()
+        {
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const char * Meta_TiledMap::Meta_ObjectLayer::getMetaName() const
+        {
+            return "TiledMap";
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const char * Meta_TiledMap::Meta_ObjectLayer::getNodeName() const
+        {
+            return "ObjectLayer";
+        }
+        //////////////////////////////////////////////////////////////////////////
+        uint32_t Meta_TiledMap::Meta_ObjectLayer::getMetaVersion() const
+        {
+            return 1U;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool Meta_TiledMap::Meta_ObjectLayer::parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            METABUF_UNUSED( _buff );
+            METABUF_UNUSED( _size );
+            METABUF_UNUSED( _read );
+            METABUF_UNUSED( _userData );
+            this->_parseData( _buff, _size, _read, _userData );
+
+            uint32_t includeTypeCount;
+            Metabuf::readSize( _buff, _size, _read, includeTypeCount );
+
+            for( uint32_t i = 0; i != includeTypeCount; ++i )
+            {
+                uint32_t includeCount;
+                Metabuf::readSize( _buff, _size, _read, includeCount );
+
+                uint32_t id;
+                Metabuf::readSize( _buff, _size, _read, id );
+
+                switch( id )
+                {
+                case 2:
+                    {
+                        includes_Meta_Object.resize( includeCount );
+
+                        for( Meta_TiledMap::Meta_ObjectLayer::Meta_Object & metadata : includes_Meta_Object )
+                        {
+                            metadata.parse( _buff, _size, _read, _userData );
+                        }
+                    }break;
+                case 1:
+                    {
+                        includes_Meta_Property.resize( includeCount );
+
+                        for( Meta_TiledMap::Meta_ObjectLayer::Meta_Property & metadata : includes_Meta_Property )
+                        {
+                            metadata.parse( _buff, _size, _read, _userData );
+                        }
+                    }break;
+                }
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_TiledMap::Meta_ObjectLayer::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Id );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Name );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Offset );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Opacity );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Visible );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_TiledMap::Meta_ObjectLayer::_preparationIncludes( uint32_t _id, uint32_t _count )
+        {
+            METABUF_UNUSED( _id );
+            METABUF_UNUSED( _count );
+            switch( _id )
+            {
+            case 2:
+                {
+                    includes_Meta_Object.reserve( _count );
+                }break;
+            case 1:
+                {
+                    includes_Meta_Property.reserve( _count );
+                }break;
+            default:
+                break;
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_TiledMap::Meta_ObjectLayer::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        {
+            METABUF_UNUSED( _buff );
+            METABUF_UNUSED( _size );
+            METABUF_UNUSED( _read );
+            METABUF_UNUSED( _id );
+            METABUF_UNUSED( _userData );
+            switch( _id )
+            {
+            case 2:
+                {
+                    includes_Meta_Object.emplace_back( Meta_TiledMap::Meta_ObjectLayer::Meta_Object() );
+                    Meta_TiledMap::Meta_ObjectLayer::Meta_Object & metadata = includes_Meta_Object.back();
+
+                    metadata.parse( _buff, _size, _read, _userData );
+                }break;
+            case 1:
+                {
+                    includes_Meta_Property.emplace_back( Meta_TiledMap::Meta_ObjectLayer::Meta_Property() );
+                    Meta_TiledMap::Meta_ObjectLayer::Meta_Property & metadata = includes_Meta_Property.back();
+
+                    metadata.parse( _buff, _size, _read, _userData );
+                }break;
+            default:
+                break;
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        //cppcheck-suppress uninitMemberVar
+        Meta_TiledMap::Meta_ObjectLayer::Meta_Object::Meta_Object()
+        {
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const char * Meta_TiledMap::Meta_ObjectLayer::Meta_Object::getMetaName() const
+        {
+            return "TiledMap";
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const char * Meta_TiledMap::Meta_ObjectLayer::Meta_Object::getNodeName() const
+        {
+            return "Object";
+        }
+        //////////////////////////////////////////////////////////////////////////
+        uint32_t Meta_TiledMap::Meta_ObjectLayer::Meta_Object::getMetaVersion() const
+        {
+            return 1U;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool Meta_TiledMap::Meta_ObjectLayer::Meta_Object::parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            METABUF_UNUSED( _buff );
+            METABUF_UNUSED( _size );
+            METABUF_UNUSED( _read );
+            METABUF_UNUSED( _userData );
+            this->_parseData( _buff, _size, _read, _userData );
+
+            uint32_t includeTypeCount;
+            Metabuf::readSize( _buff, _size, _read, includeTypeCount );
+
+            for( uint32_t i = 0; i != includeTypeCount; ++i )
+            {
+                uint32_t includeCount;
+                Metabuf::readSize( _buff, _size, _read, includeCount );
+
+                uint32_t id;
+                Metabuf::readSize( _buff, _size, _read, id );
+
+                switch( id )
+                {
+                case 2:
+                    {
+                        includes_Meta_Point.resize( includeCount );
+
+                        for( Meta_TiledMap::Meta_ObjectLayer::Meta_Object::Meta_Point & metadata : includes_Meta_Point )
+                        {
+                            metadata.parse( _buff, _size, _read, _userData );
+                        }
+                    }break;
+                case 1:
+                    {
+                        includes_Meta_Property.resize( includeCount );
+
+                        for( Meta_TiledMap::Meta_ObjectLayer::Meta_Object::Meta_Property & metadata : includes_Meta_Property )
+                        {
+                            metadata.parse( _buff, _size, _read, _userData );
+                        }
+                    }break;
+                }
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_TiledMap::Meta_ObjectLayer::Meta_Object::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Class );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Gid );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Id );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Name );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Position );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Rotation );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Shape );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Size );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Type );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Visible );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_TiledMap::Meta_ObjectLayer::Meta_Object::_preparationIncludes( uint32_t _id, uint32_t _count )
+        {
+            METABUF_UNUSED( _id );
+            METABUF_UNUSED( _count );
+            switch( _id )
+            {
+            case 2:
+                {
+                    includes_Meta_Point.reserve( _count );
+                }break;
+            case 1:
+                {
+                    includes_Meta_Property.reserve( _count );
+                }break;
+            default:
+                break;
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_TiledMap::Meta_ObjectLayer::Meta_Object::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        {
+            METABUF_UNUSED( _buff );
+            METABUF_UNUSED( _size );
+            METABUF_UNUSED( _read );
+            METABUF_UNUSED( _id );
+            METABUF_UNUSED( _userData );
+            switch( _id )
+            {
+            case 2:
+                {
+                    includes_Meta_Point.emplace_back( Meta_TiledMap::Meta_ObjectLayer::Meta_Object::Meta_Point() );
+                    Meta_TiledMap::Meta_ObjectLayer::Meta_Object::Meta_Point & metadata = includes_Meta_Point.back();
+
+                    metadata.parse( _buff, _size, _read, _userData );
+                }break;
+            case 1:
+                {
+                    includes_Meta_Property.emplace_back( Meta_TiledMap::Meta_ObjectLayer::Meta_Object::Meta_Property() );
+                    Meta_TiledMap::Meta_ObjectLayer::Meta_Object::Meta_Property & metadata = includes_Meta_Property.back();
+
+                    metadata.parse( _buff, _size, _read, _userData );
+                }break;
+            default:
+                break;
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        //cppcheck-suppress uninitMemberVar
+        Meta_TiledMap::Meta_ObjectLayer::Meta_Object::Meta_Point::Meta_Point()
+        {
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const char * Meta_TiledMap::Meta_ObjectLayer::Meta_Object::Meta_Point::getMetaName() const
+        {
+            return "TiledMap";
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const char * Meta_TiledMap::Meta_ObjectLayer::Meta_Object::Meta_Point::getNodeName() const
+        {
+            return "Point";
+        }
+        //////////////////////////////////////////////////////////////////////////
+        uint32_t Meta_TiledMap::Meta_ObjectLayer::Meta_Object::Meta_Point::getMetaVersion() const
+        {
+            return 1U;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool Meta_TiledMap::Meta_ObjectLayer::Meta_Object::Meta_Point::parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            METABUF_UNUSED( _buff );
+            METABUF_UNUSED( _size );
+            METABUF_UNUSED( _read );
+            METABUF_UNUSED( _userData );
+            this->_parseData( _buff, _size, _read, _userData );
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_TiledMap::Meta_ObjectLayer::Meta_Object::Meta_Point::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Position );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_TiledMap::Meta_ObjectLayer::Meta_Object::Meta_Point::_preparationIncludes( uint32_t _id, uint32_t _count )
+        {
+            METABUF_UNUSED( _id );
+            METABUF_UNUSED( _count );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_TiledMap::Meta_ObjectLayer::Meta_Object::Meta_Point::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        {
+            METABUF_UNUSED( _buff );
+            METABUF_UNUSED( _size );
+            METABUF_UNUSED( _read );
+            METABUF_UNUSED( _id );
+            METABUF_UNUSED( _userData );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        //cppcheck-suppress uninitMemberVar
+        Meta_TiledMap::Meta_ObjectLayer::Meta_Object::Meta_Property::Meta_Property()
+        {
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const char * Meta_TiledMap::Meta_ObjectLayer::Meta_Object::Meta_Property::getMetaName() const
+        {
+            return "TiledMap";
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const char * Meta_TiledMap::Meta_ObjectLayer::Meta_Object::Meta_Property::getNodeName() const
+        {
+            return "Property";
+        }
+        //////////////////////////////////////////////////////////////////////////
+        uint32_t Meta_TiledMap::Meta_ObjectLayer::Meta_Object::Meta_Property::getMetaVersion() const
+        {
+            return 1U;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool Meta_TiledMap::Meta_ObjectLayer::Meta_Object::Meta_Property::parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            METABUF_UNUSED( _buff );
+            METABUF_UNUSED( _size );
+            METABUF_UNUSED( _read );
+            METABUF_UNUSED( _userData );
+            this->_parseData( _buff, _size, _read, _userData );
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_TiledMap::Meta_ObjectLayer::Meta_Object::Meta_Property::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Name );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Type );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Value );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_TiledMap::Meta_ObjectLayer::Meta_Object::Meta_Property::_preparationIncludes( uint32_t _id, uint32_t _count )
+        {
+            METABUF_UNUSED( _id );
+            METABUF_UNUSED( _count );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_TiledMap::Meta_ObjectLayer::Meta_Object::Meta_Property::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        {
+            METABUF_UNUSED( _buff );
+            METABUF_UNUSED( _size );
+            METABUF_UNUSED( _read );
+            METABUF_UNUSED( _id );
+            METABUF_UNUSED( _userData );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        //cppcheck-suppress uninitMemberVar
+        Meta_TiledMap::Meta_ObjectLayer::Meta_Property::Meta_Property()
+        {
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const char * Meta_TiledMap::Meta_ObjectLayer::Meta_Property::getMetaName() const
+        {
+            return "TiledMap";
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const char * Meta_TiledMap::Meta_ObjectLayer::Meta_Property::getNodeName() const
+        {
+            return "Property";
+        }
+        //////////////////////////////////////////////////////////////////////////
+        uint32_t Meta_TiledMap::Meta_ObjectLayer::Meta_Property::getMetaVersion() const
+        {
+            return 1U;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool Meta_TiledMap::Meta_ObjectLayer::Meta_Property::parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            METABUF_UNUSED( _buff );
+            METABUF_UNUSED( _size );
+            METABUF_UNUSED( _read );
+            METABUF_UNUSED( _userData );
+            this->_parseData( _buff, _size, _read, _userData );
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_TiledMap::Meta_ObjectLayer::Meta_Property::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Name );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Type );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Value );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_TiledMap::Meta_ObjectLayer::Meta_Property::_preparationIncludes( uint32_t _id, uint32_t _count )
+        {
+            METABUF_UNUSED( _id );
+            METABUF_UNUSED( _count );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_TiledMap::Meta_ObjectLayer::Meta_Property::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        {
+            METABUF_UNUSED( _buff );
+            METABUF_UNUSED( _size );
+            METABUF_UNUSED( _read );
+            METABUF_UNUSED( _id );
+            METABUF_UNUSED( _userData );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        //cppcheck-suppress uninitMemberVar
+        Meta_TiledMap::Meta_Property::Meta_Property()
+        {
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const char * Meta_TiledMap::Meta_Property::getMetaName() const
+        {
+            return "TiledMap";
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const char * Meta_TiledMap::Meta_Property::getNodeName() const
+        {
+            return "Property";
+        }
+        //////////////////////////////////////////////////////////////////////////
+        uint32_t Meta_TiledMap::Meta_Property::getMetaVersion() const
+        {
+            return 1U;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool Meta_TiledMap::Meta_Property::parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            METABUF_UNUSED( _buff );
+            METABUF_UNUSED( _size );
+            METABUF_UNUSED( _read );
+            METABUF_UNUSED( _userData );
+            this->_parseData( _buff, _size, _read, _userData );
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_TiledMap::Meta_Property::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Name );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Type );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Value );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_TiledMap::Meta_Property::_preparationIncludes( uint32_t _id, uint32_t _count )
+        {
+            METABUF_UNUSED( _id );
+            METABUF_UNUSED( _count );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_TiledMap::Meta_Property::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        {
+            METABUF_UNUSED( _buff );
+            METABUF_UNUSED( _size );
+            METABUF_UNUSED( _read );
+            METABUF_UNUSED( _id );
+            METABUF_UNUSED( _userData );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        //cppcheck-suppress uninitMemberVar
+        Meta_TiledMap::Meta_TileLayer::Meta_TileLayer()
+        {
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const char * Meta_TiledMap::Meta_TileLayer::getMetaName() const
+        {
+            return "TiledMap";
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const char * Meta_TiledMap::Meta_TileLayer::getNodeName() const
+        {
+            return "TileLayer";
+        }
+        //////////////////////////////////////////////////////////////////////////
+        uint32_t Meta_TiledMap::Meta_TileLayer::getMetaVersion() const
+        {
+            return 1U;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool Meta_TiledMap::Meta_TileLayer::parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            METABUF_UNUSED( _buff );
+            METABUF_UNUSED( _size );
+            METABUF_UNUSED( _read );
+            METABUF_UNUSED( _userData );
+            this->_parseData( _buff, _size, _read, _userData );
+
+            uint32_t includeTypeCount;
+            Metabuf::readSize( _buff, _size, _read, includeTypeCount );
+
+            for( uint32_t i = 0; i != includeTypeCount; ++i )
+            {
+                uint32_t includeCount;
+                Metabuf::readSize( _buff, _size, _read, includeCount );
+
+                uint32_t id;
+                Metabuf::readSize( _buff, _size, _read, id );
+
+                switch( id )
+                {
+                case 1:
+                    {
+                        includes_Meta_Property.resize( includeCount );
+
+                        for( Meta_TiledMap::Meta_TileLayer::Meta_Property & metadata : includes_Meta_Property )
+                        {
+                            metadata.parse( _buff, _size, _read, _userData );
+                        }
+                    }break;
+                case 2:
+                    {
+                        includes_Meta_Tile.resize( includeCount );
+
+                        for( Meta_TiledMap::Meta_TileLayer::Meta_Tile & metadata : includes_Meta_Tile )
+                        {
+                            metadata.parse( _buff, _size, _read, _userData );
+                        }
+                    }break;
+                }
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_TiledMap::Meta_TileLayer::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Id );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Name );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Offset );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Opacity );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Visible );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_TiledMap::Meta_TileLayer::_preparationIncludes( uint32_t _id, uint32_t _count )
+        {
+            METABUF_UNUSED( _id );
+            METABUF_UNUSED( _count );
+            switch( _id )
+            {
+            case 1:
+                {
+                    includes_Meta_Property.reserve( _count );
+                }break;
+            case 2:
+                {
+                    includes_Meta_Tile.reserve( _count );
+                }break;
+            default:
+                break;
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_TiledMap::Meta_TileLayer::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        {
+            METABUF_UNUSED( _buff );
+            METABUF_UNUSED( _size );
+            METABUF_UNUSED( _read );
+            METABUF_UNUSED( _id );
+            METABUF_UNUSED( _userData );
+            switch( _id )
+            {
+            case 1:
+                {
+                    includes_Meta_Property.emplace_back( Meta_TiledMap::Meta_TileLayer::Meta_Property() );
+                    Meta_TiledMap::Meta_TileLayer::Meta_Property & metadata = includes_Meta_Property.back();
+
+                    metadata.parse( _buff, _size, _read, _userData );
+                }break;
+            case 2:
+                {
+                    includes_Meta_Tile.emplace_back( Meta_TiledMap::Meta_TileLayer::Meta_Tile() );
+                    Meta_TiledMap::Meta_TileLayer::Meta_Tile & metadata = includes_Meta_Tile.back();
+
+                    metadata.parse( _buff, _size, _read, _userData );
+                }break;
+            default:
+                break;
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        //cppcheck-suppress uninitMemberVar
+        Meta_TiledMap::Meta_TileLayer::Meta_Property::Meta_Property()
+        {
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const char * Meta_TiledMap::Meta_TileLayer::Meta_Property::getMetaName() const
+        {
+            return "TiledMap";
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const char * Meta_TiledMap::Meta_TileLayer::Meta_Property::getNodeName() const
+        {
+            return "Property";
+        }
+        //////////////////////////////////////////////////////////////////////////
+        uint32_t Meta_TiledMap::Meta_TileLayer::Meta_Property::getMetaVersion() const
+        {
+            return 1U;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool Meta_TiledMap::Meta_TileLayer::Meta_Property::parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            METABUF_UNUSED( _buff );
+            METABUF_UNUSED( _size );
+            METABUF_UNUSED( _read );
+            METABUF_UNUSED( _userData );
+            this->_parseData( _buff, _size, _read, _userData );
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_TiledMap::Meta_TileLayer::Meta_Property::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Name );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Type );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Value );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_TiledMap::Meta_TileLayer::Meta_Property::_preparationIncludes( uint32_t _id, uint32_t _count )
+        {
+            METABUF_UNUSED( _id );
+            METABUF_UNUSED( _count );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_TiledMap::Meta_TileLayer::Meta_Property::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        {
+            METABUF_UNUSED( _buff );
+            METABUF_UNUSED( _size );
+            METABUF_UNUSED( _read );
+            METABUF_UNUSED( _id );
+            METABUF_UNUSED( _userData );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        //cppcheck-suppress uninitMemberVar
+        Meta_TiledMap::Meta_TileLayer::Meta_Tile::Meta_Tile()
+        {
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const char * Meta_TiledMap::Meta_TileLayer::Meta_Tile::getMetaName() const
+        {
+            return "TiledMap";
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const char * Meta_TiledMap::Meta_TileLayer::Meta_Tile::getNodeName() const
+        {
+            return "Tile";
+        }
+        //////////////////////////////////////////////////////////////////////////
+        uint32_t Meta_TiledMap::Meta_TileLayer::Meta_Tile::getMetaVersion() const
+        {
+            return 1U;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool Meta_TiledMap::Meta_TileLayer::Meta_Tile::parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            METABUF_UNUSED( _buff );
+            METABUF_UNUSED( _size );
+            METABUF_UNUSED( _read );
+            METABUF_UNUSED( _userData );
+            this->_parseData( _buff, _size, _read, _userData );
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_TiledMap::Meta_TileLayer::Meta_Tile::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Gid );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Position );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_TiledMap::Meta_TileLayer::Meta_Tile::_preparationIncludes( uint32_t _id, uint32_t _count )
+        {
+            METABUF_UNUSED( _id );
+            METABUF_UNUSED( _count );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_TiledMap::Meta_TileLayer::Meta_Tile::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        {
+            METABUF_UNUSED( _buff );
+            METABUF_UNUSED( _size );
+            METABUF_UNUSED( _read );
+            METABUF_UNUSED( _id );
+            METABUF_UNUSED( _userData );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        //cppcheck-suppress uninitMemberVar
+        Meta_TiledMap::Meta_Tileset::Meta_Tileset()
+        {
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const char * Meta_TiledMap::Meta_Tileset::getMetaName() const
+        {
+            return "TiledMap";
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const char * Meta_TiledMap::Meta_Tileset::getNodeName() const
+        {
+            return "Tileset";
+        }
+        //////////////////////////////////////////////////////////////////////////
+        uint32_t Meta_TiledMap::Meta_Tileset::getMetaVersion() const
+        {
+            return 1U;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool Meta_TiledMap::Meta_Tileset::parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            METABUF_UNUSED( _buff );
+            METABUF_UNUSED( _size );
+            METABUF_UNUSED( _read );
+            METABUF_UNUSED( _userData );
+            this->_parseData( _buff, _size, _read, _userData );
+
+            uint32_t includeCount;
+            Metabuf::readSize( _buff, _size, _read, includeCount );
+
+            if( includeCount != 0 )
+            {
+                includes_Meta_Image.resize( includeCount );
+
+                for( Meta_TiledMap::Meta_Tileset::Meta_Image & metadata : includes_Meta_Image )
+                {
+                    metadata.parse( _buff, _size, _read, _userData );
+                }
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_TiledMap::Meta_Tileset::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Columns );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_FirstGid );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_ImageHeight );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_ImageWidth );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Margin );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Name );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Offset );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Resource );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Spacing );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_TileCount );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_TileHeight );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_TileWidth );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_TiledMap::Meta_Tileset::_preparationIncludes( uint32_t _id, uint32_t _count )
+        {
+            METABUF_UNUSED( _id );
+            METABUF_UNUSED( _count );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_TiledMap::Meta_Tileset::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        {
+            METABUF_UNUSED( _buff );
+            METABUF_UNUSED( _size );
+            METABUF_UNUSED( _read );
+            METABUF_UNUSED( _id );
+            METABUF_UNUSED( _userData );
+            switch( _id )
+            {
+            case 1:
+                {
+                    includes_Meta_Image.emplace_back( Meta_TiledMap::Meta_Tileset::Meta_Image() );
+                    Meta_TiledMap::Meta_Tileset::Meta_Image & metadata = includes_Meta_Image.back();
+
+                    metadata.parse( _buff, _size, _read, _userData );
+                }break;
+            default:
+                break;
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        //cppcheck-suppress uninitMemberVar
+        Meta_TiledMap::Meta_Tileset::Meta_Image::Meta_Image()
+        {
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const char * Meta_TiledMap::Meta_Tileset::Meta_Image::getMetaName() const
+        {
+            return "TiledMap";
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const char * Meta_TiledMap::Meta_Tileset::Meta_Image::getNodeName() const
+        {
+            return "Image";
+        }
+        //////////////////////////////////////////////////////////////////////////
+        uint32_t Meta_TiledMap::Meta_Tileset::Meta_Image::getMetaVersion() const
+        {
+            return 1U;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool Meta_TiledMap::Meta_Tileset::Meta_Image::parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            METABUF_UNUSED( _buff );
+            METABUF_UNUSED( _size );
+            METABUF_UNUSED( _read );
+            METABUF_UNUSED( _userData );
+            this->_parseData( _buff, _size, _read, _userData );
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_TiledMap::Meta_Tileset::Meta_Image::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Height );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_LocalId );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Resource );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Width );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_TiledMap::Meta_Tileset::Meta_Image::_preparationIncludes( uint32_t _id, uint32_t _count )
+        {
+            METABUF_UNUSED( _id );
+            METABUF_UNUSED( _count );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        // cppcheck-suppress duplInheritedMember
+        void Meta_TiledMap::Meta_Tileset::Meta_Image::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             METABUF_UNUSED( _buff );
             METABUF_UNUSED( _size );

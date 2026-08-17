@@ -9,6 +9,8 @@
 
 #include "math/box2.h"
 
+#include <cmath>
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -134,6 +136,274 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Grid2D::setGridPosition( uint32_t _i, uint32_t _j, const mt::vec3f & _value )
+    {
+        if( _i >= m_countX || _j >= m_countY || m_vertices.empty() == true )
+        {
+            return false;
+        }
+
+        m_vertices[_i + _j * m_countX].position = _value;
+        m_invalidateVerticesWM = true;
+        this->invalidateBoundingBox();
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Grid2D::getGridPosition( uint32_t _i, uint32_t _j, mt::vec3f * const _value ) const
+    {
+        if( _i >= m_countX || _j >= m_countY || m_vertices.empty() == true )
+        {
+            return false;
+        }
+
+        *_value = m_vertices[_i + _j * m_countX].position;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Grid2D::getOriginalGridPosition( uint32_t _i, uint32_t _j, mt::vec3f * const _value ) const
+    {
+        if( _i >= m_countX || _j >= m_countY || m_originalVertices.empty() == true )
+        {
+            return false;
+        }
+
+        *_value = m_originalVertices[_i + _j * m_countX].position;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Grid2D::resetGrid()
+    {
+        if( m_originalVertices.empty() == true )
+        {
+            return;
+        }
+
+        for( uint32_t index = 0; index != (uint32_t)m_vertices.size(); ++index )
+        {
+            m_vertices[index].position = m_originalVertices[index].position;
+        }
+
+        m_invalidateVerticesWM = true;
+        this->invalidateBoundingBox();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Grid2D::applyWaves( float _phase, float _amplitude, float _waves, bool _horizontal, bool _vertical )
+    {
+        if( m_originalVertices.empty() == true )
+        {
+            return;
+        }
+
+        const float twoPi = 6.28318530717958647692f;
+
+        for( uint32_t index = 0; index != (uint32_t)m_vertices.size(); ++index )
+        {
+            const mt::vec3f & original = m_originalVertices[index].position;
+            mt::vec3f position = original;
+
+            if( _horizontal == true )
+            {
+                float normalizedY = m_height > 0.f ? original.y / m_height : 0.f;
+                position.x += std::sin( normalizedY * _waves * twoPi + _phase ) * _amplitude;
+            }
+
+            if( _vertical == true )
+            {
+                float normalizedX = m_width > 0.f ? original.x / m_width : 0.f;
+                position.y += std::sin( normalizedX * _waves * twoPi + _phase ) * _amplitude;
+            }
+
+            m_vertices[index].position = position;
+        }
+
+        m_invalidateVerticesWM = true;
+        this->invalidateBoundingBox();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Grid2D::applyRipple( const mt::vec2f & _center, float _radius, float _amplitude, float _waves, float _phase )
+    {
+        if( m_originalVertices.empty() == true || _radius <= 0.f )
+        {
+            return;
+        }
+
+        const float twoPi = 6.28318530717958647692f;
+
+        for( uint32_t index = 0; index != (uint32_t)m_vertices.size(); ++index )
+        {
+            const mt::vec3f & original = m_originalVertices[index].position;
+            float dx = original.x - _center.x;
+            float dy = original.y - _center.y;
+            float distance = std::sqrt( dx * dx + dy * dy );
+            mt::vec3f position = original;
+
+            if( distance < _radius )
+            {
+                float normalized = distance / _radius;
+                float envelope = 1.f - normalized;
+                position.z += std::sin( normalized * _waves * twoPi + _phase ) * _amplitude * envelope;
+            }
+
+            m_vertices[index].position = position;
+        }
+
+        m_invalidateVerticesWM = true;
+        this->invalidateBoundingBox();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Grid2D::applyLiquid( float _phase, float _amplitude, float _waves )
+    {
+        if( m_originalVertices.empty() == true )
+        {
+            return;
+        }
+
+        const float twoPi = 6.28318530717958647692f;
+
+        for( uint32_t index = 0; index != (uint32_t)m_vertices.size(); ++index )
+        {
+            const mt::vec3f & original = m_originalVertices[index].position;
+            float nx = m_width > 0.f ? original.x / m_width : 0.f;
+            float ny = m_height > 0.f ? original.y / m_height : 0.f;
+
+            mt::vec3f position = original;
+            position.x += std::sin( ny * _waves * twoPi + _phase ) * _amplitude;
+            position.y += std::sin( nx * _waves * twoPi + _phase * 1.31f ) * _amplitude;
+
+            m_vertices[index].position = position;
+        }
+
+        m_invalidateVerticesWM = true;
+        this->invalidateBoundingBox();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Grid2D::applyShaky( float _range, uint32_t _seed )
+    {
+        if( m_originalVertices.empty() == true )
+        {
+            return;
+        }
+
+        uint32_t random = _seed != 0 ? _seed : 1;
+
+        for( uint32_t index = 0; index != (uint32_t)m_vertices.size(); ++index )
+        {
+            random = random * 1664525U + 1013904223U;
+            float x = (float)(random & 0xFFFFU) / 32767.5f - 1.f;
+            random = random * 1664525U + 1013904223U;
+            float y = (float)(random & 0xFFFFU) / 32767.5f - 1.f;
+
+            mt::vec3f position = m_originalVertices[index].position;
+            position.x += x * _range;
+            position.y += y * _range;
+            m_vertices[index].position = position;
+        }
+
+        m_invalidateVerticesWM = true;
+        this->invalidateBoundingBox();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Grid2D::applyShuffle( float _progress, uint32_t _seed )
+    {
+        if( m_originalVertices.empty() == true )
+        {
+            return;
+        }
+
+        float progress = mt::clamp( 0.f, _progress, 1.f );
+        uint32_t count = (uint32_t)m_vertices.size();
+        Vector<uint32_t> order( count );
+
+        for( uint32_t index = 0; index != count; ++index )
+        {
+            order[index] = index;
+        }
+
+        uint32_t random = _seed != 0 ? _seed : 1;
+
+        for( uint32_t index = count; index > 1; --index )
+        {
+            random = random * 1664525U + 1013904223U;
+            uint32_t swapIndex = random % index;
+            uint32_t value = order[index - 1];
+            order[index - 1] = order[swapIndex];
+            order[swapIndex] = value;
+        }
+
+        for( uint32_t index = 0; index != count; ++index )
+        {
+            const mt::vec3f & from = m_originalVertices[index].position;
+            const mt::vec3f & to = m_originalVertices[order[index]].position;
+            mt::linerp_v3( &m_vertices[index].position, from, to, progress );
+        }
+
+        m_invalidateVerticesWM = true;
+        this->invalidateBoundingBox();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Grid2D::applySplit( float _progress, float _distance, bool _horizontal )
+    {
+        if( m_originalVertices.empty() == true )
+        {
+            return;
+        }
+
+        float progress = mt::clamp( 0.f, _progress, 1.f );
+
+        for( uint32_t index = 0; index != (uint32_t)m_vertices.size(); ++index )
+        {
+            mt::vec3f position = m_originalVertices[index].position;
+
+            if( _horizontal == true )
+            {
+                position.x += (position.y < m_height * 0.5f ? -1.f : 1.f) * _distance * progress;
+            }
+            else
+            {
+                position.y += (position.x < m_width * 0.5f ? -1.f : 1.f) * _distance * progress;
+            }
+
+            m_vertices[index].position = position;
+        }
+
+        m_invalidateVerticesWM = true;
+        this->invalidateBoundingBox();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Grid2D::applyPageTurn( float _progress, float _radius )
+    {
+        if( m_originalVertices.empty() == true || _radius <= 0.f )
+        {
+            return;
+        }
+
+        float progress = mt::clamp( 0.f, _progress, 1.f );
+        float fold = m_width * (1.f - progress);
+        const float halfPi = 1.57079632679489661923f;
+
+        for( uint32_t index = 0; index != (uint32_t)m_vertices.size(); ++index )
+        {
+            const mt::vec3f & original = m_originalVertices[index].position;
+            mt::vec3f position = original;
+            float distance = original.x - fold;
+
+            if( distance > 0.f )
+            {
+                float angle = mt::clamp( 0.f, distance / _radius, halfPi );
+                position.x = fold + std::sin( angle ) * _radius;
+                position.z = (1.f - std::cos( angle )) * _radius;
+            }
+
+            m_vertices[index].position = position;
+        }
+
+        m_invalidateVerticesWM = true;
+        this->invalidateBoundingBox();
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Grid2D::_compile()
     {
         if( m_resourceImage != nullptr )
@@ -190,6 +460,8 @@ namespace Mengine
             }
         }
 
+        m_originalVertices = m_vertices;
+
         m_indices.resize( (m_countX - 1) * (m_countY - 1) * 6 );
 
         VectorRenderIndex::iterator indices_iterator = m_indices.begin();
@@ -219,9 +491,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Grid2D::_release()
     {
-        m_resourceImage->release();
-
+        if( m_resourceImage != nullptr )
+        {
+            m_resourceImage->release();
+        }
         m_vertices.clear();
+        m_originalVertices.clear();
         m_verticesWM.clear();
         m_indices.clear();
 
@@ -309,16 +584,26 @@ namespace Mengine
     {
         const mt::mat4f & wm = this->getWorldMatrix();
 
-        mt::vec2f minimal( 0.f, 0.f );
-        mt::vec2f maximal( m_width, m_height );
+        if( m_vertices.empty() == true )
+        {
+            mt::box2_reset( _boundingBox, 0.f, 0.f );
 
-        mt::vec2f minimal_wm;
-        mt::mul_v2_v2_m4( &minimal_wm, minimal, wm );
+            *_boundingBoxCurrent = _boundingBox;
 
-        mt::vec2f maximal_wm;
-        mt::mul_v2_v2_m4( &maximal_wm, maximal, wm );
+            return;
+        }
 
-        mt::box2_set_from_two_point( _boundingBox, minimal_wm, maximal_wm );
+        mt::vec2f worldPoint;
+        mt::mul_v2_v2_m4( &worldPoint, mt::vec2f( m_vertices.front().position.x, m_vertices.front().position.y ), wm );
+        mt::box2_reset( _boundingBox, worldPoint.x, worldPoint.y );
+
+        for( VectorRenderVertex2D::const_iterator it = m_vertices.begin() + 1; it != m_vertices.end(); ++it )
+        {
+            const RenderVertex2D & vertex = *it;
+
+            mt::mul_v2_v2_m4( &worldPoint, mt::vec2f( vertex.position.x, vertex.position.y ), wm );
+            mt::box2_add_internal_point( _boundingBox, worldPoint.x, worldPoint.y );
+        }
 
         *_boundingBoxCurrent = _boundingBox;
     }

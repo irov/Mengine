@@ -58,6 +58,19 @@ namespace Mengine
         bool setGridColor( uint32_t _i, uint32_t _j, const Color & _value );
         bool getGridColor( uint32_t _i, uint32_t _j, Color * const _value ) const;
 
+        bool setGridPosition( uint32_t _i, uint32_t _j, const mt::vec3f & _value );
+        bool getGridPosition( uint32_t _i, uint32_t _j, mt::vec3f * const _value ) const;
+        bool getOriginalGridPosition( uint32_t _i, uint32_t _j, mt::vec3f * const _value ) const;
+        void resetGrid();
+
+        void applyWaves( float _phase, float _amplitude, float _waves, bool _horizontal, bool _vertical );
+        void applyRipple( const mt::vec2f & _center, float _radius, float _amplitude, float _waves, float _phase );
+        void applyLiquid( float _phase, float _amplitude, float _waves );
+        void applyShaky( float _range, uint32_t _seed );
+        void applyShuffle( float _progress, uint32_t _seed );
+        void applySplit( float _progress, float _distance, bool _horizontal );
+        void applyPageTurn( float _progress, float _radius );
+
     protected:
         bool _compile() override;
         void _release() override;
@@ -97,6 +110,7 @@ namespace Mengine
         VectorRenderIndex m_indices;
 
         VectorRenderVertex2D m_vertices;
+        VectorRenderVertex2D m_originalVertices;
         mutable VectorRenderVertex2D m_verticesWM;
 
         mutable bool m_invalidateVerticesWM;

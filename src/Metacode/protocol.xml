@@ -1,4 +1,4 @@
-<Protocol Version = "155">
+<Protocol Version = "157">
   <Type Name="Mengine::String" Evict="string"/>
   <Type Name="Mengine::WString" Evict="wstring"/>
   <Type Name="Mengine::ConstString" Evict="string"/>
@@ -259,6 +259,12 @@
           <Member Node="File" Name="NoExist" Type="bool"/>
         </Node>
         
+        <Node Name="ResourceTiledMap" Inheritance="Resource">
+          <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
+          <Member Node="File" Name="Converter" Type="Mengine::ConstString"/>
+          <Member Node="File" Name="NoExist" Type="bool"/>
+        </Node>
+
         <Node Name="ResourceSound" Inheritance="Resource">
           <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
           <Member Node="File" Name="Codec" Type="Mengine::ConstString"/>
@@ -647,5 +653,102 @@
           </Node>
         </Node>
       </Node>
+  </Meta>
+
+  <Meta Name="TiledMap" Version="1">
+    <Node Name="TiledMap">
+      <Attribute Name="Orientation" Type="uint32_t" Required="1"/>
+      <Attribute Name="StaggerAxis" Type="uint32_t" Required="1"/>
+      <Attribute Name="StaggerIndex" Type="uint32_t" Required="1"/>
+      <Attribute Name="Width" Type="uint32_t" Required="1"/>
+      <Attribute Name="Height" Type="uint32_t" Required="1"/>
+      <Attribute Name="TileWidth" Type="uint32_t" Required="1"/>
+      <Attribute Name="TileHeight" Type="uint32_t" Required="1"/>
+      <Attribute Name="HexSideLength" Type="uint32_t" Required="1"/>
+
+      <Node Name="Property">
+        <Attribute Name="Name" Type="Mengine::String" Required="1"/>
+        <Attribute Name="Value" Type="Mengine::String" Required="1"/>
+        <Attribute Name="Type" Type="uint32_t" Required="1"/>
+      </Node>
+
+      <Node Name="Tileset">
+        <Attribute Name="FirstGid" Type="uint32_t" Required="1"/>
+        <Attribute Name="TileCount" Type="uint32_t" Required="1"/>
+        <Attribute Name="Columns" Type="uint32_t" Required="1"/>
+        <Attribute Name="TileWidth" Type="uint32_t" Required="1"/>
+        <Attribute Name="TileHeight" Type="uint32_t" Required="1"/>
+        <Attribute Name="Margin" Type="uint32_t" Required="1"/>
+        <Attribute Name="Spacing" Type="uint32_t" Required="1"/>
+        <Attribute Name="ImageWidth" Type="uint32_t" Required="1"/>
+        <Attribute Name="ImageHeight" Type="uint32_t" Required="1"/>
+        <Attribute Name="Offset" Type="mt::vec2f" Required="1"/>
+        <Attribute Name="Name" Type="Mengine::String" Required="1"/>
+        <Attribute Name="Resource" Type="Mengine::String" Required="1"/>
+
+        <Node Name="Image">
+          <Attribute Name="LocalId" Type="uint32_t" Required="1"/>
+          <Attribute Name="Resource" Type="Mengine::String" Required="1"/>
+          <Attribute Name="Width" Type="uint32_t" Required="1"/>
+          <Attribute Name="Height" Type="uint32_t" Required="1"/>
+        </Node>
+      </Node>
+
+      <Node Name="TileLayer">
+        <Attribute Name="Id" Type="uint32_t" Required="1"/>
+        <Attribute Name="Name" Type="Mengine::String" Required="1"/>
+        <Attribute Name="Visible" Type="bool" Required="1"/>
+        <Attribute Name="Opacity" Type="float" Required="1"/>
+        <Attribute Name="Offset" Type="mt::vec2f" Required="1"/>
+
+        <Node Name="Property">
+          <Attribute Name="Name" Type="Mengine::String" Required="1"/>
+          <Attribute Name="Value" Type="Mengine::String" Required="1"/>
+          <Attribute Name="Type" Type="uint32_t" Required="1"/>
+        </Node>
+
+        <Node Name="Tile">
+          <Attribute Name="Position" Type="mt::vec2f" Required="1"/>
+          <Attribute Name="Gid" Type="uint32_t" Required="1"/>
+        </Node>
+      </Node>
+
+      <Node Name="ObjectLayer">
+        <Attribute Name="Id" Type="uint32_t" Required="1"/>
+        <Attribute Name="Name" Type="Mengine::String" Required="1"/>
+        <Attribute Name="Visible" Type="bool" Required="1"/>
+        <Attribute Name="Opacity" Type="float" Required="1"/>
+        <Attribute Name="Offset" Type="mt::vec2f" Required="1"/>
+
+        <Node Name="Property">
+          <Attribute Name="Name" Type="Mengine::String" Required="1"/>
+          <Attribute Name="Value" Type="Mengine::String" Required="1"/>
+          <Attribute Name="Type" Type="uint32_t" Required="1"/>
+        </Node>
+
+        <Node Name="Object">
+          <Attribute Name="Id" Type="uint32_t" Required="1"/>
+          <Attribute Name="Name" Type="Mengine::String" Required="1"/>
+          <Attribute Name="Type" Type="Mengine::String" Required="1"/>
+          <Attribute Name="Class" Type="Mengine::String" Required="1"/>
+          <Attribute Name="Shape" Type="uint32_t" Required="1"/>
+          <Attribute Name="Visible" Type="bool" Required="1"/>
+          <Attribute Name="Position" Type="mt::vec2f" Required="1"/>
+          <Attribute Name="Size" Type="mt::vec2f" Required="1"/>
+          <Attribute Name="Rotation" Type="float" Required="1"/>
+          <Attribute Name="Gid" Type="uint32_t" Required="1"/>
+
+          <Node Name="Property">
+            <Attribute Name="Name" Type="Mengine::String" Required="1"/>
+            <Attribute Name="Value" Type="Mengine::String" Required="1"/>
+            <Attribute Name="Type" Type="uint32_t" Required="1"/>
+          </Node>
+
+          <Node Name="Point">
+            <Attribute Name="Position" Type="mt::vec2f" Required="1"/>
+          </Node>
+        </Node>
+      </Node>
+    </Node>
   </Meta>
 </Protocol>

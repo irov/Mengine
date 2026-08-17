@@ -5,7 +5,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     void MetaprotocolGenerator::generate( Metabuf::ProtocolInterface * _protocol ) const
     {
-        _protocol->setVersion( 155U, 3513258179U );
+        _protocol->setVersion( 157U, 3041487559U );
 
         _protocol->addType( "Color", "Mengine::Color", "float4", false, false, false );
         _protocol->addType( "Color255", "Mengine::Color", "float4inv255", false, false, false );
@@ -76,8 +76,9 @@ namespace Metacode
         _protocol->addType( "uint32_t", "uint32_t", "uint32_t", false, true, false );
 
         Metabuf::MetaInterface * meta_0 = _protocol->addMeta( "Data", 1U );
+        Metabuf::MetaInterface * meta_1 = _protocol->addMeta( "TiledMap", 1U );
 
-        Metabuf::NodeInterface * node_0 = _protocol->addNode( 1U, "DataBlock", "", "", 38U, 0U, false, nullptr );
+        Metabuf::NodeInterface * node_0 = _protocol->addNode( 1U, "DataBlock", "", "", 39U, 0U, false, nullptr );
         Metabuf::NodeInterface * node_1 = _protocol->addNode( 4U, "FragmentShader", "", "", 0U, 2U, false, node_0 );
         Metabuf::NodeInterface * node_2 = _protocol->addNode( 1U, "Include", "", "", 0U, 0U, false, node_0 );
         Metabuf::NodeInterface * node_3 = _protocol->addNode( 6U, "Material", "", "", 1U, 12U, false, node_0 );
@@ -89,72 +90,85 @@ namespace Metacode
         Metabuf::NodeInterface * node_9 = _protocol->addNode( 7U, "Resource", "Type", "", 0U, 2U, false, node_0 );
         Metabuf::NodeInterface * node_10 = _protocol->addNode( 13U, "ResourceAstralax", "", "Resource", 1U, 4U, false, node_0 );
         Metabuf::NodeInterface * node_11 = _protocol->addNode( 1U, "Atlas", "", "", 0U, 0U, false, node_10 );
-        Metabuf::NodeInterface * node_12 = _protocol->addNode( 32U, "ResourceCal3dAnimation", "", "Resource", 0U, 3U, false, node_0 );
-        Metabuf::NodeInterface * node_13 = _protocol->addNode( 33U, "ResourceCal3dMesh", "", "Resource", 0U, 3U, false, node_0 );
-        Metabuf::NodeInterface * node_14 = _protocol->addNode( 31U, "ResourceCal3dSkeleton", "", "Resource", 0U, 3U, false, node_0 );
+        Metabuf::NodeInterface * node_12 = _protocol->addNode( 33U, "ResourceCal3dAnimation", "", "Resource", 0U, 3U, false, node_0 );
+        Metabuf::NodeInterface * node_13 = _protocol->addNode( 34U, "ResourceCal3dMesh", "", "Resource", 0U, 3U, false, node_0 );
+        Metabuf::NodeInterface * node_14 = _protocol->addNode( 32U, "ResourceCal3dSkeleton", "", "Resource", 0U, 3U, false, node_0 );
         Metabuf::NodeInterface * node_15 = _protocol->addNode( 17U, "ResourceCursorICO", "", "Resource", 0U, 3U, false, node_0 );
         Metabuf::NodeInterface * node_16 = _protocol->addNode( 16U, "ResourceCursorSystem", "", "Resource", 0U, 3U, false, node_0 );
-        Metabuf::NodeInterface * node_17 = _protocol->addNode( 38U, "ResourceExternal", "", "Resource", 0U, 2U, true, node_0 );
-        Metabuf::NodeInterface * node_18 = _protocol->addNode( 37U, "ResourceFigma", "", "Resource", 0U, 5U, false, node_0 );
+        Metabuf::NodeInterface * node_17 = _protocol->addNode( 39U, "ResourceExternal", "", "Resource", 0U, 2U, true, node_0 );
+        Metabuf::NodeInterface * node_18 = _protocol->addNode( 38U, "ResourceFigma", "", "Resource", 0U, 5U, false, node_0 );
         Metabuf::NodeInterface * node_19 = _protocol->addNode( 18U, "ResourceFile", "", "Resource", 0U, 3U, false, node_0 );
-        Metabuf::NodeInterface * node_20 = _protocol->addNode( 26U, "ResourceHIT", "", "Resource", 0U, 5U, false, node_0 );
+        Metabuf::NodeInterface * node_20 = _protocol->addNode( 27U, "ResourceHIT", "", "Resource", 0U, 5U, false, node_0 );
         Metabuf::NodeInterface * node_21 = _protocol->addNode( 8U, "ResourceImageData", "", "Resource", 0U, 9U, false, node_0 );
         Metabuf::NodeInterface * node_22 = _protocol->addNode( 9U, "ResourceImageDefault", "", "Resource", 0U, 10U, false, node_0 );
         Metabuf::NodeInterface * node_23 = _protocol->addNode( 10U, "ResourceImageEmpty", "", "Resource", 0U, 2U, false, node_0 );
-        Metabuf::NodeInterface * node_24 = _protocol->addNode( 25U, "ResourceImageSequence", "", "Resource", 1U, 2U, false, node_0 );
+        Metabuf::NodeInterface * node_24 = _protocol->addNode( 26U, "ResourceImageSequence", "", "Resource", 1U, 2U, false, node_0 );
         Metabuf::NodeInterface * node_25 = _protocol->addNode( 1U, "Sequence", "", "", 0U, 0U, false, node_24 );
-        Metabuf::NodeInterface * node_26 = _protocol->addNode( 28U, "ResourceImageSolid", "", "Resource", 0U, 2U, false, node_0 );
+        Metabuf::NodeInterface * node_26 = _protocol->addNode( 29U, "ResourceImageSolid", "", "Resource", 0U, 2U, false, node_0 );
         Metabuf::NodeInterface * node_27 = _protocol->addNode( 12U, "ResourceImageSubstract", "", "Resource", 0U, 7U, false, node_0 );
         Metabuf::NodeInterface * node_28 = _protocol->addNode( 11U, "ResourceImageSubstractRGBAndAlpha", "", "Resource", 0U, 7U, false, node_0 );
-        Metabuf::NodeInterface * node_29 = _protocol->addNode( 29U, "ResourceInternalObject", "", "Resource", 0U, 2U, false, node_0 );
+        Metabuf::NodeInterface * node_29 = _protocol->addNode( 30U, "ResourceInternalObject", "", "Resource", 0U, 2U, false, node_0 );
         Metabuf::NodeInterface * node_30 = _protocol->addNode( 14U, "ResourceJSON", "", "Resource", 0U, 4U, false, node_0 );
-        Metabuf::NodeInterface * node_31 = _protocol->addNode( 27U, "ResourceModel3D", "", "Resource", 0U, 5U, false, node_0 );
-        Metabuf::NodeInterface * node_32 = _protocol->addNode( 23U, "ResourceMovie", "", "Resource", 3U, 8U, false, node_0 );
+        Metabuf::NodeInterface * node_31 = _protocol->addNode( 28U, "ResourceModel3D", "", "Resource", 0U, 5U, false, node_0 );
+        Metabuf::NodeInterface * node_32 = _protocol->addNode( 24U, "ResourceMovie", "", "Resource", 3U, 8U, false, node_0 );
         Metabuf::NodeInterface * node_33 = _protocol->addNode( 3U, "MovieCamera3D", "", "", 0U, 0U, false, node_32 );
         Metabuf::NodeInterface * node_34 = _protocol->addNode( 1U, "MovieLayer2D", "", "", 0U, 16U, false, node_32 );
         Metabuf::NodeInterface * node_35 = _protocol->addNode( 2U, "MovieLayer3D", "", "", 0U, 15U, false, node_32 );
-        Metabuf::NodeInterface * node_36 = _protocol->addNode( 22U, "ResourceMovie2", "", "Resource", 1U, 4U, false, node_0 );
+        Metabuf::NodeInterface * node_36 = _protocol->addNode( 23U, "ResourceMovie2", "", "Resource", 1U, 4U, false, node_0 );
         Metabuf::NodeInterface * node_37 = _protocol->addNode( 1U, "Composition", "", "", 2U, 2U, false, node_36 );
         Metabuf::NodeInterface * node_38 = _protocol->addNode( 1U, "Layer", "", "", 0U, 5U, false, node_37 );
         Metabuf::NodeInterface * node_39 = _protocol->addNode( 2U, "SubComposition", "", "", 0U, 0U, false, node_37 );
-        Metabuf::NodeInterface * node_40 = _protocol->addNode( 20U, "ResourceMusic", "", "Resource", 0U, 7U, false, node_0 );
-        Metabuf::NodeInterface * node_41 = _protocol->addNode( 30U, "ResourceShape", "", "Resource", 0U, 2U, false, node_0 );
-        Metabuf::NodeInterface * node_42 = _protocol->addNode( 19U, "ResourceSound", "", "Resource", 0U, 7U, false, node_0 );
-        Metabuf::NodeInterface * node_43 = _protocol->addNode( 34U, "ResourceSpineAtlas", "", "Resource", 1U, 4U, false, node_0 );
+        Metabuf::NodeInterface * node_40 = _protocol->addNode( 21U, "ResourceMusic", "", "Resource", 0U, 7U, false, node_0 );
+        Metabuf::NodeInterface * node_41 = _protocol->addNode( 31U, "ResourceShape", "", "Resource", 0U, 2U, false, node_0 );
+        Metabuf::NodeInterface * node_42 = _protocol->addNode( 20U, "ResourceSound", "", "Resource", 0U, 7U, false, node_0 );
+        Metabuf::NodeInterface * node_43 = _protocol->addNode( 35U, "ResourceSpineAtlas", "", "Resource", 1U, 4U, false, node_0 );
         Metabuf::NodeInterface * node_44 = _protocol->addNode( 1U, "Image", "", "", 0U, 0U, false, node_43 );
-        Metabuf::NodeInterface * node_45 = _protocol->addNode( 35U, "ResourceSpineAtlasTexturepacker", "", "Resource", 0U, 3U, false, node_0 );
-        Metabuf::NodeInterface * node_46 = _protocol->addNode( 36U, "ResourceSpineSkeleton", "", "Resource", 0U, 5U, false, node_0 );
+        Metabuf::NodeInterface * node_45 = _protocol->addNode( 36U, "ResourceSpineAtlasTexturepacker", "", "Resource", 0U, 3U, false, node_0 );
+        Metabuf::NodeInterface * node_46 = _protocol->addNode( 37U, "ResourceSpineSkeleton", "", "Resource", 0U, 5U, false, node_0 );
         Metabuf::NodeInterface * node_47 = _protocol->addNode( 15U, "ResourceTexturepacker", "", "Resource", 0U, 2U, false, node_0 );
-        Metabuf::NodeInterface * node_48 = _protocol->addNode( 24U, "ResourceVideo", "", "Resource", 0U, 11U, false, node_0 );
-        Metabuf::NodeInterface * node_49 = _protocol->addNode( 21U, "ResourceWindow", "", "Resource", 0U, 3U, false, node_0 );
-        Metabuf::NodeInterface * node_50 = _protocol->addNode( 4U, "KeyFramesPack", "", "", 5U, 0U, false, nullptr );
-        Metabuf::NodeInterface * node_51 = _protocol->addNode( 3U, "ImageShape", "", "", 1U, 5U, false, node_50 );
-        Metabuf::NodeInterface * node_52 = _protocol->addNode( 1U, "Shape", "", "", 0U, 0U, false, node_51 );
-        Metabuf::NodeInterface * node_53 = _protocol->addNode( 4U, "KeyFrames2D", "", "", 1U, 2U, false, node_50 );
-        Metabuf::NodeInterface * node_54 = _protocol->addNode( 1U, "KeyFrame2D", "", "", 0U, 7U, false, node_53 );
-        Metabuf::NodeInterface * node_55 = _protocol->addNode( 5U, "KeyFrames3D", "", "", 1U, 2U, false, node_50 );
-        Metabuf::NodeInterface * node_56 = _protocol->addNode( 1U, "KeyFrame3D", "", "", 0U, 8U, false, node_55 );
-        Metabuf::NodeInterface * node_57 = _protocol->addNode( 2U, "Polygon", "", "", 0U, 0U, false, node_50 );
-        Metabuf::NodeInterface * node_58 = _protocol->addNode( 1U, "TimeRemap", "", "", 0U, 0U, false, node_50 );
-        Metabuf::NodeInterface * node_59 = _protocol->addNode( 2U, "Pak", "", "", 8U, 0U, false, nullptr );
-        Metabuf::NodeInterface * node_60 = _protocol->addNode( 6U, "Datas", "", "", 1U, 1U, false, node_59 );
-        Metabuf::NodeInterface * node_61 = _protocol->addNode( 1U, "Data", "", "", 0U, 0U, false, node_60 );
-        Metabuf::NodeInterface * node_62 = _protocol->addNode( 3U, "Fonts", "", "", 1U, 1U, false, node_59 );
-        Metabuf::NodeInterface * node_63 = _protocol->addNode( 1U, "Font", "", "", 0U, 0U, false, node_62 );
-        Metabuf::NodeInterface * node_64 = _protocol->addNode( 2U, "Glyphs", "", "", 1U, 1U, false, node_59 );
-        Metabuf::NodeInterface * node_65 = _protocol->addNode( 1U, "Glyph", "", "", 0U, 0U, false, node_64 );
-        Metabuf::NodeInterface * node_66 = _protocol->addNode( 7U, "Materials", "", "", 1U, 1U, false, node_59 );
-        Metabuf::NodeInterface * node_67 = _protocol->addNode( 1U, "Material", "", "", 0U, 1U, false, node_66 );
-        Metabuf::NodeInterface * node_68 = _protocol->addNode( 4U, "Resources", "", "", 1U, 3U, false, node_59 );
-        Metabuf::NodeInterface * node_69 = _protocol->addNode( 1U, "Resource", "", "", 0U, 1U, false, node_68 );
-        Metabuf::NodeInterface * node_70 = _protocol->addNode( 1U, "Scripts", "", "", 1U, 1U, false, node_59 );
-        Metabuf::NodeInterface * node_71 = _protocol->addNode( 1U, "Script", "", "", 0U, 3U, false, node_70 );
-        Metabuf::NodeInterface * node_72 = _protocol->addNode( 8U, "Settings", "", "", 1U, 1U, false, node_59 );
-        Metabuf::NodeInterface * node_73 = _protocol->addNode( 1U, "Setting", "", "", 0U, 0U, false, node_72 );
-        Metabuf::NodeInterface * node_74 = _protocol->addNode( 5U, "Texts", "", "", 1U, 1U, false, node_59 );
-        Metabuf::NodeInterface * node_75 = _protocol->addNode( 1U, "Text", "", "", 0U, 0U, false, node_74 );
-        Metabuf::NodeInterface * node_76 = _protocol->addNode( 3U, "Texts", "", "", 1U, 0U, false, nullptr );
-        Metabuf::NodeInterface * node_77 = _protocol->addNode( 1U, "Text", "", "", 0U, 4U, false, node_76 );
+        Metabuf::NodeInterface * node_48 = _protocol->addNode( 19U, "ResourceTiledMap", "", "Resource", 0U, 4U, false, node_0 );
+        Metabuf::NodeInterface * node_49 = _protocol->addNode( 25U, "ResourceVideo", "", "Resource", 0U, 11U, false, node_0 );
+        Metabuf::NodeInterface * node_50 = _protocol->addNode( 22U, "ResourceWindow", "", "Resource", 0U, 3U, false, node_0 );
+        Metabuf::NodeInterface * node_51 = _protocol->addNode( 4U, "KeyFramesPack", "", "", 5U, 0U, false, nullptr );
+        Metabuf::NodeInterface * node_52 = _protocol->addNode( 3U, "ImageShape", "", "", 1U, 5U, false, node_51 );
+        Metabuf::NodeInterface * node_53 = _protocol->addNode( 1U, "Shape", "", "", 0U, 0U, false, node_52 );
+        Metabuf::NodeInterface * node_54 = _protocol->addNode( 4U, "KeyFrames2D", "", "", 1U, 2U, false, node_51 );
+        Metabuf::NodeInterface * node_55 = _protocol->addNode( 1U, "KeyFrame2D", "", "", 0U, 7U, false, node_54 );
+        Metabuf::NodeInterface * node_56 = _protocol->addNode( 5U, "KeyFrames3D", "", "", 1U, 2U, false, node_51 );
+        Metabuf::NodeInterface * node_57 = _protocol->addNode( 1U, "KeyFrame3D", "", "", 0U, 8U, false, node_56 );
+        Metabuf::NodeInterface * node_58 = _protocol->addNode( 2U, "Polygon", "", "", 0U, 0U, false, node_51 );
+        Metabuf::NodeInterface * node_59 = _protocol->addNode( 1U, "TimeRemap", "", "", 0U, 0U, false, node_51 );
+        Metabuf::NodeInterface * node_60 = _protocol->addNode( 2U, "Pak", "", "", 8U, 0U, false, nullptr );
+        Metabuf::NodeInterface * node_61 = _protocol->addNode( 6U, "Datas", "", "", 1U, 1U, false, node_60 );
+        Metabuf::NodeInterface * node_62 = _protocol->addNode( 1U, "Data", "", "", 0U, 0U, false, node_61 );
+        Metabuf::NodeInterface * node_63 = _protocol->addNode( 3U, "Fonts", "", "", 1U, 1U, false, node_60 );
+        Metabuf::NodeInterface * node_64 = _protocol->addNode( 1U, "Font", "", "", 0U, 0U, false, node_63 );
+        Metabuf::NodeInterface * node_65 = _protocol->addNode( 2U, "Glyphs", "", "", 1U, 1U, false, node_60 );
+        Metabuf::NodeInterface * node_66 = _protocol->addNode( 1U, "Glyph", "", "", 0U, 0U, false, node_65 );
+        Metabuf::NodeInterface * node_67 = _protocol->addNode( 7U, "Materials", "", "", 1U, 1U, false, node_60 );
+        Metabuf::NodeInterface * node_68 = _protocol->addNode( 1U, "Material", "", "", 0U, 1U, false, node_67 );
+        Metabuf::NodeInterface * node_69 = _protocol->addNode( 4U, "Resources", "", "", 1U, 3U, false, node_60 );
+        Metabuf::NodeInterface * node_70 = _protocol->addNode( 1U, "Resource", "", "", 0U, 1U, false, node_69 );
+        Metabuf::NodeInterface * node_71 = _protocol->addNode( 1U, "Scripts", "", "", 1U, 1U, false, node_60 );
+        Metabuf::NodeInterface * node_72 = _protocol->addNode( 1U, "Script", "", "", 0U, 3U, false, node_71 );
+        Metabuf::NodeInterface * node_73 = _protocol->addNode( 8U, "Settings", "", "", 1U, 1U, false, node_60 );
+        Metabuf::NodeInterface * node_74 = _protocol->addNode( 1U, "Setting", "", "", 0U, 0U, false, node_73 );
+        Metabuf::NodeInterface * node_75 = _protocol->addNode( 5U, "Texts", "", "", 1U, 1U, false, node_60 );
+        Metabuf::NodeInterface * node_76 = _protocol->addNode( 1U, "Text", "", "", 0U, 0U, false, node_75 );
+        Metabuf::NodeInterface * node_77 = _protocol->addNode( 3U, "Texts", "", "", 1U, 0U, false, nullptr );
+        Metabuf::NodeInterface * node_78 = _protocol->addNode( 1U, "Text", "", "", 0U, 4U, false, node_77 );
+        Metabuf::NodeInterface * node_79 = _protocol->addNode( 5U, "TiledMap", "", "", 4U, 0U, false, nullptr );
+        Metabuf::NodeInterface * node_80 = _protocol->addNode( 4U, "ObjectLayer", "", "", 2U, 0U, false, node_79 );
+        Metabuf::NodeInterface * node_81 = _protocol->addNode( 2U, "Object", "", "", 2U, 0U, false, node_80 );
+        Metabuf::NodeInterface * node_82 = _protocol->addNode( 2U, "Point", "", "", 0U, 0U, false, node_81 );
+        Metabuf::NodeInterface * node_83 = _protocol->addNode( 1U, "Property", "", "", 0U, 0U, false, node_81 );
+        Metabuf::NodeInterface * node_84 = _protocol->addNode( 1U, "Property", "", "", 0U, 0U, false, node_80 );
+        Metabuf::NodeInterface * node_85 = _protocol->addNode( 1U, "Property", "", "", 0U, 0U, false, node_79 );
+        Metabuf::NodeInterface * node_86 = _protocol->addNode( 3U, "TileLayer", "", "", 2U, 0U, false, node_79 );
+        Metabuf::NodeInterface * node_87 = _protocol->addNode( 1U, "Property", "", "", 0U, 0U, false, node_86 );
+        Metabuf::NodeInterface * node_88 = _protocol->addNode( 2U, "Tile", "", "", 0U, 0U, false, node_86 );
+        Metabuf::NodeInterface * node_89 = _protocol->addNode( 2U, "Tileset", "", "", 1U, 0U, false, node_79 );
+        Metabuf::NodeInterface * node_90 = _protocol->addNode( 1U, "Image", "", "", 0U, 0U, false, node_89 );
 
         node_0->addAttribute( 0U, "Name", "Mengine::ConstString", true, "" );
         node_0->addInclude( node_1 );
@@ -195,6 +209,7 @@ namespace Metacode
         node_0->addGenerator( node_47 );
         node_0->addGenerator( node_48 );
         node_0->addGenerator( node_49 );
+        node_0->addGenerator( node_50 );
 
         node_1->addAttribute( 0U, "Name", "Mengine::ConstString", true, "" );
         node_1->addMemberAttribute( "File", 1U, "Compile", "bool", false, "" );
@@ -511,158 +526,246 @@ namespace Metacode
         node_47->addMemberAttribute( "JSON", 0U, "Name", "Mengine::ConstString", true, "" );
 
         node_48->setInheritance( node_9 );
-        node_48->addMemberAttribute( "File", 2U, "Alpha", "bool", false, "" );
-        node_48->addMemberAttribute( "File", 4U, "Codec", "Mengine::ConstString", false, "" );
-        node_48->addMemberAttribute( "File", 5U, "Converter", "Mengine::ConstString", false, "" );
-        node_48->addMemberAttribute( "File", 8U, "Duration", "float", false, "" );
-        node_48->addMemberAttribute( "File", 7U, "FrameRate", "float", false, "" );
-        node_48->addMemberAttribute( "File", 10U, "NoExist", "bool", false, "" );
-        node_48->addMemberAttribute( "File", 6U, "NoSeek", "bool", false, "" );
+        node_48->addMemberAttribute( "File", 2U, "Converter", "Mengine::ConstString", false, "" );
+        node_48->addMemberAttribute( "File", 3U, "NoExist", "bool", false, "" );
         node_48->addMemberAttribute( "File", 0U, "Path", "Mengine::FilePath", true, "" );
-        node_48->addMemberAttribute( "File", 3U, "Premultiply", "bool", false, "" );
-        node_48->addMemberAttribute( "File", 9U, "Resize", "float", false, "" );
 
         node_49->setInheritance( node_9 );
-        node_49->addMemberAttribute( "WindowBackground", 2U, "ResourceImageName", "Mengine::ConstString", false, "" );
-        node_49->addMemberAttribute( "WindowBottom", 0U, "Offset", "mt::vec2f", true, "" );
-        node_49->addMemberAttribute( "WindowBottom", 0U, "ResourceImageName", "Mengine::ConstString", true, "" );
-        node_49->addMemberAttribute( "WindowLeft", 0U, "Offset", "mt::vec2f", true, "" );
-        node_49->addMemberAttribute( "WindowLeft", 0U, "ResourceImageName", "Mengine::ConstString", true, "" );
-        node_49->addMemberAttribute( "WindowLeftBottom", 0U, "Offset", "mt::vec2f", true, "" );
-        node_49->addMemberAttribute( "WindowLeftBottom", 0U, "ResourceImageName", "Mengine::ConstString", true, "" );
-        node_49->addMemberAttribute( "WindowLeftTop", 0U, "Offset", "mt::vec2f", true, "" );
-        node_49->addMemberAttribute( "WindowLeftTop", 0U, "ResourceImageName", "Mengine::ConstString", true, "" );
-        node_49->addMemberAttribute( "WindowRight", 0U, "Offset", "mt::vec2f", true, "" );
-        node_49->addMemberAttribute( "WindowRight", 0U, "ResourceImageName", "Mengine::ConstString", true, "" );
-        node_49->addMemberAttribute( "WindowRightBottom", 0U, "Offset", "mt::vec2f", true, "" );
-        node_49->addMemberAttribute( "WindowRightBottom", 0U, "ResourceImageName", "Mengine::ConstString", true, "" );
-        node_49->addMemberAttribute( "WindowRightTop", 0U, "Offset", "mt::vec2f", true, "" );
-        node_49->addMemberAttribute( "WindowRightTop", 0U, "ResourceImageName", "Mengine::ConstString", true, "" );
-        node_49->addMemberAttribute( "WindowTop", 0U, "Offset", "mt::vec2f", true, "" );
-        node_49->addMemberAttribute( "WindowTop", 0U, "ResourceImageName", "Mengine::ConstString", true, "" );
+        node_49->addMemberAttribute( "File", 2U, "Alpha", "bool", false, "" );
+        node_49->addMemberAttribute( "File", 4U, "Codec", "Mengine::ConstString", false, "" );
+        node_49->addMemberAttribute( "File", 5U, "Converter", "Mengine::ConstString", false, "" );
+        node_49->addMemberAttribute( "File", 8U, "Duration", "float", false, "" );
+        node_49->addMemberAttribute( "File", 7U, "FrameRate", "float", false, "" );
+        node_49->addMemberAttribute( "File", 10U, "NoExist", "bool", false, "" );
+        node_49->addMemberAttribute( "File", 6U, "NoSeek", "bool", false, "" );
+        node_49->addMemberAttribute( "File", 0U, "Path", "Mengine::FilePath", true, "" );
+        node_49->addMemberAttribute( "File", 3U, "Premultiply", "bool", false, "" );
+        node_49->addMemberAttribute( "File", 9U, "Resize", "float", false, "" );
 
-        node_50->addAttribute( 0U, "MaxIndex", "uint32_t", true, "" );
-        node_50->addAttribute( 0U, "Version", "uint32_t", true, "" );
-        node_50->addInclude( node_51 );
-        node_50->addInclude( node_53 );
-        node_50->addInclude( node_55 );
-        node_50->addInclude( node_57 );
-        node_50->addInclude( node_58 );
+        node_50->setInheritance( node_9 );
+        node_50->addMemberAttribute( "WindowBackground", 2U, "ResourceImageName", "Mengine::ConstString", false, "" );
+        node_50->addMemberAttribute( "WindowBottom", 0U, "Offset", "mt::vec2f", true, "" );
+        node_50->addMemberAttribute( "WindowBottom", 0U, "ResourceImageName", "Mengine::ConstString", true, "" );
+        node_50->addMemberAttribute( "WindowLeft", 0U, "Offset", "mt::vec2f", true, "" );
+        node_50->addMemberAttribute( "WindowLeft", 0U, "ResourceImageName", "Mengine::ConstString", true, "" );
+        node_50->addMemberAttribute( "WindowLeftBottom", 0U, "Offset", "mt::vec2f", true, "" );
+        node_50->addMemberAttribute( "WindowLeftBottom", 0U, "ResourceImageName", "Mengine::ConstString", true, "" );
+        node_50->addMemberAttribute( "WindowLeftTop", 0U, "Offset", "mt::vec2f", true, "" );
+        node_50->addMemberAttribute( "WindowLeftTop", 0U, "ResourceImageName", "Mengine::ConstString", true, "" );
+        node_50->addMemberAttribute( "WindowRight", 0U, "Offset", "mt::vec2f", true, "" );
+        node_50->addMemberAttribute( "WindowRight", 0U, "ResourceImageName", "Mengine::ConstString", true, "" );
+        node_50->addMemberAttribute( "WindowRightBottom", 0U, "Offset", "mt::vec2f", true, "" );
+        node_50->addMemberAttribute( "WindowRightBottom", 0U, "ResourceImageName", "Mengine::ConstString", true, "" );
+        node_50->addMemberAttribute( "WindowRightTop", 0U, "Offset", "mt::vec2f", true, "" );
+        node_50->addMemberAttribute( "WindowRightTop", 0U, "ResourceImageName", "Mengine::ConstString", true, "" );
+        node_50->addMemberAttribute( "WindowTop", 0U, "Offset", "mt::vec2f", true, "" );
+        node_50->addMemberAttribute( "WindowTop", 0U, "ResourceImageName", "Mengine::ConstString", true, "" );
 
-        node_51->addAttribute( 4U, "Count", "uint32_t", false, "" );
-        node_51->addAttribute( 0U, "ImageMaxSize", "mt::vec2f", true, "" );
-        node_51->addAttribute( 1U, "ImageOffset", "mt::vec2f", false, "" );
-        node_51->addAttribute( 0U, "ImageSize", "mt::vec2f", false, "" );
-        node_51->addAttribute( 2U, "Immutable", "bool", false, "" );
-        node_51->addAttribute( 0U, "LayerIndex", "uint32_t", true, "" );
-        node_51->addAttribute( 3U, "Subtract", "bool", false, "" );
+        node_51->addAttribute( 0U, "MaxIndex", "uint32_t", true, "" );
+        node_51->addAttribute( 0U, "Version", "uint32_t", true, "" );
         node_51->addInclude( node_52 );
+        node_51->addInclude( node_54 );
+        node_51->addInclude( node_56 );
+        node_51->addInclude( node_58 );
+        node_51->addInclude( node_59 );
 
-        node_52->addAttribute( 0U, "Polygon", "Mengine::Polygon", true, "" );
+        node_52->addAttribute( 4U, "Count", "uint32_t", false, "" );
+        node_52->addAttribute( 0U, "ImageMaxSize", "mt::vec2f", true, "" );
+        node_52->addAttribute( 1U, "ImageOffset", "mt::vec2f", false, "" );
+        node_52->addAttribute( 0U, "ImageSize", "mt::vec2f", false, "" );
+        node_52->addAttribute( 2U, "Immutable", "bool", false, "" );
+        node_52->addAttribute( 0U, "LayerIndex", "uint32_t", true, "" );
+        node_52->addAttribute( 3U, "Subtract", "bool", false, "" );
+        node_52->addInclude( node_53 );
 
-        node_53->addAttribute( 1U, "Count", "uint32_t", false, "" );
-        node_53->addAttribute( 0U, "Immutable", "bool", false, "" );
-        node_53->addAttribute( 0U, "LayerIndex", "uint32_t", true, "" );
-        node_53->addInclude( node_54 );
+        node_53->addAttribute( 0U, "Polygon", "Mengine::Polygon", true, "" );
 
-        node_54->addAttribute( 0U, "AnchorPoint", "mt::vec2f", false, "" );
-        node_54->addAttribute( 6U, "Count", "uint32_t", false, "" );
-        node_54->addAttribute( 4U, "Opacity", "float", false, "" );
-        node_54->addAttribute( 1U, "Position", "mt::vec2f", false, "" );
-        node_54->addAttribute( 3U, "Rotation", "float", false, "" );
-        node_54->addAttribute( 2U, "Scale", "mt::vec2f", false, "" );
-        node_54->addAttribute( 5U, "Volume", "float", false, "" );
+        node_54->addAttribute( 1U, "Count", "uint32_t", false, "" );
+        node_54->addAttribute( 0U, "Immutable", "bool", false, "" );
+        node_54->addAttribute( 0U, "LayerIndex", "uint32_t", true, "" );
+        node_54->addInclude( node_55 );
 
-        node_55->addAttribute( 1U, "Count", "uint32_t", false, "" );
-        node_55->addAttribute( 0U, "Immutable", "bool", false, "" );
-        node_55->addAttribute( 0U, "LayerIndex", "uint32_t", true, "" );
-        node_55->addInclude( node_56 );
+        node_55->addAttribute( 0U, "AnchorPoint", "mt::vec2f", false, "" );
+        node_55->addAttribute( 6U, "Count", "uint32_t", false, "" );
+        node_55->addAttribute( 4U, "Opacity", "float", false, "" );
+        node_55->addAttribute( 1U, "Position", "mt::vec2f", false, "" );
+        node_55->addAttribute( 3U, "Rotation", "float", false, "" );
+        node_55->addAttribute( 2U, "Scale", "mt::vec2f", false, "" );
+        node_55->addAttribute( 5U, "Volume", "float", false, "" );
 
-        node_56->addAttribute( 0U, "AnchorPoint", "mt::vec3f", false, "" );
-        node_56->addAttribute( 7U, "Count", "uint32_t", false, "" );
-        node_56->addAttribute( 5U, "Opacity", "float", false, "" );
-        node_56->addAttribute( 4U, "Orientation", "mt::vec3f", false, "" );
-        node_56->addAttribute( 1U, "Position", "mt::vec3f", false, "" );
-        node_56->addAttribute( 3U, "Rotation", "mt::vec3f", false, "" );
-        node_56->addAttribute( 2U, "Scale", "mt::vec3f", false, "" );
-        node_56->addAttribute( 6U, "Volume", "float", false, "" );
+        node_56->addAttribute( 1U, "Count", "uint32_t", false, "" );
+        node_56->addAttribute( 0U, "Immutable", "bool", false, "" );
+        node_56->addAttribute( 0U, "LayerIndex", "uint32_t", true, "" );
+        node_56->addInclude( node_57 );
 
-        node_57->addAttribute( 0U, "LayerIndex", "uint32_t", true, "" );
-        node_57->addAttribute( 0U, "Value", "Mengine::Polygon", true, "" );
+        node_57->addAttribute( 0U, "AnchorPoint", "mt::vec3f", false, "" );
+        node_57->addAttribute( 7U, "Count", "uint32_t", false, "" );
+        node_57->addAttribute( 5U, "Opacity", "float", false, "" );
+        node_57->addAttribute( 4U, "Orientation", "mt::vec3f", false, "" );
+        node_57->addAttribute( 1U, "Position", "mt::vec3f", false, "" );
+        node_57->addAttribute( 3U, "Rotation", "mt::vec3f", false, "" );
+        node_57->addAttribute( 2U, "Scale", "mt::vec3f", false, "" );
+        node_57->addAttribute( 6U, "Volume", "float", false, "" );
 
         node_58->addAttribute( 0U, "LayerIndex", "uint32_t", true, "" );
-        node_58->addAttribute( 0U, "Time", "Mengine::Floats", true, "" );
+        node_58->addAttribute( 0U, "Value", "Mengine::Polygon", true, "" );
 
-        node_59->addInclude( node_60 );
-        node_59->addInclude( node_62 );
-        node_59->addInclude( node_64 );
-        node_59->addInclude( node_66 );
-        node_59->addInclude( node_68 );
-        node_59->addInclude( node_70 );
-        node_59->addInclude( node_72 );
-        node_59->addInclude( node_74 );
+        node_59->addAttribute( 0U, "LayerIndex", "uint32_t", true, "" );
+        node_59->addAttribute( 0U, "Time", "Mengine::Floats", true, "" );
 
-        node_60->addAttribute( 0U, "Platform", "Mengine::Tags", false, "" );
         node_60->addInclude( node_61 );
+        node_60->addInclude( node_63 );
+        node_60->addInclude( node_65 );
+        node_60->addInclude( node_67 );
+        node_60->addInclude( node_69 );
+        node_60->addInclude( node_71 );
+        node_60->addInclude( node_73 );
+        node_60->addInclude( node_75 );
 
-        node_61->addAttribute( 0U, "Name", "Mengine::ConstString", true, "" );
-        node_61->addAttribute( 0U, "Path", "Mengine::FilePath", true, "" );
+        node_61->addAttribute( 0U, "Platform", "Mengine::Tags", false, "" );
+        node_61->addInclude( node_62 );
 
-        node_62->addAttribute( 0U, "Platform", "Mengine::Tags", false, "" );
-        node_62->addInclude( node_63 );
+        node_62->addAttribute( 0U, "Name", "Mengine::ConstString", true, "" );
+        node_62->addAttribute( 0U, "Path", "Mengine::FilePath", true, "" );
 
-        node_63->addAttribute( 0U, "Path", "Mengine::FilePath", true, "" );
+        node_63->addAttribute( 0U, "Platform", "Mengine::Tags", false, "" );
+        node_63->addInclude( node_64 );
 
-        node_64->addAttribute( 0U, "Platform", "Mengine::Tags", false, "" );
-        node_64->addInclude( node_65 );
+        node_64->addAttribute( 0U, "Path", "Mengine::FilePath", true, "" );
 
-        node_65->addAttribute( 0U, "Path", "Mengine::FilePath", true, "" );
+        node_65->addAttribute( 0U, "Platform", "Mengine::Tags", false, "" );
+        node_65->addInclude( node_66 );
 
-        node_66->addAttribute( 0U, "Platform", "Mengine::Tags", false, "" );
-        node_66->addInclude( node_67 );
+        node_66->addAttribute( 0U, "Path", "Mengine::FilePath", true, "" );
 
-        node_67->addAttribute( 0U, "Path", "Mengine::FilePath", true, "" );
-        node_67->addAttribute( 0U, "RenderPlatform", "Mengine::ConstString", false, "" );
+        node_67->addAttribute( 0U, "Platform", "Mengine::Tags", false, "" );
+        node_67->addInclude( node_68 );
 
-        node_68->addAttribute( 1U, "Demand", "bool", false, "" );
-        node_68->addAttribute( 0U, "Ignored", "bool", false, "" );
-        node_68->addAttribute( 2U, "Platform", "Mengine::Tags", false, "" );
-        node_68->addInclude( node_69 );
+        node_68->addAttribute( 0U, "Path", "Mengine::FilePath", true, "" );
+        node_68->addAttribute( 0U, "RenderPlatform", "Mengine::ConstString", false, "" );
 
-        node_69->addAttribute( 0U, "Path", "Mengine::FilePath", true, "" );
-        node_69->addAttribute( 0U, "Tags", "Mengine::Tags", false, "" );
+        node_69->addAttribute( 1U, "Demand", "bool", false, "" );
+        node_69->addAttribute( 0U, "Ignored", "bool", false, "" );
+        node_69->addAttribute( 2U, "Platform", "Mengine::Tags", false, "" );
+        node_69->addInclude( node_70 );
 
-        node_70->addAttribute( 0U, "Platform", "Mengine::Tags", false, "" );
-        node_70->addInclude( node_71 );
+        node_70->addAttribute( 0U, "Path", "Mengine::FilePath", true, "" );
+        node_70->addAttribute( 0U, "Tags", "Mengine::Tags", false, "" );
 
-        node_71->addAttribute( 2U, "Finalizer", "Mengine::ConstString", false, "" );
-        node_71->addAttribute( 1U, "Initializer", "Mengine::ConstString", false, "" );
-        node_71->addAttribute( 0U, "Module", "Mengine::ConstString", false, "" );
-        node_71->addAttribute( 0U, "Path", "Mengine::FilePath", true, "" );
+        node_71->addAttribute( 0U, "Platform", "Mengine::Tags", false, "" );
+        node_71->addInclude( node_72 );
 
-        node_72->addAttribute( 0U, "Platform", "Mengine::Tags", false, "" );
-        node_72->addInclude( node_73 );
+        node_72->addAttribute( 2U, "Finalizer", "Mengine::ConstString", false, "" );
+        node_72->addAttribute( 1U, "Initializer", "Mengine::ConstString", false, "" );
+        node_72->addAttribute( 0U, "Module", "Mengine::ConstString", false, "" );
+        node_72->addAttribute( 0U, "Path", "Mengine::FilePath", true, "" );
 
-        node_73->addAttribute( 0U, "Name", "Mengine::ConstString", true, "" );
-        node_73->addAttribute( 0U, "Path", "Mengine::FilePath", true, "" );
+        node_73->addAttribute( 0U, "Platform", "Mengine::Tags", false, "" );
+        node_73->addInclude( node_74 );
 
-        node_74->addAttribute( 0U, "Platform", "Mengine::Tags", false, "" );
-        node_74->addInclude( node_75 );
+        node_74->addAttribute( 0U, "Name", "Mengine::ConstString", true, "" );
+        node_74->addAttribute( 0U, "Path", "Mengine::FilePath", true, "" );
 
-        node_75->addAttribute( 0U, "Path", "Mengine::FilePath", true, "" );
+        node_75->addAttribute( 0U, "Platform", "Mengine::Tags", false, "" );
+        node_75->addInclude( node_76 );
 
-        node_76->addInclude( node_77 );
+        node_76->addAttribute( 0U, "Path", "Mengine::FilePath", true, "" );
 
-        node_77->addAttribute( 2U, "CharOffset", "float", false, "" );
-        node_77->addAttribute( 1U, "Font", "Mengine::ConstString", false, "" );
-        node_77->addAttribute( 0U, "Key", "Mengine::ConstString", true, "" );
-        node_77->addAttribute( 3U, "LineOffset", "float", false, "" );
-        node_77->addAttribute( 0U, "Value", "Mengine::WString", false, "" );
+        node_77->addInclude( node_78 );
+
+        node_78->addAttribute( 2U, "CharOffset", "float", false, "" );
+        node_78->addAttribute( 1U, "Font", "Mengine::ConstString", false, "" );
+        node_78->addAttribute( 0U, "Key", "Mengine::ConstString", true, "" );
+        node_78->addAttribute( 3U, "LineOffset", "float", false, "" );
+        node_78->addAttribute( 0U, "Value", "Mengine::WString", false, "" );
+
+        node_79->addAttribute( 0U, "Height", "uint32_t", true, "" );
+        node_79->addAttribute( 0U, "HexSideLength", "uint32_t", true, "" );
+        node_79->addAttribute( 0U, "Orientation", "uint32_t", true, "" );
+        node_79->addAttribute( 0U, "StaggerAxis", "uint32_t", true, "" );
+        node_79->addAttribute( 0U, "StaggerIndex", "uint32_t", true, "" );
+        node_79->addAttribute( 0U, "TileHeight", "uint32_t", true, "" );
+        node_79->addAttribute( 0U, "TileWidth", "uint32_t", true, "" );
+        node_79->addAttribute( 0U, "Width", "uint32_t", true, "" );
+        node_79->addInclude( node_80 );
+        node_79->addInclude( node_85 );
+        node_79->addInclude( node_86 );
+        node_79->addInclude( node_89 );
+
+        node_80->addAttribute( 0U, "Id", "uint32_t", true, "" );
+        node_80->addAttribute( 0U, "Name", "Mengine::String", true, "" );
+        node_80->addAttribute( 0U, "Offset", "mt::vec2f", true, "" );
+        node_80->addAttribute( 0U, "Opacity", "float", true, "" );
+        node_80->addAttribute( 0U, "Visible", "bool", true, "" );
+        node_80->addInclude( node_81 );
+        node_80->addInclude( node_84 );
+
+        node_81->addAttribute( 0U, "Class", "Mengine::String", true, "" );
+        node_81->addAttribute( 0U, "Gid", "uint32_t", true, "" );
+        node_81->addAttribute( 0U, "Id", "uint32_t", true, "" );
+        node_81->addAttribute( 0U, "Name", "Mengine::String", true, "" );
+        node_81->addAttribute( 0U, "Position", "mt::vec2f", true, "" );
+        node_81->addAttribute( 0U, "Rotation", "float", true, "" );
+        node_81->addAttribute( 0U, "Shape", "uint32_t", true, "" );
+        node_81->addAttribute( 0U, "Size", "mt::vec2f", true, "" );
+        node_81->addAttribute( 0U, "Type", "Mengine::String", true, "" );
+        node_81->addAttribute( 0U, "Visible", "bool", true, "" );
+        node_81->addInclude( node_82 );
+        node_81->addInclude( node_83 );
+
+        node_82->addAttribute( 0U, "Position", "mt::vec2f", true, "" );
+
+        node_83->addAttribute( 0U, "Name", "Mengine::String", true, "" );
+        node_83->addAttribute( 0U, "Type", "uint32_t", true, "" );
+        node_83->addAttribute( 0U, "Value", "Mengine::String", true, "" );
+
+        node_84->addAttribute( 0U, "Name", "Mengine::String", true, "" );
+        node_84->addAttribute( 0U, "Type", "uint32_t", true, "" );
+        node_84->addAttribute( 0U, "Value", "Mengine::String", true, "" );
+
+        node_85->addAttribute( 0U, "Name", "Mengine::String", true, "" );
+        node_85->addAttribute( 0U, "Type", "uint32_t", true, "" );
+        node_85->addAttribute( 0U, "Value", "Mengine::String", true, "" );
+
+        node_86->addAttribute( 0U, "Id", "uint32_t", true, "" );
+        node_86->addAttribute( 0U, "Name", "Mengine::String", true, "" );
+        node_86->addAttribute( 0U, "Offset", "mt::vec2f", true, "" );
+        node_86->addAttribute( 0U, "Opacity", "float", true, "" );
+        node_86->addAttribute( 0U, "Visible", "bool", true, "" );
+        node_86->addInclude( node_87 );
+        node_86->addInclude( node_88 );
+
+        node_87->addAttribute( 0U, "Name", "Mengine::String", true, "" );
+        node_87->addAttribute( 0U, "Type", "uint32_t", true, "" );
+        node_87->addAttribute( 0U, "Value", "Mengine::String", true, "" );
+
+        node_88->addAttribute( 0U, "Gid", "uint32_t", true, "" );
+        node_88->addAttribute( 0U, "Position", "mt::vec2f", true, "" );
+
+        node_89->addAttribute( 0U, "Columns", "uint32_t", true, "" );
+        node_89->addAttribute( 0U, "FirstGid", "uint32_t", true, "" );
+        node_89->addAttribute( 0U, "ImageHeight", "uint32_t", true, "" );
+        node_89->addAttribute( 0U, "ImageWidth", "uint32_t", true, "" );
+        node_89->addAttribute( 0U, "Margin", "uint32_t", true, "" );
+        node_89->addAttribute( 0U, "Name", "Mengine::String", true, "" );
+        node_89->addAttribute( 0U, "Offset", "mt::vec2f", true, "" );
+        node_89->addAttribute( 0U, "Resource", "Mengine::String", true, "" );
+        node_89->addAttribute( 0U, "Spacing", "uint32_t", true, "" );
+        node_89->addAttribute( 0U, "TileCount", "uint32_t", true, "" );
+        node_89->addAttribute( 0U, "TileHeight", "uint32_t", true, "" );
+        node_89->addAttribute( 0U, "TileWidth", "uint32_t", true, "" );
+        node_89->addInclude( node_90 );
+
+        node_90->addAttribute( 0U, "Height", "uint32_t", true, "" );
+        node_90->addAttribute( 0U, "LocalId", "uint32_t", true, "" );
+        node_90->addAttribute( 0U, "Resource", "Mengine::String", true, "" );
+        node_90->addAttribute( 0U, "Width", "uint32_t", true, "" );
 
         meta_0->addNode( node_0 );
-        meta_0->addNode( node_50 );
-        meta_0->addNode( node_59 );
-        meta_0->addNode( node_76 );
+        meta_0->addNode( node_51 );
+        meta_0->addNode( node_60 );
+        meta_0->addNode( node_77 );
+        meta_1->addNode( node_79 );
         _protocol->addInternal( "ResourceImageData" );
         _protocol->addInternal( "ResourceImageDefault" );
         _protocol->addInternal( "ResourceImageEmpty" );
@@ -674,6 +777,7 @@ namespace Metacode
         _protocol->addInternal( "ResourceCursorSystem" );
         _protocol->addInternal( "ResourceCursorICO" );
         _protocol->addInternal( "ResourceFile" );
+        _protocol->addInternal( "ResourceTiledMap" );
         _protocol->addInternal( "ResourceSound" );
         _protocol->addInternal( "ResourceMusic" );
         _protocol->addInternal( "ResourceWindow" );

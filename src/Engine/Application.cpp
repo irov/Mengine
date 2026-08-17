@@ -47,6 +47,7 @@
 #include "Line.h"
 #include "SoundEmitter.h"
 #include "Grid2D.h"
+#include "MotionTrail2D.h"
 #include "TextField.h"
 #include "Meshget.h"
 #include "Mesh3D.h"
@@ -62,6 +63,8 @@
 #include "Window.h"
 #include "Landscape2D.h"
 #include "TileMap2D.h"
+#include "ResourceTiledMap.h"
+#include "TiledMap2D.h"
 #include "ResourceMusic.h"
 #include "ResourceFile.h"
 #include "ResourceWindow.h"
@@ -78,6 +81,7 @@
 #include "Kernel/ShapeQuadSize.h"
 #include "Kernel/ShapeQuadFixed.h"
 #include "Kernel/ShapeQuadFlex.h"
+#include "Kernel/ShapeNinePatch.h"
 #include "Kernel/SurfaceSound.h"
 #include "Kernel/SurfaceImage.h"
 #include "Kernel/SurfaceImageSequence.h"
@@ -547,6 +551,7 @@ namespace Mengine
         NODE_FACTORY( Line );
         NODE_FACTORY( SoundEmitter );
         NODE_FACTORY( Grid2D );
+        NODE_FACTORY( MotionTrail2D );
         NODE_FACTORY( TextField );
         NODE_FACTORY( Meshget );
         NODE_FACTORY( Mesh3D );
@@ -560,6 +565,7 @@ namespace Mengine
         NODE_FACTORY( VirtualArea );
         NODE_FACTORY( Landscape2D );
         NODE_FACTORY( TileMap2D );
+        NODE_FACTORY( TiledMap2D );
         NODE_FACTORY( RenderViewport );
         NODE_FACTORY( RenderViewportDefault );
         NODE_FACTORY( RenderScissor );
@@ -573,6 +579,7 @@ namespace Mengine
         NODE_FACTORY( ShapeQuadSize );
         NODE_FACTORY( ShapeQuadFixed );
         NODE_FACTORY( ShapeQuadFlex );
+        NODE_FACTORY( ShapeNinePatch );
 
 #undef NODE_FACTORY
 
@@ -615,6 +622,7 @@ namespace Mengine
         NODE_FACTORY( Line );
         NODE_FACTORY( SoundEmitter );
         NODE_FACTORY( Grid2D );
+        NODE_FACTORY( MotionTrail2D );
         NODE_FACTORY( TextField );
         NODE_FACTORY( Meshget );
         NODE_FACTORY( Mesh3D );
@@ -628,6 +636,7 @@ namespace Mengine
         NODE_FACTORY( VirtualArea );
         NODE_FACTORY( Landscape2D );
         NODE_FACTORY( TileMap2D );
+        NODE_FACTORY( TiledMap2D );
         NODE_FACTORY( RenderViewport );
         NODE_FACTORY( RenderViewportDefault );
         NODE_FACTORY( RenderScissor );
@@ -641,6 +650,7 @@ namespace Mengine
         NODE_FACTORY( ShapeQuadSize );
         NODE_FACTORY( ShapeQuadFixed );
         NODE_FACTORY( ShapeQuadFlex );
+        NODE_FACTORY( ShapeNinePatch );
 
 #undef NODE_FACTORY
 
@@ -731,6 +741,7 @@ namespace Mengine
         ADD_PROTOTYPE( ResourceCursorSystem );
         ADD_PROTOTYPE( ResourceMesh3D );
         ADD_PROTOTYPE( ResourceSkinnedMesh3D );
+        ADD_PROTOTYPE( ResourceTiledMap );
 
 #undef ADD_PROTOTYPE
 
@@ -763,6 +774,7 @@ namespace Mengine
         REMOVE_PROTOTYPE( ResourceCursorSystem );
         REMOVE_PROTOTYPE( ResourceMesh3D );
         REMOVE_PROTOTYPE( ResourceSkinnedMesh3D );
+        REMOVE_PROTOTYPE( ResourceTiledMap );
 
 #undef REMOVE_PROTOTYPE
     }
@@ -2046,6 +2058,29 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( m_currentWindowResolution.getWidth() != 0 && m_currentWindowResolution.getHeight() != 0, "current window resolution is invalid" );
 
         return m_currentWindowResolution;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Application::setSafeAreaViewport( const Viewport & _viewport )
+    {
+        const float beginX = _viewport.begin.x > 0.f ? _viewport.begin.x : 0.f;
+        const float beginY = _viewport.begin.y > 0.f ? _viewport.begin.y : 0.f;
+        const float endX = _viewport.end.x > beginX ? _viewport.end.x : beginX;
+        const float endY = _viewport.end.y > beginY ? _viewport.end.y : beginY;
+        const Viewport viewport( beginX, beginY, endX, endY );
+
+        if( m_safeAreaViewport == viewport )
+        {
+            return;
+        }
+
+        m_safeAreaViewport = viewport;
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SAFE_AREA_VIEWPORT, m_safeAreaViewport );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const Viewport & Application::getSafeAreaViewport() const
+    {
+        return m_safeAreaViewport;
     }
     //////////////////////////////////////////////////////////////////////////
     void Application::calcRenderViewport_( float * const _aspect, Viewport * const _viewport ) const

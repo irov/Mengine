@@ -23,6 +23,9 @@ src
 
     ${MENGINE_SOLUTIONS_CONFIG_DIR}/src/Configuration/MacOSApplicationDelegates.mm
     MacOSApplicationDelegates.h
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../Environment/Apple/AppleGameControllerInput.mm
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../Environment/Apple/AppleGameControllerInput.h
 )
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})

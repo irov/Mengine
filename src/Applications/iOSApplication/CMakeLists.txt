@@ -34,6 +34,9 @@ src
     
     iOSSceneDelegate.mm
     iOSSceneDelegate.h
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../Environment/Apple/AppleGameControllerInput.mm
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../Environment/Apple/AppleGameControllerInput.h
 )
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
@@ -280,6 +283,7 @@ IF(MENGINE_TARGET_IOS OR MENGINE_TARGET_IOS_SIMULATOR)
     ADD_MENGINE_APPLE_FRAMEWORK(Foundation)
     ADD_MENGINE_APPLE_FRAMEWORK(Security)
     ADD_MENGINE_APPLE_FRAMEWORK(Metal)
+    ADD_MENGINE_APPLE_FRAMEWORK(GameController)
 ENDIF()
 
 if(APPLICATION_LINK_LIBRARIES)

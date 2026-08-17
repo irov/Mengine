@@ -9,6 +9,7 @@
 #include "Kernel/Tags.h"
 #include "Kernel/Factorable.h"
 #include "Kernel/Resolution.h"
+#include "Kernel/Viewport.h"
 #include "Kernel/LoggerLevel.h"
 #include "Kernel/AssertionLevel.h"
 #include "Kernel/ErrorLevel.h"
@@ -67,6 +68,7 @@ namespace Mengine
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_CRASH, const Char * );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_ERROR, const Char *, EErrorLevel, const Char *, int32_t, const Char *, const Char * );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, bool, Resolution );
+    MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_CHANGE_SAFE_AREA_VIEWPORT, const Viewport & );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_RENDER_DEVICE_CREATE );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_RENDER_DEVICE_DESTROY );
     MENGINE_NOTIFICATOR_DECLARE( NOTIFICATOR_CREATE_RENDER_WINDOW );

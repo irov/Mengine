@@ -8,6 +8,8 @@ src
     GDKPlatformSystem.cpp
     GDKDynamicLibrary.h
     GDKDynamicLibrary.cpp
+    GDKGameControllerInput.h
+    GDKGameControllerInput.cpp
 )
 
 # Include GDK SDK configuration to get GDK_INCLUDE_DIR

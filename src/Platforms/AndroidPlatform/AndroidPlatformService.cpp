@@ -67,6 +67,9 @@
 #include <swappy/swappyGL.h>
 #include <swappy/swappyGL_extra.h>
 
+#include <android/input.h>
+#include <android/keycodes.h>
+
 #include <clocale>
 #include <ctime>
 #include <iomanip>
@@ -318,6 +321,58 @@ extern "C"
             ->getUnknown();
 
         platformExtension->androidNativeKeyEvent( eventTime, isDown, keyCode, repeatCount );
+    }
+    ///////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1controllerConnectEvent )(JNIEnv * env, jclass cls, jlong eventTime, jint deviceId, jboolean connected)
+    {
+        if( g_androidPlatformActived == false )
+        {
+            return;
+        }
+
+        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        platformExtension->androidNativeControllerConnectEvent( eventTime, deviceId, connected );
+    }
+    ///////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1controllerButtonEvent )(JNIEnv * env, jclass cls, jlong eventTime, jint deviceId, jint keyCode, jfloat value, jboolean isDown)
+    {
+        if( g_androidPlatformActived == false )
+        {
+            return;
+        }
+
+        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        platformExtension->androidNativeControllerButtonEvent( eventTime, deviceId, keyCode, value, isDown );
+    }
+    ///////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1controllerAxisEvent )(JNIEnv * env, jclass cls, jlong eventTime, jint deviceId, jint axis, jfloat value)
+    {
+        if( g_androidPlatformActived == false )
+        {
+            return;
+        }
+
+        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        platformExtension->androidNativeControllerAxisEvent( eventTime, deviceId, axis, value );
+    }
+    ///////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1safeAreaViewportEvent )(JNIEnv * env, jclass cls, jfloat beginX, jfloat beginY, jfloat endX, jfloat endY)
+    {
+        if( g_androidPlatformActived == false )
+        {
+            return;
+        }
+
+        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        platformExtension->androidNativeSafeAreaViewportEvent( beginX, beginY, endX, endY );
     }
     ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1textEvent )(JNIEnv * env, jclass cls, jlong eventTime, jint unicode)
@@ -2799,6 +2854,123 @@ namespace Mengine
         Timestamp timestamp = static_cast<Timestamp>(_eventTime);
 
         Helper::pushKeyEvent( timestamp, x, y, pressure, keyCode, _isDown, false );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::androidNativeControllerConnectEvent( jlong _eventTime, jint _deviceId, jboolean _connected )
+    {
+        Helper::pushControllerConnectEvent( (Timestamp)_eventTime, (ControllerId)_deviceId, _connected == JNI_TRUE );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::androidNativeControllerButtonEvent( jlong _eventTime, jint _deviceId, jint _keyCode, jfloat _value, jboolean _isDown )
+    {
+        EControllerButton button;
+
+        switch( _keyCode )
+        {
+        case AKEYCODE_BUTTON_A:
+            button = CB_A;
+            break;
+        case AKEYCODE_BUTTON_B:
+            button = CB_B;
+            break;
+        case AKEYCODE_BUTTON_X:
+            button = CB_X;
+            break;
+        case AKEYCODE_BUTTON_Y:
+            button = CB_Y;
+            break;
+        case AKEYCODE_BUTTON_L1:
+            button = CB_LEFT_SHOULDER;
+            break;
+        case AKEYCODE_BUTTON_R1:
+            button = CB_RIGHT_SHOULDER;
+            break;
+        case AKEYCODE_BUTTON_L2:
+            button = CB_LEFT_TRIGGER;
+            break;
+        case AKEYCODE_BUTTON_R2:
+            button = CB_RIGHT_TRIGGER;
+            break;
+        case AKEYCODE_BUTTON_START:
+            button = CB_MENU;
+            break;
+        case AKEYCODE_BUTTON_SELECT:
+            button = CB_OPTIONS;
+            break;
+        case AKEYCODE_BUTTON_MODE:
+            button = CB_HOME;
+            break;
+        case AKEYCODE_BUTTON_THUMBL:
+            button = CB_LEFT_THUMB;
+            break;
+        case AKEYCODE_BUTTON_THUMBR:
+            button = CB_RIGHT_THUMB;
+            break;
+        case AKEYCODE_DPAD_UP:
+            button = CB_DPAD_UP;
+            break;
+        case AKEYCODE_DPAD_DOWN:
+            button = CB_DPAD_DOWN;
+            break;
+        case AKEYCODE_DPAD_LEFT:
+            button = CB_DPAD_LEFT;
+            break;
+        case AKEYCODE_DPAD_RIGHT:
+            button = CB_DPAD_RIGHT;
+            break;
+        default:
+            return;
+        }
+
+        Helper::pushControllerButtonEvent( (Timestamp)_eventTime, (ControllerId)_deviceId, button, _value, _isDown == JNI_TRUE );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::androidNativeControllerAxisEvent( jlong _eventTime, jint _deviceId, jint _axis, jfloat _value )
+    {
+        EControllerAxis axis;
+
+        switch( _axis )
+        {
+        case AMOTION_EVENT_AXIS_X:
+            axis = CA_LEFT_X;
+            break;
+        case AMOTION_EVENT_AXIS_Y:
+            axis = CA_LEFT_Y;
+            _value = -_value;
+            break;
+        case AMOTION_EVENT_AXIS_Z:
+        case AMOTION_EVENT_AXIS_RX:
+            axis = CA_RIGHT_X;
+            break;
+        case AMOTION_EVENT_AXIS_RZ:
+        case AMOTION_EVENT_AXIS_RY:
+            axis = CA_RIGHT_Y;
+            _value = -_value;
+            break;
+        case AMOTION_EVENT_AXIS_LTRIGGER:
+        case AMOTION_EVENT_AXIS_BRAKE:
+            axis = CA_LEFT_TRIGGER;
+            break;
+        case AMOTION_EVENT_AXIS_RTRIGGER:
+        case AMOTION_EVENT_AXIS_GAS:
+            axis = CA_RIGHT_TRIGGER;
+            break;
+        default:
+            return;
+        }
+
+        Helper::pushControllerAxisEvent( (Timestamp)_eventTime, (ControllerId)_deviceId, axis, _value );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::androidNativeSafeAreaViewportEvent( jfloat _beginX, jfloat _beginY, jfloat _endX, jfloat _endY )
+    {
+        if( SERVICE_IS_INITIALIZE( ApplicationInterface ) == false )
+        {
+            return;
+        }
+
+        APPLICATION_SERVICE()
+            ->setSafeAreaViewport( Viewport( _beginX, _beginY, _endX, _endY ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeTextEvent( jlong _eventTime, jint _unicode )

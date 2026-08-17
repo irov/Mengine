@@ -42,6 +42,20 @@ namespace Mengine
         bool isMouseButtonDown( EMouseButtonCode _button ) const override;
 
     public:
+        uint32_t getControllerCount() const override;
+        ControllerId getControllerId( uint32_t _index ) const override;
+        bool isControllerConnected( ControllerId _controllerId ) const override;
+        bool isControllerButtonDown( ControllerId _controllerId, EControllerButton _button ) const override;
+        float getControllerAxisValue( ControllerId _controllerId, EControllerAxis _axis ) const override;
+        bool getControllerState( ControllerId _controllerId, InputControllerState * const _state ) const override;
+
+        void setControllerDeadZone( EControllerAxis _axis, float _deadZone ) override;
+        float getControllerDeadZone( EControllerAxis _axis ) const override;
+
+        void addControllerHandler( const InputControllerHandlerInterfacePtr & _handler, const DocumentInterfacePtr & _doc ) override;
+        void removeControllerHandler( const InputControllerHandlerInterfacePtr & _handler ) override;
+
+    public:
         void setCursorPosition( ETouchCode _touchId, const mt::vec2f & _screenPosition, float _pressure ) override;
         const mt::vec2f & getCursorPosition( ETouchCode _touchId ) const override;
         float getCursorPressure( ETouchCode _touchId ) const override;
@@ -69,6 +83,9 @@ namespace Mengine
         void dispatchEvent_( const InputMouseWheelEvent & _params );
         void dispatchEvent_( const InputMouseEnterEvent & _params );
         void dispatchEvent_( const InputMouseLeaveEvent & _params );
+        void dispatchEvent_( const InputControllerConnectEvent & _event );
+        void dispatchEvent_( const InputControllerButtonEvent & _event );
+        void dispatchEvent_( const InputControllerAxisEvent & _event );
 
     protected:
         void applyCursorPosition_( ETouchCode _touchId, const mt::vec2f & _screenPosition, float _pressure );
@@ -97,5 +114,22 @@ namespace Mengine
 
         bool m_keyBuffer[MENGINE_INPUT_MAX_KEY_CODE];
         bool m_mouseBuffer[MENGINE_INPUT_MAX_MOUSE_BUTTON_CODE];
+
+        struct InputControllerHandlerDesc
+        {
+            InputControllerHandlerInterfacePtr handler;
+
+#if defined(MENGINE_DOCUMENT_ENABLE)
+            DocumentInterfacePtr doc;
+#endif
+        };
+
+        typedef Vector<InputControllerHandlerDesc> VectorControllerHandlers;
+        VectorControllerHandlers m_controllerHandlers;
+
+        typedef Vector<InputControllerState> VectorControllerStates;
+        VectorControllerStates m_controllerStates;
+
+        float m_controllerDeadZones[CONTROLLER_AXIS_COUNT];
     };
 }

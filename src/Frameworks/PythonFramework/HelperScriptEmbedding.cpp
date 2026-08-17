@@ -416,6 +416,48 @@ namespace Mengine
                 ->isMouseButtonDown( _button );
         }
         //////////////////////////////////////////////////////////////////////////
+        static uint32_t s_getControllerCount()
+        {
+            return INPUT_SERVICE()
+                ->getControllerCount();
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static ControllerId s_getControllerId( uint32_t _index )
+        {
+            return INPUT_SERVICE()
+                ->getControllerId( _index );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool s_isControllerConnected( ControllerId _controllerId )
+        {
+            return INPUT_SERVICE()
+                ->isControllerConnected( _controllerId );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool s_isControllerButtonDown( ControllerId _controllerId, EControllerButton _button )
+        {
+            return INPUT_SERVICE()
+                ->isControllerButtonDown( _controllerId, _button );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static float s_getControllerAxisValue( ControllerId _controllerId, EControllerAxis _axis )
+        {
+            return INPUT_SERVICE()
+                ->getControllerAxisValue( _controllerId, _axis );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void s_setControllerDeadZone( EControllerAxis _axis, float _deadZone )
+        {
+            INPUT_SERVICE()
+                ->setControllerDeadZone( _axis, _deadZone );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static float s_getControllerDeadZone( EControllerAxis _axis )
+        {
+            return INPUT_SERVICE()
+                ->getControllerDeadZone( _axis );
+        }
+        //////////////////////////////////////////////////////////////////////////
         static bool s_addAction( const ConstString & _action, float _deadzone )
         {
             bool successful = ACTION_SERVICE()
@@ -4176,6 +4218,36 @@ namespace Mengine
             .def( "MC_X2BUTTON", MC_X2BUTTON )
             ;
 
+        pybind::enum_<EControllerButton>( _kernel, "ControllerButton" )
+            .def( "CB_A", CB_A )
+            .def( "CB_B", CB_B )
+            .def( "CB_X", CB_X )
+            .def( "CB_Y", CB_Y )
+            .def( "CB_LEFT_SHOULDER", CB_LEFT_SHOULDER )
+            .def( "CB_RIGHT_SHOULDER", CB_RIGHT_SHOULDER )
+            .def( "CB_LEFT_TRIGGER", CB_LEFT_TRIGGER )
+            .def( "CB_RIGHT_TRIGGER", CB_RIGHT_TRIGGER )
+            .def( "CB_MENU", CB_MENU )
+            .def( "CB_OPTIONS", CB_OPTIONS )
+            .def( "CB_HOME", CB_HOME )
+            .def( "CB_LEFT_THUMB", CB_LEFT_THUMB )
+            .def( "CB_RIGHT_THUMB", CB_RIGHT_THUMB )
+            .def( "CB_DPAD_UP", CB_DPAD_UP )
+            .def( "CB_DPAD_DOWN", CB_DPAD_DOWN )
+            .def( "CB_DPAD_LEFT", CB_DPAD_LEFT )
+            .def( "CB_DPAD_RIGHT", CB_DPAD_RIGHT )
+            .def( "CB_TOUCHPAD", CB_TOUCHPAD )
+            ;
+
+        pybind::enum_<EControllerAxis>( _kernel, "ControllerAxis" )
+            .def( "CA_LEFT_X", CA_LEFT_X )
+            .def( "CA_LEFT_Y", CA_LEFT_Y )
+            .def( "CA_RIGHT_X", CA_RIGHT_X )
+            .def( "CA_RIGHT_Y", CA_RIGHT_Y )
+            .def( "CA_LEFT_TRIGGER", CA_LEFT_TRIGGER )
+            .def( "CA_RIGHT_TRIGGER", CA_RIGHT_TRIGGER )
+            ;
+
         pybind::enum_<ETouchCode>( _kernel, "TouchCode" )
             .def( "TC_TOUCH0", TC_TOUCH0 )
             .def( "TC_TOUCH1", TC_TOUCH1 )
@@ -4465,6 +4537,14 @@ namespace Mengine
 
         pybind::def_function( _kernel, "isAnyMouseButtonDown", &Detail::s_isAnyMouseButtonDown );
         pybind::def_function( _kernel, "isMouseButtonDown", &Detail::s_isMouseButtonDown );
+
+        pybind::def_function( _kernel, "getControllerCount", &Detail::s_getControllerCount );
+        pybind::def_function( _kernel, "getControllerId", &Detail::s_getControllerId );
+        pybind::def_function( _kernel, "isControllerConnected", &Detail::s_isControllerConnected );
+        pybind::def_function( _kernel, "isControllerButtonDown", &Detail::s_isControllerButtonDown );
+        pybind::def_function( _kernel, "getControllerAxisValue", &Detail::s_getControllerAxisValue );
+        pybind::def_function( _kernel, "setControllerDeadZone", &Detail::s_setControllerDeadZone );
+        pybind::def_function( _kernel, "getControllerDeadZone", &Detail::s_getControllerDeadZone );
 
         pybind::def_function( _kernel, "addAction", &Detail::s_addAction );
         pybind::def_function( _kernel, "removeAction", &Detail::s_removeAction );

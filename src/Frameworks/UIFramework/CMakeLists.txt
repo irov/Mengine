@@ -8,6 +8,47 @@ UIFrameworkPlugin
 )
 
 ADD_FILTER(
+UILayout2D
+    UILayout2D.cpp
+    UILayout2D.h
+)
+
+ADD_FILTER(
+UIVirtualCollection
+    UIVirtualCollection.cpp
+    UIVirtualCollection.h
+    UIVirtualList.cpp
+    UIVirtualList.h
+    UIVirtualGrid.cpp
+    UIVirtualGrid.h
+)
+
+ADD_FILTER(
+UIControls
+    UIControlCallbackInterface.h
+    UIProgressBar.cpp
+    UIProgressBar.h
+    UISlider.cpp
+    UISlider.h
+    UIRadioGroup.cpp
+    UIRadioGroup.h
+    UIPageView.cpp
+    UIPageView.h
+    UIFocusScope.cpp
+    UIFocusScope.h
+)
+
+if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+    ADD_FILTER(
+    Embedding
+        UIFrameworkScriptEmbedding.cpp
+        UIFrameworkScriptEmbedding.h
+    )
+
+    INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)
+endif()
+
+ADD_FILTER(
 Button
     Button.cpp
     Button.h
@@ -40,3 +81,8 @@ TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} GOAPCook)
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} Engine)
+
+if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+    TARGET_LINK_LIBRARIES(${PROJECT_NAME} Python)
+endif()

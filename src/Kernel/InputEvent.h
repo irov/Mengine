@@ -4,6 +4,7 @@
 #include "Kernel/MouseButtonCode.h"
 #include "Kernel/WheelCode.h"
 #include "Kernel/TouchCode.h"
+#include "Kernel/ControllerCode.h"
 
 #include "Config/Timestamp.h"
 #include "Config/Char.h"
@@ -133,6 +134,33 @@ namespace Mengine
         ETouchCode touchId;
 
         float pressure;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    struct InputControllerConnectEvent
+    {
+        InputBaseData base;
+
+        ControllerId controllerId;
+        bool connected;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    struct InputControllerButtonEvent
+    {
+        InputBaseData base;
+
+        ControllerId controllerId;
+        EControllerButton button;
+        float value;
+        bool isDown;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    struct InputControllerAxisEvent
+    {
+        InputBaseData base;
+
+        ControllerId controllerId;
+        EControllerAxis axis;
+        float value;
     };
     //////////////////////////////////////////////////////////////////////////
 }

@@ -431,6 +431,8 @@ Shape\\\\ShapeQuad
     ShapeQuadFixed.h
     ShapeQuadFlex.cpp
     ShapeQuadFlex.h
+    ShapeNinePatch.cpp
+    ShapeNinePatch.h
 )
 
 ADD_FILTER(
@@ -634,6 +636,7 @@ Core
     PlatformLogFormat.h
 
     InputEvent.h
+    ControllerCode.h
 
     InputServiceHelper.cpp
     InputServiceHelper.h

@@ -186,6 +186,10 @@ namespace Mengine
         void androidNativeIntentStartEvent( const String & _action, const String & _data, const String & _type, uint32_t _flags, const Params & _extras ) override;
         void androidNativeIntentNewEvent( const String & _action, const String & _data, const String & _type, uint32_t _flags, const Params & _extras ) override;
         void androidNativeKeyEvent( jlong _eventTime, jboolean _isDown, jint _keyCode, jint _repeatCount ) override;
+        void androidNativeControllerConnectEvent( jlong _eventTime, jint _deviceId, jboolean _connected ) override;
+        void androidNativeControllerButtonEvent( jlong _eventTime, jint _deviceId, jint _keyCode, jfloat _value, jboolean _isDown ) override;
+        void androidNativeControllerAxisEvent( jlong _eventTime, jint _deviceId, jint _axis, jfloat _value ) override;
+        void androidNativeSafeAreaViewportEvent( jfloat _beginX, jfloat _beginY, jfloat _endX, jfloat _endY ) override;
         void androidNativeTextEvent( jlong _eventTime, jint _unicode ) override;
         void androidNativePauseEvent( jfloat _x, jfloat _y ) override;
         void androidNativeResumeEvent( jfloat _x, jfloat _y ) override;

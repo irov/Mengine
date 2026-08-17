@@ -196,11 +196,22 @@ namespace Mengine
 
         m_factoryDynamicLibraries = Helper::makeFactoryPool<GDKDynamicLibrary, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
+        if( m_gameControllerInput.initialize() == false )
+        {
+            m_factoryDynamicLibraries = nullptr;
+
+            ::XGameRuntimeUninitialize();
+
+            return false;
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void GDKPlatformService::_finalizeService()
     {
+        m_gameControllerInput.finalize();
+
         m_active = false;
 
         m_platformTags.clear();
@@ -453,6 +464,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool GDKPlatformService::updatePlatform()
     {
+        m_gameControllerInput.update();
+
         if( m_close == true )
         {
             return false;

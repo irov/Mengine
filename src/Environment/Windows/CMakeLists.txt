@@ -36,6 +36,9 @@ src
     
     Win32KernelService.h
     Win32KernelService.cpp
+
+    Win32GameControllerInput.h
+    Win32GameControllerInput.cpp
 )
 
 if(NOT MENGINE_TARGET_UWP)

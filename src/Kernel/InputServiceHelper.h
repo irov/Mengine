@@ -4,6 +4,7 @@
 #include "Kernel/MouseButtonCode.h"
 #include "Kernel/WheelCode.h"
 #include "Kernel/TouchCode.h"
+#include "Kernel/ControllerCode.h"
 
 #include "Config/Typedef.h"
 #include "Config/Timestamp.h"
@@ -31,5 +32,8 @@ namespace Mengine
         void pushMouseEnterEvent( Timestamp _timestamp, ETouchCode _touchId, float _x, float _y, float _pressure );
         void pushMouseWheelEvent( Timestamp _timestamp, float _x, float _y, float _pressure, EWheelCode _wheel, int32_t _scroll );
         void pushAccelerometerEvent( Timestamp _timestamp, Timestamp _timestampSensor, float _dx, float _dy, float _dz );
+        void pushControllerConnectEvent( Timestamp _timestamp, ControllerId _controllerId, bool _connected );
+        void pushControllerButtonEvent( Timestamp _timestamp, ControllerId _controllerId, EControllerButton _button, float _value, bool _isDown );
+        void pushControllerAxisEvent( Timestamp _timestamp, ControllerId _controllerId, EControllerAxis _axis, float _value );
     }
 }

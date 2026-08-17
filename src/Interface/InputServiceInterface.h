@@ -2,6 +2,7 @@
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/InputMousePositionProviderInterface.h"
+#include "Interface/InputControllerHandlerInterface.h"
 
 #include "Kernel/InputEvent.h"
 #include "Kernel/KeyCode.h"
@@ -38,6 +39,20 @@ namespace Mengine
         virtual bool isMouseButtonDown( EMouseButtonCode _button ) const = 0;
 
     public:
+        virtual uint32_t getControllerCount() const = 0;
+        virtual ControllerId getControllerId( uint32_t _index ) const = 0;
+        virtual bool isControllerConnected( ControllerId _controllerId ) const = 0;
+        virtual bool isControllerButtonDown( ControllerId _controllerId, EControllerButton _button ) const = 0;
+        virtual float getControllerAxisValue( ControllerId _controllerId, EControllerAxis _axis ) const = 0;
+        virtual bool getControllerState( ControllerId _controllerId, InputControllerState * const _state ) const = 0;
+
+        virtual void setControllerDeadZone( EControllerAxis _axis, float _deadZone ) = 0;
+        virtual float getControllerDeadZone( EControllerAxis _axis ) const = 0;
+
+        virtual void addControllerHandler( const InputControllerHandlerInterfacePtr & _handler, const DocumentInterfacePtr & _doc ) = 0;
+        virtual void removeControllerHandler( const InputControllerHandlerInterfacePtr & _handler ) = 0;
+
+    public:
         virtual void setCursorPosition( ETouchCode _touchId, const mt::vec2f & _point, float _pressure ) = 0;
         virtual const mt::vec2f & getCursorPosition( ETouchCode _touchId ) const = 0;
         virtual float getCursorPressure( ETouchCode _touchId ) const = 0;
@@ -62,7 +77,10 @@ namespace Mengine
             InputMouseWheelEvent,
             InputMouseMoveEvent,
             InputMouseEnterEvent,
-            InputMouseLeaveEvent> InputVariantEvent;
+            InputMouseLeaveEvent,
+            InputControllerConnectEvent,
+            InputControllerButtonEvent,
+            InputControllerAxisEvent> InputVariantEvent;
 
         virtual void pushEvent( const InputVariantEvent & _event ) = 0;
     };

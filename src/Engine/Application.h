@@ -92,6 +92,8 @@ namespace Mengine
         const Resolution & getCurrentWindowResolution() const override;
 
         const Viewport & getRenderViewport() const override;
+        void setSafeAreaViewport( const Viewport & _viewport ) override;
+        const Viewport & getSafeAreaViewport() const override;
         void setContentResolution( const Resolution & _resolution ) override;
         const Resolution & getContentResolution() const override;
 
@@ -208,6 +210,7 @@ namespace Mengine
         Resolution m_currentWindowResolution;
 
         Viewport m_renderViewport;
+        Viewport m_safeAreaViewport;
 
         bool m_particleEnable;
         bool m_textEnable;

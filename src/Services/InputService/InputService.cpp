@@ -25,6 +25,7 @@ namespace Mengine
         StdAlgorithm::fill_n( m_cursorPressure, MENGINE_INPUT_MAX_TOUCH, 0.f );
         StdAlgorithm::fill_n( m_keyBuffer, MENGINE_INPUT_MAX_KEY_CODE, false );
         StdAlgorithm::fill_n( m_mouseBuffer, MENGINE_INPUT_MAX_MOUSE_BUTTON_CODE, false );
+        StdAlgorithm::fill_n( m_controllerDeadZones, CONTROLLER_AXIS_COUNT, 0.15f );
     }
     //////////////////////////////////////////////////////////////////////////
     InputService::~InputService()
@@ -53,8 +54,11 @@ namespace Mengine
 #endif
 
         MENGINE_ASSERTION_CONTAINER_EMPTY( m_mousePositionProviders );
+        MENGINE_ASSERTION_CONTAINER_EMPTY( m_controllerHandlers );
 
         m_mousePositionProviders.clear();
+        m_controllerHandlers.clear();
+        m_controllerStates.clear();
 
         m_mutex = nullptr;
 
@@ -213,6 +217,134 @@ namespace Mengine
         return isDown;
     }
     //////////////////////////////////////////////////////////////////////////
+    uint32_t InputService::getControllerCount() const
+    {
+        return (uint32_t)m_controllerStates.size();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ControllerId InputService::getControllerId( uint32_t _index ) const
+    {
+        MENGINE_ASSERTION_FATAL( _index < m_controllerStates.size(), "invalid controller index %u"
+            , _index
+        );
+
+        return m_controllerStates[_index].controllerId;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool InputService::isControllerConnected( ControllerId _controllerId ) const
+    {
+        VectorControllerStates::const_iterator it_found = StdAlgorithm::find_if( m_controllerStates.begin(), m_controllerStates.end(), [_controllerId]( const InputControllerState & _state )
+        {
+            return _state.controllerId == _controllerId;
+        } );
+
+        return it_found != m_controllerStates.end();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool InputService::isControllerButtonDown( ControllerId _controllerId, EControllerButton _button ) const
+    {
+        MENGINE_ASSERTION_FATAL( _button < CONTROLLER_BUTTON_COUNT, "invalid controller button %u"
+            , _button
+        );
+
+        InputControllerState state;
+
+        if( this->getControllerState( _controllerId, &state ) == false )
+        {
+            return false;
+        }
+
+        return state.buttons[_button];
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float InputService::getControllerAxisValue( ControllerId _controllerId, EControllerAxis _axis ) const
+    {
+        MENGINE_ASSERTION_FATAL( _axis < CONTROLLER_AXIS_COUNT, "invalid controller axis %u"
+            , _axis
+        );
+
+        InputControllerState state;
+
+        if( this->getControllerState( _controllerId, &state ) == false )
+        {
+            return 0.f;
+        }
+
+        return state.axes[_axis];
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool InputService::getControllerState( ControllerId _controllerId, InputControllerState * const _state ) const
+    {
+        VectorControllerStates::const_iterator it_found = StdAlgorithm::find_if( m_controllerStates.begin(), m_controllerStates.end(), [_controllerId]( const InputControllerState & _stateDesc )
+        {
+            return _stateDesc.controllerId == _controllerId;
+        } );
+
+        if( it_found == m_controllerStates.end() )
+        {
+            return false;
+        }
+
+        *_state = *it_found;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void InputService::setControllerDeadZone( EControllerAxis _axis, float _deadZone )
+    {
+        MENGINE_ASSERTION_FATAL( _axis < CONTROLLER_AXIS_COUNT, "invalid controller axis %u"
+            , _axis
+        );
+
+        float deadZone = _deadZone;
+
+        if( deadZone < 0.f )
+        {
+            deadZone = 0.f;
+        }
+        else if( deadZone > 1.f )
+        {
+            deadZone = 1.f;
+        }
+
+        m_controllerDeadZones[_axis] = deadZone;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float InputService::getControllerDeadZone( EControllerAxis _axis ) const
+    {
+        MENGINE_ASSERTION_FATAL( _axis < CONTROLLER_AXIS_COUNT, "invalid controller axis %u"
+            , _axis
+        );
+
+        return m_controllerDeadZones[_axis];
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void InputService::addControllerHandler( const InputControllerHandlerInterfacePtr & _handler, const DocumentInterfacePtr & _doc )
+    {
+        MENGINE_UNUSED( _doc );
+
+        InputControllerHandlerDesc desc;
+        desc.handler = _handler;
+
+#if defined(MENGINE_DOCUMENT_ENABLE)
+        desc.doc = _doc;
+#endif
+
+        m_controllerHandlers.emplace_back( desc );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void InputService::removeControllerHandler( const InputControllerHandlerInterfacePtr & _handler )
+    {
+        VectorControllerHandlers::iterator it_found = StdAlgorithm::find_if( m_controllerHandlers.begin(), m_controllerHandlers.end(), [_handler]( const InputControllerHandlerDesc & _desc )
+        {
+            return _desc.handler == _handler;
+        } );
+
+        MENGINE_ASSERTION_FATAL( it_found != m_controllerHandlers.end(), "controller handler not found" );
+
+        m_controllerHandlers.erase( it_found );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool InputService::validCursorPosition( float _x, float _y, float * const _vx, float * const _vy ) const
     {
         bool inside = true;
@@ -353,6 +485,12 @@ namespace Mengine
     {
         StdAlgorithm::fill( m_keyBuffer, m_keyBuffer + MENGINE_INPUT_MAX_KEY_CODE, false );
         StdAlgorithm::fill( m_mouseBuffer, m_mouseBuffer + MENGINE_INPUT_MAX_MOUSE_BUTTON_CODE, false );
+
+        for( InputControllerState & state : m_controllerStates )
+        {
+            StdAlgorithm::fill( state.buttons, state.buttons + CONTROLLER_BUTTON_COUNT, false );
+            StdAlgorithm::fill( state.axes, state.axes + CONTROLLER_AXIS_COUNT, 0.f );
+        }
 
         if( SERVICE_IS_INITIALIZE( ActionServiceInterface ) == true )
         {
@@ -541,6 +679,137 @@ namespace Mengine
 
         APPLICATION_SERVICE()
             ->handleMouseLeave( _event );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void InputService::dispatchEvent_( const InputControllerConnectEvent & _event )
+    {
+        VectorControllerStates::iterator it_found = StdAlgorithm::find_if( m_controllerStates.begin(), m_controllerStates.end(), [&_event]( const InputControllerState & _state )
+        {
+            return _state.controllerId == _event.controllerId;
+        } );
+
+        if( _event.connected == true )
+        {
+            if( it_found == m_controllerStates.end() )
+            {
+                InputControllerState state;
+                state.controllerId = _event.controllerId;
+                state.connected = true;
+                StdAlgorithm::fill_n( state.buttons, CONTROLLER_BUTTON_COUNT, false );
+                StdAlgorithm::fill_n( state.axes, CONTROLLER_AXIS_COUNT, 0.f );
+
+                m_controllerStates.emplace_back( state );
+            }
+        }
+
+        for( const InputControllerHandlerDesc & desc : m_controllerHandlers )
+        {
+            desc.handler->handleControllerConnectEvent( _event );
+        }
+
+        if( _event.connected == false && it_found != m_controllerStates.end() )
+        {
+            m_controllerStates.erase( it_found );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void InputService::dispatchEvent_( const InputControllerButtonEvent & _event )
+    {
+        if( _event.button >= CONTROLLER_BUTTON_COUNT )
+        {
+            return;
+        }
+
+        VectorControllerStates::iterator it_found = StdAlgorithm::find_if( m_controllerStates.begin(), m_controllerStates.end(), [&_event]( const InputControllerState & _state )
+        {
+            return _state.controllerId == _event.controllerId;
+        } );
+
+        if( it_found == m_controllerStates.end() )
+        {
+            return;
+        }
+
+        it_found->buttons[_event.button] = _event.isDown;
+
+        for( const InputControllerHandlerDesc & desc : m_controllerHandlers )
+        {
+            if( desc.handler->handleControllerButtonEvent( _event ) == true )
+            {
+                break;
+            }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void InputService::dispatchEvent_( const InputControllerAxisEvent & _event )
+    {
+        if( _event.axis >= CONTROLLER_AXIS_COUNT )
+        {
+            return;
+        }
+
+        VectorControllerStates::iterator it_found = StdAlgorithm::find_if( m_controllerStates.begin(), m_controllerStates.end(), [&_event]( const InputControllerState & _state )
+        {
+            return _state.controllerId == _event.controllerId;
+        } );
+
+        if( it_found == m_controllerStates.end() )
+        {
+            return;
+        }
+
+        float value = _event.value;
+
+        if( value < -1.f )
+        {
+            value = -1.f;
+        }
+        else if( value > 1.f )
+        {
+            value = 1.f;
+        }
+
+        float deadZone = m_controllerDeadZones[_event.axis];
+        bool trigger = _event.axis == CA_LEFT_TRIGGER || _event.axis == CA_RIGHT_TRIGGER;
+
+        if( trigger == true )
+        {
+            if( deadZone >= 1.f || value <= deadZone )
+            {
+                value = 0.f;
+            }
+            else
+            {
+                value = (value - deadZone) / (1.f - deadZone);
+            }
+        }
+        else
+        {
+            float absoluteValue = value >= 0.f ? value : -value;
+
+            if( deadZone >= 1.f || absoluteValue <= deadZone )
+            {
+                value = 0.f;
+            }
+            else
+            {
+                float sign = value >= 0.f ? 1.f : -1.f;
+                value = sign * (absoluteValue - deadZone) / (1.f - deadZone);
+            }
+        }
+
+        it_found->axes[_event.axis] = value;
+
+        InputControllerAxisEvent event = _event;
+        event.value = value;
+
+        for( const InputControllerHandlerDesc & desc : m_controllerHandlers )
+        {
+            if( desc.handler->handleControllerAxisEvent( event ) == true )
+            {
+                break;
+            }
+        }
     }
     //////////////////////////////////////////////////////////////////////////
 }

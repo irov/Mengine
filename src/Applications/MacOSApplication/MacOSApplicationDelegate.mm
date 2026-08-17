@@ -7,11 +7,22 @@
 
 #import "Kernel/Logger.h"
 
+#import "Environment/Apple/AppleGameControllerInput.h"
+
+@interface MacOSApplicationDelegate ()
+
+@property (nonatomic, strong) AppleGameControllerInput * m_gameControllerInput;
+
+@end
+
 @implementation MacOSApplicationDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification
 {
     MENGINE_UNUSED( notification );
+
+    self.m_gameControllerInput = [[AppleGameControllerInput alloc] init];
+    [self.m_gameControllerInput start];
 }
 
 - (void)applicationDidBecomeActive:(NSNotification *)notification
@@ -60,6 +71,9 @@
 - (void)applicationWillTerminate:(NSNotification *)notification
 {
     MENGINE_UNUSED( notification );
+
+    [self.m_gameControllerInput stop];
+    self.m_gameControllerInput = nil;
 
     if( SERVICE_PROVIDER_EXIST() == false || SERVICE_IS_INITIALIZE( Mengine::PlatformServiceInterface ) == false )
     {

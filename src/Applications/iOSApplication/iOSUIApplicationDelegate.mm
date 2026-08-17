@@ -20,6 +20,8 @@
 
 #include "Kernel/NotificationHelper.h"
 
+#import "Environment/Apple/AppleGameControllerInput.h"
+
 typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
 
 @interface iOSUIApplicationDelegate ()
@@ -45,6 +47,7 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
 @property (nonatomic, assign) BOOL m_isProcessingDidBecomeActiveOperation;
 @property (nonatomic, assign) BOOL m_isApplicationForeground;
 @property (nonatomic, assign) BOOL m_isApplicationTerminating;
+@property (nonatomic, strong) AppleGameControllerInput * m_gameControllerInput;
 
 - (void)startEngineLoop;
 - (void)stopEngineLoop;
@@ -733,6 +736,9 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
 
     [self stopEngineLoop];
 
+    [self.m_gameControllerInput stop];
+    self.m_gameControllerInput = nil;
+
     [AppleDetail cancelAllQueueOperations];
 
     Mengine::iOSApplication * application = static_cast<Mengine::iOSApplication *>(self.m_application);
@@ -871,6 +877,9 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
 
         return;
     }
+
+    self.m_gameControllerInput = [[AppleGameControllerInput alloc] init];
+    [self.m_gameControllerInput start];
 
     @autoreleasepool {
         for (id plugin in self.m_plugins) {

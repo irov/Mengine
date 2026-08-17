@@ -7,6 +7,7 @@
 #include "Environment/Windows/Win32PlatformServiceExtensionInterface.h"
 
 #include "GDKDynamicLibrary.h"
+#include "GDKGameControllerInput.h"
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/StaticString.h"
@@ -160,6 +161,8 @@ namespace Mengine
 
     protected:
         Timestamp m_beginTime;
+
+        GDKGameControllerInput m_gameControllerInput;
 
         FactoryInterfacePtr m_factoryDynamicLibraries;
 

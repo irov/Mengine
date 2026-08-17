@@ -347,11 +347,15 @@ namespace Mengine
         }
 #endif
 
+        m_gameControllerInput.initialize();
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32PlatformService::_finalizeService()
     {
+        m_gameControllerInput.finalize();
+
         m_cursorCaptureRequested = false;
         this->updateCursorCapture_();
 
@@ -765,6 +769,8 @@ namespace Mengine
     bool Win32PlatformService::updatePlatform()
     {
         this->updateWndMessage_();
+
+        m_gameControllerInput.update();
 
         if( m_close == true )
         {

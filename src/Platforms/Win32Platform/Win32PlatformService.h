@@ -5,6 +5,7 @@
 #include "Interface/FactoryInterface.h"
 
 #include "Environment/Windows/Win32PlatformServiceExtensionInterface.h"
+#include "Environment/Windows/Win32GameControllerInput.h"
 
 #include "Win32MouseEvent.h"
 #include "Win32AlreadyRunningMonitor.h"
@@ -208,6 +209,8 @@ namespace Mengine
 
     protected:
         Timestamp m_beginTime;
+
+        Win32GameControllerInput m_gameControllerInput;
 
         StaticWString<MENGINE_MAX_PATH> m_windowClassName;
 

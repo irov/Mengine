@@ -1,6 +1,7 @@
 #import "iOSViewController.h"
 
 #include "Interface/PlatformServiceInterface.h"
+#include "Interface/ApplicationInterface.h"
 
 #include "Environment/iOS/iOSPlatformServiceExtensionInterface.h"
 
@@ -11,6 +12,30 @@
 @end
 
 @implementation iOSViewController
+
+- (void)viewSafeAreaInsetsDidChange {
+    [super viewSafeAreaInsetsDidChange];
+
+    if( SERVICE_IS_INITIALIZE( Mengine::ApplicationInterface ) == false )
+    {
+        return;
+    }
+
+    UIEdgeInsets viewInsets = self.view.safeAreaInsets;
+    CGFloat scale = self.view.contentScaleFactor;
+
+    CGSize viewSize = self.view.bounds.size;
+
+    Mengine::Viewport viewport(
+        (float)(viewInsets.left * scale),
+        (float)(viewInsets.top * scale),
+        (float)((viewSize.width - viewInsets.right) * scale),
+        (float)((viewSize.height - viewInsets.bottom) * scale)
+    );
+
+    APPLICATION_SERVICE()
+        ->setSafeAreaViewport( viewport );
+}
 
 - (void)setView:(UIView *)view {
     [super setView:view];

@@ -1030,6 +1030,12 @@ namespace Mengine
                 return resolution;
             }
             //////////////////////////////////////////////////////////////////////////
+            const Viewport & s_getSafeAreaViewport()
+            {
+                return APPLICATION_SERVICE()
+                    ->getSafeAreaViewport();
+            }
+            //////////////////////////////////////////////////////////////////////////
             void s_setNopause( bool _value )
             {
                 return APPLICATION_SERVICE()
@@ -4486,6 +4492,7 @@ namespace Mengine
 
         pybind::def_functor( _kernel, "getCurrentResolution", nodeScriptMethod, &EngineScriptMethod::s_getCurrentResolution );
         pybind::def_functor( _kernel, "getContentResolution", nodeScriptMethod, &EngineScriptMethod::s_getContentResolution );
+        pybind::def_functor( _kernel, "getSafeAreaViewport", nodeScriptMethod, &EngineScriptMethod::s_getSafeAreaViewport );
         pybind::def_functor( _kernel, "getHotSpotImageSize", nodeScriptMethod, &EngineScriptMethod::s_getHotSpotImageSize );
 
         pybind::def_functor( _kernel, "setNopause", nodeScriptMethod, &EngineScriptMethod::s_setNopause );

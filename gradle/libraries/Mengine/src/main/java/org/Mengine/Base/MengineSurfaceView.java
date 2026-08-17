@@ -1,25 +1,35 @@
 package org.Mengine.Base;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.Insets;
 import android.graphics.Rect;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.hardware.input.InputManager;
+import android.os.Build;
+import android.os.SystemClock;
+import android.util.SparseBooleanArray;
+import android.util.SparseIntArray;
 import android.view.Display;
+import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.WindowInsets;
 
 import androidx.annotation.NonNull;
 
-public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Callback, View.OnKeyListener, View.OnTouchListener, SensorEventListener {
+public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Callback, View.OnKeyListener, View.OnTouchListener, SensorEventListener, InputManager.InputDeviceListener {
     public static final MengineTag TAG = MengineTag.of("MNGSurfaceView");
 
     private SensorManager m_sensorManager;
+    private InputManager m_inputManager;
     private Sensor m_accelerometer;
     private Sensor m_linearAccelerometer;
 
@@ -29,6 +39,8 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
     private float m_surfaceHeightF;
 
     private boolean m_paused;
+    private final SparseBooleanArray m_controllerDevices = new SparseBooleanArray();
+    private final SparseIntArray m_controllerHatStates = new SparseIntArray();
 
     public MengineSurfaceView(Context context) {
         super(context);
@@ -36,6 +48,7 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
         this.getHolder().addCallback(this);
 
         m_display = MengineUtils.getDefaultDisplay(context);
+        m_inputManager = (InputManager)context.getSystemService(Context.INPUT_SERVICE);
 
         if (BuildConfig.ANDROID_APP_REQUIRED_HARDWARE_SENSOR_ACCELEROMETER == true) {
             m_sensorManager = context.getSystemService(SensorManager.class);
@@ -49,6 +62,55 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
         m_surfaceWidthF = 1.f;
         m_surfaceHeightF = 1.f;
         m_paused = true;
+
+        this.setOnApplyWindowInsetsListener(this::onApplyWindowInsets);
+    }
+
+    private WindowInsets onApplyWindowInsets(View view, WindowInsets windowInsets) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            this.dispatchSafeAreaViewportR(view, windowInsets);
+        } else {
+            this.dispatchSafeAreaViewportLegacy(view, windowInsets);
+        }
+
+        return windowInsets;
+    }
+
+    @TargetApi(Build.VERSION_CODES.R)
+    private void dispatchSafeAreaViewportR(View view, WindowInsets windowInsets) {
+        Insets insets = windowInsets.getInsets(WindowInsets.Type.systemBars() | WindowInsets.Type.displayCutout());
+        this.dispatchSafeAreaViewport(view, insets.left, insets.top, insets.right, insets.bottom);
+    }
+
+    @SuppressWarnings("deprecation")
+    private void dispatchSafeAreaViewportLegacy(View view, WindowInsets windowInsets) {
+        int left = windowInsets.getSystemWindowInsetLeft();
+        int top = windowInsets.getSystemWindowInsetTop();
+        int right = windowInsets.getSystemWindowInsetRight();
+        int bottom = windowInsets.getSystemWindowInsetBottom();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && windowInsets.getDisplayCutout() != null) {
+            left = Math.max(left, windowInsets.getDisplayCutout().getSafeInsetLeft());
+            top = Math.max(top, windowInsets.getDisplayCutout().getSafeInsetTop());
+            right = Math.max(right, windowInsets.getDisplayCutout().getSafeInsetRight());
+            bottom = Math.max(bottom, windowInsets.getDisplayCutout().getSafeInsetBottom());
+        }
+
+        this.dispatchSafeAreaViewport(view, left, top, right, bottom);
+    }
+
+    private void dispatchSafeAreaViewport(View view, int left, int top, int right, int bottom) {
+        int width = view.getWidth();
+        int height = view.getHeight();
+
+        if (width != 0 && height != 0) {
+            MengineNative.AndroidPlatform_safeAreaViewportEvent(
+                (float)left,
+                (float)top,
+                (float)Math.max(left, width - right),
+                (float)Math.max(top, height - bottom)
+            );
+        }
     }
 
     public void handleStart() {
@@ -95,6 +157,16 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
                 m_sensorManager.registerListener(this, m_linearAccelerometer, SensorManager.SENSOR_DELAY_GAME);
             }
         }
+
+        if (m_inputManager != null) {
+            m_inputManager.registerInputDeviceListener(this, null);
+
+            for (int deviceId : m_inputManager.getInputDeviceIds()) {
+                this.updateControllerDevice(deviceId);
+            }
+        }
+
+        this.requestApplyInsets();
     }
 
     public void handlePause() {
@@ -120,6 +192,18 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
                 m_sensorManager.unregisterListener(this, m_linearAccelerometer);
             }
         }
+
+        if (m_inputManager != null) {
+            m_inputManager.unregisterInputDeviceListener(this);
+        }
+
+        for (int index = 0; index != m_controllerDevices.size(); ++index) {
+            int deviceId = m_controllerDevices.keyAt(index);
+            MengineNative.AndroidPlatform_controllerConnectEvent(SystemClock.uptimeMillis(), deviceId + 1, false);
+        }
+
+        m_controllerDevices.clear();
+        m_controllerHatStates.clear();
     }
 
     public void handleDestroy() {
@@ -130,6 +214,7 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
         this.getHolder().removeCallback(this);
 
         m_display = null;
+        m_inputManager = null;
         m_sensorManager = null;
         m_accelerometer = null;
         m_linearAccelerometer = null;
@@ -221,6 +306,15 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
         int repeatCount = event.getRepeatCount();
         long eventTime = event.getEventTime();
 
+        if (isControllerSource(event.getSource()) == true) {
+            boolean isDown = action == KeyEvent.ACTION_DOWN;
+
+            if (action == KeyEvent.ACTION_DOWN || action == KeyEvent.ACTION_UP) {
+                MengineNative.AndroidPlatform_controllerButtonEvent(eventTime, event.getDeviceId() + 1, keyCode, isDown == true ? 1.f : 0.f, isDown);
+                return true;
+            }
+        }
+
         if (action == KeyEvent.ACTION_DOWN) {
             MengineNative.AndroidPlatform_keyEvent(eventTime, true, keyCode, repeatCount);
 
@@ -238,6 +332,114 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
         }
 
         return false;
+    }
+
+    private static boolean isControllerSource(int source) {
+        return (source & InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD
+            || (source & InputDevice.SOURCE_JOYSTICK) == InputDevice.SOURCE_JOYSTICK;
+    }
+
+    private static boolean isControllerDevice(InputDevice device) {
+        return device != null && isControllerSource(device.getSources()) == true;
+    }
+
+    private void updateControllerDevice(int deviceId) {
+        InputDevice device = InputDevice.getDevice(deviceId);
+        boolean controller = isControllerDevice(device);
+        boolean registered = m_controllerDevices.get(deviceId, false);
+
+        if (controller == registered) {
+            return;
+        }
+
+        if (controller == true) {
+            m_controllerDevices.put(deviceId, true);
+        } else {
+            m_controllerDevices.delete(deviceId);
+        }
+
+        MengineNative.AndroidPlatform_controllerConnectEvent(SystemClock.uptimeMillis(), deviceId + 1, controller);
+    }
+
+    @Override
+    public void onInputDeviceAdded(int deviceId) {
+        this.updateControllerDevice(deviceId);
+    }
+
+    @Override
+    public void onInputDeviceRemoved(int deviceId) {
+        if (m_controllerDevices.get(deviceId, false) == false) {
+            return;
+        }
+
+        m_controllerDevices.delete(deviceId);
+        m_controllerHatStates.delete(deviceId);
+        MengineNative.AndroidPlatform_controllerConnectEvent(SystemClock.uptimeMillis(), deviceId + 1, false);
+    }
+
+    @Override
+    public void onInputDeviceChanged(int deviceId) {
+        this.updateControllerDevice(deviceId);
+    }
+
+    @Override
+    public boolean onGenericMotionEvent(MotionEvent event) {
+        if (event.getAction() != MotionEvent.ACTION_MOVE || isControllerSource(event.getSource()) == false) {
+            return super.onGenericMotionEvent(event);
+        }
+
+        int deviceId = event.getDeviceId() + 1;
+        long eventTime = event.getEventTime();
+        InputDevice inputDevice = event.getDevice();
+        int rightXAxis = inputDevice != null && inputDevice.getMotionRange(MotionEvent.AXIS_Z, event.getSource()) != null
+            ? MotionEvent.AXIS_Z
+            : MotionEvent.AXIS_RX;
+        int rightYAxis = inputDevice != null && inputDevice.getMotionRange(MotionEvent.AXIS_RZ, event.getSource()) != null
+            ? MotionEvent.AXIS_RZ
+            : MotionEvent.AXIS_RY;
+        int leftTriggerAxis = inputDevice != null && inputDevice.getMotionRange(MotionEvent.AXIS_LTRIGGER, event.getSource()) != null
+            ? MotionEvent.AXIS_LTRIGGER
+            : MotionEvent.AXIS_BRAKE;
+        int rightTriggerAxis = inputDevice != null && inputDevice.getMotionRange(MotionEvent.AXIS_RTRIGGER, event.getSource()) != null
+            ? MotionEvent.AXIS_RTRIGGER
+            : MotionEvent.AXIS_GAS;
+
+        int[] axes = {MotionEvent.AXIS_X, MotionEvent.AXIS_Y, rightXAxis, rightYAxis, leftTriggerAxis, rightTriggerAxis};
+
+        for (int axis : axes) {
+            MengineNative.AndroidPlatform_controllerAxisEvent(eventTime, deviceId, axis, event.getAxisValue(axis));
+        }
+
+        this.dispatchControllerHat(eventTime, event.getDeviceId(), event.getAxisValue(MotionEvent.AXIS_HAT_X), event.getAxisValue(MotionEvent.AXIS_HAT_Y));
+
+        return true;
+    }
+
+    private void dispatchControllerHat(long eventTime, int rawDeviceId, float x, float y) {
+        final int LEFT = 1;
+        final int RIGHT = 2;
+        final int UP = 4;
+        final int DOWN = 8;
+        int state = (x < -0.5f ? LEFT : x > 0.5f ? RIGHT : 0) | (y < -0.5f ? UP : y > 0.5f ? DOWN : 0);
+        int previous = m_controllerHatStates.get(rawDeviceId, 0);
+
+        if (state == previous) {
+            return;
+        }
+
+        int[] masks = {LEFT, RIGHT, UP, DOWN};
+        int[] keyCodes = {KeyEvent.KEYCODE_DPAD_LEFT, KeyEvent.KEYCODE_DPAD_RIGHT, KeyEvent.KEYCODE_DPAD_UP, KeyEvent.KEYCODE_DPAD_DOWN};
+
+        for (int index = 0; index != masks.length; ++index) {
+            boolean wasDown = (previous & masks[index]) != 0;
+            boolean isDown = (state & masks[index]) != 0;
+
+            if (wasDown != isDown) {
+                MengineNative.AndroidPlatform_controllerButtonEvent(eventTime, rawDeviceId + 1, keyCodes[index], isDown ? 1.f : 0.f, isDown);
+            }
+        }
+
+        m_controllerHatStates.put(rawDeviceId, state);
     }
 
     protected void nativeTouchEvent(MotionEvent event, int index, int action) {

@@ -48,6 +48,7 @@ Common
     InputServiceInterface.h
     ActionServiceInterface.h
     InputHandlerInterface.h
+    InputControllerHandlerInterface.h
     EasingInterface.h
     EasingServiceInterface.h
     BootstrapperInterface.h

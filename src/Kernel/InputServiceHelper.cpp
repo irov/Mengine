@@ -265,5 +265,41 @@ namespace Mengine
                 ->pushEvent( ev );
         }
         //////////////////////////////////////////////////////////////////////////
+        void pushControllerConnectEvent( Timestamp _timestamp, ControllerId _controllerId, bool _connected )
+        {
+            InputControllerConnectEvent ev;
+            ev.base.timestamp = _timestamp;
+            ev.controllerId = _controllerId;
+            ev.connected = _connected;
+
+            INPUT_SERVICE()
+                ->pushEvent( ev );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void pushControllerButtonEvent( Timestamp _timestamp, ControllerId _controllerId, EControllerButton _button, float _value, bool _isDown )
+        {
+            InputControllerButtonEvent ev;
+            ev.base.timestamp = _timestamp;
+            ev.controllerId = _controllerId;
+            ev.button = _button;
+            ev.value = _value;
+            ev.isDown = _isDown;
+
+            INPUT_SERVICE()
+                ->pushEvent( ev );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void pushControllerAxisEvent( Timestamp _timestamp, ControllerId _controllerId, EControllerAxis _axis, float _value )
+        {
+            InputControllerAxisEvent ev;
+            ev.base.timestamp = _timestamp;
+            ev.controllerId = _controllerId;
+            ev.axis = _axis;
+            ev.value = _value;
+
+            INPUT_SERVICE()
+                ->pushEvent( ev );
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
 }

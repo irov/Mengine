@@ -4,9 +4,7 @@
 
 #include "Interface/PrototypeServiceInterface.h"
 
-#if defined(MENGINE_PLUGIN_METABUF)
 #include "Interface/MetabufLoaderServiceInterface.h"
-#endif
 
 #include "Interface/ScriptServiceInterface.h"
 
@@ -16,9 +14,7 @@
 #include "SurfaceMockupVideo.h"
 #include "ResourceVideoValidator.h"
 
-#if defined(MENGINE_PLUGIN_METABUF)
 #include "MetabufLoaderResourceVideo.h"
-#endif
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/ResourcePrototypeGenerator.h"
@@ -88,9 +84,7 @@ namespace Mengine
 
         VOCABULARY_SET( ValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), ResourceVideo::getFactorableType(), Helper::makeFactorableUnique<ResourceVideoValidator>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 
-#if defined(MENGINE_PLUGIN_METABUF)
         VOCABULARY_SET( MetabufLoaderInterface, STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceVideo::getFactorableType(), Helper::makeFactorableUnique<MetabufLoaderResourceVideo>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
-#endif
 
         return true;
     }
@@ -101,9 +95,7 @@ namespace Mengine
         Helper::removeSurfacePrototype<SurfaceVideo>();
 
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), ResourceVideo::getFactorableType() );
-#if defined(MENGINE_PLUGIN_METABUF)
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceVideo::getFactorableType() );
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
 }

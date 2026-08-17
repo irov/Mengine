@@ -5,17 +5,13 @@
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 
-#if defined(MENGINE_PLUGIN_METABUF)
 #include "Interface/MetabufLoaderServiceInterface.h"
-#endif
 
 #include "Plugins/ResourcePrefetcherPlugin/ResourcePrefetcherServiceInterface.h"
 
 #include "ResourceJSON.h"
 
-#if defined(MENGINE_PLUGIN_METABUF)
 #include "MetabufLoaderResourceJSON.h"
-#endif
 
 #include "JSONConfig.h"
 
@@ -103,7 +99,6 @@ namespace Mengine
             return false;
         }
 
-#if defined(MENGINE_PLUGIN_METABUF)
         PLUGIN_SERVICE_WAIT( MetabufLoaderServiceInterface, [this]()
         {
             VOCABULARY_SET( MetabufLoaderInterface, STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceJSON::getFactorableType(), Helper::makeFactorableUnique<MetabufLoaderResourceJSON>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
@@ -115,7 +110,6 @@ namespace Mengine
         {
             VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceJSON::getFactorableType() );
         } );
-#endif
 
         PLUGIN_SERVICE_WAIT( ResourcePrefetcherServiceInterface, [this]()
         {

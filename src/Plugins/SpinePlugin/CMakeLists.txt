@@ -26,21 +26,19 @@ src
     SpineDebuggerBoundingBox.cpp
 )
 
-if(MENGINE_PLUGIN_METABUF)
-    ADD_FILTER(
-    Metabuf
-        MetabufLoaderResourceSpineAtlasDefault.h
-        MetabufLoaderResourceSpineAtlasDefault.cpp
-        MetabufLoaderResourceSpineAtlasTexturepacker.h
-        MetabufLoaderResourceSpineAtlasTexturepacker.cpp
-        MetabufLoaderResourceSpineSkeleton.h
-        MetabufLoaderResourceSpineSkeleton.cpp
-    )
+ADD_FILTER(
+Metabuf
+    MetabufLoaderResourceSpineAtlasDefault.h
+    MetabufLoaderResourceSpineAtlasDefault.cpp
+    MetabufLoaderResourceSpineAtlasTexturepacker.h
+    MetabufLoaderResourceSpineAtlasTexturepacker.cpp
+    MetabufLoaderResourceSpineSkeleton.h
+    MetabufLoaderResourceSpineSkeleton.cpp
+)
 
-    add_definitions(-DMETABUF_EXTERNAL_ALLOCATOR)
+add_definitions(-DMETABUF_EXTERNAL_ALLOCATOR)
 
-    INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/metabuf/include)
-endif()
+INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/metabuf/include)
 
 if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
     ADD_FILTER(
@@ -62,9 +60,7 @@ endif()
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)
 
-if(MENGINE_PLUGIN_METABUF)
-    TARGET_LINK_LIBRARIES(${PROJECT_NAME} Metacode)
-    TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}metabuf${MENGINE_LIB_SUFFIX})
-endif()
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} Metacode)
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}metabuf${MENGINE_LIB_SUFFIX})
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}spine-c${MENGINE_LIB_SUFFIX})

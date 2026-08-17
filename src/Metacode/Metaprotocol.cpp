@@ -5,7 +5,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     void MetaprotocolGenerator::generate( Metabuf::ProtocolInterface * _protocol ) const
     {
-        _protocol->setVersion( 157U, 3041487559U );
+        _protocol->setVersion( 156U, 2894994108U );
 
         _protocol->addType( "Color", "Mengine::Color", "float4", false, false, false );
         _protocol->addType( "Color255", "Mengine::Color", "float4inv255", false, false, false );
@@ -76,7 +76,6 @@ namespace Metacode
         _protocol->addType( "uint32_t", "uint32_t", "uint32_t", false, true, false );
 
         Metabuf::MetaInterface * meta_0 = _protocol->addMeta( "Data", 1U );
-        Metabuf::MetaInterface * meta_1 = _protocol->addMeta( "TiledMap", 1U );
 
         Metabuf::NodeInterface * node_0 = _protocol->addNode( 1U, "DataBlock", "", "", 39U, 0U, false, nullptr );
         Metabuf::NodeInterface * node_1 = _protocol->addNode( 4U, "FragmentShader", "", "", 0U, 2U, false, node_0 );
@@ -157,18 +156,6 @@ namespace Metacode
         Metabuf::NodeInterface * node_76 = _protocol->addNode( 1U, "Text", "", "", 0U, 0U, false, node_75 );
         Metabuf::NodeInterface * node_77 = _protocol->addNode( 3U, "Texts", "", "", 1U, 0U, false, nullptr );
         Metabuf::NodeInterface * node_78 = _protocol->addNode( 1U, "Text", "", "", 0U, 4U, false, node_77 );
-        Metabuf::NodeInterface * node_79 = _protocol->addNode( 5U, "TiledMap", "", "", 4U, 0U, false, nullptr );
-        Metabuf::NodeInterface * node_80 = _protocol->addNode( 4U, "ObjectLayer", "", "", 2U, 0U, false, node_79 );
-        Metabuf::NodeInterface * node_81 = _protocol->addNode( 2U, "Object", "", "", 2U, 0U, false, node_80 );
-        Metabuf::NodeInterface * node_82 = _protocol->addNode( 2U, "Point", "", "", 0U, 0U, false, node_81 );
-        Metabuf::NodeInterface * node_83 = _protocol->addNode( 1U, "Property", "", "", 0U, 0U, false, node_81 );
-        Metabuf::NodeInterface * node_84 = _protocol->addNode( 1U, "Property", "", "", 0U, 0U, false, node_80 );
-        Metabuf::NodeInterface * node_85 = _protocol->addNode( 1U, "Property", "", "", 0U, 0U, false, node_79 );
-        Metabuf::NodeInterface * node_86 = _protocol->addNode( 3U, "TileLayer", "", "", 2U, 0U, false, node_79 );
-        Metabuf::NodeInterface * node_87 = _protocol->addNode( 1U, "Property", "", "", 0U, 0U, false, node_86 );
-        Metabuf::NodeInterface * node_88 = _protocol->addNode( 2U, "Tile", "", "", 0U, 0U, false, node_86 );
-        Metabuf::NodeInterface * node_89 = _protocol->addNode( 2U, "Tileset", "", "", 1U, 0U, false, node_79 );
-        Metabuf::NodeInterface * node_90 = _protocol->addNode( 1U, "Image", "", "", 0U, 0U, false, node_89 );
 
         node_0->addAttribute( 0U, "Name", "Mengine::ConstString", true, "" );
         node_0->addInclude( node_1 );
@@ -679,93 +666,10 @@ namespace Metacode
         node_78->addAttribute( 3U, "LineOffset", "float", false, "" );
         node_78->addAttribute( 0U, "Value", "Mengine::WString", false, "" );
 
-        node_79->addAttribute( 0U, "Height", "uint32_t", true, "" );
-        node_79->addAttribute( 0U, "HexSideLength", "uint32_t", true, "" );
-        node_79->addAttribute( 0U, "Orientation", "uint32_t", true, "" );
-        node_79->addAttribute( 0U, "StaggerAxis", "uint32_t", true, "" );
-        node_79->addAttribute( 0U, "StaggerIndex", "uint32_t", true, "" );
-        node_79->addAttribute( 0U, "TileHeight", "uint32_t", true, "" );
-        node_79->addAttribute( 0U, "TileWidth", "uint32_t", true, "" );
-        node_79->addAttribute( 0U, "Width", "uint32_t", true, "" );
-        node_79->addInclude( node_80 );
-        node_79->addInclude( node_85 );
-        node_79->addInclude( node_86 );
-        node_79->addInclude( node_89 );
-
-        node_80->addAttribute( 0U, "Id", "uint32_t", true, "" );
-        node_80->addAttribute( 0U, "Name", "Mengine::String", true, "" );
-        node_80->addAttribute( 0U, "Offset", "mt::vec2f", true, "" );
-        node_80->addAttribute( 0U, "Opacity", "float", true, "" );
-        node_80->addAttribute( 0U, "Visible", "bool", true, "" );
-        node_80->addInclude( node_81 );
-        node_80->addInclude( node_84 );
-
-        node_81->addAttribute( 0U, "Class", "Mengine::String", true, "" );
-        node_81->addAttribute( 0U, "Gid", "uint32_t", true, "" );
-        node_81->addAttribute( 0U, "Id", "uint32_t", true, "" );
-        node_81->addAttribute( 0U, "Name", "Mengine::String", true, "" );
-        node_81->addAttribute( 0U, "Position", "mt::vec2f", true, "" );
-        node_81->addAttribute( 0U, "Rotation", "float", true, "" );
-        node_81->addAttribute( 0U, "Shape", "uint32_t", true, "" );
-        node_81->addAttribute( 0U, "Size", "mt::vec2f", true, "" );
-        node_81->addAttribute( 0U, "Type", "Mengine::String", true, "" );
-        node_81->addAttribute( 0U, "Visible", "bool", true, "" );
-        node_81->addInclude( node_82 );
-        node_81->addInclude( node_83 );
-
-        node_82->addAttribute( 0U, "Position", "mt::vec2f", true, "" );
-
-        node_83->addAttribute( 0U, "Name", "Mengine::String", true, "" );
-        node_83->addAttribute( 0U, "Type", "uint32_t", true, "" );
-        node_83->addAttribute( 0U, "Value", "Mengine::String", true, "" );
-
-        node_84->addAttribute( 0U, "Name", "Mengine::String", true, "" );
-        node_84->addAttribute( 0U, "Type", "uint32_t", true, "" );
-        node_84->addAttribute( 0U, "Value", "Mengine::String", true, "" );
-
-        node_85->addAttribute( 0U, "Name", "Mengine::String", true, "" );
-        node_85->addAttribute( 0U, "Type", "uint32_t", true, "" );
-        node_85->addAttribute( 0U, "Value", "Mengine::String", true, "" );
-
-        node_86->addAttribute( 0U, "Id", "uint32_t", true, "" );
-        node_86->addAttribute( 0U, "Name", "Mengine::String", true, "" );
-        node_86->addAttribute( 0U, "Offset", "mt::vec2f", true, "" );
-        node_86->addAttribute( 0U, "Opacity", "float", true, "" );
-        node_86->addAttribute( 0U, "Visible", "bool", true, "" );
-        node_86->addInclude( node_87 );
-        node_86->addInclude( node_88 );
-
-        node_87->addAttribute( 0U, "Name", "Mengine::String", true, "" );
-        node_87->addAttribute( 0U, "Type", "uint32_t", true, "" );
-        node_87->addAttribute( 0U, "Value", "Mengine::String", true, "" );
-
-        node_88->addAttribute( 0U, "Gid", "uint32_t", true, "" );
-        node_88->addAttribute( 0U, "Position", "mt::vec2f", true, "" );
-
-        node_89->addAttribute( 0U, "Columns", "uint32_t", true, "" );
-        node_89->addAttribute( 0U, "FirstGid", "uint32_t", true, "" );
-        node_89->addAttribute( 0U, "ImageHeight", "uint32_t", true, "" );
-        node_89->addAttribute( 0U, "ImageWidth", "uint32_t", true, "" );
-        node_89->addAttribute( 0U, "Margin", "uint32_t", true, "" );
-        node_89->addAttribute( 0U, "Name", "Mengine::String", true, "" );
-        node_89->addAttribute( 0U, "Offset", "mt::vec2f", true, "" );
-        node_89->addAttribute( 0U, "Resource", "Mengine::String", true, "" );
-        node_89->addAttribute( 0U, "Spacing", "uint32_t", true, "" );
-        node_89->addAttribute( 0U, "TileCount", "uint32_t", true, "" );
-        node_89->addAttribute( 0U, "TileHeight", "uint32_t", true, "" );
-        node_89->addAttribute( 0U, "TileWidth", "uint32_t", true, "" );
-        node_89->addInclude( node_90 );
-
-        node_90->addAttribute( 0U, "Height", "uint32_t", true, "" );
-        node_90->addAttribute( 0U, "LocalId", "uint32_t", true, "" );
-        node_90->addAttribute( 0U, "Resource", "Mengine::String", true, "" );
-        node_90->addAttribute( 0U, "Width", "uint32_t", true, "" );
-
         meta_0->addNode( node_0 );
         meta_0->addNode( node_51 );
         meta_0->addNode( node_60 );
         meta_0->addNode( node_77 );
-        meta_1->addNode( node_79 );
         _protocol->addInternal( "ResourceImageData" );
         _protocol->addInternal( "ResourceImageDefault" );
         _protocol->addInternal( "ResourceImageEmpty" );

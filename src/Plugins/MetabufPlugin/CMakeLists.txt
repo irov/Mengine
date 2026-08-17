@@ -38,8 +38,6 @@ src
     MetabufLoaderResourceShape.h
     MetabufLoaderResourceSound.cpp
     MetabufLoaderResourceSound.h
-    MetabufLoaderResourceTiledMap.cpp
-    MetabufLoaderResourceTiledMap.h
     MetabufLoaderResourceWindow.cpp
     MetabufLoaderResourceWindow.h
 

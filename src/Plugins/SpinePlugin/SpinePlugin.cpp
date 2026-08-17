@@ -5,9 +5,7 @@
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 
-#if defined(MENGINE_PLUGIN_METABUF)
 #include "Interface/MetabufLoaderServiceInterface.h"
-#endif
 
 #include "Interface/DebuggerBoundingBoxInterface.h"
 
@@ -19,11 +17,9 @@
 
 #include "Spine.h"
 
-#if defined(MENGINE_PLUGIN_METABUF)
 #include "MetabufLoaderResourceSpineAtlasDefault.h"
 #include "MetabufLoaderResourceSpineAtlasTexturepacker.h"
 #include "MetabufLoaderResourceSpineSkeleton.h"
-#endif
 
 #include "Kernel/AllocatorHelper.h"
 #include "Kernel/ResourcePrototypeGenerator.h"
@@ -112,7 +108,6 @@ namespace Mengine
             return false;
         }
 
-#if defined(MENGINE_PLUGIN_METABUF)
         PLUGIN_SERVICE_WAIT( MetabufLoaderServiceInterface, [this]()
         {
             VOCABULARY_SET( MetabufLoaderInterface, STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceSpineAtlasDefault::getFactorableType(), Helper::makeFactorableUnique<MetabufLoaderResourceSpineAtlasDefault>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
@@ -128,7 +123,6 @@ namespace Mengine
             VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceSpineAtlasTexturepacker::getFactorableType() );
             VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceSpineSkeleton::getFactorableType() );
         } );
-#endif
 
         VOCABULARY_SET( DebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ), Spine::getFactorableType(), Helper::makeFactorableUnique<SpineDebuggerBoundingBox>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 

@@ -63,8 +63,6 @@
 #include "Window.h"
 #include "Landscape2D.h"
 #include "TileMap2D.h"
-#include "ResourceTiledMap.h"
-#include "TiledMap2D.h"
 #include "ResourceMusic.h"
 #include "ResourceFile.h"
 #include "ResourceWindow.h"
@@ -565,7 +563,6 @@ namespace Mengine
         NODE_FACTORY( VirtualArea );
         NODE_FACTORY( Landscape2D );
         NODE_FACTORY( TileMap2D );
-        NODE_FACTORY( TiledMap2D );
         NODE_FACTORY( RenderViewport );
         NODE_FACTORY( RenderViewportDefault );
         NODE_FACTORY( RenderScissor );
@@ -636,7 +633,6 @@ namespace Mengine
         NODE_FACTORY( VirtualArea );
         NODE_FACTORY( Landscape2D );
         NODE_FACTORY( TileMap2D );
-        NODE_FACTORY( TiledMap2D );
         NODE_FACTORY( RenderViewport );
         NODE_FACTORY( RenderViewportDefault );
         NODE_FACTORY( RenderScissor );
@@ -741,7 +737,6 @@ namespace Mengine
         ADD_PROTOTYPE( ResourceCursorSystem );
         ADD_PROTOTYPE( ResourceMesh3D );
         ADD_PROTOTYPE( ResourceSkinnedMesh3D );
-        ADD_PROTOTYPE( ResourceTiledMap );
 
 #undef ADD_PROTOTYPE
 
@@ -774,7 +769,6 @@ namespace Mengine
         REMOVE_PROTOTYPE( ResourceCursorSystem );
         REMOVE_PROTOTYPE( ResourceMesh3D );
         REMOVE_PROTOTYPE( ResourceSkinnedMesh3D );
-        REMOVE_PROTOTYPE( ResourceTiledMap );
 
 #undef REMOVE_PROTOTYPE
     }

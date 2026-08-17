@@ -7,9 +7,7 @@
 #include "Interface/PlayerServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
 
-#if defined(MENGINE_PLUGIN_METABUF)
 #include "Interface/MetabufLoaderServiceInterface.h"
-#endif
 
 #include "Interface/DataServiceInterface.h"
 #include "Interface/ModuleServiceInterface.h"
@@ -25,9 +23,7 @@
 #include "Movie2.h"
 #include "ResourceMovie2.h"
 
-#if defined(MENGINE_PLUGIN_METABUF)
 #include "MetabufLoaderResourceMovie2.h"
-#endif
 
 #include "Movie2Slot.h"
 
@@ -249,7 +245,6 @@ namespace Mengine
             VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), ResourceMovie2::getFactorableType() );
         } );
 
-#if defined(MENGINE_PLUGIN_METABUF)
         PLUGIN_SERVICE_WAIT( MetabufLoaderServiceInterface, [MENGINE_DOCUMENT_ARGUMENTS( this )]()
         {
             VOCABULARY_SET( MetabufLoaderInterface, STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceMovie2::getFactorableType(), Helper::makeFactorableUnique<MetabufLoaderResourceMovie2>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
@@ -261,7 +256,6 @@ namespace Mengine
         {
             VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceMovie2::getFactorableType() );
         } );
-#endif
 
         VOCABULARY_SET( DebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ), Movie2::getFactorableType(), Helper::makeFactorableUnique<Movie2DebuggerBoundingBox>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
 

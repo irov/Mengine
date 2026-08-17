@@ -97,18 +97,6 @@ Object\\\\TileMap2D
 )
 
 ADD_FILTER(
-Object\\\\TiledMap2D
-    ResourceTiledMap.cpp
-    ResourceTiledMap.h
-    TiledMap2D.cpp
-    TiledMap2D.h
-)
-
-add_definitions(-DMETABUF_EXTERNAL_ALLOCATOR)
-
-INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/metabuf/include)
-
-ADD_FILTER(
 Object\\\\Meshget
     Meshget.cpp
     Meshget.h
@@ -222,8 +210,5 @@ INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/graphics/include)
 ADD_MENGINE_LIBRARY()
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)
-
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} Metacode)
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}metabuf${MENGINE_LIB_SUFFIX})
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}graphics${MENGINE_LIB_SUFFIX})

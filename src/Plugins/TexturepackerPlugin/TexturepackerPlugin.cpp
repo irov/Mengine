@@ -4,16 +4,12 @@
 
 #include "Interface/PrototypeServiceInterface.h"
 
-#if defined(MENGINE_PLUGIN_METABUF)
 #include "Interface/MetabufLoaderServiceInterface.h"
-#endif
 
 #include "ResourceTexturepacker.h"
 #include "ResourceMultiTexturepacker.h"
 
-#if defined(MENGINE_PLUGIN_METABUF)
 #include "MetabufLoaderResourceTexturepacker.h"
-#endif
 
 #include "Kernel/ResourcePrototypeGenerator.h"
 #include "Kernel/ConstStringHelper.h"
@@ -48,7 +44,6 @@ namespace Mengine
             return false;
         }
 
-#if defined(MENGINE_PLUGIN_METABUF)
         PLUGIN_SERVICE_WAIT( MetabufLoaderServiceInterface, [this]()
         {
             VOCABULARY_SET( MetabufLoaderInterface, STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceTexturepacker::getFactorableType(), Helper::makeFactorableUnique<MetabufLoaderResourceTexturepacker>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
@@ -60,7 +55,6 @@ namespace Mengine
         {
             VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceTexturepacker::getFactorableType() );
         } );
-#endif
 
         return true;
     }

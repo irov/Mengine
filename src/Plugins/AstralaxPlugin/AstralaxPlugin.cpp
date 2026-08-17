@@ -4,9 +4,7 @@
 
 #include "Interface/PrototypeServiceInterface.h"
 
-#if defined(MENGINE_PLUGIN_METABUF)
 #include "Interface/MetabufLoaderServiceInterface.h"
-#endif
 
 #include "Interface/ArchiveServiceInterface.h"
 
@@ -15,9 +13,7 @@
 
 #include "ResourceAstralax.h"
 
-#if defined(MENGINE_PLUGIN_METABUF)
 #include "MetabufLoaderResourceAstralax.h"
-#endif
 
 #include "AstralaxInterface.h"
 #include "AstralaxIncluder.h"
@@ -159,10 +155,7 @@ namespace Mengine
             VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), ResourceAstralax::getFactorableType() );
         } );
 
-#if defined(MENGINE_PLUGIN_METABUF)
         VOCABULARY_SET( MetabufLoaderInterface, STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceAstralax::getFactorableType(), Helper::makeFactorableUnique<MetabufLoaderResourceAstralax>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
-
-#endif
 
         return true;
     }
@@ -173,10 +166,7 @@ namespace Mengine
 
         Helper::removeResourcePrototype<ResourceAstralax>();
 
-#if defined(MENGINE_PLUGIN_METABUF)
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceAstralax::getFactorableType() );
-
-#endif
 
         SERVICE_FINALIZE( AstralaxService );
     }

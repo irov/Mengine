@@ -48,7 +48,6 @@
 #include "Engine/HotSpotSurface.h"
 #include "Engine/Landscape2D.h"
 #include "Engine/TileMap2D.h"
-#include "Engine/TiledMap2D.h"
 #include "Engine/Grid2D.h"
 #include "Engine/MotionTrail2D.h"
 #include "Engine/Gyroscope.h"
@@ -1195,22 +1194,6 @@ namespace Mengine
                 .def( "setBackParts", &Landscape2D::setBackParts )
                 ;
 
-            pybind::enum_<ETiledMapOrientation>( _kernel, "ETiledMapOrientation" )
-                .def( "ETMO_ORTHOGONAL", ETMO_ORTHOGONAL )
-                .def( "ETMO_ISOMETRIC", ETMO_ISOMETRIC )
-                .def( "ETMO_HEXAGONAL", ETMO_HEXAGONAL )
-                ;
-
-            pybind::enum_<ETiledMapObjectShape>( _kernel, "ETiledMapObjectShape" )
-                .def( "ETMOS_RECTANGLE", ETMOS_RECTANGLE )
-                .def( "ETMOS_ELLIPSE", ETMOS_ELLIPSE )
-                .def( "ETMOS_POINT", ETMOS_POINT )
-                .def( "ETMOS_POLYGON", ETMOS_POLYGON )
-                .def( "ETMOS_POLYLINE", ETMOS_POLYLINE )
-                .def( "ETMOS_TILE", ETMOS_TILE )
-                .def( "ETMOS_TEXT", ETMOS_TEXT )
-                ;
-
             pybind::interface_<TileMap2D, pybind::bases<Node>>( _kernel, "TileMap2D", false )
                 .def( "setupTileMap", &TileMap2D::setupTileMap )
                 .def( "setTileResource", &TileMap2D::setTileResource )
@@ -1232,44 +1215,6 @@ namespace Mengine
                 .def( "getIndexBufferUploadCount", &TileMap2D::getIndexBufferUploadCount )
                 .def( "getResidentTextureMemoryBytes", &TileMap2D::getResidentTextureMemoryBytes )
                 .def( "validateSeams", &TileMap2D::validateSeams )
-                ;
-
-            pybind::interface_<TiledMap2D, pybind::bases<Node>>( _kernel, "TiledMap2D", false )
-                .def( "setResourceTiledMap", &TiledMap2D::setResourceTiledMap )
-                .def( "getResourceTiledMap", &TiledMap2D::getResourceTiledMap )
-                .def( "setMaterialName", &TiledMap2D::setMaterialName )
-                .def( "getMaterialName", &TiledMap2D::getMaterialName )
-                .def( "getOrientation", &TiledMap2D::getOrientation )
-                .def( "getColumnCount", &TiledMap2D::getColumnCount )
-                .def( "getRowCount", &TiledMap2D::getRowCount )
-                .def( "getTileWidth", &TiledMap2D::getTileWidth )
-                .def( "getTileHeight", &TiledMap2D::getTileHeight )
-                .def( "getTileCount", &TiledMap2D::getTileCount )
-                .def( "getTileLayerCount", &TiledMap2D::getTileLayerCount )
-                .def( "getObjectLayerCount", &TiledMap2D::getObjectLayerCount )
-                .def( "getTileLayerName", &TiledMap2D::getTileLayerName )
-                .def( "getObjectLayerName", &TiledMap2D::getObjectLayerName )
-                .def( "setTileLayerVisible", &TiledMap2D::setTileLayerVisible )
-                .def( "isTileLayerVisible", &TiledMap2D::isTileLayerVisible )
-                .def( "getObjectCount", &TiledMap2D::getObjectCount )
-                .def( "getObjectId", &TiledMap2D::getObjectId )
-                .def( "getObjectName", &TiledMap2D::getObjectName )
-                .def( "getObjectType", &TiledMap2D::getObjectType )
-                .def( "getObjectClass", &TiledMap2D::getObjectClass )
-                .def( "getObjectShape", &TiledMap2D::getObjectShape )
-                .def( "getObjectPosition", &TiledMap2D::getObjectPosition )
-                .def( "getObjectSize", &TiledMap2D::getObjectSize )
-                .def( "getObjectRotation", &TiledMap2D::getObjectRotation )
-                .def( "getObjectPointCount", &TiledMap2D::getObjectPointCount )
-                .def( "getObjectPoint", &TiledMap2D::getObjectPoint )
-                .def( "getMapProperties", &TiledMap2D::getMapProperties )
-                .def( "getTileLayerProperties", &TiledMap2D::getTileLayerProperties )
-                .def( "getObjectLayerProperties", &TiledMap2D::getObjectLayerProperties )
-                .def( "getObjectProperties", &TiledMap2D::getObjectProperties )
-                .def( "getBatchCount", &TiledMap2D::getBatchCount )
-                .def( "getVertexCount", &TiledMap2D::getVertexCount )
-                .def( "getIndexCount", &TiledMap2D::getIndexCount )
-                .def( "getResidentTextureMemoryBytes", &TiledMap2D::getResidentTextureMemoryBytes )
                 ;
 
             pybind::interface_<Grid2D, pybind::bases<Node, Materialable>>( _kernel, "Grid2D", false )
@@ -1533,7 +1478,6 @@ namespace Mengine
         SCRIPT_CLASS_WRAPPING( Line );
         SCRIPT_CLASS_WRAPPING( Landscape2D );
         SCRIPT_CLASS_WRAPPING( TileMap2D );
-        SCRIPT_CLASS_WRAPPING( TiledMap2D );
         SCRIPT_CLASS_WRAPPING( Grid2D );
         SCRIPT_CLASS_WRAPPING( MotionTrail2D );
         SCRIPT_CLASS_WRAPPING( Mesh3D );
@@ -1604,7 +1548,6 @@ namespace Mengine
         UNSCRIPT_CLASS_WRAPPING( Line );
         UNSCRIPT_CLASS_WRAPPING( Landscape2D );
         UNSCRIPT_CLASS_WRAPPING( TileMap2D );
-        UNSCRIPT_CLASS_WRAPPING( TiledMap2D );
         UNSCRIPT_CLASS_WRAPPING( Grid2D );
         UNSCRIPT_CLASS_WRAPPING( MotionTrail2D );
         UNSCRIPT_CLASS_WRAPPING( Mesh3D );

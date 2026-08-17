@@ -7,10 +7,8 @@
 #include "ResourceFigma.h"
 #include "ResourceFigmaValidator.h"
 
-#if defined(MENGINE_PLUGIN_METABUF)
 #include "Interface/MetabufLoaderServiceInterface.h"
 #include "MetabufLoaderResourceFigma.h"
-#endif
 
 #include "Plugins/ResourcePrefetcherPlugin/ResourcePrefetcherServiceInterface.h"
 #include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
@@ -118,7 +116,6 @@ namespace Mengine
             VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), ResourceFigma::getFactorableType() );
         } );
 
-#if defined(MENGINE_PLUGIN_METABUF)
         PLUGIN_SERVICE_WAIT( MetabufLoaderServiceInterface, [this]()
         {
             VOCABULARY_SET( MetabufLoaderInterface, STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceFigma::getFactorableType(), Helper::makeFactorableUnique<MetabufLoaderResourceFigma>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
@@ -130,7 +127,6 @@ namespace Mengine
         {
             VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceFigma::getFactorableType() );
         } );
-#endif
 
         return true;
     }

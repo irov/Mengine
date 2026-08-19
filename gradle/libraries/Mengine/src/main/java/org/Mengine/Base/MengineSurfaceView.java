@@ -1,6 +1,5 @@
 package org.Mengine.Base;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Insets;
 import android.graphics.Rect;
@@ -24,6 +23,7 @@ import android.view.View;
 import android.view.WindowInsets;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
 public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Callback, View.OnKeyListener, View.OnTouchListener, SensorEventListener, InputManager.InputDeviceListener {
     public static final MengineTag TAG = MengineTag.of("MNGSurfaceView");
@@ -76,7 +76,7 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
         return windowInsets;
     }
 
-    @TargetApi(Build.VERSION_CODES.R)
+    @RequiresApi(Build.VERSION_CODES.R)
     private void dispatchSafeAreaViewportR(View view, WindowInsets windowInsets) {
         Insets insets = windowInsets.getInsets(WindowInsets.Type.systemBars() | WindowInsets.Type.displayCutout());
         this.dispatchSafeAreaViewport(view, insets.left, insets.top, insets.right, insets.bottom);
@@ -240,7 +240,7 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
     }
 
     @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
+    public void surfaceDestroyed(@NonNull SurfaceHolder holder) {
         MengineLog.logInfo(TAG, "surfaceDestroyed");
 
         MenginePlatformEventQueue.pushSurfaceDestroyedEvent();
@@ -503,7 +503,6 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
             case MotionEvent.ACTION_POINTER_UP:
             case MotionEvent.ACTION_POINTER_DOWN: {
                 int index = event.getActionIndex();
-
                 this.nativeTouchEvent(event, index, action);
             }break;
             case MotionEvent.ACTION_CANCEL: {

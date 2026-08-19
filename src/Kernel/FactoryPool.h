@@ -58,7 +58,7 @@ namespace Mengine
 
             const ConstString & type = Type::getFactorableType();
 
-            factory->setType( type );
+            factory->setFactoryType( type );
 
             return factory;
         }

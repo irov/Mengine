@@ -163,9 +163,7 @@ android {
             debug {
                 println "ANDROID_APP_DEBUG_STORE_FILE: $ANDROID_APP_DEBUG_STORE_FILE"
                 println "ANDROID_APP_DEBUG_STORE_TYPE: $ANDROID_APP_DEBUG_STORE_TYPE"
-                println "ANDROID_APP_DEBUG_STORE_PASSWORD: $ANDROID_APP_DEBUG_STORE_PASSWORD"
                 println "ANDROID_APP_DEBUG_KEY_ALIAS: $ANDROID_APP_DEBUG_KEY_ALIAS"
-                println "ANDROID_APP_DEBUG_KEY_PASSWORD: $ANDROID_APP_DEBUG_KEY_PASSWORD"
 
                 final def f = new File(ANDROID_APP_DEBUG_STORE_FILE)
 
@@ -185,9 +183,7 @@ android {
             release {
                 println "ANDROID_APP_RELEASE_STORE_FILE: $ANDROID_APP_RELEASE_STORE_FILE"
                 println "ANDROID_APP_RELEASE_STORE_TYPE: $ANDROID_APP_RELEASE_STORE_TYPE"
-                println "ANDROID_APP_RELEASE_STORE_PASSWORD: $ANDROID_APP_RELEASE_STORE_PASSWORD"
                 println "ANDROID_APP_RELEASE_KEY_ALIAS: $ANDROID_APP_RELEASE_KEY_ALIAS"
-                println "ANDROID_APP_RELEASE_KEY_PASSWORD: $ANDROID_APP_RELEASE_KEY_PASSWORD"
 
                 final def f = new File(ANDROID_APP_RELEASE_STORE_FILE)
 
@@ -228,7 +224,7 @@ android {
                         mappingFileUploadEnabled = true
                         nativeSymbolUploadEnabled = true
 
-                        unstrippedNativeLibsDir buildDirectory.dir("intermediates/merged_native_libs/debug/mergeDebugNativeLibs/out/lib")
+                        unstrippedNativeLibsDir = buildDirectory.dir("intermediates/merged_native_libs/debug/mergeDebugNativeLibs/out/lib")
                     }
 
                     ndk {
@@ -241,7 +237,7 @@ android {
                         mappingFileUploadEnabled = true
                         nativeSymbolUploadEnabled = true
 
-                        unstrippedNativeLibsDir buildDirectory.dir("intermediates/merged_native_libs/release/mergeReleaseNativeLibs/out/lib")
+                        unstrippedNativeLibsDir = buildDirectory.dir("intermediates/merged_native_libs/release/mergeReleaseNativeLibs/out/lib")
                     }
 
                     ndk {
@@ -336,7 +332,7 @@ android {
         noCompress += ['pak', 'bin', 'jpg', 'jpeg', 'png', 'webp', 'ogg', 'ogv', 'ogva']
     }
 
-    namespace "org.Mengine.Project"
+    namespace = "org.Mengine.Project"
 }
 
 if (ANDROID_APP_SPLIT_ENABLE == true) {
@@ -807,11 +803,14 @@ gradle.projectsEvaluated {
 }
 
 if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true && MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS_NATIVE_SYMBOL_UPLOAD_ENABLE == true) {
+    final String debugUnstrippedNativeLibsDir = android.buildTypes.debug.firebaseCrashlytics.unstrippedNativeLibsDir.get().getAsFile().getAbsolutePath()
+    final String releaseUnstrippedNativeLibsDir = android.buildTypes.release.firebaseCrashlytics.unstrippedNativeLibsDir.get().getAsFile().getAbsolutePath()
+
     tasks.register('checkDebugUnstrippedNativeLibsDir') {
         doLast {
             println "[TASK] checkDebugUnstrippedNativeLibsDir"
 
-            final File f = android.buildTypes.debug.firebaseCrashlytics.unstrippedNativeLibsDir.get().getAsFile()
+            final File f = new File(debugUnstrippedNativeLibsDir)
 
             if (f.exists() == false) {
                 final def fname = f.getCanonicalPath()
@@ -827,7 +826,7 @@ if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true && MENGINE_APP_PLUGIN_FIREBA
         doLast {
             println "[TASK] checkReleaseUnstrippedNativeLibsDir"
 
-            final File f = android.buildTypes.release.firebaseCrashlytics.unstrippedNativeLibsDir.get().getAsFile()
+            final File f = new File(releaseUnstrippedNativeLibsDir)
 
             if (f.exists() == false) {
                 final def fname = f.getCanonicalPath()

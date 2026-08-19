@@ -2,9 +2,7 @@ package org.Mengine.Plugin.AdMob;
 
 import android.os.Bundle;
 
-import androidx.annotation.BoolRes;
 import androidx.annotation.NonNull;
-import androidx.annotation.StringRes;
 
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.VersionInfo;
@@ -448,21 +446,18 @@ public class MengineAdMobPlugin extends MengineService implements MengineAdMobPl
 
         this.logInfo("[AdMob SDK] version: %s", admobSdkVersionString);
 
-        MobileAds.initialize(application, new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(@NonNull InitializationStatus initializationStatus) {
-                m_adMobSdkInitialized = true;
+        MobileAds.initialize(application, initializationStatus -> {
+            m_adMobSdkInitialized = true;
 
-                MengineActivity activity = MengineAdMobPlugin.this.getMengineActivity();
+            MengineActivity activity = MengineAdMobPlugin.this.getMengineActivity();
 
-                if (activity != null) {
-                    for (MengineAdMobAdInterface ad : m_ads) {
-                        ad.onActivityCreate(activity);
-                    }
+            if (activity != null) {
+                for (MengineAdMobAdInterface ad : m_ads) {
+                    ad.onActivityCreate(activity);
                 }
-
-                adService.readyAdProvider();
             }
+
+            adService.readyAdProvider();
         });
     }
 

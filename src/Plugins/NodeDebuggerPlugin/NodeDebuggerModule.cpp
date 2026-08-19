@@ -495,7 +495,7 @@ namespace Mengine
         mt::box2f absorb_bb;
         mt::box2_insideout( &absorb_bb );
 
-        const ConstString & type = _node->getType();
+        const ConstString & type = Helper::getFactorableType( _node );
 
         DebuggerBoundingBoxInterfacePtr boundingBox = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ), type );
 
@@ -815,7 +815,7 @@ namespace Mengine
 
             Detail::serializeNodeProp( relationNode->getUniqueIdentity(), "BaseRenderNodeUniqueIdentity", xmlRender );
             Detail::serializeNodeProp( relationNode->getName(), "BaseRenderNodeName", xmlRender );
-            Detail::serializeNodeProp( relationNode->getType(), "BaseRenderNodeType", xmlRender );
+            Detail::serializeNodeProp( Helper::getFactorableType( relationNode ), "BaseRenderNodeType", xmlRender );
         }
         else
         {
@@ -1091,7 +1091,7 @@ namespace Mengine
         pugi::xml_node xmlNode = _xmlParentNode.append_child( "Type:Spine" );
 
         Detail::serializeNodeProp( resourceSpineSkeleton->getName(), "ResourceName", xmlNode );
-        Detail::serializeNodeProp( resourceSpineSkeleton->getType(), "ResourceType", xmlNode );
+        Detail::serializeNodeProp( Helper::getFactorableType( resourceSpineSkeleton ), "ResourceType", xmlNode );
 
         const ContentInterfacePtr & content = resourceSpineSkeleton->getContent();
 
@@ -1113,7 +1113,7 @@ namespace Mengine
         pugi::xml_node xmlNode = _xmlParentNode.append_child( "Component:Surface" );
 
         Detail::serializeNodeProp( surface->getName(), "Name", xmlNode );
-        Detail::serializeNodeProp( surface->getType(), "Type", xmlNode );
+        Detail::serializeNodeProp( Helper::getFactorableType( surface ), "Type", xmlNode );
 
         if( surface->isCompile() == true )
         {
@@ -1166,7 +1166,7 @@ namespace Mengine
         pugi::xml_node xmlNode = _xmlParentNode.append_child( "Type:SurfaceImage" );
 
         Detail::serializeNodeProp( resourceImage->getName(), "ResourceName", xmlNode );
-        Detail::serializeNodeProp( resourceImage->getType(), "ResourceType", xmlNode );
+        Detail::serializeNodeProp( Helper::getFactorableType( resourceImage ), "ResourceType", xmlNode );
         Detail::serializeNodeProp( resourceImage->getUV( 0 ), "UVImage", xmlNode );
 
         const ContentInterfacePtr & content = resourceImage->getContent();
@@ -1185,7 +1185,7 @@ namespace Mengine
             const ResourceImagePtr & resourceImageAtlas = resourceImageSubstract->getResourceImage();
 
             Detail::serializeNodeProp( resourceImageAtlas->getName(), "ResourceName", xmlNodeAtlas );
-            Detail::serializeNodeProp( resourceImageAtlas->getType(), "ResourceType", xmlNodeAtlas );
+            Detail::serializeNodeProp( Helper::getFactorableType( resourceImageAtlas ), "ResourceType", xmlNodeAtlas );
 
             const ContentInterfacePtr & atlasContent = resourceImageAtlas->getContent();
 
@@ -1208,7 +1208,7 @@ namespace Mengine
         pugi::xml_node xmlNode = _xmlParentNode.append_child( "Type:SurfaceImageSequence" );
 
         Detail::serializeNodeProp( resourceImageSequence->getName(), "ResourceName", xmlNode );
-        Detail::serializeNodeProp( resourceImageSequence->getType(), "ResourceType", xmlNode );
+        Detail::serializeNodeProp( Helper::getFactorableType( resourceImageSequence ), "ResourceType", xmlNode );
 
         Detail::serializeNodeProp( resourceImageSequence->getSequenceCount(), "ResourceSequenceCount", xmlNode );
         Detail::serializeNodeProp( resourceImageSequence->getSequenceDuration(), "ResourceSequenceDuration", xmlNode );
@@ -1266,7 +1266,7 @@ namespace Mengine
         Detail::serializeNodeProp( _node->getHierarchyHash(), "hhash", _xmlNode );
         Detail::serializeNodeProp( _node->getUniqueIdentity(), "uid", _xmlNode );
         Detail::serializeNodeProp( _node->getName(), "name", _xmlNode );
-        Detail::serializeNodeProp( _node->getType(), "type", _xmlNode );
+        Detail::serializeNodeProp( Helper::getFactorableType( _node ), "type", _xmlNode );
         Detail::serializeNodeProp( _node->isEnable(), "enable", _xmlNode );
 
         this->serializeTransformation( _node, _xmlNode );
@@ -1773,7 +1773,7 @@ namespace Mengine
 
         for( auto && [factory, objects] : objectLeaks )
         {
-            const ConstString & factoryType = factory->getType();
+            const ConstString & factoryType = factory->getFactoryType();
 
             pugi::xml_node xml_objects = xml_leaks.append_child( "Objects" );
 
@@ -2596,7 +2596,7 @@ namespace Mengine
                 return true;
             }
 
-            const ConstString & type = _child->getType();
+            const ConstString & type = Helper::getFactorableType( _child );
 
             DebuggerBoundingBoxInterfacePtr boundingBoxInterfacePtr = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "DebuggerBoundingBox" ), type );
 

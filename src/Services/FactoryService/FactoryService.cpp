@@ -128,7 +128,7 @@ namespace Mengine
                     const Char * factory_delimiter = "##########################################################\n";
                     ::fwrite( factory_delimiter, StdString::strlen( factory_delimiter ), 1, f );
 
-                    const ConstString & factoryType = factory->getType();
+                    const ConstString & factoryType = factory->getFactoryType();
 
                     Char factorymsg[2048 + 1] = {'\0'};
                     int32_t factorymsg_length = MENGINE_SNPRINTF( factorymsg, 2048, "Factory '%s' [%zu]:\n"

@@ -76,7 +76,7 @@ namespace Mengine
     bool DevToDebugWidget::fillJson( jpp::object & _jwidget, bool _force )
     {
         MENGINE_ASSERTION_FATAL( m_id.empty() == false, "DevToDebug widget type '%s' miss id"
-            , this->getType().c_str()
+            , Helper::getFactorableType( this ).c_str()
         );
 
         _jwidget.set( "id", m_id );

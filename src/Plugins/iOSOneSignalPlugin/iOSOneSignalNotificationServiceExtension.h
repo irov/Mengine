@@ -1,4 +1,4 @@
-#import <OneSignal/OneSignal.h>
+#import <OneSignalExtension/OneSignalExtension.h>
 
 #import <UserNotifications/UserNotifications.h>
 

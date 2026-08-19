@@ -37,7 +37,7 @@ namespace Mengine
 #if defined(MENGINE_DOCUMENT_ENABLE)
         DocumentInterfacePtr doc = MENGINE_DOCUMENT_MESSAGE( "BitmapFontGlyph '%s' type '%s' create '%s'"
             , glyph->getName().c_str()
-            , glyph->getType().c_str()
+            , Helper::getFactorableType( glyph ).c_str()
             , MENGINE_DOCUMENT_STR( _doc )
         );
 

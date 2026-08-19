@@ -556,7 +556,7 @@ if(MENGINE_DEPENDENCE_FREETYPE)
     
     add_dependencies(freetype zlibstatic)
     
-    if(MENGINE_TARGET_IOS OR MENGINE_TARGET_IOS)
+    if(MENGINE_TARGET_IOS OR MENGINE_TARGET_IOS_SIMULATOR)
         unset(IOS_PLATFORM CACHE)
     endif()
 endif()

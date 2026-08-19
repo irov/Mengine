@@ -201,7 +201,7 @@ namespace Mengine
                     selfRender->render( _renderPipeline, &self_context );
                 }
 
-                const ConstString & type = _node->getType();
+                const ConstString & type = Helper::getFactorableType( _node );
 
                 const NodeDebugRenderInterfacePtr & nodeDebugRender = m_nodeDebugRenders.find( type );
 
@@ -229,7 +229,7 @@ namespace Mengine
         }
         else
         {
-            const ConstString & type = _node->getType();
+            const ConstString & type = Helper::getFactorableType( _node );
 
             const NodeDebugRenderInterfacePtr & nodeDebugRender = m_nodeDebugRenders.find( type );
 
@@ -485,7 +485,7 @@ namespace Mengine
                             return;
                         }
 
-                        ConstString name = _factory->getType();
+                        ConstString name = _factory->getFactoryType();
 
                         m_scopes[count].emplace_back( name );
                     }

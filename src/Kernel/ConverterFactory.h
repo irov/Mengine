@@ -91,7 +91,7 @@ namespace Mengine
 
             const ConstString & factorableType = T::getFactorableType();
 
-            factory->setType( factorableType );
+            factory->setFactoryType( factorableType );
 
             ThreadMutexInterfacePtr mutex = Helper::createThreadMutex( _doc );
 

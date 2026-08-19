@@ -127,7 +127,7 @@ namespace Mengine
 
             ConstString name = resource->getName();
             ConstString group = resource->getGroupName();
-            ConstString type = resource->getType();
+            ConstString type = Helper::getFactorableType( resource );
             bool compiled = resource->isCompile();
             jpp::object item = jpp::make_object();
             item.set( "name", name );

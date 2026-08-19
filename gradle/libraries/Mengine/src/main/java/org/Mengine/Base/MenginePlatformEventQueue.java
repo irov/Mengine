@@ -7,7 +7,6 @@ import android.view.Surface;
 import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -39,6 +38,7 @@ public class MenginePlatformEventQueue {
     record ChangeLocaleEvent(String locale) implements PlatformEvent {}
     record IntentStartEvent(String action, String data, String type, int flags, Map<String, Object> extras) implements PlatformEvent {
         // The generated record toString exposes extras values, which may contain sensitive data.
+        @NonNull
         @Override
         public String toString() {
             String description = "IntentStartEvent{action='" + action + '\''
@@ -53,6 +53,7 @@ public class MenginePlatformEventQueue {
     }
     record IntentNewEvent(String action, String data, String type, int flags, Map<String, Object> extras) implements PlatformEvent {
         // The generated record toString exposes extras values, which may contain sensitive data.
+        @NonNull
         @Override
         public String toString() {
             String description = "IntentNewEvent{action='" + action + '\''
@@ -150,37 +151,27 @@ public class MenginePlatformEventQueue {
         String data = intent.getDataString();
         String type = intent.getType();
 
-        boolean meaningful = false;
-
         if (bundle != null) {
             if (bundle.isEmpty() == false) {
-                meaningful = true;
-
-                return meaningful;
+                return true;
             }
         }
 
         if (data != null) {
-            meaningful = true;
-
-            return meaningful;
+            return true;
         }
 
         if (type != null) {
-            meaningful = true;
-
-            return meaningful;
+            return true;
         }
 
         if (action != null) {
             if (Intent.ACTION_MAIN.equals(action) == false) {
-                meaningful = true;
-
-                return meaningful;
+                return true;
             }
         }
 
-        return meaningful;
+        return false;
     }
 
     public static void pushIntentStartEvent(@NonNull Intent intent) {
@@ -282,7 +273,6 @@ public class MenginePlatformEventQueue {
                 float pauseX = pauseEvent.x();
                 float pauseY = pauseEvent.y();
                 MengineNative.AndroidPlatform_pauseEvent(pauseX, pauseY);
-                continue;
             } else if (event instanceof ResumeEvent resumeEvent) {
                 float resumeX = resumeEvent.x();
                 float resumeY = resumeEvent.y();

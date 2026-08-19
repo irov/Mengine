@@ -2,7 +2,6 @@ package org.Mengine.Base;
 
 import android.view.Surface;
 
-import java.io.File;
 import java.io.Writer;
 import java.nio.ByteBuffer;
 import java.util.Map;

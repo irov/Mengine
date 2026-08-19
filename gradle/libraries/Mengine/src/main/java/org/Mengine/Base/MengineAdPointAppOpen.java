@@ -7,13 +7,13 @@ import org.json.JSONObject;
 public class MengineAdPointAppOpen extends MengineAdPointBase {
     public static final MengineTag TAG = MengineTag.of("MNGAdPointAppOpen");
 
-    protected long m_timeSleep;
-    protected int m_actionOffset;
-    protected int m_actionCooldown;
-    protected long m_timeOffset;
-    protected long m_timeCooldown;
-    protected long m_installTimeOffset;
-    protected long m_sessionOffset;
+    protected final long m_timeSleep;
+    protected final int m_actionOffset;
+    protected final int m_actionCooldown;
+    protected final long m_timeOffset;
+    protected final long m_timeCooldown;
+    protected final long m_installTimeOffset;
+    protected final long m_sessionOffset;
 
     MengineAdPointAppOpen(@NonNull String name, @NonNull JSONObject values) {
         super(name, values);

@@ -763,10 +763,6 @@ public class MengineUtils {
     public static Map<String, Object> jsonObjectToMap(@NonNull JSONObject obj) {
         Map<String, Object> map = new HashMap<>();
 
-        if (obj == null) {
-            return map;
-        }
-
         Iterator<String> keys = obj.keys();
         while (keys.hasNext() == true) {
             String key = keys.next();
@@ -832,6 +828,11 @@ public class MengineUtils {
 
             Method forceMethod = relinkClass.getDeclaredMethod("force");
             Object relinkInstance = forceMethod.invoke(null);
+
+            if (relinkInstance == null) {
+                throw new IllegalStateException("ReLinker.force() returned null");
+            }
+
             Class<?> relinkInstanceClass = relinkInstance.getClass();
 
             Method loadMethod = relinkInstanceClass.getDeclaredMethod("loadLibrary", contextClass, stringClass, stringClass, relinkListenerClass);
@@ -850,23 +851,16 @@ public class MengineUtils {
         }
     }
 
-    @SuppressWarnings("deprecation")
     public static Locale getConfigurationLocale(@NonNull Configuration configuration) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            LocaleList locales = configuration.getLocales();
+        LocaleList locales = configuration.getLocales();
 
-            if (locales.isEmpty() == true) {
-                return Locale.getDefault();
-            }
-
-            Locale locale = locales.get(0);
-
-            return locale;
-        } else {
-            Locale locale = configuration.locale;
-
-            return locale;
+        if (locales.isEmpty() == true) {
+            return Locale.getDefault();
         }
+
+        Locale locale = locales.get(0);
+
+        return locale;
     }
 
     @SuppressWarnings("deprecation")
@@ -1058,7 +1052,7 @@ public class MengineUtils {
             } catch (JSONException e) {
                 MengineLog.logException(TAG, e, Map.of(
                     "index", i,
-                    "value", value.opt(i)
+                    "value", Objects.toString(value.opt(i), "null")
                 ));
             }
         }
@@ -1143,7 +1137,7 @@ public class MengineUtils {
             } catch (JSONException e) {
                 MengineLog.logException(TAG, e, Map.of(
                     "key", key,
-                    "value", value.opt(key)
+                    "value", Objects.toString(value.opt(key), "null")
                 ));
             }
         }
@@ -1518,10 +1512,10 @@ public class MengineUtils {
         String lineSeparator = System.lineSeparator();
 
         sb.append(indent).append("[Account Info]").append(lineSeparator);
-        sb.append(indent).append("Install Id: " + installId).append(lineSeparator);
-        sb.append(indent).append("User Id: " + userId).append(lineSeparator);
-        sb.append(indent).append("Session Id: " + sessionId).append(lineSeparator);
-        sb.append(indent).append("Remote Id: " + installationId).append(lineSeparator);
+        sb.append(indent).append("Install Id: ").append(installId).append(lineSeparator);
+        sb.append(indent).append("User Id: ").append(userId).append(lineSeparator);
+        sb.append(indent).append("Session Id: ").append(sessionId).append(lineSeparator);
+        sb.append(indent).append("Remote Id: ").append(installationId).append(lineSeparator);
     }
 
     static public String getPrintAccountInfo(@NonNull MengineApplication application) {

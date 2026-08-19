@@ -83,12 +83,12 @@ namespace Mengine
 
         LOGGER_INFO( "prefetch", "prefetch resource '%s' type '%s' group '%s'"
             , _resource->getName().c_str()
-            , _resource->getType().c_str()
+            , Helper::getFactorableType( _resource ).c_str()
             , _resource->getGroupName().c_str()
             //, _resource->getLocale().c_str()
         );
 
-        const ConstString & resourceType = _resource->getType();
+        const ConstString & resourceType = Helper::getFactorableType( _resource );
 
         ResourcePrefetcherInterfacePtr prefetcher = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), resourceType );
 
@@ -108,12 +108,12 @@ namespace Mengine
 
         LOGGER_INFO( "prefetch", "unfetch resource '%s' type '%s' group '%s'"
             , _resource->getName().c_str()
-            , _resource->getType().c_str()
+            , Helper::getFactorableType( _resource ).c_str()
             , _resource->getGroupName().c_str()
             //, _resource->getLocale().c_str()
         );
 
-        const ConstString & resourceType = _resource->getType();
+        const ConstString & resourceType = Helper::getFactorableType( _resource );
 
         ResourcePrefetcherInterfacePtr prefetcher = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), resourceType );
 

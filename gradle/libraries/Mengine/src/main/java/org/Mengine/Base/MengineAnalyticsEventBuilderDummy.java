@@ -5,10 +5,8 @@ import androidx.annotation.Nullable;
 import androidx.annotation.Size;
 
 public class MengineAnalyticsEventBuilderDummy implements MengineAnalyticsEventBuilderInterface {
-    private final String m_name;
 
     MengineAnalyticsEventBuilderDummy(@NonNull @Size(min = 1L, max = 40L) String name) {
-        m_name = name;
     }
 
     @Override

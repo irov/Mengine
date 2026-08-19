@@ -192,7 +192,7 @@ public class MengineFragmentRemoteConfig extends MengineFragment<MengineListener
                 return null;
             }
 
-            return Boolean.valueOf(value.optBoolean(key));
+            return value.optBoolean(key);
         }
     }
 
@@ -214,7 +214,7 @@ public class MengineFragmentRemoteConfig extends MengineFragment<MengineListener
                 return null;
             }
 
-            return Integer.valueOf(value.optInt(key));
+            return value.optInt(key);
         }
     }
 
@@ -236,7 +236,7 @@ public class MengineFragmentRemoteConfig extends MengineFragment<MengineListener
                 return null;
             }
 
-            return Long.valueOf(value.optLong(key));
+            return value.optLong(key);
         }
     }
 
@@ -258,7 +258,7 @@ public class MengineFragmentRemoteConfig extends MengineFragment<MengineListener
                 return null;
             }
 
-            return Double.valueOf(value.optDouble(key));
+            return value.optDouble(key);
         }
     }
 

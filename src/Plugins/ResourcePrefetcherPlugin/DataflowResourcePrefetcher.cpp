@@ -22,7 +22,7 @@ namespace Mengine
         const ContentInterfacePtr & content = _resource->getContent();
 
         MENGINE_ASSERTION_MEMORY_PANIC( content, "resource '%s' is not contentable"
-            , _resource->getType().c_str()
+            , Helper::getFactorableType( _resource ).c_str()
         );
 
         const FilePath & filePath = content->getFilePath();
@@ -46,7 +46,7 @@ namespace Mengine
         const ContentInterfacePtr & content = _resource->getContent();
 
         MENGINE_ASSERTION_MEMORY_PANIC( content, "resource '%s' is not contentable"
-            , _resource->getType().c_str()
+            , Helper::getFactorableType( _resource ).c_str()
         );
 
         bool successful = Helper::unfetch( content );

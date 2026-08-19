@@ -22,11 +22,8 @@ public class MengineFirebaseCrashlyticsANRMonitor {
     private static Thread m_watcherThread;
     private static volatile boolean m_anrDetected = false;
 
-    private static final Runnable MAIN_CHECK_RUNNABLE = new Runnable() {
-        @Override
-        public void run() {
-            m_semaphore.release();
-        }
+    private static final Runnable MAIN_CHECK_RUNNABLE = () -> {
+        m_semaphore.release();
     };
 
     public static void start() {

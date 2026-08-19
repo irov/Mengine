@@ -19,7 +19,7 @@ namespace Mengine
         const ContentInterfacePtr & content = _resource->getContent();
 
         MENGINE_ASSERTION_FATAL( content != nullptr, "resource '%s' is not contentable"
-            , _resource->getType().c_str()
+            , Helper::getFactorableType( _resource ).c_str()
         );
 
         if( Helper::prefetchSoundDecoder( content, _observer ) == false )
@@ -35,7 +35,7 @@ namespace Mengine
         const ContentInterfacePtr & content = _resource->getContent();
 
         MENGINE_ASSERTION_FATAL( content != nullptr, "resource '%s' is not contentable"
-            , _resource->getType().c_str()
+            , Helper::getFactorableType( _resource ).c_str()
         );
 
         bool successful = Helper::unfetch( content );

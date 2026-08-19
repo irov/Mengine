@@ -8,7 +8,6 @@ import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.OnPaidEventListener;
 import com.google.android.gms.ads.OnUserEarnedRewardListener;
 import com.google.android.gms.ads.ResponseInfo;
 import com.google.android.gms.ads.rewarded.RewardItem;
@@ -21,7 +20,6 @@ import org.Mengine.Base.MengineAdMediation;
 import org.Mengine.Base.MengineAdResponseInterface;
 import org.Mengine.Base.MengineAdService;
 import org.Mengine.Base.MengineAnalyticsEventBuilderInterface;
-import org.Mengine.Base.MengineNative;
 import org.Mengine.Base.MengineNetwork;
 import org.Mengine.Base.MenginePlatformEventQueue;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
@@ -83,6 +81,8 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
 
             m_rewardedAd = null;
         }
+
+        m_showing = false;
     }
 
     @Override
@@ -134,7 +134,7 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
 
                             m_showing = false;
 
-                            adResponse.onAdShowSuccess(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_REWARDED, null);
+                            adResponse.onAdShowSuccess(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_REWARDED, "");
 
                             MengineUtils.performOnMainThread(() -> {
                                 MengineAdMobRewardedAd.this.loadAd();
@@ -158,7 +158,7 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
 
                             m_showing = false;
 
-                            adResponse.onAdShowFailed(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_REWARDED, null, errorCode);
+                            adResponse.onAdShowFailed(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_REWARDED, "", errorCode);
 
                             MengineUtils.performOnMainThread(() -> {
                                 MengineAdMobRewardedAd.this.loadAd();
@@ -208,7 +208,7 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
                                 long valueMicros = adValue.getValueMicros();
                                 double value = valueMicros / 1000000.0;
 
-                                MengineAdMobRewardedAd.this.revenuePaid(responseInfo, MengineAdFormat.ADFORMAT_REWARDED, null, value);
+                                MengineAdMobRewardedAd.this.revenuePaid(responseInfo, MengineAdFormat.ADFORMAT_REWARDED, "", value);
                             }
                         }
                     });
@@ -259,7 +259,7 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
             return false;
         }
 
-        boolean ready = m_rewardedAd != null;
+        boolean ready = m_rewardedAd != null && m_showing == false;
 
         this.log("canOfferRewarded", Map.of("placement", placement, "ready", ready));
 
@@ -280,7 +280,7 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
             return false;
         }
 
-        boolean ready = m_rewardedAd != null;
+        boolean ready = m_rewardedAd != null && m_showing == false;
 
         this.log("canYouShowRewarded", Map.of("placement", placement, "ready", ready));
 
@@ -296,12 +296,12 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
         return true;
     }
 
-    public boolean showRewarded(@NonNull MengineActivity activity, String placement) {
+    public boolean showRewarded(@NonNull MengineActivity activity, @NonNull String placement) {
         if (MengineNetwork.isNetworkAvailable() == false) {
             return false;
         }
 
-        boolean ready = m_rewardedAd != null;
+        boolean ready = m_rewardedAd != null && m_showing == false;
 
         this.log("showRewarded", Map.of("placement", placement, "ready", ready));
 
@@ -319,23 +319,20 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
         RewardedAd show_rewardedAd = m_rewardedAd;
 
         MengineUtils.performOnMainThread(() -> {
-            show_rewardedAd.show(activity, new OnUserEarnedRewardListener() {
-                @Override
-                public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
-                    String rewardType = rewardItem.getType();
-                    int rewardAmount = rewardItem.getAmount();
+            show_rewardedAd.show(activity, rewardItem -> {
+                String rewardType = rewardItem.getType();
+                int rewardAmount = rewardItem.getAmount();
 
-                    MengineAdMobRewardedAd.this.log("onUserEarnedReward");
+                MengineAdMobRewardedAd.this.log("onUserEarnedReward");
 
-                    MengineAdMobRewardedAd.this.buildRewardedAdEvent("user_rewarded")
-                        .addParameterString("reward_type", rewardType)
-                        .addParameterLong("reward_amount", rewardAmount)
-                        .log();
+                MengineAdMobRewardedAd.this.buildRewardedAdEvent("user_rewarded")
+                    .addParameterString("reward_type", rewardType)
+                    .addParameterLong("reward_amount", rewardAmount)
+                    .log();
 
-                    MengineAdResponseInterface adResponse = m_adService.getAdResponse();
+                MengineAdResponseInterface adResponse = m_adService.getAdResponse();
 
-                    adResponse.onAdUserRewarded(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_REWARDED, placement, rewardType, rewardAmount);
-                }
+                adResponse.onAdUserRewarded(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_REWARDED, "", rewardType, rewardAmount);
             });
         });
 
@@ -347,4 +344,3 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
         return m_showing;
     }
 }
-

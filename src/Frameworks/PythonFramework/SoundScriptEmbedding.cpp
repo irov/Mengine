@@ -155,7 +155,7 @@ namespace Mengine
                     return false;
                 }
 
-                const ConstString & resourceType = resource->getType();
+                const ConstString & resourceType = Helper::getFactorableType( resource );
 
                 if( resourceType != ResourceSound::getFactorableType() )
                 {
@@ -184,7 +184,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "resource sound '%s' type '%s' is not compile!"
                         , resource->getName().c_str()
-                        , resource->getType().c_str()
+                        , Helper::getFactorableType( resource ).c_str()
                     );
 
                     return nullptr;

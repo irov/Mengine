@@ -25,5 +25,8 @@ org.gradle.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=512m -XX:+HeapDumpOnOutOfMemoryEr
 # Disable build cache to avoid issues with incremental builds in CI
 org.gradle.caching=false
 
+# Enable configuration cache for CI Gradle invocations
+org.gradle.configuration-cache=true
+
 # Configure daemon settings for CI
 org.gradle.daemon=false

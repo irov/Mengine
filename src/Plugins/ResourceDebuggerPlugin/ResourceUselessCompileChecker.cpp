@@ -86,7 +86,7 @@ namespace Mengine
         }
 
         LOGGER_INFO( "performance", "useless compile '%s' '%s' '%s'"
-            , _resource->getType().c_str()
+            , Helper::getFactorableType( _resource ).c_str()
             , _resource->getGroupName().c_str()
             , _resource->getName().c_str()
         );

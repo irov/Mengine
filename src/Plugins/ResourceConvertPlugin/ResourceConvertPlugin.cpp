@@ -84,7 +84,7 @@ namespace Mengine
 
         LOGGER_INFO( "convert", "convert resource '%s' type '%s' group '%s' file converter '%s'"
             , _resource->getName().c_str()
-            , _resource->getType().c_str()
+            , Helper::getFactorableType( _resource ).c_str()
             , _resource->getGroupName().c_str()
             //, _resource->getLocale().c_str()
             , content->getConverterType().c_str()

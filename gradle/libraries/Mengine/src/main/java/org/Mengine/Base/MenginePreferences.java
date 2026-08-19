@@ -51,9 +51,9 @@ public class MenginePreferences {
 
     static public boolean getPreferenceBoolean(@NonNull String name, boolean defaultValue) {
         synchronized (MenginePreferences.SETTINGS_SYNC) {
-            Boolean value = (Boolean)MenginePreferences.SETTINGS.getOrDefault(name, Boolean.valueOf(defaultValue));
+            Boolean value = (Boolean)MenginePreferences.SETTINGS.getOrDefault(name, defaultValue);
 
-            return value;
+            return Boolean.TRUE.equals(value);
         }
     }
 
@@ -75,9 +75,9 @@ public class MenginePreferences {
 
     static public long getPreferenceLong(@NonNull String name, long defaultValue) {
         synchronized (MenginePreferences.SETTINGS_SYNC) {
-            Long value = (Long)MenginePreferences.SETTINGS.getOrDefault(name, Long.valueOf(defaultValue));
+            Long value = (Long)MenginePreferences.SETTINGS.getOrDefault(name, defaultValue);
 
-            return value;
+            return value.longValue();
         }
     }
 

@@ -46,7 +46,7 @@ namespace Mengine
 #if defined(MENGINE_DOCUMENT_ENABLE)
             DocumentInterfacePtr doc = MENGINE_DOCUMENT_MESSAGE( "Resource '%s' type '%s' create '%s'"
                 , resource->getName().c_str()
-                , resource->getType().c_str()
+                , Helper::getFactorableType( resource ).c_str()
                 , MENGINE_DOCUMENT_STR( _doc )
             );
 

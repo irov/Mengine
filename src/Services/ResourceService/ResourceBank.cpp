@@ -59,7 +59,7 @@ namespace Mengine
             {
                 LOGGER_WARNING( "resource '%s' type '%s' group '%s' refcount [%u]"
                     , resource->getName().c_str()
-                    , resource->getType().c_str()
+                    , Helper::getFactorableType( resource ).c_str()
                     , resource->getGroupName().c_str()
                     , refcount
                 );
@@ -234,13 +234,13 @@ namespace Mengine
 
         MENGINE_ASSERTION_FATAL( _resource->getCompileReferenceCount() == 0, "remove resource '%s' type '%s' has reference count: %u"
             , _resource->getName().c_str()
-            , _resource->getType().c_str()
+            , Helper::getFactorableType( _resource ).c_str()
             , _resource->getCompileReferenceCount()
         );
 
         MENGINE_ASSERTION_FATAL( _resource->isMapping() == false || m_resources.exist( _resource->getName() ) == true, "resource '%s' type '%s' not found (maybe already remove)"
             , _resource->getName().c_str()
-            , _resource->getType().c_str()
+            , Helper::getFactorableType( _resource ).c_str()
         );
 
         //ToDo
@@ -248,7 +248,7 @@ namespace Mengine
         LOGGER_INFO( "resource", "remove resource '%s' group '%s' type '%s'"
             , _resource->getName().c_str()
             , _resource->getGroupName().c_str()
-            , _resource->getType().c_str()
+            , Helper::getFactorableType( _resource ).c_str()
             //, _resource->getLocale().c_str()
         );
 

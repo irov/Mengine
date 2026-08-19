@@ -53,6 +53,10 @@ final Integer ANDROID_APP_TARGET_SDK_VERSION = Utils.getIntegerProperty("ANDROID
 final Integer ANDROID_APP_COMPILE_SDK_VERSION = Utils.getIntegerProperty("ANDROID_APP_COMPILE_SDK_VERSION", 37)
 
 allprojects {
+    if (project != rootProject) {
+        project.ext.Utils = rootProject.ext.Utils
+    }
+
     layout.buildDirectory.set(layout.projectDirectory.dir(rootProject.projectDir.getAbsolutePath() + "/../outputs/gradle/build/${rootProject.name}/${project.name}"))
 
     project.ext {

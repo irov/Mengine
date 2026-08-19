@@ -280,11 +280,13 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
 
         if (attemptsBundle != null) {
             for (String key : attemptsBundle.keySet()) {
-                Bundle attemptsPointBundle = attemptsBundle.getBundle(key);
-
                 MengineAdAttempts attempts = new MengineAdAttempts();
 
-                attempts.onLoad(application, attemptsPointBundle);
+                Bundle attemptsPointBundle = attemptsBundle.getBundle(key);
+
+                if (attemptsPointBundle != null) {
+                    attempts.onLoad(application, attemptsPointBundle);
+                }
 
                 m_adAttempts.put(key, attempts);
             }
@@ -294,11 +296,13 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
 
         if (cooldownsBundle != null) {
             for (String key : cooldownsBundle.keySet()) {
-                Bundle cooldownBundle = cooldownsBundle.getBundle(key);
-
                 MengineAdCooldown cooldown = new MengineAdCooldown();
 
-                cooldown.onLoad(application, cooldownBundle);
+                Bundle cooldownBundle = cooldownsBundle.getBundle(key);
+
+                if (cooldownBundle != null) {
+                    cooldown.onLoad(application, cooldownBundle);
+                }
 
                 m_adCooldowns.put(key, cooldown);
             }
@@ -975,7 +979,7 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
     }
 
     @Override
-    public void onAdRevenuePaid(@NonNull MengineAdMediation mediation, @NonNull MengineAdFormat format, String placement, double revenue) {
+    public void onAdRevenuePaid(@NonNull MengineAdMediation mediation, @NonNull MengineAdFormat format, @NonNull String placement, double revenue) {
         placement = Objects.requireNonNullElse(placement, "");
 
         Map<String, Object> params = Map.of("placement", placement, "revenue", revenue);
@@ -1012,7 +1016,7 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
     }
 
     @Override
-    public void onAdShowSuccess(@NonNull MengineAdMediation mediation, @NonNull MengineAdFormat format, String placement) {
+    public void onAdShowSuccess(@NonNull MengineAdMediation mediation, @NonNull MengineAdFormat format, @NonNull String placement) {
         placement = Objects.requireNonNullElse(placement, "");
 
         Map<String, Object> params = Map.of("placement", placement);

@@ -36,18 +36,24 @@
 - (void)activateWithInAppPurchase:(id<iOSStoreInAppPurchaseInterface> _Nonnull)inAppPurchase
             consumableIdentifiers:(NSSet<NSString *> * _Nonnull)consumableIdentifiers
          nonconsumableIdentifiers:(NSSet<NSString *> * _Nonnull)nonconsumableIdentifiers {
+    NSArray<NSDictionary *> * cachedSKPaymentTransactions;
+
     @synchronized (self) {
         self.m_inAppPurchase = inAppPurchase;
 
         self.m_consumableIdentifiers = consumableIdentifiers;
         self.m_nonconsumableIdentifiers = nonconsumableIdentifiers;
 
-        for (NSDictionary * value in self.m_cacheSKPaymentTransactions) {
-            SKPaymentQueue * queue = value[@"queue"];
-            NSArray<SKPaymentTransaction *> * transactions = value[@"transactions"];
+        cachedSKPaymentTransactions = [self.m_cacheSKPaymentTransactions copy];
 
-            [self paymentQueue:queue updatedTransactions:transactions];
-        }
+        [self.m_cacheSKPaymentTransactions removeAllObjects];
+    }
+
+    for (NSDictionary * value in cachedSKPaymentTransactions) {
+        SKPaymentQueue * queue = value[@"queue"];
+        NSArray<SKPaymentTransaction *> * transactions = value[@"transactions"];
+
+        [self paymentQueue:queue updatedTransactions:transactions];
     }
 }
 

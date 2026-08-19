@@ -18,8 +18,8 @@ namespace Mengine
         : public ServantInterface
     {
     public:
-        virtual void setType( const ConstString & _type ) = 0;
-        virtual const ConstString & getType() const = 0;
+        virtual void setFactoryType( const ConstString & _type ) = 0;
+        virtual const ConstString & getFactoryType() const = 0;
 
     public:
         virtual FactorablePointer createObject( const DocumentInterfacePtr & _doc ) = 0;

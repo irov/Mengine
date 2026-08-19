@@ -3,7 +3,6 @@ package org.Mengine.Base;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Size;
 
 import java.util.Arrays;
 import java.util.HashSet;

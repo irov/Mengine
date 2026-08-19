@@ -21,7 +21,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_FATAL( m_soundBufferNoStreamableCache == nullptr, "resource sound invalid release no streamable cache '%s' type '%s'"
             , this->getName().c_str()
-            , this->getType().c_str()
+            , Helper::getFactorableType( this ).c_str()
         );
     }
     //////////////////////////////////////////////////////////////////////////

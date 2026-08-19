@@ -16,6 +16,7 @@ public final class MengineTag {
         return new MengineTag(value);
     }
 
+    @NonNull
     @Override
     public String toString() {
         return value;

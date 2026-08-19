@@ -24,7 +24,7 @@ namespace Mengine
 
         if( exists == true && nodeType[0] != '\0' )
         {
-            const ConstString & sceneType = scene->getType();
+            const ConstString & sceneType = Helper::getFactorableType( scene );
             exists = expectedType == sceneType;
         }
 
@@ -35,7 +35,7 @@ namespace Mengine
         if( scene != nullptr )
         {
             const ConstString & sceneName = scene->getName();
-            const ConstString & sceneType = scene->getType();
+            const ConstString & sceneType = Helper::getFactorableType( scene );
             _response->details.set( "name", sceneName );
             _response->details.set( "nodeType", sceneType );
         }

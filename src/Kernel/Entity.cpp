@@ -208,7 +208,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "entity name '%s' type '%s' event EVENT_ENTITY_DESTROY replace node to other hierarchy"
                 , this->getName().c_str()
-                , this->getFactorableType().c_str()
+                , Helper::getFactorableType( this ).c_str()
             );
         }
 

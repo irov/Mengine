@@ -3,7 +3,7 @@ apply from: rootProject.projectDir.getAbsolutePath() + '/gms.gradle'
 apply from: rootProject.projectDir.getAbsolutePath() + '/installreferrer.gradle'
 
 android {
-    namespace "org.Mengine.Plugin.Adjust"
+    namespace = "org.Mengine.Plugin.Adjust"
 }
 
 dependencies {

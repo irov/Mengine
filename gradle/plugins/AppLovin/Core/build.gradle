@@ -79,7 +79,7 @@ subprojects {
 }
 
 android {
-    namespace "org.Mengine.Plugin.AppLovin.Core"
+    namespace = "org.Mengine.Plugin.AppLovin.Core"
 }
 
 dependencies {

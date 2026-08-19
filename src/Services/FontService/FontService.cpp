@@ -420,7 +420,7 @@ namespace Mengine
             {
                 const FontInterfacePtr & font = value.element;
 
-                const ConstString & fontType = font->getType();
+                const ConstString & fontType = Helper::getFactorableType( font );
 
                 ValidatorInterfacePtr fontValidator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FontValidator" ), fontType );
 

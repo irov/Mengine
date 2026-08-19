@@ -62,6 +62,9 @@
     Mengine::iOSStoreInAppPurchaseProductsResponseInterfacePtr cb_copy = self.m_cb;
     Mengine::iOSStoreInAppPurchaseProductsRequestInterfacePtr request_copy = self.m_request;
 
+    self.m_request = nullptr;
+    self.m_cb = nullptr;
+
     Mengine::Helper::dispatchMainThreadEvent([cb_copy, request_copy]() {
         cb_copy->onProductFinish( request_copy );
     });
@@ -76,6 +79,9 @@
 
     Mengine::iOSStoreInAppPurchaseProductsResponseInterfacePtr cb_copy = self.m_cb;
     Mengine::iOSStoreInAppPurchaseProductsRequestInterfacePtr request_copy = self.m_request;
+
+    self.m_request = nullptr;
+    self.m_cb = nullptr;
 
     Mengine::Helper::dispatchMainThreadEvent([cb_copy, request_copy]() {
         cb_copy->onProductFail( request_copy );

@@ -41,18 +41,6 @@ namespace Mengine
         m_factorableId = _id;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & Factorable::getType() const
-    {
-        if( m_factorableFactory == nullptr )
-        {
-            return ConstString::none();
-        }
-
-        const ConstString & type = m_factorableFactory->getType();
-
-        return type;
-    }
-    //////////////////////////////////////////////////////////////////////////
     uint32_t Factorable::incref()
     {
         m_factorableReference.increfReferenceCount();

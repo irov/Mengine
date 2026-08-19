@@ -618,7 +618,7 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
                 return;
             }
 
-            String pictureURL = "";
+            String pictureURL;
             try {
                 pictureURL = responseObject.getJSONObject("data").getString("url");
             } catch (final JSONException e) {

@@ -25,7 +25,7 @@ android {
 
     externalNativeBuild {
         cmake {
-            version project.cmakeVersion
+            version = project.cmakeVersion
         }
     }
 }

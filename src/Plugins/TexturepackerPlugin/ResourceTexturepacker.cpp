@@ -314,7 +314,7 @@ namespace Mengine
                 LOGGER_ERROR( "resource texturepacker '%s' sub resource '%s' type '%s' invalid initialize"
                     , this->getName().c_str()
                     , resourceImage->getName().c_str()
-                    , resourceImage->getType().c_str()
+                    , Helper::getFactorableType( resourceImage ).c_str()
                 );
 
                 return false;
@@ -453,7 +453,7 @@ namespace Mengine
                 LOGGER_ERROR( "resource texturepacker '%s' frame resource '%s' type '%s' invalid initialize"
                     , this->getName().c_str()
                     , resourceImage->getName().c_str()
-                    , resourceImage->getType().c_str()
+                    , Helper::getFactorableType( resourceImage ).c_str()
                 );
 
                 return false;

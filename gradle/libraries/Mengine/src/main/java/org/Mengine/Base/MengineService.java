@@ -9,7 +9,6 @@ import androidx.annotation.StringRes;
 
 import org.json.JSONObject;
 
-import java.util.Arrays;
 import java.util.Map;
 
 public class MengineService implements MengineServiceInterface {
@@ -84,6 +83,10 @@ public class MengineService implements MengineServiceInterface {
     @Override
     public Object newInstance(@NonNull String name, boolean required, Object ... args) {
         ClassLoader cl = this.getClass().getClassLoader();
+
+        if (cl == null) {
+            return null;
+        }
 
         Object instance = MengineUtils.newInstance(cl, m_serviceTag, name, required, args);
 

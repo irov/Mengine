@@ -36,12 +36,12 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    void FactoryBase::setType( const ConstString & _type )
+    void FactoryBase::setFactoryType( const ConstString & _type )
     {
         m_type = _type;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & FactoryBase::getType() const
+    const ConstString & FactoryBase::getFactoryType() const
     {
         return m_type;
     }

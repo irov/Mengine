@@ -87,9 +87,9 @@ namespace Mengine
         {
             LOGGER_ERROR( "movie2 slot '%s' type '%s' has children name '%s' type '%s'!! (please remove, before release movie '%s')"
                 , this->getName().c_str()
-                , this->getType().c_str()
+                , Helper::getFactorableType( this ).c_str()
                 , _child->getName().c_str()
-                , _child->getType().c_str()
+                , Helper::getFactorableType( _child ).c_str()
                 , this->getMovieName().c_str()
             );
         } );
@@ -131,7 +131,7 @@ namespace Mengine
 
         LOGGER_ERROR( "movie2 slot '%s' type '%s' movie '%s' (please don't change parent it's danger)"
             , this->getName().c_str()
-            , this->getType().c_str()
+            , Helper::getFactorableType( this ).c_str()
             , this->getMovieName().c_str()
         );
     }

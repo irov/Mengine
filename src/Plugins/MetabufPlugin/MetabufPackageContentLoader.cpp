@@ -105,7 +105,7 @@ namespace Mengine
                 , Helper::getContentFullPath( _desc.content ).c_str()
                 , groupName.c_str()
                 , resource->getName().c_str()
-                , resource->getType().c_str()
+                , Helper::getFactorableType( resource ).c_str()
             );
 
             content->setGroupName( groupName );
@@ -118,7 +118,7 @@ namespace Mengine
                 , Helper::getContentFullPath( _desc.content ).c_str()
                 , groupName.c_str()
                 , resource->getName().c_str()
-                , resource->getType().c_str()
+                , Helper::getFactorableType( resource ).c_str()
             );
 
             if( loader->load( resource, meta_resource ) == false )
@@ -127,7 +127,7 @@ namespace Mengine
                     , Helper::getContentFullPath( _desc.content ).c_str()
                     , groupName.c_str()
                     , resource->getName().c_str()
-                    , resource->getType().c_str()
+                    , Helper::getFactorableType( resource ).c_str()
                 );
 
                 return false;
@@ -141,7 +141,7 @@ namespace Mengine
                     , Helper::getContentFullPath( _desc.content ).c_str()
                     , groupName.c_str()
                     , resource->getName().c_str()
-                    , resource->getType().c_str()
+                    , Helper::getFactorableType( resource ).c_str()
                 );
 
                 return false;

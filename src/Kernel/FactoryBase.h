@@ -30,8 +30,8 @@ namespace Mengine
         ~FactoryBase() override;
 
     public:
-        void setType( const ConstString & _type ) override;
-        const ConstString & getType() const override;
+        void setFactoryType( const ConstString & _type ) override;
+        const ConstString & getFactoryType() const override;
 
     public:
         bool isEmptyObjects() const override;

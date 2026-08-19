@@ -45,7 +45,7 @@ namespace Mengine
 #if defined(MENGINE_DOCUMENT_ENABLE)
         DocumentInterfacePtr doc = MENGINE_DOCUMENT_MESSAGE( "TTFFont '%s' type '%s' create '%s'"
             , font->getName().c_str()
-            , font->getType().c_str()
+            , Helper::getFactorableType( font ).c_str()
             , MENGINE_DOCUMENT_STR( _doc )
         );
 

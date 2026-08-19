@@ -44,7 +44,7 @@ namespace Mengine
 #if defined(MENGINE_DOCUMENT_ENABLE)
             DocumentInterfacePtr doc = MENGINE_DOCUMENT_MESSAGE( "Surface '%s' type '%s' create '%s'"
                 , surface->getName().c_str()
-                , surface->getType().c_str()
+                , Helper::getFactorableType( surface ).c_str()
                 , MENGINE_DOCUMENT_STR( _doc )
             );
 

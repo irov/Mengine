@@ -620,7 +620,7 @@ namespace Mengine
                     , "                                         "
                     , _child->isActivate() == true ? _child->isEnable() ? "+" : "-" : "#"
                     , _child->getName().c_str()
-                    , _child->getType().c_str()
+                    , Helper::getFactorableType( _child ).c_str()
                     , _child->getTransformation()->getWorldPosition().x
                     , _child->getTransformation()->getWorldPosition().y
                     , color.getA()

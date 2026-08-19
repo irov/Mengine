@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MenginePerformanceTrace {
-    private List<MenginePerformanceTraceProvider> m_providers = new ArrayList<>();
+    private final List<MenginePerformanceTraceProvider> m_providers = new ArrayList<>();
 
     public void addProvider(@NonNull MenginePerformanceTraceProvider provider) {
         m_providers.add(provider);

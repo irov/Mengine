@@ -577,7 +577,7 @@ namespace Mengine
             desc.compileRef = _resource->getCompileReferenceCount();
             desc.prefetchRef = _resource->getPrefetchReferenceCount();
             desc.cacheRef = _resource->getCacheReferenceCount();
-            desc.type = _resource->getType();
+            desc.type = Helper::getFactorableType( _resource );
             desc.isCached = _resource->isCache();
 
             size_t groupIndex = 0;

@@ -1,7 +1,7 @@
 apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin.gradle'
 
 android {
-    namespace "org.Mengine.Plugin.SplashScreen"
+    namespace = "org.Mengine.Plugin.SplashScreen"
 }
 
 dependencies {

@@ -32,7 +32,14 @@ namespace Mengine
     {
         LOGGER_MESSAGE( "products request cancel" );
 
-        [m_skProductsRequest cancel];
+        SKProductsRequest * skProductsRequest = m_skProductsRequest;
+
+        skProductsRequest.delegate = nil;
+
+        m_skProductsRequest = nil;
+        m_skProductsDelegate = nil;
+
+        [skProductsRequest cancel];
     }
     /////////////////////////////////////////////////////////////////////////////
 }

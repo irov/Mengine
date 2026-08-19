@@ -20,7 +20,6 @@ import androidx.annotation.StringRes;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -371,6 +370,14 @@ public abstract class MengineApplication extends Application {
 
     protected boolean createService(String type) {
         ClassLoader cl = MengineApplication.class.getClassLoader();
+
+        if (cl == null) {
+            MengineLog.logError(TAG, "invalid get class loader: %s"
+                , type
+            );
+
+            return false;
+        }
 
         MengineService service = (MengineService)MengineUtils.newInstance(cl, TAG, type, true);
 

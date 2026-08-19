@@ -4,7 +4,7 @@ apply from: rootProject.projectDir.getAbsolutePath() + '/gms.gradle'
 final Boolean MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS_ANRMONITOR = Utils.getBooleanProperty("MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS_ANRMONITOR", false)
 
 android {
-    namespace "org.Mengine.Plugin.FirebaseCrashlytics"
+    namespace = "org.Mengine.Plugin.FirebaseCrashlytics"
 }
 
 dependencies {

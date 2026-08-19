@@ -1114,6 +1114,8 @@ Factory
     Localable.cpp
     Factorable.h
     Factorable.cpp
+    FactorableHelper.h
+    FactorableHelper.cpp
     FactorableGeneric.h
     FactorablePointer.h
     FactorableUnique.h

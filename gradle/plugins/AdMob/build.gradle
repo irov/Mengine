@@ -12,7 +12,7 @@ Utils.logAvailable("MENGINE_APP_PLUGIN_ADMOB_REWARDEDAD", MENGINE_APP_PLUGIN_ADM
 Utils.logAvailable("MENGINE_APP_PLUGIN_PILOT", MENGINE_APP_PLUGIN_PILOT)
 
 android {
-    namespace "org.Mengine.Plugin.AdMob"
+    namespace = "org.Mengine.Plugin.AdMob"
 }
 
 dependencies {

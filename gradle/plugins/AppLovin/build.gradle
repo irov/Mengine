@@ -89,12 +89,12 @@ Utils.logAvailable("AppLovin add Mediation Amazon", MENGINE_APP_PLUGIN_APPLOVIN_
 
 subprojects {
     repositories {
-        maven { url 'https://artifacts.applovin.com/android' }
+        maven { url = 'https://artifacts.applovin.com/android' }
     }
 }
 
 android {
-    namespace "org.Mengine.Plugin.AppLovin"
+    namespace = "org.Mengine.Plugin.AppLovin"
 }
 
 dependencies {

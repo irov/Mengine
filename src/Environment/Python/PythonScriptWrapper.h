@@ -98,7 +98,7 @@ namespace Mengine
             );
 
             //pybind::set_attr( py_embedded, "Mengine_name", pybind::ptr(_node->getName()) );
-            //pybind::set_attr( py_embedded, "Mengine_type", pybind::ptr(_node->getType()) );
+            //pybind::set_attr( py_embedded, "Mengine_type", pybind::ptr(Helper::getFactorableType( _node )) );
             //pybind::set_attr( py_embedded, "Mengine_tag", pybind::ptr(_node->getTag()) );
 
 #if defined(MENGINE_DEBUG)

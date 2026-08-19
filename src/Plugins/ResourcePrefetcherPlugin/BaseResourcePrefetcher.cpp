@@ -26,7 +26,7 @@ namespace Mengine
         {
             LOGGER_INFO( "prefetch", "invalid prefetch group '%s' resource type '%s' name '%s'"
                 , _resource->getGroupName().c_str()
-                , _resource->getType().c_str()
+                , Helper::getFactorableType( _resource ).c_str()
                 , _resource->getName().c_str()
             );
 
@@ -49,7 +49,7 @@ namespace Mengine
         {
             LOGGER_INFO( "prefetch", "invalid unfetch group '%s' resource type '%s' name '%s'"
                 , _resource->getGroupName().c_str()
-                , _resource->getType().c_str()
+                , Helper::getFactorableType( _resource ).c_str()
                 , _resource->getName().c_str()
             );
 

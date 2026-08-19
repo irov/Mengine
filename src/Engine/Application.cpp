@@ -955,7 +955,7 @@ namespace Mengine
                     , "                                         "
                     , (enable == false) ? "[DISABLE] " : ""
                     , _child->getName().c_str()
-                    , _child->getType().c_str()
+                    , Helper::getFactorableType( _child ).c_str()
                     , _child.get()
                     , transformation->getLocalPosition().x
                     , transformation->getLocalPosition().y
@@ -1578,7 +1578,7 @@ namespace Mengine
     {
         LOGGER_VERBOSE_LEVEL( "debug", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, nullptr, LFLAG_SHORT )("compile %s type %s [%s]"
             , _resource->getName().c_str()
-            , _resource->getType().c_str()
+            , Helper::getFactorableType( _resource ).c_str()
             , _resource->getGroupName().c_str()
             );
     }
@@ -1587,7 +1587,7 @@ namespace Mengine
     {
         LOGGER_VERBOSE_LEVEL( "debug", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, nullptr, LFLAG_SHORT )("release %s type %s [%s]"
             , _resource->getName().c_str()
-            , _resource->getType().c_str()
+            , Helper::getFactorableType( _resource ).c_str()
             , _resource->getGroupName().c_str()
             );
     }
@@ -2685,7 +2685,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "resource '%s' type '%s' invalid compile"
                 , cursorResource->getName().c_str()
-                , cursorResource->getType().c_str()
+                , Helper::getFactorableType( cursorResource ).c_str()
             );
 
             return;

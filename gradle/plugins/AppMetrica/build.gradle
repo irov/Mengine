@@ -3,7 +3,7 @@ apply from: rootProject.projectDir.getAbsolutePath() + '/installreferrer.gradle'
 apply from: rootProject.projectDir.getAbsolutePath() + '/gms.gradle'
 
 android {
-    namespace "org.Mengine.Plugin.AppMetrica"
+    namespace = "org.Mengine.Plugin.AppMetrica"
 }
 
 dependencies {

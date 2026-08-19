@@ -10,11 +10,9 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 
@@ -71,13 +69,9 @@ public class MengineFileLoggerService extends MengineService implements MengineL
         }
 
         try {
-            this.logInfo("saved previous log file as old log: %s -> %s", previousLogFilePath, oldLogFile.getAbsolutePath());
+            MengineFileLoggerService.copyFile(previousLogFile, oldLogFile);
 
-            FileInputStream sourceStream = new FileInputStream(previousLogFile);
-            FileOutputStream destStream = new FileOutputStream(oldLogFile);
-            FileChannel sourceChannel = sourceStream.getChannel();
-            FileChannel destChannel = destStream.getChannel();
-            destChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
+            this.logInfo("saved previous log file as old log: %s -> %s", previousLogFilePath, oldLogFile.getAbsolutePath());
         } catch (IOException e) {
             this.logException(e, Map.of("source", previousLogFilePath, "dest", oldLogFile.getAbsolutePath()));
 

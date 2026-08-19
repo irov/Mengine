@@ -31,22 +31,22 @@ namespace Mengine
     {
         MENGINE_ASSERTION_FATAL( m_initialize == false, "destroy without finalize resource '%s' type '%s'"
             , this->getName().c_str()
-            , this->getType().c_str()
+            , Helper::getFactorableType( this ).c_str()
         );
 
         MENGINE_ASSERTION_REFERENCE_COUNT( m_compileReferenceCount, "compile reference '%s' type '%s'"
             , this->getName().c_str()
-            , this->getType().c_str()
+            , Helper::getFactorableType( this ).c_str()
         );
 
         MENGINE_ASSERTION_REFERENCE_COUNT( m_prefetchReferenceCount, "prefetch reference '%s' type '%s'"
             , this->getName().c_str()
-            , this->getType().c_str()
+            , Helper::getFactorableType( this ).c_str()
         );
 
         MENGINE_ASSERTION_REFERENCE_COUNT( m_cacheReferenceCount, "cache reference '%s' type '%s'"
             , this->getName().c_str()
-            , this->getType().c_str()
+            , Helper::getFactorableType( this ).c_str()
         );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -109,7 +109,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_FATAL( m_initialize == false, "resource '%s' type '%s' already initialize"
             , this->getName().c_str()
-            , this->getType().c_str()
+            , Helper::getFactorableType( this ).c_str()
         );
 
         if( this->_initialize() == false )
@@ -124,7 +124,7 @@ namespace Mengine
             {
                 LOGGER_ERROR( "resource '%s' type [%s] invalid convert"
                     , this->getName().c_str()
-                    , this->getType().c_str()
+                    , Helper::getFactorableType( this ).c_str()
                 );
 
                 return false;
@@ -148,13 +148,13 @@ namespace Mengine
     {
         MENGINE_ASSERTION_FATAL( m_initialize == true, "resource '%s' type '%s' not initialize (doc: %s)"
             , this->getName().c_str()
-            , this->getType().c_str()
+            , Helper::getFactorableType( this ).c_str()
             , MENGINE_DOCUMENT_STR( this->getDocument() )
         );
 
         MENGINE_ASSERTION_FATAL( this->isCompile() == false, "resource '%s' type '%s' group '%s' cache '%d' keep '%d' mapping '%d' precompile '%d' ignored '%d' not release before finalize (doc: %s)"
             , this->getName().c_str()
-            , this->getType().c_str()
+            , Helper::getFactorableType( this ).c_str()
             , this->getGroupName().c_str()
             , this->isGroupCache()
             , this->isKeep()
@@ -182,7 +182,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_FATAL( m_initialize == true, "resource '%s' type '%s' compile not initialize"
             , this->getName().c_str()
-            , this->getType().c_str()
+            , Helper::getFactorableType( this ).c_str()
         );
 
         uint32_t referenceCount = m_compileReferenceCount.increfReferenceCount();
@@ -193,7 +193,7 @@ namespace Mengine
         }
 
         LOGGER_INFO( "resource", "compile [%s] name '%s' group '%s' file '%s'"
-            , this->getType().c_str()
+            , Helper::getFactorableType( this ).c_str()
             , this->getName().c_str()
             , this->getGroupName().c_str()
             , Helper::getContentFullPath( this->getContent() ).c_str()
@@ -220,7 +220,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_FATAL( m_initialize == true, "resource '%s' type '%s' release not initialize"
             , this->getName().c_str()
-            , this->getType().c_str()
+            , Helper::getFactorableType( this ).c_str()
         );
 
         uint32_t referenceCount = m_compileReferenceCount.decrefReferenceCount();
@@ -231,7 +231,7 @@ namespace Mengine
         }
 
         LOGGER_INFO( "resource", "release [%s] name '%s' group '%s' file '%s'"
-            , this->getType().c_str()
+            , Helper::getFactorableType( this ).c_str()
             , this->getName().c_str()
             , this->getGroupName().c_str()
             , Helper::getContentFullPath( this->getContent() ).c_str()

@@ -54,7 +54,7 @@ public class MengineSplashScreenPlugin extends MengineService implements Mengine
             }
             
             String scaleTypeString = resources.getString(resourceId).toLowerCase();
-            
+
             switch (scaleTypeString) {
                 case "center":
                     return ImageView.ScaleType.CENTER;
@@ -162,14 +162,6 @@ public class MengineSplashScreenPlugin extends MengineService implements Mengine
 
         ImageView image = this.createBackground(activity);
 
-        if (image == null) {
-            this.setState("splashscreen.state", "failed");
-
-            this.invalidInitialize("splash screen image is null");
-
-            return;
-        }
-
         viewGroup.addView(image);
 
         m_image = image;
@@ -207,11 +199,6 @@ public class MengineSplashScreenPlugin extends MengineService implements Mengine
             m_text.clearAnimation();
             m_text = null;
         }
-    }
-
-    @Override
-    public void onPause(@NonNull MengineActivity activity) {
-        //Empty
     }
 
     @Override

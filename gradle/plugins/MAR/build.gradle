@@ -37,7 +37,7 @@ android {
         }
     }
 
-    namespace "org.Mengine.Plugin.MAR"
+    namespace = "org.Mengine.Plugin.MAR"
 }
 
 dependencies {

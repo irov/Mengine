@@ -444,7 +444,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_RESOURCE_TYPE( _resourceParticle, ResourceAstralaxPtr, "Resource '%s' invalid type '%s' is not 'ResourceAstralax'"
             , _resourceParticle == nullptr ? "nullptr" : _resourceParticle->getName().c_str()
-            , _resourceParticle == nullptr ? "nullptr" : _resourceParticle->getType().c_str()
+            , _resourceParticle == nullptr ? "nullptr" : Helper::getFactorableType( _resourceParticle ).c_str()
         );
 
         if( m_resourceAstralax == _resourceParticle )

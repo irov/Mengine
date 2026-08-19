@@ -2364,14 +2364,14 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( render, "node '%s' type '%s' is not renderable"
                     , _node->getName().c_str()
-                    , _node->getType().c_str()
+                    , Helper::getFactorableType( _node ).c_str()
                 );
 
                 EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( easing, "node '%s' type '%s' not found easing '%s'"
                     , _node->getName().c_str()
-                    , _node->getType().c_str()
+                    , Helper::getFactorableType( _node ).c_str()
                     , _easingType.c_str()
                 );
 
@@ -2413,6 +2413,11 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         typedef IntrusivePtr<KernelScriptMethod> KernelScriptMethodPtr;
         //////////////////////////////////////////////////////////////////////////
+        static const ConstString & s_Factorable_getFactorableType( const Factorable * _factorable )
+        {
+            return Helper::getFactorableType( _factorable );
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
     KernelScriptEmbedding::KernelScriptEmbedding()
     {
@@ -2439,7 +2444,8 @@ namespace Mengine
             ;
 
         pybind::interface_<Factorable, pybind::bases<Mixin>>( _kernel, "Factorable", true )
-            .def( "getType", &Factorable::getType )
+            .def_static_deprecated( "getType", &s_Factorable_getFactorableType, "use 'getFactorableType' instead" )
+            .def_static( "getFactorableType", &s_Factorable_getFactorableType )
             .def( "getUniqueIdentity", &Factorable::getUniqueIdentity )
             ;
 

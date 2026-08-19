@@ -45,7 +45,7 @@ namespace Mengine
 #if defined(MENGINE_DOCUMENT_ENABLE)
             DocumentInterfacePtr doc = MENGINE_DOCUMENT_MESSAGE( "Identity '%s' type '%s' create '%s'"
                 , object->getName().c_str()
-                , object->getType().c_str()
+                , Helper::getFactorableType( object ).c_str()
                 , MENGINE_DOCUMENT_STR( _doc )
             );
 

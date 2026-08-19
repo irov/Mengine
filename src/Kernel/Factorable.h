@@ -3,6 +3,7 @@
 #include "Kernel/Mixin.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/FactorableHelper.h"
 #include "Kernel/ReferenceCounter.h"
 
 #include "Config/UniqueId.h"
@@ -50,9 +51,6 @@ namespace Mengine
     public:
         void setUniqueIdentity( UniqueId _factorableId );
         MENGINE_INLINE UniqueId getUniqueIdentity() const;
-
-    public:
-        const ConstString & getType() const;
 
     protected:
         uint32_t incref() override;
@@ -129,7 +127,6 @@ namespace Mengine
 //////////////////////////////////////////////////////////////////////////
 #define DECLARE_FACTORABLE(Type)\
     public:\
-    static const Mengine::ConstString & getFactorableType(){return STRINGIZE_STRING_LOCAL( #Type );}\
+    static const Mengine::ConstString & getFactorableType(){return STRINGIZE_STRING_LOCAL(#Type);}\
     protected:
 //////////////////////////////////////////////////////////////////////////
-

@@ -49,7 +49,7 @@ namespace Mengine
         {
             const NodePtr & node = value.second;
             const ConstString & nodeName = node->getName();
-            const ConstString & nodeType = node->getType();
+            const ConstString & nodeType = Helper::getFactorableType( node );
 
             if( queryName.empty() == false && queryName != nodeName )
             {

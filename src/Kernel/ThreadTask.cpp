@@ -41,7 +41,7 @@ namespace Mengine
         }
 
         REFERENCECOUNTER_GUARD_SCOPE( this, "ThreadTask: %s"
-            , this->getType().c_str()
+            , Helper::getFactorableType( this ).c_str()
         );
 
         bool successful = this->_onThreadTaskProcess();

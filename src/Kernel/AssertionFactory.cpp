@@ -19,7 +19,7 @@ namespace Mengine
                 return;
             }
 
-            const ConstString & type = _factory->getType();
+            const ConstString & type = _factory->getFactoryType();
             uint32_t count = _factory->getCountObject();
 
             Char msg[1024 + 1] = {'\0'};

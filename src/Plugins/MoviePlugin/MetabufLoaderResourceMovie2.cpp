@@ -42,7 +42,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( dataflow, "resource '%s' type '%s' invalid get dataflow '%s'"
             , resource->getName().c_str()
-            , resource->getType().c_str()
+            , Helper::getFactorableType( resource ).c_str()
             , dataflowType.c_str()
         );
 

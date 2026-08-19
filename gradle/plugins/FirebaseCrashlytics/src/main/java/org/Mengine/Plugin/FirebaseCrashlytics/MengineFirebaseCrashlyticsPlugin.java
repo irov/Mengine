@@ -120,7 +120,7 @@ public class MengineFirebaseCrashlyticsPlugin extends MengineService implements 
     }
 
     @Override
-    public void onAppState(@NonNull MengineApplication application, @NonNull Map<String, Object> states, String name, Object value) {
+    public void onAppState(@NonNull MengineApplication application, @NonNull Map<String, Object> states, @NonNull String name, Object value) {
         String states_value = MengineUtils.jsonStringFromMap(states);
 
         FirebaseCrashlytics.getInstance().setCustomKey("states", states_value);
@@ -193,10 +193,12 @@ public class MengineFirebaseCrashlyticsPlugin extends MengineService implements 
                 FirebaseCrashlytics.getInstance().log("[" + message.MESSAGE_CATEGORY + "] R " + message.MESSAGE_DATA);
             }break;
             case MengineLog.LM_ERROR: {
+                String text = "[" + message.MESSAGE_CATEGORY + "] E " + message.MESSAGE_DATA;
+
                 if (MengineLog.isFilter(message.MESSAGE_FILTER, MengineLog.LFILTER_EXCEPTION) == true) {
-                    FirebaseCrashlytics.getInstance().recordException(new MengineFatalErrorException("[" + message.MESSAGE_CATEGORY + "] E " + message.MESSAGE_DATA));
+                    FirebaseCrashlytics.getInstance().recordException(new MengineFatalErrorException(text));
                 } else {
-                    FirebaseCrashlytics.getInstance().log("[" + message.MESSAGE_CATEGORY + "] E " + message.MESSAGE_DATA);
+                    FirebaseCrashlytics.getInstance().log(text);
                 }
             }break;
             case MengineLog.LM_FATAL: {

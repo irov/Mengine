@@ -6,12 +6,12 @@ buildscript {
         google()
         mavenLocal()
         mavenCentral()
-        maven { url "https://dl.bintray.com/datadog/datadog-maven" }
+        maven { url = "https://dl.bintray.com/datadog/datadog-maven" }
     }
 }
 
 android {
-    namespace "org.Mengine.Plugin.DataDog"
+    namespace = "org.Mengine.Plugin.DataDog"
 }
 
 dependencies {

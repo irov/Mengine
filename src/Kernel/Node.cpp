@@ -64,7 +64,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_FATAL( this->isActivate() == false, "node '%s' type '%s' destroy in activate state"
             , this->getName().c_str()
-            , this->getType().c_str()
+            , Helper::getFactorableType( this ).c_str()
         );
 
         this->release();
@@ -717,7 +717,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "node '%s' type '%s' not compiled"
                 , this->getName().c_str()
-                , this->getType().c_str()
+                , Helper::getFactorableType( this ).c_str()
             );
 
             return false;

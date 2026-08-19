@@ -1310,9 +1310,9 @@ namespace Mengine
             MENGINE_ASSERTION_NODE( parent, MatrixProxy *, "Movie2 '%s' node '%s' type '%s' invalid parent '%s' type '%s' not MatrixProxy"
                 , _movie2->getName().c_str()
                 , _node->getName().c_str()
-                , _node->getType().c_str()
+                , Helper::getFactorableType( _node ).c_str()
                 , parent->getName().c_str()
-                , parent->getType().c_str()
+                , Helper::getFactorableType( parent ).c_str()
             );
 
             MatrixProxy * matrixProxy = Helper::staticNodeCast<MatrixProxy *>( parent );

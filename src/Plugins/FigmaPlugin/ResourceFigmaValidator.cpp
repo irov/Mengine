@@ -19,7 +19,7 @@ namespace Mengine
         const ContentInterfacePtr & content = _resource->getContent();
 
         MENGINE_ASSERTION_MEMORY_PANIC( content, "resource '%s' is not contentable"
-            , _resource->getType().c_str()
+            , Helper::getFactorableType( _resource ).c_str()
         );
 
         if( content->exist( true ) == false )

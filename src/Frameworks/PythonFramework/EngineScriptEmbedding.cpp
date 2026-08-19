@@ -1248,7 +1248,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "resource '%s' type '%s' invalid compile"
                         , _nameResource.c_str()
-                        , resource->getType().c_str()
+                        , Helper::getFactorableType( resource ).c_str()
                     );
 
                     return false;
@@ -1304,7 +1304,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "resource '%s' type '%s' invalid compile"
                         , resource->getName().c_str()
-                        , resource->getType().c_str()
+                        , Helper::getFactorableType( resource ).c_str()
                     );
 
                     return ResourcePtr::none();
@@ -1431,7 +1431,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "resource '%s' type '%s' invalid compile"
                         , resource->getName().c_str()
-                        , resource->getType().c_str()
+                        , Helper::getFactorableType( resource ).c_str()
                     );
 
                     return;
@@ -2282,7 +2282,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "resource '%s' type '%s' invalid compile"
                         , resource->getName().c_str()
-                        , resource->getType().c_str()
+                        , Helper::getFactorableType( resource ).c_str()
                     );
 
                     return false;
@@ -4279,7 +4279,7 @@ namespace Mengine
                     {
                         LOGGER_ERROR( "invalid direct compile resource '%s' type '%s' content '%s'"
                             , _resource->getName().c_str()
-                            , _resource->getType().c_str()
+                            , Helper::getFactorableType( _resource ).c_str()
                             , _resource->getContent() != nullptr ? Helper::getContentFullPath( _resource->getContent() ).c_str() : "[no content]"
                         );
                     }
@@ -4312,7 +4312,7 @@ namespace Mengine
                     {
                         LOGGER_ERROR( "invalid direct compile resource '%s' type '%s' content '%s'"
                             , _resource->getName().c_str()
-                            , _resource->getType().c_str()
+                            , Helper::getFactorableType( _resource ).c_str()
                             , _resource->getContent() != nullptr ? Helper::getContentFullPath( _resource->getContent() ).c_str() : "[no content]"
                         );
                     }

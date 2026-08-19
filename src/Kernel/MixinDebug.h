@@ -12,7 +12,7 @@
 #   include "Config/DynamicCast.h"
 
 #   define MENGINE_MIXIN_DEBUG_NAME(Object) (Helper::dynamicCast<const Mengine::Identity *>(Object) != nullptr ? Helper::dynamicCast<const Mengine::Identity *>(Object)->getName().c_str() : "UNKNOWN")
-#   define MENGINE_MIXIN_DEBUG_TYPE(Object) (Helper::dynamicCast<const Mengine::Factorable *>(Object) != nullptr ? Helper::dynamicCast<const Mengine::Factorable *>(Object)->getType().c_str() : MENGINE_TYPEINFO_NAME(Object))
+#   define MENGINE_MIXIN_DEBUG_TYPE(Object) (Helper::dynamicCast<const Mengine::Factorable *>(Object) != nullptr ? Helper::getFactorableType( Helper::dynamicCast<const Mengine::Factorable *>(Object) ).c_str() : MENGINE_TYPEINFO_NAME(Object))
 #   define MENGINE_MIXIN_DEBUG_UID(Object) (Helper::dynamicCast<const Mengine::Factorable *>(Object) != nullptr ? Helper::dynamicCast<const Mengine::Factorable *>(Object)->getUniqueIdentity() : Mengine::INVALID_UNIQUE_ID)
 
 #   if defined(MENGINE_DOCUMENT_ENABLE)

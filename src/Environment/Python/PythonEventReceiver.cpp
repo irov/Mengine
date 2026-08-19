@@ -53,13 +53,13 @@ namespace Mengine
                 String k = it.key();
 
                 LOGGER_ERROR( "node type '%s' invalid kwds '%s'"
-                    , _factorable->getType().c_str()
+                    , Helper::getFactorableType( _factorable ).c_str()
                     , k.c_str()
                 );
             }
 
             MENGINE_ERROR_FATAL( "invalid python event receiver type '%s'"
-                , _factorable->getType().c_str()
+                , Helper::getFactorableType( _factorable ).c_str()
             );
         }
         //////////////////////////////////////////////////////////////////////////

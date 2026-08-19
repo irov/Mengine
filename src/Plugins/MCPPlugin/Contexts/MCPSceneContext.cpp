@@ -129,7 +129,7 @@ namespace Mengine
     {
         String handle = this->makeNodeHandle( _node );
         UniqueId identity = _node->getUniqueIdentity();
-        ConstString type = _node->getType();
+        ConstString type = Helper::getFactorableType( _node );
         ConstString name = _node->getName();
         bool enabled = _node->isEnable();
         bool active = _node->isActivate();

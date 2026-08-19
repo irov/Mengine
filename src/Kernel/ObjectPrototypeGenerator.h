@@ -43,7 +43,7 @@ namespace Mengine
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
             DocumentInterfacePtr doc = MENGINE_DOCUMENT_MESSAGE( "Object type '%s' create '%s'"
-                , object->getType().c_str()
+                , Helper::getFactorableType( object ).c_str()
                 , MENGINE_DOCUMENT_STR( _doc )
             );
 

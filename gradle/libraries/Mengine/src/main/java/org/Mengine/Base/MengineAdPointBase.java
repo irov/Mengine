@@ -7,12 +7,12 @@ import org.json.JSONObject;
 public class MengineAdPointBase {
     public static final MengineTag TAG = MengineTag.of("MNGAdBasePoint");
 
-    protected String m_name;
+    protected final String m_name;
 
-    protected int m_id;
-    protected boolean m_enabled;
+    protected final int m_id;
+    protected final boolean m_enabled;
 
-    protected String m_cooldownGroupName;
+    protected final String m_cooldownGroupName;
 
     protected MengineAdAttempts m_attempts;
     protected MengineAdCooldown m_cooldown;

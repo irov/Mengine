@@ -120,6 +120,9 @@ namespace Mengine
     public:
         bool getMaxClientResolution( Resolution * const _resolution ) const override;
 
+        bool getSafeAreaViewport( Viewport * const _viewport ) const override;
+        void setSafeAreaViewportChangedCallback( const LambdaSafeAreaViewportChanged & _callback ) override;
+
     public:
         bool openUrlInDefaultBrowser( const Char * _url ) override;
         bool openMail( const Char * _email, const Char * _subject, const Char * _body, const Char * _technically ) override;

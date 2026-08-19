@@ -56,6 +56,7 @@ src
 	iOSPluginConfigDelegateInterface.h
     iOSPluginAnalyticDelegateInterface.h
 
+    iOSSafeAreaProviderInterface.h
     iOSPlatformServiceExtensionInterface.h
 )
 

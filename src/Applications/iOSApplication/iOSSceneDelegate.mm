@@ -22,8 +22,6 @@
 
     iOSUIApplicationDelegate * appDelegate = (iOSUIApplicationDelegate *)[UIApplication sharedApplication].delegate;
     [appDelegate setWindow:window];
-
-
 }
 
 - (void)sceneDidDisconnect:(UIScene *)scene API_AVAILABLE(ios(13.0)) {

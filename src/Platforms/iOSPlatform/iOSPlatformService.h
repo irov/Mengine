@@ -18,6 +18,7 @@
 #include "Interface/FactoryInterface.h"
 #include "Interface/AnalyticsEventProviderInterface.h"
 
+#import "Environment/iOS/iOSSafeAreaProviderInterface.h"
 #include "Environment/iOS/iOSPlatformServiceExtensionInterface.h"
 
 #import "iOSMailComposeDelegate.h"
@@ -144,6 +145,9 @@ namespace Mengine
     public:
         bool getMaxClientResolution( Resolution * const _resolution ) const override;
 
+        bool getSafeAreaViewport( Viewport * const _viewport ) const override;
+        void setSafeAreaViewportChangedCallback( const LambdaSafeAreaViewportChanged & _callback ) override;
+
     public:
         bool openUrlInDefaultBrowser( const Char * _url ) override;
         bool openMail( const Char * _email, const Char * _subject, const Char * _body, const Char * _technically ) override;
@@ -201,6 +205,9 @@ namespace Mengine
         bool applyWindow_();
         void destroyWindow_();
 
+        void setupSafeAreaProvider_();
+        void removeSafeAreaProvider_();
+
     protected:
         bool processEvents_();
         bool dispatchTouchEvent_( NSSet<UITouch *> * _touches, UIView * _view, UITouchPhase _phase );
@@ -220,6 +227,8 @@ namespace Mengine
         Tags m_platformTags;
 
         UIWindow * m_uiWindow;
+        id<iOSSafeAreaProviderInterface> m_safeAreaProvider;
+        LambdaSafeAreaViewportChanged m_safeAreaViewportChangedCallback;
 
 #if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
         EAGLContext * m_glContext;

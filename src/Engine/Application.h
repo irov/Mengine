@@ -92,7 +92,6 @@ namespace Mengine
         const Resolution & getCurrentWindowResolution() const override;
 
         const Viewport & getRenderViewport() const override;
-        void setSafeAreaViewport( const Viewport & _viewport ) override;
         const Viewport & getSafeAreaViewport() const override;
         void setContentResolution( const Resolution & _resolution ) override;
         const Resolution & getContentResolution() const override;
@@ -103,6 +102,7 @@ namespace Mengine
 
     protected:
         void calcRenderViewport_( float * const _aspect, Viewport * const _viewport ) const;
+        void updateSafeAreaViewport_( const Viewport & _viewport );
 
     public:
         bool render() override;

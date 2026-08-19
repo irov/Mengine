@@ -997,6 +997,18 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Win32PlatformService::getSafeAreaViewport( Viewport * const _viewport ) const
+    {
+        (void)_viewport;
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32PlatformService::setSafeAreaViewportChangedCallback( const LambdaSafeAreaViewportChanged & _callback )
+    {
+        (void)_callback;
+    }
+    //////////////////////////////////////////////////////////////////////////
     const Tags & Win32PlatformService::getPlatformTags() const
     {
         return m_platformTags;

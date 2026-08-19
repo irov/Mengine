@@ -97,6 +97,7 @@ namespace Mengine
     iOSPlatformService::iOSPlatformService()
         : m_beginTime( 0 )
         , m_uiWindow( nil )
+        , m_safeAreaProvider( nil )
         , m_iOSInput( nullptr )
         , m_prevTime( 0.0 )
         , m_pauseUpdatingTime( -1.f )
@@ -283,6 +284,34 @@ namespace Mengine
         *_resolution = Resolution( (uint32_t)(screenRect.size.width * screenScale), (uint32_t)(screenRect.size.height * screenScale) );
         
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool iOSPlatformService::getSafeAreaViewport( Viewport * const _viewport ) const
+    {
+        if( m_safeAreaProvider == nil )
+        {
+            return false;
+        }
+
+        CGRect safeAreaViewport;
+        if( [m_safeAreaProvider getSafeAreaViewport:&safeAreaViewport] == NO )
+        {
+            return false;
+        }
+
+        *_viewport = Viewport(
+            (float)CGRectGetMinX( safeAreaViewport ),
+            (float)CGRectGetMinY( safeAreaViewport ),
+            (float)CGRectGetMaxX( safeAreaViewport ),
+            (float)CGRectGetMaxY( safeAreaViewport )
+        );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void iOSPlatformService::setSafeAreaViewportChangedCallback( const LambdaSafeAreaViewportChanged & _callback )
+    {
+        m_safeAreaViewportChangedCallback = _callback;
     }
     //////////////////////////////////////////////////////////////////////////
     bool iOSPlatformService::_initializeService()
@@ -1631,6 +1660,8 @@ namespace Mengine
             return false;
         }
 
+        this->setupSafeAreaProvider_();
+
         CGRect windowBounds = m_uiWindow.frame;
 
         LOGGER_INFO( "platform", "iOS window created [%d, %d]"
@@ -1643,6 +1674,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::destroyWindow_()
     {
+        this->removeSafeAreaProvider_();
+
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_DETACH_WINDOW );
 
 #if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
@@ -1669,6 +1702,62 @@ namespace Mengine
 #endif
 
         m_uiWindow = nil;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void iOSPlatformService::setupSafeAreaProvider_()
+    {
+        UIViewController * rootViewController = m_uiWindow.rootViewController;
+
+        id<iOSSafeAreaProviderInterface> safeAreaProvider = nil;
+        if( [rootViewController conformsToProtocol:@protocol(iOSSafeAreaProviderInterface)] == YES )
+        {
+            safeAreaProvider = (id<iOSSafeAreaProviderInterface>)rootViewController;
+        }
+
+        if( m_safeAreaProvider == safeAreaProvider )
+        {
+            return;
+        }
+
+        m_safeAreaProvider = safeAreaProvider;
+
+        if( m_safeAreaProvider == nil )
+        {
+            return;
+        }
+
+        [m_safeAreaProvider setSafeAreaInsetsDidChangeCallback:^{
+            if( m_safeAreaViewportChangedCallback == nullptr )
+            {
+                return;
+            }
+
+            Viewport safeAreaViewport;
+            if( this->getSafeAreaViewport( &safeAreaViewport ) == true )
+            {
+                m_safeAreaViewportChangedCallback( safeAreaViewport );
+            }
+        }];
+
+        if( m_safeAreaViewportChangedCallback != nullptr )
+        {
+            Viewport safeAreaViewport;
+            if( this->getSafeAreaViewport( &safeAreaViewport ) == true )
+            {
+                m_safeAreaViewportChangedCallback( safeAreaViewport );
+            }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void iOSPlatformService::removeSafeAreaProvider_()
+    {
+        if( m_safeAreaProvider == nil )
+        {
+            return;
+        }
+
+        [m_safeAreaProvider setSafeAreaInsetsDidChangeCallback:nil];
+        m_safeAreaProvider = nil;
     }
     //////////////////////////////////////////////////////////////////////////
     bool iOSPlatformService::processEvents_()

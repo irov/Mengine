@@ -226,6 +226,18 @@ namespace Mengine
         return this->getDesktopResolution( _resolution );
     }
     //////////////////////////////////////////////////////////////////////////
+    bool MacOSPlatformService::getSafeAreaViewport( Viewport * const _viewport ) const
+    {
+        (void)_viewport;
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MacOSPlatformService::setSafeAreaViewportChangedCallback( const LambdaSafeAreaViewportChanged & _callback )
+    {
+        (void)_callback;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool MacOSPlatformService::_initializeService()
     {
         m_beginTime = Helper::getSystemTimestamp();

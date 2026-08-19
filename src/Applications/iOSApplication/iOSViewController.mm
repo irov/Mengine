@@ -1,13 +1,15 @@
 #import "iOSViewController.h"
 
 #include "Interface/PlatformServiceInterface.h"
-#include "Interface/ApplicationInterface.h"
 
 #include "Environment/iOS/iOSPlatformServiceExtensionInterface.h"
 
 @interface iOSViewController ()
 
 @property (nonatomic, strong) UIViewController * m_launchScreenViewController;
+@property (nonatomic, assign) CGRect m_safeAreaViewport;
+@property (nonatomic, assign) BOOL m_safeAreaViewportValid;
+@property (nonatomic, copy) iOSSafeAreaInsetsDidChangeCallback safeAreaInsetsDidChangeCallback;
 
 @end
 
@@ -16,25 +18,31 @@
 - (void)viewSafeAreaInsetsDidChange {
     [super viewSafeAreaInsetsDidChange];
 
-    if( SERVICE_IS_INITIALIZE( Mengine::ApplicationInterface ) == false )
-    {
-        return;
-    }
-
     UIEdgeInsets viewInsets = self.view.safeAreaInsets;
     CGFloat scale = self.view.contentScaleFactor;
-
     CGSize viewSize = self.view.bounds.size;
 
-    Mengine::Viewport viewport(
-        (float)(viewInsets.left * scale),
-        (float)(viewInsets.top * scale),
-        (float)((viewSize.width - viewInsets.right) * scale),
-        (float)((viewSize.height - viewInsets.bottom) * scale)
-    );
+    CGFloat beginX = viewInsets.left * scale;
+    CGFloat beginY = viewInsets.top * scale;
+    CGFloat endX = (viewSize.width - viewInsets.right) * scale;
+    CGFloat endY = (viewSize.height - viewInsets.bottom) * scale;
 
-    APPLICATION_SERVICE()
-        ->setSafeAreaViewport( viewport );
+    self.m_safeAreaViewport = CGRectMake(beginX, beginY, endX - beginX, endY - beginY);
+    self.m_safeAreaViewportValid = YES;
+
+    if (self.safeAreaInsetsDidChangeCallback != nil) {
+        self.safeAreaInsetsDidChangeCallback();
+    }
+}
+
+- (BOOL)getSafeAreaViewport:(CGRect * _Nonnull)viewport {
+    if (self.m_safeAreaViewportValid == NO) {
+        return NO;
+    }
+
+    *viewport = self.m_safeAreaViewport;
+
+    return YES;
 }
 
 - (void)setView:(UIView *)view {

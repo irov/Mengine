@@ -1088,6 +1088,18 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool GDKPlatformService::getSafeAreaViewport( Viewport * const _viewport ) const
+    {
+        (void)_viewport;
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void GDKPlatformService::setSafeAreaViewportChangedCallback( const LambdaSafeAreaViewportChanged & _callback )
+    {
+        (void)_callback;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool GDKPlatformService::openUrlInDefaultBrowser( const Char * _url )
     {
         WPath unicode_url = {L'\0'};

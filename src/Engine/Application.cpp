@@ -433,6 +433,19 @@ namespace Mengine
 
         m_renderPipeline = renderPipeline;
 
+        PLATFORM_SERVICE()
+            ->setSafeAreaViewportChangedCallback( [this]( const Viewport & _viewport )
+            {
+                this->updateSafeAreaViewport_( _viewport );
+            } );
+
+        Viewport safeAreaViewport;
+        if( PLATFORM_SERVICE()
+            ->getSafeAreaViewport( &safeAreaViewport ) == true )
+        {
+            this->updateSafeAreaViewport_( safeAreaViewport );
+        }
+
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ENGINE_PREPARE_FINALIZE, &Application::notifyEnginePrepareFinalize_, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
@@ -440,6 +453,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::_finalizeService()
     {
+        PLATFORM_SERVICE()
+            ->setSafeAreaViewportChangedCallback( nullptr );
+
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ENGINE_PREPARE_FINALIZE );
 
         if( m_debugFileOpen == true )
@@ -2054,7 +2070,7 @@ namespace Mengine
         return m_currentWindowResolution;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Application::setSafeAreaViewport( const Viewport & _viewport )
+    void Application::updateSafeAreaViewport_( const Viewport & _viewport )
     {
         const float beginX = _viewport.begin.x > 0.f ? _viewport.begin.x : 0.f;
         const float beginY = _viewport.begin.y > 0.f ? _viewport.begin.y : 0.f;

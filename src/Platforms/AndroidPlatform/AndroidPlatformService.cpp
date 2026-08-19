@@ -762,6 +762,7 @@ namespace Mengine
         , m_lastFingerX( 0.f )
         , m_lastFingerY( 0.f )
         , m_lastFingerPressure( 0.f )
+        , m_safeAreaViewportValid( false )
         , m_prevTime( 0.0 )
         , m_pauseUpdatingTime( -1.f )
         , m_active( false )
@@ -874,6 +875,23 @@ namespace Mengine
         *_resolution = Resolution( width, height );
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AndroidPlatformService::getSafeAreaViewport( Viewport * const _viewport ) const
+    {
+        if( m_safeAreaViewportValid == false )
+        {
+            return false;
+        }
+
+        *_viewport = m_safeAreaViewport;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::setSafeAreaViewportChangedCallback( const LambdaSafeAreaViewportChanged & _callback )
+    {
+        m_safeAreaViewportChangedCallback = _callback;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::_initializeService()
@@ -2964,13 +2982,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeSafeAreaViewportEvent( jfloat _beginX, jfloat _beginY, jfloat _endX, jfloat _endY )
     {
-        if( SERVICE_IS_INITIALIZE( ApplicationInterface ) == false )
+        Viewport viewport( _beginX, _beginY, _endX, _endY );
+
+        if( m_safeAreaViewportValid == true && m_safeAreaViewport == viewport )
         {
             return;
         }
 
-        APPLICATION_SERVICE()
-            ->setSafeAreaViewport( Viewport( _beginX, _beginY, _endX, _endY ) );
+        m_safeAreaViewport = viewport;
+        m_safeAreaViewportValid = true;
+
+        if( m_safeAreaViewportChangedCallback != nullptr )
+        {
+            m_safeAreaViewportChangedCallback( m_safeAreaViewport );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeTextEvent( jlong _eventTime, jint _unicode )

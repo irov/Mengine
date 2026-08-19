@@ -118,6 +118,11 @@ namespace Mengine
     public:
         virtual bool getMaxClientResolution( Resolution * const _resolution ) const = 0;
 
+        typedef Lambda<void( const Viewport & )> LambdaSafeAreaViewportChanged;
+
+        virtual bool getSafeAreaViewport( Viewport * const _viewport ) const = 0;
+        virtual void setSafeAreaViewportChangedCallback( const LambdaSafeAreaViewportChanged & _callback ) = 0;
+
     public:
         virtual bool openUrlInDefaultBrowser( const Char * _url ) = 0;
         virtual bool openMail( const Char * _email, const Char * _subject, const Char * _body, const Char * _technically ) = 0;

@@ -971,6 +971,18 @@ namespace Mengine
         return this->getDesktopResolution( _resolution );
     }
     //////////////////////////////////////////////////////////////////////////
+    bool UnixPlatformService::getSafeAreaViewport( Viewport * const _viewport ) const
+    {
+        (void)_viewport;
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void UnixPlatformService::setSafeAreaViewportChangedCallback( const LambdaSafeAreaViewportChanged & _callback )
+    {
+        (void)_callback;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool UnixPlatformService::getNoFullscreen() const
     {
         return false;

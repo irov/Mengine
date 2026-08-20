@@ -9,6 +9,7 @@ import android.os.Bundle;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.IntentSenderRequest;
 import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.games.AchievementsClient;
@@ -40,6 +41,8 @@ import java.util.Map;
 public class MengineGoogleGameSocialPlugin extends MengineService implements MengineListenerApplication, MengineListenerActivity {
     public static final String SERVICE_NAME = "GGameSocial";
     public static final boolean SERVICE_EMBEDDING = true;
+
+    public static final @StringRes int METADATA_SERVER_CLIENT_ID = R.string.mengine_google_game_social_server_client_id;
 
     private static final String PREFERENCE_KEY_TRYING_SIGN_IN_INTENT = "mengine.googlegamesocial.trying_sign_in_intent";
 
@@ -179,6 +182,50 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
 
     public boolean isAuthenticated() {
         return m_isAuthenticated;
+    }
+
+    public void requestServerAuthCode() {
+        if (m_gamesSignInClient == null) {
+            this.logError("[ERROR] requestServerAuthCode gamesSignInClient not initialized");
+
+            this.nativeCall("onGoogleGameSocialRequestServerAuthCodeError", new RuntimeException("gamesSignInClient not initialized"));
+
+            return;
+        }
+
+        String serverClientId = this.getResourceString(METADATA_SERVER_CLIENT_ID);
+
+        if (serverClientId.isEmpty() == true) {
+            this.logError("[ERROR] requestServerAuthCode server client id is empty");
+
+            this.nativeCall("onGoogleGameSocialRequestServerAuthCodeError", new RuntimeException("server client id is empty"));
+
+            return;
+        }
+
+        this.logInfo("requestServerAuthCode");
+
+        m_gamesSignInClient.requestServerSideAccess(serverClientId, false).addOnSuccessListener(serverAuthCode -> {
+            if (serverAuthCode == null || serverAuthCode.isEmpty() == true) {
+                this.logError("[ERROR] requestServerAuthCode returned empty auth code");
+
+                this.nativeCall("onGoogleGameSocialRequestServerAuthCodeError", new RuntimeException("empty server auth code"));
+
+                return;
+            }
+
+            this.logInfo("requestServerAuthCode success");
+
+            this.nativeCall("onGoogleGameSocialRequestServerAuthCodeSuccess", serverAuthCode);
+        }).addOnFailureListener(e -> {
+            this.logException(e, Map.of());
+
+            this.nativeCall("onGoogleGameSocialRequestServerAuthCodeError", e);
+        }).addOnCanceledListener(() -> {
+            this.logInfo("requestServerAuthCode canceled");
+
+            this.nativeCall("onGoogleGameSocialRequestServerAuthCodeCanceled");
+        });
     }
 
     private void finishSignInIntent() {

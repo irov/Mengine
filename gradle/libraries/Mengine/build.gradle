@@ -1,5 +1,4 @@
 apply from: rootProject.projectDir.getAbsolutePath() + '/libraries/library.gradle'
-apply from: rootProject.projectDir.getAbsolutePath() + '/gms.gradle'
 
 final Integer ANDROID_APP_BUILD_NUMBER = Utils.getIntegerProperty("ANDROID_APP_BUILD_NUMBER", 0)
 final String ANDROID_APP_BUILD_VERSION = Utils.getStringProperty("ANDROID_APP_BUILD_VERSION", "0.0.0")

@@ -23,6 +23,6 @@ public class MengineLocalNotificationsPublisher extends BroadcastReceiver {
         Notification notification = MengineUtils.getParcelableExtra(intent, NOTIFICATION);
 
         int id = intent.getIntExtra(NOTIFICATION_ID, 0);
-        notificationManager.notify(id, notification);
+        notificationManager.notify(MengineLocalNotificationsPlugin.NOTIFICATION_TAG, id, notification);
     }
 }

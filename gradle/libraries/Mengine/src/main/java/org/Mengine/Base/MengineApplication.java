@@ -58,6 +58,8 @@ public abstract class MengineApplication extends Application {
     private boolean m_invalidInitialize = false;
     private Throwable m_invalidInitializeException = null;
 
+    private boolean m_transparencyConsentResolved = false;
+
     private MengineMain m_main;
 
     private Object m_nativeApplication;
@@ -453,11 +455,30 @@ public abstract class MengineApplication extends Application {
 
         Context context = this.getApplicationContext();
         tcParam.initFromDefaultSharedPreferences(context);
+        tcParam.setConsentState(this.hasTransparencyConsentProvider(), m_transparencyConsentResolved);
 
         return tcParam;
     }
 
+    public boolean hasTransparencyConsentProvider() {
+        for (MengineServiceInterface service : m_services) {
+            if ((service instanceof MengineTransparencyConsentProviderInterface) == false) {
+                continue;
+            }
+
+            MengineTransparencyConsentProviderInterface provider = (MengineTransparencyConsentProviderInterface)service;
+
+            if (provider.isTransparencyConsentProvider() == true) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public void checkTransparencyConsentServices() {
+        m_transparencyConsentResolved = true;
+
         MengineParamTransparencyConsent tcParam = this.makeTransparencyConsentParam();
         MengineFragmentTransparencyConsent.INSTANCE.transparencyConsent(tcParam);
     }
@@ -887,6 +908,10 @@ public abstract class MengineApplication extends Application {
 
         for (MengineListenerApplication l : applicationListeners) {
             try {
+                if (l.onAvailable(this) == false) {
+                    continue;
+                }
+
                 long service_timestamp = MengineUtils.getTimestamp();
 
                 l.onAppPrepare(this);
@@ -914,6 +939,10 @@ public abstract class MengineApplication extends Application {
 
         for (MengineListenerApplication l : applicationListeners) {
             try {
+                if (l.onAvailable(this) == false) {
+                    continue;
+                }
+
                 String serviceName = l.getServiceName();
 
                 long service_timestamp = MengineUtils.getTimestamp();
@@ -939,6 +968,10 @@ public abstract class MengineApplication extends Application {
 
         for (MengineListenerApplication l : applicationListeners) {
             try {
+                if (l.onAvailable(this) == false) {
+                    continue;
+                }
+
                 String serviceName = l.getServiceName();
 
                 long service_timestamp = MengineUtils.getTimestamp();
@@ -1002,6 +1035,10 @@ public abstract class MengineApplication extends Application {
         List<MengineServiceInterface> services = this.getServices();
 
         for (MengineServiceInterface s : services) {
+            if (s.onAvailable(this) == false) {
+                continue;
+            }
+
             String serviceName = s.getServiceName();
 
             Bundle bundle = MenginePreferences.getPreferenceBundle("service." + serviceName, null);
@@ -1027,6 +1064,10 @@ public abstract class MengineApplication extends Application {
         List<MengineServiceInterface> services = this.getServices();
 
         for (MengineServiceInterface s : services) {
+            if (s.onAvailable(this) == false) {
+                continue;
+            }
+
             String serviceName = s.getServiceName();
 
             Bundle bundle;

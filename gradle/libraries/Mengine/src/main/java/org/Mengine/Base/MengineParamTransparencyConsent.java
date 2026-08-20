@@ -79,6 +79,14 @@ public class MengineParamTransparencyConsent {
 
     public String TRANSPARENCYCONSENT_USPRIVACYSTRING;
 
+    private boolean m_consentRequired = false;
+    private boolean m_consentResolved = true;
+
+    public void setConsentState(boolean required, boolean resolved) {
+        m_consentRequired = required;
+        m_consentResolved = resolved;
+    }
+
     public static void setConsentFlowUserGeography(@NonNull Context context, MengineConsentFlowUserGeography userGeography) {
         if (MengineParamTransparencyConsent.TRANSPARENCYCONSENT_USERGEOGRAPHY == userGeography) {
             return;
@@ -142,6 +150,14 @@ public class MengineParamTransparencyConsent {
     }
 
     public boolean isPending() {
+        if (m_consentRequired == false) {
+            return false;
+        }
+
+        if (m_consentResolved == false) {
+            return true;
+        }
+
         MengineConsentFlowUserGeography geography = MengineParamTransparencyConsent.getTransparencyconsentUsergeography();
 
         if (geography == MengineConsentFlowUserGeography.MengineConsentFlowUserGeography_NonEEA) {
@@ -152,7 +168,15 @@ public class MengineParamTransparencyConsent {
     }
 
     public boolean isEEA() {
+        if (m_consentRequired == false) {
+            return false;
+        }
+
         MengineConsentFlowUserGeography geography = MengineParamTransparencyConsent.getTransparencyconsentUsergeography();
+
+        if (geography == MengineConsentFlowUserGeography.MengineConsentFlowUserGeography_EEA) {
+            return true;
+        }
 
         if (geography == MengineConsentFlowUserGeography.MengineConsentFlowUserGeography_NonEEA) {
             return false;
@@ -174,6 +198,10 @@ public class MengineParamTransparencyConsent {
     }
 
     public boolean getPurposeConsentArgument(int index) {
+        if (this.isPending() == true) {
+            return false;
+        }
+
         if (this.isEEA() == false) {
             return true;
         }
@@ -190,6 +218,10 @@ public class MengineParamTransparencyConsent {
     }
 
     public boolean getPurposeConsentArguments(List<Integer> arguments) {
+        if (this.isPending() == true) {
+            return false;
+        }
+
         if (this.isEEA() == false) {
             return true;
         }
@@ -204,6 +236,10 @@ public class MengineParamTransparencyConsent {
     }
 
     public boolean getConsentAdStorage() {
+        if (this.isPending() == true) {
+            return false;
+        }
+
         if (this.isEEA() == false) {
             return true;
         }
@@ -216,6 +252,10 @@ public class MengineParamTransparencyConsent {
     }
 
     public boolean getConsentAnalyticsStorage() {
+        if (this.isPending() == true) {
+            return false;
+        }
+
         if (this.isEEA() == false) {
             return true;
         }
@@ -232,6 +272,10 @@ public class MengineParamTransparencyConsent {
     }
 
     public boolean getConsentAdPersonalization() {
+        if (this.isPending() == true) {
+            return false;
+        }
+
         if (this.isEEA() == false) {
             return true;
         }
@@ -248,6 +292,10 @@ public class MengineParamTransparencyConsent {
     }
 
     public boolean getConsentAdUserData() {
+        if (this.isPending() == true) {
+            return false;
+        }
+
         if (this.isEEA() == false) {
             return true;
         }
@@ -264,6 +312,10 @@ public class MengineParamTransparencyConsent {
     }
 
     public boolean getConsentMeasurement() {
+        if (this.isPending() == true) {
+            return false;
+        }
+
         if (this.isEEA() == false) {
             return true;
         }

@@ -34,7 +34,7 @@ public class MengineLocalNotificationsJobService extends JobService {
                 return false;
             }
 
-            notificationManager.notify(id, notification);
+            notificationManager.notify(MengineLocalNotificationsPlugin.NOTIFICATION_TAG, id, notification);
         }
 
         return false;

@@ -22,6 +22,7 @@ import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.graphics.Color;
@@ -29,6 +30,7 @@ import android.os.Build;
 import android.os.PersistableBundle;
 import android.os.SystemClock;
 import android.os.Bundle;
+import android.service.notification.StatusBarNotification;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,6 +46,10 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
 
     private static final String CHANNEL_ID = "mengine_channel_id";
     private static final CharSequence CHANNEL_NAME = "Mengine Channel";
+    static final String NOTIFICATION_TAG = "mengine_local_notification";
+    private static final String PREFERENCES_NAME = "mengine.local_notifications";
+    private static final String PREFERENCES_SCHEDULED_ALARM_IDS = "scheduled_alarm_ids";
+    private static final int JOB_ID_PREFIX = 0x4D000000;
 
     static class LocalNotificationDesc {
         public int id;
@@ -157,6 +163,7 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
 
         m_scheduledAlarmNotificationIds.add(id);
+        this.saveScheduledAlarmNotificationIds(activity);
     }
 
     public void instantlyPresentNotification(Notification notification, int id) {
@@ -182,10 +189,11 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
             return;
         }
 
-        notificationManager.notify(id, notification);
+        notificationManager.notify(NOTIFICATION_TAG, id, notification);
     }
     
     public void startLocalNotifications(MengineActivity activity) {
+        this.loadScheduledAlarmNotificationIds(activity);
         this.cancelAll();
 
         m_notificationPermissionGranted = true;
@@ -235,7 +243,13 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
         NotificationManager notificationManager = activity.getSystemService(NotificationManager.class);
 
         if (notificationManager != null) {
-            notificationManager.cancelAll();
+            for (StatusBarNotification notification : notificationManager.getActiveNotifications()) {
+                if (Objects.equals(notification.getTag(), NOTIFICATION_TAG) == false) {
+                    continue;
+                }
+
+                notificationManager.cancel(NOTIFICATION_TAG, notification.getId());
+            }
         }
 
         AlarmManager alarmManager = activity.getSystemService(AlarmManager.class);
@@ -252,12 +266,47 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
         }
 
         m_scheduledAlarmNotificationIds.clear();
+        this.saveScheduledAlarmNotificationIds(activity);
 
         JobScheduler jobScheduler = activity.getSystemService(JobScheduler.class);
 
         if (jobScheduler != null) {
-            jobScheduler.cancelAll();
+            ComponentName localNotificationsJobService = new ComponentName(activity, MengineLocalNotificationsJobService.class);
+
+            for (JobInfo job : jobScheduler.getAllPendingJobs()) {
+                if (Objects.equals(job.getService(), localNotificationsJobService) == false) {
+                    continue;
+                }
+
+                jobScheduler.cancel(job.getId());
+            }
         }
+    }
+
+    private void loadScheduledAlarmNotificationIds(@NonNull Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
+        Set<String> ids = preferences.getStringSet(PREFERENCES_SCHEDULED_ALARM_IDS, Set.of());
+
+        m_scheduledAlarmNotificationIds.clear();
+
+        for (String id : ids) {
+            try {
+                m_scheduledAlarmNotificationIds.add(Integer.parseInt(id));
+            } catch (final NumberFormatException e) {
+                this.logWarning("invalid persisted alarm notification id: %s", id);
+            }
+        }
+    }
+
+    private void saveScheduledAlarmNotificationIds(@NonNull Context context) {
+        Set<String> ids = new HashSet<>();
+
+        for (int id : m_scheduledAlarmNotificationIds) {
+            ids.add(String.valueOf(id));
+        }
+
+        SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
+        preferences.edit().putStringSet(PREFERENCES_SCHEDULED_ALARM_IDS, ids).apply();
     }
 
     protected void parseInternalLocalNotifications(@NonNull MengineActivity activity) {
@@ -427,15 +476,17 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
             return;
         }
 
-        int jobId = bundle.getInt(MengineLocalNotificationsConstants.KEY_ID);
+        int notificationId = bundle.getInt(MengineLocalNotificationsConstants.KEY_ID);
 
-        if (jobId <= 0) {
+        if (notificationId <= 0) {
             this.logWarning("scheduleJobNotification invalid id: %d"
-                , jobId
+                , notificationId
             );
 
             return;
         }
+
+        int jobId = JOB_ID_PREFIX ^ notificationId;
 
         ComponentName jobService = new ComponentName(activity, MengineLocalNotificationsJobService.class);
 
@@ -449,6 +500,16 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
         JobScheduler jobScheduler = activity.getSystemService(JobScheduler.class);
 
         if (jobScheduler == null) {
+            return;
+        }
+
+        JobInfo pendingJob = jobScheduler.getPendingJob(jobId);
+
+        if (pendingJob != null && Objects.equals(pendingJob.getService(), jobService) == false) {
+            this.logWarning("scheduleJobNotification job id collision: %d"
+                , jobId
+            );
+
             return;
         }
 

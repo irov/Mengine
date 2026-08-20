@@ -37,6 +37,11 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
     public void onAppPrepare(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
         FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(application);
 
+        m_firebaseAnalytics = firebaseAnalytics;
+
+        MengineParamTransparencyConsent tcParam = application.makeTransparencyConsentParam();
+        this.onMengineTransparencyConsent(application, tcParam);
+
         String userId = application.getUserId();
         if (userId != null) {
             firebaseAnalytics.setUserId(userId);
@@ -70,8 +75,6 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
         long lifeTime = currentTimestamp - installTimestamp;
 
         firebaseAnalytics.setUserProperty("life_time", String.valueOf(lifeTime));
-
-        m_firebaseAnalytics = firebaseAnalytics;
     }
 
     @Override

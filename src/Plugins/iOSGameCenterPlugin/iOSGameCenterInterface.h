@@ -15,6 +15,8 @@
 - (BOOL)isConnect;
 - (BOOL)isSynchronized;
 
+- (BOOL)requestIdentityVerificationSignature:(void(^)(NSError *, NSString *, NSURL *, NSData *, NSData *, uint64_t))handler;
+
 - (BOOL)reportAchievement:(NSString *)identifier percent:(double)percent response:(void(^)(BOOL))handler;
 - (BOOL)checkAchievement:(NSString *)identifier;
 

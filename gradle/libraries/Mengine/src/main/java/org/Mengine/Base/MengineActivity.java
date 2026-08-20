@@ -32,6 +32,7 @@ import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.List;
@@ -52,11 +53,17 @@ public class MengineActivity extends AppCompatActivity {
         ACTIVITY_RESTART,
     }
 
+    private static class PermissionRequestCallbacks {
+        final List<Runnable> successCallbacks = new ArrayList<>();
+        final List<Runnable> failureCallbacks = new ArrayList<>();
+    }
+
     public static MengineActivity INSTANCE = null;
 
     private volatile ELifecycleState m_lifecycleState = ELifecycleState.ACTIVITY_INITIALIZE;
 
     private final List<MengineListenerActivity> m_activityListeners = new ArrayList<>();
+    private final Map<String, PermissionRequestCallbacks> m_permissionRequestCallbacks = new HashMap<>();
 
     private Locale m_currentLocale;
 
@@ -168,6 +175,36 @@ public class MengineActivity extends AppCompatActivity {
             return;
         }
 
+        PermissionRequestCallbacks pendingCallbacks = m_permissionRequestCallbacks.get(permission);
+
+        if (pendingCallbacks != null) {
+            if (onSuccess != null) {
+                pendingCallbacks.successCallbacks.add(onSuccess);
+            }
+
+            if (onFailure != null) {
+                pendingCallbacks.failureCallbacks.add(onFailure);
+            }
+
+            MengineLog.logDebug(TAG, "checkPermission: %s join pending request"
+                , permission
+            );
+
+            return;
+        }
+
+        PermissionRequestCallbacks callbacks = new PermissionRequestCallbacks();
+
+        if (onSuccess != null) {
+            callbacks.successCallbacks.add(onSuccess);
+        }
+
+        if (onFailure != null) {
+            callbacks.failureCallbacks.add(onFailure);
+        }
+
+        m_permissionRequestCallbacks.put(permission, callbacks);
+
         ActivityResultRegistry registry = this.getActivityResultRegistry();
 
         final String name = permission + MengineUtils.getRandomUUIDString();
@@ -185,9 +222,7 @@ public class MengineActivity extends AppCompatActivity {
 
                     launcher[0].unregister();
 
-                    if (onSuccess != null) {
-                        onSuccess.run();
-                    }
+                    this.completePermissionRequest(permission, true);
                 } else {
                     MengineLog.logInfo(TAG, "checkPermission: %s denied"
                         , permission
@@ -195,9 +230,7 @@ public class MengineActivity extends AppCompatActivity {
 
                     launcher[0].unregister();
 
-                    if (onFailure != null) {
-                        onFailure.run();
-                    }
+                    this.completePermissionRequest(permission, false);
                 }
             });
 
@@ -221,9 +254,7 @@ public class MengineActivity extends AppCompatActivity {
 
                     launcher[0].unregister();
 
-                    if (onFailure != null) {
-                        onFailure.run();
-                    }
+                    this.completePermissionRequest(permission, false);
                 }
                 , title
                 , format
@@ -235,6 +266,26 @@ public class MengineActivity extends AppCompatActivity {
             );
 
             launcher[0].launch(permission);
+        }
+    }
+
+    private void completePermissionRequest(String permission, boolean granted) {
+        PermissionRequestCallbacks callbacks = m_permissionRequestCallbacks.remove(permission);
+
+        if (callbacks == null) {
+            return;
+        }
+
+        List<Runnable> resultCallbacks = granted == true
+            ? callbacks.successCallbacks
+            : callbacks.failureCallbacks;
+
+        for (Runnable callback : resultCallbacks) {
+            try {
+                callback.run();
+            } catch (final RuntimeException e) {
+                MengineLog.logException(TAG, e, Map.of("permission", permission));
+            }
         }
     }
 

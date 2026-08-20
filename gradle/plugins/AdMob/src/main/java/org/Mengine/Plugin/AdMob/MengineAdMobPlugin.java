@@ -33,6 +33,7 @@ public class MengineAdMobPlugin extends MengineService implements MengineAdMobPl
     public static final boolean SERVICE_EMBEDDING = true;
 
     private volatile boolean m_adMobSdkInitialized = false;
+    private volatile boolean m_adMobSdkInitializing = false;
 
     private MengineAdMobBannerAdInterface m_bannerAd;
     private MengineAdMobInterstitialAdInterface m_interstitialAd;
@@ -93,6 +94,12 @@ public class MengineAdMobPlugin extends MengineService implements MengineAdMobPl
         }
 
         adService.setAdProvider(this);
+
+        if (application.hasTransparencyConsentProvider() == false) {
+            this.initializeAdMob(application, adService);
+        } else {
+            this.logInfo("[AdMob SDK] waiting for transparency consent");
+        }
     }
 
     @Override
@@ -436,8 +443,12 @@ public class MengineAdMobPlugin extends MengineService implements MengineAdMobPl
     }
 
     protected void initializeAdMob(@NonNull MengineApplication application, @NonNull MengineAdService adService) {
-        if (m_adMobSdkInitialized == true) {
-            return;
+        synchronized (this) {
+            if (m_adMobSdkInitialized == true || m_adMobSdkInitializing == true) {
+                return;
+            }
+
+            m_adMobSdkInitializing = true;
         }
 
         VersionInfo admobSdkVersion = MobileAds.getVersion();
@@ -448,6 +459,7 @@ public class MengineAdMobPlugin extends MengineService implements MengineAdMobPl
 
         MobileAds.initialize(application, initializationStatus -> {
             m_adMobSdkInitialized = true;
+            m_adMobSdkInitializing = false;
 
             MengineActivity activity = MengineAdMobPlugin.this.getMengineActivity();
 
@@ -463,7 +475,7 @@ public class MengineAdMobPlugin extends MengineService implements MengineAdMobPl
 
     @Override
     public void onMengineTransparencyConsent(@NonNull MengineApplication application, @NonNull MengineParamTransparencyConsent tcParam) {
-        if (m_adMobSdkInitialized == true) {
+        if (tcParam.isPending() == true) {
             return;
         }
 

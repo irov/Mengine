@@ -65,6 +65,20 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
     private AccessTokenTracker m_accessTokenTracker;
     private ProfileTracker m_profileTracker;
     private AppEventsLogger m_logger;
+    private boolean m_appEventsActivated = false;
+
+    private void activateAppEvents(@NonNull MengineApplication application) {
+        if (m_appEventsActivated == true) {
+            return;
+        }
+
+        try {
+            AppEventsLogger.activateApp(application);
+            m_appEventsActivated = true;
+        } catch (final Exception e) {
+            this.logException(e, Map.of());
+        }
+    }
 
     @Override
     public void onAppCreate(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
@@ -84,10 +98,8 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
             FacebookSdk.setDataProcessingOptions(new String[] {});
         }
 
-        try {
-            AppEventsLogger.activateApp(application);
-        } catch (final Exception e) {
-            this.logException(e, Map.of());
+        if (AD_STORAGE == true) {
+            this.activateAppEvents(application);
         }
 
         if (BuildConfig.DEBUG == true) {
@@ -112,6 +124,8 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
             m_logger.flush();
             m_logger = null;
         }
+
+        m_appEventsActivated = false;
     }
 
     @Override
@@ -692,6 +706,10 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
 
         FacebookSdk.setAdvertiserIDCollectionEnabled(AD_STORAGE);
         FacebookSdk.setAutoLogAppEventsEnabled(AD_STORAGE);
+
+        if (AD_STORAGE == true) {
+            this.activateAppEvents(application);
+        }
 
         boolean CCPADoNotSell = tcParam.isCCPADoNotSell();
 

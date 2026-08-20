@@ -13,6 +13,7 @@ import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineFragmentAdvertisingId;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineListenerApplication;
+import org.Mengine.Base.MengineListenerTransparencyConsent;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineParamTransparencyConsent;
 import org.Mengine.Base.MengineUtils;
@@ -21,7 +22,7 @@ import org.Mengine.Plugin.GoogleService.MengineGoogleServicePlugin;
 import java.io.IOException;
 import java.util.Objects;
 
-public class MengineGoogleAdvertisingPlugin extends MengineService implements MengineListenerApplication {
+public class MengineGoogleAdvertisingPlugin extends MengineService implements MengineListenerApplication, MengineListenerTransparencyConsent {
     public static final String SERVICE_NAME = "Advertising";
     public static final int SAVE_VERSION = 1;
 
@@ -32,6 +33,8 @@ public class MengineGoogleAdvertisingPlugin extends MengineService implements Me
     protected final Object m_synchronizationAdvertising = new Object();
 
     private Thread m_advertisingThread;
+    private long m_advertisingRequestId = 0L;
+    private boolean m_advertisingConsentGranted = false;
 
     @Override
     public boolean onAvailable(@NonNull MengineApplication application) {
@@ -70,12 +73,43 @@ public class MengineGoogleAdvertisingPlugin extends MengineService implements Me
 
     @Override
     public void onAppCreate(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
-        MengineParamTransparencyConsent tcParam = application.makeTransparencyConsentParam();
+        if (application.hasTransparencyConsentProvider() == true) {
+            this.logInfo("AdvertisingId waiting for transparency consent");
 
-        if (tcParam.getConsentAdStorage() == false) {
+            this.updateAdvertisingConsent(application, false);
+
+            return;
+        }
+
+        MengineParamTransparencyConsent tcParam = application.makeTransparencyConsentParam();
+        boolean consentAdStorage = tcParam.getConsentAdStorage();
+
+        this.updateAdvertisingConsent(application, consentAdStorage);
+    }
+
+    @Override
+    public void onMengineTransparencyConsent(@NonNull MengineApplication application, @NonNull MengineParamTransparencyConsent tcParam) {
+        boolean consentAdStorage = tcParam.getConsentAdStorage();
+
+        this.updateAdvertisingConsent(application, consentAdStorage);
+    }
+
+    private void updateAdvertisingConsent(@NonNull MengineApplication application, boolean consentAdStorage) {
+        synchronized (m_synchronizationAdvertising) {
+            m_advertisingConsentGranted = consentAdStorage;
+        }
+
+        if (consentAdStorage == false) {
             this.logInfo("AdvertisingId disabled by consent ad storage");
 
             synchronized (m_synchronizationAdvertising) {
+                m_advertisingRequestId += 1L;
+
+                if (m_advertisingThread != null) {
+                    m_advertisingThread.interrupt();
+                    m_advertisingThread = null;
+                }
+
                 m_advertisingId = MengineFragmentAdvertisingId.LIMIT_ADVERTISING_ID;
                 m_advertisingLimitTrackingEnabled = true;
                 m_advertisingLimitTrackingFetch = true;
@@ -86,6 +120,12 @@ public class MengineGoogleAdvertisingPlugin extends MengineService implements Me
             return;
         }
 
+        this.requestAdvertisingId(application);
+    }
+
+    private void requestAdvertisingId(@NonNull MengineApplication application) {
+        final long requestId;
+
         synchronized (m_synchronizationAdvertising) {
             if (m_advertisingLimitTrackingFetch == true) {
                 this.logInfo("AdvertisingId: %s limit: %s"
@@ -95,6 +135,13 @@ public class MengineGoogleAdvertisingPlugin extends MengineService implements Me
 
                 MengineFragmentAdvertisingId.INSTANCE.setAdvertisingId(m_advertisingId, m_advertisingLimitTrackingEnabled);
             }
+
+            if (m_advertisingThread != null) {
+                return;
+            }
+
+            m_advertisingRequestId += 1L;
+            requestId = m_advertisingRequestId;
         }
 
         Runnable task = () -> {
@@ -122,10 +169,14 @@ public class MengineGoogleAdvertisingPlugin extends MengineService implements Me
                 );
             }
 
-            this.postAdInfo(adInfo);
+            this.postAdInfo(requestId, adInfo);
         };
 
         synchronized (m_synchronizationAdvertising) {
+            if (requestId != m_advertisingRequestId || m_advertisingConsentGranted == false || m_advertisingThread != null) {
+                return;
+            }
+
             m_advertisingThread = new Thread(task, "MNGGAID");
             m_advertisingThread.start();
         }
@@ -134,6 +185,9 @@ public class MengineGoogleAdvertisingPlugin extends MengineService implements Me
     @Override
     public void onAppTerminate(@NonNull MengineApplication application) {
         synchronized (m_synchronizationAdvertising) {
+            m_advertisingConsentGranted = false;
+            m_advertisingRequestId += 1L;
+
             if (m_advertisingThread != null) {
                 m_advertisingThread.interrupt();
                 m_advertisingThread = null;
@@ -141,8 +195,12 @@ public class MengineGoogleAdvertisingPlugin extends MengineService implements Me
         }
     }
 
-    private void postAdInfo(AdvertisingIdClient.Info adInfo) {
+    private void postAdInfo(long requestId, AdvertisingIdClient.Info adInfo) {
         synchronized (m_synchronizationAdvertising) {
+            if (requestId != m_advertisingRequestId || m_advertisingConsentGranted == false) {
+                return;
+            }
+
             String newAdvertisingId;
             boolean newAdvertisingLimitTrackingEnabled;
 

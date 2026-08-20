@@ -39,6 +39,7 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
     private RewardedAd m_rewardedAd;
 
     private boolean m_showing = false;
+    private @NonNull String m_placement = "";
 
     public MengineAdMobRewardedAd(@NonNull MengineAdService adService, @NonNull MengineAdMobPluginInterface plugin) throws MengineServiceInvalidInitializeException {
         super(adService, plugin, MengineAdFormat.ADFORMAT_REWARDED);
@@ -83,6 +84,7 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
         }
 
         m_showing = false;
+        m_placement = "";
     }
 
     @Override
@@ -134,7 +136,7 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
 
                             m_showing = false;
 
-                            adResponse.onAdShowSuccess(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_REWARDED, "");
+                            adResponse.onAdShowSuccess(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_REWARDED, m_placement);
 
                             MengineUtils.performOnMainThread(() -> {
                                 MengineAdMobRewardedAd.this.loadAd();
@@ -158,7 +160,7 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
 
                             m_showing = false;
 
-                            adResponse.onAdShowFailed(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_REWARDED, "", errorCode);
+                            adResponse.onAdShowFailed(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_REWARDED, m_placement, errorCode);
 
                             MengineUtils.performOnMainThread(() -> {
                                 MengineAdMobRewardedAd.this.loadAd();
@@ -208,7 +210,7 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
                                 long valueMicros = adValue.getValueMicros();
                                 double value = valueMicros / 1000000.0;
 
-                                MengineAdMobRewardedAd.this.revenuePaid(responseInfo, MengineAdFormat.ADFORMAT_REWARDED, "", value);
+                                MengineAdMobRewardedAd.this.revenuePaid(responseInfo, MengineAdFormat.ADFORMAT_REWARDED, m_placement, value);
                             }
                         }
                     });
@@ -315,6 +317,7 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
         }
 
         m_showing = true;
+        m_placement = placement;
 
         RewardedAd show_rewardedAd = m_rewardedAd;
 
@@ -326,13 +329,14 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
                 MengineAdMobRewardedAd.this.log("onUserEarnedReward");
 
                 MengineAdMobRewardedAd.this.buildRewardedAdEvent("user_rewarded")
+                    .addParameterString("placement", placement)
                     .addParameterString("reward_type", rewardType)
                     .addParameterLong("reward_amount", rewardAmount)
                     .log();
 
                 MengineAdResponseInterface adResponse = m_adService.getAdResponse();
 
-                adResponse.onAdUserRewarded(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_REWARDED, "", rewardType, rewardAmount);
+                adResponse.onAdUserRewarded(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_REWARDED, placement, rewardType, rewardAmount);
             });
         });
 

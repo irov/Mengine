@@ -7,6 +7,7 @@ import org.Mengine.Base.MengineListenerActivity;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineParamTransparencyConsent;
 import org.Mengine.Base.MengineConsentFlowUserGeography;
+import org.Mengine.Base.MengineTransparencyConsentProviderInterface;
 
 import android.os.Bundle;
 
@@ -17,9 +18,14 @@ import com.google.android.ump.ConsentInformation;
 import com.google.android.ump.ConsentRequestParameters;
 import com.google.android.ump.UserMessagingPlatform;
 
-public class MengineGoogleConsentPlugin extends MengineService implements MengineListenerActivity {
+public class MengineGoogleConsentPlugin extends MengineService implements MengineListenerActivity, MengineTransparencyConsentProviderInterface {
     public static final String SERVICE_NAME = "GConsent";
     public static final boolean SERVICE_EMBEDDING = true;
+
+    @Override
+    public boolean isTransparencyConsentProvider() {
+        return true;
+    }
 
     @Override
     public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
@@ -60,25 +66,7 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
                     , privacyOptionsRequirementStatus.toString()
                 );
 
-                if (formAvailable == false) {
-                    application.checkTransparencyConsentServices();
-
-                    return;
-                }
-
-                if (privacyOptionsRequirementStatus == ConsentInformation.PrivacyOptionsRequirementStatus.NOT_REQUIRED) {
-                    application.checkTransparencyConsentServices();
-
-                    return;
-                }
-
-                if (consentStatus != ConsentInformation.ConsentStatus.REQUIRED) {
-                    application.checkTransparencyConsentServices();
-
-                    return;
-                }
-
-                this.loadForm(application, activity);
+                this.loadForm(application, activity, consentInformation);
             }
             , (formError) -> {
                 this.logError("consent info update failure: %s [%d]"
@@ -86,11 +74,31 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
                     , formError.getErrorCode()
                 );
 
-                application.checkTransparencyConsentServices();
+                this.notifyTransparencyConsent(application, consentInformation);
             });
     }
 
-    public void loadForm(@NonNull MengineApplication application, @NonNull MengineActivity activity) {
+    private void notifyTransparencyConsent(@NonNull MengineApplication application, @NonNull ConsentInformation consentInformation) {
+        boolean canRequestAds = consentInformation.canRequestAds();
+
+        this.logInfo("Google Consent canRequestAds: %b", canRequestAds);
+
+        if (canRequestAds == false) {
+            return;
+        }
+
+        MengineParamTransparencyConsent tcParam = application.makeTransparencyConsentParam();
+
+        if (tcParam.TRANSPARENCYCONSENT_GDPRAPPLIES == 1) {
+            MengineParamTransparencyConsent.setConsentFlowUserGeography(application, MengineConsentFlowUserGeography.MengineConsentFlowUserGeography_EEA);
+        } else {
+            MengineParamTransparencyConsent.setConsentFlowUserGeography(application, MengineConsentFlowUserGeography.MengineConsentFlowUserGeography_NonEEA);
+        }
+
+        application.checkTransparencyConsentServices();
+    }
+
+    public void loadForm(@NonNull MengineApplication application, @NonNull MengineActivity activity, @NonNull ConsentInformation consentInformation) {
         UserMessagingPlatform.loadAndShowConsentFormIfRequired(activity
             , (loadAndShowError) -> {
                 if (loadAndShowError != null) {
@@ -98,15 +106,11 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
                         , loadAndShowError.getMessage()
                         , loadAndShowError.getErrorCode()
                     );
-
-                    application.checkTransparencyConsentServices();
-
-                    return;
+                } else {
+                    this.logInfo("consent form load and show success");
                 }
 
-                this.logInfo("consent form load and show success");
-
-                application.checkTransparencyConsentServices();
+                this.notifyTransparencyConsent(application, consentInformation);
             });
     }
 
@@ -148,17 +152,19 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
 
             this.logInfo("Consent dialog was shown");
 
+            MengineApplication application = this.getMengineApplication();
+            ConsentInformation consentInformation = UserMessagingPlatform.getConsentInformation(activity);
+
+            this.notifyTransparencyConsent(application, consentInformation);
+
             this.nativeCall("onAndroidGoogleConsentFlowCompleted");
         });
     }
 
     public boolean isConsentFlowUserGeographyGDPR() {
-        MengineConsentFlowUserGeography geography = MengineParamTransparencyConsent.getTransparencyconsentUsergeography();
+        MengineApplication application = this.getMengineApplication();
+        MengineParamTransparencyConsent tcParam = application.makeTransparencyConsentParam();
 
-        if (geography != MengineConsentFlowUserGeography.MengineConsentFlowUserGeography_EEA) {
-            return false;
-        }
-
-        return true;
+        return tcParam.isEEA();
     }
 }

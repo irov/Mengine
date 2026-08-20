@@ -63,6 +63,28 @@ namespace Mengine
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
+        static bool iOSGameCenter_requestIdentityVerificationSignature( const pybind::object & _cb, const pybind::args & _args )
+        {
+            pybind::object copy_cb = _cb;
+            pybind::args copy_args = _args;
+
+            BOOL result = [[iOSGameCenterPlugin sharedInstance] requestIdentityVerificationSignature:^(NSError * error, NSString * playerId, NSURL * publicKeyURL, NSData * signature, NSData * salt, uint64_t timestamp) {
+                if (error != nil || playerId == nil || publicKeyURL == nil || signature == nil || salt == nil) {
+                    copy_cb.call_args( false, @"", @"", @"", @"", @"", copy_args );
+
+                    return;
+                }
+
+                NSString * signatureBase64 = [signature base64EncodedStringWithOptions:0];
+                NSString * saltBase64 = [salt base64EncodedStringWithOptions:0];
+                NSString * timestampString = [NSString stringWithFormat:@"%llu", (unsigned long long)timestamp];
+
+                copy_cb.call_args( true, playerId, publicKeyURL.absoluteString, signatureBase64, saltBase64, timestampString, copy_args );
+            }];
+
+            return result;
+        }
+        //////////////////////////////////////////////////////////////////////////
         static bool iOSGameCenter_reportAchievement( NSString * _identifier, double _percent, const pybind::object & _cb, const pybind::args & _args )
         {
             pybind::object copy_cb = _cb;
@@ -130,6 +152,7 @@ namespace Mengine
     {
         pybind::def_function_args( _kernel, "iOSGameCenterConnect", &Detail::iOSGameCenter_connect );
         pybind::def_function( _kernel, "iOSGameCenterIsConnect", &Detail::iOSGameCenter_isConnect );
+        pybind::def_function_args( _kernel, "iOSGameCenterRequestIdentityVerificationSignature", &Detail::iOSGameCenter_requestIdentityVerificationSignature );
         pybind::def_function_args( _kernel, "iOSGameCenterReportAchievement", &Detail::iOSGameCenter_reportAchievement );
         pybind::def_function( _kernel, "iOSGameCenterCheckAchievement", &Detail::iOSGameCenter_checkAchievement );
         pybind::def_function_args( _kernel, "iOSGameCenterResetAchievements", &Detail::iOSGameCenter_resetAchievements );
@@ -142,6 +165,7 @@ namespace Mengine
     {
         _kernel->remove_from_module( "iOSGameCenterConnect", nullptr );
         _kernel->remove_from_module( "iOSGameCenterIsConnect", nullptr );
+        _kernel->remove_from_module( "iOSGameCenterRequestIdentityVerificationSignature", nullptr );
         _kernel->remove_from_module( "iOSGameCenterReportAchievement", nullptr );
         _kernel->remove_from_module( "iOSGameCenterCheckAchievement", nullptr );
         _kernel->remove_from_module( "iOSGameCenterResetAchievements", nullptr );

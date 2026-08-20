@@ -117,6 +117,26 @@
     return self.m_achievementsSynchronization;
 }
 
+- (BOOL)requestIdentityVerificationSignature:(void(^)(NSError *, NSString *, NSURL *, NSData *, NSData *, uint64_t))handler {
+    GKLocalPlayer * localPlayer = [GKLocalPlayer localPlayer];
+
+    if (localPlayer.isAuthenticated == NO) {
+        IOS_LOGGER_ERROR( @"request identity verification signature failed: player is not authenticated" );
+
+        return NO;
+    }
+
+    [localPlayer fetchItemsForIdentityVerificationSignature:^(NSURL * publicKeyURL, NSData * signature, NSData * salt, uint64_t timestamp, NSError * error) {
+        NSString * playerId = localPlayer.teamPlayerID;
+
+        [AppleDetail addMainQueueOperation:^{
+            handler( error, playerId, publicKeyURL, signature, salt, timestamp );
+        }];
+    }];
+
+    return YES;
+}
+
 - (BOOL)reportAchievement:(NSString *)identifier percent:(double)percent response:(void(^)(BOOL))handler {
     IOS_LOGGER_MESSAGE( @"report achievement: '%@' [%lf]"
         , identifier

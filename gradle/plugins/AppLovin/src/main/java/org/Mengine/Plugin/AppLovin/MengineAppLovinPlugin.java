@@ -31,6 +31,7 @@ import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineListenerActivity;
 import org.Mengine.Base.MengineListenerEngine;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
+import org.Mengine.Base.MengineTransparencyConsentProviderInterface;
 import org.Mengine.Base.MengineUtils;
 import org.Mengine.Plugin.AppLovin.Core.MengineAppLovinAdInterface;
 import org.Mengine.Plugin.AppLovin.Core.MengineAppLovinAppOpenAdInterface;
@@ -48,9 +49,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class MengineAppLovinPlugin extends MengineService implements MengineAppLovinPluginInterface, MengineAdProviderInterface, MengineListenerApplication, MengineListenerActivity, MengineListenerEngine, MengineListenerRemoteConfig, MengineListenerTransparencyConsent {
+public class MengineAppLovinPlugin extends MengineService implements MengineAppLovinPluginInterface, MengineAdProviderInterface, MengineListenerApplication, MengineListenerActivity, MengineListenerEngine, MengineListenerRemoteConfig, MengineListenerTransparencyConsent, MengineTransparencyConsentProviderInterface {
     public static final String SERVICE_NAME = "AppLovin";
     public static final boolean SERVICE_EMBEDDING = true;
+
+    @Override
+    public boolean isTransparencyConsentProvider() {
+        return BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_CONSENT_FLOW;
+    }
 
     public static final @StringRes int METADATA_SDK_KEY = R.string.mengine_applovin_sdk_key;
     public static final @BoolRes int METADATA_ENABLE_PRIVACY_POLICY_FLOW = R.bool.mengine_applovin_enable_privacy_policy_flow;

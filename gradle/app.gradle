@@ -4,8 +4,6 @@ apply from: rootProject.projectDir.getAbsolutePath() + '/base.gradle'
 apply from: rootProject.projectDir.getAbsolutePath() + '/androidx.gradle'
 apply from: rootProject.projectDir.getAbsolutePath() + '/minify.gradle'
 apply from: rootProject.projectDir.getAbsolutePath() + '/split.gradle'
-apply from: rootProject.projectDir.getAbsolutePath() + '/delivery.gradle'
-apply from: rootProject.projectDir.getAbsolutePath() + '/gms.gradle'
 
 final Integer ANDROID_APP_BUILD_NUMBER = Utils.getIntegerProperty("ANDROID_APP_BUILD_NUMBER", 0)
 final String ANDROID_APP_BUILD_VERSION = Utils.getStringProperty("ANDROID_APP_BUILD_VERSION", "0.0.0")
@@ -16,6 +14,10 @@ final String ANDROID_APP_DELIVERY_PACKAGES = Utils.getStringProperty("ANDROID_AP
 final String ANDROID_APP_MAIN_PROJECT = Utils.getStringProperty("ANDROID_APP_MAIN_PROJECT", "app")
 final String ANDROID_APP_DEBUG_STORE_TYPE = Utils.getStringProperty("ANDROID_APP_DEBUG_STORE_TYPE", "jks")
 final String ANDROID_APP_RELEASE_STORE_TYPE = Utils.getStringProperty("ANDROID_APP_RELEASE_STORE_TYPE", "jks")
+
+if (ANDROID_APP_DELIVERY_PACKAGES != null) {
+    apply from: rootProject.projectDir.getAbsolutePath() + '/delivery.gradle'
+}
 
 final Boolean MENGINE_APP_LIBRARY_MENGINE = Utils.existAppLibrary("MENGINE_APP_LIBRARY_MENGINE")
 

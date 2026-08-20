@@ -1,13 +1,16 @@
 package org.Mengine.Plugin.OneSignal;
 
+import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 
-import com.onesignal.Continue;
 import com.onesignal.OneSignal;
 import com.onesignal.debug.LogLevel;
 
+import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineListenerActivity;
 import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineListenerTransparencyConsent;
 import org.Mengine.Base.MengineService;
@@ -17,7 +20,7 @@ import org.Mengine.Base.MengineUtils;
 
 import java.util.List;
 
-public class MengineOneSignalPlugin extends MengineService implements MengineListenerApplication, MengineListenerTransparencyConsent {
+public class MengineOneSignalPlugin extends MengineService implements MengineListenerApplication, MengineListenerActivity, MengineListenerTransparencyConsent {
     public static final String SERVICE_NAME = "OneSignal";
 
     public static final @StringRes int METADATA_APP_ID = R.string.mengine_onesignal_app_id;
@@ -38,13 +41,13 @@ public class MengineOneSignalPlugin extends MengineService implements MengineLis
         }
 
         MengineParamTransparencyConsent tcParam = application.makeTransparencyConsentParam();
+        boolean consentPending = tcParam.isPending();
+        boolean consentEEA = tcParam.isEEA();
 
-        if (tcParam.isEEA() == true) {
-            OneSignal.setConsentRequired(true);
+        OneSignal.setConsentRequired(consentPending == true || consentEEA == true);
 
-            if (tcParam.getPurposeConsentArguments(List.of(0, 3, 4)) == true) {
-                OneSignal.setConsentGiven(true);
-            }
+        if (consentPending == false && (consentEEA == false || tcParam.getPurposeConsentArguments(List.of(0, 3, 4)) == true)) {
+            OneSignal.setConsentGiven(true);
         }
 
         OneSignal.initWithContext(application, MengineOneSignalPlugin_AppId);
@@ -54,13 +57,17 @@ public class MengineOneSignalPlugin extends MengineService implements MengineLis
     }
 
     @Override
-    public void onMengineTransparencyConsent(@NonNull MengineApplication application, @NonNull MengineParamTransparencyConsent consent) {
-        if (consent.isEEA() == true) {
-            if (consent.getPurposeConsentArguments(List.of(0, 3, 4)) == true) {
-                OneSignal.setConsentGiven(true);
-            }
-        }
+    public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
+        activity.checkPermissionPostNotifications();
+    }
 
-        OneSignal.getNotifications().requestPermission(false, Continue.none());
+    @Override
+    public void onMengineTransparencyConsent(@NonNull MengineApplication application, @NonNull MengineParamTransparencyConsent consent) {
+        boolean consentPending = consent.isPending();
+        boolean consentEEA = consent.isEEA();
+        boolean consentGiven = consentPending == false && (consentEEA == false || consent.getPurposeConsentArguments(List.of(0, 3, 4)) == true);
+
+        OneSignal.setConsentRequired(consentPending == true || consentEEA == true);
+        OneSignal.setConsentGiven(consentGiven);
     }
 }

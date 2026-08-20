@@ -162,6 +162,7 @@ namespace Mengine
         Viewport m_windowViewport;
         bool m_fullscreen;
         bool m_depth;
+        bool m_renderWindowCreate;
 
         IDirect3D9 * m_pD3D;
         IDirect3DDevice9 * m_pD3DDevice;

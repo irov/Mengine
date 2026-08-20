@@ -70,6 +70,7 @@ namespace Mengine
         , m_d3dpp( nullptr )
         , m_fullscreen( true )
         , m_depth( false )
+        , m_renderWindowCreate( false )
         , m_adapterToUse( D3DADAPTER_DEFAULT )
         , m_deviceType( D3DDEVTYPE_HAL )
         , m_vertexBufferEnable( false )
@@ -262,6 +263,16 @@ namespace Mengine
         m_factoryRenderTargetOffscreen = nullptr;
 
         DX9RenderImageLockedFactoryStorage::finalize();
+
+        if( m_pD3DDevice != nullptr )
+        {
+            ULONG ref = m_pD3DDevice->Release();
+            MENGINE_UNUSED( ref );
+
+            MENGINE_ASSERTION( ref == 0, "D3DDevice has refcount [%lu]", ref );
+
+            m_pD3DDevice = nullptr;
+        }
 
         if( m_pD3D != nullptr )
         {
@@ -607,6 +618,8 @@ namespace Mengine
         m_supportR8G8B8 = this->supportTextureFormat( PF_R8G8B8 );
         m_supportNonPow2 = this->supportTextureNonPow2( m_d3dCaps );
 
+        m_renderWindowCreate = true;
+
         NOTIFICATION_NOTIFY( NOTIFICATOR_RENDER_DEVICE_CREATE );
 
         return true;
@@ -614,21 +627,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::destroyRenderWindow()
     {
-        if( m_pD3DDevice == nullptr )
+        if( m_renderWindowCreate == false )
         {
             return;
         }
 
+        m_renderWindowCreate = false;
+
         NOTIFICATION_NOTIFY( NOTIFICATOR_RENDER_DEVICE_DESTROY );
-         
-        this->releaseResources_();        
 
-        ULONG ref = m_pD3DDevice->Release();
-        MENGINE_UNUSED( ref );
-
-        MENGINE_ASSERTION( ref == 0, "D3DDevice has refcount [%lu]", ref );
-
-        m_pD3DDevice = nullptr;
+        this->releaseResources_();
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setProjectionMatrix( const mt::mat4f & _projectionMatrix )

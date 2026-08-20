@@ -184,11 +184,11 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
         return m_isAuthenticated;
     }
 
-    public void requestServerAuthCode() {
+    public void requestServerAuthCode(int requestId) {
         if (m_gamesSignInClient == null) {
             this.logError("[ERROR] requestServerAuthCode gamesSignInClient not initialized");
 
-            this.nativeCall("onGoogleGameSocialRequestServerAuthCodeError", new RuntimeException("gamesSignInClient not initialized"));
+            this.nativeCallServerAuthCodeError(requestId, new RuntimeException("gamesSignInClient not initialized"));
 
             return;
         }
@@ -198,7 +198,7 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
         if (serverClientId.isEmpty() == true) {
             this.logError("[ERROR] requestServerAuthCode server client id is empty");
 
-            this.nativeCall("onGoogleGameSocialRequestServerAuthCodeError", new RuntimeException("server client id is empty"));
+            this.nativeCallServerAuthCodeError(requestId, new RuntimeException("server client id is empty"));
 
             return;
         }
@@ -209,23 +209,35 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
             if (serverAuthCode == null || serverAuthCode.isEmpty() == true) {
                 this.logError("[ERROR] requestServerAuthCode returned empty auth code");
 
-                this.nativeCall("onGoogleGameSocialRequestServerAuthCodeError", new RuntimeException("empty server auth code"));
+                this.nativeCallServerAuthCodeError(requestId, new RuntimeException("empty server auth code"));
 
                 return;
             }
 
             this.logInfo("requestServerAuthCode success");
 
-            this.nativeCall("onGoogleGameSocialRequestServerAuthCodeSuccess", serverAuthCode);
+            this.nativeCallServerAuthCodeSuccess(requestId, serverAuthCode);
         }).addOnFailureListener(e -> {
             this.logException(e, Map.of());
 
-            this.nativeCall("onGoogleGameSocialRequestServerAuthCodeError", e);
+            this.nativeCallServerAuthCodeError(requestId, e);
         }).addOnCanceledListener(() -> {
             this.logInfo("requestServerAuthCode canceled");
 
-            this.nativeCall("onGoogleGameSocialRequestServerAuthCodeCanceled");
+            this.nativeCallServerAuthCodeCanceled(requestId);
         });
+    }
+
+    private void nativeCallServerAuthCodeSuccess(int requestId, String serverAuthCode) {
+        this.nativeCall("onGoogleGameSocialRequestServerAuthCodeSuccess", requestId, serverAuthCode);
+    }
+
+    private void nativeCallServerAuthCodeError(int requestId, Exception e) {
+        this.nativeCall("onGoogleGameSocialRequestServerAuthCodeError", requestId, e);
+    }
+
+    private void nativeCallServerAuthCodeCanceled(int requestId) {
+        this.nativeCall("onGoogleGameSocialRequestServerAuthCodeCanceled", requestId);
     }
 
     private void finishSignInIntent() {

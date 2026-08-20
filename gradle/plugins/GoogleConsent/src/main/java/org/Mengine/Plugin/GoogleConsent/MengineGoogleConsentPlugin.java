@@ -167,4 +167,17 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
 
         return tcParam.isEEA();
     }
+
+    public boolean isPrivacyOptionsRequired() {
+        MengineActivity activity = this.getMengineActivity();
+
+        if (activity == null) {
+            return false;
+        }
+
+        ConsentInformation consentInformation = UserMessagingPlatform.getConsentInformation(activity);
+        ConsentInformation.PrivacyOptionsRequirementStatus privacyOptionsRequirementStatus = consentInformation.getPrivacyOptionsRequirementStatus();
+
+        return privacyOptionsRequirementStatus == ConsentInformation.PrivacyOptionsRequirementStatus.REQUIRED;
+    }
 }

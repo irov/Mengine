@@ -4,7 +4,7 @@
 
 @implementation AppleKeyChain
 
-+ (BOOL)setDataForKey:(NSString *)key data:(NSDate *)data {
++ (BOOL)setDataForKey:(NSString *)key data:(NSData *)data {
     NSString * tag = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleIdentifier"];
     
     NSDictionary * query = @{
@@ -32,7 +32,7 @@
             return NO;
         }
         
-        return NO;
+        return YES;
     }
     
     if (status_matching != errSecItemNotFound) {

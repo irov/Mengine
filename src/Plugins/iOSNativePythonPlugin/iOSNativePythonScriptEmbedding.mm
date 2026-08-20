@@ -44,6 +44,11 @@ namespace Mengine
 
             PyObject * wrap( pybind::kernel_interface * _kernel, pybind::type_cast_result<value_type>::TCastRef _value ) override
             {
+                if( _value == nil )
+                {
+                    return _kernel->ret_none();
+                }
+
                 const Char * value_str = [_value UTF8String];
 
                 PyObject * py_value = _kernel->string_from_char( value_str );

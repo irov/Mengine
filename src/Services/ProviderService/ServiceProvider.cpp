@@ -119,6 +119,7 @@ namespace Mengine
             desc.initialize = false;
             desc.requiring = false;
             desc.available = false;
+            desc.required_count = 0;
 
             if( service->availableService() == false )
             {
@@ -129,6 +130,13 @@ namespace Mengine
             desc.available = true;
 
             const ServiceRequiredList & required = service->requiredServices();
+
+            MENGINE_ASSERTION_FATAL( required.size() <= MENGINE_SERVICE_PROVIDER_MAX_REQUIRED, "service '%s' required service count '%zu' exceeds maximum '%u' (doc: %s)"
+                , service->getServiceId()
+                , required.size()
+                , MENGINE_SERVICE_PROVIDER_MAX_REQUIRED
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
 
             for( const Char * require_name : required )
             {

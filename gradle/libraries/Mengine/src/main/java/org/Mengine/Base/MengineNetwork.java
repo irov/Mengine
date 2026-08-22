@@ -16,13 +16,16 @@ import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class MengineNetwork {
     public static final MengineTag TAG = MengineTag.of("MNGNetwork");
 
-    public static boolean m_networkAvailable = true;
-    public static boolean m_networkUnmetered = true;
-    public static MengineNetworkTransport m_networkTransport = MengineNetworkTransport.NETWORKTRANSPORT_UNKNOWN;
+    public static volatile boolean m_networkAvailable = true;
+    public static volatile boolean m_networkUnmetered = true;
+    public static volatile MengineNetworkTransport m_networkTransport = MengineNetworkTransport.NETWORKTRANSPORT_UNKNOWN;
+    private static final ConcurrentMap<Integer, HttpURLConnection> m_connections = new ConcurrentHashMap<>();
 
     public static void setNetworkAvailable(boolean available) {
         m_networkAvailable = available;
@@ -53,38 +56,46 @@ public class MengineNetwork {
 
         HttpURLConnection connection = (HttpURLConnection)httpUrl.openConnection();
 
-        connection.setUseCaches(false);
-        connection.setDoInput(true);
-        connection.setInstanceFollowRedirects(true);
-        connection.setRequestMethod(method);
-        connection.setDoOutput(output);
+        try {
+            connection.setUseCaches(false);
+            connection.setDoInput(true);
+            connection.setInstanceFollowRedirects(true);
+            connection.setRequestMethod(method);
+            connection.setDoOutput(output);
 
-        MengineApplication application = MengineApplication.INSTANCE;
+            MengineApplication application = MengineApplication.INSTANCE;
 
-        String installId = application.getInstallId();
-        long installRND = application.getInstallRND();
-        String applicationId = application.getApplicationId();
-        int versionCode = application.getVersionCode();
-        String versionName = application.getVersionName();
+            String installId = application.getInstallId();
+            long installRND = application.getInstallRND();
+            String applicationId = application.getApplicationId();
+            int versionCode = application.getVersionCode();
+            String versionName = application.getVersionName();
 
-        connection.setRequestProperty("Mengine-Build-Type", BuildConfig.BUILD_TYPE);
-        connection.setRequestProperty("Mengine-Platform", "Android");
-        connection.setRequestProperty("Mengine-Install-Id", installId);
-        connection.setRequestProperty("Mengine-Install-RND", String.valueOf(installRND));
-        connection.setRequestProperty("Mengine-Application-Id", applicationId);
-        connection.setRequestProperty("Mengine-Application-Code", String.valueOf(versionCode));
-        connection.setRequestProperty("Mengine-Application-Version", versionName);
+            connection.setRequestProperty("Mengine-Build-Type", BuildConfig.BUILD_TYPE);
+            connection.setRequestProperty("Mengine-Platform", "Android");
+            connection.setRequestProperty("Mengine-Install-Id", installId);
+            connection.setRequestProperty("Mengine-Install-RND", String.valueOf(installRND));
+            connection.setRequestProperty("Mengine-Application-Id", applicationId);
+            connection.setRequestProperty("Mengine-Application-Code", String.valueOf(versionCode));
+            connection.setRequestProperty("Mengine-Application-Version", versionName);
 
-        String userId = application.getUserId();
+            String userId = application.getUserId();
 
-        if (userId != null) {
-            connection.setRequestProperty("Mengine-User-Id", userId);
+            if (userId != null) {
+                connection.setRequestProperty("Mengine-User-Id", userId);
+            }
+
+            MengineNetwork.setTimeout(connection, request.HTTP_TIMEOUT);
+            MengineNetwork.setHeaders(connection, request.HTTP_HEADERS);
+
+            m_connections.put(request.HTTP_REQUEST_ID, connection);
+
+            return connection;
+        } catch (final IOException | RuntimeException e) {
+            connection.disconnect();
+
+            throw e;
         }
-
-        MengineNetwork.setTimeout(connection, request.HTTP_TIMEOUT);
-        MengineNetwork.setHeaders(connection, request.HTTP_HEADERS);
-
-        return connection;
     }
 
     protected static MengineParamHttpResponse processConnectionData(@NonNull HttpURLConnection connection) throws IOException {
@@ -92,9 +103,26 @@ public class MengineNetwork {
 
         MengineParamHttpResponse response = MengineNetwork.makeResponseData(connection);
 
-        connection.disconnect();
-
         return response;
+    }
+
+    protected static void closeConnection(@NonNull MengineParamHttpRequest request, @Nullable HttpURLConnection connection) {
+        if (connection == null) {
+            return;
+        }
+
+        m_connections.remove(request.HTTP_REQUEST_ID, connection);
+        connection.disconnect();
+    }
+
+    public static void cancelHttpRequest(int requestId) {
+        HttpURLConnection connection = m_connections.remove(requestId);
+
+        if (connection == null) {
+            return;
+        }
+
+        connection.disconnect();
     }
 
     @Nullable
@@ -103,8 +131,10 @@ public class MengineNetwork {
             return null;
         }
 
+        HttpURLConnection connection = null;
+
         try {
-            HttpURLConnection connection = MengineNetwork.openConnection(request, "HEAD", false);
+            connection = MengineNetwork.openConnection(request, "HEAD", false);
 
             MengineParamHttpResponse response = MengineNetwork.processConnectionData(connection);
 
@@ -113,6 +143,8 @@ public class MengineNetwork {
             MengineParamHttpResponse response = MengineNetwork.catchException(request, e);
 
             return response;
+        } finally {
+            MengineNetwork.closeConnection(request, connection);
         }
     }
 
@@ -122,8 +154,10 @@ public class MengineNetwork {
             return null;
         }
 
+        HttpURLConnection connection = null;
+
         try {
-            HttpURLConnection connection = MengineNetwork.openConnection(request, "POST", true);
+            connection = MengineNetwork.openConnection(request, "POST", true);
 
             MengineNetwork.setMultipartFormData(connection, properties);
 
@@ -134,6 +168,8 @@ public class MengineNetwork {
             MengineParamHttpResponse response = MengineNetwork.catchException(request, e);
 
             return response;
+        } finally {
+            MengineNetwork.closeConnection(request, connection);
         }
     }
 
@@ -143,8 +179,10 @@ public class MengineNetwork {
             return null;
         }
 
+        HttpURLConnection connection = null;
+
         try {
-            HttpURLConnection connection = MengineNetwork.openConnection(request, "POST", true);
+            connection = MengineNetwork.openConnection(request, "POST", true);
 
             MengineNetwork.setData(connection, data);
 
@@ -155,6 +193,8 @@ public class MengineNetwork {
             MengineParamHttpResponse response = MengineNetwork.catchException(request, e);
 
             return response;
+        } finally {
+            MengineNetwork.closeConnection(request, connection);
         }
     }
 
@@ -164,8 +204,10 @@ public class MengineNetwork {
             return null;
         }
 
+        HttpURLConnection connection = null;
+
         try {
-            HttpURLConnection connection = MengineNetwork.openConnection(request, "GET", false);
+            connection = MengineNetwork.openConnection(request, "GET", false);
 
             MengineParamHttpResponse response = MengineNetwork.processConnectionData(connection);
 
@@ -174,6 +216,8 @@ public class MengineNetwork {
             MengineParamHttpResponse response = MengineNetwork.catchException(request, e);
 
             return response;
+        } finally {
+            MengineNetwork.closeConnection(request, connection);
         }
     }
 
@@ -183,8 +227,10 @@ public class MengineNetwork {
             return null;
         }
 
+        HttpURLConnection connection = null;
+
         try {
-            HttpURLConnection connection = MengineNetwork.openConnection(request, "DELETE", false);
+            connection = MengineNetwork.openConnection(request, "DELETE", false);
 
             MengineParamHttpResponse response = MengineNetwork.processConnectionData(connection);
 
@@ -193,6 +239,8 @@ public class MengineNetwork {
             MengineParamHttpResponse response = MengineNetwork.catchException(request, e);
 
             return response;
+        } finally {
+            MengineNetwork.closeConnection(request, connection);
         }
     }
 
@@ -202,8 +250,10 @@ public class MengineNetwork {
             return null;
         }
 
+        HttpURLConnection connection = null;
+
         try {
-            HttpURLConnection connection = MengineNetwork.openConnection(request, "GET", false);
+            connection = MengineNetwork.openConnection(request, "GET", false);
 
             MengineNetwork.setBasicAuthorization(connection, login, password);
 
@@ -214,6 +264,8 @@ public class MengineNetwork {
             MengineParamHttpResponse response = MengineNetwork.catchException(request, e);
 
             return response;
+        } finally {
+            MengineNetwork.closeConnection(request, connection);
         }
     }
 
@@ -248,6 +300,7 @@ public class MengineNetwork {
         }
 
         connection.setConnectTimeout(timeout);
+        connection.setReadTimeout(timeout);
     }
 
     protected static void setBasicAuthorization(@NonNull HttpURLConnection connection, @NonNull String login, @NonNull String password) {

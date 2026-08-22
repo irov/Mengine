@@ -39,6 +39,7 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
     private OnPaidEventListener m_onPaidEventListener;
 
     private boolean m_showing = false;
+    private String m_placement = "";
 
     public MengineAdMobInterstitialAd(@NonNull MengineAdService adService, @NonNull MengineAdMobPluginInterface plugin) throws MengineServiceInvalidInitializeException {
         super(adService, plugin, MengineAdFormat.ADFORMAT_INTERSTITIAL);
@@ -83,6 +84,7 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
         }
 
         m_showing = false;
+        m_placement = "";
     }
 
     @Override
@@ -120,6 +122,8 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
                         @Override
                         public void onAdDismissedFullScreenContent() {
                             m_interstitialAd = null;
+                            String placement = m_placement;
+                            m_placement = "";
 
                             MengineAdMobInterstitialAd.this.log("onAdDismissedFullScreenContent");
 
@@ -135,7 +139,7 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
                             MengineUtils.performOnMainThread(() -> {
                                 MengineAdResponseInterface adResponse = m_adService.getAdResponse();
 
-                                adResponse.onAdShowSuccess(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_INTERSTITIAL, "");
+                                adResponse.onAdShowSuccess(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_INTERSTITIAL, placement);
 
                                 MengineAdMobInterstitialAd.this.loadAd();
                             });
@@ -144,6 +148,8 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
                         @Override
                         public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
                             m_interstitialAd = null;
+                            String placement = m_placement;
+                            m_placement = "";
 
                             MengineAdMobInterstitialAd.this.logAdError("onAdFailedToShowFullScreenContent", adError);
 
@@ -161,7 +167,7 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
                             MengineUtils.performOnMainThread(() -> {
                                 MengineAdResponseInterface adResponse = m_adService.getAdResponse();
 
-                                adResponse.onAdShowFailed(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_INTERSTITIAL, "", errorCode);
+                                adResponse.onAdShowFailed(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_INTERSTITIAL, placement, errorCode);
 
                                 MengineAdMobInterstitialAd.this.loadAd();
                             });
@@ -210,7 +216,7 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
                                 long valueMicros = adValue.getValueMicros();
                                 double value = valueMicros / 1000000.0;
 
-                                MengineAdMobInterstitialAd.this.revenuePaid(responseInfo, MengineAdFormat.ADFORMAT_INTERSTITIAL, "", value);
+                                MengineAdMobInterstitialAd.this.revenuePaid(responseInfo, MengineAdFormat.ADFORMAT_INTERSTITIAL, m_placement, value);
                             }
                         }
                     });
@@ -296,6 +302,7 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
         }
 
         m_showing = true;
+        m_placement = placement;
 
         InterstitialAd show_interstitialAd = m_interstitialAd;
 

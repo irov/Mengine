@@ -72,9 +72,10 @@ namespace Mengine
 
         jclass jclass_MengineHttpRequestParam = Helper::AndroidEnvFindClass( jenv, "org/Mengine/Base/MengineParamHttpRequest" );
 
-        jmethodID jmethod_MengineHttpRequestParam_constructor = Mengine_JNI_GetMethodID( jenv, jclass_MengineHttpRequestParam, "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;I)V" );
+        jmethodID jmethod_MengineHttpRequestParam_constructor = Mengine_JNI_GetMethodID( jenv, jclass_MengineHttpRequestParam, "<init>", "(ILjava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;I)V" );
 
         jobject jobject_request = Mengine_JNI_NewObject( jenv, jclass_MengineHttpRequestParam, jmethod_MengineHttpRequestParam_constructor
+            , (jint)m_id
             , jurl
             , jproxy
             , jobject_headers
@@ -172,6 +173,17 @@ namespace Mengine
         }
 
         return HTTP_SUCCESSFUL;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidHttpRequest::_onThreadTaskCancel()
+    {
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
+
+        Helper::AndroidCallVoidStaticClassMethod( jenv, "org/Mengine/Base/MengineNetwork", "cancelHttpRequest", "(I)V"
+            , (jint)m_id
+        );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidHttpRequest::_onThreadTaskComplete( bool _successful )

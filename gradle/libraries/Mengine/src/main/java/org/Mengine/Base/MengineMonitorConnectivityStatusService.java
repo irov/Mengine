@@ -15,6 +15,7 @@ import java.util.Set;
 
 public class MengineMonitorConnectivityStatusService extends MengineService implements MengineListenerApplication {
     public static final String SERVICE_NAME = "MonitorConnStatus";
+    public static final boolean SERVICE_EMBEDDING = true;
 
     private ConnectivityManager.NetworkCallback m_networkCallback;
     private final Set<Network> m_networks = new HashSet<>();
@@ -80,6 +81,7 @@ public class MengineMonitorConnectivityStatusService extends MengineService impl
     }
 
     private void recomputeAndPublish(@NonNull ConnectivityManager cm) {
+        boolean previousAvailable = MengineNetwork.isNetworkAvailable();
         boolean available = false;
         boolean unmetered = false;
         MengineNetworkTransport transport = MengineNetworkTransport.NETWORKTRANSPORT_UNKNOWN;
@@ -121,6 +123,18 @@ public class MengineMonitorConnectivityStatusService extends MengineService impl
         MengineNetwork.setNetworkAvailable(available);
         MengineNetwork.setNetworkUnmetered(unmetered);
         MengineNetwork.setNetworkTransport(transport);
+
+        if (previousAvailable == available) {
+            return;
+        }
+
+        MengineFragmentConnectivity.INSTANCE.connectivityChanged(available);
+
+        if (available == true) {
+            this.nativeCall("onAndroidNetworkAvailable");
+        } else {
+            this.nativeCall("onAndroidNetworkLost");
+        }
     }
 
     @Override

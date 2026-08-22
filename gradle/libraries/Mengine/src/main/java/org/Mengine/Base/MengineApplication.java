@@ -137,6 +137,7 @@ public abstract class MengineApplication extends Application {
         this.createFragment(MengineFragmentAcquisition.class);
         this.createFragment(MengineFragmentAdvertisingId.class);
         this.createFragment(MengineFragmentAnalytics.class);
+        this.createFragment(MengineFragmentConnectivity.class);
         this.createFragment(MengineFragmentEngine.class);
         this.createFragment(MengineFragmentGame.class);
         this.createFragment(MengineFragmentInAppPurchase.class);

@@ -18,6 +18,7 @@ namespace Mengine
         void _onThreadTaskPreparation() override;
         bool _onThreadTaskRun() override;
         bool _onThreadTaskProcess() override;
+        void _onThreadTaskCancel() override;
 
     protected:
         virtual jobject _onHttp( JNIEnv * _jenv, jobject _basses ) = 0;

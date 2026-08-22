@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.LocaleList;
 import android.os.Looper;
+import android.os.Parcelable;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
@@ -26,6 +27,7 @@ import android.view.WindowMetrics;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
+import androidx.core.os.BundleCompat;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,6 +44,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -51,6 +54,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -59,6 +63,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -234,6 +241,82 @@ public class MengineUtils {
         runnablePeriodically.start(delay);
 
         return runnablePeriodically;
+    }
+
+    public static Runnable createCountDownRunnable(int count, @NonNull Runnable completion) {
+        if (count < 0) {
+            throw new IllegalArgumentException("Count must not be negative");
+        }
+
+        if (count == 0) {
+            completion.run();
+
+            Runnable emptyRunnable = () -> {};
+
+            return emptyRunnable;
+        }
+
+        AtomicInteger remainingCount = new AtomicInteger(count);
+
+        Runnable countDownRunnable = () -> {
+            int remaining = remainingCount.decrementAndGet();
+
+            if (remaining != 0) {
+                return;
+            }
+
+            completion.run();
+        };
+
+        return countDownRunnable;
+    }
+
+    public static Runnable createCountDownRunnable(@NonNull Collection<?> collection, @NonNull Runnable completion) {
+        int count = collection.size();
+        Runnable countDownRunnable = MengineUtils.createCountDownRunnable(count, completion);
+
+        return countDownRunnable;
+    }
+
+    public static Consumer<Boolean> createCountDownConsumer(int count, @NonNull Consumer<Boolean> completion) {
+        if (count < 0) {
+            throw new IllegalArgumentException("Count must not be negative");
+        }
+
+        if (count == 0) {
+            completion.accept(true);
+
+            Consumer<Boolean> emptyConsumer = successful -> {};
+
+            return emptyConsumer;
+        }
+
+        AtomicBoolean allSuccessful = new AtomicBoolean(true);
+        AtomicInteger remainingCount = new AtomicInteger(count);
+
+        Consumer<Boolean> countDownConsumer = successful -> {
+            if (successful == false) {
+                allSuccessful.set(false);
+            }
+
+            int remaining = remainingCount.decrementAndGet();
+
+            if (remaining != 0) {
+                return;
+            }
+
+            boolean completionSuccessful = allSuccessful.get();
+            completion.accept(completionSuccessful);
+        };
+
+        return countDownConsumer;
+    }
+
+    public static Consumer<Boolean> createCountDownConsumer(@NonNull Collection<?> collection, @NonNull Consumer<Boolean> completion) {
+        int count = collection.size();
+        Consumer<Boolean> countDownConsumer = MengineUtils.createCountDownConsumer(count, completion);
+
+        return countDownConsumer;
     }
 
     public static Thread performOnNewThread(@NonNull Runnable runnable, String name) {
@@ -1060,6 +1143,24 @@ public class MengineUtils {
         return list;
     }
 
+    public static Object getBundleValue(@NonNull Bundle bundle, @NonNull String key) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            Object value = bundle.getParcelable(key, Object.class);
+
+            return value;
+        }
+
+        Serializable serializable = BundleCompat.getSerializable(bundle, key, Serializable.class);
+
+        if (serializable != null) {
+            return serializable;
+        }
+
+        Parcelable parcelable = BundleCompat.getParcelable(bundle, key, Parcelable.class);
+
+        return parcelable;
+    }
+
     public static Map<String, Object> bundleToMap(@Nullable Bundle bundle) {
         Map<String, Object> map = new HashMap<>();
 
@@ -1071,7 +1172,7 @@ public class MengineUtils {
             Object value;
 
             try {
-                value = bundle.get(key);
+                value = MengineUtils.getBundleValue(bundle, key);
             } catch (RuntimeException e) {
                 MengineLog.logWarning(TAG, "invalid bundle value key: %s error: %s"
                     , key
@@ -1171,7 +1272,7 @@ public class MengineUtils {
     public static JSONObject jsonObjectFromBundle(@NonNull Bundle bundle) {
         JSONObject object = new JSONObject();
         for (String key : bundle.keySet()) {
-            Object value = bundle.get(key);
+            Object value = MengineUtils.getBundleValue(bundle, key);
             try {
                 if (value instanceof String) {
                     object.put(key, value);

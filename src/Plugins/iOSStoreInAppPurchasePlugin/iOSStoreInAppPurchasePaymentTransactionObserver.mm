@@ -186,7 +186,6 @@
         , transactions
     );
 
-    //ToDo
 }
 
 // Sent when an error is encountered while adding transactions from the user's purchase history back to the queue.
@@ -202,7 +201,18 @@
         , [AppleDetail getMessageFromNSError:error]
     );
 
-    //ToDo
+    Mengine::iOSStoreInAppPurchasePaymentTransactionProviderInterfacePtr copy_provider = [self.m_inAppPurchase getPaymentTransactionProvider];
+
+    if( copy_provider == nullptr )
+    {
+        LOGGER_ERROR( "payment transaction provider is not set" );
+
+        return;
+    }
+
+    Mengine::Helper::dispatchMainThreadEvent([copy_provider]() {
+        copy_provider->onPaymentQueueRestoreCompletedTransactionsFailed();
+    });
 }
 
 // Sent when all transactions from the user's purchase history have successfully been added back to the queue.
@@ -217,7 +227,18 @@
         , queue
     );
 
-    //ToDo
+    Mengine::iOSStoreInAppPurchasePaymentTransactionProviderInterfacePtr copy_provider = [self.m_inAppPurchase getPaymentTransactionProvider];
+
+    if( copy_provider == nullptr )
+    {
+        LOGGER_ERROR( "payment transaction provider is not set" );
+
+        return;
+    }
+
+    Mengine::Helper::dispatchMainThreadEvent([copy_provider]() {
+        copy_provider->onPaymentQueueRestoreCompletedTransactionsFinished();
+    });
 }
 
 // Sent when a user initiates an IAP buy from the App Store

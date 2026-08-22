@@ -10,10 +10,14 @@ import android.os.ext.SdkExtensions;
 
 import androidx.annotation.NonNull;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class MengineMonitorConnectivityStatusService extends MengineService implements MengineListenerApplication {
     public static final String SERVICE_NAME = "MonitorConnStatus";
 
     private ConnectivityManager.NetworkCallback m_networkCallback;
+    private final Set<Network> m_networks = new HashSet<>();
 
     private static MengineNetworkTransport getNetworkTransport(@NonNull NetworkCapabilities networkCapabilities) {
         if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) == true) {
@@ -81,7 +85,11 @@ public class MengineMonitorConnectivityStatusService extends MengineService impl
         MengineNetworkTransport transport = MengineNetworkTransport.NETWORKTRANSPORT_UNKNOWN;
 
         try {
-            Network[] networks = cm.getAllNetworks();
+            Network[] networks;
+
+            synchronized (m_networks) {
+                networks = m_networks.toArray(new Network[0]);
+            }
 
             for (Network network : networks) {
                 NetworkCapabilities nc = cm.getNetworkCapabilities(network);
@@ -90,17 +98,17 @@ public class MengineMonitorConnectivityStatusService extends MengineService impl
                     continue;
                 }
 
-                if (nc.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == false ||
-                    nc.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) == false) {
+                if (nc.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == false) {
                     continue;
                 }
 
-                final boolean candidateUnmetered = nc.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED);
-                final MengineNetworkTransport candidateTransport = MengineMonitorConnectivityStatusService.getNetworkTransport(nc);
+                if (nc.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) == false) {
+                    continue;
+                }
 
                 available = true;
-                unmetered = candidateUnmetered;
-                transport = candidateTransport;
+                unmetered = nc.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED);
+                transport = MengineMonitorConnectivityStatusService.getNetworkTransport(nc);
 
                 break;
             }
@@ -131,6 +139,10 @@ public class MengineMonitorConnectivityStatusService extends MengineService impl
             public void onAvailable(@NonNull Network network) {
                 super.onAvailable(network);
 
+                synchronized (m_networks) {
+                    m_networks.add(network);
+                }
+
                 MengineMonitorConnectivityStatusService.this.logInfo("network %s available"
                     , network.toString()
                 );
@@ -142,6 +154,10 @@ public class MengineMonitorConnectivityStatusService extends MengineService impl
             public void onLost(@NonNull Network network) {
                 super.onLost(network);
 
+                synchronized (m_networks) {
+                    m_networks.remove(network);
+                }
+
                 MengineMonitorConnectivityStatusService.this.logInfo("network %s lost"
                     , network.toString()
                 );
@@ -152,6 +168,11 @@ public class MengineMonitorConnectivityStatusService extends MengineService impl
             @Override
             public void onCapabilitiesChanged(@NonNull Network network, @NonNull NetworkCapabilities networkCapabilities) {
                 super.onCapabilitiesChanged(network, networkCapabilities);
+
+                synchronized (m_networks) {
+                    m_networks.add(network);
+                }
+
                 final boolean unmetered = networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED);
                 MengineNetworkTransport transport = MengineMonitorConnectivityStatusService.getNetworkTransport(networkCapabilities);
 
@@ -169,6 +190,14 @@ public class MengineMonitorConnectivityStatusService extends MengineService impl
             NetworkRequest request = new NetworkRequest.Builder()
                 .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
                 .build();
+
+            Network activeNetwork = cm.getActiveNetwork();
+
+            if (activeNetwork != null) {
+                synchronized (m_networks) {
+                    m_networks.add(activeNetwork);
+                }
+            }
 
             cm.registerNetworkCallback(request, networkCallback);
 
@@ -203,5 +232,9 @@ public class MengineMonitorConnectivityStatusService extends MengineService impl
         }
 
         m_networkCallback = null;
+
+        synchronized (m_networks) {
+            m_networks.clear();
+        }
     }
 }

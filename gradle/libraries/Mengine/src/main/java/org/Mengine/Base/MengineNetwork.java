@@ -223,6 +223,7 @@ public class MengineNetwork {
         } catch (final UnknownHostException e) {
             MengineParamHttpResponse response = new MengineParamHttpResponse();
 
+            response.HTTP_SUCCESSFUL = false;
             response.HTTP_RESPONSE_CODE = HttpURLConnection.HTTP_UNAVAILABLE;
             response.HTTP_CONTENT_LENGTH = 0;
             response.HTTP_CONTENT_DATA = new byte[0];
@@ -231,6 +232,7 @@ public class MengineNetwork {
             return response;
         } catch (final Exception e) {
             MengineParamHttpResponse response = new MengineParamHttpResponse();
+            response.HTTP_SUCCESSFUL = false;
             response.HTTP_RESPONSE_CODE = HttpURLConnection.HTTP_INTERNAL_ERROR;
             response.HTTP_CONTENT_LENGTH = 0;
             response.HTTP_CONTENT_DATA = new byte[0];
@@ -339,6 +341,7 @@ public class MengineNetwork {
 
     protected static MengineParamHttpResponse makeResponseData(@NonNull HttpURLConnection connection) throws IOException {
         MengineParamHttpResponse response = new MengineParamHttpResponse();
+        response.HTTP_SUCCESSFUL = true;
 
         MengineNetwork.setResponseCode(connection, response);
 

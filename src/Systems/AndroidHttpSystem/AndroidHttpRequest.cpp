@@ -106,11 +106,12 @@ namespace Mengine
 
             m_mutex->unlock();
 
-            return true;
+            return false;
         }
 
         jclass jclass_MengineHttpResponseParam = Helper::AndroidEnvFindClass( jenv, "org/Mengine/Base/MengineParamHttpResponse" );
 
+        jfieldID jfieldiD_HTTP_SUCCESSFUL = Mengine_JNI_GetFieldID( jenv, jclass_MengineHttpResponseParam, "HTTP_SUCCESSFUL", "Z" );
         jfieldID jfieldiD_HTTP_RESPONSE_CODE = Mengine_JNI_GetFieldID( jenv, jclass_MengineHttpResponseParam, "HTTP_RESPONSE_CODE", "I" );
         jfieldID jfieldiD_HTTP_CONTENT_LENGTH = Mengine_JNI_GetFieldID( jenv, jclass_MengineHttpResponseParam, "HTTP_CONTENT_LENGTH", "I" );
         jfieldID jfieldiD_HTTP_CONTENT_DATA = Mengine_JNI_GetFieldID( jenv, jclass_MengineHttpResponseParam, "HTTP_CONTENT_DATA", "[B" );
@@ -118,6 +119,7 @@ namespace Mengine
 
         Mengine_JNI_DeleteLocalRef( jenv, jclass_MengineHttpResponseParam );
 
+        bool HTTP_SUCCESSFUL = Mengine_JNI_GetBooleanField( jenv, jobject_response, jfieldiD_HTTP_SUCCESSFUL ) == JNI_TRUE;
         int HTTP_RESPONSE_CODE = Mengine_JNI_GetIntField( jenv, jobject_response, jfieldiD_HTTP_RESPONSE_CODE );
         int HTTP_CONTENT_LENGTH = Mengine_JNI_GetIntField( jenv, jobject_response, jfieldiD_HTTP_CONTENT_LENGTH );
         jbyteArray HTTP_CONTENT_DATA = (jbyteArray)Mengine_JNI_GetObjectField( jenv, jobject_response, jfieldiD_HTTP_CONTENT_DATA );
@@ -129,7 +131,7 @@ namespace Mengine
 
         if( m_response != nullptr )
         {
-            m_response->setSuccessful( true );
+            m_response->setSuccessful( HTTP_SUCCESSFUL );
 
             m_response->setCode( (EHttpCode)HTTP_RESPONSE_CODE );
 
@@ -169,7 +171,7 @@ namespace Mengine
             Mengine_JNI_DeleteLocalRef( jenv, HTTP_ERROR_MESSAGE );
         }
 
-        return true;
+        return HTTP_SUCCESSFUL;
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidHttpRequest::_onThreadTaskComplete( bool _successful )

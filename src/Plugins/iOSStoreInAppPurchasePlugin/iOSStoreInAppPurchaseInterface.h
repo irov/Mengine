@@ -30,6 +30,7 @@ namespace Mengine
     {
     public:
         virtual NSString * getProductIdentifier() const = 0;
+        virtual NSString * getTransactionIdentifier() const = 0;
 
     public:
         virtual void finish() = 0;
@@ -68,6 +69,8 @@ namespace Mengine
         virtual void onPaymentQueueUpdatedTransactionFailed( const iOSStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) = 0;
         virtual void onPaymentQueueUpdatedTransactionRestored( const iOSStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) = 0;
         virtual void onPaymentQueueUpdatedTransactionDeferred( const iOSStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) = 0;
+        virtual void onPaymentQueueRestoreCompletedTransactionsFinished() = 0;
+        virtual void onPaymentQueueRestoreCompletedTransactionsFailed() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<iOSStoreInAppPurchasePaymentTransactionProviderInterface> iOSStoreInAppPurchasePaymentTransactionProviderInterfacePtr;

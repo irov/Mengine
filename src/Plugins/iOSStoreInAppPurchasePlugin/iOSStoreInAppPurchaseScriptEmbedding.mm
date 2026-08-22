@@ -58,6 +58,16 @@ namespace Mengine
             {
                 this->call_method( "onPaymentQueueUpdatedTransactionDeferred", _transaction );
             }
+
+            void onPaymentQueueRestoreCompletedTransactionsFinished() override
+            {
+                this->call_method( "onPaymentQueueRestoreCompletedTransactionsFinished" );
+            }
+
+            void onPaymentQueueRestoreCompletedTransactionsFailed() override
+            {
+                this->call_method( "onPaymentQueueRestoreCompletedTransactionsFailed" );
+            }
         };
         //////////////////////////////////////////////////////////////////////////
         static void iOSStoreInAppPurchase_setPaymentTransactionProvider(const pybind::dict & _cbs, const pybind::args & _args )
@@ -156,6 +166,7 @@ namespace Mengine
 
         pybind::interface_<iOSStoreInAppPurchasePaymentTransactionInterface, pybind::bases<Factorable>>( _kernel, "iOSStoreInAppPurchasePaymentTransactionInterface", true )
             .def( "getProductIdentifier", &iOSStoreInAppPurchasePaymentTransactionInterface::getProductIdentifier )
+            .def( "getTransactionIdentifier", &iOSStoreInAppPurchasePaymentTransactionInterface::getTransactionIdentifier )
             .def( "finish", &iOSStoreInAppPurchasePaymentTransactionInterface::finish )
             ;
 

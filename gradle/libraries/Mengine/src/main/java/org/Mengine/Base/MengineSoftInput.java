@@ -83,7 +83,7 @@ public class MengineSoftInput extends View implements View.OnKeyListener {
         this.post(() -> {
             this.requestFocus();
 
-            m_imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT);
+            m_imm.showSoftInput(this, 0);
 
             MengineLog.logMessage(TAG, "input method show succesful");
         });

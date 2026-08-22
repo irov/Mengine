@@ -48,6 +48,18 @@ namespace Mengine
         return payment.productIdentifier;
     }
     /////////////////////////////////////////////////////////////////////////////
+    NSString * iOSStoreInAppPurchasePaymentTransaction::getTransactionIdentifier() const
+    {
+        SKPaymentTransaction * originalTransaction = m_skPaymentTransaction.originalTransaction;
+
+        if( originalTransaction != nil )
+        {
+            return originalTransaction.transactionIdentifier;
+        }
+
+        return m_skPaymentTransaction.transactionIdentifier;
+    }
+    /////////////////////////////////////////////////////////////////////////////
     void iOSStoreInAppPurchasePaymentTransaction::finish()
     {
         IOS_LOGGER_MESSAGE( @"payment transaction finish product: %@"

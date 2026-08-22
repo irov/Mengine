@@ -22,6 +22,9 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
     public static final String SERVICE_NAME = "GConsent";
     public static final boolean SERVICE_EMBEDDING = true;
 
+    private boolean m_consentRequestInProgress;
+    private boolean m_consentResolved;
+
     @Override
     public boolean isTransparencyConsentProvider() {
         return true;
@@ -29,6 +32,26 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
 
     @Override
     public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
+        this.m_consentRequestInProgress = false;
+        this.m_consentResolved = false;
+
+        this.requestConsentInfoUpdate(activity);
+    }
+
+    @Override
+    public void onResume(@NonNull MengineActivity activity) {
+        if (this.m_consentResolved == true) {
+            return;
+        }
+
+        if (this.m_consentRequestInProgress == true) {
+            return;
+        }
+
+        this.requestConsentInfoUpdate(activity);
+    }
+
+    private void requestConsentInfoUpdate(@NonNull MengineActivity activity) {
         ConsentRequestParameters.Builder builder = new ConsentRequestParameters.Builder();
 
         if (BuildConfig.DEBUG == true) {
@@ -52,6 +75,8 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
 
         MengineApplication application = this.getMengineApplication();
 
+        this.m_consentRequestInProgress = true;
+
         this.logInfo("Google Consent requestConsentInfoUpdate started");
 
         consentInformation.requestConsentInfoUpdate(activity, params
@@ -74,17 +99,18 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
                     , formError.getErrorCode()
                 );
 
-                this.notifyTransparencyConsent(application, consentInformation);
+                this.m_consentRequestInProgress = false;
+                this.m_consentResolved = this.notifyTransparencyConsent(application, consentInformation);
             });
     }
 
-    private void notifyTransparencyConsent(@NonNull MengineApplication application, @NonNull ConsentInformation consentInformation) {
+    private boolean notifyTransparencyConsent(@NonNull MengineApplication application, @NonNull ConsentInformation consentInformation) {
         boolean canRequestAds = consentInformation.canRequestAds();
 
         this.logInfo("Google Consent canRequestAds: %b", canRequestAds);
 
         if (canRequestAds == false) {
-            return;
+            return false;
         }
 
         MengineParamTransparencyConsent tcParam = application.makeTransparencyConsentParam();
@@ -96,6 +122,8 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
         }
 
         application.checkTransparencyConsentServices();
+
+        return true;
     }
 
     public void loadForm(@NonNull MengineApplication application, @NonNull MengineActivity activity, @NonNull ConsentInformation consentInformation) {
@@ -110,7 +138,8 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
                     this.logInfo("consent form load and show success");
                 }
 
-                this.notifyTransparencyConsent(application, consentInformation);
+                this.m_consentRequestInProgress = false;
+                this.m_consentResolved = this.notifyTransparencyConsent(application, consentInformation);
             });
     }
 
@@ -125,6 +154,7 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
 
         ConsentInformation consentInformation = UserMessagingPlatform.getConsentInformation(activity);
         consentInformation.reset();
+        this.m_consentResolved = false;
     }
 
     public void showConsentFlow() {
@@ -155,7 +185,7 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
             MengineApplication application = this.getMengineApplication();
             ConsentInformation consentInformation = UserMessagingPlatform.getConsentInformation(activity);
 
-            this.notifyTransparencyConsent(application, consentInformation);
+            this.m_consentResolved = this.notifyTransparencyConsent(application, consentInformation);
 
             this.nativeCall("onAndroidGoogleConsentFlowCompleted");
         });

@@ -304,7 +304,7 @@ public class MenginePreferences {
         Map<String, Object> preferencesMap = new HashMap<>();
 
         for (String key : preferences.keySet()) {
-            Object value = preferences.get(key);
+            Object value = MengineUtils.getBundleValue(preferences, key);
             preferencesMap.put(key, value);
         }
 

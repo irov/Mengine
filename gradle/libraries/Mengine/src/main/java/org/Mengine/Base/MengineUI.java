@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.core.content.ContextCompat;
 import java.util.Arrays;
@@ -21,9 +22,27 @@ import java.util.function.Consumer;
 public class MengineUI {
     public static final MengineTag TAG = MengineTag.of("MNGUI");
 
-    public static void showToast(@NonNull MengineActivity activity, @NonNull String format, Object ... args) {
+    public static void showToast(@Nullable MengineActivity activity, @NonNull String format, Object ... args) {
         if (activity == null) {
             MengineLog.logError(TAG, "[ERROR] showToast activity is null format: %s args: %s"
+                , format
+                , Arrays.toString(args)
+            );
+
+            return;
+        }
+
+        if (activity.isFinishing() == true) {
+            MengineLog.logError(TAG, "[ERROR] showToast activity is finishing format: %s args: %s"
+                , format
+                , Arrays.toString(args)
+            );
+
+            return;
+        }
+
+        if (activity.isDestroyed() == true) {
+            MengineLog.logError(TAG, "[ERROR] showToast activity is destroyed format: %s args: %s"
                 , format
                 , Arrays.toString(args)
             );
@@ -40,7 +59,7 @@ public class MengineUI {
         });
     }
 
-    public static void showToastRes(@NonNull MengineActivity activity, @StringRes int formatId, Object ... args) {
+    public static void showToastRes(@Nullable MengineActivity activity, @StringRes int formatId, Object ... args) {
         if (activity == null) {
             MengineLog.logError(TAG, "[ERROR] showToastRes activity is null formatId: %d args: %s"
                 , formatId
@@ -66,8 +85,18 @@ public class MengineUI {
             return false;
         }
 
-        if (activity.isFinishing() == true || activity.isDestroyed() == true) {
-            MengineLog.logError(TAG, "[ERROR] showOkAlertDialog activity is finishing or destroyed title: %s format: %s args: %s"
+        if (activity.isFinishing() == true) {
+            MengineLog.logError(TAG, "[ERROR] showOkAlertDialog activity is finishing title: %s format: %s args: %s"
+                , title
+                , format
+                , Arrays.toString(args)
+            );
+
+            return false;
+        }
+
+        if (activity.isDestroyed() == true) {
+            MengineLog.logError(TAG, "[ERROR] showOkAlertDialog activity is destroyed title: %s format: %s args: %s"
                 , title
                 , format
                 , Arrays.toString(args)

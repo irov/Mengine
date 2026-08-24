@@ -24,15 +24,16 @@ namespace Mengine
 
     public:
         void setDazzleService( const dz_service_t * _service );
-        const dz_service_t * getDazzleService() const;
 
     public:
-        void setDazzleEffect( const dz_effect_t * _effect );
+        void setDazzleEffect( dz_effect_t * _effect );
         const dz_effect_t * getDazzleEffect() const override;
+
+        dz_result_t setDazzleEmitterTexture( const dz_shape_mask_source_t * _source ) override;
 
     protected:
         const dz_service_t * m_service;
-        const dz_effect_t * m_effect;
+        dz_effect_t * m_effect;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DazzleData, DazzleDataInterface> DazzleDataPtr;

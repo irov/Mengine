@@ -66,6 +66,247 @@ namespace Mengine
         return m_resourceImage;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool DazzleEffect::setPathPoints( const VectorDazzlePathPositions & _points )
+    {
+        bool result = this->setPathPoints_( _points, 0.30f, 1.f, 0.08f, 1.f );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DazzleEffect::setPathPointsColored( const VectorDazzlePathPositions & _points, const VectorDazzlePathColors & _colors )
+    {
+        bool result = this->setPathPointsColored_( _points, _colors, 0.30f, 1.f, 0.08f, 1.f );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DazzleEffect::setPathPointsColoredGradient( const VectorDazzlePathPositions & _points, const VectorDazzlePathColors & _colors, float _scaleBegin, float _scaleEnd, float _alphaBegin, float _alphaEnd )
+    {
+        bool result = this->setPathPointsColored_( _points, _colors, _scaleBegin, _scaleEnd, _alphaBegin, _alphaEnd );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DazzleEffect::setPathPoints_( const VectorDazzlePathPositions & _points, float _scaleBegin, float _scaleEnd, float _alphaBegin, float _alphaEnd )
+    {
+        VectorDazzlePathPoints pathPoints;
+        if( this->makePathPoints_( _points, _scaleBegin, _scaleEnd, _alphaBegin, _alphaEnd, &pathPoints ) == false )
+        {
+            return false;
+        }
+
+        bool result = this->applyPathPoints_( pathPoints );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DazzleEffect::setPathPointsColored_( const VectorDazzlePathPositions & _points, const VectorDazzlePathColors & _colors, float _scaleBegin, float _scaleEnd, float _alphaBegin, float _alphaEnd )
+    {
+        VectorDazzlePathPoints pathPoints;
+        if( this->makePathPoints_( _points, _scaleBegin, _scaleEnd, _alphaBegin, _alphaEnd, &pathPoints ) == false )
+        {
+            return false;
+        }
+
+        if( this->applyPathPointColors_( _points, _colors, &pathPoints ) == false )
+        {
+            return false;
+        }
+
+        bool result = this->applyPathPoints_( pathPoints );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DazzleEffect::makePathPoints_( const VectorDazzlePathPositions & _points, float _scaleBegin, float _scaleEnd, float _alphaBegin, float _alphaEnd, VectorDazzlePathPoints * const _pathPoints ) const
+    {
+        const VectorDazzlePathPositions::size_type pointsSize = _points.size();
+
+        if( pointsSize < 2 )
+        {
+            return false;
+        }
+
+        _pathPoints->reserve( pointsSize );
+
+        uint32_t segmentPoint = 0U;
+        uint32_t segmentCount = 0U;
+
+        for( VectorDazzlePathPositions::size_type index = 0; index != pointsSize; ++index )
+        {
+            const mt::vec2f & point = _points[index];
+
+            if( point.x <= -99990.f && point.y <= -99990.f )
+            {
+                segmentPoint = 0U;
+                segmentCount = 0U;
+
+                continue;
+            }
+
+            if( segmentCount == 0U )
+            {
+                for( VectorDazzlePathPositions::size_type countIndex = index; countIndex != pointsSize; ++countIndex )
+                {
+                    const mt::vec2f & countPoint = _points[countIndex];
+
+                    if( countPoint.x <= -99990.f && countPoint.y <= -99990.f )
+                    {
+                        break;
+                    }
+
+                    ++segmentCount;
+                }
+            }
+
+            const float progress = segmentCount > 1U ? (float)segmentPoint / (float)(segmentCount - 1U) : 1.f;
+
+            dz_path_point_t pathPoint;
+            pathPoint.position = {point.x, point.y, 0.f};
+            pathPoint.scale = _scaleBegin + (_scaleEnd - _scaleBegin) * progress;
+            pathPoint.alpha = _alphaBegin + (_alphaEnd - _alphaBegin) * progress;
+            pathPoint.color = {1.f, 1.f, 1.f, 1.f};
+            pathPoint.flags = DZ_PATH_POINT_FLAG_NONE;
+
+            if( segmentPoint == 0U )
+            {
+                pathPoint.flags |= DZ_PATH_POINT_FLAG_BREAK;
+            }
+
+            _pathPoints->emplace_back( pathPoint );
+
+            ++segmentPoint;
+        }
+
+        const VectorDazzlePathPoints::size_type pathPointsSize = _pathPoints->size();
+
+        if( pathPointsSize < 2 )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DazzleEffect::applyPathPointColors_( const VectorDazzlePathPositions & _points, const VectorDazzlePathColors & _colors, VectorDazzlePathPoints * const _pathPoints ) const
+    {
+        const VectorDazzlePathPositions::size_type pointsSize = _points.size();
+        const VectorDazzlePathColors::size_type colorsSize = _colors.size();
+
+        if( pointsSize != colorsSize )
+        {
+            return false;
+        }
+
+        const VectorDazzlePathPoints::size_type pathPointsSize = _pathPoints->size();
+
+        VectorDazzlePathPoints::size_type pathIndex = 0;
+
+        for( VectorDazzlePathPositions::size_type index = 0; index != pointsSize; ++index )
+        {
+            const mt::vec2f & point = _points[index];
+
+            if( point.x <= -99990.f && point.y <= -99990.f )
+            {
+                continue;
+            }
+
+            if( pathIndex + 1 != pathPointsSize && ((*_pathPoints)[pathIndex + 1].flags & DZ_PATH_POINT_FLAG_BREAK) == 0U )
+            {
+                const mt::vec4f & color = _colors[index];
+                dz_path_point_t & pathPoint = (*_pathPoints)[pathIndex];
+
+                pathPoint.color = {color.x, color.y, color.z, color.w};
+                pathPoint.flags |= DZ_PATH_POINT_FLAG_COLOR;
+            }
+
+            ++pathIndex;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DazzleEffect::applyPathPoints_( const VectorDazzlePathPoints & _pathPoints )
+    {
+        if( m_instance == nullptr )
+        {
+            return false;
+        }
+
+        const dz_path_point_t * pathPoints = _pathPoints.data();
+        const VectorDazzlePathPoints::size_type pathPointsSize = _pathPoints.size();
+
+        dz_result_t result = dz_instance_set_path_points( m_service, m_instance, pathPoints, (dz_uint32_t)pathPointsSize );
+
+        if( result == DZ_SUCCESSFUL )
+        {
+            this->invalidateBoundingBox();
+        }
+
+        return result == DZ_SUCCESSFUL;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DazzleEffect::clearPathPoints()
+    {
+        if( m_instance == nullptr )
+        {
+            return;
+        }
+
+        dz_instance_clear_path_points( m_instance );
+        this->invalidateBoundingBox();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DazzleEffect::primePath( float _time )
+    {
+        if( m_instance == nullptr )
+        {
+            return false;
+        }
+
+        dz_instance_restart( m_instance );
+
+        dz_result_t result = dz_instance_seek( m_service, m_instance, _time, 1.f / 120.f );
+
+        if( result != DZ_SUCCESSFUL )
+        {
+            return false;
+        }
+
+        dz_instance_pause( m_instance );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DazzleEffect::restartEffect( float _prewarm )
+    {
+        UniqueId playId = BaseAnimation::play( 0.f );
+
+        if( playId == INVALID_UNIQUE_ID )
+        {
+            return false;
+        }
+
+        if( m_instance == nullptr )
+        {
+            return true;
+        }
+
+        if( _prewarm > 0.f )
+        {
+            dz_result_t result = dz_instance_update( m_service, m_instance, _prewarm );
+
+            if( result != DZ_SUCCESSFUL )
+            {
+                return false;
+            }
+        }
+
+        this->invalidateBoundingBox();
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool DazzleEffect::_play( UniqueId _enumerator, float _time )
     {
         return this->_restart( _enumerator, _time );
@@ -367,6 +608,8 @@ namespace Mengine
             m_renderIndicies = nullptr;
             m_renderIndexCount = 0;
         }
+
+        m_renderMaterials.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     void DazzleEffect::_dispose()
@@ -752,6 +995,25 @@ namespace Mengine
             else
             {
                 material = Helper::makeSolidMaterial( ConstString::none(), blendMode, false, MENGINE_DOCUMENT_FACTORABLE );
+            }
+        }
+
+        if( material != nullptr )
+        {
+            bool cached = false;
+
+            for( const RenderMaterialInterfacePtr & cachedMaterial : m_renderMaterials )
+            {
+                if( cachedMaterial == material )
+                {
+                    cached = true;
+                    break;
+                }
+            }
+
+            if( cached == false )
+            {
+                m_renderMaterials.emplace_back( material );
             }
         }
 

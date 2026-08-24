@@ -13,6 +13,7 @@ namespace Mengine
     namespace Helper
     {
         ContentInterfacePtr makeFileContent( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentInterfacePtr & _doc );
+        const ConstString & findContentCodecType( const ContentInterfacePtr & _content );
         PathString getContentFullPath( const ContentInterfacePtr & _content );
     }
 }

@@ -58,6 +58,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PlayerGlobalInputHandler::handleFocus( bool _focus )
     {
+        this->processHandlers_();
+
         for( const GlobalHandlerDesc & desc : m_handlers )
         {
             if( desc.dead == true )
@@ -76,6 +78,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PlayerGlobalInputHandler::handleKeyEvent( const InputKeyEvent & _event )
     {
+        this->processHandlers_();
+
         for( const GlobalHandlerDesc & desc : m_handlers )
         {
             if( desc.dead == true )
@@ -97,6 +101,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PlayerGlobalInputHandler::handleTextEvent( const InputTextEvent & _event )
     {
+        this->processHandlers_();
+
         for( const GlobalHandlerDesc & desc : m_handlers )
         {
             if( desc.dead == true )
@@ -118,6 +124,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PlayerGlobalInputHandler::handleAccelerometerEvent( const InputAccelerometerEvent & _event )
     {
+        this->processHandlers_();
+
         for( const GlobalHandlerDesc & desc : m_handlers )
         {
             if( desc.dead == true )
@@ -139,6 +147,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PlayerGlobalInputHandler::handleMouseButtonEvent( const InputMouseButtonEvent & _event )
     {
+        this->processHandlers_();
+
         for( const GlobalHandlerDesc & desc : m_handlers )
         {
             if( desc.dead == true )
@@ -160,6 +170,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PlayerGlobalInputHandler::handleMouseButtonEventBegin( const InputMouseButtonEvent & _event )
     {
+        this->processHandlers_();
+
         for( const GlobalHandlerDesc & desc : m_handlers )
         {
             if( desc.dead == true )
@@ -181,6 +193,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PlayerGlobalInputHandler::handleMouseButtonEventEnd( const InputMouseButtonEvent & _event )
     {
+        this->processHandlers_();
+
         for( const GlobalHandlerDesc & desc : m_handlers )
         {
             if( desc.dead == true )
@@ -202,6 +216,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PlayerGlobalInputHandler::handleMouseMove( const InputMouseMoveEvent & _event )
     {
+        this->processHandlers_();
+
         for( const GlobalHandlerDesc & desc : m_handlers )
         {
             if( desc.dead == true )
@@ -223,6 +239,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PlayerGlobalInputHandler::handleMouseWheel( const InputMouseWheelEvent & _event )
     {
+        this->processHandlers_();
+
         for( const GlobalHandlerDesc & desc : m_handlers )
         {
             if( desc.dead == true )
@@ -244,6 +262,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PlayerGlobalInputHandler::handleMouseEnter( const InputMouseEnterEvent & _event )
     {
+        this->processHandlers_();
+
         for( const GlobalHandlerDesc & desc : m_handlers )
         {
             if( desc.dead == true )
@@ -265,6 +285,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PlayerGlobalInputHandler::handleMouseLeave( const InputMouseLeaveEvent & _event )
     {
+        this->processHandlers_();
+
         for( const GlobalHandlerDesc & desc : m_handlers )
         {
             if( desc.dead == true )
@@ -365,6 +387,11 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     void PlayerGlobalInputHandler::update()
+    {
+        this->processHandlers_();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PlayerGlobalInputHandler::processHandlers_()
     {
         m_handlers.insert( m_handlers.end(), m_handlersAdd.begin(), m_handlersAdd.end() );
         m_handlersAdd.clear();

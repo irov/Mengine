@@ -13,6 +13,7 @@
 #include "Interface/PackageServiceInterface.h"
 #include "Interface/RandomizerInterface.h"
 #include "Interface/DiceInterface.h"
+#include "Interface/DataflowInterface.h"
 #include "Interface/PluginServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
@@ -133,6 +134,7 @@
 #include "Kernel/NodeScreenPosition.h"
 #include "Kernel/TagsHelper.h"
 #include "Kernel/Localable.h"
+#include "Kernel/VocabularyHelper.h"
 
 #include "Config/StdString.h"
 #include "Config/Lambda.h"
@@ -1221,6 +1223,69 @@ namespace Mengine
                 MENGINE_ASSERTION_MEMORY_PANIC( resource, "invalid create resource '%s'"
                     , _type.c_str()
                 );
+
+                return resource;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            ResourcePtr s_createFileResource( const ConstString & _type, const ConstString & _resourceName, const ConstString & _fileGroupName, const FilePath & _filePath )
+            {
+                const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+                    ->getFileGroup( _fileGroupName );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( fileGroup, "invalid file group '%s' for resource '%s' type '%s'"
+                    , _fileGroupName.c_str()
+                    , _resourceName.c_str()
+                    , _type.c_str()
+                );
+
+                const ConstString & codecType = CODEC_SERVICE()
+                    ->findCodecType( _filePath );
+
+                if( codecType.empty() == true )
+                {
+                    LOGGER_ERROR( "invalid codec for resource '%s' type '%s' file '%s'"
+                        , _resourceName.c_str()
+                        , _type.c_str()
+                        , _filePath.c_str()
+                    );
+
+                    return nullptr;
+                }
+
+                DataflowInterfacePtr dataflow = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), codecType );
+
+                ResourcePtr resource = this->s_createResource( _type );
+
+                resource->setName( _resourceName );
+                resource->setGroupName( _fileGroupName );
+
+                ContentInterfacePtr content = Helper::makeFileContent( fileGroup, _filePath, MENGINE_DOCUMENT_PYTHON );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( content, "invalid create content for resource '%s' type '%s' file '%s'"
+                    , _resourceName.c_str()
+                    , _type.c_str()
+                    , _filePath.c_str()
+                );
+
+                content->setCodecType( codecType );
+
+                if( dataflow != nullptr )
+                {
+                    content->setDataflow( dataflow );
+                }
+
+                resource->setContent( content );
+
+                if( resource->initialize() == false )
+                {
+                    LOGGER_ERROR( "invalid initialize resource '%s' type '%s' file '%s'"
+                        , _resourceName.c_str()
+                        , _type.c_str()
+                        , _filePath.c_str()
+                    );
+
+                    return nullptr;
+                }
 
                 return resource;
             }
@@ -4462,6 +4527,7 @@ namespace Mengine
         pybind::def_functor( _kernel, "setArrowLayer", nodeScriptMethod, &EngineScriptMethod::s_setArrowLayer );
 
         pybind::def_functor( _kernel, "createResource", nodeScriptMethod, &EngineScriptMethod::s_createResource );
+        pybind::def_functor( _kernel, "createFileResource", nodeScriptMethod, &EngineScriptMethod::s_createFileResource );
         pybind::def_functor( _kernel, "removeResource", nodeScriptMethod, &EngineScriptMethod::s_removeResource );
 
         pybind::def_functor( _kernel, "directResourceCompile", nodeScriptMethod, &EngineScriptMethod::s_directResourceCompile );

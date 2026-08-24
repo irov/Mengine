@@ -7,6 +7,7 @@
 #include "DazzleInterface.h"
 
 #include "DataflowDZZ.h"
+#include "DataflowDazzleJSON.h"
 #include "DazzleEffect.h"
 #include "ResourceDazzleEffect.h"
 #include "DazzleEffectPrototypeGenerator.h"
@@ -128,6 +129,9 @@ namespace Mengine
         CODEC_SERVICE()
             ->registerCodecExt( STRINGIZE_STRING_LOCAL( "dzz" ), STRINGIZE_STRING_LOCAL( "dazzle" ) );
 
+        CODEC_SERVICE()
+            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "dzjson" ), STRINGIZE_STRING_LOCAL( "dazzle_json" ) );
+
         PLUGIN_SERVICE_WAIT( DataServiceInterface, [this]()
         {
             DataflowDZZPtr dataflowDazzle = Helper::makeFactorableUnique<DataflowDZZ>( MENGINE_DOCUMENT_FACTORABLE );
@@ -146,6 +150,17 @@ namespace Mengine
 
             VOCABULARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "dazzle" ), dataflowDazzle, MENGINE_DOCUMENT_FACTORABLE );
 
+            DataflowDazzleJSONPtr dataflowDazzleJSON = Helper::makeFactorableUnique<DataflowDazzleJSON>( MENGINE_DOCUMENT_FACTORABLE );
+
+            dataflowDazzleJSON->setDazzleService( m_service );
+
+            if( dataflowDazzleJSON->initialize() == false )
+            {
+                return false;
+            }
+
+            VOCABULARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "dazzle_json" ), dataflowDazzleJSON, MENGINE_DOCUMENT_FACTORABLE );
+
             return true;
         } );
 
@@ -153,6 +168,9 @@ namespace Mengine
         {
             DataflowInterfacePtr dataflowFE = VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "dazzle" ) );
             dataflowFE->finalize();
+
+            DataflowInterfacePtr dataflowJSON = VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "dazzle_json" ) );
+            dataflowJSON->finalize();
         } );
 
         return true;
@@ -162,6 +180,9 @@ namespace Mengine
     {
         CODEC_SERVICE()
             ->removeCodecExt( STRINGIZE_STRING_LOCAL( "dzz" ) );
+
+        CODEC_SERVICE()
+            ->removeCodecExt( STRINGIZE_STRING_LOCAL( "dzjson" ) );
 
         Helper::removeNodePrototype<DazzleEffect>();
         Helper::removeResourcePrototype<ResourceDazzleEffect>();

@@ -42,12 +42,7 @@ namespace Mengine
         m_service = _service;
     }
     //////////////////////////////////////////////////////////////////////////
-    const dz_service_t * DazzleData::getDazzleService() const
-    {
-        return m_service;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DazzleData::setDazzleEffect( const dz_effect_t * _effect )
+    void DazzleData::setDazzleEffect( dz_effect_t * _effect )
     {
         m_effect = _effect;
     }
@@ -55,6 +50,13 @@ namespace Mengine
     const dz_effect_t * DazzleData::getDazzleEffect() const
     {
         return m_effect;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    dz_result_t DazzleData::setDazzleEmitterTexture( const dz_shape_mask_source_t * _source )
+    {
+        dz_result_t result = dz_effect_set_emitter_texture( m_service, m_effect, _source );
+
+        return result;
     }
     //////////////////////////////////////////////////////////////////////////
 }

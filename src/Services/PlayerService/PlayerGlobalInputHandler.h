@@ -53,6 +53,9 @@ namespace Mengine
         void handleMouseLeave( const InputMouseLeaveEvent & _event ) override;
 
     protected:
+        void processHandlers_();
+
+    protected:
         struct GlobalHandlerDesc
         {
             UniqueId id;

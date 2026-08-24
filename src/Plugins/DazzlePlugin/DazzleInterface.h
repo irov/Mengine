@@ -30,6 +30,9 @@ namespace Mengine
         : public UnknownInterface
     {
     public:
+        virtual void setResourceEmitterImage( const ResourceImagePtr & _resource ) = 0;
+        virtual const ResourceImagePtr & getResourceEmitterImage() const = 0;
+
         virtual const DataInterfacePtr & getData() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////

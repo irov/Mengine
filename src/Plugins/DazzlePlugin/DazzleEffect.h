@@ -12,9 +12,16 @@
 #include "Kernel/BaseRender.h"
 #include "Kernel/BaseTransformation.h"
 #include "Kernel/Materialable.h"
+#include "Kernel/Vector.h"
+
+#include "math/vec2.h"
+#include "math/vec4.h"
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    typedef Vector<mt::vec2f> VectorDazzlePathPositions;
+    typedef Vector<mt::vec4f> VectorDazzlePathColors;
     //////////////////////////////////////////////////////////////////////////
     class DazzleEffect
         : public Node
@@ -35,6 +42,10 @@ namespace Mengine
         DECLARE_EVENTABLE();
         DECLARE_TRANSFORMABLE();
 
+    private:
+        typedef Vector<dz_path_point_t> VectorDazzlePathPoints;
+        typedef Vector<RenderMaterialInterfacePtr> VectorDazzleRenderMaterials;
+
     public:
         DazzleEffect();
         ~DazzleEffect() override;
@@ -49,6 +60,20 @@ namespace Mengine
 
         void setResourceImage( const ResourceImagePtr & _resource ) override;
         const ResourceImagePtr & getResourceImage() const override;
+
+        bool setPathPoints( const VectorDazzlePathPositions & _points );
+        bool setPathPointsColored( const VectorDazzlePathPositions & _points, const VectorDazzlePathColors & _colors );
+        bool setPathPointsColoredGradient( const VectorDazzlePathPositions & _points, const VectorDazzlePathColors & _colors, float _scaleBegin, float _scaleEnd, float _alphaBegin, float _alphaEnd );
+        void clearPathPoints();
+        bool primePath( float _time );
+        bool restartEffect( float _prewarm );
+
+    protected:
+        bool setPathPoints_( const VectorDazzlePathPositions & _points, float _scaleBegin, float _scaleEnd, float _alphaBegin, float _alphaEnd );
+        bool setPathPointsColored_( const VectorDazzlePathPositions & _points, const VectorDazzlePathColors & _colors, float _scaleBegin, float _scaleEnd, float _alphaBegin, float _alphaEnd );
+        bool makePathPoints_( const VectorDazzlePathPositions & _points, float _scaleBegin, float _scaleEnd, float _alphaBegin, float _alphaEnd, VectorDazzlePathPoints * const _pathPoints ) const;
+        bool applyPathPointColors_( const VectorDazzlePathPositions & _points, const VectorDazzlePathColors & _colors, VectorDazzlePathPoints * const _pathPoints ) const;
+        bool applyPathPoints_( const VectorDazzlePathPoints & _pathPoints );
 
     public:
         bool _play( uint32_t _enumerator, float _time ) override;
@@ -116,6 +141,8 @@ namespace Mengine
         mutable RenderVertex2D * m_submitVertices;
         mutable RenderIndex * m_renderIndicies;
         mutable uint32_t m_renderIndexCount;
+
+        mutable VectorDazzleRenderMaterials m_renderMaterials;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DazzleEffect, Node> DazzleEffectPtr;

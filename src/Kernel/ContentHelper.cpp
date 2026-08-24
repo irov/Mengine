@@ -1,5 +1,7 @@
 #include "ContentHelper.h"
 
+#include "Interface/CodecServiceInterface.h"
+
 #include "FileGroupHelper.h"
 
 #include "Kernel/AssertionMemoryPanic.h"
@@ -25,6 +27,22 @@ namespace Mengine
             content->setFilePath( _filePath );
 
             return content;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const ConstString & findContentCodecType( const ContentInterfacePtr & _content )
+        {
+            const ConstString & codecType = _content->getCodecType();
+
+            if( codecType.empty() == false )
+            {
+                return codecType;
+            }
+
+            const FilePath & filePath = _content->getFilePath();
+            const ConstString & fileCodecType = CODEC_SERVICE()
+                ->findCodecType( filePath );
+
+            return fileCodecType;
         }
         //////////////////////////////////////////////////////////////////////////
         PathString getContentFullPath( const ContentInterfacePtr & _content )

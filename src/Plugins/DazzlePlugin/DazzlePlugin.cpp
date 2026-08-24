@@ -85,6 +85,33 @@ namespace Mengine
             return value;
         }
         //////////////////////////////////////////////////////////////////////////
+        static float dz_atan2f(float _y, float _x, dz_userdata_t _ud )
+        {
+            DZ_UNUSED( _ud );
+
+            float value = StdMath::atan2f( _y, _x );
+
+            return value;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static float dz_asinf(float _a, dz_userdata_t _ud )
+        {
+            DZ_UNUSED( _ud );
+
+            float value = StdMath::asinf( _a );
+
+            return value;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static float dz_tanf(float _a, dz_userdata_t _ud )
+        {
+            DZ_UNUSED( _ud );
+
+            float value = StdMath::tanf( _a );
+
+            return value;
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     DazzlePlugin::DazzlePlugin()
@@ -105,6 +132,9 @@ namespace Mengine
         providers.f_sqrtf = &Detail::dz_sqrtf;
         providers.f_cosf = &Detail::dz_cosf;
         providers.f_sinf = &Detail::dz_sinf;
+        providers.f_atan2f = &Detail::dz_atan2f;
+        providers.f_asinf = &Detail::dz_asinf;
+        providers.f_tanf = &Detail::dz_tanf;
 
         dz_service_t * service;
         dz_service_create( &service, &providers, DZ_NULLPTR );

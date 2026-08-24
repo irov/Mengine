@@ -727,7 +727,7 @@ namespace Mengine
         buffers.index_type = requirements.index_type;
 
         uint32_t chunkCount = 0;
-        dz_result_t fillResult = dz_instance_fill_render( m_instance, cameraOverride, &buffers, m_renderChunks, m_renderChunkCount, &chunkCount );
+        dz_result_t fillResult = dz_instance_fill_render( m_service, m_instance, cameraOverride, &buffers, m_renderChunks, m_renderChunkCount, &chunkCount );
         if( fillResult != DZ_SUCCESSFUL )
         {
             LOGGER_ERROR( "dazzle '%s' fill render failed result '%u'", this->getName().c_str(), (uint32_t)fillResult );
@@ -845,7 +845,7 @@ namespace Mengine
         }
 
         dz_aabb_t aabb;
-        dz_instance_get_aabb( m_instance, &aabb );
+        dz_instance_get_aabb( m_service, m_instance, &aabb );
         if( aabb.valid == DZ_FALSE )
         {
             *_boundingBoxCurrent = nullptr;

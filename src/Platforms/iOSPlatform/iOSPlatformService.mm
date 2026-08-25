@@ -960,10 +960,7 @@ namespace Mengine
                                 [progress.bottomAnchor constraintEqualToAnchor:progressAlert.view.bottomAnchor constant:-18.0]
                             ]];
 
-                            if( @available(iOS 13.0, *) )
-                            {
-                                progressAlert.modalInPresentation = YES;
-                            }
+                            progressAlert.modalInPresentation = YES;
 
                             this->m_deleteAccountProgressAlert = progressAlert;
 

@@ -1129,11 +1129,30 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool GDKPlatformService::openDeleteAccount()
+    bool GDKPlatformService::openDeleteAccount( const LambdaDeleteAccountAccepted & _accepted, const LambdaDeleteAccountCanceled & _canceled )
     {
+        MENGINE_UNUSED( _accepted );
+        MENGINE_UNUSED( _canceled );
+
         MENGINE_ASSERTION_NOT_IMPLEMENTED();
 
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool GDKPlatformService::completeDeleteAccount( EDeleteAccountResult _result )
+    {
+        MENGINE_UNUSED( _result );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool GDKPlatformService::isNetworkAvailable() const
+    {
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void GDKPlatformService::removeUserData()
+    {
     }
     //////////////////////////////////////////////////////////////////////////
     bool GDKPlatformService::updateDesktopWallpaper( const Char * _directoryPath, const Char * _filePath )

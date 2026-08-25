@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mengine_delete_account_success_title">Запрос принят</string>
+    <string name="mengine_delete_account_success_message">Ваш запрос принят. Приложение будет закрыто.</string>
+    <string name="mengine_delete_account_option_reason_1">Потерял интерес к игре</string>
+    <string name="mengine_delete_account_option_reason_2">Хочу начать заново</string>
+    <string name="mengine_delete_account_option_reason_3">Слишком много рекламы</string>
+    <string name="mengine_delete_account_option_reason_4">Поддержка не решила проблему</string>
+    <string name="mengine_delete_account_option_reason_5">Другая причина</string>
+    <string name="mengine_delete_account_option_title">Выберите причину</string>
+    <string name="mengine_delete_account_try_title">Удалить аккаунт</string>
+    <string name="mengine_delete_account_try_message">Это навсегда удалит ваш аккаунт и все связанные с ним данные, а также отвяжет подключённые способы входа. Отменить это действие невозможно.</string>
+    <string name="mengine_delete_account_wait_title">Пожалуйста, подождите</string>
+    <string name="mengine_delete_account_wait_message">Выполняется обработка…</string>
+    <string name="mengine_delete_account_error_title">Удаление аккаунта</string>
+    <string name="mengine_delete_account_error_offline_message">Нет подключения к интернету. Подключитесь к интернету и попробуйте позже.</string>
+    <string name="mengine_delete_account_error_ambiguous_message">Не удалось подтвердить, был ли обработан запрос. Локальные данные сохранены. Подключитесь к интернету и попробуйте позже.</string>
+    <string name="mengine_delete_account_error_server_message">Не удалось выполнить запрос. Локальные данные сохранены. Попробуйте позже.</string>
+    <string name="mengine_delete_account_pending_title">Запрос выполняется</string>
+    <string name="mengine_delete_account_pending_message">Ваш запрос всё ещё обрабатывается. Попробуйте запустить приложение позже.</string>
+    <string name="mengine_delete_account_completed_title">Аккаунт удалён</string>
+    <string name="mengine_delete_account_completed_message">Ваш аккаунт удалён. Локальные данные будут очищены, и приложение закроется.</string>
+</resources>

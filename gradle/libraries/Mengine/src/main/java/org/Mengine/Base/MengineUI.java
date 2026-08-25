@@ -7,7 +7,11 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.AlignmentSpan;
 import android.text.style.StyleSpan;
+import android.view.Gravity;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -151,6 +155,55 @@ public class MengineUI {
         String message = activity.getString(formatId, args);
 
         MengineUI.showOkAlertDialog(activity, ok, title, message);
+    }
+
+    public static AlertDialog showProgressAlertDialogRes(@NonNull MengineActivity activity, @StringRes int titleId, @StringRes int messageId) {
+        if (activity == null) {
+            MengineLog.logError(TAG, "[ERROR] showProgressAlertDialogRes activity is null titleId: %d messageId: %d"
+                , titleId
+                , messageId
+            );
+
+            return null;
+        }
+
+        if (activity.isFinishing() == true || activity.isDestroyed() == true) {
+            MengineLog.logError(TAG, "[ERROR] showProgressAlertDialogRes activity is unavailable titleId: %d messageId: %d"
+                , titleId
+                , messageId
+            );
+
+            return null;
+        }
+
+        String title = activity.getString(titleId);
+        String message = activity.getString(messageId);
+
+        int padding = Math.round(24.f * activity.getResources().getDisplayMetrics().density);
+
+        FrameLayout container = new FrameLayout(activity);
+        container.setPadding(0, padding, 0, padding);
+
+        ProgressBar progress = new ProgressBar(activity);
+        FrameLayout.LayoutParams progressParams = new FrameLayout.LayoutParams(
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            Gravity.CENTER
+        );
+
+        container.addView(progress, progressParams);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setView(container);
+        builder.setCancelable(false);
+
+        AlertDialog alert = builder.create();
+        alert.setCanceledOnTouchOutside(false);
+        alert.show();
+
+        return alert;
     }
 
     public static void showAllowPermissionAlertDialog(@NonNull MengineActivity activity, Runnable allow, Runnable denied, @NonNull String title, @NonNull String format, Object ... args) {

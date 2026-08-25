@@ -575,6 +575,32 @@ extern "C"
         platformExtension->androidNativeWindowFocusChangedEvent( _focus );
     }
     ///////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1deleteAccountAccepted )(JNIEnv * env, jclass cls)
+    {
+        if( g_androidPlatformActived == false )
+        {
+            return;
+        }
+
+        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        platformExtension->androidNativeDeleteAccountAccepted();
+    }
+    ///////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1deleteAccountCanceled )(JNIEnv * env, jclass cls)
+    {
+        if( g_androidPlatformActived == false )
+        {
+            return;
+        }
+
+        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        platformExtension->androidNativeDeleteAccountCanceled();
+    }
+    ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1invokeNativeRunnable )(JNIEnv * env, jclass cls, jobject _buffer)
     {
         if( g_androidPlatformActived == false )
@@ -986,6 +1012,9 @@ namespace Mengine
 
         g_androidPlatformActived = false;
 
+        m_deleteAccountAccepted = nullptr;
+        m_deleteAccountCanceled = nullptr;
+
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_BASE_SERVICES );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION );
 
@@ -1309,9 +1338,22 @@ namespace Mengine
         return jresult;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidPlatformService::openDeleteAccount()
+    bool AndroidPlatformService::openDeleteAccount( const LambdaDeleteAccountAccepted & _accepted, const LambdaDeleteAccountCanceled & _canceled )
     {
-        LOGGER_MESSAGE( "open delete account" );
+        if( _accepted == nullptr || _canceled == nullptr )
+        {
+            return false;
+        }
+
+        if( m_deleteAccountAccepted != nullptr || m_deleteAccountCanceled != nullptr )
+        {
+            LOGGER_WARNING( "delete account dialog is already active" );
+
+            return false;
+        }
+
+        m_deleteAccountAccepted = _accepted;
+        m_deleteAccountCanceled = _canceled;
 
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
@@ -1319,7 +1361,46 @@ namespace Mengine
 
         jboolean jresult = Helper::AndroidCallBooleanActivityMethod( jenv, "linkingOpenDeleteAccount", "()Z" );
 
-        return jresult;
+        if( jresult != JNI_TRUE )
+        {
+            m_deleteAccountAccepted = nullptr;
+            m_deleteAccountCanceled = nullptr;
+
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AndroidPlatformService::completeDeleteAccount( EDeleteAccountResult _result )
+    {
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
+
+        jboolean completed = Helper::AndroidCallBooleanActivityMethod( jenv, "linkingCompleteDeleteAccount", "(I)Z", (jint)_result );
+
+        return completed == JNI_TRUE;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AndroidPlatformService::isNetworkAvailable() const
+    {
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
+
+        jboolean available = Helper::AndroidCallBooleanActivityMethod( jenv, "isNetworkAvailable", "()Z" );
+
+        return available == JNI_TRUE;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::removeUserData()
+    {
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
+
+        Helper::AndroidCallVoidActivityMethod( jenv, "removeUserData", "()V" );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::notifyBootstrapperInitializeBaseServices_()
@@ -3113,6 +3194,38 @@ namespace Mengine
         MENGINE_UNUSED( _focus );
 
         //ToDo
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::androidNativeDeleteAccountAccepted()
+    {
+        Helper::dispatchMainThreadEvent([this]()
+        {
+            LambdaDeleteAccountAccepted accepted = m_deleteAccountAccepted;
+
+            m_deleteAccountAccepted = nullptr;
+            m_deleteAccountCanceled = nullptr;
+
+            if( accepted != nullptr )
+            {
+                accepted();
+            }
+        });
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::androidNativeDeleteAccountCanceled()
+    {
+        Helper::dispatchMainThreadEvent([this]()
+        {
+            LambdaDeleteAccountCanceled canceled = m_deleteAccountCanceled;
+
+            m_deleteAccountAccepted = nullptr;
+            m_deleteAccountCanceled = nullptr;
+
+            if( canceled != nullptr )
+            {
+                canceled();
+            }
+        });
     }
     //////////////////////////////////////////////////////////////////////////
     jobject AndroidPlatformService::createNativeRunnable( JNIEnv * _jenv, const LambdaNativeRunnable & _callback )

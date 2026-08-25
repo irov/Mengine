@@ -45,6 +45,8 @@ namespace Mengine
         virtual void androidNativeFreezeEvent( const ConstString & _owner, bool _freeze ) = 0;
         virtual void androidNativeClipboardChangedEvent() = 0;
         virtual void androidNativeWindowFocusChangedEvent( jboolean _focus ) = 0;
+        virtual void androidNativeDeleteAccountAccepted() = 0;
+        virtual void androidNativeDeleteAccountCanceled() = 0;
 
     public:
         typedef Lambda<void()> LambdaNativeRunnable;

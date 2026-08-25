@@ -151,7 +151,10 @@ namespace Mengine
     public:
         bool openUrlInDefaultBrowser( const Char * _url ) override;
         bool openMail( const Char * _email, const Char * _subject, const Char * _body, const Char * _technically ) override;
-        bool openDeleteAccount() override;
+        bool openDeleteAccount( const LambdaDeleteAccountAccepted & _accepted, const LambdaDeleteAccountCanceled & _canceled ) override;
+        bool completeDeleteAccount( EDeleteAccountResult _result ) override;
+        bool isNetworkAvailable() const override;
+        void removeUserData() override;
 
     public:
         bool updateDesktopWallpaper( const Char * _directoryPath, const Char * _filePath ) override;
@@ -256,6 +259,8 @@ namespace Mengine
         StaticString<MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME> m_projectTitle;
         
         AnalyticsEventProviderInterfacePtr m_analyticsEventProvider;
+
+        UIAlertController * m_deleteAccountProgressAlert;
         
         float m_mainScreenScale;
 

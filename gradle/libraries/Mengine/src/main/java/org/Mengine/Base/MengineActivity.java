@@ -1,6 +1,7 @@
 package org.Mengine.Base;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -41,6 +42,13 @@ import java.util.Objects;
 public class MengineActivity extends AppCompatActivity {
     public static final MengineTag TAG = MengineTag.of("MNGActivity");
 
+    private static final int DELETE_ACCOUNT_RESULT_ACCEPTED = 0;
+    private static final int DELETE_ACCOUNT_RESULT_OFFLINE = 1;
+    private static final int DELETE_ACCOUNT_RESULT_AMBIGUOUS = 2;
+    private static final int DELETE_ACCOUNT_RESULT_SERVER_ERROR = 3;
+    private static final int DELETE_ACCOUNT_RESULT_PENDING = 4;
+    private static final int DELETE_ACCOUNT_RESULT_COMPLETED = 5;
+
     public enum ELifecycleState {
         ACTIVITY_INITIALIZE,
         ACTIVITY_CREATE,
@@ -76,6 +84,9 @@ public class MengineActivity extends AppCompatActivity {
     private MengineSoftInput m_softInput;
 
     private MengineClipboard m_clipboard;
+
+    private volatile boolean m_deleteAccountFlowActive = false;
+    private AlertDialog m_deleteAccountProgressDialog;
 
     public MengineActivity() {
         super();
@@ -998,6 +1009,9 @@ public class MengineActivity extends AppCompatActivity {
 
         MengineLog.logDebug(TAG, "[BEGIN] onDestroy");
 
+        m_deleteAccountFlowActive = false;
+        this.dismissDeleteAccountProgressDialog();
+
         MengineApplication application = (MengineApplication)this.getApplication();
 
         if (application.isInvalidInitialize() == true) {
@@ -1293,8 +1307,114 @@ public class MengineActivity extends AppCompatActivity {
     }
 
     public boolean linkingOpenDeleteAccount() {
+        if (m_deleteAccountFlowActive == true) {
+            return false;
+        }
+
+        m_deleteAccountFlowActive = true;
+
         boolean result = MengineProcedureManager.execute(this, "deleteAccount");
 
+        if (result == false) {
+            m_deleteAccountFlowActive = false;
+        }
+
         return result;
+    }
+
+    public void showDeleteAccountProgressDialog() {
+        m_deleteAccountFlowActive = true;
+
+        if (m_deleteAccountProgressDialog != null) {
+            return;
+        }
+
+        m_deleteAccountProgressDialog = MengineUI.showProgressAlertDialogRes(this
+            , R.string.mengine_delete_account_wait_title
+            , R.string.mengine_delete_account_wait_message
+        );
+    }
+
+    public void cancelDeleteAccountFlow() {
+        m_deleteAccountFlowActive = false;
+        this.dismissDeleteAccountProgressDialog();
+    }
+
+    public boolean linkingCompleteDeleteAccount(int result) {
+        if (result < DELETE_ACCOUNT_RESULT_ACCEPTED || result > DELETE_ACCOUNT_RESULT_COMPLETED) {
+            return false;
+        }
+
+        if (this.isFinishing() == true || this.isDestroyed() == true) {
+            return false;
+        }
+
+        m_deleteAccountFlowActive = false;
+
+        this.runOnUiThread(() -> {
+            this.dismissDeleteAccountProgressDialog();
+
+            switch (result) {
+            case DELETE_ACCOUNT_RESULT_ACCEPTED:
+                MengineApplication.INSTANCE.removeUserData();
+
+                MengineUI.showOkAlertDialogRes(this, this::finishAndRemoveTask
+                    , R.string.mengine_delete_account_success_title
+                    , R.string.mengine_delete_account_success_message
+                );
+                break;
+            case DELETE_ACCOUNT_RESULT_OFFLINE:
+                MengineUI.showOkAlertDialogRes(this, null
+                    , R.string.mengine_delete_account_error_title
+                    , R.string.mengine_delete_account_error_offline_message
+                );
+                break;
+            case DELETE_ACCOUNT_RESULT_AMBIGUOUS:
+                MengineUI.showOkAlertDialogRes(this, null
+                    , R.string.mengine_delete_account_error_title
+                    , R.string.mengine_delete_account_error_ambiguous_message
+                );
+                break;
+            case DELETE_ACCOUNT_RESULT_SERVER_ERROR:
+                MengineUI.showOkAlertDialogRes(this, null
+                    , R.string.mengine_delete_account_error_title
+                    , R.string.mengine_delete_account_error_server_message
+                );
+                break;
+            case DELETE_ACCOUNT_RESULT_PENDING:
+                MengineUI.showOkAlertDialogRes(this, this::finishAndRemoveTask
+                    , R.string.mengine_delete_account_pending_title
+                    , R.string.mengine_delete_account_pending_message
+                );
+                break;
+            case DELETE_ACCOUNT_RESULT_COMPLETED:
+                MengineApplication.INSTANCE.removeUserData();
+
+                MengineUI.showOkAlertDialogRes(this, this::finishAndRemoveTask
+                    , R.string.mengine_delete_account_completed_title
+                    , R.string.mengine_delete_account_completed_message
+                );
+                break;
+            }
+        });
+
+        return true;
+    }
+
+    private void dismissDeleteAccountProgressDialog() {
+        if (m_deleteAccountProgressDialog == null) {
+            return;
+        }
+
+        m_deleteAccountProgressDialog.dismiss();
+        m_deleteAccountProgressDialog = null;
+    }
+
+    public boolean isNetworkAvailable() {
+        return MengineNetwork.isNetworkAvailable();
+    }
+
+    public void removeUserData() {
+        MengineApplication.INSTANCE.removeUserData();
     }
 }

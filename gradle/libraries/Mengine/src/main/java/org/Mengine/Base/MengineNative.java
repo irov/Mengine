@@ -54,6 +54,8 @@ public class MengineNative {
     public static native void AndroidPlatform_freezeEvent(String owner, boolean freeze);
     public static native void AndroidPlatform_clipboardChangedEvent();
     public static native void AndroidPlatform_windowFocusChangedEvent(boolean focus);
+    public static native void AndroidPlatform_deleteAccountAccepted();
+    public static native void AndroidPlatform_deleteAccountCanceled();
     public static native void AndroidPlatform_invokeNativeRunnable(ByteBuffer nativeRunnable);
     public static native void AndroidPlatform_releaseNativeRunnable(ByteBuffer nativeRunnable);
     public static native void AndroidPlatform_quitEvent();

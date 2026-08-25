@@ -109,7 +109,10 @@ namespace Mengine
     public:
         bool openUrlInDefaultBrowser( const Char * _url ) override;
         bool openMail( const Char * _email, const Char * _subject, const Char * _body, const Char * _technically ) override;
-        bool openDeleteAccount() override;
+        bool openDeleteAccount( const LambdaDeleteAccountAccepted & _accepted, const LambdaDeleteAccountCanceled & _canceled ) override;
+        bool completeDeleteAccount( EDeleteAccountResult _result ) override;
+        bool isNetworkAvailable() const override;
+        void removeUserData() override;
         bool updateDesktopWallpaper( const Char * _directoryPath, const Char * _filePath ) override;
         bool createDirectoryUserPicture( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size ) override;
         bool createDirectoryUserMusic( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size ) override;

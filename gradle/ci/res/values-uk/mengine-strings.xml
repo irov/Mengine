@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mengine_delete_account_success_title">Запит прийнято</string>
+    <string name="mengine_delete_account_success_message">Ваш запит прийнято. Застосунок буде закрито.</string>
+    <string name="mengine_delete_account_option_reason_1">Втратив інтерес до гри</string>
+    <string name="mengine_delete_account_option_reason_2">Хочу почати спочатку</string>
+    <string name="mengine_delete_account_option_reason_3">Забагато реклами</string>
+    <string name="mengine_delete_account_option_reason_4">Підтримка не вирішила проблему</string>
+    <string name="mengine_delete_account_option_reason_5">Інша причина</string>
+    <string name="mengine_delete_account_option_title">Оберіть причину</string>
+    <string name="mengine_delete_account_try_title">Видалити обліковий запис</string>
+    <string name="mengine_delete_account_try_message">Це назавжди видалить ваш обліковий запис і всі пов’язані з ним дані, а також відв’яже підключені способи входу. Цю дію неможливо скасувати.</string>
+    <string name="mengine_delete_account_wait_title">Будь ласка, зачекайте</string>
+    <string name="mengine_delete_account_wait_message">Виконується обробка…</string>
+    <string name="mengine_delete_account_error_title">Видалення облікового запису</string>
+    <string name="mengine_delete_account_error_offline_message">Немає підключення до інтернету. Підключіться до інтернету та спробуйте пізніше.</string>
+    <string name="mengine_delete_account_error_ambiguous_message">Не вдалося підтвердити, чи було оброблено запит. Локальні дані збережено. Підключіться до інтернету та спробуйте пізніше.</string>
+    <string name="mengine_delete_account_error_server_message">Не вдалося виконати запит. Локальні дані збережено. Спробуйте пізніше.</string>
+    <string name="mengine_delete_account_pending_title">Запит виконується</string>
+    <string name="mengine_delete_account_pending_message">Ваш запит усе ще обробляється. Спробуйте запустити застосунок пізніше.</string>
+    <string name="mengine_delete_account_completed_title">Обліковий запис видалено</string>
+    <string name="mengine_delete_account_completed_message">Ваш обліковий запис видалено. Локальні дані буде очищено, а застосунок закрито.</string>
+</resources>

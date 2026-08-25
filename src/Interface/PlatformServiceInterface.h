@@ -27,6 +27,26 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    enum EDeleteAccountReason : uint32_t
+    {
+        DELETE_ACCOUNT_REASON_LOST_INTEREST = 1001,
+        DELETE_ACCOUNT_REASON_START_OVER = 1002,
+        DELETE_ACCOUNT_REASON_TOO_MANY_ADS = 1003,
+        DELETE_ACCOUNT_REASON_SUPPORT_UNSOLVED = 1004,
+        DELETE_ACCOUNT_REASON_OTHER = 1099,
+    };
+    //////////////////////////////////////////////////////////////////////////
+    enum EDeleteAccountResult : uint32_t
+    {
+        DELETE_ACCOUNT_RESULT_ACCEPTED = 0,
+        DELETE_ACCOUNT_RESULT_OFFLINE = 1,
+        DELETE_ACCOUNT_RESULT_AMBIGUOUS = 2,
+        DELETE_ACCOUNT_RESULT_SERVER_ERROR = 3,
+        DELETE_ACCOUNT_RESULT_PENDING = 4,
+        DELETE_ACCOUNT_RESULT_COMPLETED = 5,
+    };
+    //////////////////////////////////////////////////////////////////////////
     class PlatformServiceInterface
         : public ServiceInterface
         , public Unknowable
@@ -126,7 +146,15 @@ namespace Mengine
     public:
         virtual bool openUrlInDefaultBrowser( const Char * _url ) = 0;
         virtual bool openMail( const Char * _email, const Char * _subject, const Char * _body, const Char * _technically ) = 0;
-        virtual bool openDeleteAccount() = 0;
+
+        typedef Lambda<void()> LambdaDeleteAccountAccepted;
+        typedef Lambda<void()> LambdaDeleteAccountCanceled;
+
+        virtual bool openDeleteAccount( const LambdaDeleteAccountAccepted & _accepted, const LambdaDeleteAccountCanceled & _canceled ) = 0;
+
+        virtual bool completeDeleteAccount( EDeleteAccountResult _result ) = 0;
+        virtual bool isNetworkAvailable() const = 0;
+        virtual void removeUserData() = 0;
 
     public:
         virtual bool updateDesktopWallpaper( const Char * _directoryPath, const Char * _filePath ) = 0;

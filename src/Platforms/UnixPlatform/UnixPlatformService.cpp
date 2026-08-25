@@ -1658,9 +1658,28 @@ namespace Mengine
         return this->openUrlInDefaultBrowser( uri.c_str() );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool UnixPlatformService::openDeleteAccount()
+    bool UnixPlatformService::openDeleteAccount( const LambdaDeleteAccountAccepted & _accepted, const LambdaDeleteAccountCanceled & _canceled )
     {
+        MENGINE_UNUSED( _accepted );
+        MENGINE_UNUSED( _canceled );
+
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool UnixPlatformService::completeDeleteAccount( EDeleteAccountResult _result )
+    {
+        MENGINE_UNUSED( _result );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool UnixPlatformService::isNetworkAvailable() const
+    {
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void UnixPlatformService::removeUserData()
+    {
     }
     //////////////////////////////////////////////////////////////////////////
     bool UnixPlatformService::updateDesktopWallpaper( const Char * _directoryPath, const Char * _filePath )

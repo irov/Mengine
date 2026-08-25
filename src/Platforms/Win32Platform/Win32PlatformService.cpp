@@ -3868,11 +3868,30 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32PlatformService::openDeleteAccount()
+    bool Win32PlatformService::openDeleteAccount( const LambdaDeleteAccountAccepted & _accepted, const LambdaDeleteAccountCanceled & _canceled )
     {
+        MENGINE_UNUSED( _accepted );
+        MENGINE_UNUSED( _canceled );
+
         MENGINE_ASSERTION_NOT_IMPLEMENTED();
 
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32PlatformService::completeDeleteAccount( EDeleteAccountResult _result )
+    {
+        MENGINE_UNUSED( _result );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32PlatformService::isNetworkAvailable() const
+    {
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32PlatformService::removeUserData()
+    {
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32PlatformService::setActive_( bool _active )

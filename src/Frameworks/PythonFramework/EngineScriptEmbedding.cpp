@@ -4280,12 +4280,41 @@ namespace Mengine
                 return val;
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_openDeleteAccount()
+            bool s_openDeleteAccount( const pybind::object & _accepted, const pybind::object & _canceled )
             {
                 bool val = PLATFORM_SERVICE()
-                    ->openDeleteAccount();
+                    ->openDeleteAccount( [_accepted]()
+                {
+                    _accepted.call();
+                }, [_canceled]()
+                {
+                    _canceled.call();
+                } );
 
                 return val;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            bool s_completeDeleteAccount( uint32_t _result )
+            {
+                if( _result > DELETE_ACCOUNT_RESULT_COMPLETED )
+                {
+                    return false;
+                }
+
+                return PLATFORM_SERVICE()
+                    ->completeDeleteAccount( (EDeleteAccountResult)_result );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            bool s_isNetworkAvailable()
+            {
+                return PLATFORM_SERVICE()
+                    ->isNetworkAvailable();
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_removeUserData()
+            {
+                PLATFORM_SERVICE()
+                    ->removeUserData();
             }
             //////////////////////////////////////////////////////////////////////////
             ConstString s_getDefaultResourceFontName()
@@ -4653,6 +4682,9 @@ namespace Mengine
         pybind::def_functor( _kernel, "openUrlInDefaultBrowser", nodeScriptMethod, &EngineScriptMethod::s_openUrlInDefaultBrowser );
         pybind::def_functor( _kernel, "openMail", nodeScriptMethod, &EngineScriptMethod::s_openMail );
         pybind::def_functor( _kernel, "openDeleteAccount", nodeScriptMethod, &EngineScriptMethod::s_openDeleteAccount );
+        pybind::def_functor( _kernel, "completeDeleteAccount", nodeScriptMethod, &EngineScriptMethod::s_completeDeleteAccount );
+        pybind::def_functor( _kernel, "isNetworkAvailable", nodeScriptMethod, &EngineScriptMethod::s_isNetworkAvailable );
+        pybind::def_functor( _kernel, "removeUserData", nodeScriptMethod, &EngineScriptMethod::s_removeUserData );
 
         pybind::def_functor( _kernel, "getDefaultResourceFontName", nodeScriptMethod, &EngineScriptMethod::s_getDefaultResourceFontName );
 

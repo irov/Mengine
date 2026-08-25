@@ -19,6 +19,7 @@
 #import "Environment/iOS/iOSApplication.h"
 #import "Environment/iOS/iOSDetail.h"
 #import "Environment/iOS/iOSLog.h"
+#import "Environment/iOS/iOSNetwork.h"
 #import "Environment/iOS/iOSKernelServiceInterface.h"
 
 #include "iOSAnalyticsEventProvider.h"
@@ -111,6 +112,7 @@ namespace Mengine
         , m_metalDevice( nil )
         , m_metalView( nil )
 #endif
+        , m_deleteAccountProgressAlert( nil )
         , m_mainScreenScale( 1.f )
     {
     }
@@ -499,6 +501,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::_finalizeService()
     {
+        if( m_deleteAccountProgressAlert != nil )
+        {
+            [m_deleteAccountProgressAlert dismissViewControllerAnimated:NO completion:nil];
+            m_deleteAccountProgressAlert = nil;
+        }
+
         if( m_analyticsEventProvider != nullptr )
         {
             ANALYTICS_SERVICE()
@@ -862,34 +870,244 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool iOSPlatformService::openDeleteAccount()
+    bool iOSPlatformService::openDeleteAccount( const LambdaDeleteAccountAccepted & _accepted, const LambdaDeleteAccountCanceled & _canceled )
     {
-        LOGGER_INFO( "platform", "open delete account" );
-        
-        [iOSDetail showAreYouSureAlertDialogWithTitle:@"Delete Account"
-                                              message:@"Click 'YES' will delete all account data. All game progress, virtual goods, and currency will be permanently removed and unrecoverable."
-                                                delay:3000
-                                                  yes:^() {
-            IOS_LOGGER_MESSAGE(@"delete account [YES]");
-            
-            [iOSApplication.sharedInstance removeUserData];
-            
-            ACCOUNT_SERVICE()
-                ->deleteCurrentAccount();
-            
-            [iOSDetail showOkAlertWithTitle:@"Account Deleted"
-                                    message:@"Account data has been deleted. The application will now close."
-                                         ok:^() {
-                APPLICATION_SERVICE()
-                    ->quit();
-            }];
+        if( _accepted == nullptr || _canceled == nullptr )
+        {
+            return false;
         }
-                                               cancel: ^() {
-            IOS_LOGGER_MESSAGE(@"delete account [CANCEL]");
-            
+
+        UIViewController * viewController = [iOSDetail getRootViewController];
+
+        if( viewController == nil )
+        {
+            return false;
+        }
+
+        NSString * title = @"Delete Account";
+        NSString * message = @"This permanently deletes your account and all associated data and unlinks connected sign-in methods. This action cannot be undone.";
+        NSString * question = @"Are you sure?";
+        NSString * deleteText = @"DELETE";
+        NSString * cancelText = @"CANCEL";
+        NSString * reasonTitle = @"Choose a reason";
+        NSString * waitTitle = @"Please Wait";
+        NSString * waitMessage = @"Processing…";
+        NSArray<NSNumber *> * reasonIds = @[
+            @(DELETE_ACCOUNT_REASON_LOST_INTEREST),
+            @(DELETE_ACCOUNT_REASON_START_OVER),
+            @(DELETE_ACCOUNT_REASON_TOO_MANY_ADS),
+            @(DELETE_ACCOUNT_REASON_SUPPORT_UNSOLVED),
+            @(DELETE_ACCOUNT_REASON_OTHER)
+        ];
+        NSDictionary<NSNumber *, NSString *> * reasonTexts = @{
+            @(DELETE_ACCOUNT_REASON_LOST_INTEREST): @"Lost interest in the game",
+            @(DELETE_ACCOUNT_REASON_START_OVER): @"Want to start over",
+            @(DELETE_ACCOUNT_REASON_TOO_MANY_ADS): @"Too many ads",
+            @(DELETE_ACCOUNT_REASON_SUPPORT_UNSOLVED): @"Support did not solve my problem",
+            @(DELETE_ACCOUNT_REASON_OTHER): @"Other reason"
+        };
+
+        LambdaDeleteAccountAccepted accepted = _accepted;
+        LambdaDeleteAccountCanceled canceled = _canceled;
+
+        [AppleDetail addMainQueueOperation:^{
+            NSString * fullMessage = [NSString stringWithFormat:@"%@\n\n%@", message, question];
+            UIAlertController * confirmation = [UIAlertController alertControllerWithTitle:title
+                                                                                    message:fullMessage
+                                                                             preferredStyle:UIAlertControllerStyleAlert];
+
+            UIAlertAction * cancelAction = [UIAlertAction actionWithTitle:cancelText
+                                                                    style:UIAlertActionStyleCancel
+                                                                  handler:^(UIAlertAction * action) {
+                Helper::dispatchMainThreadEvent([canceled]() {
+                    canceled();
+                });
+            }];
+
+            UIAlertAction * deleteAction = [UIAlertAction actionWithTitle:deleteText
+                                                                    style:UIAlertActionStyleDestructive
+                                                                  handler:^(UIAlertAction * action) {
+                UIAlertController * reasonAlert = [UIAlertController alertControllerWithTitle:reasonTitle
+                                                                                       message:nil
+                                                                                preferredStyle:UIAlertControllerStyleActionSheet];
+
+                [reasonIds enumerateObjectsUsingBlock:^(NSNumber * reasonId, NSUInteger index, BOOL * stop) {
+                    NSString * reasonText = reasonTexts[reasonId];
+
+                    UIAlertAction * reasonAction = [UIAlertAction actionWithTitle:reasonText
+                                                                           style:UIAlertActionStyleDefault
+                                                                         handler:^(UIAlertAction * selectedAction) {
+                        int64_t reasonIdValue = reasonId.longLongValue;
+
+                        ANALYTICS_SERVICE()
+                            ->buildEvent( AEEC_SYSTEM, STRINGIZE_STRING_LOCAL( "mng_delete_account_option_accept" ), MENGINE_DOCUMENT_FACTORABLE )
+                            ->addParameterInteger( STRINGIZE_STRING_LOCAL( "option" ), reasonIdValue )
+                            ->log();
+
+                        [reasonAlert dismissViewControllerAnimated:YES completion:^{
+                            NSString * progressMessage = [NSString stringWithFormat:@"%@\n\n", waitMessage];
+                            UIAlertController * progressAlert = [UIAlertController alertControllerWithTitle:waitTitle
+                                                                                                    message:progressMessage
+                                                                                             preferredStyle:UIAlertControllerStyleAlert];
+
+                            UIActivityIndicatorView * progress = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleMedium];
+                            progress.translatesAutoresizingMaskIntoConstraints = NO;
+                            [progress startAnimating];
+
+                            [progressAlert.view addSubview:progress];
+                            [NSLayoutConstraint activateConstraints:@[
+                                [progress.centerXAnchor constraintEqualToAnchor:progressAlert.view.centerXAnchor],
+                                [progress.bottomAnchor constraintEqualToAnchor:progressAlert.view.bottomAnchor constant:-18.0]
+                            ]];
+
+                            if( @available(iOS 13.0, *) )
+                            {
+                                progressAlert.modalInPresentation = YES;
+                            }
+
+                            this->m_deleteAccountProgressAlert = progressAlert;
+
+                            [viewController presentViewController:progressAlert animated:YES completion:nil];
+
+                            Helper::dispatchMainThreadEvent([accepted]() {
+                                accepted();
+                            });
+                        }];
+                    }];
+
+                    [reasonAlert addAction:reasonAction];
+                }];
+
+                UIAlertAction * reasonCancelAction = [UIAlertAction actionWithTitle:cancelText
+                                                                               style:UIAlertActionStyleCancel
+                                                                             handler:^(UIAlertAction * selectedAction) {
+                    Helper::dispatchMainThreadEvent([canceled]() {
+                        canceled();
+                    });
+                }];
+
+                [reasonAlert addAction:reasonCancelAction];
+
+                UIPopoverPresentationController * popover = reasonAlert.popoverPresentationController;
+
+                if( popover != nil )
+                {
+                    popover.sourceView = viewController.view;
+                    popover.sourceRect = CGRectMake( CGRectGetMidX( viewController.view.bounds ), CGRectGetMidY( viewController.view.bounds ), 1.0, 1.0 );
+                    popover.permittedArrowDirections = 0;
+                }
+
+                [viewController presentViewController:reasonAlert animated:YES completion:nil];
+            }];
+
+            deleteAction.enabled = NO;
+
+            [confirmation addAction:cancelAction];
+            [confirmation addAction:deleteAction];
+
+            [viewController presentViewController:confirmation animated:YES completion:nil];
+
+            dispatch_after( dispatch_time( DISPATCH_TIME_NOW, (int64_t)(3000 * NSEC_PER_MSEC) ), dispatch_get_main_queue(), ^{
+                deleteAction.enabled = YES;
+            } );
         }];
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool iOSPlatformService::completeDeleteAccount( EDeleteAccountResult _result )
+    {
+        UIViewController * viewController = [iOSDetail getRootViewController];
+
+        if( viewController == nil )
+        {
+            return false;
+        }
+
+        NSString * title = nil;
+        NSString * message = nil;
+        bool removeUserData = false;
+        bool closeApplication = false;
+
+        switch( _result )
+        {
+        case DELETE_ACCOUNT_RESULT_ACCEPTED:
+            title = @"Request Accepted";
+            message = @"Your request was accepted. The application will now close.";
+            removeUserData = true;
+            closeApplication = true;
+            break;
+        case DELETE_ACCOUNT_RESULT_OFFLINE:
+            title = @"Account Deletion";
+            message = @"No Internet connection. Connect to the Internet and try again later.";
+            break;
+        case DELETE_ACCOUNT_RESULT_AMBIGUOUS:
+            title = @"Account Deletion";
+            message = @"We could not confirm whether your request was processed. Your local data has been kept. Connect to the Internet and try again later.";
+            break;
+        case DELETE_ACCOUNT_RESULT_SERVER_ERROR:
+            title = @"Account Deletion";
+            message = @"Your request could not be completed. Your local data has been kept. Please try again later.";
+            break;
+        case DELETE_ACCOUNT_RESULT_PENDING:
+            title = @"Request in Progress";
+            message = @"Your request is still being processed. Please try to start the application again later.";
+            closeApplication = true;
+            break;
+        case DELETE_ACCOUNT_RESULT_COMPLETED:
+            title = @"Account Deleted";
+            message = @"Your account has been deleted. Local data will be cleared and the application will close.";
+            removeUserData = true;
+            closeApplication = true;
+            break;
+        }
+
+        if( removeUserData == true )
+        {
+            this->removeUserData();
+        }
+
+        [AppleDetail addMainQueueOperation:^{
+            UIAlertController * progressAlert = this->m_deleteAccountProgressAlert;
+            this->m_deleteAccountProgressAlert = nil;
+
+            void (^showResult)(void) = ^{
+                [iOSDetail showOkAlertWithViewController:viewController
+                                                   title:title
+                                                 message:message
+                                                      ok:^() {
+                    if( closeApplication == true )
+                    {
+                        APPLICATION_SERVICE()
+                            ->quit();
+                    }
+                }];
+            };
+
+            if( progressAlert != nil && progressAlert.presentingViewController != nil )
+            {
+                [progressAlert dismissViewControllerAnimated:YES completion:showResult];
+            }
+            else
+            {
+                showResult();
+            }
+        }];
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool iOSPlatformService::isNetworkAvailable() const
+    {
+        return [[iOSNetwork sharedInstance] isNetworkAvailable] == YES;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void iOSPlatformService::removeUserData()
+    {
+        [iOSApplication.sharedInstance removeUserData];
+
+        ACCOUNT_SERVICE()
+            ->deleteCurrentAccount();
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::stopPlatform()

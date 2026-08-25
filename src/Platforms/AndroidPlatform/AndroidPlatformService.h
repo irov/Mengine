@@ -142,7 +142,10 @@ namespace Mengine
     public:
         bool openUrlInDefaultBrowser( const Char * _url ) override;
         bool openMail( const Char * _email, const Char * _subject, const Char * _body, const Char * _technically ) override;
-        bool openDeleteAccount() override;
+        bool openDeleteAccount( const LambdaDeleteAccountAccepted & _accepted, const LambdaDeleteAccountCanceled & _canceled ) override;
+        bool completeDeleteAccount( EDeleteAccountResult _result ) override;
+        bool isNetworkAvailable() const override;
+        void removeUserData() override;
 
     public:
         bool updateDesktopWallpaper( const Char * _directoryPath, const Char * _filePath ) override;
@@ -203,6 +206,8 @@ namespace Mengine
         void androidNativeFreezeEvent( const ConstString & _owner, bool _freeze ) override;
         void androidNativeClipboardChangedEvent() override;
         void androidNativeWindowFocusChangedEvent( jboolean _focus ) override;
+        void androidNativeDeleteAccountAccepted() override;
+        void androidNativeDeleteAccountCanceled() override;
         jobject createNativeRunnable( JNIEnv * _jenv, const LambdaNativeRunnable & _callback ) override;
         void androidNativeInvokeRunnable( JNIEnv * _jenv, jobject _buffer ) override;
         void androidNativeReleaseRunnable( JNIEnv * _jenv, jobject _buffer ) override;
@@ -275,6 +280,9 @@ namespace Mengine
         Viewport m_safeAreaViewport;
         LambdaSafeAreaViewportChanged m_safeAreaViewportChangedCallback;
         bool m_safeAreaViewportValid;
+
+        LambdaDeleteAccountAccepted m_deleteAccountAccepted;
+        LambdaDeleteAccountCanceled m_deleteAccountCanceled;
 
         StaticString<MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME> m_projectTitle;
 

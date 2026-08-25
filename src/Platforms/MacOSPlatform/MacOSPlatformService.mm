@@ -587,11 +587,30 @@ namespace Mengine
         return this->openUrlInDefaultBrowser( [mail UTF8String] );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MacOSPlatformService::openDeleteAccount()
+    bool MacOSPlatformService::openDeleteAccount( const LambdaDeleteAccountAccepted & _accepted, const LambdaDeleteAccountCanceled & _canceled )
     {
+        MENGINE_UNUSED( _accepted );
+        MENGINE_UNUSED( _canceled );
+
         LOGGER_INFO( "platform", "open delete account" );
 
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool MacOSPlatformService::completeDeleteAccount( EDeleteAccountResult _result )
+    {
+        MENGINE_UNUSED( _result );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool MacOSPlatformService::isNetworkAvailable() const
+    {
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MacOSPlatformService::removeUserData()
+    {
     }
     //////////////////////////////////////////////////////////////////////////
     void MacOSPlatformService::stopPlatform()

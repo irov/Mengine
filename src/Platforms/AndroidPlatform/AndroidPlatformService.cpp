@@ -2057,7 +2057,7 @@ namespace Mengine
         EGLint base_depth_size = 24;
 
         const EGLint configAttribs[] = {
-            EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
+            EGL_RENDERABLE_TYPE, EGL_OPENGL_ES3_BIT,
             EGL_RED_SIZE, base_red_size,
             EGL_GREEN_SIZE, base_green_size,
             EGL_BLUE_SIZE, base_blue_size,
@@ -2190,7 +2190,8 @@ namespace Mengine
         ::eglQuerySurface( m_eglDisplay, m_eglSurface, EGL_HEIGHT, &height );
 
         const EGLint contextAttribs[] = {
-            EGL_CONTEXT_CLIENT_VERSION, 2,
+            EGL_CONTEXT_MAJOR_VERSION, 3,
+            EGL_CONTEXT_MINOR_VERSION, 2,
             EGL_NONE
         };
 

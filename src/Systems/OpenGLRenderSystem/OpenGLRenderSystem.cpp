@@ -180,26 +180,12 @@ namespace Mengine
 #endif
 
         const Char * versionStr = reinterpret_cast<const Char *>(glGetString( GL_VERSION ));
-
-        MENGINE_UNUSED( versionStr );
-
-        LOGGER_INFO( "opengl", "OpenGL version: %s"
-            , versionStr
-        );
-
         const Char * vendorStr = reinterpret_cast<const Char *>(glGetString( GL_VENDOR ));
-
-        MENGINE_UNUSED( vendorStr );
-
-        LOGGER_INFO( "opengl", "OpenGL vendor: %s"
-            , vendorStr
-        );
-
         const Char * rendererStr = reinterpret_cast<const Char *>(glGetString( GL_RENDERER ));
 
-        MENGINE_UNUSED( rendererStr );
-
-        LOGGER_INFO( "opengl", "OpenGL renderer: %s"
+        LOGGER_MESSAGE( "OpenGL version: %s vendor: %s renderer: %s"
+            , versionStr
+            , vendorStr
             , rendererStr
         );
 

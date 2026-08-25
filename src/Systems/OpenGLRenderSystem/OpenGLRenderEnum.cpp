@@ -47,7 +47,7 @@ namespace Mengine
             case BOP_SUBTRACT: return GL_FUNC_SUBTRACT;
             case BOP_REVSUBTRACT: return GL_FUNC_REVERSE_SUBTRACT;
 
-#if defined(MENGINE_RENDER_OPENGL_ES)
+#if defined(MENGINE_RENDER_OPENGL_ES_IOS)
             case BOP_MIN: return GL_MIN_EXT;
             case BOP_MAX: return GL_MAX_EXT;
 #else

@@ -64,7 +64,7 @@ namespace Mengine
     ERenderPlatform MockupRenderSystem::getRenderPlatformType() const
     {
 #if defined(MENGINE_PLATFORM_WINDOWS)
-        return RP_DX9;
+        return RP_DX11;
 #else
 #   if defined(MENGINE_RENDER_OPENGL_ES)
         return RP_OPENGLES;
@@ -86,7 +86,7 @@ namespace Mengine
         m_dxMaxCombinedTextureImageUnits = MENGINE_MAX_TEXTURE_STAGES;
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
-        m_renderSystemName = CONFIG_VALUE_CONSTSTRING( "Engine", "MockupRenderSystem", STRINGIZE_STRING_LOCAL( "DX9" ) );
+        m_renderSystemName = CONFIG_VALUE_CONSTSTRING( "Engine", "MockupRenderSystem", STRINGIZE_STRING_LOCAL( "DX11" ) );
 #else
 #   if defined(MENGINE_RENDER_OPENGL_ES)
         m_renderSystemName = CONFIG_VALUE_CONSTSTRING( "Engine", "MockupRenderSystem", STRINGIZE_STRING_LOCAL( "OpenGLES" ) );
@@ -804,13 +804,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     MockupRenderImagePtr MockupRenderSystem::createRenderImage_( uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, EPixelFormat _hwPixelFormat, const DocumentInterfacePtr & _doc )
     {
-        MockupRenderImagePtr dx9RenderImage = m_factoryRenderImage->createObject( _doc );
+        MockupRenderImagePtr renderImage = m_factoryRenderImage->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( dx9RenderImage, "invalid create render image" );
+        MENGINE_ASSERTION_MEMORY_PANIC( renderImage, "invalid create render image" );
 
-        dx9RenderImage->initialize( _mipmaps, _hwWidth, _hwHeight, _hwPixelFormat );
+        renderImage->initialize( _mipmaps, _hwWidth, _hwHeight, _hwPixelFormat );
 
-        return dx9RenderImage;
+        return renderImage;
     }
     //////////////////////////////////////////////////////////////////////////
     void MockupRenderSystem::onDestroyRenderImage_( MockupRenderImage * _image )
@@ -846,4 +846,3 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
 }
-

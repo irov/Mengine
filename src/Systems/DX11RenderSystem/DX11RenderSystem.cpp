@@ -198,10 +198,10 @@ namespace Mengine
 
         LOGGER_MESSAGE( "D3D Adapter Description: %ls", AdapterDesc.Description );
 
-        LOGGER_MESSAGE( "D3D Adapter VendorId: %lu", AdapterDesc.VendorId );
-        LOGGER_MESSAGE( "D3D Adapter DeviceId: %lu", AdapterDesc.DeviceId );
-        LOGGER_MESSAGE( "D3D Adapter SubSysId: %lu", AdapterDesc.SubSysId );
-        LOGGER_MESSAGE( "D3D Adapter Revision: %lu", AdapterDesc.Revision );
+        LOGGER_MESSAGE( "D3D Adapter VendorId: %u", AdapterDesc.VendorId );
+        LOGGER_MESSAGE( "D3D Adapter DeviceId: %u", AdapterDesc.DeviceId );
+        LOGGER_MESSAGE( "D3D Adapter SubSysId: %u", AdapterDesc.SubSysId );
+        LOGGER_MESSAGE( "D3D Adapter Revision: %u", AdapterDesc.Revision );
 
         m_renderSystemName = STRINGIZE_STRING_LOCAL( "DX11" );
 
@@ -324,7 +324,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid create DXGI factory: %s [%x]"
                 , Helper::getDX11ErrorMessage( result )
-                , result
+                , static_cast<uint32_t>(result)
             );
 
             return false;
@@ -1390,13 +1390,13 @@ namespace Mengine
     {
         if( _program != nullptr )
         {
-            DX11RenderProgram * dx9_program = _program.getT<DX11RenderProgram *>();
+            DX11RenderProgram * dx11Program = _program.getT<DX11RenderProgram *>();
 
-            dx9_program->enable( m_pD3DDeviceImmediateContext );
+            dx11Program->enable( m_pD3DDeviceImmediateContext );
 
-            const RenderVertexAttributeInterfacePtr & vertexAttribute = dx9_program->getVertexAttribute();
-            const RenderVertexShaderInterfacePtr & vertexShader = dx9_program->getVertexShader();
-            const RenderFragmentShaderInterfacePtr & fragmentShader = dx9_program->getFragmentShader();
+            const RenderVertexAttributeInterfacePtr & vertexAttribute = dx11Program->getVertexAttribute();
+            const RenderVertexShaderInterfacePtr & vertexShader = dx11Program->getVertexShader();
+            const RenderFragmentShaderInterfacePtr & fragmentShader = dx11Program->getFragmentShader();
 
             bool vertexAttributeEnable = vertexAttribute != nullptr;
             bool vertexShaderEnable = vertexShader != nullptr;
@@ -1450,9 +1450,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::updateProgram( const RenderProgramInterfacePtr & _program )
     {
-        DX11RenderProgramPtr dx9_program = stdex::intrusive_static_cast<DX11RenderProgramPtr>(_program);
+        DX11RenderProgramPtr dx11Program = stdex::intrusive_static_cast<DX11RenderProgramPtr>(_program);
 
-        dx9_program->bindMatrix( m_pD3DDeviceImmediateContext, m_worldMatrix, m_modelViewMatrix, m_projectionMatrix, m_totalWVPInvMatrix );
+        dx11Program->bindMatrix( m_pD3DDeviceImmediateContext, m_worldMatrix, m_modelViewMatrix, m_projectionMatrix, m_totalWVPInvMatrix );
     }
     //////////////////////////////////////////////////////////////////////////
     RenderProgramVariableInterfacePtr DX11RenderSystem::createProgramVariableStatic( uint32_t _vertexCount, uint32_t _pixelCount, const DocumentInterfacePtr & _doc )
@@ -1485,9 +1485,9 @@ namespace Mengine
             return true;
         }
 
-        DX11RenderProgramVariable * dx9_variable = _variable.getT<DX11RenderProgramVariable *>();
+        DX11RenderProgramVariable * dx11Variable = _variable.getT<DX11RenderProgramVariable *>();
 
-        bool successful = dx9_variable->apply( m_pD3DDevice, m_pD3DDeviceImmediateContext );
+        bool successful = dx11Variable->apply( m_pD3DDevice, m_pD3DDeviceImmediateContext );
 
         return successful;
     }

@@ -4,9 +4,7 @@ project(jpeg)
 
 SET(SOURCE_DIR ${THIRDPARTY_DIR}/libjpeg)
 
-IF(MENGINE_RENDER_DIRECTX9)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jmorecfg_dx9.h ${THIRDPARTY_CONFIG_DIR}/libjpeg/jmorecfg.h COPYONLY)
-ELSEIF(MENGINE_RENDER_DIRECTX11)
+IF(MENGINE_RENDER_DIRECTX11)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jmorecfg_dx11.h ${THIRDPARTY_CONFIG_DIR}/libjpeg/jmorecfg.h COPYONLY)
 ELSE()
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jmorecfg_ogl.h ${THIRDPARTY_CONFIG_DIR}/libjpeg/jmorecfg.h COPYONLY)

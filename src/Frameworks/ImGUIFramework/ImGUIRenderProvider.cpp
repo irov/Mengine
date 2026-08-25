@@ -23,8 +23,8 @@
 #include "Environment/iOS/iOSPlatformServiceExtensionInterface.h"
 #endif
 
-#if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
-#include "Environment/DirectX9/DX9RenderImageExtensionInterface.h"
+#if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX11)
+#include "Environment/DirectX11/DX11RenderImageExtensionInterface.h"
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
@@ -43,8 +43,8 @@
 #include "ImGUIWin32Platform.h"
 #endif
 
-#if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
-#include "ImGUIDX9Render.h"
+#if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX11)
+#include "imgui_impl_dx11.h"
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL) && (defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS) || defined(MENGINE_ENVIRONMENT_PLATFORM_IOS) || defined(MENGINE_ENVIRONMENT_PLATFORM_UNIX))
@@ -68,12 +68,12 @@ namespace Mengine
     {
         const RenderImageInterfacePtr & image = _texture->getImage();
 
-#if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
-        DX9RenderImageExtensionInterface * extension = image->getUnknown();
+#if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX11)
+        DX11RenderImageExtensionInterface * extension = image->getUnknown();
 
-        IDirect3DTexture9 * pD3DTexture = extension->getD3DTexture();
+        const ID3D11ShaderResourceViewPtr & d3dShaderResource = extension->getD3DShaderResource();
 
-        return (ImTextureID)pD3DTexture;
+        return (ImTextureID)d3dShaderResource.Get();
 #elif defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
         OpenGLRenderImageExtensionInterface * extension = image->getUnknown();
 
@@ -91,8 +91,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ImGUIRenderProvider::newFrame()
     {
-#if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
-        MengineImGUIDX9Render_NewFrame();
+#if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX11)
+        ImGui_ImplDX11_NewFrame();
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL) && (defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS) || defined(MENGINE_ENVIRONMENT_PLATFORM_IOS) || defined(MENGINE_ENVIRONMENT_PLATFORM_UNIX))
@@ -138,8 +138,8 @@ namespace Mengine
 
         MENGINE_UNUSED( imData );
 
-#if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
-        MengineImGUIDX9Render_RenderDrawData( imData );
+#if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX11)
+        ImGui_ImplDX11_RenderDrawData( imData );
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL) && (defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS) || defined(MENGINE_ENVIRONMENT_PLATFORM_IOS) || defined(MENGINE_ENVIRONMENT_PLATFORM_UNIX))

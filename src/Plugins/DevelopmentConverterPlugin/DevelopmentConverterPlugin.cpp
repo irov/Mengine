@@ -11,9 +11,6 @@
 #include "VideoConverterFFMPEGToOGV.h"
 #include "VideoConverterFFMPEGToOGVA.h"
 #if defined(MENGINE_PLATFORM_WINDOWS)
-#   include "ShaderConverterTextToVSO.h"
-#   include "ShaderConverterTextToVSO3.h"
-#   include "ShaderConverterTextToPSO.h"
 #   include "ShaderConverterTextToVSO11.h"
 #   include "ShaderConverterTextToPSO11.h"
 #endif
@@ -71,9 +68,6 @@ namespace Mengine
             , GET_MAGIC_NUMBER( MAGIC_AEZ ), GET_MAGIC_VERSION( MAGIC_AEZ ), false, EAC_BEST
         );
 #if defined(MENGINE_PLATFORM_WINDOWS)
-        Helper::registerConverter<ShaderConverterTextToVSO>( STRINGIZE_STRING_LOCAL( "text2vso" ), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerConverter<ShaderConverterTextToVSO3>( STRINGIZE_STRING_LOCAL( "text2vso3" ), MENGINE_DOCUMENT_FACTORABLE );
-        Helper::registerConverter<ShaderConverterTextToPSO>( STRINGIZE_STRING_LOCAL( "text2pso" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerConverter<ShaderConverterTextToVSO11>( STRINGIZE_STRING_LOCAL( "text2vso11" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerConverter<ShaderConverterTextToPSO11>( STRINGIZE_STRING_LOCAL( "text2pso11" ), MENGINE_DOCUMENT_FACTORABLE );
 #endif
@@ -84,9 +78,6 @@ namespace Mengine
     void DevelopmentConverterPlugin::_finalizePlugin()
     {
 #if defined(MENGINE_PLATFORM_WINDOWS)
-        Helper::unregisterConverter( STRINGIZE_STRING_LOCAL( "text2vso" ) );
-        Helper::unregisterConverter( STRINGIZE_STRING_LOCAL( "text2vso3" ) );
-        Helper::unregisterConverter( STRINGIZE_STRING_LOCAL( "text2pso" ) );
         Helper::unregisterConverter( STRINGIZE_STRING_LOCAL( "text2vso11" ) );
         Helper::unregisterConverter( STRINGIZE_STRING_LOCAL( "text2pso11" ) );
 #endif

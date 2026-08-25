@@ -11,7 +11,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     enum ERenderPlatform
     {
-        RP_DX9,
         RP_DX11,
         RP_OPENGL,
         RP_OPENGLES,

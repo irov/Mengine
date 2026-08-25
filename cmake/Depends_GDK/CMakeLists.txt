@@ -11,7 +11,6 @@ INCLUDE(${MENGINE_REPOSITORY}/cmake/win64_template.cmake)
 INCLUDE(${MENGINE_REPOSITORY}/cmake/dependencies_template.cmake)
 
 # GDK supports DirectX 11 (Windows desktop) and DirectX 12 (all platforms including Xbox)
-# DirectX 9 is not natively supported by GDK
 SET_MENGINE_ENVIRONMENT(WINDOWS DIRECTX11 WIN32 MSVC)
 
 SET_MENGINE_DEPENDENCIES_OUTPUT_DIRECTORY()

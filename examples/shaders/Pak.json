@@ -10,14 +10,6 @@
                 "RenderPlatform": "DX11"
             },
             {
-                "Path": "Materials/Shader_DX9.json",
-                "RenderPlatform": "DX9"
-            },
-            {
-                "Path": "Materials/Standart_DX9.json",
-                "RenderPlatform": "DX9"
-            },
-            {
                 "Path": "Materials/Shader_Metal.json",
                 "RenderPlatform": "Metal"
             },

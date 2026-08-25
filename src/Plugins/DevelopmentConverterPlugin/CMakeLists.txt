@@ -30,12 +30,6 @@ src
 if(MENGINE_TARGET_WINDOWS)
     ADD_FILTER(
     win32
-        ShaderConverterTextToPSO.cpp
-        ShaderConverterTextToPSO.h
-        ShaderConverterTextToVSO.cpp
-        ShaderConverterTextToVSO.h
-        ShaderConverterTextToVSO3.cpp
-        ShaderConverterTextToVSO3.h
         ShaderConverterTextToPSO11.cpp
         ShaderConverterTextToPSO11.h
         ShaderConverterTextToVSO11.cpp

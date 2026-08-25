@@ -3,6 +3,7 @@
 #include "Config/Config.h"
 
 #include <climits>
+#include <cfloat>
 
 #ifndef MENGINE_INT_MIN
 #define MENGINE_INT_MIN (INT_MIN)

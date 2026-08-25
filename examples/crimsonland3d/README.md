@@ -4,7 +4,7 @@ Minimal example wiring up the new 3D upgrade pipeline (phases C1..C7):
 
 | Phase | Component                                | Used here                                |
 |-------|------------------------------------------|------------------------------------------|
-| C1-C3 | DX9 Vertex3D / unlit Mesh3D / shaders    | Material_OpaqueUnlit / Material_OpaqueLit |
+| C1-C3 | DX11 Vertex3D / unlit Mesh3D / shaders   | Material_OpaqueUnlit / Material_OpaqueLit |
 | C4    | SkinnedMesh3D + bone palette upload      | (TODO: drop a glTF rig)                  |
 | C5    | GLTFImporterPlugin (cgltf-based)         | enabled in Configs.json                  |
 | C6    | Lighting3D + DirectionalLight3D / PointLight3D / BlobShadow3D | created in scene |

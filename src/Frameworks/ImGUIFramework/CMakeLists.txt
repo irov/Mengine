@@ -58,11 +58,11 @@ if(MENGINE_PLATFORM_UNIX)
     INCLUDE_DIRECTORIES(${THIRDPARTY_CONFIG_DIR}/glad_gl_core_33/include)
 endif()
 
-if(MENGINE_RENDER_DIRECTX9)
+if(MENGINE_RENDER_DIRECTX11)
     ADD_FILTER(
-    src
-        ImGUIDX9Render.h
-        ImGUIDX9Render.cpp
+    backend
+        ${THIRDPARTY_DIR}/imgui/backends/imgui_impl_dx11.h
+        ${THIRDPARTY_DIR}/imgui/backends/imgui_impl_dx11.cpp
     )
 endif()
 
@@ -124,6 +124,10 @@ endif()
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}imgui${MENGINE_LIB_SUFFIX})
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)
+
+if(MENGINE_RENDER_DIRECTX11)
+    TARGET_LINK_LIBRARIES(${PROJECT_NAME} d3dcompiler)
+endif()
 
 if(MENGINE_PLATFORM_MACOS)
     ADD_MENGINE_APPLE_FRAMEWORK(AppKit)

@@ -19,8 +19,8 @@
 #include "Environment/Unix/UnixPlatformServiceExtensionInterface.h"
 #endif
 
-#if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
-#include "Environment/DirectX9/DX9RenderSystemExtensionInterface.h"
+#if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX11)
+#include "Environment/DirectX11/DX11RenderSystemExtensionInterface.h"
 #endif
 
 #include "Interface/RenderSystemInterface.h"
@@ -34,8 +34,8 @@
 #include "ImGUIWin32Platform.h"
 #endif
 
-#if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
-#include "ImGUIDX9Render.h"
+#if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX11)
+#include "imgui_impl_dx11.h"
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL) && (defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS) || defined(MENGINE_ENVIRONMENT_PLATFORM_IOS) || defined(MENGINE_ENVIRONMENT_PLATFORM_UNIX))
@@ -461,24 +461,25 @@ namespace Mengine
         [MengineImGUIMetalRender initializeRenderer];
 #endif
 
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32) && defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
-        DX9RenderSystemExtensionInterface * extension = RENDER_SYSTEM()
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32) && defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX11)
+        DX11RenderSystemExtensionInterface * extension = RENDER_SYSTEM()
             ->getUnknown();
 
         if( extension != nullptr )
         {
-            IDirect3DDevice9 * d3dDevice = extension->getDirect3DDevice9();
+            const ID3D11DevicePtr & d3dDevice = extension->getDirect3D11Device();
+            const ID3D11DeviceContextPtr & d3dDeviceContext = extension->getDirect3D11DeviceContext();
 
-            MengineImGUIDX9Render_Init( d3dDevice );
-            MengineImGUIDX9Render_CreateDeviceObjects();
+            ImGui_ImplDX11_Init( d3dDevice.Get(), d3dDeviceContext.Get() );
+            ImGui_ImplDX11_CreateDeviceObjects();
         }
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
     void ImGUIService::notifyRenderDeviceDestroy_()
     {
-#if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
-        MengineImGUIDX9Render_Shutdown();
+#if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX11)
+        ImGui_ImplDX11_Shutdown();
 #endif
 
 #if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL) && (defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS) || defined(MENGINE_ENVIRONMENT_PLATFORM_IOS) || defined(MENGINE_ENVIRONMENT_PLATFORM_UNIX))
@@ -496,15 +497,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ImGUIService::notifyRenderDeviceLostPrepare_()
     {
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32) && defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
-        MengineImGUIDX9Render_InvalidateDeviceObjects();
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32) && defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX11)
+        ImGui_ImplDX11_InvalidateDeviceObjects();
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
     void ImGUIService::notifyRenderDeviceLostRestore_()
     {
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32) && defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX9)
-        MengineImGUIDX9Render_CreateDeviceObjects();
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32) && defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX11)
+        ImGui_ImplDX11_CreateDeviceObjects();
 #endif
     }
     //////////////////////////////////////////////////////////////////////////

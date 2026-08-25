@@ -3,6 +3,8 @@
 #include "DX11RenderErrorHelper.h"
 #include "DX11RenderEnum.h"
 
+#include "Config/Limits.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -115,7 +117,7 @@ namespace Mengine
             samplerDesc.AddressU = Helper::toD3DTextureAddress( textureStage->addressU );
             samplerDesc.AddressV = Helper::toD3DTextureAddress( textureStage->addressV );
             samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-            samplerDesc.MaxLOD = FLT_MAX;
+            samplerDesc.MaxLOD = MENGINE_FLT_MAX;
 
             ID3D11SamplerState * samplerState;
             MENGINE_IF_DX11_CALL( _pD3DDevice, CreateSamplerState, (&samplerDesc, &samplerState) )

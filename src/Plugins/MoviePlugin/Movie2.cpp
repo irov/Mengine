@@ -66,6 +66,13 @@ namespace Mengine
             return;
         }
 
+        bool surfacesActivated = this->isActivate();
+
+        if( surfacesActivated == true )
+        {
+            this->deactivateSurfaces_();
+        }
+
         this->recompile( [this, &resourceMovie2]()
         {
             m_resourceMovie2 = resourceMovie2;
@@ -77,6 +84,11 @@ namespace Mengine
 
             return true;
         } );
+
+        if( surfacesActivated == true && this->isActivate() == true )
+        {
+            this->activateSurfaces_();
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     const ResourcePtr & Movie2::getResourceMovie2() const
@@ -96,6 +108,13 @@ namespace Mengine
             m_compositionName = _compositionName;
 
             return true;
+        }
+
+        bool surfacesActivated = this->isActivate();
+
+        if( surfacesActivated == true )
+        {
+            this->deactivateSurfaces_();
         }
 
         bool successful = true;
@@ -122,6 +141,11 @@ namespace Mengine
 
             return true;
         } );
+
+        if( surfacesActivated == true && this->isActivate() == true )
+        {
+            this->activateSurfaces_();
+        }
 
         return successful;
     }
@@ -1626,7 +1650,7 @@ namespace Mengine
 
                     surfaceTrackMatte->setBlendMode( blend_mode );
 
-                    movie2->addSurface_( surfaceTrackMatte, true );
+                    movie2->addSurface_( surfaceTrackMatte );
 
                     *_nd = surfaceTrackMatte.get();
 
@@ -1645,6 +1669,14 @@ namespace Mengine
 
                     ConstString c_name = Helper::stringizeString( layer_name );
                     surfaceTrackMatte->setName( c_name );
+
+                    const aeMovieResource * resource = ae_get_movie_layer_data_resource( _callbackData->layer_data );
+                    const aeMovieResourceSequence * resourceSequence = reinterpret_cast<const aeMovieResourceSequence *>(resource);
+                    const aeMovieResourceImage * resourceImage = resourceSequence->images[0];
+                    const aeMovieResource * resourceImageBase = reinterpret_cast<const aeMovieResource *>(resourceImage);
+
+                    Movie2Data::ImageDesc * imageDesc = reinterpret_cast<Movie2Data::ImageDesc *>(ae_get_movie_resource_userdata( resourceImageBase ));
+                    surfaceTrackMatte->setResourceImage( ResourceImagePtr::from( imageDesc->resourceImage ) );
 
                     MENGINE_ASSERTION_FATAL( ae_get_movie_layer_data_type( _callbackData->track_matte_layer_data ) == AE_MOVIE_LAYER_TYPE_IMAGE, "Movie2 '%s' sequence layer '%s' [%u] has track_mate_layer '%s' [%u] not image type"
                         , movie2->getName().c_str()
@@ -1687,7 +1719,7 @@ namespace Mengine
 
                     surfaceTrackMatte->setBlendMode( blend_mode );
 
-                    movie2->addSurface_( surfaceTrackMatte, false );
+                    movie2->addSurface_( surfaceTrackMatte );
 
                     *_nd = surfaceTrackMatte.get();
 
@@ -1732,7 +1764,7 @@ namespace Mengine
 
                     surfaceVideo->setBlendMode( blend_mode );
 
-                    movie2->addSurface_( surfaceVideo, true );
+                    movie2->addSurface_( surfaceVideo );
 
                     *_nd = surfaceVideo.get();
 
@@ -1773,7 +1805,7 @@ namespace Mengine
 
                     surfaceSound->setResourceSound( Helper::makeIntrusivePtr( resourceSound ) );
 
-                    movie2->addSurface_( surfaceSound, true );
+                    movie2->addSurface_( surfaceSound );
 
                     *_nd = surfaceSound.get();
 
@@ -2690,22 +2722,14 @@ namespace Mengine
             this->setLocalOrigin( origin );
         }
 
-        for( const SurfacePtr & surface : m_surfaces )
-        {
-            surface->activate();
-        }
+        this->activateSurfaces_();
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_deactivate()
     {
-        Node::_deactivate();
-
-        for( const SurfacePtr & surface : m_surfaces )
-        {
-            surface->deactivate();
-        }
+        this->deactivateSurfaces_();
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_hierarchyChangeParent( Node * _oldParent, Node * _newParent )
@@ -2827,11 +2851,6 @@ namespace Mengine
         float totalTime = this->calcTotalTime( _context );
 
         ae_update_movie_composition( m_composition, totalTime * 0.001f, &m_compositionAlive );
-
-        for( const SurfacePtr & surface : m_surfaces )
-        {
-            surface->update( _context );
-        }
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const
@@ -3377,7 +3396,10 @@ namespace Mengine
 
                         surfaceTrackMatte->setResourceImage( ResourceImagePtr::from( resourceImage ) );
 
-                        surfaceTrackMatte->compile();
+                        if( surfaceTrackMatte->isCompile() == false )
+                        {
+                            continue;
+                        }
 
                         const ResourceImagePtr & resourceTrackMatteImage = surfaceTrackMatte->getResourceTrackMatteImage();
 
@@ -3491,15 +3513,18 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::addSurface_( const SurfacePtr & _surface, bool _compile )
+    void Movie2::addSurface_( const SurfacePtr & _surface )
     {
         MENGINE_ASSERTION_FATAL( StdAlgorithm::find( m_surfaces.begin(), m_surfaces.end(), _surface ) == m_surfaces.end(), "surface '%s' already attach"
             , _surface->getName().c_str()
         );
 
-        if( _compile == true )
+        if( _surface->compile() == false )
         {
-            _surface->compile();
+            LOGGER_ERROR( "movie2 '%s' surface '%s' invalid compile"
+                , this->getName().c_str()
+                , _surface->getName().c_str()
+            );
         }
 
         m_surfaces.emplace_back( _surface );
@@ -3507,11 +3532,36 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::removeSurface_( const SurfacePtr & _surface )
     {
-        _surface->release();
-
         VectorSurfaces::iterator it_found = StdAlgorithm::find( m_surfaces.begin(), m_surfaces.end(), _surface );
 
+        MENGINE_ASSERTION_FATAL( it_found != m_surfaces.end(), "surface '%s' not attached"
+            , _surface->getName().c_str()
+        );
+
+        if( this->isActivate() == true )
+        {
+            _surface->deactivate();
+        }
+
+        _surface->release();
+
         m_surfaces.erase( it_found );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::activateSurfaces_()
+    {
+        for( const SurfacePtr & surface : m_surfaces )
+        {
+            surface->activate();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::deactivateSurfaces_()
+    {
+        for( const SurfacePtr & surface : m_surfaces )
+        {
+            surface->deactivate();
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::addSprite_( uint32_t _index, const ShapeQuadFixedPtr & _sprite )

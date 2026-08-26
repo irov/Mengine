@@ -35,6 +35,9 @@ namespace Mengine
         void stopAllAffectors() override final;
 
     public:
+        void replaceAffectors( uint32_t _deep ) override final;
+
+    public:
         void setAngularSpeed( float _angular ) override final;
         float getAngularSpeed() const override final;
 

@@ -24,6 +24,11 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    UpdationInterface * SurfaceImageSequence::getSurfaceUpdation()
+    {
+        return this;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void SurfaceImageSequence::setResourceImageSequence( const ResourceImageSequencePtr & _resourceImageSequence )
     {
         if( m_resourceImageSequence == _resourceImageSequence )
@@ -49,7 +54,7 @@ namespace Mengine
         return m_resourceImageSequence;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SurfaceImageSequence::_update( const UpdateContext * _context )
+    void SurfaceImageSequence::update( const UpdateContext * _context )
     {
         if( this->isPlay() == false )
         {

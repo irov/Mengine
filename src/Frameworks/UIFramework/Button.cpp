@@ -192,8 +192,6 @@ namespace Mengine
             m_chain->cancel();
             m_chain = nullptr;
         }
-
-        Node::_deactivate();
     }
     //////////////////////////////////////////////////////////////////////////
     void Button::_onCursorEnter() const

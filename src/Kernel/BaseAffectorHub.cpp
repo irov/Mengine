@@ -89,6 +89,20 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    void BaseAffectorHub::replaceAffectors( uint32_t _deep )
+    {
+        for( IntrusiveSlugAffector it( m_affectors ); it.eof() == false; )
+        {
+            Affector * affector = *it;
+
+            it.next_shuffle();
+
+            UpdationInterface * updation = affector->getUpdation();
+
+            updation->replace( _deep );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     void BaseAffectorHub::setAngularSpeed( float _angular )
     {
         m_angularSpeed = _angular;

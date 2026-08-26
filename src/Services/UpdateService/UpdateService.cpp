@@ -72,6 +72,8 @@ namespace Mengine
     {
         m_beforeLeafs.clear();
         m_leafs.clear();
+        m_surfaceLeaf.indecies.clear();
+        m_surfaceLeaf.indeciesAdd.clear();
         m_afterLeafs.clear();
     }
     //////////////////////////////////////////////////////////////////////////
@@ -89,6 +91,14 @@ namespace Mengine
                 LeafUpdatable & leaf = m_leafs[_deep];
 
                 return &leaf;
+            }break;
+        case EUM_SURFACE:
+            {
+                MENGINE_ASSERTION_FATAL( _deep == 0, "surface deep %u"
+                    , _deep
+                );
+
+                return &m_surfaceLeaf;
             }break;
         case EUM_SERVICE_BEFORE:
             {
@@ -191,6 +201,16 @@ namespace Mengine
             return true;
         }
 
+        if( std::find( m_surfaceLeaf.indecies.begin(), m_surfaceLeaf.indecies.end(), _updation ) != m_surfaceLeaf.indecies.end() )
+        {
+            return true;
+        }
+
+        if( std::find( m_surfaceLeaf.indeciesAdd.begin(), m_surfaceLeaf.indeciesAdd.end(), _updation ) != m_surfaceLeaf.indeciesAdd.end() )
+        {
+            return true;
+        }
+
         if( Detail::findLeafUpdatater( m_afterLeafs, _updation ) == true )
         {
             return true;
@@ -249,6 +269,8 @@ namespace Mengine
 
             ++enumerateDeep;
         }
+
+        this->updateLeaf_( MENGINE_UINT32_C(0), &m_surfaceLeaf, _context );
 
         uint32_t enumerateAfterDeep = MENGINE_UINT32_C(0);
         for( LeafUpdatable & leaf : m_afterLeafs )

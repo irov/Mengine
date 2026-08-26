@@ -718,8 +718,6 @@ namespace Mengine
             globalInputHandler->removeGlobalHandler( m_globalHandlerId );
             m_globalHandlerId = INVALID_UNIQUE_ID;
         }
-
-        Node::_deactivate();
     }
     //////////////////////////////////////////////////////////////////////////
     void VirtualArea::_dispose()

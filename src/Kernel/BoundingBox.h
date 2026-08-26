@@ -15,7 +15,7 @@ namespace Mengine
         ~BoundingBox() override;
 
     public:
-        MENGINE_INLINE const mt::box2f * getBoundingBox() const;
+        virtual const mt::box2f * getBoundingBox() const;
 
     public:
         MENGINE_INLINE void invalidateBoundingBox() const;

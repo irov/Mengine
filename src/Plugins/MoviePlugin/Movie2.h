@@ -137,8 +137,11 @@ namespace Mengine
         void _hierarchyRemoveChild( const NodePtr & _node ) override;
 
     protected:
-        void addSurface_( const SurfacePtr & _surface, bool _compile );
+        void addSurface_( const SurfacePtr & _surface );
         void removeSurface_( const SurfacePtr & _surface );
+
+        void activateSurfaces_();
+        void deactivateSurfaces_();
 
     protected:
         void addSprite_( uint32_t _index, const ShapeQuadFixedPtr & _sprite );

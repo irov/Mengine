@@ -5,11 +5,12 @@
 #include "Kernel/Identity.h"
 #include "Kernel/Visitable.h"
 #include "Kernel/Materialable.h"
-#include "Kernel/Compilable.h"
+#include "Kernel/CompilableReference.h"
 #include "Kernel/Animatable.h"
 #include "Kernel/Eventable.h"
 #include "Kernel/Unknowable.h"
-#include "Kernel/UpdateContext.h"
+#include "Kernel/Updatable.h"
+#include "Kernel/ReferenceCounter.h"
 
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
 #   include "Kernel/Scriptable.h"
@@ -27,7 +28,7 @@ namespace Mengine
         , public Identity
         , public Visitable
         , public Materialable
-        , public Compilable
+        , public CompilableReference
         , public Animatable
         , public Eventable
         , public Unknowable
@@ -70,11 +71,13 @@ namespace Mengine
         void activate();
         void deactivate();
 
-    public:
-        uint32_t update( const UpdateContext * _context );
+        uint32_t getActivationReferenceCount() const;
 
     protected:
-        virtual void _update( const UpdateContext * _context );
+        virtual UpdationInterface * getSurfaceUpdation();
+
+    public:
+        uint32_t getRevision() const;
 
     protected:
         virtual void _activate();
@@ -87,6 +90,8 @@ namespace Mengine
         mutable uint32_t m_revision;
 
         mt::vec2f m_anchor;
+
+        ReferenceCounter m_activationReferenceCount;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Surface> SurfacePtr;

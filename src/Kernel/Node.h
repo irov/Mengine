@@ -121,8 +121,8 @@ namespace Mengine
         virtual bool _activate();
         virtual bool _afterActivate();
 
+        virtual void _beforeDeactivate();
         virtual void _deactivate();
-        virtual void _afterDeactivate();
 
     protected:
         bool compile() override;

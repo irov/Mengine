@@ -339,8 +339,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool HotSpot::_activate()
     {
-        //Empty
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -358,7 +356,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void HotSpot::_deactivate()
+    void HotSpot::_beforeDeactivate()
     {
         this->setPickerPressed( false );
         this->setPickerHandle( false );
@@ -371,7 +369,7 @@ namespace Mengine
                 ->onHotSpotMouseOverDestroy();
         }
 
-        Node::_deactivate();
+        Node::_beforeDeactivate();
     }
     //////////////////////////////////////////////////////////////////////////
     void HotSpot::_dispose()

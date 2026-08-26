@@ -26,6 +26,13 @@ namespace Mengine
             return;
         }
 
+        bool surfaceActivated = this->isActivate();
+
+        if( surfaceActivated == true )
+        {
+            m_surface->deactivate();
+        }
+
         this->recompile( [this, &_surface]()
         {
             m_surface = _surface;
@@ -38,11 +45,23 @@ namespace Mengine
 
             return true;
         } );
+
+        if( surfaceActivated == true && this->isActivate() == true )
+        {
+            m_surface->activate();
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     const SurfacePtr & Shape::getSurface() const
     {
         return m_surface;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const mt::box2f * Shape::getBoundingBox() const
+    {
+        this->synchronizeSurfaceRevision();
+
+        return BoundingBox::getBoundingBox();
     }
     //////////////////////////////////////////////////////////////////////////
     bool Shape::_compile()
@@ -60,6 +79,8 @@ namespace Mengine
 
             return false;
         }
+
+        m_surfaceRevision = m_surface->getRevision();
 
         this->invalidateVerticesLocal();
         this->invalidateVerticesColor();
@@ -79,16 +100,28 @@ namespace Mengine
         Node::_dispose();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Shape::update( const UpdateContext * _context )
+    bool Shape::_activate()
     {
-        uint32_t revision = m_surface->update( _context );
+        m_surface->activate();
 
-        if( m_surfaceRevision < revision )
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Shape::_deactivate()
+    {
+        m_surface->deactivate();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Shape::synchronizeSurfaceRevision() const
+    {
+        uint32_t revision = m_surface->getRevision();
+
+        if( m_surfaceRevision != revision )
         {
+            m_surfaceRevision = revision;
+
             this->invalidateVerticesLocal();
             this->invalidateVerticesColor();
-
-            m_surfaceRevision = revision;
         }
     }
     //////////////////////////////////////////////////////////////////////////

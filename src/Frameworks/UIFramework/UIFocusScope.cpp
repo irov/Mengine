@@ -534,8 +534,6 @@ namespace Mengine
         }
 
         this->resetAxes_();
-
-        Node::_deactivate();
     }
     //////////////////////////////////////////////////////////////////////////
     void UIFocusController::_dispose()

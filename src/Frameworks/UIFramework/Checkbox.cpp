@@ -208,8 +208,6 @@ namespace Mengine
             m_chain->cancel();
             m_chain = nullptr;
         }
-
-        Node::_deactivate();
     }
     //////////////////////////////////////////////////////////////////////////
     void Checkbox::__setState( bool _value, ECheckboxState _state )

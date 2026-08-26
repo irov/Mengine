@@ -46,6 +46,7 @@ namespace Mengine
     protected:
         LeafUpdatables m_beforeLeafs;
         LeafUpdatables m_leafs;
+        LeafUpdatable m_surfaceLeaf;
         LeafUpdatables m_afterLeafs;
 
     protected:

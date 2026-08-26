@@ -41,6 +41,9 @@ namespace Mengine
         virtual void stopAllAffectors() = 0;
 
     public:
+        virtual void replaceAffectors( uint32_t _deep ) = 0;
+
+    public:
         virtual void setAngularSpeed( float _angular ) = 0;
         virtual float getAngularSpeed() const = 0;
 

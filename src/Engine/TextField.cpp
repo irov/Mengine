@@ -95,8 +95,6 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_TEXT_ALIAS_ID );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_TEXT_ALIAS_ARGUMENTS );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE );
-
-        Node::_deactivate();
     }
     //////////////////////////////////////////////////////////////////////////
     bool TextField::_compile()

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Kernel/Node.h"
-#include "Kernel/BaseUpdation.h"
 #include "Kernel/BaseRender.h"
 #include "Kernel/BaseTransformation.h"
 #include "Kernel/Surface.h"
@@ -11,12 +10,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class Shape
         : public Node
-        , protected BaseUpdation
         , protected BaseRender
         , protected BaseTransformation
     {
         DECLARE_VISITABLE( Node );
-        DECLARE_UPDATABLE();
         DECLARE_RENDERABLE();
         DECLARE_TRANSFORMABLE();
 
@@ -28,6 +25,9 @@ namespace Mengine
         void setSurface( const SurfacePtr & _surface );
         const SurfacePtr & getSurface() const;
 
+    public:
+        const mt::box2f * getBoundingBox() const override;
+
     protected:
         bool _compile() override;
         void _release() override;
@@ -36,11 +36,15 @@ namespace Mengine
         void _dispose() override;
 
     protected:
-        void update( const UpdateContext * _context ) override;
+        bool _activate() override;
+        void _deactivate() override;
 
     protected:
         void _invalidateColor() const override;
         void _invalidateWorldMatrix() const override;
+
+    protected:
+        void synchronizeSurfaceRevision() const;
 
     protected:
         void invalidateVerticesLocal() const;
@@ -58,7 +62,7 @@ namespace Mengine
     protected:
         SurfacePtr m_surface;
 
-        uint32_t m_surfaceRevision;
+        mutable uint32_t m_surfaceRevision;
 
         mutable bool m_invalidateVerticesLocal;
         mutable bool m_invalidateVerticesWM;
@@ -69,6 +73,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE void Shape::prepareVerticesWM() const
     {
+        this->synchronizeSurfaceRevision();
+
         if( m_invalidateVerticesLocal == true )
         {
             m_invalidateVerticesLocal = false;

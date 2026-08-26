@@ -27,8 +27,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ScriptHolder::_deactivate()
     {
-        Node::_deactivate();
-
         EVENTABLE_METHOD( EVENT_SCRIPT_HOLDER_RELEASE )
             ->onScriptHolderReleaseScript( m_script );
 

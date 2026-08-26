@@ -2225,13 +2225,13 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Figma::_deactivate()
+    void Figma::_beforeDeactivate()
     {
         this->setPickerPicked( false );
         this->setPickerPressed( false );
         this->setPickerHandle( false );
 
-        Node::_deactivate();
+        Node::_beforeDeactivate();
     }
     //////////////////////////////////////////////////////////////////////////
     void Figma::update( const UpdateContext * _context )

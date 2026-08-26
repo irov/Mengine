@@ -31,8 +31,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderViewportDefault::_deactivate()
     {
-        Node::_deactivate();
-
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION );
     }
     //////////////////////////////////////////////////////////////////////////

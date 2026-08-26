@@ -65,7 +65,7 @@ namespace Mengine
     protected:
         bool _activate() override;
         bool _afterActivate() override;
-        void _deactivate() override;
+        void _beforeDeactivate() override;
 
     protected:
         void _dispose() override;

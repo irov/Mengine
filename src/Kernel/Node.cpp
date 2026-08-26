@@ -57,6 +57,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::_dispose()
     {
+        this->stopAllAffectors();
         this->clearAffectorHub();
     }
     //////////////////////////////////////////////////////////////////////////
@@ -69,6 +70,7 @@ namespace Mengine
 
         this->release();
 
+        this->stopAllAffectors();
         this->clearAffectorHub();
 
         this->removeChildren( []( const NodePtr & )
@@ -158,7 +160,9 @@ namespace Mengine
 
         m_state |= EN_STATE_DEACTIVATING;
 
-        if( this->isAfterActive() == false )
+        bool afterActive = this->isAfterActive();
+
+        if( afterActive == false )
         {
             LOGGER_WARNING( "node '%s' invalid deactivate in 'activate state'"
                 , this->getName().c_str()
@@ -167,7 +171,10 @@ namespace Mengine
 
         m_state &= ~EN_STATE_AFTER_ACTIVE;
 
-        this->_deactivate();
+        if( afterActive == true )
+        {
+            this->_beforeDeactivate();
+        }
 
         this->foreachChildrenSlug( []( const NodePtr & _child )
         {
@@ -176,7 +183,7 @@ namespace Mengine
 
         m_state &= ~(EN_STATE_ACTIVE | EN_STATE_DEACTIVATING);
 
-        this->_afterDeactivate();
+        this->_deactivate();
     }
     //////////////////////////////////////////////////////////////////////////
     bool Node::enable()
@@ -676,7 +683,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Node::_deactivate()
+    void Node::_beforeDeactivate()
     {
         UpdationInterface * updation = this->getUpdation();
 
@@ -706,7 +713,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Node::_afterDeactivate()
+    void Node::_deactivate()
     {
         //Empty
     }
@@ -777,13 +784,20 @@ namespace Mengine
         this->addRenderRelation_( _newParent, _hint );
         this->addPickerRelation_( _newParent, _hint );
 
+        uint32_t deep = this->getLeafDeep();
+
         UpdationInterface * updation = this->getUpdation();
 
         if( updation != nullptr )
         {
-            uint32_t deep = this->getLeafDeep();
+            updation->replace( deep );
+        }
 
-            updation->replace( deep );            
+        if( this->availableAffectorHub() == true )
+        {
+            const AffectorHubInterfacePtr & affectorHub = this->getAffectorHub();
+
+            affectorHub->replaceAffectors( deep );
         }
     }
     //////////////////////////////////////////////////////////////////////////

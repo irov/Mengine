@@ -137,18 +137,16 @@ namespace Mengine
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Entity::_deactivate()
+    void Entity::_beforeDeactivate()
     {
         EVENTABLE_METHOD( EVENT_ENTITY_PASSIVATE )
             ->onEntityPassivate( m_behavior );
 
-        Node::_deactivate();
+        Node::_beforeDeactivate();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Entity::_afterDeactivate()
+    void Entity::_deactivate()
     {
-        Node::_afterDeactivate();
-
         EVENTABLE_METHOD( EVENT_ENTITY_DEACTIVATE )
             ->onEntityDeactivate( m_behavior );
     }

@@ -5,6 +5,7 @@
 #include "Kernel/Surface.h"
 #include "Kernel/BaseEventation.h"
 #include "Kernel/BaseAnimation.h"
+#include "Kernel/BaseUpdation.h"
 #include "Kernel/AnimationEventReceiver.h"
 
 #include "ResourceVideo.h"
@@ -14,14 +15,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class SurfaceMockupVideo
         : public Surface
+        , public Updatable
         , public UnknownVideoSurfaceInterface
         , protected BaseEventation
         , protected BaseAnimation
+        , protected BaseUpdation
     {
         DECLARE_FACTORABLE( SurfaceMockupVideo );
         DECLARE_UNKNOWABLE();
         DECLARE_ANIMATABLE();
         DECLARE_EVENTABLE();
+        DECLARE_UPDATABLE();
 
     public:
         SurfaceMockupVideo();
@@ -52,7 +56,10 @@ namespace Mengine
         const Color & getColor() const override;
 
     protected:
-        void _update( const UpdateContext * _context ) override;
+        UpdationInterface * getSurfaceUpdation() override;
+
+    protected:
+        void update( const UpdateContext * _context ) override;
 
     protected:
         void _setTime( float _time ) override;

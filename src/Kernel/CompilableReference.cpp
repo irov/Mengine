@@ -27,6 +27,8 @@ namespace Mengine
 
         if( Compilable::compile() == false )
         {
+            m_compileReferenceCount.decrefReferenceCount();
+
             return false;
         }
     

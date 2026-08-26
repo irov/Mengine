@@ -20,6 +20,9 @@ namespace Mengine
             case EUM_NODE_AFFECTOR:
                 return _deep * 2U + MENGINE_UINT32_C(1);
                 break;
+            case EUM_SURFACE:
+                return MENGINE_UINT32_C(0);
+                break;
             case EUM_SERVICE_BEFORE:
                 return _deep;
                 break;

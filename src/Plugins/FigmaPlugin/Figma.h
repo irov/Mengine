@@ -116,7 +116,7 @@ namespace Mengine
 
         bool _activate() override;
         bool _afterActivate() override;
-        void _deactivate() override;
+        void _beforeDeactivate() override;
 
     protected:
         void update( const UpdateContext * _context ) override;

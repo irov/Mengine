@@ -32,6 +32,11 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    UpdationInterface * SurfaceMockupVideo::getSurfaceUpdation()
+    {
+        return this;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void SurfaceMockupVideo::setResourceVideo( const ResourcePtr & _resourceVideo )
     {
         if( m_resourceVideo == _resourceVideo )
@@ -67,7 +72,7 @@ namespace Mengine
         return m_size.y;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SurfaceMockupVideo::_update( const UpdateContext * _context )
+    void SurfaceMockupVideo::update( const UpdateContext * _context )
     {
         if( this->isPlay() == false )
         {

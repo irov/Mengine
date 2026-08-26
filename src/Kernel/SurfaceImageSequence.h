@@ -4,6 +4,7 @@
 #include "Kernel/Resource.h"
 #include "Kernel/BaseEventation.h"
 #include "Kernel/BaseAnimation.h"
+#include "Kernel/BaseUpdation.h"
 #include "Kernel/AnimationEventReceiver.h"
 #include "Kernel/ResourceImageSequence.h"
 
@@ -31,12 +32,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class SurfaceImageSequence
         : public Surface
+        , public Updatable
         , protected BaseEventation
         , protected BaseAnimation
+        , protected BaseUpdation
     {
         DECLARE_FACTORABLE( SurfaceImageSequence );
         DECLARE_ANIMATABLE();
         DECLARE_EVENTABLE();
+        DECLARE_UPDATABLE();
 
     public:
         SurfaceImageSequence();
@@ -67,6 +71,9 @@ namespace Mengine
         const Color & getColor() const override;
 
     protected:
+        UpdationInterface * getSurfaceUpdation() override;
+
+    protected:
         void _setTime( float _timming ) override;
         float _getTime() const override;
 
@@ -83,7 +90,7 @@ namespace Mengine
         bool _interrupt( UniqueId _enumerator ) override;
 
     protected:
-        void _update( const UpdateContext * _context ) override;
+        void update( const UpdateContext * _context ) override;
 
     protected:
         bool _compile() override;

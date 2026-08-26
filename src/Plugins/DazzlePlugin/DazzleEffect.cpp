@@ -444,8 +444,6 @@ namespace Mengine
     void DazzleEffect::_deactivate()
     {
         //ToDo
-
-        Node::_deactivate();
     }
     //////////////////////////////////////////////////////////////////////////
     bool DazzleEffect::_compile()

@@ -26,6 +26,11 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    UpdationInterface * SurfaceVideo::getSurfaceUpdation()
+    {
+        return this;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void SurfaceVideo::setResourceVideo( const ResourcePtr & _resourceVideo )
     {
         if( m_resourceVideo == _resourceVideo )
@@ -84,7 +89,7 @@ namespace Mengine
         this->updateVideoBuffer_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void SurfaceVideo::_update( const UpdateContext * _context )
+    void SurfaceVideo::update( const UpdateContext * _context )
     {
         if( this->isPlay() == false )
         {

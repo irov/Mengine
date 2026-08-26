@@ -115,8 +115,6 @@ namespace Mengine
     {
         m_zone->removeTriger( m_trigger );
         m_trigger = nullptr;
-
-        Node::_deactivate();
     }
     //////////////////////////////////////////////////////////////////////////
 }

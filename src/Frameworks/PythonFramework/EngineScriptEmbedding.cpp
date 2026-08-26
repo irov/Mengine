@@ -4681,6 +4681,16 @@ namespace Mengine
 
         pybind::def_functor( _kernel, "openUrlInDefaultBrowser", nodeScriptMethod, &EngineScriptMethod::s_openUrlInDefaultBrowser );
         pybind::def_functor( _kernel, "openMail", nodeScriptMethod, &EngineScriptMethod::s_openMail );
+
+        pybind::enum_<EDeleteAccountResult>( _kernel, "EDeleteAccountResult" )
+            .def( "DELETE_ACCOUNT_RESULT_ACCEPTED", DELETE_ACCOUNT_RESULT_ACCEPTED )
+            .def( "DELETE_ACCOUNT_RESULT_OFFLINE", DELETE_ACCOUNT_RESULT_OFFLINE )
+            .def( "DELETE_ACCOUNT_RESULT_AMBIGUOUS", DELETE_ACCOUNT_RESULT_AMBIGUOUS )
+            .def( "DELETE_ACCOUNT_RESULT_SERVER_ERROR", DELETE_ACCOUNT_RESULT_SERVER_ERROR )
+            .def( "DELETE_ACCOUNT_RESULT_PENDING", DELETE_ACCOUNT_RESULT_PENDING )
+            .def( "DELETE_ACCOUNT_RESULT_COMPLETED", DELETE_ACCOUNT_RESULT_COMPLETED )
+            ;
+
         pybind::def_functor( _kernel, "openDeleteAccount", nodeScriptMethod, &EngineScriptMethod::s_openDeleteAccount );
         pybind::def_functor( _kernel, "completeDeleteAccount", nodeScriptMethod, &EngineScriptMethod::s_completeDeleteAccount );
         pybind::def_functor( _kernel, "isNetworkAvailable", nodeScriptMethod, &EngineScriptMethod::s_isNetworkAvailable );

@@ -93,7 +93,7 @@ namespace Mengine
         rect.right = image_width;
         rect.bottom = image_height;
 
-        RenderImageLockedInterfacePtr locked = _image->lock( 0, rect, false );
+        RenderImageLockedInterfacePtr locked = _image->lock( 0, 0, rect, false );
 
         size_t pitch = 0;
         void * textureBuffer = locked->getLockedBuffer( &pitch );
@@ -120,7 +120,7 @@ namespace Mengine
 
         if( m_decoder->decode( &data ) == 0 )
         {
-            _image->unlock( locked, 0, false );
+            _image->unlock( locked, 0, 0, false );
 
             return false;
         }
@@ -166,7 +166,7 @@ namespace Mengine
             }
         }
 
-        _image->unlock( locked, 0, true );
+        _image->unlock( locked, 0, 0, true );
 
         return true;
     }

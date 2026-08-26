@@ -10,19 +10,7 @@
 #define GL_ETC1_RGB8_OES 0x8D64
 
 #if defined(MENGINE_PLATFORM_IOS)
-#   include <TargetConditionals.h>
-
-#   define GL_GLEXT_PROTOTYPES
-
-#   if !defined(MENGINE_ENVIRONMENT_PLATFORM_IOS)
-#       error "OpenGL ES not supported"
-#   endif
-
-#   include <OpenGLES/ES2/gl.h>
-#   include <OpenGLES/ES2/glext.h>
-
-#   define MENGINE_RENDER_OPENGL_ES
-#   define MENGINE_RENDER_OPENGL_ES_IOS
+#   error "OpenGL is not supported on iOS"
 #elif defined(MENGINE_PLATFORM_ANDROID)
 #   define GL_GLEXT_PROTOTYPES
 

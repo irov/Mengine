@@ -130,10 +130,6 @@
 #include "ImGUIOpenGL3Render.h"
 #include <stdio.h>
 #include <stdint.h>     // intptr_t
-#if defined(__APPLE__)
-#include <TargetConditionals.h>
-#endif
-
 // Clang/GCC warnings with -Weverything
 #if defined(__clang__)
 #pragma clang diagnostic push
@@ -154,11 +150,7 @@
 
 // GL includes
 #if defined(IMGUI_IMPL_OPENGL_ES2)
-#if (defined(__APPLE__) && (TARGET_OS_IOS || TARGET_OS_TV))
-#include <OpenGLES/ES2/gl.h>    // Use GL ES 2
-#else
 #include <GLES2/gl2.h>          // Use GL ES 2
-#endif
 #if defined(__EMSCRIPTEN__)
 #ifndef GL_GLEXT_PROTOTYPES
 #define GL_GLEXT_PROTOTYPES
@@ -166,11 +158,7 @@
 #include <GLES2/gl2ext.h>
 #endif
 #elif defined(IMGUI_IMPL_OPENGL_ES3)
-#if (defined(__APPLE__) && (TARGET_OS_IOS || TARGET_OS_TV))
-#include <OpenGLES/ES3/gl.h>    // Use GL ES 3
-#else
 #include <GLES3/gl3.h>          // Use GL ES 3
-#endif
 #elif !defined(IMGUI_IMPL_OPENGL_LOADER_CUSTOM)
 // Modern desktop OpenGL doesn't have a standard portable header file to load OpenGL function pointers.
 // Helper libraries are often used for this purpose! Here we are using our own minimal custom loader based on gl3w.

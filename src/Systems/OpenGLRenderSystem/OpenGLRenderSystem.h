@@ -5,7 +5,9 @@
 
 #include "Environment/OpenGL/OpenGLRenderSystemExtensionInterface.h"
 
+#include "OpenGLRenderImageBase.h"
 #include "OpenGLRenderImage.h"
+#include "OpenGLRenderImageArray.h"
 #include "OpenGLRenderImageTarget.h"
 #include "OpenGLRenderTargetTexture.h"
 #include "OpenGLRenderVertexAttribute.h"
@@ -94,7 +96,7 @@ namespace Mengine
         bool setProgramVariable( const RenderProgramInterfacePtr & _program, const RenderProgramVariableInterfacePtr & _programVariable ) override;
 
     public:
-        RenderImageInterfacePtr createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentInterfacePtr & _doc ) override;
+        RenderImageInterfacePtr createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _layers, EPixelFormat _format, const DocumentInterfacePtr & _doc ) override;
 
         RenderTargetInterfacePtr createRenderTargetTexture( uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentInterfacePtr & _doc ) override;
         RenderTargetInterfacePtr createRenderTargetOffscreen( uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentInterfacePtr & _doc ) override;
@@ -119,7 +121,8 @@ namespace Mengine
 
         uint32_t getMaxCombinedTextureImageUnits() const override;
 
-        uint32_t getMaxTextureSize() const override;
+        uint32_t getMaxTexture2DSize() const override;
+        uint32_t getMaxTexture2DArrayLayers() const override;
 
         void onWindowMovedOrResized() override;
         void onWindowClose() override;
@@ -140,7 +143,7 @@ namespace Mengine
     protected:
         void onRenderVertexBufferDestroy_( OpenGLRenderVertexBuffer * _vertexBuffer );
         void onRenderIndexBufferDestroy_( OpenGLRenderIndexBuffer * _indexBuffer );
-        void onRenderImageDestroy_( OpenGLRenderImage * _image );
+        void onRenderImageDestroy_( OpenGLRenderImageBase * _image );
         void onRenderImageTargetDestroy_( OpenGLRenderImageTarget * _imageTarget );
         void onRenderTargetTextureDestroy_( OpenGLRenderTargetTexture * _targetTexture );
         void onRenderVertexShaderDestroy_( OpenGLRenderVertexShader * _vertexShader );
@@ -189,7 +192,8 @@ namespace Mengine
         VectorDeferredRenderPrograms m_deferredCompilePrograms;
 
         uint32_t m_glMaxCombinedTextureImageUnits;
-        uint32_t m_glMaxTextureSize;
+        uint32_t m_glMaxTexture2DSize;
+        uint32_t m_glMaxTexture2DArrayLayers;
 
         struct TextureStage
         {
@@ -223,6 +227,7 @@ namespace Mengine
         FactoryInterfacePtr m_factoryRenderVertexBuffer;
         FactoryInterfacePtr m_factoryRenderIndexBuffer;
         FactoryInterfacePtr m_factoryRenderImage;
+        FactoryInterfacePtr m_factoryRenderImageArray;
         FactoryInterfacePtr m_factoryRenderImageTarget;
         FactoryInterfacePtr m_factoryRenderTargetTexture;
         FactoryInterfacePtr m_factoryRenderVertexAttribute;

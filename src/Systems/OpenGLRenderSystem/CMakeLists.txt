@@ -29,8 +29,12 @@ src
     OpenGLRenderVertexBuffer.h
     OpenGLRenderVertexShader.cpp
     OpenGLRenderVertexShader.h
+    OpenGLRenderImageBase.cpp
+    OpenGLRenderImageBase.h
     OpenGLRenderImage.cpp
     OpenGLRenderImage.h
+    OpenGLRenderImageArray.cpp
+    OpenGLRenderImageArray.h
     OpenGLRenderImageTarget.cpp
     OpenGLRenderImageTarget.h
     OpenGLRenderImageLocked.cpp
@@ -40,19 +44,7 @@ src
     OpenGLRenderTargetTexture.h
 )
 
-if(MENGINE_TARGET_IOS)
-    add_definitions(-DGLES_SILENCE_DEPRECATION)
-endif()
-
-if(MENGINE_TARGET_IOS_SIMULATOR)
-    add_definitions(-DGLES_SILENCE_DEPRECATION)
-endif()
-
 ADD_MENGINE_LIBRARY(Systems)
-
-IF(MENGINE_TARGET_IOS OR MENGINE_TARGET_IOS_SIMULATOR)
-    ADD_MENGINE_APPLE_FRAMEWORK(OpenGLES)
-ENDIF()
 
 IF(MENGINE_TARGET_WINDOWS)
     TARGET_LINK_LIBRARIES(${PROJECT_NAME} OpenGL32.lib)

@@ -129,7 +129,7 @@ namespace Mengine
         virtual void setTextureStageFilter( uint32_t _stage, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification ) = 0;
 
     public:
-        virtual RenderImageInterfacePtr createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentInterfacePtr & _doc ) = 0;
+        virtual RenderImageInterfacePtr createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _layers, EPixelFormat _format, const DocumentInterfacePtr & _doc ) = 0;
 
         virtual RenderTargetInterfacePtr createRenderTargetTexture( uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentInterfacePtr & _doc ) = 0;
         virtual RenderTargetInterfacePtr createRenderTargetOffscreen( uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentInterfacePtr & _doc ) = 0;
@@ -167,7 +167,8 @@ namespace Mengine
         virtual uint32_t getMaxCombinedTextureImageUnits() const = 0;
 
     public:
-        virtual uint32_t getMaxTextureSize() const = 0;
+        virtual uint32_t getMaxTexture2DSize() const = 0;
+        virtual uint32_t getMaxTexture2DArrayLayers() const = 0;
 
     public:
         virtual uint32_t getAvailableTextureMemory() const = 0;

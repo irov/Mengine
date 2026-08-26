@@ -188,19 +188,25 @@ namespace Mengine
         this->updateWVPInvMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderImageInterfacePtr MockupRenderSystem::createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentInterfacePtr & _doc )
+    RenderImageInterfacePtr MockupRenderSystem::createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _layers, EPixelFormat _format, const DocumentInterfacePtr & _doc )
     {
-        LOGGER_INFO( "render", "texture normal created %ux%u format %x"
+        if( _layers == 0 || _layers > this->getMaxTexture2DArrayLayers() )
+        {
+            return nullptr;
+        }
+
+        LOGGER_INFO( "render", "texture created %ux%u layers %u format %x"
             , _width
             , _height
+            , _layers
             , _format
         );
 
-        MockupRenderImagePtr dxTexture = this->createRenderImage_( _mipmaps, _width, _height, _format, _doc );
+        MockupRenderImagePtr texture = this->createRenderImage_( _mipmaps, _width, _height, _layers, _format, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( dxTexture, "invalid create render texture" );
+        MENGINE_ASSERTION_MEMORY_PANIC( texture, "invalid create render texture" );
 
-        return dxTexture;
+        return texture;
     }
     //////////////////////////////////////////////////////////////////////////
     RenderTargetInterfacePtr MockupRenderSystem::createRenderTargetTexture( uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentInterfacePtr & _doc )
@@ -350,10 +356,15 @@ namespace Mengine
         return m_dxMaxCombinedTextureImageUnits;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t MockupRenderSystem::getMaxTextureSize() const
+    uint32_t MockupRenderSystem::getMaxTexture2DSize() const
     {
         // Return a reasonable default value for mockup system
         return 8192U;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t MockupRenderSystem::getMaxTexture2DArrayLayers() const
+    {
+        return 2048U;
     }
     //////////////////////////////////////////////////////////////////////////
     void MockupRenderSystem::onDeviceLostPrepare()
@@ -802,13 +813,13 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    MockupRenderImagePtr MockupRenderSystem::createRenderImage_( uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, EPixelFormat _hwPixelFormat, const DocumentInterfacePtr & _doc )
+    MockupRenderImagePtr MockupRenderSystem::createRenderImage_( uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwLayers, EPixelFormat _hwPixelFormat, const DocumentInterfacePtr & _doc )
     {
         MockupRenderImagePtr renderImage = m_factoryRenderImage->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( renderImage, "invalid create render image" );
 
-        renderImage->initialize( _mipmaps, _hwWidth, _hwHeight, _hwPixelFormat );
+        renderImage->initialize( _mipmaps, _hwWidth, _hwHeight, _hwLayers, _hwPixelFormat );
 
         return renderImage;
     }

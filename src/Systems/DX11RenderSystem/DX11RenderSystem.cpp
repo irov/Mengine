@@ -123,12 +123,13 @@ namespace Mengine
 
         D3D_FEATURE_LEVEL featureLevels[] =
         {
-            D3D_FEATURE_LEVEL_9_1
+            D3D_FEATURE_LEVEL_11_0
         };
 
         // Create the Direct3D 11 API device object and a corresponding context.
         ID3D11Device * d3dDevice;
         ID3D11DeviceContext * d3dContext;
+        D3D_FEATURE_LEVEL featureLevel;
         result = D3D11CreateDevice(
             adapter, // Specify nullptr to use the default adapter.
             D3D_DRIVER_TYPE_UNKNOWN,
@@ -138,7 +139,7 @@ namespace Mengine
             ARRAYSIZE( featureLevels ),
             D3D11_SDK_VERSION, // UWP apps must set this to D3D11_SDK_VERSION.
             &d3dDevice, // Returns the Direct3D device created.
-            nullptr,
+            &featureLevel,
             &d3dContext // Returns the device immediate context.
         );
 
@@ -149,6 +150,10 @@ namespace Mengine
 
         m_pD3DDevice.Attach( d3dDevice );
         m_pD3DDeviceContext.Attach( d3dContext );
+
+        LOGGER_INFO( "render", "Direct3D feature level: 0x%X"
+            , (uint32_t)featureLevel
+        );
 
         IDXGIOutput * adapterOutput;
         // Enumerate the primary adapter output (monitor).
@@ -420,8 +425,20 @@ namespace Mengine
         this->updateWVPInvMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderImageInterfacePtr DX11RenderSystem::createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentInterfacePtr & _doc )
+    RenderImageInterfacePtr DX11RenderSystem::createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _layers, EPixelFormat _format, const DocumentInterfacePtr & _doc )
     {
+        uint32_t maxTexture2DArrayLayers = this->getMaxTexture2DArrayLayers();
+
+        if( _layers == 0 || _layers > maxTexture2DArrayLayers )
+        {
+            LOGGER_ERROR( "invalid texture layer count %u (max %u)"
+                , _layers
+                , maxTexture2DArrayLayers
+            );
+
+            return nullptr;
+        }
+
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
 
         DX11RenderImagePtr renderImage = m_factoryRenderImage->createObject( _doc );
@@ -430,7 +447,7 @@ namespace Mengine
 
         renderImage->setDirect3D11Device( m_pD3DDevice );
 
-        if( renderImage->initialize( _mipmaps, _width, _height, _format ) == false )
+        if( renderImage->initialize( _mipmaps, _width, _height, _layers, _format ) == false )
         {
             LOGGER_ERROR( "can't initialize image %ux%u format [%u]"
                 , _width
@@ -880,12 +897,14 @@ namespace Mengine
         return (uint32_t)D3D11_COMMONSHADER_SAMPLER_SLOT_COUNT;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t DX11RenderSystem::getMaxTextureSize() const
+    uint32_t DX11RenderSystem::getMaxTexture2DSize() const
     {
-        // D3D11 supports up to 16384x16384 textures (feature level 11.0+)
-        // For feature level 9.x, the limit is 2048x2048
-        // We return a conservative value that should work for most cases
-        return 16384U;
+        return (uint32_t)D3D11_REQ_TEXTURE2D_U_OR_V_DIMENSION;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t DX11RenderSystem::getMaxTexture2DArrayLayers() const
+    {
+        return (uint32_t)D3D11_REQ_TEXTURE2D_ARRAY_AXIS_DIMENSION;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::onDeviceLostPrepare()

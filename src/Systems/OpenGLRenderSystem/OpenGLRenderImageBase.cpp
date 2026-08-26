@@ -1,7 +1,13 @@
-#include "MetalRenderImage.h"
+#include "OpenGLRenderImageBase.h"
 
-#include "MetalRenderImageLockedFactoryStorage.h"
-#include "MetalRenderEnum.h"
+#include "Interface/RenderSystemInterface.h"
+
+#include "Environment/OpenGL/OpenGLRenderSystemExtensionInterface.h"
+
+#include "OpenGLRenderImageLockedFactoryStorage.h"
+
+#include "OpenGLRenderErrorHelper.h"
+#include "OpenGLRenderExtension.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -10,13 +16,12 @@
 #include "Kernel/PixelFormatHelper.h"
 #include "Kernel/TimestampHelper.h"
 
-#import <Metal/Metal.h>
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    MetalRenderImage::MetalRenderImage()
+    OpenGLRenderImageBase::OpenGLRenderImageBase()
         : m_createTimestamp( 0 )
+        , m_uid( 0 )
         , m_hwPixelFormat( PF_UNKNOWN )
         , m_width( 0 )
         , m_height( 0 )
@@ -26,23 +31,48 @@ namespace Mengine
         , m_hwLayers( 0 )
         , m_hwWidthInv( 0.f )
         , m_hwHeightInv( 0.f )
-        , m_texture( nil )
-        , m_lockFirst( false )
+        , m_minFilter( GL_LINEAR )
+        , m_magFilter( GL_LINEAR )
+        , m_wrapS( GL_CLAMP_TO_EDGE )
+        , m_wrapT( GL_CLAMP_TO_EDGE )
+        , m_internalFormat( GL_RGB )
+        , m_format( GL_RGB )
+        , m_type( GL_UNSIGNED_BYTE )
         , m_pow2( false )
         , m_upscalePow2( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    MetalRenderImage::~MetalRenderImage()
+    OpenGLRenderImageBase::~OpenGLRenderImageBase()
     {
-        MENGINE_ASSERTION_FATAL( m_texture == nil, "texture is not released" );
+        MENGINE_ASSERTION_FATAL( m_uid == 0, "texture is not released" );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MetalRenderImage::initialize( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _layers, EPixelFormat _pixelFormat )
+    bool OpenGLRenderImageBase::initialize( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _layers, EPixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type )
     {
         MENGINE_ASSERTION_FATAL( _width != 0, "invalid create texture width == 0" );
         MENGINE_ASSERTION_FATAL( _height != 0, "invalid create texture height == 0" );
         MENGINE_ASSERTION_FATAL( _layers != 0, "invalid create texture layers == 0" );
+
+        switch( _internalFormat )
+        {
+        case GL_ETC1_RGB8_OES:
+        case GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG:
+        case GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:
+            {
+                if( _width != _height )
+                {
+                    LOGGER_ERROR( "not square texture %d:%d"
+                        , _width
+                        , _height
+                    );
+
+                    return false;
+                }
+            }break;
+        default:
+            break;
+        }
 
         m_width = _width;
         m_height = _height;
@@ -51,6 +81,9 @@ namespace Mengine
         m_hwHeight = Helper::getTexturePow2( _height );
         m_hwLayers = _layers;
         m_hwPixelFormat = _pixelFormat;
+        m_internalFormat = _internalFormat;
+        m_format = _format;
+        m_type = _type;
 
         m_hwWidthInv = 1.f / (float)m_hwWidth;
         m_hwHeightInv = 1.f / (float)m_hwHeight;
@@ -60,10 +93,10 @@ namespace Mengine
 
         if( this->create() == false )
         {
-            LOGGER_ERROR( "invalid create texture for size %u:%u PF %u"
+            LOGGER_ERROR( "invalid gen texture for size %u:%u PF %u"
                 , _width
                 , _height
-                , _pixelFormat
+                , _format
             );
 
             return false;
@@ -72,141 +105,148 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t MetalRenderImage::getHWLayerCount() const
+    uint32_t OpenGLRenderImageBase::getHWLayerCount() const
     {
         return m_hwLayers;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MetalRenderImage::finalize()
+    void OpenGLRenderImageBase::finalize()
     {
         this->release();
 
         m_renderImageProvider = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t MetalRenderImage::getHWMipmaps() const
+    uint32_t OpenGLRenderImageBase::getHWMipmaps() const
     {
         return m_hwMipmaps;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t MetalRenderImage::getHWWidth() const
+    uint32_t OpenGLRenderImageBase::getHWWidth() const
     {
         return m_hwWidth;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t MetalRenderImage::getHWHeight() const
+    uint32_t OpenGLRenderImageBase::getHWHeight() const
     {
         return m_hwHeight;
     }
     //////////////////////////////////////////////////////////////////////////
-    EPixelFormat MetalRenderImage::getHWPixelFormat() const
+    EPixelFormat OpenGLRenderImageBase::getHWPixelFormat() const
     {
         return m_hwPixelFormat;
     }
     //////////////////////////////////////////////////////////////////////////
-    float MetalRenderImage::getHWWidthInv() const
+    float OpenGLRenderImageBase::getHWWidthInv() const
     {
         return m_hwWidthInv;
     }
     //////////////////////////////////////////////////////////////////////////
-    float MetalRenderImage::getHWHeightInv() const
+    float OpenGLRenderImageBase::getHWHeightInv() const
     {
         return m_hwHeightInv;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MetalRenderImage::getUpscalePow2() const
+    bool OpenGLRenderImageBase::getUpscalePow2() const
     {
         return m_upscalePow2;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MetalRenderImage::bind( uint32_t _stage )
+    void OpenGLRenderImageBase::bind( uint32_t _stage )
     {
-        MENGINE_UNUSED( _stage );
+#if defined(MENGINE_RENDER_OPENGL_ES)
+        MENGINE_GLCALL( glActiveTexture, (GL_TEXTURE0 + _stage) );
+#else
+        MENGINE_GLCALL( glActiveTexture_, (GL_TEXTURE0 + _stage) );
+#endif
 
-        // Binding is handled in the render command encoder
+        MENGINE_GLCALL( glBindTexture, (this->getTextureTarget(), m_uid) );
     }
     //////////////////////////////////////////////////////////////////////////
-    void MetalRenderImage::unbind( uint32_t _stage )
+    void OpenGLRenderImageBase::unbind( uint32_t _stage )
     {
-        MENGINE_UNUSED( _stage );
+#if defined(MENGINE_RENDER_OPENGL_ES)
+        MENGINE_GLCALL( glActiveTexture, (GL_TEXTURE0 + _stage) );
+#else
+        MENGINE_GLCALL( glActiveTexture_, (GL_TEXTURE0 + _stage) );
+#endif
 
-        // Unbinding is handled in the render command encoder
+        MENGINE_GLCALL( glBindTexture, (this->getTextureTarget(), 0) );
     }
     //////////////////////////////////////////////////////////////////////////
-    void MetalRenderImage::setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider )
+    void OpenGLRenderImageBase::setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider )
     {
         m_renderImageProvider = _renderImageProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderImageProviderInterfacePtr & MetalRenderImage::getRenderImageProvider() const
+    const RenderImageProviderInterfacePtr & OpenGLRenderImageBase::getRenderImageProvider() const
     {
         return m_renderImageProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MetalRenderImage::create()
+    bool OpenGLRenderImageBase::create()
     {
-        MENGINE_ASSERTION_FATAL( m_texture == nil, "texture already created" );
+        MENGINE_ASSERTION_FATAL( m_uid == 0, "texture already created" );
 
-        MTLPixelFormat pixelFormat = Helper::toMTLPixelFormat( m_hwPixelFormat );
+        OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
+            ->getUnknown();
 
-        if( pixelFormat == MTLPixelFormatInvalid )
+        GLuint tuid = extension->genTexture();
+
+        if( tuid == 0 )
         {
-            LOGGER_ERROR( "unsupported pixel format %d"
-                , m_hwPixelFormat
-            );
-
             return false;
         }
 
-        MTLTextureDescriptor * descriptor = [[MTLTextureDescriptor alloc] init];
-        descriptor.textureType = m_hwLayers > 1 ? MTLTextureType2DArray : MTLTextureType2D;
-        descriptor.pixelFormat = pixelFormat;
-        descriptor.width = m_hwWidth;
-        descriptor.height = m_hwHeight;
-        descriptor.mipmapLevelCount = m_hwMipmaps;
-        descriptor.arrayLength = m_hwLayers;
-        descriptor.usage = MTLTextureUsageShaderRead;
-        descriptor.storageMode = MTLStorageModeShared;
+        m_uid = tuid;
 
-        id<MTLTexture> texture = [m_device newTextureWithDescriptor:descriptor];
-
-        if( texture == nil )
+        if( this->_create() == false )
         {
-            LOGGER_ERROR( "invalid create texture size %u:%u"
-                , m_hwWidth
-                , m_hwHeight
-            );
+            extension->deleteTexture( m_uid );
+            m_uid = 0;
 
             return false;
         }
-
-        m_texture = texture;
-        m_lockFirst = true;
 
         int64_t textureMemorySize = (int64_t)m_hwWidth * (int64_t)m_hwHeight * (int64_t)m_hwLayers * (int64_t)Helper::getPixelFormatChannels( m_hwPixelFormat );
 
         STATISTIC_ADD_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_SIZE, textureMemorySize );
+
+        LOGGER_DEBUG( "opengl", "render texture alloc add: %" MENGINE_PRId64 " total: %" MENGINE_PRId64
+            , textureMemorySize
+            , STATISTIC_GET_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_SIZE )
+        );
 
         m_createTimestamp = Helper::getSystemTimestamp();
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MetalRenderImage::release()
+    void OpenGLRenderImageBase::release()
     {
-        if( m_texture == nil )
+        if( m_uid == 0 )
         {
             return;
         }
+
+        OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
+            ->getUnknown();
+
+        extension->deleteTexture( m_uid );
+
+        m_uid = 0;
 
         int64_t textureMemorySize = (int64_t)m_hwWidth * (int64_t)m_hwHeight * (int64_t)m_hwLayers * (int64_t)Helper::getPixelFormatChannels( m_hwPixelFormat );
 
         STATISTIC_DEL_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_SIZE, textureMemorySize );
 
-        m_texture = nil;
+        LOGGER_DEBUG( "opengl", "render texture alloc del: %" MENGINE_PRId64 " total: %" MENGINE_PRId64
+            , textureMemorySize
+            , STATISTIC_GET_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_SIZE )
+        );
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderImageLockedInterfacePtr MetalRenderImage::lock( uint32_t _layer, uint32_t _level, const Rect & _rect, bool _readOnly )
+    RenderImageLockedInterfacePtr OpenGLRenderImageBase::lock( uint32_t _layer, uint32_t _level, const Rect & _rect, bool _readOnly )
     {
         if( _layer >= m_hwLayers || _level >= m_hwMipmaps )
         {
@@ -228,7 +268,7 @@ namespace Mengine
 
         size_t size = Helper::getTextureMemorySize( miplevel_width, miplevel_height, m_hwPixelFormat );
 
-        MetalRenderImageLockedPtr imageLocked = MetalRenderImageLockedFactoryStorage::createObject( MENGINE_DOCUMENT_FACTORABLE );
+        OpenGLRenderImageLockedPtr imageLocked = OpenGLRenderImageLockedFactoryStorage::createObject( MENGINE_DOCUMENT_FACTORABLE );
 
         size_t pitch = size / miplevel_height;
 
@@ -240,7 +280,7 @@ namespace Mengine
         return imageLocked;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MetalRenderImage::unlock( const RenderImageLockedInterfacePtr & _locked, uint32_t _layer, uint32_t _level, bool _successful )
+    bool OpenGLRenderImageBase::unlock( const RenderImageLockedInterfacePtr & _locked, uint32_t _layer, uint32_t _level, bool _successful )
     {
         if( _layer >= m_hwLayers || _level >= m_hwMipmaps )
         {
@@ -252,72 +292,72 @@ namespace Mengine
             return true;
         }
 
-        if( m_texture == nil )
-        {
-            return false;
-        }
-
         const Rect & lockedRect = _locked->getLockedRect();
 
         size_t pitch;
-        void * buffer = _locked->getLockedBuffer( &pitch );
+        const void * buffer = _locked->getLockedBuffer( &pitch );
 
-        uint32_t miplevel_hwwidth = m_hwWidth >> _level;
-        uint32_t miplevel_hwheight = m_hwHeight >> _level;
+        MENGINE_GLCALL( glBindTexture, (this->getTextureTarget(), m_uid) );
 
-        MENGINE_UNUSED( miplevel_hwheight );
-
-        uint32_t upload_x = lockedRect.left >> _level;
-        uint32_t upload_y = lockedRect.top >> _level;
-        uint32_t upload_width = (lockedRect.right - lockedRect.left) >> _level;
-        uint32_t upload_height = (lockedRect.bottom - lockedRect.top) >> _level;
-
-        if( lockedRect.full( m_hwWidth, m_hwHeight ) == true )
-        {
-            upload_x = 0;
-            upload_y = 0;
-            upload_width = miplevel_hwwidth;
-            upload_height = miplevel_hwheight;
-        }
-
-        MTLRegion region = MTLRegionMake2D( upload_x, upload_y, upload_width, upload_height );
-
-        if( m_hwLayers > 1 )
-        {
-            [m_texture replaceRegion:region
-                         mipmapLevel:_level
-                               slice:_layer
-                           withBytes:buffer
-                         bytesPerRow:pitch
-                       bytesPerImage:pitch * upload_height];
-        }
-        else
-        {
-            [m_texture replaceRegion:region
-                         mipmapLevel:_level
-                           withBytes:buffer
-                         bytesPerRow:pitch];
-        }
-
-        m_lockFirst = false;
+        bool successful = this->_unlock( lockedRect, buffer, _layer, _level );
 
         STATISTIC_INC_INTEGER( STATISTIC_RENDER_TEXTURE_UNLOCK_COUNT );
         STATISTIC_ADD_INTEGER( STATISTIC_RENDER_TEXTURE_UNLOCK_PIXEL, (lockedRect.bottom - lockedRect.top) * (lockedRect.right - lockedRect.left) );
 
-        return true;
+        return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    id<MTLTexture> MetalRenderImage::getMetalTexture() const
+    void OpenGLRenderImageBase::setMinFilter( GLenum _minFilter )
     {
-        return m_texture;
+        m_minFilter = _minFilter;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MetalRenderImage::onRenderReset()
+    GLenum OpenGLRenderImageBase::getMinFilter() const
+    {
+        return m_minFilter;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderImageBase::setMagFilter( GLenum _magFilter )
+    {
+        m_magFilter = _magFilter;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    GLenum OpenGLRenderImageBase::getMagFilter() const
+    {
+        return m_magFilter;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderImageBase::setWrapS( GLenum _wrapS )
+    {
+        m_wrapS = _wrapS;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    GLenum OpenGLRenderImageBase::getWrapS() const
+    {
+        return m_wrapS;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderImageBase::setWrapT( GLenum _wrapT )
+    {
+        m_wrapT = _wrapT;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    GLenum OpenGLRenderImageBase::getWrapT() const
+    {
+        return m_wrapT;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    GLuint OpenGLRenderImageBase::getUID() const
+    {
+        return m_uid;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderImageBase::onRenderReset()
     {
         this->release();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MetalRenderImage::onRenderRestore()
+    bool OpenGLRenderImageBase::onRenderRestore()
     {
         if( this->create() == false )
         {
@@ -333,7 +373,9 @@ namespace Mengine
 
         if( loader->load( RenderImageInterfacePtr( this ) ) == false )
         {
-            LOGGER_ERROR( "invalid decode image" );
+            LOGGER_ERROR( "invalid decode image [%u]"
+                , m_uid
+            );
 
             return false;
         }

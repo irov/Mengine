@@ -23,12 +23,7 @@
 
 #import "iOSMailComposeDelegate.h"
 
-#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
-#   import "iOSOpenGLView.h"
-#   import <OpenGLES/EAGL.h>
-#elif defined(MENGINE_ENVIRONMENT_RENDER_METAL)
-#   import "iOSMetalView.h"
-#endif
+#import "iOSMetalView.h"
 
 #import <UIKit/UIKit.h>
 
@@ -182,14 +177,9 @@ namespace Mengine
         UIWindow * getUIWindow() const override;
         UIView * getUIView() const override;
 
-#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
-    public:
-        EAGLContext * getEAGLContext() const override;
-#elif defined(MENGINE_ENVIRONMENT_RENDER_METAL)
     public:
         id<MTLDevice> getMetalDevice() const override;
         UIView * getMetalView() const override;
-#endif
 
     public:
         UniqueId addIOSTouchHandler( const LambdaIOSTouchHandler & _lambda, const DocumentInterfacePtr & _doc ) override;
@@ -233,13 +223,8 @@ namespace Mengine
         id<iOSSafeAreaProviderInterface> m_safeAreaProvider;
         LambdaSafeAreaViewportChanged m_safeAreaViewportChangedCallback;
 
-#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
-        EAGLContext * m_glContext;
-        iOSOpenGLView * m_glView;
-#elif defined(MENGINE_ENVIRONMENT_RENDER_METAL)
         id<MTLDevice> m_metalDevice;
         iOSMetalView * m_metalView;
-#endif
 
         iOSInputPtr m_iOSInput;
 

@@ -5,14 +5,14 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class OpenGLRenderImage
+    class OpenGLRenderImageArray
         : public OpenGLRenderImageBase
     {
         DECLARE_FACTORABLE( RenderImageInterface );
 
     public:
-        OpenGLRenderImage();
-        ~OpenGLRenderImage() override;
+        OpenGLRenderImageArray();
+        ~OpenGLRenderImageArray() override;
 
     public:
         GLenum getTextureTarget() const override;
@@ -20,11 +20,8 @@ namespace Mengine
     protected:
         bool _create() override;
         bool _unlock( const Rect & _lockedRect, const void * _buffer, uint32_t _layer, uint32_t _level ) override;
-
-    protected:
-        bool m_lockFirst;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<OpenGLRenderImage, RenderImageInterface> OpenGLRenderImagePtr;
+    typedef IntrusivePtr<OpenGLRenderImageArray, RenderImageInterface> OpenGLRenderImageArrayPtr;
     //////////////////////////////////////////////////////////////////////////
 }

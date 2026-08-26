@@ -11,6 +11,7 @@ namespace Mengine
     {
     public:
         virtual GLuint getUID() const = 0;
+        virtual GLenum getTextureTarget() const = 0;
 
     public:
         virtual void bind( uint32_t _stage ) = 0;

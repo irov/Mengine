@@ -73,7 +73,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( texture_image, "invalid texture image" );
 
-        RenderImageLockedInterfacePtr texture_locked = texture_image->lock( 0, rect, false );
+        RenderImageLockedInterfacePtr texture_locked = texture_image->lock( 0, 0, rect, false );
 
         size_t texture_pitch;
         uint8_t * texture_memory = texture_locked->getLockedBuffer( &texture_pitch );
@@ -86,7 +86,7 @@ namespace Mengine
 
         bool successful = _provider->onTextureGlyphFill( texture_memory, texture_pitch, hwPixelChannels, _border );
 
-        texture_image->unlock( texture_locked, 0, successful );
+        texture_image->unlock( texture_locked, 0, 0, successful );
 
         if( successful == false )
         {

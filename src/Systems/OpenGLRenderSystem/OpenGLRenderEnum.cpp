@@ -47,13 +47,8 @@ namespace Mengine
             case BOP_SUBTRACT: return GL_FUNC_SUBTRACT;
             case BOP_REVSUBTRACT: return GL_FUNC_REVERSE_SUBTRACT;
 
-#if defined(MENGINE_RENDER_OPENGL_ES_IOS)
-            case BOP_MIN: return GL_MIN_EXT;
-            case BOP_MAX: return GL_MAX_EXT;
-#else
             case BOP_MIN: return GL_MIN;
             case BOP_MAX: return GL_MAX;
-#endif
             default:;
             }
 
@@ -152,9 +147,9 @@ namespace Mengine
             case PF_A8R8G8B8:
             case PF_B8G8R8A8:
             case PF_R8G8B8A8:
-                return GL_RGBA;
+                return GL_RGBA8;
             case PF_R8G8B8:
-                return GL_RGB;
+                return GL_RGB8;
             case PF_A8:
 #if defined(MENGINE_RENDER_OPENGL_NORMAL)
                 return GL_R8;

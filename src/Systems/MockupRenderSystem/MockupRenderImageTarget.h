@@ -23,6 +23,9 @@ namespace Mengine
         void initialize( const MockupRenderTargetTexturePtr & _target );
         void finalize();
 
+    public:
+        uint32_t getHWLayerCount() const override;
+
     protected:
         void setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider ) override;
         const RenderImageProviderInterfacePtr & getRenderImageProvider() const override;
@@ -42,8 +45,8 @@ namespace Mengine
         bool getUpscalePow2() const override;
 
     public:
-        RenderImageLockedInterfacePtr lock( uint32_t _level, const Rect & _rect, bool _readOnly ) override;
-        bool unlock( const RenderImageLockedInterfacePtr & _locked, uint32_t _level, bool _successful ) override;
+        RenderImageLockedInterfacePtr lock( uint32_t _layer, uint32_t _level, const Rect & _rect, bool _readOnly ) override;
+        bool unlock( const RenderImageLockedInterfacePtr & _locked, uint32_t _layer, uint32_t _level, bool _successful ) override;
 
     protected:
         MockupRenderTargetTexturePtr m_target;

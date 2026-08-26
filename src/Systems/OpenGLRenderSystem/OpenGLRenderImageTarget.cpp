@@ -26,6 +26,11 @@ namespace Mengine
         m_renderTarget = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
+    uint32_t OpenGLRenderImageTarget::getHWLayerCount() const
+    {
+        return 1U;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderImageTarget::bind( uint32_t _stage )
     {
 #if defined(MENGINE_RENDER_OPENGL_ES)
@@ -60,8 +65,9 @@ namespace Mengine
         return RenderImageProviderInterfacePtr::none();
     }
     ///////////////////////////////////////////////////////////////////////////
-    RenderImageLockedInterfacePtr OpenGLRenderImageTarget::lock( uint32_t _level, const Rect & _rect, bool _readOnly )
+    RenderImageLockedInterfacePtr OpenGLRenderImageTarget::lock( uint32_t _layer, uint32_t _level, const Rect & _rect, bool _readOnly )
     {
+        MENGINE_UNUSED( _layer );
         MENGINE_UNUSED( _level );
         MENGINE_UNUSED( _rect );
         MENGINE_UNUSED( _readOnly );
@@ -69,9 +75,10 @@ namespace Mengine
         return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderImageTarget::unlock( const RenderImageLockedInterfacePtr & _locked, uint32_t _level, bool _successful )
+    bool OpenGLRenderImageTarget::unlock( const RenderImageLockedInterfacePtr & _locked, uint32_t _layer, uint32_t _level, bool _successful )
     {
         MENGINE_UNUSED( _locked );
+        MENGINE_UNUSED( _layer );
         MENGINE_UNUSED( _level );
         MENGINE_UNUSED( _successful );
 
@@ -132,6 +139,11 @@ namespace Mengine
         GLuint uid = m_renderTarget->getUID();
 
         return uid;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    GLenum OpenGLRenderImageTarget::getTextureTarget() const
+    {
+        return GL_TEXTURE_2D;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderImageTarget::onRenderReset()

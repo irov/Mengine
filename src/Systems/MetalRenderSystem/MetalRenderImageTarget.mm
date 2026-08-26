@@ -25,6 +25,11 @@ namespace Mengine
         m_renderTarget = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
+    uint32_t MetalRenderImageTarget::getHWLayerCount() const
+    {
+        return 1U;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void MetalRenderImageTarget::bind( uint32_t _stage )
     {
         MENGINE_UNUSED( _stage );
@@ -45,8 +50,9 @@ namespace Mengine
         return RenderImageProviderInterfacePtr::none();
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderImageLockedInterfacePtr MetalRenderImageTarget::lock( uint32_t _level, const Rect & _rect, bool _readOnly )
+    RenderImageLockedInterfacePtr MetalRenderImageTarget::lock( uint32_t _layer, uint32_t _level, const Rect & _rect, bool _readOnly )
     {
+        MENGINE_UNUSED( _layer );
         MENGINE_UNUSED( _level );
         MENGINE_UNUSED( _rect );
         MENGINE_UNUSED( _readOnly );
@@ -54,9 +60,10 @@ namespace Mengine
         return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MetalRenderImageTarget::unlock( const RenderImageLockedInterfacePtr & _locked, uint32_t _level, bool _successful )
+    bool MetalRenderImageTarget::unlock( const RenderImageLockedInterfacePtr & _locked, uint32_t _layer, uint32_t _level, bool _successful )
     {
         MENGINE_UNUSED( _locked );
+        MENGINE_UNUSED( _layer );
         MENGINE_UNUSED( _level );
         MENGINE_UNUSED( _successful );
 

@@ -1,271 +1,37 @@
 #include "OpenGLRenderImage.h"
 
-#include "Interface/RenderSystemInterface.h"
-
-#include "Environment/OpenGL/OpenGLRenderSystemExtensionInterface.h"
-
-#include "OpenGLRenderImageLockedFactoryStorage.h"
-
 #include "OpenGLRenderErrorHelper.h"
-#include "OpenGLRenderExtension.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/AssertionMemoryPanic.h"
-#include "Kernel/TextureHelper.h"
-#include "Kernel/StatisticHelper.h"
 #include "Kernel/PixelFormatHelper.h"
-#include "Kernel/TimestampHelper.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderImage::OpenGLRenderImage()
-        : m_createTimestamp( 0 )
-        , m_uid( 0 )
-        , m_hwPixelFormat( PF_UNKNOWN )
-        , m_width( 0 )
-        , m_height( 0 )
-        , m_hwMipmaps( 0 )
-        , m_hwWidth( 0 )
-        , m_hwHeight( 0 )
-        , m_hwWidthInv( 0.f )
-        , m_hwHeightInv( 0.f )
-        , m_minFilter( GL_LINEAR )
-        , m_magFilter( GL_LINEAR )
-        , m_wrapS( GL_CLAMP_TO_EDGE )
-        , m_wrapT( GL_CLAMP_TO_EDGE )
-        , m_internalFormat( GL_RGB )
-        , m_format( GL_RGB )
-        , m_type( GL_UNSIGNED_BYTE )
-        , m_lockFirst( false )
-        , m_pow2( false )
-        , m_upscalePow2( false )
+        : m_lockFirst( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderImage::~OpenGLRenderImage()
     {
-        MENGINE_ASSERTION_FATAL( m_uid == 0, "texture is not released" );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderImage::initialize( uint32_t _mipmaps, uint32_t _width, uint32_t _height, EPixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type )
+    GLenum OpenGLRenderImage::getTextureTarget() const
     {
-        MENGINE_ASSERTION_FATAL( _width != 0, "invalid create texture width == 0" );
-        MENGINE_ASSERTION_FATAL( _height != 0, "invalid create texture height == 0" );
-
-        switch( _internalFormat )
-        {
-        case GL_ETC1_RGB8_OES:
-        case GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG:
-        case GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:
-            {
-                if( _width != _height )
-                {
-                    LOGGER_ERROR( "not square texture %d:%d"
-                        , _width
-                        , _height
-                    );
-
-                    return false;
-                }
-            }break;
-        default:
-            break;
-        }
-
-        m_width = _width;
-        m_height = _height;
-        m_hwMipmaps = _mipmaps;
-        m_hwWidth = Helper::getTexturePow2( _width );
-        m_hwHeight = Helper::getTexturePow2( _height );
-        m_hwPixelFormat = _pixelFormat;
-        m_internalFormat = _internalFormat;
-        m_format = _format;
-        m_type = _type;
-
-        m_hwWidthInv = 1.f / (float)m_hwWidth;
-        m_hwHeightInv = 1.f / (float)m_hwHeight;
-
-        m_pow2 = Helper::isTexturePow2( _width ) == true && Helper::isTexturePow2( _height ) == true;
-        m_upscalePow2 = _width != m_hwWidth || _height != m_hwHeight;
-
-        if( this->create() == false )
-        {
-            LOGGER_ERROR( "invalid gen texture for size %u:%u PF %u"
-                , _width
-                , _height
-                , _format
-            );
-
-            return false;
-        }
-
-        return true;
+        return GL_TEXTURE_2D;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderImage::finalize()
+    bool OpenGLRenderImage::_create()
     {
-        this->release();
-
-        m_renderImageProvider = nullptr;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t OpenGLRenderImage::getHWMipmaps() const
-    {
-        return m_hwMipmaps;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t OpenGLRenderImage::getHWWidth() const
-    {
-        return m_hwWidth;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t OpenGLRenderImage::getHWHeight() const
-    {
-        return m_hwHeight;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    EPixelFormat OpenGLRenderImage::getHWPixelFormat() const
-    {
-        return m_hwPixelFormat;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    float OpenGLRenderImage::getHWWidthInv() const
-    {
-        return m_hwWidthInv;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    float OpenGLRenderImage::getHWHeightInv() const
-    {
-        return m_hwHeightInv;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderImage::getUpscalePow2() const
-    {
-        return m_upscalePow2;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderImage::bind( uint32_t _stage )
-    {
-#if defined(MENGINE_RENDER_OPENGL_ES)
-        MENGINE_GLCALL( glActiveTexture, (GL_TEXTURE0 + _stage) );
-#else
-        MENGINE_GLCALL( glActiveTexture_, (GL_TEXTURE0 + _stage) );
-#endif
-
-        MENGINE_GLCALL( glBindTexture, (GL_TEXTURE_2D, m_uid) );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderImage::unbind( uint32_t _stage )
-    {
-#if defined(MENGINE_RENDER_OPENGL_ES)
-        MENGINE_GLCALL( glActiveTexture, (GL_TEXTURE0 + _stage) );
-#else
-        MENGINE_GLCALL( glActiveTexture_, (GL_TEXTURE0 + _stage) );
-#endif
-
-        MENGINE_GLCALL( glBindTexture, (GL_TEXTURE_2D, 0) );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderImage::setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider )
-    {
-        m_renderImageProvider = _renderImageProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const RenderImageProviderInterfacePtr & OpenGLRenderImage::getRenderImageProvider() const
-    {
-        return m_renderImageProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderImage::create()
-    {
-        MENGINE_ASSERTION_FATAL( m_uid == 0, "texture already created" );
-
-        OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
-            ->getUnknown();
-
-        GLuint tuid = extension->genTexture();
-
-        if( tuid == 0 )
-        {
-            return false;
-        }
-
-        m_uid = tuid;
-
         m_lockFirst = true;
 
-        STATISTIC_ADD_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_SIZE, m_hwWidth * m_hwHeight * Helper::getPixelFormatChannels( m_hwPixelFormat ) );
-
-        LOGGER_DEBUG( "opengl", "render texture alloc add: %u total: %" MENGINE_PRId64
-            , m_hwWidth * m_hwHeight * Helper::getPixelFormatChannels( m_hwPixelFormat )
-            , STATISTIC_GET_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_SIZE )
-        );
-
-        m_createTimestamp = Helper::getSystemTimestamp();
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderImage::release()
+    bool OpenGLRenderImage::_unlock( const Rect & _lockedRect, const void * _buffer, uint32_t _layer, uint32_t _level )
     {
-        if( m_uid == 0 )
-        {
-            return;
-        }
-
-        OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
-            ->getUnknown();
-
-        extension->deleteTexture( m_uid );
-
-        m_uid = 0;
-
-        STATISTIC_DEL_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_SIZE, m_hwWidth * m_hwHeight * Helper::getPixelFormatChannels( m_hwPixelFormat ) );
-
-        LOGGER_DEBUG( "opengl", "render texture alloc del: %u total: %" MENGINE_PRId64
-            , m_hwWidth * m_hwHeight * Helper::getPixelFormatChannels( m_hwPixelFormat )
-            , STATISTIC_GET_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_SIZE )
-        );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    RenderImageLockedInterfacePtr OpenGLRenderImage::lock( uint32_t _level, const Rect & _rect, bool _readOnly )
-    {
-        MENGINE_UNUSED( _readOnly );
-
-        uint32_t rect_width = _rect.getWidth();
-        uint32_t rect_height = _rect.getHeight();
-
-        uint32_t miplevel_width = rect_width >> _level;
-        uint32_t miplevel_height = rect_height >> _level;
-
-        size_t size = Helper::getTextureMemorySize( miplevel_width, miplevel_height, m_hwPixelFormat );
-
-        OpenGLRenderImageLockedPtr imageLocked = OpenGLRenderImageLockedFactoryStorage::createObject( MENGINE_DOCUMENT_FACTORABLE );
-
-        size_t pitch = size / miplevel_height;
-
-        imageLocked->initialize( size, pitch, _rect );
-
-        STATISTIC_INC_INTEGER( STATISTIC_RENDER_TEXTURE_LOCK_COUNT );
-        STATISTIC_ADD_INTEGER( STATISTIC_RENDER_TEXTURE_LOCK_PIXEL, (_rect.bottom - _rect.top) * (_rect.right - _rect.left) );
-
-        return imageLocked;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderImage::unlock( const RenderImageLockedInterfacePtr & _locked, uint32_t _level, bool _successful )
-    {
-        if( _successful == false )
-        {
-            return true;
-        }
-
-        const Rect & lockedRect = _locked->getLockedRect();
-
-        size_t pitch;
-        void * buffer = _locked->getLockedBuffer( &pitch );
-
-        MENGINE_GLCALL( glBindTexture, (GL_TEXTURE_2D, m_uid) );
+        MENGINE_UNUSED( _layer );
 
         bool successful = true;
 
@@ -281,13 +47,13 @@ namespace Mengine
         case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
 #endif
             {
-                if( lockedRect.full( m_hwWidth, m_hwHeight ) == true )
+                if( _lockedRect.full( m_hwWidth, m_hwHeight ) == true )
                 {
                     GLuint textureMemorySize = Helper::getTextureMemorySize( miplevel_hwwidth, miplevel_hwheight, m_hwPixelFormat );
 #if defined(MENGINE_RENDER_OPENGL_ES)
-                    MENGINE_IF_GLCALL( glCompressedTexImage2D, (GL_TEXTURE_2D, _level, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0x00000000, textureMemorySize, buffer) )
+                    MENGINE_IF_GLCALL( glCompressedTexImage2D, (GL_TEXTURE_2D, _level, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0x00000000, textureMemorySize, _buffer) )
 #else
-                    MENGINE_IF_GLCALL( glCompressedTexImage2D_, (GL_TEXTURE_2D, _level, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0x00000000, textureMemorySize, buffer) )
+                    MENGINE_IF_GLCALL( glCompressedTexImage2D_, (GL_TEXTURE_2D, _level, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0x00000000, textureMemorySize, _buffer) )
 #endif
                     {
                         LOGGER_ASSERTION( "glCompressedTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n PixelFormat %d\n size %d"
@@ -309,9 +75,9 @@ namespace Mengine
             }break;
         default:
             {
-                if( lockedRect.full( m_hwWidth, m_hwHeight ) == true )
+                if( _lockedRect.full( m_hwWidth, m_hwHeight ) == true )
                 {
-                    MENGINE_IF_GLCALL( glTexImage2D, (GL_TEXTURE_2D, _level, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0x00000000, m_format, m_type, buffer) )
+                    MENGINE_IF_GLCALL( glTexImage2D, (GL_TEXTURE_2D, _level, m_internalFormat, miplevel_hwwidth, miplevel_hwheight, 0x00000000, m_format, m_type, _buffer) )
                     {
                         LOGGER_ASSERTION( "glTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n Format %d\n Type %d\n PixelFormat %d"
                             , _level
@@ -328,10 +94,10 @@ namespace Mengine
                 }
                 else
                 {
-                    uint32_t miplevel_xoffset = lockedRect.left >> _level;
-                    uint32_t miplevel_yoffset = lockedRect.top >> _level;
-                    uint32_t miplevel_width = (lockedRect.right - lockedRect.left) >> _level;
-                    uint32_t miplevel_height = (lockedRect.bottom - lockedRect.top) >> _level;
+                    uint32_t miplevel_xoffset = _lockedRect.left >> _level;
+                    uint32_t miplevel_yoffset = _lockedRect.top >> _level;
+                    uint32_t miplevel_width = (_lockedRect.right - _lockedRect.left) >> _level;
+                    uint32_t miplevel_height = (_lockedRect.bottom - _lockedRect.top) >> _level;
 
                     if( m_lockFirst == true )
                     {
@@ -351,7 +117,7 @@ namespace Mengine
                         }
                     }
 
-                    MENGINE_IF_GLCALL( glTexSubImage2D, (GL_TEXTURE_2D, _level, miplevel_xoffset, miplevel_yoffset, miplevel_width, miplevel_height, m_format, m_type, buffer) )
+                    MENGINE_IF_GLCALL( glTexSubImage2D, (GL_TEXTURE_2D, _level, miplevel_xoffset, miplevel_yoffset, miplevel_width, miplevel_height, m_format, m_type, _buffer) )
                     {
                         LOGGER_ASSERTION( "glTexSubImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n Format %d\n Type %d\n PixelFormat %d"
                             , _level
@@ -371,86 +137,7 @@ namespace Mengine
 
         m_lockFirst = false;
 
-        STATISTIC_INC_INTEGER( STATISTIC_RENDER_TEXTURE_UNLOCK_COUNT );
-        STATISTIC_ADD_INTEGER( STATISTIC_RENDER_TEXTURE_UNLOCK_PIXEL, (lockedRect.bottom - lockedRect.top) * (lockedRect.right - lockedRect.left) );
-
         return successful;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderImage::setMinFilter( GLenum _minFilter )
-    {
-        m_minFilter = _minFilter;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    GLenum OpenGLRenderImage::getMinFilter() const
-    {
-        return m_minFilter;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderImage::setMagFilter( GLenum _magFilter )
-    {
-        m_magFilter = _magFilter;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    GLenum OpenGLRenderImage::getMagFilter() const
-    {
-        return m_magFilter;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderImage::setWrapS( GLenum _wrapS )
-    {
-        m_wrapS = _wrapS;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    GLenum OpenGLRenderImage::getWrapS() const
-    {
-        return m_wrapS;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderImage::setWrapT( GLenum _wrapT )
-    {
-        m_wrapT = _wrapT;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    GLenum OpenGLRenderImage::getWrapT() const
-    {
-        return m_wrapT;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    GLuint OpenGLRenderImage::getUID() const
-    {
-        return m_uid;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderImage::onRenderReset()
-    {
-        this->release();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderImage::onRenderRestore()
-    {
-        if( this->create() == false )
-        {
-            return false;
-        }
-
-        if( m_renderImageProvider == nullptr )
-        {
-            return true;
-        }
-
-        RenderImageLoaderInterfacePtr loader = m_renderImageProvider->getLoader( MENGINE_DOCUMENT_FACTORABLE );
-
-        if( loader->load( RenderImageInterfacePtr( this ) ) == false )
-        {
-            LOGGER_ERROR( "invalid decode image [%u]"
-                , m_uid
-            );
-
-            return false;
-        }
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
 }

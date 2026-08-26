@@ -32,7 +32,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderSystem::OpenGLRenderSystem()
         : m_glMaxCombinedTextureImageUnits( 0 )
-        , m_glMaxTextureSize( 0 )
+        , m_glMaxTexture2DSize( 0 )
+        , m_glMaxTexture2DArrayLayers( 0 )
         , m_renderWindowCreate( false )
         , m_depthMask( false )
         , m_renderDeviceLost( false )
@@ -68,6 +69,7 @@ namespace Mengine
         m_factoryRenderVertexBuffer = Helper::makeFactoryPoolWithListener<OpenGLRenderVertexBuffer, 8>( this, &OpenGLRenderSystem::onRenderVertexBufferDestroy_, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderIndexBuffer = Helper::makeFactoryPoolWithListener<OpenGLRenderIndexBuffer, 8>( this, &OpenGLRenderSystem::onRenderIndexBufferDestroy_, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderImage = Helper::makeFactoryPoolWithListener<OpenGLRenderImage, 128>( this, &OpenGLRenderSystem::onRenderImageDestroy_, MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRenderImageArray = Helper::makeFactoryPoolWithListener<OpenGLRenderImageArray, 128>( this, &OpenGLRenderSystem::onRenderImageDestroy_, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderImageTarget = Helper::makeFactoryPoolWithListener<OpenGLRenderImageTarget, 128>( this, &OpenGLRenderSystem::onRenderImageTargetDestroy_, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderTargetTexture = Helper::makeFactoryPoolWithListener<OpenGLRenderTargetTexture, 128>( this, &OpenGLRenderSystem::onRenderTargetTextureDestroy_, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderVertexAttribute = Helper::makeFactoryPool<OpenGLRenderVertexAttribute, 16>( MENGINE_DOCUMENT_FACTORABLE );
@@ -118,6 +120,7 @@ namespace Mengine
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderVertexBuffer );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderIndexBuffer );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderImage );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderImageArray );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderImageTarget );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderTargetTexture );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderVertexAttribute );
@@ -130,6 +133,7 @@ namespace Mengine
         m_factoryRenderVertexBuffer = nullptr;
         m_factoryRenderIndexBuffer = nullptr;
         m_factoryRenderImage = nullptr;
+        m_factoryRenderImageArray = nullptr;
         m_factoryRenderImageTarget = nullptr;
         m_factoryRenderTargetTexture = nullptr;
         m_factoryRenderVertexAttribute = nullptr;
@@ -216,13 +220,24 @@ namespace Mengine
             , m_glMaxCombinedTextureImageUnits
         );
 
-        GLint maxTextureSize;
-        MENGINE_GLCALL( glGetIntegerv, (GL_MAX_TEXTURE_SIZE, &maxTextureSize) );
+        GLint maxTexture2DSize;
+        MENGINE_GLCALL( glGetIntegerv, (GL_MAX_TEXTURE_SIZE, &maxTexture2DSize) );
 
-        m_glMaxTextureSize = maxTextureSize;
+        m_glMaxTexture2DSize = maxTexture2DSize;
 
         LOGGER_INFO( "opengl", "OpenGL max texture size: %u"
-            , m_glMaxTextureSize
+            , m_glMaxTexture2DSize
+        );
+
+        GLint maxTexture2DArrayLayers = 0;
+        MENGINE_GLCALL( glGetIntegerv, (GL_MAX_ARRAY_TEXTURE_LAYERS, &maxTexture2DArrayLayers) );
+
+        m_glMaxTexture2DArrayLayers = maxTexture2DArrayLayers > 0
+            ? (uint32_t)maxTexture2DArrayLayers
+            : 0U;
+
+        LOGGER_INFO( "opengl", "OpenGL max texture 2d array layers: %u"
+            , m_glMaxTexture2DArrayLayers
         );
 
         MENGINE_GLCALL( glFrontFace, (GL_CW) );
@@ -662,6 +677,7 @@ namespace Mengine
 #endif
 
                 MENGINE_GLCALL( glBindTexture, (GL_TEXTURE_2D, 0) );
+                MENGINE_GLCALL( glBindTexture, (GL_TEXTURE_2D_ARRAY, 0) );
 
                 continue;
             }
@@ -669,10 +685,12 @@ namespace Mengine
             OpenGLRenderImageExtensionInterface * extension = texture->getUnknown();
             extension->bind( stageId );
 
-            MENGINE_GLCALL( glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, textureStage.wrapS) );
-            MENGINE_GLCALL( glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, textureStage.wrapT) );
-            MENGINE_GLCALL( glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, textureStage.minFilter) );
-            MENGINE_GLCALL( glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, textureStage.magFilter) );
+            GLenum textureTarget = extension->getTextureTarget();
+
+            MENGINE_GLCALL( glTexParameteri, (textureTarget, GL_TEXTURE_WRAP_S, textureStage.wrapS) );
+            MENGINE_GLCALL( glTexParameteri, (textureTarget, GL_TEXTURE_WRAP_T, textureStage.wrapT) );
+            MENGINE_GLCALL( glTexParameteri, (textureTarget, GL_TEXTURE_MIN_FILTER, textureStage.minFilter) );
+            MENGINE_GLCALL( glTexParameteri, (textureTarget, GL_TEXTURE_MAG_FILTER, textureStage.magFilter) );
 
             if( m_currentProgram->bindTexture( stageId ) == false )
             {
@@ -923,8 +941,20 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderImageInterfacePtr OpenGLRenderSystem::createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentInterfacePtr & _doc )
+    RenderImageInterfacePtr OpenGLRenderSystem::createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _layers, EPixelFormat _format, const DocumentInterfacePtr & _doc )
     {
+        uint32_t maxTexture2DArrayLayers = this->getMaxTexture2DArrayLayers();
+
+        if( _layers == 0 || _layers > maxTexture2DArrayLayers )
+        {
+            LOGGER_ERROR( "invalid texture layer count %u (max %u)"
+                , _layers
+                , maxTexture2DArrayLayers
+            );
+
+            return nullptr;
+        }
+
         EPixelFormat hwFormat = PF_UNKNOWN;
         this->findFormatFromChannels_( _format, &hwFormat );
 
@@ -948,29 +978,34 @@ namespace Mengine
 
         uint32_t hwWidth = Helper::getTexturePow2( _width );
         uint32_t hwHeight = Helper::getTexturePow2( _height );
-        uint32_t maxTextureSize = this->getMaxTextureSize();
+        uint32_t maxTexture2DSize = this->getMaxTexture2DSize();
 
-        if( maxTextureSize > 0 && (hwWidth > maxTextureSize || hwHeight > maxTextureSize) )
+        if( maxTexture2DSize > 0 && (hwWidth > maxTexture2DSize || hwHeight > maxTexture2DSize) )
         {
             LOGGER_ERROR( "invalid texture size exceeds maximum: size %u:%u hwSize %u:%u maxSize %u PF %u"
                 , _width
                 , _height
                 , hwWidth
                 , hwHeight
-                , maxTextureSize
+                , maxTexture2DSize
                 , hwFormat
             );
 
             return nullptr;
         }
 
-        OpenGLRenderImagePtr image = m_factoryRenderImage->createObject( _doc );
+        const FactoryInterfacePtr & factoryRenderImage = _layers == 1
+            ? m_factoryRenderImage
+            : m_factoryRenderImageArray;
+
+        OpenGLRenderImageBasePtr image = factoryRenderImage->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( image, "invalid create" );
 
         if( image->initialize( _mipmaps
             , _width
             , _height
+            , _layers
             , hwFormat
             , textureInternalFormat
             , textureColorFormat
@@ -981,7 +1016,7 @@ namespace Mengine
             return nullptr;
         }
 
-        OpenGLRenderImage * image_ptr = image.get();
+        OpenGLRenderImageBase * image_ptr = image.get();
         m_renderResourceHandlers.push_back( image_ptr );
 
         return image;
@@ -1089,9 +1124,14 @@ namespace Mengine
         return m_glMaxCombinedTextureImageUnits;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t OpenGLRenderSystem::getMaxTextureSize() const
+    uint32_t OpenGLRenderSystem::getMaxTexture2DSize() const
     {
-        return m_glMaxTextureSize;
+        return m_glMaxTexture2DSize;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t OpenGLRenderSystem::getMaxTexture2DArrayLayers() const
+    {
+        return m_glMaxTexture2DArrayLayers;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onWindowMovedOrResized()
@@ -1273,7 +1313,7 @@ namespace Mengine
         _indexBuffer->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::onRenderImageDestroy_( OpenGLRenderImage * _image )
+    void OpenGLRenderSystem::onRenderImageDestroy_( OpenGLRenderImageBase * _image )
     {
         _image->finalize();
     }

@@ -38,7 +38,7 @@
 #include "imgui_impl_dx11.h"
 #endif
 
-#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL) && (defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS) || defined(MENGINE_ENVIRONMENT_PLATFORM_IOS) || defined(MENGINE_ENVIRONMENT_PLATFORM_UNIX))
+#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL) && (defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS) || defined(MENGINE_ENVIRONMENT_PLATFORM_UNIX))
 #include "ImGUIOpenGL3Render.h"
 #elif defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
 #include "ImGUIOpenGL2Render.h"
@@ -451,8 +451,6 @@ namespace Mengine
     {
 #if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL) && defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
         MengineImGUIOpenGL3Render_Init( "#version 150" );
-#elif defined(MENGINE_ENVIRONMENT_RENDER_OPENGL) && defined(MENGINE_ENVIRONMENT_PLATFORM_IOS)
-        MengineImGUIOpenGL3Render_Init( nullptr );
 #elif defined(MENGINE_ENVIRONMENT_RENDER_OPENGL) && defined(MENGINE_ENVIRONMENT_PLATFORM_UNIX)
         MengineImGUIOpenGL3Render_Init( "#version 330 core" );
 #elif defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
@@ -482,7 +480,7 @@ namespace Mengine
         ImGui_ImplDX11_Shutdown();
 #endif
 
-#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL) && (defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS) || defined(MENGINE_ENVIRONMENT_PLATFORM_IOS) || defined(MENGINE_ENVIRONMENT_PLATFORM_UNIX))
+#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL) && (defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS) || defined(MENGINE_ENVIRONMENT_PLATFORM_UNIX))
         MengineImGUIOpenGL3Render_DestroyDeviceObjects();
 
         MengineImGUIOpenGL3Render_Shutdown();

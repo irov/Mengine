@@ -18,8 +18,11 @@ namespace Mengine
         ~MockupRenderImage() override;
 
     public:
-        void initialize( uint32_t _mipmaps, uint32_t _width, uint32_t _height, EPixelFormat _pixelFormat );
+        void initialize( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _layers, EPixelFormat _pixelFormat );
         void finalize();
+
+    public:
+        uint32_t getHWLayerCount() const override;
 
     protected:
         void setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider ) override;
@@ -40,8 +43,8 @@ namespace Mengine
         bool getUpscalePow2() const override;
 
     public:
-        RenderImageLockedInterfacePtr lock( uint32_t _level, const Rect & _rect, bool _readOnly ) override;
-        bool unlock( const RenderImageLockedInterfacePtr & _locked, uint32_t _level, bool _successful ) override;
+        RenderImageLockedInterfacePtr lock( uint32_t _layer, uint32_t _level, const Rect & _rect, bool _readOnly ) override;
+        bool unlock( const RenderImageLockedInterfacePtr & _locked, uint32_t _layer, uint32_t _level, bool _successful ) override;
 
     protected:
         RenderImageProviderInterfacePtr m_renderImageProvider;
@@ -49,6 +52,7 @@ namespace Mengine
         uint32_t m_hwMipmaps;
         uint32_t m_hwWidth;
         uint32_t m_hwHeight;
+        uint32_t m_hwLayers;
 
         EPixelFormat m_hwPixelFormat;
 

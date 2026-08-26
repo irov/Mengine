@@ -116,7 +116,7 @@ namespace Mengine
     RenderTextureInterfacePtr RenderTextureService::createTexture( uint32_t _mipmaps, uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentInterfacePtr & _doc )
     {
         RenderImageInterfacePtr image = RENDER_SYSTEM()
-            ->createImage( _mipmaps, _width, _height, _format, _doc );
+            ->createImage( _mipmaps, _width, _height, 1, _format, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( image, "invalid create image %ux%u"
             , _width
@@ -179,7 +179,7 @@ namespace Mengine
         rect.right = dataInfo.width;
         rect.bottom = dataInfo.height;
 
-        RenderImageLockedInterfacePtr locked = image->lock( 0, rect, true );
+        RenderImageLockedInterfacePtr locked = image->lock( 0, 0, rect, true );
 
         size_t pitch = 0;
         void * buffer = locked->getLockedBuffer( &pitch );
@@ -199,7 +199,7 @@ namespace Mengine
 
         imageEncoder->finalize();
 
-        image->unlock( locked, 0, true );
+        image->unlock( locked, 0, 0, true );
 
         bool successful_close_stream = _content->closeOutputStreamFile( stream );
 

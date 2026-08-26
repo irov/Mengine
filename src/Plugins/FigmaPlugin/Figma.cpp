@@ -2411,7 +2411,7 @@ namespace Mengine
         rect.right = _width;
         rect.bottom = _height;
 
-        RenderImageLockedInterfacePtr locked = image->lock( 0, rect, false );
+        RenderImageLockedInterfacePtr locked = image->lock( 0, 0, rect, false );
 
         if( locked == nullptr )
         {
@@ -2424,7 +2424,7 @@ namespace Mengine
 
         if( textureMemory == nullptr )
         {
-            image->unlock( locked, 0, false );
+            image->unlock( locked, 0, 0, false );
             texture->release();
             return nullptr;
         }
@@ -2441,7 +2441,7 @@ namespace Mengine
             target += texturePitch;
         }
 
-        image->unlock( locked, 0, true );
+        image->unlock( locked, 0, 0, true );
 
         return texture;
     }
@@ -2547,7 +2547,7 @@ namespace Mengine
         rect.right = width;
         rect.bottom = height;
 
-        RenderImageLockedInterfacePtr locked = image->lock( 0, rect, false );
+        RenderImageLockedInterfacePtr locked = image->lock( 0, 0, rect, false );
 
         if( locked == nullptr )
         {
@@ -2560,7 +2560,7 @@ namespace Mengine
 
         if( textureMemory == nullptr )
         {
-            image->unlock( locked, 0, false );
+            image->unlock( locked, 0, 0, false );
             texture->release();
             return nullptr;
         }
@@ -2606,7 +2606,7 @@ namespace Mengine
             Detail::applyImageFilter_( static_cast<uint8_t *>(textureMemory), pitch, width, height, _batch );
         }
 
-        image->unlock( locked, 0, successful );
+        image->unlock( locked, 0, 0, successful );
 
         if( successful == false )
         {

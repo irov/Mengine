@@ -24,6 +24,11 @@ namespace Mengine
         m_target = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
+    uint32_t DX11RenderImageTarget::getHWLayerCount() const
+    {
+        return 1U;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void DX11RenderImageTarget::bind( const ID3D11DeviceContextPtr & _pImmediateContext, uint32_t _stage )
     {
         const ID3D11ShaderResourceViewPtr & d3dShaderResource = m_target->getD3DShaderResource();
@@ -52,8 +57,9 @@ namespace Mengine
         return RenderImageProviderInterfacePtr::none();
     }
     ///////////////////////////////////////////////////////////////////////////
-    RenderImageLockedInterfacePtr DX11RenderImageTarget::lock( uint32_t _level, const Rect & _rect, bool _readOnly )
+    RenderImageLockedInterfacePtr DX11RenderImageTarget::lock( uint32_t _layer, uint32_t _level, const Rect & _rect, bool _readOnly )
     {
+        MENGINE_UNUSED( _layer );
         MENGINE_UNUSED( _level );
         MENGINE_UNUSED( _rect );
         MENGINE_UNUSED( _readOnly );
@@ -61,9 +67,10 @@ namespace Mengine
         return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX11RenderImageTarget::unlock( const RenderImageLockedInterfacePtr & _locked, uint32_t _level, bool _successful )
+    bool DX11RenderImageTarget::unlock( const RenderImageLockedInterfacePtr & _locked, uint32_t _layer, uint32_t _level, bool _successful )
     {
         MENGINE_UNUSED( _locked );
+        MENGINE_UNUSED( _layer );
         MENGINE_UNUSED( _level );
         MENGINE_UNUSED( _successful );
 

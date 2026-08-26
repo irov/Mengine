@@ -16,19 +16,11 @@ src
     iOSAnalyticsEventProvider.mm
 )
 
-if(MENGINE_RENDER_OPENGL)
-    ADD_FILTER(
-    src
-        iOSOpenGLView.h
-        iOSOpenGLView.mm
-    )
-elseif(MENGINE_RENDER_METAL)
-    ADD_FILTER(
-    src
-        iOSMetalView.h
-        iOSMetalView.mm
-    )
-endif()
+ADD_FILTER(
+src
+    iOSMetalView.h
+    iOSMetalView.mm
+)
 
 ADD_MENGINE_LIBRARY(Platforms)
 

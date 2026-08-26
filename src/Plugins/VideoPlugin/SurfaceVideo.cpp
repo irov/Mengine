@@ -521,7 +521,7 @@ namespace Mengine
             rect.bottom = image->getHWHeight();
         }
 
-        RenderImageLockedInterfacePtr locked = image->lock( 0, rect, false );
+        RenderImageLockedInterfacePtr locked = image->lock( 0, 0, rect, false );
 
         MENGINE_ASSERTION_MEMORY_PANIC( locked, "video '%s' invalid lock image"
             , this->getName().c_str()
@@ -550,7 +550,7 @@ namespace Mengine
 
         size_t bytes = m_decoderVideo->decode( &data );
 
-        image->unlock( locked, 0, true );
+        image->unlock( locked, 0, 0, true );
 
         if( bytes == 0 )
         {

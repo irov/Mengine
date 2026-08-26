@@ -43,7 +43,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     MetalRenderSystem::MetalRenderSystem()
         : m_maxCombinedTextureImageUnits( 0 )
-        , m_maxTextureSize( 0 )
+        , m_maxTexture2DSize( 0 )
         , m_renderWindowCreate( false )
         , m_renderDeviceLost( false )
         , m_depthMask( false )
@@ -232,25 +232,25 @@ namespace Mengine
 #if TARGET_OS_OSX
         if( [m_device supportsFamily:MTLGPUFamilyApple1] == YES )
         {
-            m_maxTextureSize = 16384;
+            m_maxTexture2DSize = 16384;
         }
         else
         {
-            m_maxTextureSize = 8192;
+            m_maxTexture2DSize = 8192;
         }
 #else
         if( [m_device supportsFamily:MTLGPUFamilyApple3] == YES )
         {
-            m_maxTextureSize = 16384;
+            m_maxTexture2DSize = 16384;
         }
         else
         {
-            m_maxTextureSize = 8192;
+            m_maxTexture2DSize = 8192;
         }
 #endif
 
         LOGGER_INFO( "metal", "Metal max texture size: %u"
-            , m_maxTextureSize
+            , m_maxTexture2DSize
         );
 
         this->updateDepthStencilState_();
@@ -906,23 +906,35 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderImageInterfacePtr MetalRenderSystem::createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentInterfacePtr & _doc )
+    RenderImageInterfacePtr MetalRenderSystem::createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _layers, EPixelFormat _format, const DocumentInterfacePtr & _doc )
     {
+        uint32_t maxTexture2DArrayLayers = this->getMaxTexture2DArrayLayers();
+
+        if( _layers == 0 || _layers > maxTexture2DArrayLayers )
+        {
+            LOGGER_ERROR( "invalid texture layer count %u (max %u)"
+                , _layers
+                , maxTexture2DArrayLayers
+            );
+
+            return nullptr;
+        }
+
         EPixelFormat hwFormat = PF_UNKNOWN;
         this->findFormatFromChannels_( _format, &hwFormat );
 
         uint32_t hwWidth = Helper::getTexturePow2( _width );
         uint32_t hwHeight = Helper::getTexturePow2( _height );
-        uint32_t maxTextureSize = this->getMaxTextureSize();
+        uint32_t maxTexture2DSize = this->getMaxTexture2DSize();
 
-        if( maxTextureSize > 0 && (hwWidth > maxTextureSize || hwHeight > maxTextureSize) )
+        if( maxTexture2DSize > 0 && (hwWidth > maxTexture2DSize || hwHeight > maxTexture2DSize) )
         {
             LOGGER_ERROR( "invalid texture size exceeds maximum: size %u:%u hwSize %u:%u maxSize %u PF %u"
                 , _width
                 , _height
                 , hwWidth
                 , hwHeight
-                , maxTextureSize
+                , maxTexture2DSize
                 , hwFormat
             );
 
@@ -935,7 +947,7 @@ namespace Mengine
 
         image->setMetalDevice( m_device );
 
-        if( image->initialize( _mipmaps, _width, _height, hwFormat ) == false )
+        if( image->initialize( _mipmaps, _width, _height, _layers, hwFormat ) == false )
         {
             LOGGER_ERROR( "invalid initialize" );
 
@@ -1085,9 +1097,14 @@ namespace Mengine
         return m_maxCombinedTextureImageUnits;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t MetalRenderSystem::getMaxTextureSize() const
+    uint32_t MetalRenderSystem::getMaxTexture2DSize() const
     {
-        return m_maxTextureSize;
+        return m_maxTexture2DSize;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t MetalRenderSystem::getMaxTexture2DArrayLayers() const
+    {
+        return 2048U;
     }
     //////////////////////////////////////////////////////////////////////////
     void MetalRenderSystem::onWindowMovedOrResized()

@@ -2,34 +2,32 @@
 
 #include "Interface/RenderImageInterface.h"
 
-#include "Environment/Metal/MetalRenderImageExtensionInterface.h"
+#include "Environment/OpenGL/OpenGLRenderIncluder.h"
+#include "Environment/OpenGL/OpenGLRenderImageExtensionInterface.h"
 
-#include "MetalRenderResourceHandler.h"
+#include "OpenGLRenderResourceHandler.h"
 
 #include "Kernel/Factorable.h"
 
 #include "Config/Timestamp.h"
 
-#import <Metal/Metal.h>
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class MetalRenderImage
+    class OpenGLRenderImageBase
         : public RenderImageInterface
-        , public MetalRenderImageExtensionInterface
-        , public MetalRenderResourceHandler
+        , public OpenGLRenderImageExtensionInterface
+        , public OpenGLRenderResourceHandler
         , public Factorable
     {
-        DECLARE_FACTORABLE( RenderImageInterface );
         DECLARE_UNKNOWABLE();
 
     public:
-        MetalRenderImage();
-        ~MetalRenderImage() override;
+        OpenGLRenderImageBase();
+        ~OpenGLRenderImageBase() override;
 
     public:
-        bool initialize( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _layers, EPixelFormat _pixelFormat );
+        bool initialize( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _layers, EPixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type );
         void finalize();
 
     public:
@@ -47,9 +45,15 @@ namespace Mengine
         bool create();
         void release();
 
+    protected:
+        virtual bool _create() = 0;
+
     public:
         RenderImageLockedInterfacePtr lock( uint32_t _layer, uint32_t _level, const Rect & _rect, bool _readOnly ) override;
         bool unlock( const RenderImageLockedInterfacePtr & _locked, uint32_t _layer, uint32_t _level, bool _successful ) override;
+
+    protected:
+        virtual bool _unlock( const Rect & _lockedRect, const void * _buffer, uint32_t _layer, uint32_t _level ) = 0;
 
     public:
         uint32_t getHWMipmaps() const override;
@@ -67,7 +71,21 @@ namespace Mengine
         bool getUpscalePow2() const override;
 
     public:
-        id<MTLTexture> getMetalTexture() const override;
+        GLuint getUID() const override;
+        virtual GLenum getTextureTarget() const override = 0;
+
+    public:
+        void setMinFilter( GLenum _minFilter );
+        GLenum getMinFilter() const;
+
+        void setMagFilter( GLenum _magFilter );
+        GLenum getMagFilter() const;
+
+        void setWrapS( GLenum _wrapS );
+        GLenum getWrapS() const;
+
+        void setWrapT( GLenum _wrapT );
+        GLenum getWrapT() const;
 
     protected:
         void onRenderReset() override;
@@ -77,6 +95,8 @@ namespace Mengine
         RenderImageProviderInterfacePtr m_renderImageProvider;
 
         Timestamp m_createTimestamp;
+
+        GLuint m_uid;
 
         EPixelFormat m_hwPixelFormat;
 
@@ -91,13 +111,20 @@ namespace Mengine
         float m_hwWidthInv;
         float m_hwHeightInv;
 
-        id<MTLTexture> m_texture;
+        GLenum m_minFilter;
+        GLenum m_magFilter;
+        GLenum m_wrapS;
+        GLenum m_wrapT;
 
-        bool m_lockFirst;
+        GLint m_internalFormat;
+
+        GLenum m_format;
+        GLenum m_type;
+
         bool m_pow2;
         bool m_upscalePow2;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<MetalRenderImage, RenderImageInterface> MetalRenderImagePtr;
+    typedef IntrusivePtr<OpenGLRenderImageBase, RenderImageInterface> OpenGLRenderImageBasePtr;
     //////////////////////////////////////////////////////////////////////////
 }

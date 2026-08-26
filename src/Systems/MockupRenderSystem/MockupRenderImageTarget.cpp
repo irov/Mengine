@@ -23,6 +23,11 @@ namespace Mengine
         m_target = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
+    uint32_t MockupRenderImageTarget::getHWLayerCount() const
+    {
+        return 1U;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void MockupRenderImageTarget::setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider )
     {
         MENGINE_UNUSED( _renderImageProvider );
@@ -33,8 +38,9 @@ namespace Mengine
         return RenderImageProviderInterfacePtr::none();
     }
     ///////////////////////////////////////////////////////////////////////////
-    RenderImageLockedInterfacePtr MockupRenderImageTarget::lock( uint32_t _level, const Rect & _rect, bool _readOnly )
+    RenderImageLockedInterfacePtr MockupRenderImageTarget::lock( uint32_t _layer, uint32_t _level, const Rect & _rect, bool _readOnly )
     {
+        MENGINE_UNUSED( _layer );
         MENGINE_UNUSED( _level );
         MENGINE_UNUSED( _rect );
         MENGINE_UNUSED( _readOnly );
@@ -42,9 +48,10 @@ namespace Mengine
         return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MockupRenderImageTarget::unlock( const RenderImageLockedInterfacePtr & _locked, uint32_t _level, bool _successful )
+    bool MockupRenderImageTarget::unlock( const RenderImageLockedInterfacePtr & _locked, uint32_t _layer, uint32_t _level, bool _successful )
     {
         MENGINE_UNUSED( _locked );
+        MENGINE_UNUSED( _layer );
         MENGINE_UNUSED( _level );
         MENGINE_UNUSED( _successful );
 

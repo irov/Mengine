@@ -87,7 +87,7 @@ namespace Mengine
 
         void setTextureStageFilter( uint32_t _stage, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification ) override;
 
-        RenderImageInterfacePtr createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentInterfacePtr & _doc ) override;
+        RenderImageInterfacePtr createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _layers, EPixelFormat _format, const DocumentInterfacePtr & _doc ) override;
 
         RenderTargetInterfacePtr createRenderTargetTexture( uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentInterfacePtr & _doc ) override;
         RenderTargetInterfacePtr createRenderTargetOffscreen( uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentInterfacePtr & _doc ) override;
@@ -112,7 +112,8 @@ namespace Mengine
 
         uint32_t getMaxCombinedTextureImageUnits() const override;
 
-        uint32_t getMaxTextureSize() const override;
+        uint32_t getMaxTexture2DSize() const override;
+        uint32_t getMaxTexture2DArrayLayers() const override;
 
         void onDeviceLostPrepare() override;
         bool onDeviceLostRestore() override;
@@ -143,7 +144,7 @@ namespace Mengine
         void release_();
         bool restore_();
 
-        MockupRenderImagePtr createRenderImage_( uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, EPixelFormat _hwPixelFormat, const DocumentInterfacePtr & _doc );
+        MockupRenderImagePtr createRenderImage_( uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwLayers, EPixelFormat _hwPixelFormat, const DocumentInterfacePtr & _doc );
 
     protected:
         void onDestroyRenderImage_( MockupRenderImage * _image );

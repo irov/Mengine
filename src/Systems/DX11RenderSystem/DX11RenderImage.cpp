@@ -17,6 +17,7 @@ namespace Mengine
         : m_hwMipmaps( 0 )
         , m_hwWidth( 0 )
         , m_hwHeight( 0 )
+        , m_hwLayers( 0 )
         , m_hwChannels( 0 )
         , m_hwDepth( 0 )
         , m_hwPixelFormat( PF_UNKNOWN )
@@ -31,7 +32,7 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( m_pD3DResourceView == nullptr, "D3D resource view is not null" );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX11RenderImage::initialize( uint32_t _mipmaps, uint32_t _width, uint32_t _height, EPixelFormat _pixelFormat )
+    bool DX11RenderImage::initialize( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _layers, EPixelFormat _pixelFormat )
     {
         DXGI_FORMAT d3dFormat = Helper::toD3DFormat( _pixelFormat );
 
@@ -41,6 +42,8 @@ namespace Mengine
             return false;
         }
 
+        MENGINE_ASSERTION_FATAL( _layers != 0, "invalid create texture layers == 0" );
+
         m_hwPixelFormat = Helper::toPixelFormat( d3dFormat );
 
         uint32_t hwChannels = Helper::getPixelFormatChannels( m_hwPixelFormat );
@@ -49,6 +52,7 @@ namespace Mengine
         m_hwMipmaps = _mipmaps;
         m_hwWidth = Helper::getTexturePow2( _width );
         m_hwHeight = Helper::getTexturePow2( _height );
+        m_hwLayers = _layers;
         m_hwChannels = hwChannels;
         m_hwDepth = hwDepth;
 
@@ -61,7 +65,7 @@ namespace Mengine
         textureDesc.Width = m_hwWidth;
         textureDesc.Height = m_hwHeight;
         textureDesc.MipLevels = m_hwMipmaps;
-        textureDesc.ArraySize = 1;
+        textureDesc.ArraySize = m_hwLayers;
         textureDesc.Format = d3dFormat;
         textureDesc.SampleDesc.Count = 1;
         textureDesc.SampleDesc.Quality = 0;
@@ -80,23 +84,45 @@ namespace Mengine
 
         m_pD3DTexture.Attach( pD3DTexture );
 
+        D3D11_TEXTURE2D_DESC createdTextureDesc;
+        m_pD3DTexture->GetDesc( &createdTextureDesc );
+        m_hwMipmaps = createdTextureDesc.MipLevels;
+
         D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
         ZeroMemory( &shaderResourceViewDesc, sizeof( D3D11_SHADER_RESOURCE_VIEW_DESC ) );
 
         shaderResourceViewDesc.Format = textureDesc.Format;
-        shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-        shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
-        shaderResourceViewDesc.Texture2D.MipLevels = textureDesc.MipLevels;
+        if( m_hwLayers > 1 )
+        {
+            shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
+            shaderResourceViewDesc.Texture2DArray.MostDetailedMip = 0;
+            shaderResourceViewDesc.Texture2DArray.MipLevels = m_hwMipmaps;
+            shaderResourceViewDesc.Texture2DArray.FirstArraySlice = 0;
+            shaderResourceViewDesc.Texture2DArray.ArraySize = m_hwLayers;
+        }
+        else
+        {
+            shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+            shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
+            shaderResourceViewDesc.Texture2D.MipLevels = m_hwMipmaps;
+        }
 
         ID3D11ShaderResourceView * pD3DResourceView;
         MENGINE_IF_DX11_CALL( pD3DDevice, CreateShaderResourceView, (m_pD3DTexture.Get(), &shaderResourceViewDesc, &pD3DResourceView) )
         {
+            m_pD3DTexture = nullptr;
+
             return false;
         }
 
         m_pD3DResourceView.Attach( pD3DResourceView );
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t DX11RenderImage::getHWLayerCount() const
+    {
+        return m_hwLayers;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderImage::finalize()
@@ -148,8 +174,13 @@ namespace Mengine
         return m_renderImageProvider;
     }
     ///////////////////////////////////////////////////////////////////////////
-    RenderImageLockedInterfacePtr DX11RenderImage::lock( uint32_t _level, const Rect & _rect, bool _readOnly )
+    RenderImageLockedInterfacePtr DX11RenderImage::lock( uint32_t _layer, uint32_t _level, const Rect & _rect, bool _readOnly )
     {
+        if( _layer >= m_hwLayers || _level >= m_hwMipmaps )
+        {
+            return nullptr;
+        }
+
         MENGINE_UNUSED( _readOnly );
 
         uint32_t rect_offsetX = _rect.getOffsetX();
@@ -162,11 +193,18 @@ namespace Mengine
         uint32_t miplevel_width = rect_width >> _level;
         uint32_t miplevel_height = rect_height >> _level;
 
+        if( miplevel_width == 0 || miplevel_height == 0 )
+        {
+            return nullptr;
+        }
+
         DX11RenderImageLockedPtr imageLocked = DX11RenderImageLockedFactoryStorage::createObject( MENGINE_DOCUMENT_FACTORABLE );
 
         const ID3D11DevicePtr & pD3DDevice = this->getDirect3D11Device();
 
-        if( imageLocked->initialize( pD3DDevice, m_pD3DTexture, miplevel_offsetX, miplevel_offsetY, miplevel_width, miplevel_height ) == false )
+        uint32_t subresource = D3D11CalcSubresource( _level, _layer, m_hwMipmaps );
+
+        if( imageLocked->initialize( pD3DDevice, m_pD3DTexture, subresource, miplevel_offsetX, miplevel_offsetY, miplevel_width, miplevel_height ) == false )
         {
             return nullptr;
         }
@@ -181,9 +219,12 @@ namespace Mengine
         return imageLocked;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX11RenderImage::unlock( const RenderImageLockedInterfacePtr & _locked, uint32_t _level, bool _successful )
+    bool DX11RenderImage::unlock( const RenderImageLockedInterfacePtr & _locked, uint32_t _layer, uint32_t _level, bool _successful )
     {
-        MENGINE_UNUSED( _level );
+        if( _layer >= m_hwLayers || _level >= m_hwMipmaps )
+        {
+            return false;
+        }
 
         DX11RenderImageLocked * imageLocked = _locked.getT<DX11RenderImageLocked *>();
 

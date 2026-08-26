@@ -58,13 +58,9 @@
 #include "Config/Switch.h"
 #include "Config/Path.h"
 
-#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
-#   import <OpenGLES/ES2/gl.h>
-#   import <OpenGLES/ES2/glext.h>
-#elif defined(MENGINE_ENVIRONMENT_RENDER_METAL)
-#   import <Metal/Metal.h>
-#   include "Environment/Metal/MetalRenderSystemExtensionInterface.h"
-#endif
+#import <Metal/Metal.h>
+
+#include "Environment/Metal/MetalRenderSystemExtensionInterface.h"
 
 #import <QuartzCore/QuartzCore.h>
 #import <sys/utsname.h>
@@ -105,13 +101,8 @@ namespace Mengine
         , m_active( false )
         , m_desktop( false )
         , m_touchpad( false )
-#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
-        , m_glContext( nil )
-        , m_glView( nil )
-#elif defined(MENGINE_ENVIRONMENT_RENDER_METAL)
         , m_metalDevice( nil )
         , m_metalView( nil )
-#endif
         , m_deleteAccountProgressAlert( nil )
         , m_mainScreenScale( 1.f )
     {
@@ -243,20 +234,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool iOSPlatformService::getMaxClientResolution( Resolution * const _resolution ) const
     {
-#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
-        if( m_glView != nil )
-        {
-            GLint backingWidth = [m_glView backingWidth];
-            GLint backingHeight = [m_glView backingHeight];
-
-            if( backingWidth > 0 && backingHeight > 0 )
-            {
-                *_resolution = Resolution( (uint32_t)backingWidth, (uint32_t)backingHeight );
-
-                return true;
-            }
-        }
-#elif defined(MENGINE_ENVIRONMENT_RENDER_METAL)
         if( m_metalView != nil )
         {
             NSInteger drawableWidth = [m_metalView drawableWidth];
@@ -269,7 +246,6 @@ namespace Mengine
                 return true;
             }
         }
-#endif
 
         UIScreen * mainScreen = [UIScreen mainScreen];
 
@@ -597,33 +573,6 @@ namespace Mengine
             return false;
         }
 
-#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
-        if( m_glContext == nil || m_glView == nil )
-        {
-            return false;
-        }
-
-        if( [m_glView beginRender] == NO )
-        {
-            return false;
-        }
-
-        bool sucessful = APPLICATION_SERVICE()
-            ->render();
-
-        if( sucessful == false )
-        {
-            return false;
-        }
-
-        APPLICATION_SERVICE()
-            ->flush();
-
-        if( [m_glView endRender] == NO )
-        {
-            return false;
-        }
-#elif defined(MENGINE_ENVIRONMENT_RENDER_METAL)
         if( m_metalView == nil )
         {
             return false;
@@ -655,7 +604,6 @@ namespace Mengine
             ->flush();
 
         [m_metalView endRender];
-#endif
         
         return true;
     }
@@ -1194,75 +1142,6 @@ namespace Mengine
 
         UIViewController * rootViewController = m_uiWindow.rootViewController;
 
-#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
-        EAGLContext * glContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
-
-        if( glContext == nil )
-        {
-            LOGGER_ERROR( "invalid create EAGLContext for OpenGL ES 2.0" );
-
-            return false;
-        }
-
-        if( [EAGLContext setCurrentContext:glContext] == NO )
-        {
-            LOGGER_ERROR( "invalid set current EAGLContext" );
-
-            return false;
-        }
-
-        m_glContext = glContext;
-
-        iOSOpenGLView * glView = [[iOSOpenGLView alloc] initWithFrame:screenBounds context:m_glContext];
-
-        if( glView == nil )
-        {
-            LOGGER_ERROR( "invalid create iOSOpenGLView" );
-
-            return false;
-        }
-
-        glView.frame = m_uiWindow.bounds;
-        glView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-
-        if( rootViewController != nil )
-        {
-            rootViewController.view = glView;
-        }
-        else
-        {
-            [m_uiWindow addSubview:glView];
-        }
-
-        [m_uiWindow makeKeyAndVisible];
-        [m_uiWindow setNeedsLayout];
-        [m_uiWindow layoutIfNeeded];
-        [glView setNeedsLayout];
-        [glView layoutIfNeeded];
-
-        if( [glView backingWidth] == 0 || [glView backingHeight] == 0 )
-        {
-            if( [glView createFramebuffer] == NO )
-            {
-                LOGGER_ERROR( "invalid create framebuffer for iOSOpenGLView" );
-
-                return false;
-            }
-        }
-
-        m_glView = glView;
-        
-        IOS_LOGGER_INFO( @"platform", @"iOS OpenGL drawable size [%d, %d]"
-            , [glView backingWidth]
-            , [glView backingWidth]
-        );
-
-        IOS_LOGGER_INFO( @"platform", @"iOS OpenGL window size [%f, %f] scale [%.1f]"
-            , screenBounds.size.width
-            , screenBounds.size.height
-            , (float)screenScale
-        );
-#elif defined(MENGINE_ENVIRONMENT_RENDER_METAL)
         id<MTLDevice> metalDevice = MTLCreateSystemDefaultDevice();
 
         if( metalDevice == nil )
@@ -1313,7 +1192,6 @@ namespace Mengine
             , screenBounds.size.height
             , (float)screenScale
         );
-#endif
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_ATACH_WINDOW );
 
@@ -1375,20 +1253,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool iOSPlatformService::getDesktopResolution( Resolution * const _resolution ) const
     {
-#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
-        if( m_glView != nil )
-        {
-            GLint backingWidth = [m_glView backingWidth];
-            GLint backingHeight = [m_glView backingHeight];
-
-            if( backingWidth > 0 && backingHeight > 0 )
-            {
-                *_resolution = Resolution( (uint32_t)backingWidth, (uint32_t)backingHeight );
-
-                return true;
-            }
-        }
-#elif defined(MENGINE_ENVIRONMENT_RENDER_METAL)
         if( m_metalView != nil )
         {
             NSInteger drawableWidth = [m_metalView drawableWidth];
@@ -1401,7 +1265,6 @@ namespace Mengine
                 return true;
             }
         }
-#endif
 
         UIScreen * mainScreen = [UIScreen mainScreen];
 
@@ -1698,23 +1561,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     UIView * iOSPlatformService::getUIView() const
     {
-#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
-        return m_glView;
-#elif defined(MENGINE_ENVIRONMENT_RENDER_METAL)
         return m_metalView;
-#else
-        return m_uiWindow.rootViewController.view;
-#endif
     }
-    //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
-    //////////////////////////////////////////////////////////////////////////
-    EAGLContext * iOSPlatformService::getEAGLContext() const
-    {
-        return m_glContext;
-    }
-    //////////////////////////////////////////////////////////////////////////
-#elif defined(MENGINE_ENVIRONMENT_RENDER_METAL)
     //////////////////////////////////////////////////////////////////////////
     id<MTLDevice> iOSPlatformService::getMetalDevice() const
     {
@@ -1725,8 +1573,6 @@ namespace Mengine
     {
         return m_metalView;
     }
-    //////////////////////////////////////////////////////////////////////////
-#endif
     //////////////////////////////////////////////////////////////////////////
     UniqueId iOSPlatformService::addIOSTouchHandler( const LambdaIOSTouchHandler & _lambda, const DocumentInterfacePtr & _doc )
     {
@@ -1893,20 +1739,6 @@ namespace Mengine
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_DETACH_WINDOW );
 
-#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
-        if( m_glView != nil )
-        {
-            [m_glView destroyFramebuffer];
-            [m_glView removeFromSuperview];
-            m_glView = nil;
-        }
-
-        if( m_glContext != nil )
-        {
-            [EAGLContext setCurrentContext:nil];
-            m_glContext = nil;
-        }
-#elif defined(MENGINE_ENVIRONMENT_RENDER_METAL)
         if( m_metalView != nil )
         {
             [m_metalView removeFromSuperview];
@@ -1914,7 +1746,6 @@ namespace Mengine
         }
 
         m_metalDevice = nil;
-#endif
 
         m_uiWindow = nil;
     }

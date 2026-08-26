@@ -96,7 +96,7 @@ namespace Mengine
         bool setProgramVariable( const RenderProgramInterfacePtr & _program, const RenderProgramVariableInterfacePtr & _programVariable ) override;
 
     public:
-        RenderImageInterfacePtr createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentInterfacePtr & _doc ) override;
+        RenderImageInterfacePtr createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _layers, EPixelFormat _format, const DocumentInterfacePtr & _doc ) override;
 
         RenderTargetInterfacePtr createRenderTargetTexture( uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentInterfacePtr & _doc ) override;
         RenderTargetInterfacePtr createRenderTargetOffscreen( uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentInterfacePtr & _doc ) override;
@@ -121,7 +121,8 @@ namespace Mengine
 
         uint32_t getMaxCombinedTextureImageUnits() const override;
 
-        uint32_t getMaxTextureSize() const override;
+        uint32_t getMaxTexture2DSize() const override;
+        uint32_t getMaxTexture2DArrayLayers() const override;
 
         void onWindowMovedOrResized() override;
         void onWindowClose() override;
@@ -186,7 +187,7 @@ namespace Mengine
         VectorDeferredRenderPrograms m_deferredCompilePrograms;
 
         uint32_t m_maxCombinedTextureImageUnits;
-        uint32_t m_maxTextureSize;
+        uint32_t m_maxTexture2DSize;
 
         struct TextureStage
         {

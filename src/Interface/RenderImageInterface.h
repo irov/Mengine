@@ -17,6 +17,9 @@ namespace Mengine
         : public Unknowable
     {
     public:
+        virtual uint32_t getHWLayerCount() const = 0;
+
+    public:
         virtual void setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider ) = 0;
         virtual const RenderImageProviderInterfacePtr & getRenderImageProvider() const = 0;
 
@@ -35,8 +38,8 @@ namespace Mengine
         virtual bool getUpscalePow2() const = 0;
 
     public:
-        virtual RenderImageLockedInterfacePtr lock( uint32_t _level, const Rect & _rect, bool _readOnly = true ) = 0;
-        virtual bool unlock( const RenderImageLockedInterfacePtr & _lock, uint32_t _level, bool _successful ) = 0;
+        virtual RenderImageLockedInterfacePtr lock( uint32_t _layer, uint32_t _level, const Rect & _rect, bool _readOnly = true ) = 0;
+        virtual bool unlock( const RenderImageLockedInterfacePtr & _lock, uint32_t _layer, uint32_t _level, bool _successful ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<RenderImageInterface> RenderImageInterfacePtr;

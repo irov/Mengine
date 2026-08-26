@@ -9,6 +9,7 @@ namespace Mengine
         : m_hwMipmaps( 0 )
         , m_hwWidth( 0 )
         , m_hwHeight( 0 )
+        , m_hwLayers( 0 )
         , m_hwPixelFormat( PF_UNKNOWN )
         , m_hwWidthInv( 0.f )
         , m_hwHeightInv( 0.f )
@@ -20,11 +21,12 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void MockupRenderImage::initialize( uint32_t _mipmaps, uint32_t _width, uint32_t _height, EPixelFormat _pixelFormat )
+    void MockupRenderImage::initialize( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _layers, EPixelFormat _pixelFormat )
     {
-        m_hwMipmaps = _mipmaps;
+        m_hwMipmaps = _mipmaps != 0 ? _mipmaps : 1;
         m_hwWidth = _width;
         m_hwHeight = _height;
+        m_hwLayers = _layers;
         m_hwPixelFormat = _pixelFormat;
 
         m_hwWidthInv = 1.f / (float)m_hwWidth;
@@ -38,6 +40,11 @@ namespace Mengine
         m_renderImageProvider = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
+    uint32_t MockupRenderImage::getHWLayerCount() const
+    {
+        return m_hwLayers;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void MockupRenderImage::setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider )
     {
         m_renderImageProvider = _renderImageProvider;
@@ -48,9 +55,13 @@ namespace Mengine
         return m_renderImageProvider;
     }
     ///////////////////////////////////////////////////////////////////////////
-    RenderImageLockedInterfacePtr MockupRenderImage::lock( uint32_t _level, const Rect & _rect, bool _readOnly )
+    RenderImageLockedInterfacePtr MockupRenderImage::lock( uint32_t _layer, uint32_t _level, const Rect & _rect, bool _readOnly )
     {
-        MENGINE_UNUSED( _level );
+        if( _layer >= m_hwLayers || _level >= m_hwMipmaps )
+        {
+            return nullptr;
+        }
+
         MENGINE_UNUSED( _readOnly );
 
         MockupRenderImageLockedPtr locked = MockupRenderImageLockedFactoryStorage::createObject( MENGINE_DOCUMENT_FACTORABLE );
@@ -60,10 +71,14 @@ namespace Mengine
         return locked;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MockupRenderImage::unlock( const RenderImageLockedInterfacePtr & _locked, uint32_t _level, bool _successful )
+    bool MockupRenderImage::unlock( const RenderImageLockedInterfacePtr & _locked, uint32_t _layer, uint32_t _level, bool _successful )
     {
+        if( _layer >= m_hwLayers || _level >= m_hwMipmaps )
+        {
+            return false;
+        }
+
         MENGINE_UNUSED( _locked );
-        MENGINE_UNUSED( _level );
         MENGINE_UNUSED( _successful );
 
         return true;

@@ -26,8 +26,11 @@ namespace Mengine
         ~DX11RenderImage() override;
 
     public:
-        bool initialize( uint32_t _mipmaps, uint32_t _width, uint32_t _height, EPixelFormat _pixelFormat );
+        bool initialize( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _layers, EPixelFormat _pixelFormat );
         void finalize();
+
+    public:
+        uint32_t getHWLayerCount() const override;
 
     public:
         void bind( const ID3D11DeviceContextPtr & _pImmediateContext, uint32_t _stage ) override;
@@ -52,8 +55,8 @@ namespace Mengine
         bool getUpscalePow2() const override;
 
     public:
-        RenderImageLockedInterfacePtr lock( uint32_t _level, const Rect & _rect, bool _readOnly ) override;
-        bool unlock( const RenderImageLockedInterfacePtr & _locked, uint32_t _level, bool _successful ) override;
+        RenderImageLockedInterfacePtr lock( uint32_t _layer, uint32_t _level, const Rect & _rect, bool _readOnly ) override;
+        bool unlock( const RenderImageLockedInterfacePtr & _locked, uint32_t _layer, uint32_t _level, bool _successful ) override;
 
     protected:
         void onRenderReset() override;
@@ -77,6 +80,7 @@ namespace Mengine
         uint32_t m_hwMipmaps;
         uint32_t m_hwWidth;
         uint32_t m_hwHeight;
+        uint32_t m_hwLayers;
         uint32_t m_hwChannels;
         uint32_t m_hwDepth;
 

@@ -10,6 +10,7 @@ namespace Mengine
     DX11RenderImageLocked::DX11RenderImageLocked()
         : m_stagingOffsetX( 0 )
         , m_stagingOffsetY( 0 )
+        , m_subresource( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -18,13 +19,15 @@ namespace Mengine
         this->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX11RenderImageLocked::initialize( const ID3D11DevicePtr & _pD3DDevice, const ID3D11Texture2DPtr & _pMainTexture, uint32_t _offsetX, uint32_t _offsetY, uint32_t _width, uint32_t _height )
+    bool DX11RenderImageLocked::initialize( const ID3D11DevicePtr & _pD3DDevice, const ID3D11Texture2DPtr & _pMainTexture, uint32_t _subresource, uint32_t _offsetX, uint32_t _offsetY, uint32_t _width, uint32_t _height )
     {
         D3D11_TEXTURE2D_DESC stagingTextureDesc;
         _pMainTexture->GetDesc( &stagingTextureDesc );
 
         stagingTextureDesc.Width = _width;
         stagingTextureDesc.Height = _height;
+        stagingTextureDesc.MipLevels = 1;
+        stagingTextureDesc.ArraySize = 1;
         stagingTextureDesc.BindFlags = 0;
         stagingTextureDesc.MiscFlags = 0;
         stagingTextureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
@@ -46,6 +49,7 @@ namespace Mengine
         m_lockedRect = Rect( _offsetX, _offsetY, _offsetX + _width, _offsetY + _height );
         m_stagingOffsetX = _offsetX;
         m_stagingOffsetY = _offsetY;
+        m_subresource = _subresource;
 
         return true;
     }
@@ -76,7 +80,7 @@ namespace Mengine
             return;
         }
 
-        _pImmediateContext->CopySubresourceRegion( _pD3DTexture.Get(), 0, m_stagingOffsetX, m_stagingOffsetY, 0, m_pD3DStagingTexture.Get(), 0, NULL );
+        _pImmediateContext->CopySubresourceRegion( _pD3DTexture.Get(), m_subresource, m_stagingOffsetX, m_stagingOffsetY, 0, m_pD3DStagingTexture.Get(), 0, NULL );
     }
     //////////////////////////////////////////////////////////////////////////
     const Rect & DX11RenderImageLocked::getLockedRect() const

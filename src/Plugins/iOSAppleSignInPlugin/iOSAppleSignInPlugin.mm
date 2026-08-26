@@ -104,15 +104,6 @@ static NSString * iOSAppleSignInStringFromData( NSData * data )
     return self.m_provider;
 }
 
-- (BOOL)isAvailable {
-    if( @available(iOS 13.0, *) )
-    {
-        return YES;
-    }
-
-    return NO;
-}
-
 - (BOOL)loginWithEmail:(BOOL)requestEmail
               fullName:(BOOL)requestFullName
                  state:(NSString *)state
@@ -120,13 +111,6 @@ static NSString * iOSAppleSignInStringFromData( NSData * data )
     if( [NSThread isMainThread] == NO )
     {
         IOS_LOGGER_ERROR( @"Apple Sign In login must be called on the main thread" );
-
-        return NO;
-    }
-
-    if( [self isAvailable] == NO )
-    {
-        IOS_LOGGER_ERROR( @"Apple Sign In is not available" );
 
         return NO;
     }

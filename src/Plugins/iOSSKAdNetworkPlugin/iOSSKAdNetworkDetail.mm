@@ -49,19 +49,9 @@
     } else if (@available(iOS 15.4, *)) {
         [SKAdNetwork updatePostbackConversionValue:fineValue
                                  completionHandler:completion];
-    } else if (@available(iOS 14.0, *)) {
+    } else {
         [SKAdNetwork updateConversionValue:fineValue];
         completion(nil);
-    } else {
-        NSDictionary * userInfo = @{
-            NSLocalizedDescriptionKey: @"SKAdNetwork's 'updateConversionValue' method is not available for this operating system version"
-        };
-
-        NSError * error = [NSError errorWithDomain:@"com.mengine.skadnetwork"
-                                              code:1001
-                                          userInfo:userInfo];
-
-        completion(error);
     }
 }
 

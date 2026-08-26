@@ -94,11 +94,6 @@ namespace Mengine
             [[iOSAppleSignInPlugin sharedInstance] setProvider:provider];
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool iOSAppleSignIn_isAvailable()
-        {
-            return [[iOSAppleSignInPlugin sharedInstance] isAvailable] == YES;
-        }
-        //////////////////////////////////////////////////////////////////////////
         static bool iOSAppleSignIn_login( bool _requestEmail, bool _requestFullName, const Char * _state, const Char * _nonce )
         {
             NSString * state = _state != nullptr ? [NSString stringWithUTF8String:_state] : nil;
@@ -175,7 +170,6 @@ namespace Mengine
         pybind::def_const<int32_t>( _kernel, "IOS_APPLE_SIGNIN_BUTTON_STYLE_BLACK", iOSAppleSignInButtonStyleBlack );
 
         pybind::def_function_args( _kernel, "iOSAppleSignInSetProvider", &Detail::iOSAppleSignIn_setProvider );
-        pybind::def_function( _kernel, "iOSAppleSignInIsAvailable", &Detail::iOSAppleSignIn_isAvailable );
         pybind::def_function( _kernel, "iOSAppleSignInLogin", &Detail::iOSAppleSignIn_login );
         pybind::def_function( _kernel, "iOSAppleSignInGetStoredUserId", &Detail::iOSAppleSignIn_getStoredUserId );
         pybind::def_function( _kernel, "iOSAppleSignInClearStoredCredential", &Detail::iOSAppleSignIn_clearStoredCredential );
@@ -204,7 +198,6 @@ namespace Mengine
         _kernel->remove_from_module( "IOS_APPLE_SIGNIN_BUTTON_STYLE_BLACK", nullptr );
 
         _kernel->remove_from_module( "iOSAppleSignInSetProvider", nullptr );
-        _kernel->remove_from_module( "iOSAppleSignInIsAvailable", nullptr );
         _kernel->remove_from_module( "iOSAppleSignInLogin", nullptr );
         _kernel->remove_from_module( "iOSAppleSignInGetStoredUserId", nullptr );
         _kernel->remove_from_module( "iOSAppleSignInClearStoredCredential", nullptr );

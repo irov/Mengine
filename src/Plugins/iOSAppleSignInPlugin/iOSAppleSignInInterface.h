@@ -44,7 +44,6 @@ typedef NS_ENUM(NSInteger, iOSAppleSignInButtonStyle) {
 - (void)setProvider:(id<iOSAppleSignInProviderInterface>)provider;
 - (id<iOSAppleSignInProviderInterface>)getProvider;
 
-- (BOOL)isAvailable;
 - (BOOL)loginWithEmail:(BOOL)requestEmail
               fullName:(BOOL)requestFullName
                  state:(NSString *)state

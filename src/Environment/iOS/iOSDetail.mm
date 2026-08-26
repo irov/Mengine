@@ -45,11 +45,7 @@
 }
 
 + (BOOL) isAppTrackingTransparencyAllowed {
-    if (@available(iOS 14.0, *)) {
-        return ATTrackingManager.trackingAuthorizationStatus == ATTrackingManagerAuthorizationStatusAuthorized;
-    }
-
-    return NO;
+    return ATTrackingManager.trackingAuthorizationStatus == ATTrackingManagerAuthorizationStatusAuthorized;
 }
 
 + (NSString *) getIDFA {

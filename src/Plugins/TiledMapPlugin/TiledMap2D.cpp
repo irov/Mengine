@@ -4,16 +4,22 @@
 #include "Interface/RenderPipelineInterface.h"
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/RenderCameraInterface.h"
+#include "Interface/RenderTextureServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Logger.h"
+#include "Kernel/MemoryCopy.h"
+#include "Kernel/PixelFormatHelper.h"
 #include "Kernel/ResourceCast.h"
 #include "Kernel/VectorRenderIndex.h"
 #include "Kernel/VectorRenderVertex2D.h"
 
+#include "Config/StdAlgorithm.h"
+
 #include <cmath>
+#include <cstring>
 #include <limits>
 
 namespace Mengine
@@ -22,8 +28,10 @@ namespace Mengine
     TiledMap2D::TiledMap2D()
         : m_vertexCount( 0 )
         , m_indexCount( 0 )
-        , m_materialName( STRINGIZE_STRING_LOCAL( "Texture_Solid" ) )
+        , m_textureArrayLayerCount( 0 )
+        , m_materialName( STRINGIZE_STRING_LOCAL( "TextureArray_Blend" ) )
     {
+        mt::box2_reset( &m_mapBoundingBox, 0.f, 0.f );
         mt::ident_m4( &m_renderWorldMatrix );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -304,41 +312,40 @@ namespace Mengine
         return m_indexCount;
     }
     //////////////////////////////////////////////////////////////////////////
+    uint32_t TiledMap2D::getTextureArrayCount() const
+    {
+        return (uint32_t)m_textureArrays.size();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t TiledMap2D::getTextureArrayLayerCount() const
+    {
+        return m_textureArrayLayerCount;
+    }
+    //////////////////////////////////////////////////////////////////////////
     uint64_t TiledMap2D::getResidentTextureMemoryBytes() const
     {
         uint64_t bytes = 0;
 
-        for( VectorTiledBatches::size_type index = 0; index != m_batches.size(); ++index )
+        for( const RenderTextureInterfacePtr & texture : m_textureArrays )
         {
-            const TiledBatch & batch = m_batches[index];
-            bool alreadyCounted = false;
-
-            for( VectorTiledBatches::size_type previousIndex = 0; previousIndex != index; ++previousIndex )
-            {
-                if( m_batches[previousIndex].resource == batch.resource )
-                {
-                    alreadyCounted = true;
-
-                    break;
-                }
-            }
-
-            if( alreadyCounted == true )
-            {
-                continue;
-            }
-
-            const mt::vec2f & size = batch.resource->getMaxSize();
-            bytes += (uint64_t)size.x * (uint64_t)size.y * 4ULL;
+            const RenderImageInterfacePtr & image = texture->getImage();
+            uint32_t channels = Helper::getPixelFormatChannels( image->getHWPixelFormat() );
+            bytes += (uint64_t)image->getHWWidth() * (uint64_t)image->getHWHeight() * (uint64_t)image->getHWLayerCount() * (uint64_t)channels;
         }
 
         return bytes;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const mt::box2f & TiledMap2D::getMapBoundingBox() const
+    {
+        return m_mapBoundingBox;
     }
     //////////////////////////////////////////////////////////////////////////
     const mt::mat4f & TiledMap2D::getTransformationWorldMatrix() const
     {
         return m_renderWorldMatrix;
     }
+    //////////////////////////////////////////////////////////////////////////
     bool TiledMap2D::_compile()
     {
         this->releaseBatches_();
@@ -394,12 +401,182 @@ namespace Mengine
         const uint32_t staggerAxis = m_resourceTiledMap->getStaggerAxis();
         const uint32_t staggerIndex = m_resourceTiledMap->getStaggerIndex();
 
+        struct TextureArraySource
+        {
+            String resourceName;
+            Optional<uint32_t> transparentColor;
+            ResourceImagePtr resource;
+            RenderImageLoaderInterfacePtr loader;
+            RenderImageDesc desc;
+            uint32_t textureArrayIndex;
+            uint32_t textureArrayLayer;
+        };
+
+        typedef Vector<TextureArraySource> VectorTextureArraySources;
+        typedef Vector<uint32_t> VectorTextureArraySourceIndices;
+
+        struct TextureArrayResource
+        {
+            String resourceName;
+            Optional<uint32_t> transparentColor;
+        };
+
+        typedef Vector<TextureArrayResource> VectorTextureArrayResources;
+
+        struct TextureArrayBuild
+        {
+            uint32_t width;
+            uint32_t height;
+            EPixelFormat format;
+            VectorTextureArraySourceIndices sourceIndices;
+            RenderTextureInterfacePtr texture;
+        };
+
+        typedef Vector<TextureArrayBuild> VectorTextureArrayBuilds;
+
+        VectorTextureArraySources textureArraySources;
+        VectorTextureArrayBuilds textureArrayBuilds;
+
+        uint32_t maxTextureArrayLayers = RENDER_SYSTEM()->getMaxTexture2DArrayLayers();
+
+        if( maxTextureArrayLayers < 2 )
+        {
+            LOGGER_ERROR( "tiledmap2d '%s' renderer doesn't support texture arrays"
+                , this->getName().c_str()
+            );
+
+            return false;
+        }
+
+        VectorTextureArrayResources textureArrayResources;
+
+        for( const TiledMapTileset & tileset : tilesets )
+        {
+            if( tileset.resourceName.empty() == false )
+            {
+                TextureArrayResource resource;
+                resource.resourceName = tileset.resourceName;
+                resource.transparentColor = tileset.transparentColor;
+                textureArrayResources.emplace_back( std::move( resource ) );
+            }
+
+            for( const TiledMapTileImage & image : tileset.tileImages )
+            {
+                TextureArrayResource resource;
+                resource.resourceName = image.resourceName;
+                textureArrayResources.emplace_back( std::move( resource ) );
+            }
+        }
+
+        const ConstString & groupName = m_resourceTiledMap->getGroupName();
+
+        for( const TextureArrayResource & textureArrayResource : textureArrayResources )
+        {
+            bool duplicate = false;
+
+            for( const TextureArraySource & source : textureArraySources )
+            {
+                if( source.resourceName == textureArrayResource.resourceName && source.transparentColor == textureArrayResource.transparentColor )
+                {
+                    duplicate = true;
+
+                    break;
+                }
+            }
+
+            if( duplicate == true )
+            {
+                continue;
+            }
+
+            ResourcePtr baseResource = RESOURCE_SERVICE()
+                ->getResourceReference( groupName, Helper::stringizeString( textureArrayResource.resourceName ) );
+
+            ResourceImagePtr resource = Helper::dynamicResourceCast<ResourceImagePtr>( baseResource );
+
+            if( resource == nullptr || resource->getContent() == nullptr )
+            {
+                LOGGER_ERROR( "tiledmap2d '%s' texture array source resource '%s' has no image content"
+                    , this->getName().c_str()
+                    , textureArrayResource.resourceName.c_str()
+                );
+
+                return false;
+            }
+
+            RenderImageLoaderInterfacePtr loader = RENDERTEXTURE_SERVICE()
+                ->createDecoderRenderImageLoader( resource->getContent(), DF_IMAGE_NONE, MENGINE_DOCUMENT_FACTORABLE );
+
+            if( loader == nullptr )
+            {
+                LOGGER_ERROR( "tiledmap2d '%s' can't create decoder for texture array source '%s'"
+                    , this->getName().c_str()
+                    , textureArrayResource.resourceName.c_str()
+                );
+
+                return false;
+            }
+
+            RenderImageDesc desc;
+            loader->getImageDesc( &desc );
+
+            if( desc.width == 0 || desc.height == 0 || desc.format == PF_UNKNOWN )
+            {
+                LOGGER_ERROR( "tiledmap2d '%s' texture array source '%s' has invalid image description"
+                    , this->getName().c_str()
+                    , textureArrayResource.resourceName.c_str()
+                );
+
+                return false;
+            }
+
+            uint32_t textureArrayIndex = (uint32_t)textureArrayBuilds.size();
+
+            for( uint32_t index = 0; index != (uint32_t)textureArrayBuilds.size(); ++index )
+            {
+                const TextureArrayBuild & textureArray = textureArrayBuilds[index];
+
+                if( textureArray.width == desc.width &&
+                    textureArray.height == desc.height &&
+                    textureArray.format == desc.format &&
+                    textureArray.sourceIndices.size() < maxTextureArrayLayers )
+                {
+                    textureArrayIndex = index;
+
+                    break;
+                }
+            }
+
+            if( textureArrayIndex == textureArrayBuilds.size() )
+            {
+                TextureArrayBuild textureArray;
+                textureArray.width = desc.width;
+                textureArray.height = desc.height;
+                textureArray.format = desc.format;
+                textureArrayBuilds.emplace_back( std::move( textureArray ) );
+            }
+
+            TextureArrayBuild & textureArray = textureArrayBuilds[textureArrayIndex];
+
+            TextureArraySource source;
+            source.resourceName = textureArrayResource.resourceName;
+            source.transparentColor = textureArrayResource.transparentColor;
+            source.resource = resource;
+            source.loader = loader;
+            source.desc = desc;
+            source.textureArrayIndex = textureArrayIndex;
+            source.textureArrayLayer = (uint32_t)textureArray.sourceIndices.size();
+
+            textureArray.sourceIndices.emplace_back( (uint32_t)textureArraySources.size() );
+            textureArraySources.emplace_back( std::move( source ) );
+        }
+
         struct BuildBatch
         {
             uint32_t layerIndex;
             int32_t chunkX;
             int32_t chunkY;
-            String resourceName;
+            uint32_t textureArrayIndex;
             VectorRenderVertex2D vertices;
             VectorRenderIndex indices;
         };
@@ -437,7 +614,7 @@ namespace Mengine
                     }
                 }
 
-                if( tileset == nullptr || gid - tileset->firstGid >= tileset->tileCount )
+                if( tileset == nullptr )
                 {
                     LOGGER_ERROR( "tiledmap2d '%s' tile gid %u has no tileset"
                         , this->getName().c_str()
@@ -451,35 +628,97 @@ namespace Mengine
 
                 uint32_t localId = gid - tileset->firstGid;
                 String resourceName = tileset->resourceName;
+                Optional<uint32_t> transparentColor = tileset->transparentColor;
                 uint32_t imageWidth = tileset->imageWidth;
                 uint32_t imageHeight = tileset->imageHeight;
+                uint32_t columns = tileset->columns;
+                uint32_t tileCount = tileset->tileCount;
                 uint32_t sourceX = tileset->margin;
                 uint32_t sourceY = tileset->margin;
                 uint32_t sourceWidth = tileset->tileWidth;
                 uint32_t sourceHeight = tileset->tileHeight;
-
-                if( tileset->columns != 0 )
-                {
-                    sourceX += localId % tileset->columns * (tileset->tileWidth + tileset->spacing);
-                    sourceY += localId / tileset->columns * (tileset->tileHeight + tileset->spacing);
-                }
 
                 for( const TiledMapTileImage & image : tileset->tileImages )
                 {
                     if( image.localId == localId )
                     {
                         resourceName = image.resourceName;
+                        transparentColor.reset();
                         imageWidth = image.imageWidth;
                         imageHeight = image.imageHeight;
-                        sourceX = 0;
-                        sourceY = 0;
-                        sourceWidth = image.imageWidth;
-                        sourceHeight = image.imageHeight;
+                        sourceX = image.sourceX;
+                        sourceY = image.sourceY;
+                        sourceWidth = image.sourceWidth;
+                        sourceHeight = image.sourceHeight;
                         break;
                     }
                 }
 
-                if( resourceName.empty() == true || imageWidth == 0 || imageHeight == 0 || sourceWidth == 0 || sourceHeight == 0 )
+                const TextureArraySource * textureArraySource = nullptr;
+
+                for( const TextureArraySource & source : textureArraySources )
+                {
+                    if( source.resourceName == resourceName && source.transparentColor == transparentColor )
+                    {
+                        textureArraySource = &source;
+
+                        break;
+                    }
+                }
+
+                if( textureArraySource == nullptr )
+                {
+                    LOGGER_ERROR( "tiledmap2d '%s' can't find texture array source '%s'"
+                        , this->getName().c_str()
+                        , resourceName.c_str()
+                    );
+
+                    this->releaseBatches_();
+
+                    return false;
+                }
+
+                if( imageWidth == 0 )
+                {
+                    imageWidth = textureArraySource->desc.width;
+                }
+
+                if( imageHeight == 0 )
+                {
+                    imageHeight = textureArraySource->desc.height;
+                }
+
+                if( sourceWidth == 0 )
+                {
+                    sourceWidth = imageWidth;
+                }
+
+                if( sourceHeight == 0 )
+                {
+                    sourceHeight = imageHeight;
+                }
+
+                if( columns == 0 && tileset->tileWidth != 0 )
+                {
+                    int64_t numerator = (int64_t)imageWidth - (int64_t)tileset->margin * 2 + tileset->spacing;
+                    int64_t denominator = (int64_t)tileset->tileWidth + tileset->spacing;
+                    columns = numerator > 0 && denominator > 0 ? (uint32_t)(numerator / denominator) : 0;
+                }
+
+                if( tileCount == 0 && columns != 0 && tileset->tileHeight != 0 )
+                {
+                    int64_t numerator = (int64_t)imageHeight - (int64_t)tileset->margin * 2 + tileset->spacing;
+                    int64_t denominator = (int64_t)tileset->tileHeight + tileset->spacing;
+                    int64_t rows = numerator > 0 && denominator > 0 ? numerator / denominator : 0;
+                    uint64_t inferredCount = (uint64_t)columns * (uint64_t)rows;
+
+                    if( inferredCount <= std::numeric_limits<uint32_t>::max() )
+                    {
+                        tileCount = (uint32_t)inferredCount;
+                    }
+                }
+
+                if( localId >= tileCount || resourceName.empty() == true || imageWidth == 0 || imageHeight == 0 || sourceWidth == 0 || sourceHeight == 0 )
                 {
                     LOGGER_ERROR( "tiledmap2d '%s' tile gid %u has invalid image metadata"
                         , this->getName().c_str()
@@ -491,6 +730,12 @@ namespace Mengine
                     return false;
                 }
 
+                if( columns != 0 && tileset->tileImages.empty() == true )
+                {
+                    sourceX += localId % columns * (tileset->tileWidth + tileset->spacing);
+                    sourceY += localId / columns * (tileset->tileHeight + tileset->spacing);
+                }
+
                 BuildBatch * batch = nullptr;
                 int32_t chunkX = (int32_t)std::floor( (float)tile.x / (float)chunkSize );
                 int32_t chunkY = (int32_t)std::floor( (float)tile.y / (float)chunkSize );
@@ -500,7 +745,7 @@ namespace Mengine
                     if( candidate.layerIndex == layerIndex &&
                         candidate.chunkX == chunkX &&
                         candidate.chunkY == chunkY &&
-                        candidate.resourceName == resourceName &&
+                        candidate.textureArrayIndex == textureArraySource->textureArrayIndex &&
                         candidate.vertices.size() / 4U < maximumQuads )
                     {
                         batch = &candidate;
@@ -516,7 +761,7 @@ namespace Mengine
                     batch->layerIndex = layerIndex;
                     batch->chunkX = chunkX;
                     batch->chunkY = chunkY;
-                    batch->resourceName = resourceName;
+                    batch->textureArrayIndex = textureArraySource->textureArrayIndex;
                 }
 
                 float cellX;
@@ -561,6 +806,14 @@ namespace Mengine
                 const float positionY[4] = {0.f, 0.f, (float)sourceHeight, (float)sourceHeight};
                 const float cornerX[4] = {0.f, 1.f, 1.f, 0.f};
                 const float cornerY[4] = {0.f, 0.f, 1.f, 1.f};
+                const mt::vec2f sourceUVBegin(
+                    ((float)sourceX + 0.5f) / (float)imageWidth,
+                    ((float)sourceY + 0.5f) / (float)imageHeight
+                );
+                const mt::vec2f sourceUVEnd(
+                    ((float)sourceX + (float)sourceWidth - 0.5f) / (float)imageWidth,
+                    ((float)sourceY + (float)sourceHeight - 0.5f) / (float)imageHeight
+                );
 
                 for( uint32_t vertexIndex = 0; vertexIndex != 4; ++vertexIndex )
                 {
@@ -607,11 +860,21 @@ namespace Mengine
                         sourceCornerY = 1.f - previousX;
                     }
 
-                    vertex.uv[0] = mt::vec2f(
-                        ((float)sourceX + sourceCornerX * (float)sourceWidth) / (float)imageWidth,
-                        ((float)sourceY + sourceCornerY * (float)sourceHeight) / (float)imageHeight
+                    const mt::vec2f sourceUV(
+                        sourceUVBegin.x + (sourceUVEnd.x - sourceUVBegin.x) * sourceCornerX,
+                        sourceUVBegin.y + (sourceUVEnd.y - sourceUVBegin.y) * sourceCornerY
                     );
-                    vertex.uv[1] = vertex.uv[0];
+
+                    const mt::uv4f & resourceUV = textureArraySource->resource->getUVTexture( 0 );
+                    mt::vec2f top;
+                    top.x = resourceUV[0].x + (resourceUV[1].x - resourceUV[0].x) * sourceUV.x;
+                    top.y = resourceUV[0].y + (resourceUV[1].y - resourceUV[0].y) * sourceUV.x;
+                    mt::vec2f bottom;
+                    bottom.x = resourceUV[3].x + (resourceUV[2].x - resourceUV[3].x) * sourceUV.x;
+                    bottom.y = resourceUV[3].y + (resourceUV[2].y - resourceUV[3].y) * sourceUV.x;
+                    vertex.uv[0].x = top.x + (bottom.x - top.x) * sourceUV.y;
+                    vertex.uv[0].y = top.y + (bottom.y - top.y) * sourceUV.y;
+                    vertex.uv[1] = mt::vec2f( (float)textureArraySource->textureArrayLayer, 0.f );
                 }
 
                 batch->indices[indexOffset + 0] = (RenderIndex)(vertexOffset + 0);
@@ -625,21 +888,27 @@ namespace Mengine
 
         m_vertexCount = 0;
         m_indexCount = 0;
+        m_textureArrayLayerCount = 0;
+        mt::box2_insideout( &m_mapBoundingBox );
         m_batches.reserve( buildBatches.size() );
-        const ConstString & groupName = m_resourceTiledMap->getGroupName();
+        m_textureArrays.reserve( textureArrayBuilds.size() );
 
-        for( BuildBatch & sourceBatch : buildBatches )
+        for( TextureArrayBuild & textureArray : textureArrayBuilds )
         {
-            ResourcePtr baseResource = RESOURCE_SERVICE()
-                ->getResourceReference( groupName, Helper::stringizeString( sourceBatch.resourceName ) );
+            uint32_t sourceLayerCount = (uint32_t)textureArray.sourceIndices.size();
+            uint32_t hardwareLayerCount = StdAlgorithm::max( sourceLayerCount, 2U );
 
-            ResourceImagePtr resource = Helper::dynamicResourceCast<ResourceImagePtr>( baseResource );
+            RenderImageInterfacePtr image = RENDER_SYSTEM()
+                ->createImage( 1, textureArray.width, textureArray.height, hardwareLayerCount, textureArray.format, MENGINE_DOCUMENT_FACTORABLE );
 
-            if( resource == nullptr || resource->compile() == false )
+            if( image == nullptr )
             {
-                LOGGER_ERROR( "tiledmap2d '%s' can't compile Tiled image resource '%s'"
+                LOGGER_ERROR( "tiledmap2d '%s' can't create texture array %ux%ux%u format %u"
                     , this->getName().c_str()
-                    , sourceBatch.resourceName.c_str()
+                    , textureArray.width
+                    , textureArray.height
+                    , hardwareLayerCount
+                    , (uint32_t)textureArray.format
                 );
 
                 this->releaseBatches_();
@@ -647,26 +916,85 @@ namespace Mengine
                 return false;
             }
 
-            const mt::uv4f & resourceUV = resource->getUVTexture( 0 );
+            RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
+                ->createRenderTexture( image, textureArray.width, textureArray.height, MENGINE_DOCUMENT_FACTORABLE );
 
-            for( RenderVertex2D & vertex : sourceBatch.vertices )
+            if( texture == nullptr )
             {
-                const mt::vec2f normalizedUV = vertex.uv[0];
-                mt::vec2f top;
-                top.x = resourceUV[0].x + (resourceUV[1].x - resourceUV[0].x) * normalizedUV.x;
-                top.y = resourceUV[0].y + (resourceUV[1].y - resourceUV[0].y) * normalizedUV.x;
-                mt::vec2f bottom;
-                bottom.x = resourceUV[3].x + (resourceUV[2].x - resourceUV[3].x) * normalizedUV.x;
-                bottom.y = resourceUV[3].y + (resourceUV[2].y - resourceUV[3].y) * normalizedUV.x;
-                vertex.uv[0].x = top.x + (bottom.x - top.x) * normalizedUV.y;
-                vertex.uv[0].y = top.y + (bottom.y - top.y) * normalizedUV.y;
-                vertex.uv[1] = vertex.uv[0];
+                LOGGER_ERROR( "tiledmap2d '%s' can't create render texture for texture array"
+                    , this->getName().c_str()
+                );
+
+                this->releaseBatches_();
+
+                return false;
             }
 
+            textureArray.texture = texture;
+            m_textureArrays.emplace_back( texture );
+            m_textureArrayLayerCount += hardwareLayerCount;
+
+            for( uint32_t sourceIndex : textureArray.sourceIndices )
+            {
+                const TextureArraySource & source = textureArraySources[sourceIndex];
+
+                if( this->uploadTextureArrayLayer_( image, source.textureArrayLayer, source.loader, source.desc, source.transparentColor ) == false )
+                {
+                    LOGGER_ERROR( "tiledmap2d '%s' can't upload texture array source '%s' to layer %u"
+                        , this->getName().c_str()
+                        , source.resourceName.c_str()
+                        , source.textureArrayLayer
+                    );
+
+                    this->releaseBatches_();
+
+                    return false;
+                }
+            }
+
+            for( uint32_t layer = sourceLayerCount; layer != hardwareLayerCount; ++layer )
+            {
+                Rect rect;
+                rect.left = 0;
+                rect.top = 0;
+                rect.right = image->getHWWidth();
+                rect.bottom = image->getHWHeight();
+
+                RenderImageLockedInterfacePtr locked = image->lock( layer, 0, rect, false );
+
+                if( locked == nullptr )
+                {
+                    this->releaseBatches_();
+
+                    return false;
+                }
+
+                size_t pitch;
+                void * buffer = locked->getLockedBuffer( &pitch );
+
+                if( buffer == nullptr )
+                {
+                    image->unlock( locked, layer, 0, false );
+                    this->releaseBatches_();
+
+                    return false;
+                }
+
+                std::memset( buffer, 0, pitch * image->getHWHeight() );
+
+                if( image->unlock( locked, layer, 0, true ) == false )
+                {
+                    this->releaseBatches_();
+
+                    return false;
+                }
+            }
+        }
+
+        for( BuildBatch & sourceBatch : buildBatches )
+        {
             TiledBatch batch;
             batch.layerIndex = sourceBatch.layerIndex;
-            batch.resourceName = sourceBatch.resourceName;
-            batch.resource = resource;
             batch.vertexCount = (uint32_t)sourceBatch.vertices.size();
             batch.indexCount = (uint32_t)sourceBatch.indices.size();
             const mt::vec3f & firstPosition = sourceBatch.vertices.front().position;
@@ -676,6 +1004,9 @@ namespace Mengine
             {
                 mt::box2_add_internal_point( &batch.boundingBox, vertex.position.x, vertex.position.y );
             }
+
+            mt::box2_add_internal_point( &m_mapBoundingBox, batch.boundingBox.minimum );
+            mt::box2_add_internal_point( &m_mapBoundingBox, batch.boundingBox.maximum );
 
             batch.vertexBuffer = RENDER_SYSTEM()->createVertexBuffer( sizeof( RenderVertex2D ), BT_STATIC, MENGINE_DOCUMENT_FACTORABLE );
             batch.indexBuffer = RENDER_SYSTEM()->createIndexBuffer( sizeof( RenderIndex ), BT_STATIC, MENGINE_DOCUMENT_FACTORABLE );
@@ -688,18 +1019,16 @@ namespace Mengine
                 batch.indexBuffer->resize( batch.indexCount ) == false ||
                 batch.indexBuffer->draw( sourceBatch.indices.data(), 0, batch.indexCount ) == false )
             {
-                resource->release();
                 this->releaseBatches_();
 
                 return false;
             }
 
-            const RenderTextureInterfacePtr & texture = resource->getTexture( 0 );
+            const RenderTextureInterfacePtr & texture = textureArrayBuilds[sourceBatch.textureArrayIndex].texture;
             batch.material = RENDERMATERIAL_SERVICE()->getMaterial( m_materialName, PT_TRIANGLELIST, &texture, 1, MENGINE_DOCUMENT_FACTORABLE );
 
             if( batch.material == nullptr )
             {
-                resource->release();
                 this->releaseBatches_();
 
                 return false;
@@ -710,7 +1039,130 @@ namespace Mengine
             m_batches.emplace_back( std::move( batch ) );
         }
 
+        if( m_batches.empty() == true )
+        {
+            mt::box2_reset( &m_mapBoundingBox, 0.f, 0.f );
+        }
+
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TiledMap2D::uploadTextureArrayLayer_( const RenderImageInterfacePtr & _image, uint32_t _layer, const RenderImageLoaderInterfacePtr & _loader, const RenderImageDesc & _desc, const Optional<uint32_t> & _transparentColor ) const
+    {
+        MemoryInterfacePtr memory = _loader->getMemory( DF_IMAGE_NONE, MENGINE_DOCUMENT_FACTORABLE );
+
+        if( memory == nullptr )
+        {
+            return false;
+        }
+
+        uint32_t channels = Helper::getPixelFormatChannels( _desc.format );
+        size_t sourcePitch = (size_t)_desc.width * channels;
+        size_t sourceSize = sourcePitch * _desc.height;
+
+        if( channels == 0 || _desc.width == 0 || _desc.height == 0 || memory->getSize() < sourceSize )
+        {
+            return false;
+        }
+
+        uint32_t hwWidth = _image->getHWWidth();
+        uint32_t hwHeight = _image->getHWHeight();
+
+        if( _desc.width > hwWidth || _desc.height > hwHeight )
+        {
+            return false;
+        }
+
+        Rect rect;
+        rect.left = 0;
+        rect.top = 0;
+        rect.right = hwWidth;
+        rect.bottom = hwHeight;
+
+        RenderImageLockedInterfacePtr locked = _image->lock( _layer, 0, rect, false );
+
+        if( locked == nullptr )
+        {
+            return false;
+        }
+
+        size_t destinationPitch;
+        void * destinationBuffer = locked->getLockedBuffer( &destinationPitch );
+
+        if( destinationBuffer == nullptr || destinationPitch < (size_t)hwWidth * channels )
+        {
+            _image->unlock( locked, _layer, 0, false );
+
+            return false;
+        }
+
+        std::memset( destinationBuffer, 0, destinationPitch * hwHeight );
+
+        const uint8_t * sourceBuffer = static_cast<const uint8_t *>(memory->getBuffer());
+        uint8_t * destinationBytes = static_cast<uint8_t *>(destinationBuffer);
+
+        uint8_t transparentRed = 0;
+        uint8_t transparentGreen = 0;
+        uint8_t transparentBlue = 0;
+
+        if( _transparentColor.has_value() == true )
+        {
+            if( (_desc.format != PF_A8R8G8B8 && _desc.format != PF_X8R8G8B8) || channels != 4 )
+            {
+                _image->unlock( locked, _layer, 0, false );
+
+                return false;
+            }
+
+            uint32_t transparentColor = _transparentColor.value();
+            transparentRed = (uint8_t)(transparentColor >> 16);
+            transparentGreen = (uint8_t)(transparentColor >> 8);
+            transparentBlue = (uint8_t)transparentColor;
+        }
+
+#if defined(MENGINE_RENDER_TEXTURE_RGBA)
+        const uint32_t redOffset = 0;
+        const uint32_t greenOffset = 1;
+        const uint32_t blueOffset = 2;
+#else
+        const uint32_t redOffset = 2;
+        const uint32_t greenOffset = 1;
+        const uint32_t blueOffset = 0;
+#endif
+
+        for( uint32_t y = 0; y != _desc.height; ++y )
+        {
+            uint8_t * destinationRow = destinationBytes + (size_t)y * destinationPitch;
+            Helper::memoryCopy( destinationRow, 0, sourceBuffer, (size_t)y * sourcePitch, sourcePitch );
+
+            if( _transparentColor.has_value() == true )
+            {
+                for( uint32_t x = 0; x != _desc.width; ++x )
+                {
+                    uint8_t * pixel = destinationRow + (size_t)x * channels;
+
+                    if( pixel[redOffset] == transparentRed && pixel[greenOffset] == transparentGreen && pixel[blueOffset] == transparentBlue )
+                    {
+                        pixel[0] = 0;
+                        pixel[1] = 0;
+                        pixel[2] = 0;
+                        pixel[3] = 0;
+                    }
+                }
+            }
+
+            for( uint32_t x = _desc.width; x != hwWidth; ++x )
+            {
+                Helper::memoryCopy( destinationRow, (size_t)x * channels, destinationRow, (size_t)(_desc.width - 1) * channels, channels );
+            }
+        }
+
+        for( uint32_t y = _desc.height; y != hwHeight; ++y )
+        {
+            Helper::memoryCopy( destinationBytes, (size_t)y * destinationPitch, destinationBytes, (size_t)(_desc.height - 1) * destinationPitch, destinationPitch );
+        }
+
+        return _image->unlock( locked, _layer, 0, true );
     }
     //////////////////////////////////////////////////////////////////////////
     void TiledMap2D::_release()
@@ -739,17 +1191,14 @@ namespace Mengine
             batch.material = nullptr;
             batch.vertexBuffer = nullptr;
             batch.indexBuffer = nullptr;
-
-            if( batch.resource != nullptr )
-            {
-                batch.resource->release();
-                batch.resource = nullptr;
-            }
         }
 
         m_batches.clear();
+        m_textureArrays.clear();
         m_vertexCount = 0;
         m_indexCount = 0;
+        m_textureArrayLayerCount = 0;
+        mt::box2_reset( &m_mapBoundingBox, 0.f, 0.f );
     }
     //////////////////////////////////////////////////////////////////////////
     void TiledMap2D::render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const

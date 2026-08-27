@@ -840,6 +840,22 @@ namespace Mengine
         return userPathLen;
     }
     //////////////////////////////////////////////////////////////////////////
+    size_t AndroidPlatformService::getTemporaryPath( Char * const _temporaryPath ) const
+    {
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
+
+        if( Helper::AndroidGetApplicationCacheDirCanonicalPath( jenv, _temporaryPath ) == false )
+        {
+            LOGGER_ERROR( "invalid get temporary path" );
+
+            return 0;
+        }
+
+        return StdString::strlen( _temporaryPath );
+    }
+    //////////////////////////////////////////////////////////////////////////
     size_t AndroidPlatformService::getExtraPreferencesFolderName( Char * const _folderName ) const
     {
         PathString Project_ExtraPreferencesFolderName = CONFIG_VALUE_PATHSTRING( "Project", "ExtraPreferencesFolderName", "" );

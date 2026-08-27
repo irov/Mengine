@@ -1,0 +1,22 @@
+{
+    "GAME_PACKAGES": {
+        "FrameworkPack": [
+            "Shaders"
+        ],
+        "ResourcePack": [
+            "TiledExamples"
+        ]
+    },
+
+    "Shaders": {
+        "Name": "Shaders",
+        "Path": "shaders/",
+        "Description": "Pak.json",
+        "Format": "json"
+    },
+
+    "TiledExamples": {
+        "Name": "TiledExamples",
+        "Path": "tiled/"
+    }
+}

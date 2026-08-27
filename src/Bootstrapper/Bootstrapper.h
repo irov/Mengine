@@ -56,6 +56,7 @@ namespace Mengine
         void logOptions_() const;
         bool loadApplicationConfig_();
         bool mountUserFileGroup_();
+        bool mountTemporaryFileGroup_();
         bool initializeFileLogger_();
 
     protected:

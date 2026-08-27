@@ -2,6 +2,7 @@
 
 #include "Interface/RenderIndexBufferInterface.h"
 #include "Interface/RenderMaterialInterface.h"
+#include "Interface/RenderImageLoaderInterface.h"
 #include "Interface/RenderTransformationInterface.h"
 #include "Interface/RenderVertexBufferInterface.h"
 
@@ -73,7 +74,10 @@ namespace Mengine
         uint32_t getBatchCount() const;
         uint32_t getVertexCount() const;
         uint32_t getIndexCount() const;
+        uint32_t getTextureArrayCount() const;
+        uint32_t getTextureArrayLayerCount() const;
         uint64_t getResidentTextureMemoryBytes() const;
+        const mt::box2f & getMapBoundingBox() const;
 
     public:
         const mt::mat4f & getTransformationWorldMatrix() const override;
@@ -88,6 +92,7 @@ namespace Mengine
 
     protected:
         bool compileBatches_();
+        bool uploadTextureArrayLayer_( const RenderImageInterfacePtr & _image, uint32_t _layer, const RenderImageLoaderInterfacePtr & _loader, const RenderImageDesc & _desc, const Optional<uint32_t> & _transparentColor ) const;
         void releaseBatches_();
 
     protected:
@@ -96,8 +101,6 @@ namespace Mengine
         struct TiledBatch
         {
             uint32_t layerIndex;
-            String resourceName;
-            ResourceImagePtr resource;
             RenderMaterialInterfacePtr material;
             RenderVertexBufferInterfacePtr vertexBuffer;
             RenderIndexBufferInterfacePtr indexBuffer;
@@ -106,15 +109,19 @@ namespace Mengine
             mt::box2f boundingBox;
         };
         typedef Vector<TiledBatch> VectorTiledBatches;
+        typedef Vector<RenderTextureInterfacePtr> VectorTiledMapTextures;
 
     protected:
         ResourceTiledMapPtr m_resourceTiledMap;
         VectorTiledMapLayerVisibilities m_tileLayerVisibilities;
         VectorTiledBatches m_batches;
+        VectorTiledMapTextures m_textureArrays;
         uint32_t m_vertexCount;
         uint32_t m_indexCount;
+        uint32_t m_textureArrayLayerCount;
 
         ConstString m_materialName;
+        mt::box2f m_mapBoundingBox;
 
         mutable mt::mat4f m_renderWorldMatrix;
     };

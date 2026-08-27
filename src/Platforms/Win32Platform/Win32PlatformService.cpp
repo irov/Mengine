@@ -3624,6 +3624,38 @@ namespace Mengine
         return currentPathLen;
     }
     //////////////////////////////////////////////////////////////////////////
+    size_t Win32PlatformService::getTemporaryPath( Char * const _temporaryPath ) const
+    {
+        WPath temporaryPath = {L'\0'};
+        DWORD temporaryPathLen = ::GetTempPathW( MENGINE_MAX_PATH, temporaryPath );
+
+        if( temporaryPathLen == 0 || temporaryPathLen >= MENGINE_MAX_PATH )
+        {
+            LOGGER_ERROR( "failed to get temporary directory" );
+
+            _temporaryPath[0] = '\0';
+
+            return 0;
+        }
+
+        size_t pathLen;
+        if( Helper::unicodeToUtf8( temporaryPath, _temporaryPath, MENGINE_MAX_PATH, &pathLen ) == false )
+        {
+            LOGGER_ERROR( "invalid convert temporary path from unicode to utf8 '%ls'"
+                , temporaryPath
+            );
+
+            _temporaryPath[0] = '\0';
+
+            return 0;
+        }
+
+        Helper::pathCorrectFolderPathA( _temporaryPath, MENGINE_PATH_FORWARDSLASH );
+        Helper::pathCorrectBackslashA( _temporaryPath );
+
+        return pathLen;
+    }
+    //////////////////////////////////////////////////////////////////////////
     size_t Win32PlatformService::getExtraPreferencesFolderName( Char * const _folderName ) const
     {
         PathString Project_ExtraPreferencesFolderName = CONFIG_VALUE_PATHSTRING( "Project", "ExtraPreferencesFolderName", "" );

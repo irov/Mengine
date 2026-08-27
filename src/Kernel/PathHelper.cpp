@@ -1,5 +1,6 @@
 #include "PathHelper.h"
 
+#include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
@@ -43,7 +44,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         FilePath concatenateFilePath( InitializerList<FilePath> && _paths )
         {
-            Char concatenatePath[MENGINE_MAX_PATH];
+            Char concatenatePath[MENGINE_MAX_PATH] = {'\0'};
             if( Helper::concatenateFilePath( std::forward<InitializerList<FilePath>>( _paths ), concatenatePath ) == false )
             {
                 return FilePath::none();
@@ -54,7 +55,7 @@ namespace Mengine
             return fp;
         }
         //////////////////////////////////////////////////////////////////////////
-        FilePath getFolderPath( const FilePath & _fullpath )
+        size_t getFolderPath( const FilePath & _fullpath, Char * const _folderPath )
         {
             const Char * str_fullpath = _fullpath.c_str();
 
@@ -65,12 +66,33 @@ namespace Mengine
 
             if( folder_delimiter == nullptr )
             {
-                return FilePath( ConstString::none() );
+                _folderPath[0] = '\0';
+
+                return 0;
             }
 
-            FilePath::size_type size_fullpath = (FilePath::size_type)(folder_delimiter - str_fullpath + 1);
+            size_t size_fullpath = folder_delimiter - str_fullpath + 1;
 
-            FilePath c_folder = Helper::stringizeFilePathSize( str_fullpath, size_fullpath );
+            MENGINE_ASSERTION_FATAL( size_fullpath < MENGINE_MAX_PATH, "folder path '%s' size %zu exceeds maximum %u"
+                , str_fullpath
+                , size_fullpath
+                , (uint32_t)MENGINE_MAX_PATH
+            );
+
+            Helper::memoryCopy( _folderPath, 0, str_fullpath, 0, size_fullpath );
+
+            _folderPath[size_fullpath] = '\0';
+
+            return size_fullpath;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        FilePath getFolderPath( const FilePath & _fullpath )
+        {
+            Char folderPath[MENGINE_MAX_PATH] = {'\0'};
+
+            size_t folderPathSize = Helper::getFolderPath( _fullpath, folderPath );
+
+            FilePath c_folder = Helper::stringizeFilePathSize( folderPath, (FilePath::size_type)folderPathSize );
 
             return c_folder;
         }

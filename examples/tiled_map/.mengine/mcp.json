@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "apps": [
+    {
+      "id": "tiled-map-example",
+      "name": "TiledMap Example",
+      "profiles": [
+        {
+          "id": "macos-debug",
+          "platform": "macos",
+          "command": "../../bin/Mengine_Xcode_MacOS/Xcode/Debug/MacOSApplication.app/Contents/MacOS/MacOSApplication",
+          "cwd": "../../bin/Mengine_Xcode_MacOS/Xcode/Debug/MacOSApplication.app/Contents/MacOS"
+        }
+      ],
+      "assetRoots": [
+        {
+          "path": "./resources/.downloads/tiled/examples",
+          "fileGroup": "TiledExamples"
+        }
+      ]
+    }
+  ]
+}

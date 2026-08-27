@@ -15,11 +15,14 @@
 #include "Interface/AnalyticsServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/RenderServiceInterface.h"
+#include "Interface/EnvironmentServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/ConfigurationHelper.h"
 #include "Kernel/VectorConstString.h"
 #include "Kernel/FilePathHelper.h"
+#include "Kernel/PathHelper.h"
+#include "Kernel/SHA1.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionVocabulary.h"
 #include "Kernel/Stringalized.h"
@@ -360,6 +363,10 @@ PLUGIN_EXPORT( Box2D );
 PLUGIN_EXPORT( Texturepacker );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_PLUGIN_TILEDMAP_STATIC)
+PLUGIN_EXPORT( TiledMap );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLUGIN_GRAPHICS_STATIC)
 PLUGIN_EXPORT( Graphics );
 #endif
@@ -679,9 +686,13 @@ namespace Mengine
         if( SERVICE_IS_INITIALIZE( FileServiceInterface ) == true )
         {
             FILE_SERVICE()
+                ->unmountFileGroup( STRINGIZE_STRING_LOCAL( "temporary" ) );
+
+            FILE_SERVICE()
                 ->unmountFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
         }
 
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FileGroup" ), STRINGIZE_STRING_LOCAL( "temporary" ) );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FileGroup" ), STRINGIZE_STRING_LOCAL( "user" ) );
 
         SERVICE_FINALIZE( FileService );
@@ -1034,6 +1045,72 @@ namespace Mengine
         VOCABULARY_SET( FileGroupInterface, STRINGIZE_STRING_LOCAL( "FileGroup" ), STRINGIZE_STRING_LOCAL( "user" ), userFileGroup, MENGINE_DOCUMENT_FACTORABLE );
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_MOUNT_USER_FILEGROUP );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Bootstrapper::mountTemporaryFileGroup_()
+    {
+        Path temporaryPath = {'\0'};
+        size_t temporaryPathLen = PLATFORM_SERVICE()
+            ->getTemporaryPath( temporaryPath );
+
+        if( temporaryPathLen == 0 )
+        {
+            LOGGER_ERROR( "failed to resolve temporary directory" );
+
+            return false;
+        }
+
+        PathString company = CONFIG_VALUE_PATHSTRING( "Project", "Company", "UNKNOWN" );
+        PathString project = CONFIG_VALUE_PATHSTRING( "Project", "Name", "UNKNOWN" );
+
+        String projectIdentity = company.c_str();
+        projectIdentity.append( project.c_str() );
+
+        Char projectHash[MENGINE_SHA1_HEX_COUNT + 1] = {'\0'};
+        Helper::makeSHA1String( projectIdentity.c_str(), projectHash, true );
+        projectHash[6] = '\0';
+
+        Char sessionId[MENGINE_ENVIRONMENT_SESSIONID_MAXNAME] = {'\0'};
+        ENVIRONMENT_SERVICE()
+            ->getSessionId( sessionId );
+
+        if( sessionId[0] == '\0' )
+        {
+            LOGGER_ERROR( "failed to resolve temporary session directory identity" );
+
+            return false;
+        }
+
+        sessionId[6] = '\0';
+
+        Timestamp sessionTimestamp = ENVIRONMENT_SERVICE()
+            ->getSessionTimestamp();
+
+        Stringstream temporaryDirectoryName;
+        temporaryDirectoryName << "mng_" << projectHash << "_" << sessionId << "_" << sessionTimestamp;
+
+        Helper::pathAppendA( temporaryPath, temporaryDirectoryName.str().c_str(), MENGINE_PATH_FORWARDSLASH );
+        Helper::pathCorrectFolderPathA( temporaryPath, MENGINE_PATH_FORWARDSLASH );
+
+        FilePath cs_temporaryPath = Helper::stringizeFilePath( temporaryPath );
+
+        LOGGER_INFO_PROTECTED( "bootstrapper", "temporary folder '%s'", cs_temporaryPath.c_str() );
+
+        FileGroupInterfacePtr temporaryFileGroup = nullptr;
+
+        if( FILE_SERVICE()
+            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "temporary" ), nullptr, nullptr, cs_temporaryPath, STRINGIZE_STRING_LOCAL( "global" ), &temporaryFileGroup, true, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            LOGGER_ERROR( "failed to mount temporary directory '%s'"
+                , temporaryPath
+            );
+
+            return false;
+        }
+
+        VOCABULARY_SET( FileGroupInterface, STRINGIZE_STRING_LOCAL( "FileGroup" ), STRINGIZE_STRING_LOCAL( "temporary" ), temporaryFileGroup, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -1440,6 +1517,15 @@ namespace Mengine
             return false;
         }
 
+        LOGGER_INFO( "bootstrapper", "bootstrapper mount temporary file group" );
+
+        if( this->mountTemporaryFileGroup_() == false )
+        {
+            LOGGER_ERROR( "invalid mount temporary file group" );
+
+            return false;
+        }
+
 #if defined(MENGINE_PLUGIN_OPTICK_STATIC)
         MENGINE_ADD_PLUGIN( Optick, "initialize Optick...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
@@ -1658,6 +1744,10 @@ namespace Mengine
 
 #if defined(MENGINE_PLUGIN_TEXTUREPACKER_STATIC)
         MENGINE_ADD_PLUGIN( Texturepacker, "plugin Texturepacker...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#if defined(MENGINE_PLUGIN_TILEDMAP_STATIC)
+        MENGINE_ADD_PLUGIN( TiledMap, "plugin TiledMap...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #if defined(MENGINE_PLUGIN_GRAPHICS_STATIC)

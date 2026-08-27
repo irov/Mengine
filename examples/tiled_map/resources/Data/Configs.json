@@ -1,0 +1,33 @@
+{
+    "Project": {
+        "Name": "TiledMapExample",
+        "Codename": "TiledMapExample",
+        "Company": "Mengine"
+    },
+
+    "Game": {
+        "ContentResolution": [1280, 720],
+        "PersonalityModule": ""
+    },
+
+    "Window": {
+        "Fullscreen": false,
+        "Size": [1280, 720]
+    },
+
+    "Platform": {
+        "Cursor": true
+    },
+
+    "DevPlugins-PC": {
+        "Name": [
+            "Win32ConsoleLogger.dll"
+        ]
+    },
+
+    "Frameworks": {
+        "Name": [
+            "TiledMapExampleFramework"
+        ]
+    }
+}

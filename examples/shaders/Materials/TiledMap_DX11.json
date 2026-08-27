@@ -1,0 +1,58 @@
+{
+    "Name": "Shaders_TiledMap",
+    "VertexShader": [
+        {
+            "Name": "Vertex_TextureArray",
+            "File": {
+                "Path": "Materials/DX11_Vertex_TextureArray.hlsl",
+                "Converter": "text2vso11",
+                "Compile": true
+            }
+        }
+    ],
+    "FragmentShader": [
+        {
+            "Name": "Fragment_TextureArray",
+            "File": {
+                "Path": "Materials/DX11_Fragment_TextureArray.hlsl",
+                "Converter": "text2pso11",
+                "Compile": true
+            }
+        }
+    ],
+    "Program": [
+        {
+            "Name": "TextureArray",
+            "VertexShader": {
+                "Name": "Vertex_TextureArray"
+            },
+            "FragmentShader": {
+                "Name": "Fragment_TextureArray"
+            },
+            "VertexAttribute": {
+                "Name": "Vertex2D_UV2"
+            },
+            "Sampler": {
+                "Count": 1
+            }
+        }
+    ],
+    "Material": [
+        {
+            "Name": "TextureArray_Blend",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "SOURCE_ALPHA",
+                "Dest": "ONE_MINUS_SOURCE_ALPHA"
+            },
+            "Program": {
+                "Name": "TextureArray"
+            }
+        }
+    ]
+}

@@ -73,6 +73,8 @@ namespace Mengine
             .def( "getBatchCount", &TiledMap2D::getBatchCount )
             .def( "getVertexCount", &TiledMap2D::getVertexCount )
             .def( "getIndexCount", &TiledMap2D::getIndexCount )
+            .def( "getTextureArrayCount", &TiledMap2D::getTextureArrayCount )
+            .def( "getTextureArrayLayerCount", &TiledMap2D::getTextureArrayLayerCount )
             .def( "getResidentTextureMemoryBytes", &TiledMap2D::getResidentTextureMemoryBytes )
             ;
 

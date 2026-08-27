@@ -1,0 +1,16 @@
+#version 320 es
+
+precision highp float;
+
+uniform highp sampler2DArray inSampler0;
+
+in mediump vec4 v_Col;
+in highp vec2 v_UV0;
+flat in highp float v_Layer;
+
+layout(location = 0) out mediump vec4 outColor;
+
+void main(void)
+{
+    outColor = v_Col * texture(inSampler0, vec3(v_UV0, v_Layer));
+}

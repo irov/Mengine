@@ -1,5 +1,7 @@
 #include "AppleHttpSystem.h"
 
+#include "Interface/FileServiceInterface.h"
+
 #import "Environment/Apple/AppleBundle.h"
 
 #include "AppleHttpNetwork.h"
@@ -13,6 +15,10 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/HttpLogger.h"
 #include "Kernel/AssertionFactory.h"
+#include "Kernel/FilePathHelper.h"
+#include "Kernel/Logger.h"
+
+#include "Config/Path.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( HttpSystem, Mengine::AppleHttpSystem );
@@ -42,10 +48,39 @@ namespace Mengine
         NSInteger MengineAppleHttpSystem_CacheDiskCapacity = [AppleBundle getPluginConfigInteger:@"MengineAppleHttpSystem" withKey:@"CacheDiskCapacity" withDefault:32*1024*1024];
         
         NSString * MengineAppleHttpSystem_CacheDiskPath = [AppleBundle getPluginConfigString:@"MengineAppleHttpSystem" withKey:@"CacheDiskPath" withDefault:@"mngnsurlcache"];
+
+        if( [MengineAppleHttpSystem_CacheDiskPath length] == 0 || [MengineAppleHttpSystem_CacheDiskPath isAbsolutePath] == YES || [[MengineAppleHttpSystem_CacheDiskPath pathComponents] containsObject:@".."] == YES )
+        {
+            LOGGER_ERROR( "Apple HTTP cache disk path must be relative to the temporary directory: '%s'"
+                , [MengineAppleHttpSystem_CacheDiskPath UTF8String]
+            );
+
+            return false;
+        }
+
+        const FileGroupInterfacePtr & temporaryFileGroup = FILE_SERVICE()
+            ->getFileGroup( STRINGIZE_STRING_LOCAL( "temporary" ) );
+
+        FilePath cacheFolderPath = Helper::stringizeFilePath( [MengineAppleHttpSystem_CacheDiskPath UTF8String] );
+
+        if( temporaryFileGroup->createDirectory( cacheFolderPath ) == false )
+        {
+            LOGGER_ERROR( "Apple HTTP cache can't create temporary directory '%s'"
+                , [MengineAppleHttpSystem_CacheDiskPath UTF8String]
+            );
+
+            return false;
+        }
+
+        Path cacheDirectoryPath = {'\0'};
+        temporaryFileGroup->getFullPath( cacheFolderPath, cacheDirectoryPath );
+
+        NSString * MengineAppleHttpSystem_CacheDirectoryPath = [NSString stringWithUTF8String:cacheDirectoryPath];
+        NSURL * MengineAppleHttpSystem_CacheDirectoryURL = [NSURL fileURLWithPath:MengineAppleHttpSystem_CacheDirectoryPath isDirectory:YES];
         
         [AppleHttpNetwork httpRequestSetCacheWithMemoryCapacity:MengineAppleHttpSystem_CacheMemoryCapacity
                                                    diskCapacity:MengineAppleHttpSystem_CacheDiskCapacity
-                                                       diskPath:MengineAppleHttpSystem_CacheDiskPath];
+                                                    directoryURL:MengineAppleHttpSystem_CacheDirectoryURL];
 
         return true;
     }

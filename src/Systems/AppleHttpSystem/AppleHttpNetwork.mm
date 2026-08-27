@@ -16,8 +16,8 @@
 
 @implementation AppleHttpNetwork
 
-+ (void)httpRequestSetCacheWithMemoryCapacity:(NSUInteger)memoryCapacity diskCapacity:(NSUInteger)diskCapacity diskPath:(NSString * _Nonnull)diskPath {
-    NSURLCache *sharedCache = [[NSURLCache alloc] initWithMemoryCapacity:memoryCapacity diskCapacity:diskCapacity diskPath:diskPath];
++ (void)httpRequestSetCacheWithMemoryCapacity:(NSUInteger)memoryCapacity diskCapacity:(NSUInteger)diskCapacity directoryURL:(NSURL * _Nonnull)directoryURL {
+    NSURLCache *sharedCache = [[NSURLCache alloc] initWithMemoryCapacity:memoryCapacity diskCapacity:diskCapacity directoryURL:directoryURL];
 
     [NSURLCache setSharedURLCache:sharedCache];
 }

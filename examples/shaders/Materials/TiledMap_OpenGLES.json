@@ -1,0 +1,54 @@
+{
+    "Name": "Shaders_TiledMap",
+    "VertexShader": [
+        {
+            "Name": "Vertex_TextureArray",
+            "File": {
+                "Path": "Materials/GLES_Vertex_TextureArray.txt"
+            }
+        }
+    ],
+    "FragmentShader": [
+        {
+            "Name": "Fragment_TextureArray",
+            "File": {
+                "Path": "Materials/GLES_Fragment_TextureArray.txt"
+            }
+        }
+    ],
+    "Program": [
+        {
+            "Name": "TextureArray",
+            "VertexShader": {
+                "Name": "Vertex_TextureArray"
+            },
+            "FragmentShader": {
+                "Name": "Fragment_TextureArray"
+            },
+            "VertexAttribute": {
+                "Name": "Vertex2D_UV2"
+            },
+            "Sampler": {
+                "Count": 1
+            }
+        }
+    ],
+    "Material": [
+        {
+            "Name": "TextureArray_Blend",
+            "AlphaBlend": {
+                "Enable": true
+            },
+            "DepthBufferWrite": {
+                "Enable": false
+            },
+            "BlendFactor": {
+                "Source": "SOURCE_ALPHA",
+                "Dest": "ONE_MINUS_SOURCE_ALPHA"
+            },
+            "Program": {
+                "Name": "TextureArray"
+            }
+        }
+    ]
+}

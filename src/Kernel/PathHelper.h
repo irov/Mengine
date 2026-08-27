@@ -11,6 +11,7 @@ namespace Mengine
     {
         bool concatenateFilePath( InitializerList<FilePath> && _paths, Char * const _concatenatePath );
         FilePath concatenateFilePath( InitializerList<FilePath> && _paths );
+        size_t getFolderPath( const FilePath & _path, Char * const _folderPath );
         FilePath getFolderPath( const FilePath & _path );
         FilePath replaceFileSpec( const FilePath & _path, const Char * _fileSpec );
         FilePath unicodeToFilePath( const WString & _unicode );        

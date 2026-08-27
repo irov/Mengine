@@ -1,13 +1,16 @@
 #include "ResourceTiledMap.h"
 
+#include "TiledMapReader.h"
+
 #include "Kernel/Base64.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Data.h"
 #include "Kernel/FilePathHelper.h"
-#include "Kernel/FileStreamHelper.h"
+#include "Kernel/Hexadecimal.h"
 #include "Kernel/JSONHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/PathHelper.h"
+#include "Kernel/VectorString.h"
 
 #include "Config/StdAlgorithm.h"
 #include "Config/StdString.h"
@@ -41,9 +44,8 @@ namespace Mengine
         class TiledMapReader
         {
         public:
-            TiledMapReader( const String & _resourceName, const FileGroupInterfacePtr & _fileGroup, const FilePath & _mapPath, TiledMapData * const _data )
-                : m_resourceName( _resourceName )
-                , m_fileGroup( _fileGroup )
+            TiledMapReader( const FileGroupInterfacePtr & _fileGroup, const FilePath & _mapPath, TiledMapData * const _data )
+                : m_fileGroup( _fileGroup )
                 , m_mapPath( _mapPath )
                 , m_data( _data )
                 , m_reverseX( false )
@@ -56,7 +58,7 @@ namespace Mengine
             {
                 jpp::object map;
 
-                if( this->loadJSON_( m_mapPath, &map ) == false )
+                if( Detail::loadTiledMapDocument( m_fileGroup, m_mapPath, ETMDT_MAP, &map ) == false )
                 {
                     return false;
                 }
@@ -78,7 +80,7 @@ namespace Mengine
                 else
                 {
                     LOGGER_ERROR( "resource tiled map '%s' has unsupported orientation '%s'"
-                        , m_resourceName.c_str()
+                        , m_mapPath.c_str()
                         , orientation
                     );
 
@@ -129,54 +131,11 @@ namespace Mengine
             bool error_( const Char * _message ) const
             {
                 LOGGER_ERROR( "resource tiled map '%s' %s"
-                    , m_resourceName.c_str()
+                    , m_mapPath.c_str()
                     , _message
                 );
 
                 return false;
-            }
-
-            bool loadJSON_( const FilePath & _filePath, jpp::object * const _json ) const
-            {
-                if( m_fileGroup->existFile( _filePath, true ) == false )
-                {
-                    LOGGER_ERROR( "resource tiled map '%s' can't find Tiled JSON '%s'"
-                        , m_resourceName.c_str()
-                        , _filePath.c_str()
-                    );
-
-                    return false;
-                }
-
-                InputStreamInterfacePtr stream = Helper::openInputStreamFile( m_fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FUNCTION );
-
-                if( stream == nullptr )
-                {
-                    LOGGER_ERROR( "resource tiled map '%s' can't open Tiled JSON '%s'"
-                        , m_resourceName.c_str()
-                        , _filePath.c_str()
-                    );
-
-                    return false;
-                }
-
-                jpp::object json = Helper::loadJSONStream( stream, MENGINE_DOCUMENT_FUNCTION );
-
-                Helper::closeInputStreamFile( m_fileGroup, stream );
-
-                if( json.invalid() == true || json.is_type_object() == false )
-                {
-                    LOGGER_ERROR( "resource tiled map '%s' has invalid Tiled JSON root '%s'"
-                        , m_resourceName.c_str()
-                        , _filePath.c_str()
-                    );
-
-                    return false;
-                }
-
-                *_json = std::move( json );
-
-                return true;
             }
 
             bool readString_( const jpp::object & _owner, const Char * _key, const Char * _default, String * const _value ) const
@@ -432,7 +391,7 @@ namespace Mengine
                     else
                     {
                         LOGGER_ERROR( "resource tiled map '%s' has unsupported property type '%s'"
-                            , m_resourceName.c_str()
+                            , m_mapPath.c_str()
                             , type.c_str()
                         );
 
@@ -510,25 +469,18 @@ namespace Mengine
                 return _image.substr( begin, dot - begin );
             }
 
-            bool makeExternalPath_( const String & _source, FilePath * const _filePath ) const
+            bool makeExternalPath_( const FilePath & _ownerPath, const String & _source, FilePath * const _filePath ) const
             {
                 if( _source.empty() == true || _source[0] == '/' || (_source.size() > 1 && _source[1] == ':') )
                 {
                     return false;
                 }
 
-                String path = Helper::getFolderPath( m_mapPath ).c_str();
+                String path = Helper::getFolderPath( _ownerPath ).c_str();
                 path += _source;
+                Helper::pathCorrectBackslashA( path.data() );
 
-                for( Char & ch : path )
-                {
-                    if( ch == '\\' )
-                    {
-                        ch = '/';
-                    }
-                }
-
-                Vector<String> parts;
+                VectorString parts;
                 String::size_type position = 0;
 
                 while( position <= path.size() )
@@ -584,19 +536,6 @@ namespace Mengine
                 return true;
             }
 
-            bool isTilesetPath_( const FilePath & _filePath ) const
-            {
-                const Char * extension = Helper::getFilePathExt( _filePath ).c_str();
-                String lowercase;
-
-                for( const Char * ch = extension; *ch != '\0'; ++ch )
-                {
-                    lowercase += *ch >= 'A' && *ch <= 'Z' ? *ch - 'A' + 'a' : *ch;
-                }
-
-                return lowercase == "tsj" || lowercase == "json";
-            }
-
             bool readTilesets_( const jpp::object & _map )
             {
                 jpp::array tilesets;
@@ -637,12 +576,12 @@ namespace Mengine
 
                     if( source.empty() == false )
                     {
-                        if( this->makeExternalPath_( source, &tilesetPath ) == false || this->isTilesetPath_( tilesetPath ) == false )
+                        if( this->makeExternalPath_( m_mapPath, source, &tilesetPath ) == false )
                         {
                             return this->error_( "references an invalid external tileset path" );
                         }
 
-                        if( this->loadJSON_( tilesetPath, &tileset ) == false )
+                        if( Detail::loadTiledMapDocument( m_fileGroup, tilesetPath, ETMDT_TILESET, &tileset ) == false )
                         {
                             return false;
                         }
@@ -672,7 +611,38 @@ namespace Mengine
                     }
 
                     result.resourceName = image.empty() == false ? this->makeImageResourceName_( tileset, image ) : String();
+
+                    if( image.empty() == false && this->makeExternalPath_( tilesetPath, image, &result.imagePath ) == false )
+                    {
+                        return this->error_( "references an invalid tileset image path" );
+                    }
+
                     result.offset = mt::vec2f( 0.f, 0.f );
+
+                    String transparentColor;
+
+                    if( this->readString_( tileset, "transparentcolor", "", &transparentColor ) == false )
+                    {
+                        return this->error_( "has an invalid tileset transparent color" );
+                    }
+
+                    if( transparentColor.empty() == false )
+                    {
+                        if( transparentColor.size() != 7 || transparentColor[0] != '#' )
+                        {
+                            return this->error_( "has an invalid tileset transparent color" );
+                        }
+
+                        uint8_t color[3];
+                        size_t colorSize;
+
+                        if( Helper::decodeHexadecimal( transparentColor.c_str() + 1, 6, color, 3, &colorSize ) == false || colorSize != 3 )
+                        {
+                            return this->error_( "has an invalid tileset transparent color" );
+                        }
+
+                        result.transparentColor = ((uint32_t)color[0] << 16) | ((uint32_t)color[1] << 8) | (uint32_t)color[2];
+                    }
 
                     jpp::object tileOffset;
 
@@ -729,8 +699,17 @@ namespace Mengine
                             resultImage.localId = localId;
                             resultImage.resourceName = this->makeImageResourceName_( tile, tileImage );
 
+                            if( this->makeExternalPath_( tilesetPath, tileImage, &resultImage.imagePath ) == false )
+                            {
+                                return this->error_( "references an invalid collection tile image path" );
+                            }
+
                             if( this->readUInt32_( tile, "imagewidth", result.tileWidth, &resultImage.imageWidth ) == false
-                                || this->readUInt32_( tile, "imageheight", result.tileHeight, &resultImage.imageHeight ) == false )
+                                || this->readUInt32_( tile, "imageheight", result.tileHeight, &resultImage.imageHeight ) == false
+                                || this->readUInt32_( tile, "x", 0, &resultImage.sourceX ) == false
+                                || this->readUInt32_( tile, "y", 0, &resultImage.sourceY ) == false
+                                || this->readUInt32_( tile, "width", result.tileWidth, &resultImage.sourceWidth ) == false
+                                || this->readUInt32_( tile, "height", result.tileHeight, &resultImage.sourceHeight ) == false )
                             {
                                 return this->error_( "has invalid collection tile image dimensions" );
                             }
@@ -766,10 +745,10 @@ namespace Mengine
                         result.tileCount = StdAlgorithm::max( result.tileCount, (uint32_t)collectionCount );
                     }
 
-                    if( result.tileCount == 0 )
+                    if( result.tileCount == 0 && result.resourceName.empty() == true )
                     {
                         LOGGER_ERROR( "resource tiled map '%s' tileset '%s' has no tiles"
-                            , m_resourceName.c_str()
+                            , m_mapPath.c_str()
                             , result.name.c_str()
                         );
 
@@ -916,7 +895,7 @@ namespace Mengine
                 else if( compression[0] != '\0' )
                 {
                     LOGGER_ERROR( "resource tiled map '%s' has unsupported tile compression '%s'"
-                        , m_resourceName.c_str()
+                        , m_mapPath.c_str()
                         , compression
                     );
 
@@ -1369,7 +1348,6 @@ namespace Mengine
             }
 
         private:
-            String m_resourceName;
             FileGroupInterfacePtr m_fileGroup;
             FilePath m_mapPath;
             TiledMapData * m_data;
@@ -1488,18 +1466,19 @@ namespace Mengine
     {
         const ContentInterfacePtr & content = this->getContent();
         const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
+        const FilePath & filePath = content->getFilePath();
 
         if( fileGroup == nullptr )
         {
             LOGGER_ERROR( "resource tiled map '%s' has no file group"
-                , this->getName().c_str()
+                , filePath.c_str()
             );
 
             return false;
         }
 
         Detail::TiledMapData data;
-        Detail::TiledMapReader reader( this->getName().c_str(), fileGroup, content->getFilePath(), &data );
+        Detail::TiledMapReader reader( fileGroup, filePath, &data );
 
         if( reader.read() == false )
         {

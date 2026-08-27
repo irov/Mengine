@@ -113,6 +113,7 @@ namespace Mengine
         void AndroidGetJavaRect( JNIEnv * _jenv, jclass _jclass, jobject _jrect, Viewport * const _viewport );
         //////////////////////////////////////////////////////////////////////////
         bool AndroidGetApplicationFilesDirCanonicalPath( JNIEnv * _jenv, Char * const _path );
+        bool AndroidGetApplicationCacheDirCanonicalPath( JNIEnv * _jenv, Char * const _path );
         //////////////////////////////////////////////////////////////////////////
         MENGINE_NODISCARD jobject AndroidGetActivitySurface( JNIEnv * _jenv );
         //////////////////////////////////////////////////////////////////////////

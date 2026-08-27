@@ -958,6 +958,47 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        bool AndroidGetApplicationCacheDirCanonicalPath( JNIEnv * _jenv, Char * const _path )
+        {
+            jobject jobject_MengineApplication = Mengine_JNI_GetObjectApplication( _jenv );
+
+            jmethodID midMengineApplication_getCacheDir = Mengine_JNI_GetMethodApplication( _jenv, "getCacheDir", "()Ljava/io/File;" );
+
+            jobject cacheDir = Mengine_JNI_CallObjectMethod( _jenv, jobject_MengineApplication, midMengineApplication_getCacheDir );
+
+            Mengine_JNI_DeleteLocalRef( _jenv, jobject_MengineApplication );
+
+            if( cacheDir == nullptr )
+            {
+                return false;
+            }
+
+            jclass jclass_CacheDir = Mengine_JNI_GetObjectClass( _jenv, cacheDir );
+
+            jmethodID midCacheDir_getCanonicalPath = Mengine_JNI_GetMethodID( _jenv, jclass_CacheDir, "getCanonicalPath", "()Ljava/lang/String;" );
+
+            Mengine_JNI_DeleteLocalRef( _jenv, jclass_CacheDir );
+
+            jstring jstring_CanonicalPath = (jstring)Mengine_JNI_CallObjectMethod( _jenv, cacheDir, midCacheDir_getCanonicalPath );
+
+            Mengine_JNI_DeleteLocalRef( _jenv, cacheDir );
+
+            if( jstring_CanonicalPath == nullptr )
+            {
+                return false;
+            }
+
+            const Char * canonicalPath_str = Mengine_JNI_GetStringUTFChars( _jenv, jstring_CanonicalPath, NULL );
+            StdString::strcpy_safe( _path, canonicalPath_str, MENGINE_MAX_PATH );
+            Mengine_JNI_ReleaseStringUTFChars( _jenv, jstring_CanonicalPath, canonicalPath_str );
+
+            Mengine_JNI_DeleteLocalRef( _jenv, jstring_CanonicalPath );
+
+            Helper::pathCorrectFolderPathA( _path, MENGINE_PATH_FORWARDSLASH );
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
         jobject AndroidGetActivitySurface( JNIEnv * _jenv )
         {
             jobject jobject_MengineActivity = Mengine_JNI_GetObjectActivity( _jenv );

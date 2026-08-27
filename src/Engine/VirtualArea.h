@@ -234,6 +234,7 @@ namespace Mengine
         bool endTouch_( const InputMouseButtonEvent & _event );
         bool releaseTouch_( ETouchCode _touchId );
         bool updatePinch_();
+        void scaleToPoint_( float _factor, const mt::vec2f & _screenPoint, const RenderContext * _context );
 
     protected:
         mt::vec2f getScreenContentDelta_( const mt::vec2f & _screenDelta, const RenderContext * _context ) const;

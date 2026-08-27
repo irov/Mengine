@@ -1105,6 +1105,22 @@ namespace Mengine
         return StdString::strlen( _userPath );
     }
     //////////////////////////////////////////////////////////////////////////
+    size_t UnixPlatformService::getTemporaryPath( Char * const _temporaryPath ) const
+    {
+        const Char * temporaryPath = std::getenv( "TMPDIR" );
+
+        if( temporaryPath == nullptr || temporaryPath[0] == '\0' )
+        {
+            temporaryPath = "/tmp";
+        }
+
+        StdString::strcpy_safe( _temporaryPath, temporaryPath, MENGINE_MAX_PATH );
+        Helper::pathCorrectFolderPathA( _temporaryPath, MENGINE_PATH_FORWARDSLASH );
+        Helper::pathCorrectBackslashA( _temporaryPath );
+
+        return StdString::strlen( _temporaryPath );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool UnixPlatformService::getUserLocaleLanguage( Char * const _userLocaleLanguage ) const
     {
         const Char * locale = ::setlocale( LC_MESSAGES, nullptr );

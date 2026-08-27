@@ -24,7 +24,7 @@
 
 @interface AppleHttpNetwork : NSObject
 
-+ (void)httpRequestSetCacheWithMemoryCapacity:(NSUInteger)memoryCapacity diskCapacity:(NSUInteger)diskCapacity diskPath:(NSString * _Nonnull)diskPath;
++ (void)httpRequestSetCacheWithMemoryCapacity:(NSUInteger)memoryCapacity diskCapacity:(NSUInteger)diskCapacity directoryURL:(NSURL * _Nonnull)directoryURL;
 + (void)httpRequestClearCache;
 
 + (nullable AppleHttpResponseParam *)httpRequestPing:(AppleHttpRequestParam * _Nonnull)request;

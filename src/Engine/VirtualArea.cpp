@@ -13,6 +13,7 @@
 #include "Kernel/EventableHelper.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/PrototypeHelper.h"
+#include "Kernel/ResolutionHelper.h"
 
 #include "Config/StdMath.h"
 
@@ -1053,8 +1054,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool VirtualArea::handleMouseWheel( const RenderContext * _context, const InputMouseWheelEvent & _event )
     {
-        MENGINE_UNUSED( _context );
-
         if( m_frozen == true || m_scrollLocked == true || m_enableScale == false )
         {
             return false;
@@ -1062,11 +1061,11 @@ namespace Mengine
 
         if( _event.scroll > 0 )
         {
-            this->scale( 1.f - m_wheelScaleFactor );
+            this->scaleToPoint_( 1.f - m_wheelScaleFactor, _event.position.screen, _context );
         }
         else
         {
-            this->scale( 1.f + m_wheelScaleFactor );
+            this->scaleToPoint_( 1.f + m_wheelScaleFactor, _event.position.screen, _context );
         }
 
         return m_defaultHandle;
@@ -1515,6 +1514,50 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void VirtualArea::scaleToPoint_( float _factor, const mt::vec2f & _screenPoint, const RenderContext * _context )
+    {
+        if( _context == nullptr || _context->resolution == nullptr )
+        {
+            this->scale( _factor );
+
+            return;
+        }
+
+        Viewport viewport = m_viewport;
+
+        if( m_renderViewport != nullptr )
+        {
+            viewport = m_renderViewport->getViewportWM();
+        }
+
+        const mt::vec2f viewportSize = viewport.size();
+
+        if( mt::abs_f( viewportSize.x ) <= 0.0001f || mt::abs_f( viewportSize.y ) <= 0.0001f )
+        {
+            this->scale( _factor );
+
+            return;
+        }
+
+        mt::vec2f adaptScreenPoint;
+        Helper::adaptScreenPosition( _screenPoint, &adaptScreenPoint );
+
+        mt::vec2f contentPoint;
+        _context->resolution->fromScreenToContentPosition( adaptScreenPoint, &contentPoint );
+
+        const mt::vec2f viewportPoint = (contentPoint - viewport.begin) / viewportSize;
+        const mt::vec2f boundsPointBefore = m_bounds.begin + viewportPoint * m_bounds.size();
+
+        this->scale( _factor );
+
+        const mt::vec2f boundsPointAfter = m_bounds.begin + viewportPoint * m_bounds.size();
+
+        m_velocity = mt::vec2f( 0.f, 0.f );
+
+        this->setPositionInternal_( m_position + boundsPointAfter - boundsPointBefore, true );
+        this->validatePosition_();
+    }
+    //////////////////////////////////////////////////////////////////////////
     mt::vec2f VirtualArea::getScreenContentDelta_( const mt::vec2f & _screenDelta, const RenderContext * _context ) const
     {
         mt::vec2f contentDelta = _screenDelta;
@@ -1545,12 +1588,12 @@ namespace Mengine
 
         if( mt::abs_f( viewportSize.x ) > 0.0001f )
         {
-            worldDelta.x = contentDelta.x * boundsSize.x / viewportSize.x;
+            worldDelta.x = -contentDelta.x * boundsSize.x / viewportSize.x;
         }
 
         if( mt::abs_f( viewportSize.y ) > 0.0001f )
         {
-            worldDelta.y = -contentDelta.y * boundsSize.y / viewportSize.y;
+            worldDelta.y = contentDelta.y * boundsSize.y / viewportSize.y;
         }
 
         return worldDelta;

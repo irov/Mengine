@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Kernel/Resource.h"
+#include "Kernel/FilePath.h"
+#include "Kernel/Optional.h"
 #include "Kernel/Params.h"
 #include "Kernel/String.h"
 #include "Kernel/Vector.h"
@@ -94,8 +96,13 @@ namespace Mengine
     {
         uint32_t localId;
         String resourceName;
+        FilePath imagePath;
         uint32_t imageWidth;
         uint32_t imageHeight;
+        uint32_t sourceX;
+        uint32_t sourceY;
+        uint32_t sourceWidth;
+        uint32_t sourceHeight;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef Vector<TiledMapTileImage> VectorTiledMapTileImages;
@@ -114,6 +121,8 @@ namespace Mengine
         mt::vec2f offset;
         String name;
         String resourceName;
+        FilePath imagePath;
+        Optional<uint32_t> transparentColor;
         VectorTiledMapTileImages tileImages;
     };
     //////////////////////////////////////////////////////////////////////////

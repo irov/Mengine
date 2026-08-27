@@ -166,6 +166,26 @@ namespace Mengine
         return userPathLen;
     }
     //////////////////////////////////////////////////////////////////////////
+    size_t MacOSPlatformService::getTemporaryPath( Char * const _temporaryPath ) const
+    {
+        NSString * temporaryPath = NSTemporaryDirectory();
+
+        if( temporaryPath == nil )
+        {
+            _temporaryPath[0] = '\0';
+
+            return 0;
+        }
+
+        const Char * temporaryPathRepresentation = [temporaryPath fileSystemRepresentation];
+
+        StdString::strcpy_safe( _temporaryPath, temporaryPathRepresentation, MENGINE_MAX_PATH );
+        Helper::pathCorrectFolderPathA( _temporaryPath, MENGINE_PATH_FORWARDSLASH );
+        Helper::pathCorrectBackslashA( _temporaryPath );
+
+        return StdString::strlen( _temporaryPath );
+    }
+    //////////////////////////////////////////////////////////////////////////
     size_t MacOSPlatformService::getExtraPreferencesFolderName( Char * const _folderName ) const
     {
         PathString Project_ExtraPreferencesFolderName = CONFIG_VALUE_PATHSTRING( "Project", "ExtraPreferencesFolderName", "" );

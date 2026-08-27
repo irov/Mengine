@@ -10,11 +10,19 @@
                 "RenderPlatform": "DX11"
             },
             {
+                "Path": "Materials/TiledMap_DX11.json",
+                "RenderPlatform": "DX11"
+            },
+            {
                 "Path": "Materials/Shader_Metal.json",
                 "RenderPlatform": "Metal"
             },
             {
                 "Path": "Materials/Standart_Metal.json",
+                "RenderPlatform": "Metal"
+            },
+            {
+                "Path": "Materials/TiledMap_Metal.json",
                 "RenderPlatform": "Metal"
             },
             {
@@ -26,11 +34,19 @@
                 "RenderPlatform": "OpenGL"
             },
             {
+                "Path": "Materials/TiledMap_OpenGL.json",
+                "RenderPlatform": "OpenGL"
+            },
+            {
                 "Path": "Materials/Shader_OpenGLES.json",
                 "RenderPlatform": "OpenGLES"
             },
             {
                 "Path": "Materials/Standart_OpenGLES.json",
+                "RenderPlatform": "OpenGLES"
+            },
+            {
+                "Path": "Materials/TiledMap_OpenGLES.json",
                 "RenderPlatform": "OpenGLES"
             }
         ]

@@ -53,7 +53,9 @@
     self.m_configs = [NSMutableDictionary dictionary];
 
     FIRRemoteConfigSettings *remoteConfigSettings = [[FIRRemoteConfigSettings alloc] init];
-    remoteConfigSettings.minimumFetchInterval = MENGINE_DEBUG_VALUE(0, 3600);
+#if defined(MENGINE_DEBUG)
+    remoteConfigSettings.minimumFetchInterval = 0;
+#endif
 
     FIRRemoteConfig * remoteConfig = [FIRRemoteConfig remoteConfig];
 

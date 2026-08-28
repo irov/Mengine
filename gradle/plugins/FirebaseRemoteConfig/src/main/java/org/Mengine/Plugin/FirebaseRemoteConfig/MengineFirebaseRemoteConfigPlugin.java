@@ -2,7 +2,6 @@ package org.Mengine.Plugin.FirebaseRemoteConfig;
 
 import android.os.Bundle;
 
-import androidx.annotation.IntegerRes;
 import androidx.annotation.NonNull;
 
 import com.google.firebase.FirebaseApp;
@@ -34,29 +33,18 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
     public static final String SERVICE_NAME = "FBRemoteConfig";
     public static final boolean SERVICE_EMBEDDING = true;
 
-    private static final @IntegerRes int METADATA_MINIMUM_FETCH_INTERVAL = R.integer.mengine_firebase_remote_config_minimum_fetch_interval;
-
     private Map<String, String> m_defaults = new HashMap<>();
 
     private volatile boolean m_prefetching = false;
 
     @Override
     public void onAppCreate(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
-        int MengineFirebaseRemoteConfigPlugin_MinimumFetchInterval = this.getResourceInteger(METADATA_MINIMUM_FETCH_INTERVAL);
-
-        this.logInfo("%s: %d"
-            , this.getResourceName(METADATA_MINIMUM_FETCH_INTERVAL)
-            , MengineFirebaseRemoteConfigPlugin_MinimumFetchInterval
-        );
-
         FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
 
         FirebaseRemoteConfigSettings.Builder configSettingsBuilder = new FirebaseRemoteConfigSettings.Builder();
 
         if (BuildConfig.DEBUG == true) {
             configSettingsBuilder.setMinimumFetchIntervalInSeconds(0);
-        } else {
-            configSettingsBuilder.setMinimumFetchIntervalInSeconds(MengineFirebaseRemoteConfigPlugin_MinimumFetchInterval);
         }
 
         FirebaseRemoteConfigSettings configSettings = configSettingsBuilder.build();

@@ -187,9 +187,23 @@ namespace Mengine
         return exist;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool ResourceService::hasResource( const ResourceUID & _uid, ResourcePtr * const _resource ) const
+    {
+        bool exist = m_globalBank->hasResource( _uid, _resource );
+
+        return exist;
+    }
+    //////////////////////////////////////////////////////////////////////////
     const ResourcePtr & ResourceService::getResourceReference( const ConstString & _groupName, const ConstString & _name ) const
     {
         const ResourcePtr & resource = m_globalBank->getResource( _groupName, _name );
+
+        return resource;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ResourcePtr & ResourceService::getResourceReference( const ResourceUID & _uid ) const
+    {
+        const ResourcePtr & resource = m_globalBank->getResource( _uid );
 
         return resource;
     }

@@ -14,6 +14,7 @@
 #include "Kernel/WString.h"
 #include "Kernel/Floats.h"
 
+#include "Config/ResourceUID.h"
 #include "Config/Typedef.h"
 
 #include "math/vec2.h"
@@ -31,6 +32,7 @@ namespace Metabuf
     void archive_read( Reader & ar, uint8_t & _value, void * _userData );
     void archive_read( Reader & ar, uint16_t & _value, void * _userData );
     void archive_read( Reader & ar, uint32_t & _value, void * _userData );
+    void archive_read( Reader & ar, Mengine::ResourceUID & _value, void * _userData );
     void archive_read( Reader & ar, float & _value, void * _userData );
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Mengine::String & _value, void * _userData );

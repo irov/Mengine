@@ -168,6 +168,7 @@ src
     Metaprogramming.h
     UniqueId.h
     HashType.h
+    ResourceUID.h
     NotificatorId.h
     StatisticId.h
     InitializerList.h

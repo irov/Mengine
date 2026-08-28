@@ -17,6 +17,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Resource::Resource()
         : m_resourceBank( nullptr )
+        , m_resourceUID( INVALID_RESOURCE_UID )
         , m_prefetchReferenceSuccessful( false )
         , m_initialize( false )
         , m_groupCache( false )
@@ -53,6 +54,11 @@ namespace Mengine
     void Resource::setResourceBank( ResourceBankInterface * _bank )
     {
         m_resourceBank = _bank;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Resource::setResourceUID( const ResourceUID & _uid )
+    {
+        m_resourceUID = _uid;
     }
     //////////////////////////////////////////////////////////////////////////
     void Resource::setContent( const ContentInterfacePtr & _content )

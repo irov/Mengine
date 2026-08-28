@@ -37,6 +37,10 @@
 #define MENGINE_PRIu64 PRIu64
 #endif
 
+#ifndef MENGINE_PRIx64
+#define MENGINE_PRIx64 PRIx64
+#endif
+
 #ifndef MENGINE_PRIuPTR
 #define MENGINE_PRIuPTR PRIuPTR
 #endif

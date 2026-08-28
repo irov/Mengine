@@ -1,4 +1,4 @@
-<Protocol Version = "156">
+<Protocol Version = "157">
   <Type Name="Mengine::String" Evict="string"/>
   <Type Name="Mengine::WString" Evict="wstring"/>
   <Type Name="Mengine::ConstString" Evict="string"/>
@@ -6,6 +6,7 @@
   <Type Name="Mengine::Tags" Evict="strings"/>
   <Type Name="bool" Evict="bool" NCR="1"/>
   <Type Name="uint32_t" Evict="uint32_t" NCR="1"/>
+  <Type Name="Mengine::ResourceUID" Evict="uuid_v4"/>
   <Type Name="Mengine::WChar" Evict="wchar_t" NCR="1"/>
   <Type Name="float" Evict="float" NCR="1"/>
   <Type Name="mt::vec2f" Evict="float2"/>
@@ -159,6 +160,7 @@
         <Node Name="Resource" Generator="Type">
           <Attribute Name="Name" Type="Mengine::ConstString" Required="1"/>
           <Attribute Name="Type" Type="Mengine::ConstString" Required="1"/>
+          <Attribute Name="UID" Type="Mengine::ResourceUID"/>
           <Attribute Name="Unique" Type="bool"/> 
           <Attribute Name="Precompile" Type="bool"/> 
         </Node>

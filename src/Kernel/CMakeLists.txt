@@ -512,6 +512,7 @@ Assertion
     AssertionNotImplemented.h
     AssertionToDo.h
     AssertionResourceType.h
+    AssertionResourceUID.h
     AssertionMemoryPanic.h
     AssertionMainThreadGuard.h
     AssertionVocabulary.h

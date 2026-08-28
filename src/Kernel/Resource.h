@@ -14,6 +14,8 @@
 #include "Kernel/ReferenceCounter.h"
 #include "Kernel/IntrusivePtrView.h"
 
+#include "Config/ResourceUID.h"
+
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
 #   include "Kernel/Scriptable.h"
 #endif
@@ -44,6 +46,9 @@ namespace Mengine
     public:
         void setResourceBank( ResourceBankInterface * _bank );
         MENGINE_INLINE ResourceBankInterface * getResourceBank() const;
+
+        void setResourceUID( const ResourceUID & _uid );
+        MENGINE_INLINE const ResourceUID & getResourceUID() const;
 
     public:
         void setContent( const ContentInterfacePtr & _content );
@@ -115,6 +120,7 @@ namespace Mengine
 
     protected:
         ResourceBankInterface * m_resourceBank;
+        ResourceUID m_resourceUID;
 
         ContentInterfacePtr m_content;
 
@@ -141,6 +147,11 @@ namespace Mengine
     MENGINE_INLINE ResourceBankInterface * Resource::getResourceBank() const
     {
         return m_resourceBank;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_INLINE const ResourceUID & Resource::getResourceUID() const
+    {
+        return m_resourceUID;
     }
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE const ContentInterfacePtr & Resource::getContent() const

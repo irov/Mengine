@@ -39,7 +39,9 @@ namespace Mengine
 
     public:
         const ResourcePtr & getResourceReference( const ConstString & _groupName, const ConstString & _name ) const override;
+        const ResourcePtr & getResourceReference( const ResourceUID & _uid ) const override;
         bool hasResource( const ConstString & _groupName, const ConstString & _name, bool _onlyGroup, ResourcePtr * const _resource ) const override;
+        bool hasResource( const ResourceUID & _uid, ResourcePtr * const _resource ) const override;
 
     public:
         void foreachResources( const LambdaResource & _lambda ) const override;

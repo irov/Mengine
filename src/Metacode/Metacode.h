@@ -74,8 +74,8 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_File_Compile = (1 <<1),
-                    EMETA_File_Converter = (1 <<0),
+                    EMETA_File_Compile = (1 << 1),
+                    EMETA_File_Converter = (1 << 0),
                 };
 
                 uint32_t m_flagNoRequiredAttribute;
@@ -110,7 +110,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_Compile( bool * _value ) const
+                bool get_File_Compile( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_Compile) == 0 )
                     {
@@ -140,7 +140,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_Converter( Mengine::ConstString * _value ) const
+                bool get_File_Converter( Mengine::ConstString * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
                     {
@@ -237,18 +237,18 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_Debug = (1 <<0),
-                    EMETA_AlphaBlend_Enable = (1 <<8),
-                    EMETA_BlendFactor_Dest = (1 <<2),
-                    EMETA_BlendFactor_Op = (1 <<3),
-                    EMETA_BlendFactor_Source = (1 <<1),
-                    EMETA_DepthBufferTest_Enable = (1 <<9),
-                    EMETA_DepthBufferWrite_Enable = (1 <<10),
-                    EMETA_Program_Name = (1 <<11),
-                    EMETA_SeparateAlphaBlend_Enable = (1 <<7),
-                    EMETA_SeparateAlphaBlendFactor_Dest = (1 <<5),
-                    EMETA_SeparateAlphaBlendFactor_Op = (1 <<6),
-                    EMETA_SeparateAlphaBlendFactor_Source = (1 <<4),
+                    EMETA_Debug = (1 << 0),
+                    EMETA_AlphaBlend_Enable = (1 << 8),
+                    EMETA_BlendFactor_Dest = (1 << 2),
+                    EMETA_BlendFactor_Op = (1 << 3),
+                    EMETA_BlendFactor_Source = (1 << 1),
+                    EMETA_DepthBufferTest_Enable = (1 << 9),
+                    EMETA_DepthBufferWrite_Enable = (1 << 10),
+                    EMETA_Program_Name = (1 << 11),
+                    EMETA_SeparateAlphaBlend_Enable = (1 << 7),
+                    EMETA_SeparateAlphaBlendFactor_Dest = (1 << 5),
+                    EMETA_SeparateAlphaBlendFactor_Op = (1 << 6),
+                    EMETA_SeparateAlphaBlendFactor_Source = (1 << 4),
                 };
 
                 uint32_t m_flagNoRequiredAttribute;
@@ -269,7 +269,7 @@ namespace Metacode
                     return this->m_Debug;
                 }
 
-                bool get_Debug( bool * _value ) const
+                bool get_Debug( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Debug) == 0 )
                     {
@@ -294,7 +294,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool getd_Debug( bool * _value, const bool & _default ) const
+                bool getd_Debug( bool * const _value, const bool & _default ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Debug) == 0 )
                     {
@@ -364,7 +364,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_BlendFactor_Dest( Mengine::EBlendFactor * _value ) const
+                bool get_BlendFactor_Dest( Mengine::EBlendFactor * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_BlendFactor_Dest) == 0 )
                     {
@@ -394,7 +394,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_BlendFactor_Op( Mengine::EBlendOp * _value ) const
+                bool get_BlendFactor_Op( Mengine::EBlendOp * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_BlendFactor_Op) == 0 )
                     {
@@ -424,7 +424,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_BlendFactor_Source( Mengine::EBlendFactor * _value ) const
+                bool get_BlendFactor_Source( Mengine::EBlendFactor * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_BlendFactor_Source) == 0 )
                     {
@@ -510,7 +510,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_Program_Name( Mengine::ConstString * _value ) const
+                bool get_Program_Name( Mengine::ConstString * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Program_Name) == 0 )
                     {
@@ -568,7 +568,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_SeparateAlphaBlendFactor_Dest( Mengine::EBlendFactor * _value ) const
+                bool get_SeparateAlphaBlendFactor_Dest( Mengine::EBlendFactor * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_SeparateAlphaBlendFactor_Dest) == 0 )
                     {
@@ -598,7 +598,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_SeparateAlphaBlendFactor_Op( Mengine::EBlendOp * _value ) const
+                bool get_SeparateAlphaBlendFactor_Op( Mengine::EBlendOp * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_SeparateAlphaBlendFactor_Op) == 0 )
                     {
@@ -628,7 +628,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_SeparateAlphaBlendFactor_Source( Mengine::EBlendFactor * _value ) const
+                bool get_SeparateAlphaBlendFactor_Source( Mengine::EBlendFactor * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_SeparateAlphaBlendFactor_Source) == 0 )
                     {
@@ -668,9 +668,9 @@ namespace Metacode
                 protected:
                     enum NoRequiredAttribute
                     {
-                        EMETA_AddressMode_Border = (1 <<2),
-                        EMETA_AddressMode_U = (1 <<0),
-                        EMETA_AddressMode_V = (1 <<1),
+                        EMETA_AddressMode_Border = (1 << 2),
+                        EMETA_AddressMode_U = (1 << 0),
+                        EMETA_AddressMode_V = (1 << 1),
                     };
 
                     uint32_t m_flagNoRequiredAttribute;
@@ -705,7 +705,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool get_AddressMode_Border( uint32_t * _value ) const
+                    bool get_AddressMode_Border( uint32_t * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_AddressMode_Border) == 0 )
                         {
@@ -735,7 +735,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool get_AddressMode_U( Mengine::ETextureAddressMode * _value ) const
+                    bool get_AddressMode_U( Mengine::ETextureAddressMode * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_AddressMode_U) == 0 )
                         {
@@ -765,7 +765,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool get_AddressMode_V( Mengine::ETextureAddressMode * _value ) const
+                    bool get_AddressMode_V( Mengine::ETextureAddressMode * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_AddressMode_V) == 0 )
                         {
@@ -1097,8 +1097,8 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_File_Compile = (1 <<1),
-                    EMETA_File_Converter = (1 <<0),
+                    EMETA_File_Compile = (1 << 1),
+                    EMETA_File_Converter = (1 << 0),
                 };
 
                 uint32_t m_flagNoRequiredAttribute;
@@ -1133,7 +1133,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_Compile( bool * _value ) const
+                bool get_File_Compile( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_Compile) == 0 )
                     {
@@ -1163,7 +1163,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_Converter( Mengine::ConstString * _value ) const
+                bool get_File_Converter( Mengine::ConstString * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
                     {
@@ -1222,8 +1222,9 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_Precompile = (1 <<1),
-                    EMETA_Unique = (1 <<0),
+                    EMETA_Precompile = (1 << 2),
+                    EMETA_UID = (1 << 0),
+                    EMETA_Unique = (1 << 1),
                 };
 
                 uint32_t m_flagNoRequiredAttribute;
@@ -1255,7 +1256,7 @@ namespace Metacode
                     return this->m_Precompile;
                 }
 
-                bool get_Precompile( bool * _value ) const
+                bool get_Precompile( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Precompile) == 0 )
                     {
@@ -1280,7 +1281,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool getd_Precompile( bool * _value, const bool & _default ) const
+                bool getd_Precompile( bool * const _value, const bool & _default ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Precompile) == 0 )
                     {
@@ -1304,6 +1305,49 @@ namespace Metacode
                     return this->m_Type;
                 }
 
+                bool has_UID() const
+                {
+                    return (m_flagNoRequiredAttribute & EMETA_UID) != 0;
+                }
+
+                template<class C, class M>
+                bool getm_UID( C _self, M _method ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_UID) == 0 )
+                    {
+                        return false;
+                    }
+
+                    (_self->*_method)( this->m_UID );
+
+                    return true;
+                }
+
+                bool get_UID( Mengine::ResourceUID * const _value ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_UID) == 0 )
+                    {
+                        return false;
+                    }
+
+                    *_value = this->m_UID;
+
+                    return true;
+                }
+
+                bool getd_UID( Mengine::ResourceUID * const _value, const Mengine::ResourceUID & _default ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_UID) == 0 )
+                    {
+                        *_value = _default;
+
+                        return false;
+                    }
+
+                    *_value = this->m_UID;
+
+                    return true;
+                }
                 bool has_Unique() const
                 {
                     return (m_flagNoRequiredAttribute & EMETA_Unique) != 0;
@@ -1319,7 +1363,7 @@ namespace Metacode
                     return this->m_Unique;
                 }
 
-                bool get_Unique( bool * _value ) const
+                bool get_Unique( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Unique) == 0 )
                     {
@@ -1344,7 +1388,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool getd_Unique( bool * _value, const bool & _default ) const
+                bool getd_Unique( bool * const _value, const bool & _default ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Unique) == 0 )
                     {
@@ -1380,6 +1424,7 @@ namespace Metacode
                 Mengine::ConstString m_Name;
                 bool m_Precompile;
                 Mengine::ConstString m_Type;
+                Mengine::ResourceUID m_UID;
                 bool m_Unique;
             };
 
@@ -1392,8 +1437,8 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_File_Converter = (1 <<2),
-                    EMETA_File_NoExist = (1 <<3),
+                    EMETA_File_Converter = (1 << 3),
+                    EMETA_File_NoExist = (1 << 4),
                 };
 
             public:
@@ -1426,7 +1471,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_Converter( Mengine::ConstString * _value ) const
+                bool get_File_Converter( Mengine::ConstString * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
                     {
@@ -1456,7 +1501,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_NoExist( bool * _value ) const
+                bool get_File_NoExist( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
                     {
@@ -1575,7 +1620,7 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_File_NoExist = (1 <<2),
+                    EMETA_File_NoExist = (1 << 3),
                 };
 
             public:
@@ -1597,7 +1642,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_NoExist( bool * _value ) const
+                bool get_File_NoExist( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
                     {
@@ -1653,7 +1698,7 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_File_NoExist = (1 <<2),
+                    EMETA_File_NoExist = (1 << 3),
                 };
 
             public:
@@ -1675,7 +1720,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_NoExist( bool * _value ) const
+                bool get_File_NoExist( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
                     {
@@ -1731,7 +1776,7 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_File_NoExist = (1 <<2),
+                    EMETA_File_NoExist = (1 << 3),
                 };
 
             public:
@@ -1753,7 +1798,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_NoExist( bool * _value ) const
+                bool get_File_NoExist( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
                     {
@@ -1809,7 +1854,7 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_File_NoExist = (1 <<2),
+                    EMETA_File_NoExist = (1 << 3),
                 };
 
             public:
@@ -1831,7 +1876,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_NoExist( bool * _value ) const
+                bool get_File_NoExist( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
                     {
@@ -1887,7 +1932,7 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_File_NoExist = (1 <<2),
+                    EMETA_File_NoExist = (1 << 3),
                 };
 
             public:
@@ -1909,7 +1954,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_NoExist( bool * _value ) const
+                bool get_File_NoExist( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
                     {
@@ -1989,9 +2034,9 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_File_Dataflow = (1 <<3),
-                    EMETA_File_NoExist = (1 <<2),
-                    EMETA_Sidecar_Path = (1 <<4),
+                    EMETA_File_Dataflow = (1 << 4),
+                    EMETA_File_NoExist = (1 << 3),
+                    EMETA_Sidecar_Path = (1 << 5),
                 };
 
             public:
@@ -2013,7 +2058,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_Dataflow( Mengine::ConstString * _value ) const
+                bool get_File_Dataflow( Mengine::ConstString * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_Dataflow) == 0 )
                     {
@@ -2043,7 +2088,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_NoExist( bool * _value ) const
+                bool get_File_NoExist( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
                     {
@@ -2084,7 +2129,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_Sidecar_Path( Mengine::FilePath * _value ) const
+                bool get_Sidecar_Path( Mengine::FilePath * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Sidecar_Path) == 0 )
                     {
@@ -2131,7 +2176,7 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_File_NoExist = (1 <<2),
+                    EMETA_File_NoExist = (1 << 3),
                 };
 
             public:
@@ -2153,7 +2198,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_NoExist( bool * _value ) const
+                bool get_File_NoExist( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
                     {
@@ -2209,9 +2254,9 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_File_Codec = (1 <<2),
-                    EMETA_File_Converter = (1 <<3),
-                    EMETA_File_NoExist = (1 <<4),
+                    EMETA_File_Codec = (1 << 3),
+                    EMETA_File_Converter = (1 << 4),
+                    EMETA_File_NoExist = (1 << 5),
                 };
 
             public:
@@ -2233,7 +2278,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_Codec( Mengine::ConstString * _value ) const
+                bool get_File_Codec( Mengine::ConstString * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_Codec) == 0 )
                     {
@@ -2263,7 +2308,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_Converter( Mengine::ConstString * _value ) const
+                bool get_File_Converter( Mengine::ConstString * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
                     {
@@ -2293,7 +2338,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_NoExist( bool * _value ) const
+                bool get_File_NoExist( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
                     {
@@ -2351,13 +2396,13 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_File_Alpha = (1 <<3),
-                    EMETA_File_Codec = (1 <<2),
-                    EMETA_File_NoExist = (1 <<7),
-                    EMETA_File_Offset = (1 <<6),
-                    EMETA_File_Premultiply = (1 <<4),
-                    EMETA_File_Size = (1 <<5),
-                    EMETA_File_TrimAtlas = (1 <<8),
+                    EMETA_File_Alpha = (1 << 4),
+                    EMETA_File_Codec = (1 << 3),
+                    EMETA_File_NoExist = (1 << 8),
+                    EMETA_File_Offset = (1 << 7),
+                    EMETA_File_Premultiply = (1 << 5),
+                    EMETA_File_Size = (1 << 6),
+                    EMETA_File_TrimAtlas = (1 << 9),
                 };
 
             public:
@@ -2379,7 +2424,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_Alpha( bool * _value ) const
+                bool get_File_Alpha( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_Alpha) == 0 )
                     {
@@ -2409,7 +2454,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_Codec( Mengine::ConstString * _value ) const
+                bool get_File_Codec( Mengine::ConstString * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_Codec) == 0 )
                     {
@@ -2450,7 +2495,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_NoExist( bool * _value ) const
+                bool get_File_NoExist( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
                     {
@@ -2480,7 +2525,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_Offset( mt::vec2f * _value ) const
+                bool get_File_Offset( mt::vec2f * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_Offset) == 0 )
                     {
@@ -2521,7 +2566,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_Premultiply( bool * _value ) const
+                bool get_File_Premultiply( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_Premultiply) == 0 )
                     {
@@ -2551,7 +2596,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_Size( mt::vec2f * _value ) const
+                bool get_File_Size( mt::vec2f * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_Size) == 0 )
                     {
@@ -2581,7 +2626,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_TrimAtlas( bool * _value ) const
+                bool get_File_TrimAtlas( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_TrimAtlas) == 0 )
                     {
@@ -2633,14 +2678,14 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_File_Alpha = (1 <<4),
-                    EMETA_File_Codec = (1 <<2),
-                    EMETA_File_Converter = (1 <<3),
-                    EMETA_File_NoExist = (1 <<8),
-                    EMETA_File_Offset = (1 <<7),
-                    EMETA_File_Premultiply = (1 <<5),
-                    EMETA_File_Size = (1 <<6),
-                    EMETA_File_TrimAtlas = (1 <<9),
+                    EMETA_File_Alpha = (1 << 5),
+                    EMETA_File_Codec = (1 << 3),
+                    EMETA_File_Converter = (1 << 4),
+                    EMETA_File_NoExist = (1 << 9),
+                    EMETA_File_Offset = (1 << 8),
+                    EMETA_File_Premultiply = (1 << 6),
+                    EMETA_File_Size = (1 << 7),
+                    EMETA_File_TrimAtlas = (1 << 10),
                 };
 
             public:
@@ -2662,7 +2707,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_Alpha( bool * _value ) const
+                bool get_File_Alpha( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_Alpha) == 0 )
                     {
@@ -2692,7 +2737,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_Codec( Mengine::ConstString * _value ) const
+                bool get_File_Codec( Mengine::ConstString * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_Codec) == 0 )
                     {
@@ -2722,7 +2767,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_Converter( Mengine::ConstString * _value ) const
+                bool get_File_Converter( Mengine::ConstString * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
                     {
@@ -2763,7 +2808,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_NoExist( bool * _value ) const
+                bool get_File_NoExist( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
                     {
@@ -2793,7 +2838,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_Offset( mt::vec2f * _value ) const
+                bool get_File_Offset( mt::vec2f * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_Offset) == 0 )
                     {
@@ -2834,7 +2879,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_Premultiply( bool * _value ) const
+                bool get_File_Premultiply( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_Premultiply) == 0 )
                     {
@@ -2864,7 +2909,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_Size( mt::vec2f * _value ) const
+                bool get_File_Size( mt::vec2f * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_Size) == 0 )
                     {
@@ -2894,7 +2939,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_TrimAtlas( bool * _value ) const
+                bool get_File_TrimAtlas( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_TrimAtlas) == 0 )
                     {
@@ -3122,11 +3167,11 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_Image_Alpha = (1 <<3),
-                    EMETA_Image_Offset = (1 <<6),
-                    EMETA_Image_Premultiply = (1 <<4),
-                    EMETA_Image_Size = (1 <<5),
-                    EMETA_Image_UVRotate = (1 <<2),
+                    EMETA_Image_Alpha = (1 << 4),
+                    EMETA_Image_Offset = (1 << 7),
+                    EMETA_Image_Premultiply = (1 << 5),
+                    EMETA_Image_Size = (1 << 6),
+                    EMETA_Image_UVRotate = (1 << 3),
                 };
 
             public:
@@ -3148,7 +3193,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_Image_Alpha( bool * _value ) const
+                bool get_Image_Alpha( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Image_Alpha) == 0 )
                     {
@@ -3200,7 +3245,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_Image_Offset( mt::vec2f * _value ) const
+                bool get_Image_Offset( mt::vec2f * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Image_Offset) == 0 )
                     {
@@ -3230,7 +3275,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_Image_Premultiply( bool * _value ) const
+                bool get_Image_Premultiply( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Image_Premultiply) == 0 )
                     {
@@ -3260,7 +3305,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_Image_Size( mt::vec2f * _value ) const
+                bool get_Image_Size( mt::vec2f * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Image_Size) == 0 )
                     {
@@ -3301,7 +3346,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_Image_UVRotate( bool * _value ) const
+                bool get_Image_UVRotate( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Image_UVRotate) == 0 )
                     {
@@ -3352,11 +3397,11 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_Image_Offset = (1 <<6),
-                    EMETA_Image_Premultiply = (1 <<4),
-                    EMETA_Image_Size = (1 <<5),
-                    EMETA_Image_UVAlphaRotate = (1 <<3),
-                    EMETA_Image_UVRGBRotate = (1 <<2),
+                    EMETA_Image_Offset = (1 << 7),
+                    EMETA_Image_Premultiply = (1 << 5),
+                    EMETA_Image_Size = (1 << 6),
+                    EMETA_Image_UVAlphaRotate = (1 << 4),
+                    EMETA_Image_UVRGBRotate = (1 << 3),
                 };
 
             public:
@@ -3411,7 +3456,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_Image_Offset( mt::vec2f * _value ) const
+                bool get_Image_Offset( mt::vec2f * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Image_Offset) == 0 )
                     {
@@ -3441,7 +3486,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_Image_Premultiply( bool * _value ) const
+                bool get_Image_Premultiply( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Image_Premultiply) == 0 )
                     {
@@ -3471,7 +3516,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_Image_Size( mt::vec2f * _value ) const
+                bool get_Image_Size( mt::vec2f * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Image_Size) == 0 )
                     {
@@ -3512,7 +3557,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_Image_UVAlphaRotate( bool * _value ) const
+                bool get_Image_UVAlphaRotate( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Image_UVAlphaRotate) == 0 )
                     {
@@ -3553,7 +3598,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_Image_UVRGBRotate( bool * _value ) const
+                bool get_Image_UVRGBRotate( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Image_UVRGBRotate) == 0 )
                     {
@@ -3657,8 +3702,8 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_File_Converter = (1 <<2),
-                    EMETA_File_NoExist = (1 <<3),
+                    EMETA_File_Converter = (1 << 3),
+                    EMETA_File_NoExist = (1 << 4),
                 };
 
             public:
@@ -3680,7 +3725,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_Converter( Mengine::ConstString * _value ) const
+                bool get_File_Converter( Mengine::ConstString * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
                     {
@@ -3710,7 +3755,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_NoExist( bool * _value ) const
+                bool get_File_NoExist( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
                     {
@@ -3767,9 +3812,9 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_File_Converter = (1 <<3),
-                    EMETA_File_Dataflow = (1 <<2),
-                    EMETA_File_NoExist = (1 <<4),
+                    EMETA_File_Converter = (1 << 4),
+                    EMETA_File_Dataflow = (1 << 3),
+                    EMETA_File_NoExist = (1 << 5),
                 };
 
             public:
@@ -3791,7 +3836,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_Converter( Mengine::ConstString * _value ) const
+                bool get_File_Converter( Mengine::ConstString * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
                     {
@@ -3821,7 +3866,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_Dataflow( Mengine::ConstString * _value ) const
+                bool get_File_Dataflow( Mengine::ConstString * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_Dataflow) == 0 )
                     {
@@ -3851,7 +3896,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_NoExist( bool * _value ) const
+                bool get_File_NoExist( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
                     {
@@ -3921,12 +3966,12 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_Anchor_Point = (1 <<5),
-                    EMETA_Bounds_Box = (1 <<7),
-                    EMETA_KeyFramesPackPath_Codec = (1 <<2),
-                    EMETA_KeyFramesPackPath_Converter = (1 <<3),
-                    EMETA_Loop_Segment = (1 <<4),
-                    EMETA_Offset_Point = (1 <<6),
+                    EMETA_Anchor_Point = (1 << 6),
+                    EMETA_Bounds_Box = (1 << 8),
+                    EMETA_KeyFramesPackPath_Codec = (1 << 3),
+                    EMETA_KeyFramesPackPath_Converter = (1 << 4),
+                    EMETA_Loop_Segment = (1 << 5),
+                    EMETA_Offset_Point = (1 << 7),
                 };
 
             public:
@@ -3948,7 +3993,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_Anchor_Point( mt::vec3f * _value ) const
+                bool get_Anchor_Point( mt::vec3f * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Anchor_Point) == 0 )
                     {
@@ -3978,7 +4023,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_Bounds_Box( mt::box2f * _value ) const
+                bool get_Bounds_Box( mt::box2f * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Bounds_Box) == 0 )
                     {
@@ -4041,7 +4086,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_KeyFramesPackPath_Codec( Mengine::ConstString * _value ) const
+                bool get_KeyFramesPackPath_Codec( Mengine::ConstString * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_KeyFramesPackPath_Codec) == 0 )
                     {
@@ -4071,7 +4116,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_KeyFramesPackPath_Converter( Mengine::ConstString * _value ) const
+                bool get_KeyFramesPackPath_Converter( Mengine::ConstString * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_KeyFramesPackPath_Converter) == 0 )
                     {
@@ -4112,7 +4157,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_Loop_Segment( mt::vec2f * _value ) const
+                bool get_Loop_Segment( mt::vec2f * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Loop_Segment) == 0 )
                     {
@@ -4142,7 +4187,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_Offset_Point( mt::vec3f * _value ) const
+                bool get_Offset_Point( mt::vec3f * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Offset_Point) == 0 )
                     {
@@ -4292,22 +4337,22 @@ namespace Metacode
                 protected:
                     enum NoRequiredAttribute
                     {
-                        EMETA_AnchorPoint = (1 <<10),
-                        EMETA_BlendingMode = (1 <<2),
-                        EMETA_Loop = (1 <<9),
-                        EMETA_Params = (1 <<15),
-                        EMETA_Parent = (1 <<0),
-                        EMETA_PlayCount = (1 <<6),
-                        EMETA_Polygon = (1 <<5),
-                        EMETA_Position = (1 <<11),
-                        EMETA_Rotation = (1 <<13),
-                        EMETA_Scale = (1 <<12),
-                        EMETA_Shape = (1 <<4),
-                        EMETA_StartInterval = (1 <<1),
-                        EMETA_Stretch = (1 <<7),
-                        EMETA_Switch = (1 <<8),
-                        EMETA_TimeRemap = (1 <<3),
-                        EMETA_Viewport = (1 <<14),
+                        EMETA_AnchorPoint = (1 << 10),
+                        EMETA_BlendingMode = (1 << 2),
+                        EMETA_Loop = (1 << 9),
+                        EMETA_Params = (1 << 15),
+                        EMETA_Parent = (1 << 0),
+                        EMETA_PlayCount = (1 << 6),
+                        EMETA_Polygon = (1 << 5),
+                        EMETA_Position = (1 << 11),
+                        EMETA_Rotation = (1 << 13),
+                        EMETA_Scale = (1 << 12),
+                        EMETA_Shape = (1 << 4),
+                        EMETA_StartInterval = (1 << 1),
+                        EMETA_Stretch = (1 << 7),
+                        EMETA_Switch = (1 << 8),
+                        EMETA_TimeRemap = (1 << 3),
+                        EMETA_Viewport = (1 << 14),
                     };
 
                     uint32_t m_flagNoRequiredAttribute;
@@ -4331,7 +4376,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool get_AnchorPoint( mt::vec3f * _value ) const
+                    bool get_AnchorPoint( mt::vec3f * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_AnchorPoint) == 0 )
                         {
@@ -4343,7 +4388,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_AnchorPoint( mt::vec3f * _value, const mt::vec3f & _default ) const
+                    bool getd_AnchorPoint( mt::vec3f * const _value, const mt::vec3f & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_AnchorPoint) == 0 )
                         {
@@ -4374,7 +4419,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool get_BlendingMode( Mengine::ConstString * _value ) const
+                    bool get_BlendingMode( Mengine::ConstString * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_BlendingMode) == 0 )
                         {
@@ -4386,7 +4431,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_BlendingMode( Mengine::ConstString * _value, const Mengine::ConstString & _default ) const
+                    bool getd_BlendingMode( Mengine::ConstString * const _value, const Mengine::ConstString & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_BlendingMode) == 0 )
                         {
@@ -4436,7 +4481,7 @@ namespace Metacode
                         return this->m_Loop;
                     }
 
-                    bool get_Loop( bool * _value ) const
+                    bool get_Loop( bool * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Loop) == 0 )
                         {
@@ -4461,7 +4506,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_Loop( bool * _value, const bool & _default ) const
+                    bool getd_Loop( bool * const _value, const bool & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Loop) == 0 )
                         {
@@ -4511,7 +4556,7 @@ namespace Metacode
                         return this->m_Params;
                     }
 
-                    bool get_Params( uint32_t * _value ) const
+                    bool get_Params( uint32_t * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Params) == 0 )
                         {
@@ -4536,7 +4581,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_Params( uint32_t * _value, const uint32_t & _default ) const
+                    bool getd_Params( uint32_t * const _value, const uint32_t & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Params) == 0 )
                         {
@@ -4564,7 +4609,7 @@ namespace Metacode
                         return this->m_Parent;
                     }
 
-                    bool get_Parent( uint32_t * _value ) const
+                    bool get_Parent( uint32_t * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Parent) == 0 )
                         {
@@ -4589,7 +4634,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_Parent( uint32_t * _value, const uint32_t & _default ) const
+                    bool getd_Parent( uint32_t * const _value, const uint32_t & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Parent) == 0 )
                         {
@@ -4617,7 +4662,7 @@ namespace Metacode
                         return this->m_PlayCount;
                     }
 
-                    bool get_PlayCount( uint32_t * _value ) const
+                    bool get_PlayCount( uint32_t * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_PlayCount) == 0 )
                         {
@@ -4642,7 +4687,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_PlayCount( uint32_t * _value, const uint32_t & _default ) const
+                    bool getd_PlayCount( uint32_t * const _value, const uint32_t & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_PlayCount) == 0 )
                         {
@@ -4670,7 +4715,7 @@ namespace Metacode
                         return this->m_Polygon;
                     }
 
-                    bool get_Polygon( bool * _value ) const
+                    bool get_Polygon( bool * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Polygon) == 0 )
                         {
@@ -4695,7 +4740,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_Polygon( bool * _value, const bool & _default ) const
+                    bool getd_Polygon( bool * const _value, const bool & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Polygon) == 0 )
                         {
@@ -4726,7 +4771,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool get_Position( mt::vec3f * _value ) const
+                    bool get_Position( mt::vec3f * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Position) == 0 )
                         {
@@ -4738,7 +4783,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_Position( mt::vec3f * _value, const mt::vec3f & _default ) const
+                    bool getd_Position( mt::vec3f * const _value, const mt::vec3f & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Position) == 0 )
                         {
@@ -4769,7 +4814,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool get_Rotation( mt::vec3f * _value ) const
+                    bool get_Rotation( mt::vec3f * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Rotation) == 0 )
                         {
@@ -4781,7 +4826,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_Rotation( mt::vec3f * _value, const mt::vec3f & _default ) const
+                    bool getd_Rotation( mt::vec3f * const _value, const mt::vec3f & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Rotation) == 0 )
                         {
@@ -4812,7 +4857,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool get_Scale( mt::vec3f * _value ) const
+                    bool get_Scale( mt::vec3f * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Scale) == 0 )
                         {
@@ -4824,7 +4869,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_Scale( mt::vec3f * _value, const mt::vec3f & _default ) const
+                    bool getd_Scale( mt::vec3f * const _value, const mt::vec3f & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Scale) == 0 )
                         {
@@ -4852,7 +4897,7 @@ namespace Metacode
                         return this->m_Shape;
                     }
 
-                    bool get_Shape( bool * _value ) const
+                    bool get_Shape( bool * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Shape) == 0 )
                         {
@@ -4877,7 +4922,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_Shape( bool * _value, const bool & _default ) const
+                    bool getd_Shape( bool * const _value, const bool & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Shape) == 0 )
                         {
@@ -4916,7 +4961,7 @@ namespace Metacode
                         return this->m_StartInterval;
                     }
 
-                    bool get_StartInterval( float * _value ) const
+                    bool get_StartInterval( float * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_StartInterval) == 0 )
                         {
@@ -4941,7 +4986,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_StartInterval( float * _value, const float & _default ) const
+                    bool getd_StartInterval( float * const _value, const float & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_StartInterval) == 0 )
                         {
@@ -4969,7 +5014,7 @@ namespace Metacode
                         return this->m_Stretch;
                     }
 
-                    bool get_Stretch( float * _value ) const
+                    bool get_Stretch( float * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Stretch) == 0 )
                         {
@@ -4994,7 +5039,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_Stretch( float * _value, const float & _default ) const
+                    bool getd_Stretch( float * const _value, const float & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Stretch) == 0 )
                         {
@@ -5022,7 +5067,7 @@ namespace Metacode
                         return this->m_Switch;
                     }
 
-                    bool get_Switch( bool * _value ) const
+                    bool get_Switch( bool * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Switch) == 0 )
                         {
@@ -5047,7 +5092,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_Switch( bool * _value, const bool & _default ) const
+                    bool getd_Switch( bool * const _value, const bool & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Switch) == 0 )
                         {
@@ -5075,7 +5120,7 @@ namespace Metacode
                         return this->m_TimeRemap;
                     }
 
-                    bool get_TimeRemap( bool * _value ) const
+                    bool get_TimeRemap( bool * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_TimeRemap) == 0 )
                         {
@@ -5100,7 +5145,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_TimeRemap( bool * _value, const bool & _default ) const
+                    bool getd_TimeRemap( bool * const _value, const bool & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_TimeRemap) == 0 )
                         {
@@ -5142,7 +5187,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool get_Viewport( Mengine::Viewport * _value ) const
+                    bool get_Viewport( Mengine::Viewport * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Viewport) == 0 )
                         {
@@ -5154,7 +5199,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_Viewport( Mengine::Viewport * _value, const Mengine::Viewport & _default ) const
+                    bool getd_Viewport( Mengine::Viewport * const _value, const Mengine::Viewport & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Viewport) == 0 )
                         {
@@ -5220,21 +5265,21 @@ namespace Metacode
                 protected:
                     enum NoRequiredAttribute
                     {
-                        EMETA_AnchorPoint = (1 <<10),
-                        EMETA_BlendingMode = (1 <<2),
-                        EMETA_Loop = (1 <<9),
-                        EMETA_Params = (1 <<14),
-                        EMETA_Parent = (1 <<0),
-                        EMETA_PlayCount = (1 <<6),
-                        EMETA_Polygon = (1 <<5),
-                        EMETA_Position = (1 <<11),
-                        EMETA_Rotation = (1 <<13),
-                        EMETA_Scale = (1 <<12),
-                        EMETA_Shape = (1 <<4),
-                        EMETA_StartInterval = (1 <<1),
-                        EMETA_Stretch = (1 <<7),
-                        EMETA_Switch = (1 <<8),
-                        EMETA_TimeRemap = (1 <<3),
+                        EMETA_AnchorPoint = (1 << 10),
+                        EMETA_BlendingMode = (1 << 2),
+                        EMETA_Loop = (1 << 9),
+                        EMETA_Params = (1 << 14),
+                        EMETA_Parent = (1 << 0),
+                        EMETA_PlayCount = (1 << 6),
+                        EMETA_Polygon = (1 << 5),
+                        EMETA_Position = (1 << 11),
+                        EMETA_Rotation = (1 << 13),
+                        EMETA_Scale = (1 << 12),
+                        EMETA_Shape = (1 << 4),
+                        EMETA_StartInterval = (1 << 1),
+                        EMETA_Stretch = (1 << 7),
+                        EMETA_Switch = (1 << 8),
+                        EMETA_TimeRemap = (1 << 3),
                     };
 
                     uint32_t m_flagNoRequiredAttribute;
@@ -5258,7 +5303,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool get_AnchorPoint( mt::vec3f * _value ) const
+                    bool get_AnchorPoint( mt::vec3f * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_AnchorPoint) == 0 )
                         {
@@ -5270,7 +5315,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_AnchorPoint( mt::vec3f * _value, const mt::vec3f & _default ) const
+                    bool getd_AnchorPoint( mt::vec3f * const _value, const mt::vec3f & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_AnchorPoint) == 0 )
                         {
@@ -5301,7 +5346,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool get_BlendingMode( Mengine::ConstString * _value ) const
+                    bool get_BlendingMode( Mengine::ConstString * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_BlendingMode) == 0 )
                         {
@@ -5313,7 +5358,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_BlendingMode( Mengine::ConstString * _value, const Mengine::ConstString & _default ) const
+                    bool getd_BlendingMode( Mengine::ConstString * const _value, const Mengine::ConstString & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_BlendingMode) == 0 )
                         {
@@ -5363,7 +5408,7 @@ namespace Metacode
                         return this->m_Loop;
                     }
 
-                    bool get_Loop( bool * _value ) const
+                    bool get_Loop( bool * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Loop) == 0 )
                         {
@@ -5388,7 +5433,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_Loop( bool * _value, const bool & _default ) const
+                    bool getd_Loop( bool * const _value, const bool & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Loop) == 0 )
                         {
@@ -5438,7 +5483,7 @@ namespace Metacode
                         return this->m_Params;
                     }
 
-                    bool get_Params( uint32_t * _value ) const
+                    bool get_Params( uint32_t * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Params) == 0 )
                         {
@@ -5463,7 +5508,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_Params( uint32_t * _value, const uint32_t & _default ) const
+                    bool getd_Params( uint32_t * const _value, const uint32_t & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Params) == 0 )
                         {
@@ -5491,7 +5536,7 @@ namespace Metacode
                         return this->m_Parent;
                     }
 
-                    bool get_Parent( uint32_t * _value ) const
+                    bool get_Parent( uint32_t * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Parent) == 0 )
                         {
@@ -5516,7 +5561,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_Parent( uint32_t * _value, const uint32_t & _default ) const
+                    bool getd_Parent( uint32_t * const _value, const uint32_t & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Parent) == 0 )
                         {
@@ -5544,7 +5589,7 @@ namespace Metacode
                         return this->m_PlayCount;
                     }
 
-                    bool get_PlayCount( uint32_t * _value ) const
+                    bool get_PlayCount( uint32_t * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_PlayCount) == 0 )
                         {
@@ -5569,7 +5614,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_PlayCount( uint32_t * _value, const uint32_t & _default ) const
+                    bool getd_PlayCount( uint32_t * const _value, const uint32_t & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_PlayCount) == 0 )
                         {
@@ -5597,7 +5642,7 @@ namespace Metacode
                         return this->m_Polygon;
                     }
 
-                    bool get_Polygon( bool * _value ) const
+                    bool get_Polygon( bool * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Polygon) == 0 )
                         {
@@ -5622,7 +5667,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_Polygon( bool * _value, const bool & _default ) const
+                    bool getd_Polygon( bool * const _value, const bool & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Polygon) == 0 )
                         {
@@ -5653,7 +5698,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool get_Position( mt::vec3f * _value ) const
+                    bool get_Position( mt::vec3f * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Position) == 0 )
                         {
@@ -5665,7 +5710,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_Position( mt::vec3f * _value, const mt::vec3f & _default ) const
+                    bool getd_Position( mt::vec3f * const _value, const mt::vec3f & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Position) == 0 )
                         {
@@ -5696,7 +5741,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool get_Rotation( mt::vec3f * _value ) const
+                    bool get_Rotation( mt::vec3f * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Rotation) == 0 )
                         {
@@ -5708,7 +5753,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_Rotation( mt::vec3f * _value, const mt::vec3f & _default ) const
+                    bool getd_Rotation( mt::vec3f * const _value, const mt::vec3f & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Rotation) == 0 )
                         {
@@ -5739,7 +5784,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool get_Scale( mt::vec3f * _value ) const
+                    bool get_Scale( mt::vec3f * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Scale) == 0 )
                         {
@@ -5751,7 +5796,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_Scale( mt::vec3f * _value, const mt::vec3f & _default ) const
+                    bool getd_Scale( mt::vec3f * const _value, const mt::vec3f & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Scale) == 0 )
                         {
@@ -5779,7 +5824,7 @@ namespace Metacode
                         return this->m_Shape;
                     }
 
-                    bool get_Shape( bool * _value ) const
+                    bool get_Shape( bool * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Shape) == 0 )
                         {
@@ -5804,7 +5849,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_Shape( bool * _value, const bool & _default ) const
+                    bool getd_Shape( bool * const _value, const bool & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Shape) == 0 )
                         {
@@ -5843,7 +5888,7 @@ namespace Metacode
                         return this->m_StartInterval;
                     }
 
-                    bool get_StartInterval( float * _value ) const
+                    bool get_StartInterval( float * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_StartInterval) == 0 )
                         {
@@ -5868,7 +5913,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_StartInterval( float * _value, const float & _default ) const
+                    bool getd_StartInterval( float * const _value, const float & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_StartInterval) == 0 )
                         {
@@ -5896,7 +5941,7 @@ namespace Metacode
                         return this->m_Stretch;
                     }
 
-                    bool get_Stretch( float * _value ) const
+                    bool get_Stretch( float * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Stretch) == 0 )
                         {
@@ -5921,7 +5966,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_Stretch( float * _value, const float & _default ) const
+                    bool getd_Stretch( float * const _value, const float & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Stretch) == 0 )
                         {
@@ -5949,7 +5994,7 @@ namespace Metacode
                         return this->m_Switch;
                     }
 
-                    bool get_Switch( bool * _value ) const
+                    bool get_Switch( bool * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Switch) == 0 )
                         {
@@ -5974,7 +6019,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_Switch( bool * _value, const bool & _default ) const
+                    bool getd_Switch( bool * const _value, const bool & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Switch) == 0 )
                         {
@@ -6002,7 +6047,7 @@ namespace Metacode
                         return this->m_TimeRemap;
                     }
 
-                    bool get_TimeRemap( bool * _value ) const
+                    bool get_TimeRemap( bool * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_TimeRemap) == 0 )
                         {
@@ -6027,7 +6072,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_TimeRemap( bool * _value, const bool & _default ) const
+                    bool getd_TimeRemap( bool * const _value, const bool & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_TimeRemap) == 0 )
                         {
@@ -6147,8 +6192,8 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_File_Dataflow = (1 <<2),
-                    EMETA_File_NoExist = (1 <<3),
+                    EMETA_File_Dataflow = (1 << 3),
+                    EMETA_File_NoExist = (1 << 4),
                 };
 
             public:
@@ -6170,7 +6215,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_Dataflow( Mengine::ConstString * _value ) const
+                bool get_File_Dataflow( Mengine::ConstString * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_Dataflow) == 0 )
                     {
@@ -6200,7 +6245,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_NoExist( bool * _value ) const
+                bool get_File_NoExist( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
                     {
@@ -6251,8 +6296,8 @@ namespace Metacode
                 protected:
                     enum NoRequiredAttribute
                     {
-                        EMETA_Bounds = (1 <<0),
-                        EMETA_Master = (1 <<1),
+                        EMETA_Bounds = (1 << 0),
+                        EMETA_Master = (1 << 1),
                     };
 
                     uint32_t m_flagNoRequiredAttribute;
@@ -6276,7 +6321,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool get_Bounds( mt::box2f * _value ) const
+                    bool get_Bounds( mt::box2f * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Bounds) == 0 )
                         {
@@ -6288,7 +6333,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_Bounds( mt::box2f * _value, const mt::box2f & _default ) const
+                    bool getd_Bounds( mt::box2f * const _value, const mt::box2f & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Bounds) == 0 )
                         {
@@ -6338,7 +6383,7 @@ namespace Metacode
                         return this->m_Master;
                     }
 
-                    bool get_Master( bool * _value ) const
+                    bool get_Master( bool * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Master) == 0 )
                         {
@@ -6363,7 +6408,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_Master( bool * _value, const bool & _default ) const
+                    bool getd_Master( bool * const _value, const bool & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Master) == 0 )
                         {
@@ -6415,11 +6460,11 @@ namespace Metacode
                     protected:
                         enum NoRequiredAttribute
                         {
-                            EMETA_Color = (1 <<1),
-                            EMETA_Dimension = (1 <<3),
-                            EMETA_Matrix = (1 <<0),
-                            EMETA_Options = (1 <<2),
-                            EMETA_TrackMatte = (1 <<4),
+                            EMETA_Color = (1 << 1),
+                            EMETA_Dimension = (1 << 3),
+                            EMETA_Matrix = (1 << 0),
+                            EMETA_Options = (1 << 2),
+                            EMETA_TrackMatte = (1 << 4),
                         };
 
                         uint32_t m_flagNoRequiredAttribute;
@@ -6443,7 +6488,7 @@ namespace Metacode
                             return true;
                         }
 
-                        bool get_Color( Mengine::Color * _value ) const
+                        bool get_Color( Mengine::Color * const _value ) const
                         {
                             if( (m_flagNoRequiredAttribute & EMETA_Color) == 0 )
                             {
@@ -6455,7 +6500,7 @@ namespace Metacode
                             return true;
                         }
 
-                        bool getd_Color( Mengine::Color * _value, const Mengine::Color & _default ) const
+                        bool getd_Color( Mengine::Color * const _value, const Mengine::Color & _default ) const
                         {
                             if( (m_flagNoRequiredAttribute & EMETA_Color) == 0 )
                             {
@@ -6486,7 +6531,7 @@ namespace Metacode
                             return true;
                         }
 
-                        bool get_Dimension( mt::box2f * _value ) const
+                        bool get_Dimension( mt::box2f * const _value ) const
                         {
                             if( (m_flagNoRequiredAttribute & EMETA_Dimension) == 0 )
                             {
@@ -6498,7 +6543,7 @@ namespace Metacode
                             return true;
                         }
 
-                        bool getd_Dimension( mt::box2f * _value, const mt::box2f & _default ) const
+                        bool getd_Dimension( mt::box2f * const _value, const mt::box2f & _default ) const
                         {
                             if( (m_flagNoRequiredAttribute & EMETA_Dimension) == 0 )
                             {
@@ -6540,7 +6585,7 @@ namespace Metacode
                             return true;
                         }
 
-                        bool get_Matrix( mt::mat4f * _value ) const
+                        bool get_Matrix( mt::mat4f * const _value ) const
                         {
                             if( (m_flagNoRequiredAttribute & EMETA_Matrix) == 0 )
                             {
@@ -6552,7 +6597,7 @@ namespace Metacode
                             return true;
                         }
 
-                        bool getd_Matrix( mt::mat4f * _value, const mt::mat4f & _default ) const
+                        bool getd_Matrix( mt::mat4f * const _value, const mt::mat4f & _default ) const
                         {
                             if( (m_flagNoRequiredAttribute & EMETA_Matrix) == 0 )
                             {
@@ -6594,7 +6639,7 @@ namespace Metacode
                             return true;
                         }
 
-                        bool get_Options( Mengine::UInt32s * _value ) const
+                        bool get_Options( Mengine::UInt32s * const _value ) const
                         {
                             if( (m_flagNoRequiredAttribute & EMETA_Options) == 0 )
                             {
@@ -6606,7 +6651,7 @@ namespace Metacode
                             return true;
                         }
 
-                        bool getd_Options( Mengine::UInt32s * _value, const Mengine::UInt32s & _default ) const
+                        bool getd_Options( Mengine::UInt32s * const _value, const Mengine::UInt32s & _default ) const
                         {
                             if( (m_flagNoRequiredAttribute & EMETA_Options) == 0 )
                             {
@@ -6816,11 +6861,11 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_DefaultVolume_Value = (1 <<6),
-                    EMETA_File_Codec = (1 <<2),
-                    EMETA_File_Converter = (1 <<3),
-                    EMETA_File_External = (1 <<4),
-                    EMETA_File_NoExist = (1 <<5),
+                    EMETA_DefaultVolume_Value = (1 << 7),
+                    EMETA_File_Codec = (1 << 3),
+                    EMETA_File_Converter = (1 << 4),
+                    EMETA_File_External = (1 << 5),
+                    EMETA_File_NoExist = (1 << 6),
                 };
 
             public:
@@ -6842,7 +6887,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_DefaultVolume_Value( float * _value ) const
+                bool get_DefaultVolume_Value( float * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_DefaultVolume_Value) == 0 )
                     {
@@ -6872,7 +6917,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_Codec( Mengine::ConstString * _value ) const
+                bool get_File_Codec( Mengine::ConstString * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_Codec) == 0 )
                     {
@@ -6902,7 +6947,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_Converter( Mengine::ConstString * _value ) const
+                bool get_File_Converter( Mengine::ConstString * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
                     {
@@ -6932,7 +6977,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_External( bool * _value ) const
+                bool get_File_External( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_External) == 0 )
                     {
@@ -6962,7 +7007,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_NoExist( bool * _value ) const
+                bool get_File_NoExist( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
                     {
@@ -7061,11 +7106,11 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_DefaultVolume_Value = (1 <<5),
-                    EMETA_File_Codec = (1 <<2),
-                    EMETA_File_Converter = (1 <<3),
-                    EMETA_File_NoExist = (1 <<4),
-                    EMETA_IsStreamable_Value = (1 <<6),
+                    EMETA_DefaultVolume_Value = (1 << 6),
+                    EMETA_File_Codec = (1 << 3),
+                    EMETA_File_Converter = (1 << 4),
+                    EMETA_File_NoExist = (1 << 5),
+                    EMETA_IsStreamable_Value = (1 << 7),
                 };
 
             public:
@@ -7087,7 +7132,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_DefaultVolume_Value( float * _value ) const
+                bool get_DefaultVolume_Value( float * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_DefaultVolume_Value) == 0 )
                     {
@@ -7117,7 +7162,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_Codec( Mengine::ConstString * _value ) const
+                bool get_File_Codec( Mengine::ConstString * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_Codec) == 0 )
                     {
@@ -7147,7 +7192,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_Converter( Mengine::ConstString * _value ) const
+                bool get_File_Converter( Mengine::ConstString * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
                     {
@@ -7177,7 +7222,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_NoExist( bool * _value ) const
+                bool get_File_NoExist( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
                     {
@@ -7218,7 +7263,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_IsStreamable_Value( bool * _value ) const
+                bool get_IsStreamable_Value( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_IsStreamable_Value) == 0 )
                     {
@@ -7267,8 +7312,8 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_File_Converter = (1 <<2),
-                    EMETA_File_NoExist = (1 <<3),
+                    EMETA_File_Converter = (1 << 3),
+                    EMETA_File_NoExist = (1 << 4),
                 };
 
             public:
@@ -7290,7 +7335,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_Converter( Mengine::ConstString * _value ) const
+                bool get_File_Converter( Mengine::ConstString * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
                     {
@@ -7320,7 +7365,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_NoExist( bool * _value ) const
+                bool get_File_NoExist( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
                     {
@@ -7438,7 +7483,7 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_Texturepacker_Name = (1 <<2),
+                    EMETA_Texturepacker_Name = (1 << 3),
                 };
 
             public:
@@ -7460,7 +7505,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_Texturepacker_Name( Mengine::ConstString * _value ) const
+                bool get_Texturepacker_Name( Mengine::ConstString * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Texturepacker_Name) == 0 )
                     {
@@ -7502,9 +7547,9 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_Atlas_Name = (1 <<4),
-                    EMETA_File_Converter = (1 <<2),
-                    EMETA_File_NoExist = (1 <<3),
+                    EMETA_Atlas_Name = (1 << 5),
+                    EMETA_File_Converter = (1 << 3),
+                    EMETA_File_NoExist = (1 << 4),
                 };
 
             public:
@@ -7526,7 +7571,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_Atlas_Name( Mengine::ConstString * _value ) const
+                bool get_Atlas_Name( Mengine::ConstString * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Atlas_Name) == 0 )
                     {
@@ -7556,7 +7601,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_Converter( Mengine::ConstString * _value ) const
+                bool get_File_Converter( Mengine::ConstString * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
                     {
@@ -7586,7 +7631,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_NoExist( bool * _value ) const
+                bool get_File_NoExist( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
                     {
@@ -7695,8 +7740,8 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_File_Converter = (1 <<2),
-                    EMETA_File_NoExist = (1 <<3),
+                    EMETA_File_Converter = (1 << 3),
+                    EMETA_File_NoExist = (1 << 4),
                 };
 
             public:
@@ -7718,7 +7763,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_Converter( Mengine::ConstString * _value ) const
+                bool get_File_Converter( Mengine::ConstString * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
                     {
@@ -7748,7 +7793,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_NoExist( bool * _value ) const
+                bool get_File_NoExist( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
                     {
@@ -7805,15 +7850,15 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_File_Alpha = (1 <<2),
-                    EMETA_File_Codec = (1 <<4),
-                    EMETA_File_Converter = (1 <<5),
-                    EMETA_File_Duration = (1 <<8),
-                    EMETA_File_FrameRate = (1 <<7),
-                    EMETA_File_NoExist = (1 <<10),
-                    EMETA_File_NoSeek = (1 <<6),
-                    EMETA_File_Premultiply = (1 <<3),
-                    EMETA_File_Resize = (1 <<9),
+                    EMETA_File_Alpha = (1 << 3),
+                    EMETA_File_Codec = (1 << 5),
+                    EMETA_File_Converter = (1 << 6),
+                    EMETA_File_Duration = (1 << 9),
+                    EMETA_File_FrameRate = (1 << 8),
+                    EMETA_File_NoExist = (1 << 11),
+                    EMETA_File_NoSeek = (1 << 7),
+                    EMETA_File_Premultiply = (1 << 4),
+                    EMETA_File_Resize = (1 << 10),
                 };
 
             public:
@@ -7835,7 +7880,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_Alpha( bool * _value ) const
+                bool get_File_Alpha( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_Alpha) == 0 )
                     {
@@ -7865,7 +7910,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_Codec( Mengine::ConstString * _value ) const
+                bool get_File_Codec( Mengine::ConstString * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_Codec) == 0 )
                     {
@@ -7895,7 +7940,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_Converter( Mengine::ConstString * _value ) const
+                bool get_File_Converter( Mengine::ConstString * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
                     {
@@ -7925,7 +7970,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_Duration( float * _value ) const
+                bool get_File_Duration( float * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_Duration) == 0 )
                     {
@@ -7955,7 +8000,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_FrameRate( float * _value ) const
+                bool get_File_FrameRate( float * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_FrameRate) == 0 )
                     {
@@ -7985,7 +8030,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_NoExist( bool * _value ) const
+                bool get_File_NoExist( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
                     {
@@ -8015,7 +8060,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_NoSeek( bool * _value ) const
+                bool get_File_NoSeek( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_NoSeek) == 0 )
                     {
@@ -8056,7 +8101,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_Premultiply( bool * _value ) const
+                bool get_File_Premultiply( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_Premultiply) == 0 )
                     {
@@ -8086,7 +8131,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_File_Resize( float * _value ) const
+                bool get_File_Resize( float * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_File_Resize) == 0 )
                     {
@@ -8139,7 +8184,7 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_WindowBackground_ResourceImageName = (1 <<2),
+                    EMETA_WindowBackground_ResourceImageName = (1 << 3),
                 };
 
             public:
@@ -8161,7 +8206,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_WindowBackground_ResourceImageName( Mengine::ConstString * _value ) const
+                bool get_WindowBackground_ResourceImageName( Mengine::ConstString * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_WindowBackground_ResourceImageName) == 0 )
                     {
@@ -8517,11 +8562,11 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_Count = (1 <<4),
-                    EMETA_ImageOffset = (1 <<1),
-                    EMETA_ImageSize = (1 <<0),
-                    EMETA_Immutable = (1 <<2),
-                    EMETA_Subtract = (1 <<3),
+                    EMETA_Count = (1 << 4),
+                    EMETA_ImageOffset = (1 << 1),
+                    EMETA_ImageSize = (1 << 0),
+                    EMETA_Immutable = (1 << 2),
+                    EMETA_Subtract = (1 << 3),
                 };
 
                 uint32_t m_flagNoRequiredAttribute;
@@ -8542,7 +8587,7 @@ namespace Metacode
                     return this->m_Count;
                 }
 
-                bool get_Count( uint32_t * _value ) const
+                bool get_Count( uint32_t * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Count) == 0 )
                     {
@@ -8567,7 +8612,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool getd_Count( uint32_t * _value, const uint32_t & _default ) const
+                bool getd_Count( uint32_t * const _value, const uint32_t & _default ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Count) == 0 )
                     {
@@ -8609,7 +8654,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_ImageOffset( mt::vec2f * _value ) const
+                bool get_ImageOffset( mt::vec2f * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_ImageOffset) == 0 )
                     {
@@ -8621,7 +8666,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool getd_ImageOffset( mt::vec2f * _value, const mt::vec2f & _default ) const
+                bool getd_ImageOffset( mt::vec2f * const _value, const mt::vec2f & _default ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_ImageOffset) == 0 )
                     {
@@ -8652,7 +8697,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_ImageSize( mt::vec2f * _value ) const
+                bool get_ImageSize( mt::vec2f * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_ImageSize) == 0 )
                     {
@@ -8664,7 +8709,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool getd_ImageSize( mt::vec2f * _value, const mt::vec2f & _default ) const
+                bool getd_ImageSize( mt::vec2f * const _value, const mt::vec2f & _default ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_ImageSize) == 0 )
                     {
@@ -8692,7 +8737,7 @@ namespace Metacode
                     return this->m_Immutable;
                 }
 
-                bool get_Immutable( bool * _value ) const
+                bool get_Immutable( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Immutable) == 0 )
                     {
@@ -8717,7 +8762,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool getd_Immutable( bool * _value, const bool & _default ) const
+                bool getd_Immutable( bool * const _value, const bool & _default ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Immutable) == 0 )
                     {
@@ -8756,7 +8801,7 @@ namespace Metacode
                     return this->m_Subtract;
                 }
 
-                bool get_Subtract( bool * _value ) const
+                bool get_Subtract( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Subtract) == 0 )
                     {
@@ -8781,7 +8826,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool getd_Subtract( bool * _value, const bool & _default ) const
+                bool getd_Subtract( bool * const _value, const bool & _default ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Subtract) == 0 )
                     {
@@ -8881,8 +8926,8 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_Count = (1 <<1),
-                    EMETA_Immutable = (1 <<0),
+                    EMETA_Count = (1 << 1),
+                    EMETA_Immutable = (1 << 0),
                 };
 
                 uint32_t m_flagNoRequiredAttribute;
@@ -8903,7 +8948,7 @@ namespace Metacode
                     return this->m_Count;
                 }
 
-                bool get_Count( uint32_t * _value ) const
+                bool get_Count( uint32_t * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Count) == 0 )
                     {
@@ -8928,7 +8973,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool getd_Count( uint32_t * _value, const uint32_t & _default ) const
+                bool getd_Count( uint32_t * const _value, const uint32_t & _default ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Count) == 0 )
                     {
@@ -8956,7 +9001,7 @@ namespace Metacode
                     return this->m_Immutable;
                 }
 
-                bool get_Immutable( bool * _value ) const
+                bool get_Immutable( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Immutable) == 0 )
                     {
@@ -8981,7 +9026,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool getd_Immutable( bool * _value, const bool & _default ) const
+                bool getd_Immutable( bool * const _value, const bool & _default ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Immutable) == 0 )
                     {
@@ -9033,13 +9078,13 @@ namespace Metacode
                 protected:
                     enum NoRequiredAttribute
                     {
-                        EMETA_AnchorPoint = (1 <<0),
-                        EMETA_Count = (1 <<6),
-                        EMETA_Opacity = (1 <<4),
-                        EMETA_Position = (1 <<1),
-                        EMETA_Rotation = (1 <<3),
-                        EMETA_Scale = (1 <<2),
-                        EMETA_Volume = (1 <<5),
+                        EMETA_AnchorPoint = (1 << 0),
+                        EMETA_Count = (1 << 6),
+                        EMETA_Opacity = (1 << 4),
+                        EMETA_Position = (1 << 1),
+                        EMETA_Rotation = (1 << 3),
+                        EMETA_Scale = (1 << 2),
+                        EMETA_Volume = (1 << 5),
                     };
 
                     uint32_t m_flagNoRequiredAttribute;
@@ -9063,7 +9108,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool get_AnchorPoint( mt::vec2f * _value ) const
+                    bool get_AnchorPoint( mt::vec2f * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_AnchorPoint) == 0 )
                         {
@@ -9075,7 +9120,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_AnchorPoint( mt::vec2f * _value, const mt::vec2f & _default ) const
+                    bool getd_AnchorPoint( mt::vec2f * const _value, const mt::vec2f & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_AnchorPoint) == 0 )
                         {
@@ -9103,7 +9148,7 @@ namespace Metacode
                         return this->m_Count;
                     }
 
-                    bool get_Count( uint32_t * _value ) const
+                    bool get_Count( uint32_t * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Count) == 0 )
                         {
@@ -9128,7 +9173,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_Count( uint32_t * _value, const uint32_t & _default ) const
+                    bool getd_Count( uint32_t * const _value, const uint32_t & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Count) == 0 )
                         {
@@ -9156,7 +9201,7 @@ namespace Metacode
                         return this->m_Opacity;
                     }
 
-                    bool get_Opacity( float * _value ) const
+                    bool get_Opacity( float * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Opacity) == 0 )
                         {
@@ -9181,7 +9226,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_Opacity( float * _value, const float & _default ) const
+                    bool getd_Opacity( float * const _value, const float & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Opacity) == 0 )
                         {
@@ -9212,7 +9257,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool get_Position( mt::vec2f * _value ) const
+                    bool get_Position( mt::vec2f * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Position) == 0 )
                         {
@@ -9224,7 +9269,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_Position( mt::vec2f * _value, const mt::vec2f & _default ) const
+                    bool getd_Position( mt::vec2f * const _value, const mt::vec2f & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Position) == 0 )
                         {
@@ -9252,7 +9297,7 @@ namespace Metacode
                         return this->m_Rotation;
                     }
 
-                    bool get_Rotation( float * _value ) const
+                    bool get_Rotation( float * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Rotation) == 0 )
                         {
@@ -9277,7 +9322,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_Rotation( float * _value, const float & _default ) const
+                    bool getd_Rotation( float * const _value, const float & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Rotation) == 0 )
                         {
@@ -9308,7 +9353,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool get_Scale( mt::vec2f * _value ) const
+                    bool get_Scale( mt::vec2f * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Scale) == 0 )
                         {
@@ -9320,7 +9365,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_Scale( mt::vec2f * _value, const mt::vec2f & _default ) const
+                    bool getd_Scale( mt::vec2f * const _value, const mt::vec2f & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Scale) == 0 )
                         {
@@ -9348,7 +9393,7 @@ namespace Metacode
                         return this->m_Volume;
                     }
 
-                    bool get_Volume( float * _value ) const
+                    bool get_Volume( float * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Volume) == 0 )
                         {
@@ -9373,7 +9418,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_Volume( float * _value, const float & _default ) const
+                    bool getd_Volume( float * const _value, const float & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Volume) == 0 )
                         {
@@ -9438,8 +9483,8 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_Count = (1 <<1),
-                    EMETA_Immutable = (1 <<0),
+                    EMETA_Count = (1 << 1),
+                    EMETA_Immutable = (1 << 0),
                 };
 
                 uint32_t m_flagNoRequiredAttribute;
@@ -9460,7 +9505,7 @@ namespace Metacode
                     return this->m_Count;
                 }
 
-                bool get_Count( uint32_t * _value ) const
+                bool get_Count( uint32_t * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Count) == 0 )
                     {
@@ -9485,7 +9530,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool getd_Count( uint32_t * _value, const uint32_t & _default ) const
+                bool getd_Count( uint32_t * const _value, const uint32_t & _default ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Count) == 0 )
                     {
@@ -9513,7 +9558,7 @@ namespace Metacode
                     return this->m_Immutable;
                 }
 
-                bool get_Immutable( bool * _value ) const
+                bool get_Immutable( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Immutable) == 0 )
                     {
@@ -9538,7 +9583,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool getd_Immutable( bool * _value, const bool & _default ) const
+                bool getd_Immutable( bool * const _value, const bool & _default ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Immutable) == 0 )
                     {
@@ -9590,14 +9635,14 @@ namespace Metacode
                 protected:
                     enum NoRequiredAttribute
                     {
-                        EMETA_AnchorPoint = (1 <<0),
-                        EMETA_Count = (1 <<7),
-                        EMETA_Opacity = (1 <<5),
-                        EMETA_Orientation = (1 <<4),
-                        EMETA_Position = (1 <<1),
-                        EMETA_Rotation = (1 <<3),
-                        EMETA_Scale = (1 <<2),
-                        EMETA_Volume = (1 <<6),
+                        EMETA_AnchorPoint = (1 << 0),
+                        EMETA_Count = (1 << 7),
+                        EMETA_Opacity = (1 << 5),
+                        EMETA_Orientation = (1 << 4),
+                        EMETA_Position = (1 << 1),
+                        EMETA_Rotation = (1 << 3),
+                        EMETA_Scale = (1 << 2),
+                        EMETA_Volume = (1 << 6),
                     };
 
                     uint32_t m_flagNoRequiredAttribute;
@@ -9621,7 +9666,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool get_AnchorPoint( mt::vec3f * _value ) const
+                    bool get_AnchorPoint( mt::vec3f * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_AnchorPoint) == 0 )
                         {
@@ -9633,7 +9678,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_AnchorPoint( mt::vec3f * _value, const mt::vec3f & _default ) const
+                    bool getd_AnchorPoint( mt::vec3f * const _value, const mt::vec3f & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_AnchorPoint) == 0 )
                         {
@@ -9661,7 +9706,7 @@ namespace Metacode
                         return this->m_Count;
                     }
 
-                    bool get_Count( uint32_t * _value ) const
+                    bool get_Count( uint32_t * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Count) == 0 )
                         {
@@ -9686,7 +9731,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_Count( uint32_t * _value, const uint32_t & _default ) const
+                    bool getd_Count( uint32_t * const _value, const uint32_t & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Count) == 0 )
                         {
@@ -9714,7 +9759,7 @@ namespace Metacode
                         return this->m_Opacity;
                     }
 
-                    bool get_Opacity( float * _value ) const
+                    bool get_Opacity( float * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Opacity) == 0 )
                         {
@@ -9739,7 +9784,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_Opacity( float * _value, const float & _default ) const
+                    bool getd_Opacity( float * const _value, const float & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Opacity) == 0 )
                         {
@@ -9770,7 +9815,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool get_Orientation( mt::vec3f * _value ) const
+                    bool get_Orientation( mt::vec3f * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Orientation) == 0 )
                         {
@@ -9782,7 +9827,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_Orientation( mt::vec3f * _value, const mt::vec3f & _default ) const
+                    bool getd_Orientation( mt::vec3f * const _value, const mt::vec3f & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Orientation) == 0 )
                         {
@@ -9813,7 +9858,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool get_Position( mt::vec3f * _value ) const
+                    bool get_Position( mt::vec3f * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Position) == 0 )
                         {
@@ -9825,7 +9870,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_Position( mt::vec3f * _value, const mt::vec3f & _default ) const
+                    bool getd_Position( mt::vec3f * const _value, const mt::vec3f & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Position) == 0 )
                         {
@@ -9856,7 +9901,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool get_Rotation( mt::vec3f * _value ) const
+                    bool get_Rotation( mt::vec3f * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Rotation) == 0 )
                         {
@@ -9868,7 +9913,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_Rotation( mt::vec3f * _value, const mt::vec3f & _default ) const
+                    bool getd_Rotation( mt::vec3f * const _value, const mt::vec3f & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Rotation) == 0 )
                         {
@@ -9899,7 +9944,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool get_Scale( mt::vec3f * _value ) const
+                    bool get_Scale( mt::vec3f * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Scale) == 0 )
                         {
@@ -9911,7 +9956,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_Scale( mt::vec3f * _value, const mt::vec3f & _default ) const
+                    bool getd_Scale( mt::vec3f * const _value, const mt::vec3f & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Scale) == 0 )
                         {
@@ -9939,7 +9984,7 @@ namespace Metacode
                         return this->m_Volume;
                     }
 
-                    bool get_Volume( float * _value ) const
+                    bool get_Volume( float * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Volume) == 0 )
                         {
@@ -9964,7 +10009,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_Volume( float * _value, const float & _default ) const
+                    bool getd_Volume( float * const _value, const float & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Volume) == 0 )
                         {
@@ -10208,7 +10253,7 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_Platform = (1 <<0),
+                    EMETA_Platform = (1 << 0),
                 };
 
                 uint32_t m_flagNoRequiredAttribute;
@@ -10232,7 +10277,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_Platform( Mengine::Tags * _value ) const
+                bool get_Platform( Mengine::Tags * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Platform) == 0 )
                     {
@@ -10244,7 +10289,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool getd_Platform( Mengine::Tags * _value, const Mengine::Tags & _default ) const
+                bool getd_Platform( Mengine::Tags * const _value, const Mengine::Tags & _default ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Platform) == 0 )
                     {
@@ -10348,7 +10393,7 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_Platform = (1 <<0),
+                    EMETA_Platform = (1 << 0),
                 };
 
                 uint32_t m_flagNoRequiredAttribute;
@@ -10372,7 +10417,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_Platform( Mengine::Tags * _value ) const
+                bool get_Platform( Mengine::Tags * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Platform) == 0 )
                     {
@@ -10384,7 +10429,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool getd_Platform( Mengine::Tags * _value, const Mengine::Tags & _default ) const
+                bool getd_Platform( Mengine::Tags * const _value, const Mengine::Tags & _default ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Platform) == 0 )
                     {
@@ -10476,7 +10521,7 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_Platform = (1 <<0),
+                    EMETA_Platform = (1 << 0),
                 };
 
                 uint32_t m_flagNoRequiredAttribute;
@@ -10500,7 +10545,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_Platform( Mengine::Tags * _value ) const
+                bool get_Platform( Mengine::Tags * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Platform) == 0 )
                     {
@@ -10512,7 +10557,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool getd_Platform( Mengine::Tags * _value, const Mengine::Tags & _default ) const
+                bool getd_Platform( Mengine::Tags * const _value, const Mengine::Tags & _default ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Platform) == 0 )
                     {
@@ -10604,7 +10649,7 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_Platform = (1 <<0),
+                    EMETA_Platform = (1 << 0),
                 };
 
                 uint32_t m_flagNoRequiredAttribute;
@@ -10628,7 +10673,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_Platform( Mengine::Tags * _value ) const
+                bool get_Platform( Mengine::Tags * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Platform) == 0 )
                     {
@@ -10640,7 +10685,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool getd_Platform( Mengine::Tags * _value, const Mengine::Tags & _default ) const
+                bool getd_Platform( Mengine::Tags * const _value, const Mengine::Tags & _default ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Platform) == 0 )
                     {
@@ -10679,7 +10724,7 @@ namespace Metacode
                 protected:
                     enum NoRequiredAttribute
                     {
-                        EMETA_RenderPlatform = (1 <<0),
+                        EMETA_RenderPlatform = (1 << 0),
                     };
 
                     uint32_t m_flagNoRequiredAttribute;
@@ -10714,7 +10759,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool get_RenderPlatform( Mengine::ConstString * _value ) const
+                    bool get_RenderPlatform( Mengine::ConstString * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_RenderPlatform) == 0 )
                         {
@@ -10726,7 +10771,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_RenderPlatform( Mengine::ConstString * _value, const Mengine::ConstString & _default ) const
+                    bool getd_RenderPlatform( Mengine::ConstString * const _value, const Mengine::ConstString & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_RenderPlatform) == 0 )
                         {
@@ -10786,9 +10831,9 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_Demand = (1 <<1),
-                    EMETA_Ignored = (1 <<0),
-                    EMETA_Platform = (1 <<2),
+                    EMETA_Demand = (1 << 1),
+                    EMETA_Ignored = (1 << 0),
+                    EMETA_Platform = (1 << 2),
                 };
 
                 uint32_t m_flagNoRequiredAttribute;
@@ -10809,7 +10854,7 @@ namespace Metacode
                     return this->m_Demand;
                 }
 
-                bool get_Demand( bool * _value ) const
+                bool get_Demand( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Demand) == 0 )
                     {
@@ -10834,7 +10879,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool getd_Demand( bool * _value, const bool & _default ) const
+                bool getd_Demand( bool * const _value, const bool & _default ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Demand) == 0 )
                     {
@@ -10862,7 +10907,7 @@ namespace Metacode
                     return this->m_Ignored;
                 }
 
-                bool get_Ignored( bool * _value ) const
+                bool get_Ignored( bool * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Ignored) == 0 )
                     {
@@ -10887,7 +10932,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool getd_Ignored( bool * _value, const bool & _default ) const
+                bool getd_Ignored( bool * const _value, const bool & _default ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Ignored) == 0 )
                     {
@@ -10918,7 +10963,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_Platform( Mengine::Tags * _value ) const
+                bool get_Platform( Mengine::Tags * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Platform) == 0 )
                     {
@@ -10930,7 +10975,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool getd_Platform( Mengine::Tags * _value, const Mengine::Tags & _default ) const
+                bool getd_Platform( Mengine::Tags * const _value, const Mengine::Tags & _default ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Platform) == 0 )
                     {
@@ -10969,7 +11014,7 @@ namespace Metacode
                 protected:
                     enum NoRequiredAttribute
                     {
-                        EMETA_Tags = (1 <<0),
+                        EMETA_Tags = (1 << 0),
                     };
 
                     uint32_t m_flagNoRequiredAttribute;
@@ -11004,7 +11049,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool get_Tags( Mengine::Tags * _value ) const
+                    bool get_Tags( Mengine::Tags * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Tags) == 0 )
                         {
@@ -11016,7 +11061,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_Tags( Mengine::Tags * _value, const Mengine::Tags & _default ) const
+                    bool getd_Tags( Mengine::Tags * const _value, const Mengine::Tags & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Tags) == 0 )
                         {
@@ -11078,7 +11123,7 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_Platform = (1 <<0),
+                    EMETA_Platform = (1 << 0),
                 };
 
                 uint32_t m_flagNoRequiredAttribute;
@@ -11102,7 +11147,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_Platform( Mengine::Tags * _value ) const
+                bool get_Platform( Mengine::Tags * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Platform) == 0 )
                     {
@@ -11114,7 +11159,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool getd_Platform( Mengine::Tags * _value, const Mengine::Tags & _default ) const
+                bool getd_Platform( Mengine::Tags * const _value, const Mengine::Tags & _default ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Platform) == 0 )
                     {
@@ -11153,9 +11198,9 @@ namespace Metacode
                 protected:
                     enum NoRequiredAttribute
                     {
-                        EMETA_Finalizer = (1 <<2),
-                        EMETA_Initializer = (1 <<1),
-                        EMETA_Module = (1 <<0),
+                        EMETA_Finalizer = (1 << 2),
+                        EMETA_Initializer = (1 << 1),
+                        EMETA_Module = (1 << 0),
                     };
 
                     uint32_t m_flagNoRequiredAttribute;
@@ -11179,7 +11224,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool get_Finalizer( Mengine::ConstString * _value ) const
+                    bool get_Finalizer( Mengine::ConstString * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Finalizer) == 0 )
                         {
@@ -11191,7 +11236,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_Finalizer( Mengine::ConstString * _value, const Mengine::ConstString & _default ) const
+                    bool getd_Finalizer( Mengine::ConstString * const _value, const Mengine::ConstString & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Finalizer) == 0 )
                         {
@@ -11222,7 +11267,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool get_Initializer( Mengine::ConstString * _value ) const
+                    bool get_Initializer( Mengine::ConstString * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Initializer) == 0 )
                         {
@@ -11234,7 +11279,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_Initializer( Mengine::ConstString * _value, const Mengine::ConstString & _default ) const
+                    bool getd_Initializer( Mengine::ConstString * const _value, const Mengine::ConstString & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Initializer) == 0 )
                         {
@@ -11265,7 +11310,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool get_Module( Mengine::ConstString * _value ) const
+                    bool get_Module( Mengine::ConstString * const _value ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Module) == 0 )
                         {
@@ -11277,7 +11322,7 @@ namespace Metacode
                         return true;
                     }
 
-                    bool getd_Module( Mengine::ConstString * _value, const Mengine::ConstString & _default ) const
+                    bool getd_Module( Mengine::ConstString * const _value, const Mengine::ConstString & _default ) const
                     {
                         if( (m_flagNoRequiredAttribute & EMETA_Module) == 0 )
                         {
@@ -11350,7 +11395,7 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_Platform = (1 <<0),
+                    EMETA_Platform = (1 << 0),
                 };
 
                 uint32_t m_flagNoRequiredAttribute;
@@ -11374,7 +11419,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_Platform( Mengine::Tags * _value ) const
+                bool get_Platform( Mengine::Tags * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Platform) == 0 )
                     {
@@ -11386,7 +11431,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool getd_Platform( Mengine::Tags * _value, const Mengine::Tags & _default ) const
+                bool getd_Platform( Mengine::Tags * const _value, const Mengine::Tags & _default ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Platform) == 0 )
                     {
@@ -11490,7 +11535,7 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_Platform = (1 <<0),
+                    EMETA_Platform = (1 << 0),
                 };
 
                 uint32_t m_flagNoRequiredAttribute;
@@ -11514,7 +11559,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_Platform( Mengine::Tags * _value ) const
+                bool get_Platform( Mengine::Tags * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Platform) == 0 )
                     {
@@ -11526,7 +11571,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool getd_Platform( Mengine::Tags * _value, const Mengine::Tags & _default ) const
+                bool getd_Platform( Mengine::Tags * const _value, const Mengine::Tags & _default ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Platform) == 0 )
                     {
@@ -11722,10 +11767,10 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_CharOffset = (1 <<2),
-                    EMETA_Font = (1 <<1),
-                    EMETA_LineOffset = (1 <<3),
-                    EMETA_Value = (1 <<0),
+                    EMETA_CharOffset = (1 << 2),
+                    EMETA_Font = (1 << 1),
+                    EMETA_LineOffset = (1 << 3),
+                    EMETA_Value = (1 << 0),
                 };
 
                 uint32_t m_flagNoRequiredAttribute;
@@ -11746,7 +11791,7 @@ namespace Metacode
                     return this->m_CharOffset;
                 }
 
-                bool get_CharOffset( float * _value ) const
+                bool get_CharOffset( float * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_CharOffset) == 0 )
                     {
@@ -11771,7 +11816,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool getd_CharOffset( float * _value, const float & _default ) const
+                bool getd_CharOffset( float * const _value, const float & _default ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_CharOffset) == 0 )
                     {
@@ -11802,7 +11847,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_Font( Mengine::ConstString * _value ) const
+                bool get_Font( Mengine::ConstString * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Font) == 0 )
                     {
@@ -11814,7 +11859,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool getd_Font( Mengine::ConstString * _value, const Mengine::ConstString & _default ) const
+                bool getd_Font( Mengine::ConstString * const _value, const Mengine::ConstString & _default ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Font) == 0 )
                     {
@@ -11853,7 +11898,7 @@ namespace Metacode
                     return this->m_LineOffset;
                 }
 
-                bool get_LineOffset( float * _value ) const
+                bool get_LineOffset( float * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_LineOffset) == 0 )
                     {
@@ -11878,7 +11923,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool getd_LineOffset( float * _value, const float & _default ) const
+                bool getd_LineOffset( float * const _value, const float & _default ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_LineOffset) == 0 )
                     {
@@ -11909,7 +11954,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool get_Value( Mengine::WString * _value ) const
+                bool get_Value( Mengine::WString * const _value ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Value) == 0 )
                     {
@@ -11921,7 +11966,7 @@ namespace Metacode
                     return true;
                 }
 
-                bool getd_Value( Mengine::WString * _value, const Mengine::WString & _default ) const
+                bool getd_Value( Mengine::WString * const _value, const Mengine::WString & _default ) const
                 {
                     if( (m_flagNoRequiredAttribute & EMETA_Value) == 0 )
                     {

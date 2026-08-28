@@ -32,8 +32,10 @@ namespace Mengine
 
     public:
         const ResourcePtr & getResource( const ConstString & _groupName, const ConstString & _name ) const override;
+        const ResourcePtr & getResource( const ResourceUID & _uid ) const override;
 
         bool hasResource( const ConstString & _groupName, const ConstString & _name, bool _onlyGroup, ResourcePtr * const _resource ) const override;
+        bool hasResource( const ResourceUID & _uid, ResourcePtr * const _resource ) const override;
 
     protected:
         void foreachResources( const LambdaResourceView & _lambda ) const override;
@@ -49,6 +51,9 @@ namespace Mengine
 
         typedef Hashtable2<ConstString, ConstString, ResourcePtrView> HashtableGroupResources;
         HashtableGroupResources m_resourcesGroup;
+
+        typedef Hashtable<ResourceUID, ResourcePtrView, ResourceUIDHash> HashtableResourceUIDs;
+        HashtableResourceUIDs m_resourceUIDs;
 
         friend class Resource;
         friend class ResourceService;

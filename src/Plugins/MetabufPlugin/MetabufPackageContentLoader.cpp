@@ -10,8 +10,11 @@
 #include "Kernel/Resource.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionResourceUID.h"
 #include "Kernel/ContentHelper.h"
 #include "Kernel/VocabularyHelper.h"
+
+#include "Config/ResourceUID.h"
 
 namespace Mengine
 {
@@ -56,6 +59,13 @@ namespace Mengine
             const ConstString & name = meta_resource->get_Name();
             const ConstString & type = meta_resource->get_Type();
 
+            ResourceUID uid = INVALID_RESOURCE_UID;
+
+            if( meta_resource->get_UID( &uid ) == true )
+            {
+                MENGINE_ASSERTION_RESOURCE_UID( uid, name, groupName );
+            }
+
             //ToDo
             bool unique = meta_resource->getd_Unique( true );
 
@@ -80,6 +90,7 @@ namespace Mengine
             }
 
             ResourceCook cook;
+            cook.uid = uid;
             cook.locales = _locales;
             cook.groupName = groupName;
             cook.name = name;

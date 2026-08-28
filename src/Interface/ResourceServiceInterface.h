@@ -31,7 +31,9 @@ namespace Mengine
 
     public:
         virtual const ResourcePtr & getResourceReference( const ConstString & _groupName, const ConstString & _name ) const = 0;
+        virtual const ResourcePtr & getResourceReference( const ResourceUID & _uid ) const = 0;
         virtual bool hasResource( const ConstString & _groupName, const ConstString & _name, bool _onlyGroup, ResourcePtr * const _resource ) const = 0;
+        virtual bool hasResource( const ResourceUID & _uid, ResourcePtr * const _resource ) const = 0;
 
     public:
         typedef Lambda<void( const ResourcePtr & )> LambdaResource;
@@ -48,4 +50,3 @@ namespace Mengine
 #define RESOURCE_SERVICE()\
     ((Mengine::ResourceServiceInterface *)SERVICE_GET(Mengine::ResourceServiceInterface))
 //////////////////////////////////////////////////////////////////////////
-

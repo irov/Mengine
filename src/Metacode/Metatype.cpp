@@ -46,6 +46,14 @@ namespace Metabuf
         ar.readPOD( _value );
     }
     //////////////////////////////////////////////////////////////////////////
+    void archive_read( Reader & ar, Mengine::ResourceUID & _value, void * _userData )
+    {
+        MENGINE_UNUSED( _userData );
+
+        ar.readPOD( _value.high );
+        ar.readPOD( _value.low );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, float & _value, void * _userData )
     {
         MENGINE_UNUSED( _userData );

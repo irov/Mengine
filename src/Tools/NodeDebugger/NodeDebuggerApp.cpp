@@ -68,7 +68,7 @@ namespace Mengine
 
         timeval tv;
         tv.tv_sec = static_cast<long>(_timeoutMs / 1000);
-        tv.tv_usec = static_cast<long>((_timeoutMs - static_cast<int>(tv.tv_sec * 1000)) * 1000);
+        tv.tv_usec = static_cast<decltype(tv.tv_usec)>((_timeoutMs % 1000) * 1000);
 
 #if defined(_WIN32)
         const int descriptorCount = 0;
@@ -1951,6 +1951,11 @@ namespace Mengine
 
         switch( _jppType )
         {
+        case jpp::e_type::JPP_OBJECT:
+        case jpp::e_type::JPP_ARRAY:
+            {
+                _out->clear();
+            }break;
         case jpp::e_type::JPP_INTEGER:
             {
                 int32_t valueInteger = _object;
@@ -1987,6 +1992,9 @@ namespace Mengine
             ImGui::PushID( desc.id );
             switch( desc.state )
             {
+            case ESS_INIT:
+                ImGui::TextColored( ImVec4( 0.5f, 0.5f, 0.5f, 1.f ), "[init]" );
+                break;
             case ESS_STOP:
                 ImGui::TextColored( ImVec4( 1.f, 0.f, 0.f, 1.f ), "[stop]" );
                 break;
@@ -1995,6 +2003,9 @@ namespace Mengine
                 break;
             case ESS_PAUSE:
                 ImGui::TextColored( ImVec4( 0.f, 0.5f, 1.f, 1.f ), "[pause]" );
+                break;
+            case ESS_END:
+                ImGui::TextColored( ImVec4( 0.5f, 0.5f, 0.5f, 1.f ), "[end]" );
                 break;
             }
             ImGui::SameLine();

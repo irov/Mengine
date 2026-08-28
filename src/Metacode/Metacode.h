@@ -33,7 +33,7 @@ namespace Metacode
         {
         public:
             Meta_DataBlock();
-            ~Meta_DataBlock();
+            ~Meta_DataBlock() override;
 
         public:
             template<class C, class M>
@@ -1217,7 +1217,7 @@ namespace Metacode
             {
             public:
                 Meta_Resource();
-                virtual ~Meta_Resource();
+                ~Meta_Resource() override;
 
             protected:
                 enum NoRequiredAttribute

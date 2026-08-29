@@ -24,7 +24,7 @@
 #include <string>
 
 //////////////////////////////////////////////////////////////////////////
-static bool writeBin( const std::wstring & _protocol, const std::wstring & _inputFormat, const std::wstring & _outputFormat, const std::wstring & _meta, const std::wstring & _node, const std::wstring & _input, const std::wstring & _output )
+static bool writeBin( const std::wstring & _inputFormat, const std::wstring & _outputFormat, const std::wstring & _meta, const std::wstring & _node, const std::wstring & _input, const std::wstring & _output )
 {
     if( _outputFormat != L"bin" )
     {
@@ -33,7 +33,6 @@ static bool writeBin( const std::wstring & _protocol, const std::wstring & _inpu
         return false;
     }
 
-    const Mengine::FilePath protocolPath = Mengine::Helper::unicodeToFilePath( Mengine::WString( _protocol.begin(), _protocol.end() ) );
     const Mengine::FilePath inputPath = Mengine::Helper::unicodeToFilePath( Mengine::WString( _input.begin(), _input.end() ) );
     const Mengine::FilePath outputPath = Mengine::Helper::unicodeToFilePath( Mengine::WString( _output.begin(), _output.end() ) );
 
@@ -46,24 +45,20 @@ static bool writeBin( const std::wstring & _protocol, const std::wstring & _inpu
         return false;
     }
 
-    Mengine::ContentInterfacePtr protocolContent = Mengine::Helper::makeFileContent( fileGroup, protocolPath, MENGINE_DOCUMENT_FUNCTION );
     Mengine::ContentInterfacePtr inputContent = Mengine::Helper::makeFileContent( fileGroup, inputPath, MENGINE_DOCUMENT_FUNCTION );
     Mengine::ContentInterfacePtr outputContent = Mengine::Helper::makeFileContent( fileGroup, outputPath, MENGINE_DOCUMENT_FUNCTION );
 
-    Mengine::InputStreamInterfacePtr protocolStream = protocolContent->openInputStreamFile( false, false, MENGINE_DOCUMENT_FUNCTION );
     Mengine::InputStreamInterfacePtr inputStream = inputContent->openInputStreamFile( false, false, MENGINE_DOCUMENT_FUNCTION );
 
-    if( protocolStream == nullptr || inputStream == nullptr )
+    if( inputStream == nullptr )
     {
-        LOGGER_ERROR( "Metawrite cannot open protocol or input" );
+        LOGGER_ERROR( "Metawrite cannot open input" );
 
         return false;
     }
 
-    Mengine::MemoryInterfacePtr protocolMemory = Mengine::Helper::createMemoryStream( protocolStream, MENGINE_DOCUMENT_FUNCTION );
     Mengine::MemoryInterfacePtr inputMemory = Mengine::Helper::createMemoryStream( inputStream, MENGINE_DOCUMENT_FUNCTION );
 
-    protocolContent->closeInputStreamFile( protocolStream );
     inputContent->closeInputStreamFile( inputStream );
 
     const Metacode::MetaprotocolGenerator generator;
@@ -92,15 +87,6 @@ static bool writeBin( const std::wstring & _protocol, const std::wstring & _inpu
     }
 
     std::string error;
-
-    if( metaconvert->validateProtocol( protocolMemory->getBuffer(), protocolMemory->getSize(), error ) == false )
-    {
-        LOGGER_ERROR( "Metawrite invalid protocol: %s", error.c_str() );
-
-        Metabuf::destroyMetaconvert( metaconvert );
-
-        return false;
-    }
 
     const std::string metaName( _meta.begin(), _meta.end() );
     const std::string nodeName( _node.begin(), _node.end() );
@@ -186,12 +172,18 @@ int main( int argc, char * argv[] )
 
     if( has_args( L"--help" ) == true || has_args( L"-h" ) == true )
     {
-        message_error( "usage: Metawrite --protocol <protocol.xml> --input-format <json|xml> --output-format bin --meta <meta> --node <node> --in <source> --out <output.bin>" );
+        message_error( "usage: Metawrite --input-format <json|xml> --output-format bin --meta <meta> --node <node> --in <source> --out <output.bin>" );
 
         return EXIT_SUCCESS;
     }
 
-    const std::wstring protocol = parse_kwds( L"--protocol", std::wstring() );
+    if( has_args( L"--protocol" ) == true )
+    {
+        message_error( "Metawrite no longer accepts --protocol; the protocol is embedded in the tool" );
+
+        return EXIT_FAILURE;
+    }
+
     const std::wstring inputFormat = parse_kwds( L"--input-format", std::wstring() );
     const std::wstring outputFormat = parse_kwds( L"--output-format", std::wstring() );
     const std::wstring meta = parse_kwds( L"--meta", std::wstring() );
@@ -199,9 +191,44 @@ int main( int argc, char * argv[] )
     const std::wstring input = parse_kwds( L"--in", std::wstring() );
     const std::wstring output = parse_kwds( L"--out", std::wstring() );
 
-    if( protocol.empty() == true || inputFormat.empty() == true || outputFormat.empty() == true || meta.empty() == true || node.empty() == true || input.empty() == true || output.empty() == true )
+    if( inputFormat.empty() == true )
     {
-        message_error( "Metawrite missing required argument. Use --help for the complete command." );
+        message_error( "Metawrite missing required argument '--input-format'. Expected 'json' or 'xml'." );
+
+        return EXIT_FAILURE;
+    }
+
+    if( outputFormat.empty() == true )
+    {
+        message_error( "Metawrite missing required argument '--output-format'. Expected 'bin'." );
+
+        return EXIT_FAILURE;
+    }
+
+    if( meta.empty() == true )
+    {
+        message_error( "Metawrite missing required argument '--meta'. Specify the embedded protocol meta name, for example 'Data'." );
+
+        return EXIT_FAILURE;
+    }
+
+    if( node.empty() == true )
+    {
+        message_error( "Metawrite missing required argument '--node'. Specify the embedded protocol node name, for example 'Pak'." );
+
+        return EXIT_FAILURE;
+    }
+
+    if( input.empty() == true )
+    {
+        message_error( "Metawrite missing required argument '--in'. Specify the input JSON or XML file path." );
+
+        return EXIT_FAILURE;
+    }
+
+    if( output.empty() == true )
+    {
+        message_error( "Metawrite missing required argument '--out'. Specify the output BIN file path." );
 
         return EXIT_FAILURE;
     }
@@ -222,7 +249,7 @@ int main( int argc, char * argv[] )
         return EXIT_FAILURE;
     }
 
-    const bool successful = writeBin( protocol, inputFormat, outputFormat, meta, node, input, output );
+    const bool successful = writeBin( inputFormat, outputFormat, meta, node, input, output );
     Mengine::ToolEngineFinalize();
 
     return successful == true ? EXIT_SUCCESS : EXIT_FAILURE;

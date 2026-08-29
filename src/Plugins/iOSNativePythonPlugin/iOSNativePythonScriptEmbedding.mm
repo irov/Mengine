@@ -280,6 +280,11 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         typedef IntrusivePtr<PythonAppleSemaphoreListener, AppleSemaphoreListenerInterface> PythonAppleSemaphoreListenerPtr;
         //////////////////////////////////////////////////////////////////////////
+        void iOSNativePython_activateSemaphore( NSString * _name )
+        {
+            [[iOSNativePythonPlugin sharedInstance] activateSemaphore:_name];
+        }
+        //////////////////////////////////////////////////////////////////////////
         void iOSNativePython_waitSemaphore( NSString * _name, const pybind::object & _cb, const pybind::args & _args )
         {
             if( _name == nil )
@@ -347,6 +352,7 @@ namespace Mengine
         pybind::registration_type_cast<NSDictionary *>(_kernel, pybind::make_type_cast<Detail::extract_NSDictionary_type>(_kernel));
         pybind::registration_type_cast<NSSet *>(_kernel, pybind::make_type_cast<Detail::extract_NSSet_type>(_kernel));
 
+        pybind::def_function( _kernel, "activateSemaphore", &Detail::iOSNativePython_activateSemaphore );
         pybind::def_function_args( _kernel, "waitSemaphore", &Detail::iOSNativePython_waitSemaphore );
         pybind::def_function_args( _kernel, "iOSNativePythonShowAreYouSureAlertDialog", &Detail::iOSNativePython_showAreYouSureAlertDialog );
         pybind::def_function_args( _kernel, "iOSNativePythonShowOkAlert", &Detail::iOSNativePython_showOkAlert );

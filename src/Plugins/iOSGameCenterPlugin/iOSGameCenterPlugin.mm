@@ -38,7 +38,15 @@
 }
 
 - (void)connect:(id<iOSGameCenterConnectCallbackInterface>)callback {
+    __block BOOL authenticationCompleted = NO;
+
     [self login:^(NSError * _error) {
+        if (authenticationCompleted == YES) {
+            return;
+        }
+
+        authenticationCompleted = YES;
+
         if (_error != nil) {
             self.m_gameCenterAuthenticate = false;
 

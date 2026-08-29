@@ -396,7 +396,7 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
 #pragma mark - UISceneSession lifecycle
 
 - (UISceneConfiguration *)application:(UIApplication *)application configurationForConnectingSceneSession:(UISceneSession *)connectingSceneSession options:(UISceneConnectionOptions *)options API_AVAILABLE(ios(13.0)) {
-    UISceneConfiguration * configuration = [[UISceneConfiguration alloc] initWithName:@"Default Configuration" sessionRole:connectingSceneSession.role];
+    UISceneConfiguration * configuration = [[UISceneConfiguration alloc] initWithName:nil sessionRole:connectingSceneSession.role];
     configuration.delegateClass = [iOSSceneDelegate class];
 
     return configuration;

@@ -87,6 +87,7 @@ public class MengineActivity extends AppCompatActivity {
 
     private volatile boolean m_deleteAccountFlowActive = false;
     private AlertDialog m_deleteAccountProgressDialog;
+    private boolean m_engineActivityInitialized = false;
     private boolean m_quitApplicationAfterDestroy = false;
 
     public MengineActivity() {
@@ -357,7 +358,16 @@ public class MengineActivity extends AppCompatActivity {
             return;
         }
 
+        if (application.isQuitRequested() == true) {
+            MengineLog.logMessage(TAG, "onCreate: application quit already requested");
+
+            this.finishAndRemoveTask();
+
+            return;
+        }
+
         INSTANCE = this;
+        m_engineActivityInitialized = true;
 
         List<MengineServiceInterface> services = application.getServices();
 
@@ -1013,6 +1023,12 @@ public class MengineActivity extends AppCompatActivity {
         m_deleteAccountFlowActive = false;
         this.dismissDeleteAccountProgressDialog();
 
+        if (m_engineActivityInitialized == false) {
+            super.onDestroy();
+
+            return;
+        }
+
         MengineApplication application = (MengineApplication)this.getApplication();
 
         if (application.isInvalidInitialize() == true) {
@@ -1333,6 +1349,9 @@ public class MengineActivity extends AppCompatActivity {
 
     private void quitApplication() {
         m_quitApplicationAfterDestroy = true;
+
+        MengineApplication.INSTANCE.quit();
+
         this.finishAndRemoveTask();
     }
 
@@ -1370,7 +1389,7 @@ public class MengineActivity extends AppCompatActivity {
 
             switch (result) {
             case DELETE_ACCOUNT_RESULT_ACCEPTED:
-                MengineApplication.INSTANCE.removeUserData();
+                MengineApplication.INSTANCE.removeUserDataForAccountDeletion();
 
                 MengineUI.showOkAlertDialogRes(this, this::linkingQuitApplication
                     , R.string.mengine_delete_account_success_title
@@ -1402,7 +1421,7 @@ public class MengineActivity extends AppCompatActivity {
                 );
                 break;
             case DELETE_ACCOUNT_RESULT_COMPLETED:
-                MengineApplication.INSTANCE.removeUserData();
+                MengineApplication.INSTANCE.removeUserDataForAccountDeletion();
 
                 MengineUI.showOkAlertDialogRes(this, this::linkingQuitApplication
                     , R.string.mengine_delete_account_completed_title

@@ -29,6 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class MengineApplication extends Application {
     private static final MengineTag TAG = MengineTag.of("MNGApplication");
+    private static final String PREFERENCE_ACCOUNT_DELETION_RESTART = "account_deletion_restart";
 
     static {
         System.loadLibrary("AndroidApplication");
@@ -564,12 +565,36 @@ public abstract class MengineApplication extends Application {
         return true;
     }
 
+    public boolean isQuitRequested() {
+        if (m_main == null) {
+            return false;
+        }
+
+        return m_main.isQuitRequested();
+    }
+
     public void removeUserData() {
         MenginePreferences.clearPreferences();
 
         MengineFragmentUser.INSTANCE.removeUserData();
 
         MengineNative.AndroidEnvironmentService_deleteCurrentAccount();
+    }
+
+    public void removeUserDataForAccountDeletion() {
+        this.removeUserData();
+
+        if (MenginePreferences.setPreferenceBooleanImmediately(PREFERENCE_ACCOUNT_DELETION_RESTART, true) == false) {
+            MengineLog.logError(TAG, "failed to persist account deletion restart marker");
+        }
+    }
+
+    public boolean hasAccountDeletionRestart() {
+        return MenginePreferences.getPreferenceBoolean(PREFERENCE_ACCOUNT_DELETION_RESTART, false);
+    }
+
+    public void clearAccountDeletionRestart() {
+        MenginePreferences.removePreference(PREFERENCE_ACCOUNT_DELETION_RESTART);
     }
 
     public void setADID(String adid) {

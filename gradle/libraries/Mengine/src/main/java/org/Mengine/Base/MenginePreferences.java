@@ -73,6 +73,17 @@ public class MenginePreferences {
         editor.apply();
     }
 
+    static public boolean setPreferenceBooleanImmediately(@NonNull String name, boolean value) {
+        synchronized (MenginePreferences.SETTINGS_SYNC) {
+            MenginePreferences.SETTINGS.put(name, value);
+        }
+
+        SharedPreferences.Editor editor = MenginePreferences.PREFERENCES.edit();
+        editor.putBoolean(name, value);
+
+        return editor.commit();
+    }
+
     static public long getPreferenceLong(@NonNull String name, long defaultValue) {
         synchronized (MenginePreferences.SETTINGS_SYNC) {
             Long value = (Long)MenginePreferences.SETTINGS.getOrDefault(name, defaultValue);

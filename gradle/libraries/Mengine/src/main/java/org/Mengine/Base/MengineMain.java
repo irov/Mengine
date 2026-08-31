@@ -53,6 +53,10 @@ public class MengineMain implements Runnable {
         MenginePlatformEventQueue.pushQuitEvent();
     }
 
+    public boolean isQuitRequested() {
+        return m_quitRequested;
+    }
+
     public void stop() {
         MengineLog.logInfo(TAG, "main join");
 
@@ -111,8 +115,7 @@ public class MengineMain implements Runnable {
         if (m_quitRequested == true) {
             MengineLog.logInfo(TAG, "main quit process");
 
-            int pid = Process.myPid();
-            Process.killProcess(pid);
+            System.exit(0);
         }
     }
 }

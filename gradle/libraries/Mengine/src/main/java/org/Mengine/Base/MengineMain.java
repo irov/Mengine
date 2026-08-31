@@ -15,9 +15,11 @@ public class MengineMain implements Runnable {
     protected final Object m_nativeApplication;
 
     protected Thread m_thread;
+    private volatile boolean m_quitRequested;
 
     public MengineMain(@NonNull Object nativeApplication) {
         m_nativeApplication = nativeApplication;
+        m_quitRequested = false;
     }
 
     public static void runLatch() {
@@ -40,6 +42,15 @@ public class MengineMain implements Runnable {
         }
 
         return true;
+    }
+
+    public synchronized void quit() {
+        if (m_quitRequested == true) {
+            return;
+        }
+
+        m_quitRequested = true;
+        MenginePlatformEventQueue.pushQuitEvent();
     }
 
     public void stop() {
@@ -96,5 +107,12 @@ public class MengineMain implements Runnable {
         }
 
         MengineLog.logInfo(TAG, "main finish successful");
+
+        if (m_quitRequested == true) {
+            MengineLog.logInfo(TAG, "main quit process");
+
+            int pid = Process.myPid();
+            Process.killProcess(pid);
+        }
     }
 }

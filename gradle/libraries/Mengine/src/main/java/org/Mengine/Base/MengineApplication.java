@@ -554,6 +554,16 @@ public abstract class MengineApplication extends Application {
         return m_userId;
     }
 
+    public boolean quit() {
+        if (m_main == null) {
+            return false;
+        }
+
+        m_main.quit();
+
+        return true;
+    }
+
     public void removeUserData() {
         MenginePreferences.clearPreferences();
 

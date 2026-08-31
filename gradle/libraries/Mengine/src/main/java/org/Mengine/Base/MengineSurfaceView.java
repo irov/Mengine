@@ -142,6 +142,7 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
 
         m_paused = false;
 
+        this.setVisibility(View.VISIBLE);
         this.setFocusable(true);
         this.setFocusableInTouchMode(true);
         this.requestFocus();
@@ -178,6 +179,7 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
 
         m_paused = true;
 
+        this.setVisibility(View.INVISIBLE);
         this.setFocusable(false);
         this.setFocusableInTouchMode(false);
         this.setOnKeyListener(null);

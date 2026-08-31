@@ -1657,9 +1657,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::closeWindow()
     {
-        //Empty
-        
-        //this->pushQuitEvent_();
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
+
+        Helper::AndroidCallVoidActivityMethod( jenv, "linkingQuitApplication", "()V" );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::minimizeWindow()

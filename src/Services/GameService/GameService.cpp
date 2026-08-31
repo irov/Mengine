@@ -60,6 +60,7 @@ namespace Mengine
 
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_TIME_FACTOR_CHANGE, &GameService::notifyTimeFactorChange_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_SETTING_CHANGE, &GameService::notifySettingChange_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_SAFE_AREA_VIEWPORT, &GameService::notifySafeAreaViewportChange_, MENGINE_DOCUMENT_FACTORABLE );
 
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_DID_BECOME_ACTIVE, &GameService::notifyApplicationDidBecomeActive_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_WILL_ENTER_FOREGROUND, &GameService::notifyApplicationWillEnterForeground_, MENGINE_DOCUMENT_FACTORABLE );
@@ -77,6 +78,7 @@ namespace Mengine
     {
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_TIME_FACTOR_CHANGE );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SETTING_CHANGE );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_SAFE_AREA_VIEWPORT );
 
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_DID_BECOME_ACTIVE );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_WILL_ENTER_FOREGROUND );
@@ -533,6 +535,12 @@ namespace Mengine
     {
         EVENTABLE_METHOD( EVENT_GAME_SETTING_CHANGE )
             ->onGameSettingChange( _setting, _key );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void GameService::notifySafeAreaViewportChange_( const Viewport & _viewport )
+    {
+        EVENTABLE_METHOD( EVENT_GAME_SAFE_AREA_VIEWPORT )
+            ->onGameSafeAreaViewport( _viewport );
     }
     //////////////////////////////////////////////////////////////////////////
     void GameService::notifyApplicationDidBecomeActive_()

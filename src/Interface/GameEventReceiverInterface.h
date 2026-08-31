@@ -70,6 +70,7 @@ namespace Mengine
         EVENT_GAME_ANALYTICS_EVENT,
         EVENT_GAME_ANALYTICS_SCREENVIEW,
         EVENT_GAME_ANALYTICS_FLUSH,
+        EVENT_GAME_SAFE_AREA_VIEWPORT,
 
         __EVENT_GAME_LAST__
     };
@@ -129,6 +130,7 @@ namespace Mengine
         virtual void onGameAnalyticsEvent( const AnalyticsEventInterfacePtr & _event ) = 0;
         virtual void onGameAnalyticsScreenView( const ConstString & _screenType, const ConstString & _screenName ) = 0;
         virtual void onGameAnalyticsFlush() = 0;
+        virtual void onGameSafeAreaViewport( const Viewport & _viewport ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_FULLSCREEN );
@@ -182,5 +184,6 @@ namespace Mengine
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_ANALYTICS_EVENT );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_ANALYTICS_SCREENVIEW );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_ANALYTICS_FLUSH );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_SAFE_AREA_VIEWPORT );
     //////////////////////////////////////////////////////////////////////////
 }

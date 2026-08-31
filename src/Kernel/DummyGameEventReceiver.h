@@ -59,5 +59,6 @@ namespace Mengine
         void onGameApplicationDidEnterBackground() override;
         void onGameApplicationWillResignActive() override;
         void onGameApplicationWillTerminate() override;
+        void onGameSafeAreaViewport( const Viewport & _viewport ) override;
     };
 }

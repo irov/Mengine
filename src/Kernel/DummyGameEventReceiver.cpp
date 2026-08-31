@@ -332,4 +332,11 @@ namespace Mengine
         // Empty
     }
     //////////////////////////////////////////////////////////////////////////
+    void DummyGameEventReceiver::onGameSafeAreaViewport( const Viewport & _viewport )
+    {
+        MENGINE_UNUSED( _viewport );
+
+        // Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

@@ -41,6 +41,9 @@ namespace Mengine
         AndroidSemaphoreListenerInterfacePtr waitSemaphore( const ConstString & _semaphore, const AndroidSemaphoreListenerInterfacePtr & _listener ) override;
 
     public:
+        void clearCallbacks() override;
+
+    public:
         void _update() override;
 
     protected:

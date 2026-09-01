@@ -46,6 +46,7 @@ typedef NSMutableDictionary<NSString *, iOSNativePythonMethods *> iOSNativePytho
 }
 
 - (void)onFinalize {
+    [AppleSemaphoreService.sharedInstance clearSemaphores];
     [m_callbacks removeAllObjects];
 }
 
@@ -57,6 +58,7 @@ typedef NSMutableDictionary<NSString *, iOSNativePythonMethods *> iOSNativePytho
 - (void)onStopEnd {
     Mengine::Helper::removeScriptEmbedding<Mengine::iOSNativePythonScriptEmbedding>();
 
+    [AppleSemaphoreService.sharedInstance clearSemaphores];
     [m_callbacks removeAllObjects];
 }
 #endif

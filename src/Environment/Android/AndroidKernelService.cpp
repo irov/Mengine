@@ -99,12 +99,11 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
+        this->clearCallbacks();
+
         m_semaphoresMutex = nullptr;
         m_callbacksMutex = nullptr;
         m_pluginsMutex = nullptr;
-
-        m_semaphores.clear();
-        m_callbacks.clear();
 
         for( auto && [name, jplugin] : m_plugins )
         {
@@ -339,6 +338,17 @@ namespace Mengine
         semaphore.listeners.emplace_back( _listener );
 
         return _listener;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidKernelService::clearCallbacks()
+    {
+        m_semaphoresMutex->lock();
+        m_semaphores.clear();
+        m_semaphoresMutex->unlock();
+
+        m_callbacksMutex->lock();
+        m_callbacks.clear();
+        m_callbacksMutex->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidKernelService::_update()

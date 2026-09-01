@@ -32,6 +32,9 @@ namespace Mengine
     public:
         virtual void activateSemaphore( const ConstString & _semaphore ) = 0;
         virtual AndroidSemaphoreListenerInterfacePtr waitSemaphore( const ConstString & _semaphore, const AndroidSemaphoreListenerInterfacePtr & _listener ) = 0;
+
+    public:
+        virtual void clearCallbacks() = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

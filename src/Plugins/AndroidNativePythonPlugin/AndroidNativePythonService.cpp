@@ -59,7 +59,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonService::_finalizeService()
     {
-        //Empty
+        ANDROID_KERNEL_SERVICE()
+            ->clearCallbacks();
+
+        m_kernel = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonService::androidMethod( const ConstString & _plugin, const ConstString & _method, const pybind::args & _args ) const

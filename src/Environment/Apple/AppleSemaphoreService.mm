@@ -71,4 +71,10 @@
     [listener invoke];
 }
 
+- (void)clearSemaphores {
+    @synchronized(self) {
+        [self.m_semaphores removeAllObjects];
+    }
+}
+
 @end

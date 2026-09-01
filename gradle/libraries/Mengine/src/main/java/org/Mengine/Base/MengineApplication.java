@@ -30,6 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public abstract class MengineApplication extends Application {
     private static final MengineTag TAG = MengineTag.of("MNGApplication");
     private static final String PREFERENCE_ACCOUNT_DELETION_RESTART = "account_deletion_restart";
+    private static final String PREFERENCE_EXPECTED_PROCESS_EXIT = "expected_process_exit";
 
     static {
         System.loadLibrary("AndroidApplication");
@@ -595,6 +596,24 @@ public abstract class MengineApplication extends Application {
 
     public void clearAccountDeletionRestart() {
         MenginePreferences.removePreference(PREFERENCE_ACCOUNT_DELETION_RESTART);
+    }
+
+    public void setExpectedProcessExit() {
+        if (MenginePreferences.setPreferenceBooleanImmediately(PREFERENCE_EXPECTED_PROCESS_EXIT, true) == false) {
+            MengineLog.logError(TAG, "failed to persist expected process exit marker");
+        }
+    }
+
+    public boolean consumeExpectedProcessExit() {
+        if (MenginePreferences.getPreferenceBoolean(PREFERENCE_EXPECTED_PROCESS_EXIT, false) == false) {
+            return false;
+        }
+
+        if (MenginePreferences.removePreferenceImmediately(PREFERENCE_EXPECTED_PROCESS_EXIT) == false) {
+            MengineLog.logError(TAG, "failed to clear expected process exit marker");
+        }
+
+        return true;
     }
 
     public void setADID(String adid) {

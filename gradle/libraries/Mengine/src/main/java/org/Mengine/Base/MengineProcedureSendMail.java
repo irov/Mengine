@@ -360,8 +360,6 @@ public class MengineProcedureSendMail implements MengineProcedureInterface {
 
         Intent chooser = Intent.createChooser(intent, "Send Email");
 
-        chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
         try {
             activity.startActivity(chooser);
         } catch (final ActivityNotFoundException e) {

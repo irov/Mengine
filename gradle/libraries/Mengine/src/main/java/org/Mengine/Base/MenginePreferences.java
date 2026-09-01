@@ -332,6 +332,17 @@ public class MenginePreferences {
         editor.apply();
     }
 
+    static public boolean removePreferenceImmediately(@NonNull String name) {
+        synchronized (MenginePreferences.SETTINGS_SYNC) {
+            MenginePreferences.SETTINGS.remove(name);
+        }
+
+        SharedPreferences.Editor editor = MenginePreferences.PREFERENCES.edit();
+        editor.remove(name);
+
+        return editor.commit();
+    }
+
     static public void clearPreferences() {
         synchronized (MenginePreferences.SETTINGS_SYNC) {
             MenginePreferences.SETTINGS.clear();

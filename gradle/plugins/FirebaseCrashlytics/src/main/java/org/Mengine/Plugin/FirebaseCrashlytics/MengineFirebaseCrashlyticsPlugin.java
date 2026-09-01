@@ -33,8 +33,14 @@ public class MengineFirebaseCrashlyticsPlugin extends MengineService implements 
     public static final String SERVICE_NAME = "FBCrashlytics";
     public static final boolean SERVICE_EMBEDDING = true;
 
+    private boolean m_previousExecutionExpectedExit;
+
     @Override
     public void onAppInit(@NonNull MengineApplication application, boolean isMainProcess) throws MengineServiceInvalidInitializeException {
+        if (isMainProcess == true) {
+            m_previousExecutionExpectedExit = application.consumeExpectedProcessExit();
+        }
+
         boolean is_publish = application.isBuildPublish();
         FirebaseCrashlytics.getInstance().setCustomKey("is_publish", is_publish);
         FirebaseCrashlytics.getInstance().setCustomKey("is_debug", BuildConfig.DEBUG);
@@ -80,7 +86,11 @@ public class MengineFirebaseCrashlyticsPlugin extends MengineService implements 
     @Override
     public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
         if (BuildConfig.DEBUG == true) {
-            if (FirebaseCrashlytics.getInstance().didCrashOnPreviousExecution() == true) {
+            boolean didCrashOnPreviousExecution = FirebaseCrashlytics.getInstance().didCrashOnPreviousExecution();
+
+            if (m_previousExecutionExpectedExit == true && didCrashOnPreviousExecution == true) {
+                this.logInfo("skip previous crash notification after expected process exit");
+            } else if (didCrashOnPreviousExecution == true) {
                 MengineUtils.performOnMainThreadDelayed(() -> {
                     MengineUI.showToast(activity, "Last launch ended in a crash");
                 }, 10000L);

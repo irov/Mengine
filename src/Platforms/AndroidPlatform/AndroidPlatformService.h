@@ -147,6 +147,8 @@ namespace Mengine
         bool completeDeleteAccount( EDeleteAccountResult _result ) override;
         bool isNetworkAvailable() const override;
         void removeUserData() override;
+        bool hasAccountDeletionRestart() const override;
+        void clearAccountDeletionRestart() override;
 
     public:
         bool updateDesktopWallpaper( const Char * _directoryPath, const Char * _filePath ) override;

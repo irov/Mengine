@@ -6,6 +6,8 @@
 
 #import "Environment/iOS/iOSDetail.h"
 
+static NSString * const kMengineAccountDeletionRestartKey = @"mengine.app.account_deletion_restart";
+
 @implementation iOSApplication
 
 + (instancetype)sharedInstance {
@@ -92,6 +94,20 @@
     [AppleUserDefaults clear];
     
     [iOSDetail removeUserData];
+}
+
+- (BOOL)removeUserDataForAccountDeletion {
+    [self removeUserData];
+
+    return [AppleUserDefaults setBooleanForKey:kMengineAccountDeletionRestartKey value:YES];
+}
+
+- (BOOL)hasAccountDeletionRestart {
+    return [AppleUserDefaults getBooleanForKey:kMengineAccountDeletionRestartKey defaultValue:NO];
+}
+
+- (BOOL)clearAccountDeletionRestart {
+    return [AppleUserDefaults removeKey:kMengineAccountDeletionRestartKey];
 }
 
 - (NSString * _Nonnull)getInstallId {

@@ -1029,7 +1029,13 @@ namespace Mengine
 
         if( removeUserData == true )
         {
-            this->removeUserData();
+            if( [iOSApplication.sharedInstance removeUserDataForAccountDeletion] == NO )
+            {
+                IOS_LOGGER_ERROR( @"failed to persist account deletion restart marker" );
+            }
+
+            ACCOUNT_SERVICE()
+                ->deleteCurrentAccount();
         }
 
         [AppleDetail addMainQueueOperation:^{
@@ -1073,6 +1079,19 @@ namespace Mengine
 
         ACCOUNT_SERVICE()
             ->deleteCurrentAccount();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool iOSPlatformService::hasAccountDeletionRestart() const
+    {
+        return [iOSApplication.sharedInstance hasAccountDeletionRestart] == YES;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void iOSPlatformService::clearAccountDeletionRestart()
+    {
+        if( [iOSApplication.sharedInstance clearAccountDeletionRestart] == NO )
+        {
+            IOS_LOGGER_ERROR( @"failed to clear account deletion restart marker" );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::stopPlatform()

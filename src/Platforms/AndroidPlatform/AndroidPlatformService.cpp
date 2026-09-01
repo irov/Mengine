@@ -1419,6 +1419,26 @@ namespace Mengine
         Helper::AndroidCallVoidActivityMethod( jenv, "removeUserData", "()V" );
     }
     //////////////////////////////////////////////////////////////////////////
+    bool AndroidPlatformService::hasAccountDeletionRestart() const
+    {
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
+
+        jboolean restart = Helper::AndroidCallBooleanApplicationMethod( jenv, "hasAccountDeletionRestart", "()Z" );
+
+        return restart == JNI_TRUE;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::clearAccountDeletionRestart()
+    {
+        JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
+
+        Helper::AndroidCallVoidApplicationMethod( jenv, "clearAccountDeletionRestart", "()V" );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::notifyBootstrapperInitializeBaseServices_()
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();

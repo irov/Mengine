@@ -12,6 +12,9 @@
 
 - (void)setUserId:(NSString * _Nonnull)userId;
 - (void)removeUserData;
+- (BOOL)removeUserDataForAccountDeletion;
+- (BOOL)hasAccountDeletionRestart;
+- (BOOL)clearAccountDeletionRestart;
 
 - (NSString * _Nonnull)getInstallId;
 - (NSInteger)getInstallTimestamp;

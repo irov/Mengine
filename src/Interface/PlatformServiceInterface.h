@@ -157,6 +157,15 @@ namespace Mengine
         virtual bool isNetworkAvailable() const = 0;
         virtual void removeUserData() = 0;
 
+        // Persists across the account-data reset and remains set until replacement authentication succeeds.
+        virtual bool hasAccountDeletionRestart() const
+        {
+            return false;
+        }
+        virtual void clearAccountDeletionRestart()
+        {
+        }
+
     public:
         virtual bool updateDesktopWallpaper( const Char * _directoryPath, const Char * _filePath ) = 0;
 

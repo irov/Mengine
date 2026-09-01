@@ -4317,6 +4317,18 @@ namespace Mengine
                     ->removeUserData();
             }
             //////////////////////////////////////////////////////////////////////////
+            bool s_hasAccountDeletionRestart()
+            {
+                return PLATFORM_SERVICE()
+                    ->hasAccountDeletionRestart();
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void s_clearAccountDeletionRestart()
+            {
+                PLATFORM_SERVICE()
+                    ->clearAccountDeletionRestart();
+            }
+            //////////////////////////////////////////////////////////////////////////
             ConstString s_getDefaultResourceFontName()
             {
                 const FontInterfacePtr & defaultResourceFont = FONT_SERVICE()
@@ -4695,6 +4707,8 @@ namespace Mengine
         pybind::def_functor( _kernel, "completeDeleteAccount", nodeScriptMethod, &EngineScriptMethod::s_completeDeleteAccount );
         pybind::def_functor( _kernel, "isNetworkAvailable", nodeScriptMethod, &EngineScriptMethod::s_isNetworkAvailable );
         pybind::def_functor( _kernel, "removeUserData", nodeScriptMethod, &EngineScriptMethod::s_removeUserData );
+        pybind::def_functor( _kernel, "hasAccountDeletionRestart", nodeScriptMethod, &EngineScriptMethod::s_hasAccountDeletionRestart );
+        pybind::def_functor( _kernel, "clearAccountDeletionRestart", nodeScriptMethod, &EngineScriptMethod::s_clearAccountDeletionRestart );
 
         pybind::def_functor( _kernel, "getDefaultResourceFontName", nodeScriptMethod, &EngineScriptMethod::s_getDefaultResourceFontName );
 

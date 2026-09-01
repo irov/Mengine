@@ -115,9 +115,7 @@ public class MengineMain implements Runnable {
         if (m_quitRequested == true) {
             MengineLog.logInfo(TAG, "main quit process");
 
-            MengineApplication.INSTANCE.setExpectedProcessExit();
-
-            System.exit(0);
+            MengineApplication.INSTANCE.terminateProcess();
         }
     }
 }

@@ -604,6 +604,12 @@ public abstract class MengineApplication extends Application {
         }
     }
 
+    public void terminateProcess() {
+        this.setExpectedProcessExit();
+
+        System.exit(0);
+    }
+
     public boolean consumeExpectedProcessExit() {
         if (MenginePreferences.getPreferenceBoolean(PREFERENCE_EXPECTED_PROCESS_EXIT, false) == false) {
             return false;

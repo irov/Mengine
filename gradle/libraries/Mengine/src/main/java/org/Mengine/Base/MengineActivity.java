@@ -48,6 +48,7 @@ public class MengineActivity extends AppCompatActivity {
     private static final int DELETE_ACCOUNT_RESULT_SERVER_ERROR = 3;
     private static final int DELETE_ACCOUNT_RESULT_PENDING = 4;
     private static final int DELETE_ACCOUNT_RESULT_COMPLETED = 5;
+    private static final long ACCOUNT_DELETION_PROCESS_EXIT_DELAY_MS = 100L;
 
     public enum ELifecycleState {
         ACTIVITY_INITIALIZE,
@@ -1355,6 +1356,15 @@ public class MengineActivity extends AppCompatActivity {
         this.finishAndRemoveTask();
     }
 
+    private void terminateApplicationAfterAccountDeletion() {
+        this.finishAndRemoveTask();
+
+        MengineUtils.performOnMainThreadDelayed(
+            MengineApplication.INSTANCE::terminateProcess,
+            ACCOUNT_DELETION_PROCESS_EXIT_DELAY_MS
+        );
+    }
+
     public void showDeleteAccountProgressDialog() {
         m_deleteAccountFlowActive = true;
 
@@ -1391,7 +1401,7 @@ public class MengineActivity extends AppCompatActivity {
             case DELETE_ACCOUNT_RESULT_ACCEPTED:
                 MengineApplication.INSTANCE.removeUserDataForAccountDeletion();
 
-                MengineUI.showOkAlertDialogRes(this, this::linkingQuitApplication
+                MengineUI.showOkAlertDialogRes(this, this::terminateApplicationAfterAccountDeletion
                     , R.string.mengine_delete_account_success_title
                     , R.string.mengine_delete_account_success_message
                 );
@@ -1415,7 +1425,7 @@ public class MengineActivity extends AppCompatActivity {
                 );
                 break;
             case DELETE_ACCOUNT_RESULT_PENDING:
-                MengineUI.showOkAlertDialogRes(this, this::linkingQuitApplication
+                MengineUI.showOkAlertDialogRes(this, this::terminateApplicationAfterAccountDeletion
                     , R.string.mengine_delete_account_pending_title
                     , R.string.mengine_delete_account_pending_message
                 );
@@ -1423,7 +1433,7 @@ public class MengineActivity extends AppCompatActivity {
             case DELETE_ACCOUNT_RESULT_COMPLETED:
                 MengineApplication.INSTANCE.removeUserDataForAccountDeletion();
 
-                MengineUI.showOkAlertDialogRes(this, this::linkingQuitApplication
+                MengineUI.showOkAlertDialogRes(this, this::terminateApplicationAfterAccountDeletion
                     , R.string.mengine_delete_account_completed_title
                     , R.string.mengine_delete_account_completed_message
                 );

@@ -121,6 +121,13 @@ jobs:
             $magic = [System.Text.Encoding]::ASCII.GetString($bytes, 0, 4)
             if ($magic -ne $entry.Value) { throw "$($entry.Key) produced invalid magic $magic" }
           }
+          $hit = Join-Path $env:RUNNER_TEMP "png2hit.hit"
+          & (Join-Path $stage "MengineConverter.exe") --converter png2hit `
+            --in gradle/ci/res/mipmap/ic_launcher.png --out $hit --params-json "{}"
+          if ($LASTEXITCODE -ne 0) { throw "MengineConverter png2hit failed" }
+          $hitBytes = [System.IO.File]::ReadAllBytes($hit)
+          $hitMagic = [System.Text.Encoding]::ASCII.GetString($hitBytes, 0, 4)
+          if ($hitMagic -ne "HIT1") { throw "png2hit produced invalid magic $hitMagic" }
           $provenance = [ordered]@{
             platform = "windows-x64"
             commit = $env:GITHUB_SHA
@@ -250,6 +257,10 @@ jobs:
               --in src/Kernel/Magic.h --out "${archive}" --params-json '{}'
             test "$(head -c 4 "${archive}")" = "${expected}"
           done
+          hit="${RUNNER_TEMP}/png2hit.hit"
+          "${stage}/MengineConverter" --converter png2hit \
+            --in gradle/ci/res/mipmap/ic_launcher.png --out "${hit}" --params-json '{}'
+          test "$(head -c 4 "${hit}")" = "HIT1"
           python3 - <<'PY'
           import json
           import os

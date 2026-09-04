@@ -55,11 +55,6 @@ namespace Mengine
 
             this->_finalize();
 
-            if( m_content != nullptr )
-            {
-                m_content->closeOutputStreamFile( m_stream );
-            }
-
             m_content = nullptr;
             m_stream = nullptr;
         }

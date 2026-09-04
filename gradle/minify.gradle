@@ -1,8 +1,9 @@
+final boolean isLibrary = project.plugins.hasPlugin('com.android.library')
+
 final Boolean ANDROID_APP_DEBUG_MINIFY_ENABLE = Utils.getBooleanProperty("ANDROID_APP_DEBUG_MINIFY_ENABLE", false)
-final Boolean ANDROID_APP_RELEASE_MINIFY_ENABLE = Utils.getBooleanProperty("ANDROID_APP_RELEASE_MINIFY_ENABLE", false)
+final Boolean ANDROID_APP_RELEASE_MINIFY_ENABLE = Utils.getBooleanProperty("ANDROID_APP_RELEASE_MINIFY_ENABLE", isLibrary == false)
 
 final File proguardUserFile = project.file('proguard-rules.pro')
-final boolean isLibrary = project.plugins.hasPlugin('com.android.library')
 
 android {
     buildTypes {
@@ -13,7 +14,7 @@ android {
                 if (proguardUserFile.exists() == true) {
                     proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), proguardUserFile
                 } else {
-                    proguardFiles getDefaultProguardFile('proguard-android.txt')
+                    proguardFiles getDefaultProguardFile('proguard-android-optimize.txt')
                 }
             }
         }
@@ -21,11 +22,15 @@ android {
         release {
             minifyEnabled ANDROID_APP_RELEASE_MINIFY_ENABLE
 
+            if (isLibrary == false) {
+                shrinkResources ANDROID_APP_RELEASE_MINIFY_ENABLE
+            }
+
             if (ANDROID_APP_RELEASE_MINIFY_ENABLE == true) {
                 if (proguardUserFile.exists() == true) {
                     proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), proguardUserFile
                 } else {
-                    proguardFiles getDefaultProguardFile('proguard-android.txt')
+                    proguardFiles getDefaultProguardFile('proguard-android-optimize.txt')
                 }
             }
         }

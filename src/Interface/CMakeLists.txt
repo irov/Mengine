@@ -142,6 +142,7 @@ Common
     HttpRequestInterface.h
     HttpReceiverInterface.h
     EnvironmentServiceInterface.h
+    FindPython3ServiceInterface.h
     Win32KernelServiceInterface.h
     ArrowServiceInterface.h
     AmplifierServiceInterface.h

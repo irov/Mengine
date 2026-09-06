@@ -4,6 +4,7 @@
 #include "Kernel/StringLength.h"
 
 #include "Config/Char.h"
+#include "Config/StdAssert.h"
 #include "Config/StdInt.h"
 
 namespace Mengine
@@ -42,6 +43,20 @@ namespace Mengine
             return m_buffer;
         }
 
+        value_type & operator [] ( size_type _index )
+        {
+            assert( _index < m_carriage );
+
+            return m_buffer[_index];
+        }
+
+        const value_type & operator [] ( size_type _index ) const
+        {
+            assert( _index < m_carriage );
+
+            return m_buffer[_index];
+        }
+
         size_type size() const
         {
             return m_carriage;
@@ -61,10 +76,8 @@ namespace Mengine
     public:
         void append( const value_type * _value, size_type _size )
         {
-            if( m_carriage + _size >= Size )
-            {
-                return;
-            }
+            assert( _value != nullptr );
+            assert( _size < Size - m_carriage );
 
             Helper::memoryCopy( m_buffer, (size_t)m_carriage * sizeof( value_type ), _value, 0, (size_t)_size * sizeof( value_type ) );
 
@@ -74,6 +87,8 @@ namespace Mengine
 
         void append( value_type * _value )
         {
+            assert( _value != nullptr );
+
             size_type size = (size_type)Helper::stringLength( _value );
 
             this->append( _value, size );
@@ -81,6 +96,8 @@ namespace Mengine
 
         void append( const value_type * _value )
         {
+            assert( _value != nullptr );
+
             size_type size = (size_type)Helper::stringLength( _value );
 
             this->append( _value, size );
@@ -88,10 +105,7 @@ namespace Mengine
 
         void append( value_type _ch )
         {
-            if( m_carriage + 1 >= Size )
-            {
-                return;
-            }
+            assert( m_carriage + 1 < Size );
 
             m_buffer[m_carriage] = _ch;
             m_carriage += 1;
@@ -110,10 +124,8 @@ namespace Mengine
     public:
         void assign( const value_type * _value, size_type _size )
         {
-            if( _size >= Size )
-            {
-                return;
-            }
+            assert( _value != nullptr );
+            assert( _size < Size );
 
             Helper::memoryCopy( m_buffer, 0, _value, 0, (size_t)_size * sizeof( value_type ) );
 
@@ -123,6 +135,8 @@ namespace Mengine
 
         void assign( value_type * _value )
         {
+            assert( _value != nullptr );
+
             size_type size = (size_type)Helper::stringLength( _value );
 
             this->assign( _value, size );
@@ -130,6 +144,8 @@ namespace Mengine
 
         void assign( const value_type * _value )
         {
+            assert( _value != nullptr );
+
             size_type size = (size_type)Helper::stringLength( _value );
 
             this->assign( _value, size );
@@ -137,10 +153,7 @@ namespace Mengine
 
         void assign( value_type _ch )
         {
-            if( 1 >= Size )
-            {
-                return;
-            }
+            assert( 1 < Size );
 
             m_buffer[0] = _ch;
             m_carriage = 1;
@@ -159,12 +172,11 @@ namespace Mengine
     public:
         void replace_last( const value_type * _value )
         {
+            assert( _value != nullptr );
+
             size_type size = (size_type)Helper::stringLength( _value );
 
-            if( size > m_carriage )
-            {
-                return;
-            }
+            assert( size <= m_carriage );
 
             Helper::memoryCopy( m_buffer, (size_t)(m_carriage - size) * sizeof( value_type ), _value, 0, size * sizeof( value_type ) );
         }

@@ -1,9 +1,11 @@
 #include "VideoConverterFFMPEGToWEBM.h"
-#include "DevelopmentConverterProcess.h"
 
 #include "Interface/PlatformServiceInterface.h"
 
+#include "DevelopmentConverterProcess.h"
+
 #include "Kernel/Logger.h"
+#include "Kernel/PathString.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/ParamsHelper.h"
 #include "Kernel/FilePathHelper.h"
@@ -45,28 +47,33 @@ namespace Mengine
         const FilePath & inputFolderPath = inputFileGroup->getFolderPath();
         const FilePath & outputFolderPath = outputFileGroup->getFolderPath();
 
-        String full_input = inputFolderPath.c_str();
-        full_input += inputFilePath.c_str();
+        PathString fullInput;
+        fullInput.append( inputFolderPath );
+        fullInput.append( inputFilePath );
 
-        String full_output = outputFolderPath.c_str();
-        full_output += outputFilePath.c_str();
+        PathString fullOutput;
+        fullOutput.append( outputFolderPath );
+        fullOutput.append( outputFilePath );
 
-        const std::vector<String> arguments = {
+        const Char * inputPath = fullInput.c_str();
+        const Char * outputPath = fullOutput.c_str();
+
+        const ArgumentStrings arguments = {
             "-loglevel", "error",
             "-y",
-            "-i", full_input,
+            "-i", inputPath,
             "-codec:v", "libvpx",
             "-f", "webm",
             "-qmin", "5",
             "-qmax", "15",
             "-threads", "8",
             "-max_muxing_queue_size", "1024",
-            full_output
+            outputPath
         };
 
         LOGGER_INFO( "convert", "converting file '%s' to '%s'"
-            , full_input.c_str()
-            , full_output.c_str()
+            , inputPath
+            , outputPath
         );
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
@@ -80,7 +87,9 @@ namespace Mengine
         uint32_t exitCode;
         if( Helper::executeDevelopmentConverterProcess( ffmpegPath2, arguments, &exitCode ) == false )
         {
-            LOGGER_ERROR( "invalid execute ffmpeg '%s'", ffmpegPath2.c_str() );
+            const Char * executablePath = ffmpegPath2.c_str();
+
+            LOGGER_ERROR( "invalid execute ffmpeg '%s'", executablePath );
 
             return false;
         }

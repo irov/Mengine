@@ -29,6 +29,7 @@
 #include "Config/Path.h"
 #include "Config/StdAlgorithm.h"
 #include "Config/StdIO.h"
+#include "Config/StdLib.h"
 #include "Config/StdString.h"
 
 #include <X11/Xatom.h>
@@ -43,7 +44,6 @@
 #include <climits>
 #include <clocale>
 #include <csignal>
-#include <cstdlib>
 #include <cstring>
 
 #include <dlfcn.h>
@@ -927,6 +927,15 @@ namespace Mengine
         return dynamicLibrary;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool UnixPlatformService::createProcess( const Char * _executable, const ArgumentStrings & _arguments, uint32_t * const _exitCode ) const
+    {
+        MENGINE_UNUSED( _executable );
+        MENGINE_UNUSED( _arguments );
+        MENGINE_UNUSED( _exitCode );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool UnixPlatformService::getDesktopResolution( Resolution * const _resolution ) const
     {
         if( m_display == nullptr )
@@ -1107,7 +1116,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t UnixPlatformService::getTemporaryPath( Char * const _temporaryPath ) const
     {
-        const Char * temporaryPath = std::getenv( "TMPDIR" );
+        const Char * temporaryPath = StdLib::getenv( "TMPDIR" );
 
         if( temporaryPath == nullptr || temporaryPath[0] == '\0' )
         {
@@ -1118,7 +1127,9 @@ namespace Mengine
         Helper::pathCorrectFolderPathA( _temporaryPath, MENGINE_PATH_FORWARDSLASH );
         Helper::pathCorrectBackslashA( _temporaryPath );
 
-        return StdString::strlen( _temporaryPath );
+        size_t length = StdString::strlen( _temporaryPath );
+
+        return length;
     }
     //////////////////////////////////////////////////////////////////////////
     bool UnixPlatformService::getUserLocaleLanguage( Char * const _userLocaleLanguage ) const

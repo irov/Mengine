@@ -8,6 +8,8 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/MemoryAllocator.h"
+#include "Kernel/Materialable.h"
+#include "Kernel/Logger.h"
 #include "Kernel/RenderHelper.h"
 #include "Kernel/FactorableUnique.h"
 
@@ -52,6 +54,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Graphics::Graphics()
         : m_canvas( nullptr )
+        , m_uvRect( 0.f, 0.f, 1.f, 1.f )
         , m_invalidateLocalVertex2D( false )
     {
         GP_CALL( gp_canvas_create, (&m_canvas, &gp_malloc, &gp_realloc, &gp_free, nullptr) );
@@ -67,8 +70,32 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Graphics::_compile()
     {
-        RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
-            ->getMaterial3( EM_COLOR_BLEND, PT_TRIANGLELIST, nullptr, 0, MENGINE_DOCUMENT_FACTORABLE );
+        RenderMaterialInterfacePtr material;
+
+        if( m_resourceImage != nullptr )
+        {
+            if( m_resourceImage->compile() == false )
+            {
+                const ConstString & name = this->getName();
+                const ConstString & resourceName = m_resourceImage->getName();
+                const Char * nameStr = name.c_str();
+                const Char * resourceNameStr = resourceName.c_str();
+
+                LOGGER_ERROR( "graphics '%s' image resource '%s' not compile"
+                    , nameStr
+                    , resourceNameStr
+                );
+
+                return false;
+            }
+
+            material = Helper::makeImageMaterial( m_resourceImage, ConstString::none(), EMB_NORMAL, false, false, MENGINE_DOCUMENT_FACTORABLE );
+        }
+        else
+        {
+            material = RENDERMATERIAL_SERVICE()
+                ->getMaterial3( EM_COLOR_BLEND, PT_TRIANGLELIST, nullptr, 0, MENGINE_DOCUMENT_FACTORABLE );
+        }
 
         MENGINE_ASSERTION_MEMORY_PANIC( material, "invalid get material" );
 
@@ -79,7 +106,52 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Graphics::_release()
     {
+        if( m_resourceImage != nullptr )
+        {
+            m_resourceImage->release();
+        }
+
         m_material = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Graphics::_dispose()
+    {
+        m_resourceImage = nullptr;
+
+        Node::_dispose();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Graphics::setResourceImage( const ResourceImagePtr & _resourceImage )
+    {
+        if( m_resourceImage == _resourceImage )
+        {
+            return;
+        }
+
+        this->recompile( [this, &_resourceImage]()
+        {
+            m_resourceImage = _resourceImage;
+
+            return true;
+        } );
+
+        m_invalidateLocalVertex2D = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ResourceImagePtr & Graphics::getResourceImage() const
+    {
+        return m_resourceImage;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Graphics::setUVRect( const mt::vec4f & _uvRect )
+    {
+        m_uvRect = _uvRect;
+        m_invalidateLocalVertex2D = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const mt::vec4f & Graphics::getUVRect() const
+    {
+        return m_uvRect;
     }
     //////////////////////////////////////////////////////////////////////////
     void Graphics::setLineWidth( float _width )
@@ -543,9 +615,7 @@ namespace Mengine
             const RenderVertex2D * vertexData = m_renderVertex2D.data() + batch.vertex_offset;
             const RenderIndex * indexData = m_renderIndices.data() + batch.index_offset;
 
-            _renderPipeline->addRenderObject( _context, m_material, nullptr
-                , vertexData, batch.vertex_count, indexData, batch.index_count
-                , &m_renderBatchBoundingBoxes[index], false, MENGINE_DOCUMENT_FORWARD );
+            _renderPipeline->addRenderObject( _context, m_material, nullptr, vertexData, batch.vertex_count, indexData, batch.index_count, &m_renderBatchBoundingBoxes[index], EROF_NONE, MENGINE_DOCUMENT_FORWARD );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -567,6 +637,11 @@ namespace Mengine
 
         Color color;
         this->calcTotalColor( &color );
+
+        if( m_resourceImage != nullptr )
+        {
+            color *= m_resourceImage->getColor();
+        }
 
         gp_mesh_t mesh;
         GP_CALL( gp_calculate_mesh_size, (m_canvas, &mesh) );
@@ -611,6 +686,17 @@ namespace Mengine
 
         for( RenderVertex2D & vertex : m_renderVertex2D )
         {
+            if( m_resourceImage != nullptr )
+            {
+                mt::vec2f uv(
+                    m_uvRect.x + vertex.uv[0].x * (m_uvRect.z - m_uvRect.x),
+                    m_uvRect.y + vertex.uv[0].y * (m_uvRect.w - m_uvRect.y)
+                );
+
+                m_resourceImage->correctUV( 0, uv, &vertex.uv[0] );
+                m_resourceImage->correctUV( 1, uv, &vertex.uv[1] );
+            }
+
 #if defined(MENGINE_RENDER_COLOR_RGBA)
             // graphics packs colors as 0xAARRGGBB. RGBA render backends read
             // the uint32 bytes as R, G, B, A, so swap red and blue before the

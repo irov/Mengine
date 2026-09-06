@@ -236,6 +236,7 @@ namespace Mengine
             , Detail::BLOB_SHADOW3D_VERTEX_COUNT
             , Detail::BLOB_SHADOW3D_INDEX_COUNT
             , 0, 0
+            , EROF_NONE
             , MENGINE_DOCUMENT_FORWARD );
     }
     //////////////////////////////////////////////////////////////////////////

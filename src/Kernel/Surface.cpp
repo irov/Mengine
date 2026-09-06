@@ -44,6 +44,8 @@ namespace Mengine
 
         this->_finalize();
 
+        this->setProgramVariable( nullptr );
+
         Materialable::releaseMaterial();
     }
     //////////////////////////////////////////////////////////////////////////

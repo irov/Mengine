@@ -3,6 +3,7 @@
 #include "Interface/MaterialEnumInterface.h"
 #include "Interface/RenderEnumInterface.h"
 #include "Interface/RenderMaterialInterface.h"
+#include "Interface/RenderProgramVariableInterface.h"
 #include "Interface/RenderTextureInterface.h"
 
 #include "Kernel/ResourceImage.h"
@@ -14,9 +15,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
+        //////////////////////////////////////////////////////////////////////////
+        RenderMaterialInterfacePtr getMaterial3( EMaterial _materialId, EPrimitiveType _primitiveType, uint32_t _textureCount, const RenderTextureInterfacePtr * _textures, const DocumentInterfacePtr & _doc );
         RenderMaterialInterfacePtr makeSolidMaterial( const ConstString & _materialName, EMaterialBlendMode _blendMode, bool _solid, const DocumentInterfacePtr & _doc );
         RenderMaterialInterfacePtr makeImageMaterial( const ResourceImagePtrView & _resourceImage, const ConstString & _materialName, EMaterialBlendMode _blendMode, bool _disableTextureColor, bool _solid, const DocumentInterfacePtr & _doc );
         RenderMaterialInterfacePtr makeTextureMaterial( const ConstString & _materialName, uint32_t _textureCount, const RenderTextureInterfacePtr * _textures, EMaterialBlendMode _blendMode, bool _premultiply, bool _disableTextureColor, bool _solid, const DocumentInterfacePtr & _doc );
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     class Materialable
@@ -29,6 +33,10 @@ namespace Mengine
     public:
         void setMaterialName( const ConstString & _materialName );
         const ConstString & getMaterialName() const;
+
+    public:
+        void setProgramVariable( const RenderProgramVariableInterfacePtr & _programVariable );
+        const RenderProgramVariableInterfacePtr & getProgramVariable() const;
 
     public:
         void setDisableTextureColor( bool _disable );
@@ -63,19 +71,13 @@ namespace Mengine
         virtual void _invalidateMaterial() const;
 
     protected:
-        RenderMaterialInterfacePtr getMaterial3( EMaterial _materialId
-            , EPrimitiveType _primitiveType
-            , uint32_t _textureCount
-            , const RenderTextureInterfacePtr * _textures, const DocumentInterfacePtr & _doc ) const;
-
-        const RenderMaterialInterfacePtr & getSolidMaterial( EMaterialBlendMode _blendMode, bool _premultiply ) const;
-
-    protected:
         ConstString m_materialName;
 
         EMaterialBlendMode m_blendMode;
 
         bool m_disableTextureColor;
+
+        RenderProgramVariableInterfacePtr m_programVariable;
 
         mutable RenderMaterialInterfacePtr m_material;
         mutable bool m_invalidateMaterial;

@@ -121,12 +121,13 @@ namespace Mengine
         uint32_t indexCount = (uint32_t)m_indices.size();
 
         const RenderMaterialInterfacePtr & material = m_surface->getMaterial();
+        const RenderProgramVariableInterfacePtr & programVariable = m_surface->getProgramVariable();
 
         const Mengine::RenderInterface * render = this->getRender();
 
         const mt::box2f * bb = render->getBoundingBox();
 
-        _renderPipeline->addRenderObject( _context, material, nullptr, vertices, vertexCount, indices, indexCount, bb, false, MENGINE_DOCUMENT_FORWARD );
+        _renderPipeline->addRenderObject( _context, material, programVariable, vertices, vertexCount, indices, indexCount, bb, EROF_NONE, MENGINE_DOCUMENT_FORWARD );
     }
     //////////////////////////////////////////////////////////////////////////
     void ShapeCircle::_updateBoundingBox( mt::box2f * const _boundingBox, mt::box2f ** const _boundingBoxCurrent ) const

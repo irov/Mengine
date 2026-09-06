@@ -2,8 +2,6 @@ MENGINE_PROJECT(Win32FindPython3Plugin)
 
 ADD_FILTER(
 src
-    Win32FindPython3Interface.h
-
     Win32FindPython3Service.cpp
     Win32FindPython3Service.h
 

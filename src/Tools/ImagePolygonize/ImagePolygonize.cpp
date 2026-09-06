@@ -38,6 +38,8 @@ int main( int argc, char * argv[] )
     }
 
     const std::wstring outputPath = path_join( get_temporary_directory(), L"aemovie_temp_texturepacker_sheet.xml" );
+    std::wstring toleranceArgument = std::to_wstring( tolerance );
+
     const std::vector<std::wstring> processArguments = {
         L"--shape-padding", L"0",
         L"--border-padding", L"0",
@@ -46,7 +48,7 @@ int main( int argc, char * argv[] )
         L"--extrude", L"0",
         L"--trim-mode", L"Polygon",
         L"--trim-threshold", L"0",
-        L"--tracer-tolerance", std::to_wstring( tolerance ),
+        L"--tracer-tolerance", toleranceArgument,
         L"--max-width", L"8192",
         L"--max-height", L"8192",
         L"--max-size", L"8192",

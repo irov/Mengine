@@ -10,7 +10,7 @@
 #include "Config/StdString.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( Win32FindPython3Service, Mengine::Win32FindPython3Service );
+SERVICE_FACTORY( FindPython3Service, Mengine::Win32FindPython3Service );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
@@ -189,14 +189,13 @@ namespace Mengine
             return false;
         }
 
-        StdString::wcscpy_safe( m_python3LibraryPathW, Python3PathPythonPathValue, MENGINE_MAX_PATH );
+        WPath python3ExecutablePathW = {L'\0'};
+        ::PathCombineW( python3ExecutablePathW, Python3PathW, L"python.exe" );
 
-        ::PathCombineW( m_python3ExecutablePathW, Python3PathW, L"python.exe" );
-
-        if( ::PathFileExistsW( m_python3ExecutablePathW ) == FALSE )
+        if( ::PathFileExistsW( python3ExecutablePathW ) == FALSE )
         {
             LOGGER_ERROR( "invalid python3 lib path not found: %ls"
-                , m_python3ExecutablePathW
+                , python3ExecutablePathW
             );
 
             return false;
@@ -205,32 +204,36 @@ namespace Mengine
         WPath Python3DllNameW = {L'\0'};
         MENGINE_SWPRINTF( Python3DllNameW, MENGINE_MAX_PATH, L"python%d%d.dll", majorVersion, minorVersion );
 
-        ::PathCombineW( m_python3DllPathW, Python3PathW, Python3DllNameW );
+        WPath python3DllPathW = {L'\0'};
+        ::PathCombineW( python3DllPathW, Python3PathW, Python3DllNameW );
 
-        if( ::PathFileExistsW( m_python3DllPathW ) == FALSE )
+        if( ::PathFileExistsW( python3DllPathW ) == FALSE )
         {
             LOGGER_ERROR( "invalid python3 lib path not found: %ls"
-                , m_python3DllPathW
+                , python3DllPathW
             );
 
             return false;
         }
 
         LOGGER_MESSAGE( "Found python3 executable: %ls"
-            , m_python3ExecutablePathW
+            , python3ExecutablePathW
         );
 
         LOGGER_MESSAGE( "Found python3 libraries: %ls"
-            , m_python3LibraryPathW
+            , Python3PathPythonPathValue
         );
 
         LOGGER_MESSAGE( "Found python3 dll: %ls"
-            , m_python3DllPathW
+            , python3DllPathW
         );
 
-        Helper::unicodeToUtf8( m_python3ExecutablePathW, m_python3ExecutablePathA, MENGINE_MAX_PATH );
-        Helper::unicodeToUtf8( m_python3LibraryPathW, m_python3LibraryPathA, MENGINE_MAX_PATH );
-        Helper::unicodeToUtf8( m_python3DllPathW, m_python3DllPathA, MENGINE_MAX_PATH );
+        if( Helper::unicodeToUtf8( python3ExecutablePathW, m_python3ExecutablePath, MENGINE_MAX_PATH ) == false )
+        {
+            LOGGER_ERROR( "invalid python3 executable path UTF-8 conversion" );
+
+            return false;
+        }
 
         return true;
     }
@@ -240,34 +243,9 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32FindPython3Service::getPython3ExecutablePathW( WChar * const _path ) const
+    void Win32FindPython3Service::getPython3ExecutablePath( Char * const _path ) const
     {
-        StdString::wcscpy_safe( _path, m_python3ExecutablePathW, MENGINE_MAX_PATH );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Win32FindPython3Service::getPython3LibraryPathW( WChar * const _path ) const
-    {
-        StdString::wcscpy_safe( _path, m_python3LibraryPathW, MENGINE_MAX_PATH );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Win32FindPython3Service::getPython3DllPathW( WChar * const _path ) const
-    {
-        StdString::wcscpy_safe( _path, m_python3DllPathW, MENGINE_MAX_PATH );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Win32FindPython3Service::getPython3ExecutablePathA( Char * const _path ) const
-    {
-        StdString::strcpy_safe( _path, m_python3ExecutablePathA, MENGINE_MAX_PATH );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Win32FindPython3Service::getPython3LibraryPathA( Char * const _path ) const
-    {
-        StdString::strcpy_safe( _path, m_python3LibraryPathA, MENGINE_MAX_PATH );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Win32FindPython3Service::getPython3DllPathA( Char * const _path ) const
-    {
-        StdString::strcpy_safe( _path, m_python3DllPathA, MENGINE_MAX_PATH );
+        StdString::strcpy_safe( _path, m_python3ExecutablePath, MENGINE_MAX_PATH );
     }
     //////////////////////////////////////////////////////////////////////////
 }

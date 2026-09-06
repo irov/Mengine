@@ -4,6 +4,8 @@ ADD_FILTER(
 src
     POSIXCreateProcess.h
     POSIXCreateProcess.cpp
+    POSIXFileHelper.h
+    POSIXFileHelper.cpp
 )
 
 ADD_MENGINE_LIBRARY(Environment)

@@ -19,12 +19,13 @@ namespace Mengine
         const RenderVertex2D * vertices = this->getVerticesWM();
 
         const RenderMaterialInterfacePtr & material = m_surface->getMaterial();
+        const RenderProgramVariableInterfacePtr & programVariable = m_surface->getProgramVariable();
 
         const Mengine::RenderInterface * render = this->getRender();
 
         const mt::box2f * bb = render->getBoundingBox();
 
-        _renderPipeline->addRenderQuad( _context, material, vertices, 4, bb, false, MENGINE_DOCUMENT_FORWARD );
+        _renderPipeline->addRenderQuad( _context, material, programVariable, vertices, 4u, bb, EROF_NONE, MENGINE_DOCUMENT_FORWARD );
     }
     //////////////////////////////////////////////////////////////////////////
     void ShapeQuad::_updateBoundingBox( mt::box2f * const _boundingBox, mt::box2f ** const _boundingBoxCurrent ) const

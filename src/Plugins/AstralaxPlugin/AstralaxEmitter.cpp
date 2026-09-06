@@ -375,7 +375,7 @@ namespace Mengine
 
             MENGINE_ASSERTION_MEMORY_PANIC( material, "astralax emitter render without material" );
 
-            _renderPipeline->addRenderObject( _context, material, nullptr, m_renderVertices + mesh.vertexOffset, mesh.vertexCount, m_renderIndicies + mesh.indexOffset, mesh.indexCount, bb, false, MENGINE_DOCUMENT_FORWARD );
+            _renderPipeline->addRenderObject( _context, material, nullptr, m_renderVertices + mesh.vertexOffset, mesh.vertexCount, m_renderIndicies + mesh.indexOffset, mesh.indexCount, bb, EROF_NONE, MENGINE_DOCUMENT_FORWARD );
         }
     }
     //////////////////////////////////////////////////////////////////////////

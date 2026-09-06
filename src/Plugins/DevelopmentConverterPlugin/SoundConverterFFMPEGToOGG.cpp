@@ -1,9 +1,11 @@
 #include "SoundConverterFFMPEGToOGG.h"
-#include "DevelopmentConverterProcess.h"
 
 #include "Interface/PlatformServiceInterface.h"
 
+#include "DevelopmentConverterProcess.h"
+
 #include "Kernel/Logger.h"
+#include "Kernel/PathString.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/ParamsHelper.h"
 #include "Kernel/FilePathHelper.h"
@@ -45,47 +47,55 @@ namespace Mengine
         const FilePath & inputFolderPath = inputFileGroup->getFolderPath();
         const FilePath & outputFolderPath = outputFileGroup->getFolderPath();
 
-        String full_input = inputFolderPath.c_str();
-        full_input += inputFilePath.c_str();
+        PathString fullInput;
+        fullInput.append( inputFolderPath );
+        fullInput.append( inputFilePath );
 
-        String full_output = outputFolderPath.c_str();
-        full_output += outputFilePath.c_str();
+        PathString fullOutput;
+        fullOutput.append( outputFolderPath );
+        fullOutput.append( outputFilePath );
+
+        const Char * inputPath = fullInput.c_str();
+        const Char * outputPath = fullOutput.c_str();
 
         const String ac = Helper::getParam( m_options.params, STRINGIZE_STRING_LOCAL( "ac" ), "2" );
         const String ar = Helper::getParam( m_options.params, STRINGIZE_STRING_LOCAL( "ar" ), "44100" );
         const String aq = Helper::getParam( m_options.params, STRINGIZE_STRING_LOCAL( "aq" ), "" );
 
-        std::vector<String> arguments = {
+        ArgumentStrings arguments = {
             "-loglevel", "error",
             "-y",
             "-threads", "8",
-            "-i", full_input,
+            "-i", inputPath,
             "-map_metadata", "-1"
         };
 
         if( ac.empty() == false )
         {
-            arguments.emplace_back( "-ac" );
-            arguments.emplace_back( ac );
+            arguments.append( "-ac" );
+            const Char * acValue = ac.c_str();
+            arguments.append( acValue );
         }
 
         if( ar.empty() == false )
         {
-            arguments.emplace_back( "-ar" );
-            arguments.emplace_back( ar );
+            arguments.append( "-ar" );
+            const Char * arValue = ar.c_str();
+            arguments.append( arValue );
         }
 
         if( aq.empty() == false )
         {
-            arguments.emplace_back( "-aq" );
-            arguments.emplace_back( aq );
+            arguments.append( "-aq" );
+            const Char * aqValue = aq.c_str();
+            arguments.append( aqValue );
         }
 
-        arguments.insert( arguments.end(), {"-acodec", "libvorbis", "-max_muxing_queue_size", "1024", full_output} );
+        arguments.append( {"-acodec", "libvorbis", "-max_muxing_queue_size", "1024", outputPath} );
 
         LOGGER_INFO( "convert", "converting file '%s' to '%s'"
-            , full_input.c_str()
-            , full_output.c_str()
+            , inputPath
+            , outputPath
         );
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
@@ -99,7 +109,9 @@ namespace Mengine
         uint32_t exitCode;
         if( Helper::executeDevelopmentConverterProcess( ffmpegPath2, arguments, &exitCode ) == false )
         {
-            LOGGER_ERROR( "invalid execute ffmpeg '%s'", ffmpegPath2.c_str() );
+            const Char * executablePath = ffmpegPath2.c_str();
+
+            LOGGER_ERROR( "invalid execute ffmpeg '%s'", executablePath );
 
             return false;
         }

@@ -534,6 +534,7 @@ namespace Mengine
                 , Detail::TILEMAP2D_INDEX_PER_TILE
                 , 0
                 , tileIndex * Detail::TILEMAP2D_INDEX_PER_TILE
+                , EROF_NONE
                 , MENGINE_DOCUMENT_FORWARD );
         }
     }

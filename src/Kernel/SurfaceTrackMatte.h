@@ -15,7 +15,6 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class ResourceImage, class Resource> ResourceImagePtr;
-    typedef IntrusivePtr<class RenderProgramVariableInterface> RenderProgramVariableInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class SurfaceTrackMatte
         : public Surface
@@ -37,9 +36,6 @@ namespace Mengine
     public:
         void setResourceTrackMatteImage( const ResourceImagePtr & _resourceTrackMatteImage );
         const ResourceImagePtr & getResourceTrackMatteImage() const;
-
-    public:
-        const RenderProgramVariableInterfacePtr & getProgramVariable() const;
 
     public:
         void setTrackMatteMode( ESurfaceTrackMatteMode _trackMatteMode );
@@ -67,8 +63,6 @@ namespace Mengine
     protected:
         ResourceImagePtr m_resourceImage;
         ResourceImagePtr m_resourceTrackMatteImage;
-
-        RenderProgramVariableInterfacePtr m_programVariable;
 
         ESurfaceTrackMatteMode m_trackMatteMode;
     };

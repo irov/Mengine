@@ -15,6 +15,7 @@ namespace Mengine
         using std::FILE;
         using std::fopen;
         using std::fclose;
+        using std::ferror;
         using std::fread;
         using std::fwrite;
         using std::fseek;

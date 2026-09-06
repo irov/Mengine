@@ -2,13 +2,12 @@
 
 #include "Config/Config.h"
 
+#include <cstdlib>
+
 #if defined(MENGINE_VENDOR_APPLE)
 #   include <malloc/malloc.h>
 #elif defined(MENGINE_PLATFORM_LINUX) || defined(MENGINE_PLATFORM_ANDROID)
 #   include <malloc.h>
-#   include <cstdlib>
-#else
-#   include <cstdlib>
 #endif
 
 namespace Mengine
@@ -21,6 +20,7 @@ namespace Mengine
         using std::realloc;
         using std::strtoul;
         using std::strtoull;
+        using std::getenv;
     }
 }
 //////////////////////////////////////////////////////////////////////////

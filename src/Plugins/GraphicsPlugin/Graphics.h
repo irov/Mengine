@@ -37,6 +37,13 @@ namespace Mengine
     public:
         bool _compile() override;
         void _release() override;
+        void _dispose() override;
+
+    public:
+        void setResourceImage( const ResourceImagePtr & _resourceImage ) override;
+        const ResourceImagePtr & getResourceImage() const override;
+        void setUVRect( const mt::vec4f & _uvRect ) override;
+        const mt::vec4f & getUVRect() const override;
 
     public:
         void setLineWidth( float _width ) override;
@@ -133,6 +140,9 @@ namespace Mengine
 
     protected:
         gp_canvas_t * m_canvas;
+
+        ResourceImagePtr m_resourceImage;
+        mt::vec4f m_uvRect;
 
         RenderMaterialInterfacePtr m_material;
 

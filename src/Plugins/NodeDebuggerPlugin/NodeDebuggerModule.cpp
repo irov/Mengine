@@ -645,13 +645,12 @@ namespace Mengine
         indices[3 * 6 + 1 * 3 + 1] = 0;
         indices[3 * 6 + 1 * 3 + 2] = 4;
 
-        _renderPipeline->addRenderObject( &node_context
-            , debugMaterial
-            , nullptr
-            , vertices.data(), (uint32_t)vertices.size()
-            , indices.data(), (uint32_t)indices.size()
-            , &bbox
-            , false, MENGINE_DOCUMENT_FORWARD );
+        const RenderVertex2D * vertexData = vertices.data();
+        uint32_t vertexCount = (uint32_t)vertices.size();
+        const RenderIndex * indexData = indices.data();
+        uint32_t indexCount = (uint32_t)indices.size();
+
+        _renderPipeline->addRenderObject( &node_context, debugMaterial, nullptr, vertexData, vertexCount, indexData, indexCount, &bbox, EROF_NONE, MENGINE_DOCUMENT_FORWARD );
     }
     //////////////////////////////////////////////////////////////////////////
     bool NodeDebuggerModule::privateInit()

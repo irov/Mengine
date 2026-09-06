@@ -7,9 +7,10 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ColorHelper.h"
 
-#include "math/box2.h"
+#include "Config/StdMath.h"
 
-#include <cmath>
+#include "math/box2.h"
+#include "math/constant.h"
 
 namespace Mengine
 {
@@ -197,8 +198,6 @@ namespace Mengine
             return;
         }
 
-        const float twoPi = 6.28318530717958647692f;
-
         for( uint32_t index = 0; index != (uint32_t)m_vertices.size(); ++index )
         {
             const mt::vec3f & original = m_originalVertices[index].position;
@@ -207,13 +206,15 @@ namespace Mengine
             if( _horizontal == true )
             {
                 float normalizedY = m_height > 0.f ? original.y / m_height : 0.f;
-                position.x += std::sin( normalizedY * _waves * twoPi + _phase ) * _amplitude;
+                float phase = normalizedY * _waves * mt::constant::two_pi + _phase;
+                position.x += StdMath::sinf( phase ) * _amplitude;
             }
 
             if( _vertical == true )
             {
                 float normalizedX = m_width > 0.f ? original.x / m_width : 0.f;
-                position.y += std::sin( normalizedX * _waves * twoPi + _phase ) * _amplitude;
+                float phase = normalizedX * _waves * mt::constant::two_pi + _phase;
+                position.y += StdMath::sinf( phase ) * _amplitude;
             }
 
             m_vertices[index].position = position;
@@ -230,21 +231,21 @@ namespace Mengine
             return;
         }
 
-        const float twoPi = 6.28318530717958647692f;
-
         for( uint32_t index = 0; index != (uint32_t)m_vertices.size(); ++index )
         {
             const mt::vec3f & original = m_originalVertices[index].position;
             float dx = original.x - _center.x;
             float dy = original.y - _center.y;
-            float distance = std::sqrt( dx * dx + dy * dy );
+            float distanceSquared = dx * dx + dy * dy;
+            float distance = StdMath::sqrtf( distanceSquared );
             mt::vec3f position = original;
 
             if( distance < _radius )
             {
                 float normalized = distance / _radius;
                 float envelope = 1.f - normalized;
-                position.z += std::sin( normalized * _waves * twoPi + _phase ) * _amplitude * envelope;
+                float phase = normalized * _waves * mt::constant::two_pi + _phase;
+                position.z += StdMath::sinf( phase ) * _amplitude * envelope;
             }
 
             m_vertices[index].position = position;
@@ -261,8 +262,6 @@ namespace Mengine
             return;
         }
 
-        const float twoPi = 6.28318530717958647692f;
-
         for( uint32_t index = 0; index != (uint32_t)m_vertices.size(); ++index )
         {
             const mt::vec3f & original = m_originalVertices[index].position;
@@ -270,8 +269,10 @@ namespace Mengine
             float ny = m_height > 0.f ? original.y / m_height : 0.f;
 
             mt::vec3f position = original;
-            position.x += std::sin( ny * _waves * twoPi + _phase ) * _amplitude;
-            position.y += std::sin( nx * _waves * twoPi + _phase * 1.31f ) * _amplitude;
+            float phaseX = ny * _waves * mt::constant::two_pi + _phase;
+            float phaseY = nx * _waves * mt::constant::two_pi + _phase * 1.31f;
+            position.x += StdMath::sinf( phaseX ) * _amplitude;
+            position.y += StdMath::sinf( phaseY ) * _amplitude;
 
             m_vertices[index].position = position;
         }
@@ -382,7 +383,6 @@ namespace Mengine
 
         float progress = mt::clamp( 0.f, _progress, 1.f );
         float fold = m_width * (1.f - progress);
-        const float halfPi = 1.57079632679489661923f;
 
         for( uint32_t index = 0; index != (uint32_t)m_vertices.size(); ++index )
         {
@@ -392,9 +392,9 @@ namespace Mengine
 
             if( distance > 0.f )
             {
-                float angle = mt::clamp( 0.f, distance / _radius, halfPi );
-                position.x = fold + std::sin( angle ) * _radius;
-                position.z = (1.f - std::cos( angle )) * _radius;
+                float angle = mt::clamp( 0.f, distance / _radius, mt::constant::half_pi );
+                position.x = fold + StdMath::sinf( angle ) * _radius;
+                position.z = (1.f - StdMath::cosf( angle )) * _radius;
             }
 
             m_vertices[index].position = position;
@@ -530,10 +530,11 @@ namespace Mengine
         const RenderVertex2D * vertices = this->getVerticesWM();
 
         const RenderMaterialInterfacePtr & material = this->getMaterial();
+        const RenderProgramVariableInterfacePtr & programVariable = this->getProgramVariable();
 
         const mt::box2f * bb = this->getBoundingBox();
 
-        _renderPipeline->addRenderObject( _context, material, nullptr, vertices, verticesCount, indices, indicesCount, bb, false, MENGINE_DOCUMENT_FORWARD );
+        _renderPipeline->addRenderObject( _context, material, programVariable, vertices, verticesCount, indices, indicesCount, bb, EROF_NONE, MENGINE_DOCUMENT_FORWARD );
     }
     //////////////////////////////////////////////////////////////////////////
     void Grid2D::updateVerticesWM_() const
@@ -593,15 +594,20 @@ namespace Mengine
             return;
         }
 
+        const RenderVertex2D & frontVertex = m_vertices.front();
+        const mt::vec2f frontPoint( frontVertex.position.x, frontVertex.position.y );
+
         mt::vec2f worldPoint;
-        mt::mul_v2_v2_m4( &worldPoint, mt::vec2f( m_vertices.front().position.x, m_vertices.front().position.y ), wm );
+        mt::mul_v2_v2_m4( &worldPoint, frontPoint, wm );
         mt::box2_reset( _boundingBox, worldPoint.x, worldPoint.y );
 
         for( VectorRenderVertex2D::const_iterator it = m_vertices.begin() + 1; it != m_vertices.end(); ++it )
         {
             const RenderVertex2D & vertex = *it;
 
-            mt::mul_v2_v2_m4( &worldPoint, mt::vec2f( vertex.position.x, vertex.position.y ), wm );
+            const mt::vec2f point( vertex.position.x, vertex.position.y );
+
+            mt::mul_v2_v2_m4( &worldPoint, point, wm );
             mt::box2_add_internal_point( _boundingBox, worldPoint.x, worldPoint.y );
         }
 

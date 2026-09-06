@@ -21,6 +21,7 @@ namespace Mengine
         using std::strchr;
         using std::strrchr;
         using std::strstr;
+        using std::strerror;
 
         using std::wcslen;
         using std::wcscmp;

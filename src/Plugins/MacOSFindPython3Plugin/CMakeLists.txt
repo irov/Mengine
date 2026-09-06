@@ -1,0 +1,15 @@
+MENGINE_PROJECT(MacOSFindPython3Plugin)
+
+ADD_FILTER(
+src
+    MacOSFindPython3Service.cpp
+    MacOSFindPython3Service.h
+
+    MacOSFindPython3Plugin.cpp
+    MacOSFindPython3Plugin.h
+)
+
+ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_MACOS_FINDPYTHON3)
+
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} POSIX)

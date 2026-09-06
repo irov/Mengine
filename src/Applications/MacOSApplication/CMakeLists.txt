@@ -1,5 +1,16 @@
 MENGINE_PROJECT(MacOSApplication)
 
+# Apple linkers rescan static archives, so repeating transitive libraries is
+# unnecessary and produces an ld warning on current Xcode toolchains. These
+# policies make CMake de-duplicate the link line while preserving its first
+# declared occurrence. Keep the guards for projects using older CMake.
+if(POLICY CMP0156)
+    cmake_policy(SET CMP0156 NEW)
+endif()
+if(POLICY CMP0179)
+    cmake_policy(SET CMP0179 NEW)
+endif()
+
 SET(MENGINE_APPLE_APPLICATION_DELEGATE_STRING "")
 
 foreach(DELEGATE ${APPLICATION_APPLE_APPLICATION_DELEGATE})
@@ -150,6 +161,13 @@ MESSAGE("Bundle Version: ${MENGINE_BUILD_VERSION} [${MENGINE_BUILD_NUMBER}]")
 SET(SRC_FILES ${SRC_FILES} ${MENGINE_APPLE_RESOURCES})
 
 ADD_MENGINE_EXECUTABLE_MACOSX()
+
+if(POLICY CMP0179)
+    set_target_properties(
+        ${PROJECT_NAME}
+        PROPERTIES LINK_LIBRARIES_STRATEGY REORDER_FREELY
+    )
+endif()
 
 if(MENGINE_APPLICATION_OUTPUT_PATH)
     set_target_properties(

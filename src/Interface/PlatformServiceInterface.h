@@ -15,6 +15,7 @@
 #include "Kernel/UnknownPointer.h"
 #include "Kernel/LambdaFilePath.h"
 #include "Kernel/Unknowable.h"
+#include "Kernel/ArgumentStrings.h"
 
 #include "Config/Lambda.h"
 #include "Config/UniqueId.h"
@@ -96,6 +97,9 @@ namespace Mengine
 
     public:
         virtual DynamicLibraryInterfacePtr loadDynamicLibrary( const Char * _dynamicLibraryName, const DocumentInterfacePtr & _doc ) = 0;
+
+    public:
+        virtual bool createProcess( const Char * _executable, const ArgumentStrings & _arguments, uint32_t * const _exitCode ) const = 0;
 
     public:
         virtual bool getDesktopResolution( Resolution * const _resolution ) const = 0;

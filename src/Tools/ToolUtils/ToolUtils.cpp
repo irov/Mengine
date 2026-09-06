@@ -1,14 +1,15 @@
 #include "ToolUtils.h"
 
+#include "utf8/utf8.hpp"
+
 #include <algorithm>
-#include <codecvt>
 #include <cerrno>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <cwchar>
 #include <filesystem>
-#include <locale>
+#include <stdexcept>
 
 #if defined(__APPLE__)
 #   include <crt_externs.h>
@@ -21,18 +22,73 @@
 //////////////////////////////////////////////////////////////////////////
 static std::string wide_to_utf8( const wchar_t * _value, size_t _size = std::wstring::npos )
 {
-    const std::wstring value = _size == std::wstring::npos
-        ? std::wstring( _value )
-        : std::wstring( _value, _size );
+    size_t length = _size == std::wstring::npos ? std::wcslen( _value ) : _size;
 
-    std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
-    return converter.to_bytes( value );
+    if( length == 0 )
+    {
+        std::string result;
+
+        return result;
+    }
+
+#if defined(_WIN32)
+    int size = ::WideCharToMultiByte( CP_UTF8, WC_ERR_INVALID_CHARS, _value, static_cast<int>( length ), nullptr, 0, nullptr, nullptr );
+
+    if( size == 0 )
+#else
+    size_t size = utf8_from_unicodez_size( _value, length );
+
+    if( size == UTF8_UNKNOWN )
+#endif
+    {
+        throw std::range_error( "invalid Unicode string" );
+    }
+
+    std::string result( size, '\0' );
+    char * buffer = result.data();
+
+#if defined(_WIN32)
+    ::WideCharToMultiByte( CP_UTF8, WC_ERR_INVALID_CHARS, _value, static_cast<int>( length ), buffer, size, nullptr, nullptr );
+#else
+    utf8_from_unicodez( _value, length, buffer, size );
+#endif
+
+    return result;
 }
 //////////////////////////////////////////////////////////////////////////
 static std::wstring utf8_to_wide( const char * _value )
 {
-    std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
-    return converter.from_bytes( _value );
+    if( _value[0] == '\0' )
+    {
+        std::wstring result;
+
+        return result;
+    }
+
+#if defined(_WIN32)
+    int length = static_cast<int>( std::strlen( _value ) );
+    int size = ::MultiByteToWideChar( CP_UTF8, MB_ERR_INVALID_CHARS, _value, length, nullptr, 0 );
+
+    if( size == 0 )
+#else
+    size_t size = utf8_to_unicode_size( _value );
+
+    if( size == UTF8_UNKNOWN )
+#endif
+    {
+        throw std::range_error( "invalid UTF-8 string" );
+    }
+
+    std::wstring result( size, L'\0' );
+    wchar_t * buffer = result.data();
+
+#if defined(_WIN32)
+    ::MultiByteToWideChar( CP_UTF8, MB_ERR_INVALID_CHARS, _value, length, buffer, size );
+#else
+    utf8_to_unicode( _value, buffer, size );
+#endif
+
+    return result;
 }
 //////////////////////////////////////////////////////////////////////////
 static FILE * open_wide_file( const wchar_t * _path, const wchar_t * _mode )
@@ -207,32 +263,39 @@ bool create_directories( const std::wstring & _path )
     return error ? false : true;
 }
 //////////////////////////////////////////////////////////////////////////
-bool execute_process( const std::wstring & _executable, const std::vector<std::wstring> & _arguments, const std::wstring & _logPath, int * const _exitCode )
-{
 #if defined(_WIN32)
-    auto quoteArgument = []( const std::wstring & _argument )
+namespace Detail
+{
+    //////////////////////////////////////////////////////////////////////////
+    static std::wstring quoteProcessArgument( const std::wstring & _argument )
     {
-        if( _argument.find_first_of( L" \t\"" ) == std::wstring::npos )
+        if( _argument.empty() == false )
         {
-            return _argument;
+            if( _argument.find_first_of( L" \t\"" ) == std::wstring::npos )
+            {
+                return _argument;
+            }
         }
 
         std::wstring result = L"\"";
         size_t backslashes = 0;
 
-        for( const wchar_t character : _argument )
+        for( wchar_t character : _argument )
         {
             if( character == L'\\' )
             {
                 ++backslashes;
+
                 continue;
             }
 
             if( character == L'\"' )
             {
-                result.append( backslashes * 2 + 1, L'\\' );
+                size_t escapedBackslashes = backslashes * 2 + 1;
+                result.append( escapedBackslashes, L'\\' );
                 result += character;
                 backslashes = 0;
+
                 continue;
             }
 
@@ -241,21 +304,32 @@ bool execute_process( const std::wstring & _executable, const std::vector<std::w
             result += character;
         }
 
-        result.append( backslashes * 2, L'\\' );
+        size_t escapedBackslashes = backslashes * 2;
+        result.append( escapedBackslashes, L'\\' );
         result += L'\"';
-        return result;
-    };
 
-    std::wstring commandLine = quoteArgument( _executable );
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+}
+#endif
+//////////////////////////////////////////////////////////////////////////
+bool execute_process( const std::wstring & _executable, const std::vector<std::wstring> & _arguments, const std::wstring & _logPath, int * const _exitCode )
+{
+    const wchar_t * executablePath = _executable.c_str();
+    const wchar_t * outputLogPath = _logPath.c_str();
+
+#if defined(_WIN32)
+    std::wstring commandLine = Detail::quoteProcessArgument( _executable );
 
     for( const std::wstring & argument : _arguments )
     {
+        std::wstring quotedArgument = Detail::quoteProcessArgument( argument );
         commandLine += L' ';
-        commandLine += quoteArgument( argument );
+        commandLine += quotedArgument;
     }
 
-    std::vector<wchar_t> mutableCommandLine( commandLine.begin(), commandLine.end() );
-    mutableCommandLine.push_back( L'\0' );
+    wchar_t * mutableCommandLine = commandLine.data();
 
     HANDLE log = INVALID_HANDLE_VALUE;
     SECURITY_ATTRIBUTES security = {};
@@ -268,7 +342,7 @@ bool execute_process( const std::wstring & _executable, const std::vector<std::w
 
     if( _logPath.empty() == false )
     {
-        log = ::CreateFileW( _logPath.c_str(), FILE_APPEND_DATA, FILE_SHARE_READ | FILE_SHARE_WRITE, &security, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr );
+        log = ::CreateFileW( outputLogPath, FILE_APPEND_DATA, FILE_SHARE_READ | FILE_SHARE_WRITE, &security, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr );
 
         if( log == INVALID_HANDLE_VALUE )
         {
@@ -281,7 +355,7 @@ bool execute_process( const std::wstring & _executable, const std::vector<std::w
     }
 
     PROCESS_INFORMATION process = {};
-    const BOOL created = ::CreateProcessW( _executable.c_str(), mutableCommandLine.data(), nullptr, nullptr, log != INVALID_HANDLE_VALUE, CREATE_NO_WINDOW, nullptr, nullptr, &startup, &process );
+    BOOL created = ::CreateProcessW( executablePath, mutableCommandLine, nullptr, nullptr, log != INVALID_HANDLE_VALUE, CREATE_NO_WINDOW, nullptr, nullptr, &startup, &process );
 
     if( created == FALSE )
     {
@@ -308,27 +382,42 @@ bool execute_process( const std::wstring & _executable, const std::vector<std::w
     *_exitCode = static_cast<int>( exitCode );
     return true;
 #else
-    const std::string executable = wide_to_utf8( _executable.c_str(), _executable.size() );
+    size_t executableLength = _executable.size();
+    std::string executable = wide_to_utf8( executablePath, executableLength );
+    size_t logPathLength = _logPath.size();
+    std::string logPath = wide_to_utf8( outputLogPath, logPathLength );
+
+    size_t argumentCount = _arguments.size();
+    size_t utf8ArgumentCount = argumentCount + 1;
     std::vector<std::string> utf8Arguments;
-    utf8Arguments.reserve( _arguments.size() + 1 );
+    utf8Arguments.reserve( utf8ArgumentCount );
     utf8Arguments.emplace_back( executable );
 
     for( const std::wstring & argument : _arguments )
     {
-        utf8Arguments.emplace_back( wide_to_utf8( argument.c_str(), argument.size() ) );
+        const wchar_t * argumentData = argument.c_str();
+        size_t argumentLength = argument.size();
+        std::string utf8Argument = wide_to_utf8( argumentData, argumentLength );
+        utf8Arguments.emplace_back( utf8Argument );
     }
 
+    size_t processArgumentCount = utf8ArgumentCount + 1;
     std::vector<char *> processArguments;
-    processArguments.reserve( utf8Arguments.size() + 1 );
+    processArguments.reserve( processArgumentCount );
 
     for( std::string & argument : utf8Arguments )
     {
-        processArguments.emplace_back( argument.data() );
+        char * argumentData = argument.data();
+        processArguments.emplace_back( argumentData );
     }
 
     processArguments.emplace_back( nullptr );
 
-    const pid_t process = ::fork();
+    const char * processExecutable = executable.c_str();
+    const char * processLogPath = logPath.c_str();
+    char ** processArgumentData = processArguments.data();
+
+    pid_t process = ::fork();
 
     if( process == -1 )
     {
@@ -339,8 +428,7 @@ bool execute_process( const std::wstring & _executable, const std::vector<std::w
     {
         if( _logPath.empty() == false )
         {
-            const std::string logPath = wide_to_utf8( _logPath.c_str(), _logPath.size() );
-            const int log = ::open( logPath.c_str(), O_CREAT | O_WRONLY | O_APPEND, 0666 );
+            int log = ::open( processLogPath, O_CREAT | O_WRONLY | O_APPEND, 0666 );
 
             if( log == -1 )
             {
@@ -352,7 +440,7 @@ bool execute_process( const std::wstring & _executable, const std::vector<std::w
             ::close( log );
         }
 
-        ::execvp( executable.c_str(), processArguments.data() );
+        ::execvp( processExecutable, processArgumentData );
         _exit( 127 );
     }
 

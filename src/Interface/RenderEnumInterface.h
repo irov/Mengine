@@ -162,6 +162,12 @@ namespace Mengine
         BLF_LOCK_NOSYSLOCK
     };
     //////////////////////////////////////////////////////////////////////////
+    enum ERenderObjectFlag
+    {
+        EROF_NONE = 0x00000000,
+        EROF_DEBUG = 0x00000001
+    };
+    //////////////////////////////////////////////////////////////////////////
     enum ERenderBatchMode
     {
         ERBM_NONE = 0,

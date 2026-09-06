@@ -768,6 +768,8 @@ namespace Mengine
         this->updateVertexColor_( m_renderVertices, requirements.vertex_count );
         this->updateVertexWM_( m_renderVertices, requirements.vertex_count );
 
+        const RenderProgramVariableInterfacePtr & programVariable = this->getProgramVariable();
+
         const mt::box2f * bb = this->getBoundingBox();
         uint32_t submitOffset = 0;
 
@@ -824,8 +826,7 @@ namespace Mengine
                     m_renderIndicies[submitOffset + batchIndex] = (RenderIndex)batchIndex;
                 }
 
-                _renderPipeline->addRenderObject( _context, material, nullptr, m_submitVertices + submitOffset, batchIndexCount, m_renderIndicies + submitOffset, batchIndexCount,
-                                                  bb, false, MENGINE_DOCUMENT_FORWARD );
+                _renderPipeline->addRenderObject( _context, material, programVariable, m_submitVertices + submitOffset, batchIndexCount, m_renderIndicies + submitOffset, batchIndexCount, bb, EROF_NONE, MENGINE_DOCUMENT_FORWARD );
 
                 submitOffset += batchIndexCount;
                 chunkIndexOffset += batchIndexCount;

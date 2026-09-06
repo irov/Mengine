@@ -14,12 +14,10 @@ namespace Mengine
             const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE()
                 ->getDebugLineMaterial();
 
-            _renderPipeline->addRenderLine( _context
-                    , debugMaterial
-                    , _vertices.data()
-                    , (uint32_t)_vertices.size()
-                    , nullptr
-                    , true, _doc );
+            const RenderVertex2D * vertices = _vertices.data();
+            uint32_t vertexCount = (uint32_t)_vertices.size();
+
+            _renderPipeline->addRenderLine( _context, debugMaterial, vertices, vertexCount, nullptr, EROF_DEBUG, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
         void nodeDebugRenderLineByToPoints( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const mt::mat4f & _wm, const mt::vec2f & _startPoint, const mt::vec2f & _finishPoint, ColorValue_ARGB _color, const DocumentInterfacePtr & _doc )

@@ -5,6 +5,7 @@
 #include "Kernel/Color.h"
 #include "Kernel/Node.h"
 #include "Kernel/Polygon.h"
+#include "Kernel/ResourceImage.h"
 #include "Kernel/Vector.h"
 
 #include "math/box2.h"
@@ -88,6 +89,12 @@ namespace Mengine
     class GraphicsInterface
         : public UnknownNodeInterface
     {
+    public:
+        virtual void setResourceImage( const ResourceImagePtr & _resourceImage ) = 0;
+        virtual const ResourceImagePtr & getResourceImage() const = 0;
+        virtual void setUVRect( const mt::vec4f & _uvRect ) = 0;
+        virtual const mt::vec4f & getUVRect() const = 0;
+
     public:
         virtual void setLineWidth( float _width ) = 0;
         virtual float getLineWidth() const = 0;

@@ -5,6 +5,9 @@ Containers
     StlAllocator.h
     Array.h
     ArrayTString.h
+    ArrayTStrings.h
+    ArgumentStrings.h
+    ArgumentWStrings.h
     ArrayString.h
     ArrayWString.h
     Bitset.h
@@ -50,12 +53,19 @@ Mixin\\\\Invalidable
     Invalidable.cpp
 )
 
+set(MENGINE_DOCUMENTABLE_IMPLEMENTATION)
+if(MENGINE_BUILD_TYPE_DEBUG)
+    list(APPEND MENGINE_DOCUMENTABLE_IMPLEMENTATION
+        DocumentableHelper.cpp
+    )
+endif()
+
 ADD_FILTER(
 Mixin\\\\Documentable
     Documentable.h
     Documentable.cpp
     DocumentableHelper.h
-    DocumentableHelper.cpp
+    ${MENGINE_DOCUMENTABLE_IMPLEMENTATION}
 )
 
 ADD_FILTER(
@@ -501,13 +511,26 @@ Dice
     PityDice.h
 )
 
+set(MENGINE_ASSERTION_IMPLEMENTATIONS)
+if(MENGINE_BUILD_TYPE_DEBUG)
+    list(APPEND MENGINE_ASSERTION_IMPLEMENTATIONS
+        Assertion.cpp
+        AssertionFactory.cpp
+        AssertionVocabulary.cpp
+        AssertionStatistic.cpp
+        AssertionObservable.cpp
+        AssertionCharacter.cpp
+        AssertionUtf8.cpp
+        AssertionVSNPRINTF.cpp
+        AssertionFilePath.cpp
+    )
+endif()
+
 ADD_FILTER(
 Assertion
     Assertion.h
-    Assertion.cpp
     AssertionLevel.h
     AssertionFactory.h
-    AssertionFactory.cpp
     AssertionContainer.h
     AssertionNotImplemented.h
     AssertionToDo.h
@@ -516,27 +539,21 @@ Assertion
     AssertionMemoryPanic.h
     AssertionMainThreadGuard.h
     AssertionVocabulary.h
-    AssertionVocabulary.cpp
     AssertionStatistic.h
-    AssertionStatistic.cpp
     AssertionNode.h
     AssertionType.h
     AssertionAllocator.h
     AssertionObservable.h
-    AssertionObservable.cpp
     AssertionOptional.h
     AssertionCompilable.h
     AssertionUnique.h
     AssertionJSONInvalid.h
-    AssertionCharacter.cpp
     AssertionCharacter.h
-    AssertionUtf8.cpp
     AssertionUtf8.h
     AssertionReferenceCount.h
-    AssertionVSNPRINTF.cpp
     AssertionVSNPRINTF.h
     AssertionFilePath.h
-    AssertionFilePath.cpp
+    ${MENGINE_ASSERTION_IMPLEMENTATIONS}
 )
 
 ADD_FILTER(
@@ -659,6 +676,9 @@ Core
 
     StringLength.h
     StringLength.cpp
+
+    StringCopy.h
+    StringCopy.cpp
 
     StringView.h
     StringView.cpp

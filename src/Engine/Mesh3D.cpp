@@ -212,6 +212,7 @@ namespace Mengine
             , m_vertexCount
             , m_indexCount
             , 0, 0
+            , EROF_NONE
             , MENGINE_DOCUMENT_FORWARD );
     }
     //////////////////////////////////////////////////////////////////////////

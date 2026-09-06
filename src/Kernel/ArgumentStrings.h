@@ -1,0 +1,12 @@
+#pragma once
+
+#include "Kernel/ArrayTStrings.h"
+
+#include "Config/Char.h"
+
+namespace Mengine
+{
+    //////////////////////////////////////////////////////////////////////////
+    typedef ArrayTStrings<Char, MENGINE_MAX_PROCESS_ARGUMENTS, MENGINE_MAX_PATH + 1> ArgumentStrings;
+    //////////////////////////////////////////////////////////////////////////
+}

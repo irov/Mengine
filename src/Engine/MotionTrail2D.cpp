@@ -236,7 +236,18 @@ namespace Mengine
             indices[io + 5] = (RenderIndex)(vo + 3);
         }
 
-        _renderPipeline->addRenderObject( _context, this->getMaterial(), nullptr, vertices.data(), (uint32_t)vertices.size(), indices.data(), (uint32_t)indices.size(), this->getBoundingBox(), false, MENGINE_DOCUMENT_FORWARD );
+        const RenderMaterialInterfacePtr & material = this->getMaterial();
+        const RenderProgramVariableInterfacePtr & programVariable = this->getProgramVariable();
+
+        const RenderVertex2D * vertexBuffer = vertices.data();
+        uint32_t vertexCount = (uint32_t)vertices.size();
+
+        const RenderIndex * indexBuffer = indices.data();
+        uint32_t indicesCount = (uint32_t)indices.size();
+
+        const mt::box2f * bb = this->getBoundingBox();
+
+        _renderPipeline->addRenderObject( _context, material, programVariable, vertexBuffer, vertexCount, indexBuffer, indicesCount, bb, EROF_NONE, MENGINE_DOCUMENT_FORWARD );
     }
     //////////////////////////////////////////////////////////////////////////
     RenderMaterialInterfacePtr MotionTrail2D::_updateMaterial() const

@@ -1290,6 +1290,15 @@ namespace Mengine
         return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool iOSPlatformService::createProcess( const Char * _executable, const ArgumentStrings & _arguments, uint32_t * const _exitCode ) const
+    {
+        MENGINE_UNUSED( _executable );
+        MENGINE_UNUSED( _arguments );
+        MENGINE_UNUSED( _exitCode );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool iOSPlatformService::getDesktopResolution( Resolution * const _resolution ) const
     {
         if( m_metalView != nil )

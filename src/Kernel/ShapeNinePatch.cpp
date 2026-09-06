@@ -229,12 +229,13 @@ namespace Mengine
         const RenderVertex2D * vertices = this->getVerticesWM();
 
         const RenderMaterialInterfacePtr & material = m_surface->getMaterial();
+        const RenderProgramVariableInterfacePtr & programVariable = m_surface->getProgramVariable();
 
         const Mengine::RenderInterface * render = this->getRender();
 
         const mt::box2f * bb = render->getBoundingBox();
 
-        _renderPipeline->addRenderObject( _context, material, nullptr, vertices, 16, Detail::SHAPE_NINE_PATCH_INDICES, 54, bb, false, MENGINE_DOCUMENT_FORWARD );
+        _renderPipeline->addRenderObject( _context, material, programVariable, vertices, 16, Detail::SHAPE_NINE_PATCH_INDICES, 54, bb, EROF_NONE, MENGINE_DOCUMENT_FORWARD );
     }
     //////////////////////////////////////////////////////////////////////////
     void ShapeNinePatch::_updateBoundingBox( mt::box2f * const _boundingBox, mt::box2f ** const _boundingBoxCurrent ) const

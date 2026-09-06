@@ -1,12 +1,12 @@
 #include "Win32FindPython3Plugin.h"
 
-#include "Interface/SocketSystemInterface.h"
+#include "Interface/ServiceInterface.h"
 
 #include "Kernel/PluginHelper.h"
 #include "Kernel/DocumentHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_EXTERN( Win32FindPython3Service );
+SERVICE_EXTERN( FindPython3Service );
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Win32FindPython3, Mengine::Win32FindPython3Plugin );
 //////////////////////////////////////////////////////////////////////////
@@ -23,19 +23,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FindPython3Plugin::_initializePlugin()
     {
-        SERVICE_CREATE( Win32FindPython3Service, MENGINE_DOCUMENT_FACTORABLE );
+        if( SERVICE_CREATE( FindPython3Service, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32FindPython3Plugin::_finalizePlugin()
     {
-        SERVICE_FINALIZE( Win32FindPython3Service );
+        SERVICE_FINALIZE( FindPython3Service );
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32FindPython3Plugin::_destroyPlugin()
     {
-        SERVICE_DESTROY( Win32FindPython3Service );
+        SERVICE_DESTROY( FindPython3Service );
     }
     //////////////////////////////////////////////////////////////////////////
 }

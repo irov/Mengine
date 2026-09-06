@@ -2385,7 +2385,7 @@ namespace Mengine
         }
 
         static const RenderIndex indices[] = {0, 1, 2, 0, 2, 3};
-        _renderPipeline->addRenderObject( _context, _target->material, nullptr, _target->vertices, 4, indices, 6, nullptr, false, MENGINE_DOCUMENT_FORWARD );
+        _renderPipeline->addRenderObject( _context, _target->material, nullptr, _target->vertices, 4, indices, 6, nullptr, EROF_NONE, MENGINE_DOCUMENT_FORWARD );
     }
     //////////////////////////////////////////////////////////////////////////
     RenderTextureInterfacePtr Figma::createTextureFromPixels_( uint32_t _width, uint32_t _height, const void * _pixels, size_t _pitch ) const
@@ -2987,7 +2987,10 @@ namespace Mengine
 
             m_renderMaterials.emplace_back( material );
 
-            _renderPipeline->addRenderObject( &context, material, nullptr, vertices.data(), batch.vertex_count, indices.data(), batch.index_count, nullptr, false, MENGINE_DOCUMENT_FORWARD );
+            const RenderVertex2D * vertexData = vertices.data();
+            const RenderIndex * indexData = indices.data();
+
+            _renderPipeline->addRenderObject( &context, material, nullptr, vertexData, batch.vertex_count, indexData, batch.index_count, nullptr, EROF_NONE, MENGINE_DOCUMENT_FORWARD );
         }
 
         finishRenderLayer();

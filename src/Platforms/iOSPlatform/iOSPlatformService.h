@@ -101,6 +101,9 @@ namespace Mengine
         DynamicLibraryInterfacePtr loadDynamicLibrary( const Char * _dynamicLibraryName, const DocumentInterfacePtr & _doc ) override;
 
     public:
+        bool createProcess( const Char * _executable, const ArgumentStrings & _arguments, uint32_t * const _exitCode ) const override;
+
+    public:
         bool getDesktopResolution( Resolution * const _resolution ) const override;
 
         bool getNoFullscreen() const override;

@@ -93,7 +93,10 @@ int main( int argc, char * argv[] )
         L"--max-size", L"2048"
     };
 
-    processArguments.insert( processArguments.end(), images_path.begin(), images_path.end() );
+    for( const std::wstring & imagePath : images_path )
+    {
+        processArguments.emplace_back( imagePath );
+    }
 
     int exit_code = EXIT_FAILURE;
 

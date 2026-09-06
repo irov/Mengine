@@ -80,19 +80,11 @@ namespace Mengine
         using std::modff;
         using std::fmodf;
 #endif
-        using std::abs;
         using std::floor;
-        using std::acos;
-        using std::asin;
         using std::atan2;
-        using std::atan;
         using std::sqrt;
         using std::pow;
-        using std::cos;
-        using std::sin;
-        using std::tan;
         using std::fabs;
-        using std::log;
         using std::log10;
         using std::round;
         using std::lround;

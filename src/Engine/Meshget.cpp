@@ -120,13 +120,14 @@ namespace Mengine
 
         const VectorRenderVertex2D & vertices = this->getVerticesWM();
         const RenderMaterialInterfacePtr & material = m_surface->getMaterial();
+        const RenderProgramVariableInterfacePtr & programVariable = m_surface->getProgramVariable();
 
         const RenderVertex2D * vertices_buff = vertices.data();
         const RenderIndex * indices_buff = m_indices.data();
 
         const mt::box2f * bb = this->getBoundingBox();
 
-        _renderPipeline->addRenderObject( _context, material, nullptr, vertices_buff, vertexCount, indices_buff, indicesCount, bb, false, MENGINE_DOCUMENT_FORWARD );
+        _renderPipeline->addRenderObject( _context, material, programVariable, vertices_buff, vertexCount, indices_buff, indicesCount, bb, EROF_NONE, MENGINE_DOCUMENT_FORWARD );
     }
     //////////////////////////////////////////////////////////////////////////
     void Meshget::_updateBoundingBox( mt::box2f * const _boundingBox, mt::box2f ** const _boundingBoxCurrent ) const

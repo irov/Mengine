@@ -2,15 +2,18 @@
 
 #include "Kernel/Logger.h"
 
-#include <cerrno>
-#include <cstdlib>
-#include <cstring>
+#include "Config/StdErrno.h"
+#include "Config/StdIO.h"
+#include "Config/StdLib.h"
+#include "Config/StdString.h"
+
 #include <fcntl.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
@@ -24,35 +27,43 @@ namespace Mengine
 
             if( ::pipe( errorPipe ) != 0 )
             {
+                const Char * errorMessage = StdString::strerror( errno );
+
                 LOGGER_ERROR( "unable to create process pipe '%s': %s"
                     , _executable
-                    , ::strerror( errno )
+                    , errorMessage
                 );
 
                 return false;
             }
 
-            if( ::fcntl( errorPipe[0], F_SETFD, FD_CLOEXEC ) == -1
-                || ::fcntl( errorPipe[1], F_SETFD, FD_CLOEXEC ) == -1 )
+            for( uint32_t pipeIndex = 0; pipeIndex != 2; ++pipeIndex )
             {
-                LOGGER_ERROR( "unable to configure process pipe '%s': %s"
-                    , _executable
-                    , ::strerror( errno )
-                );
+                if( ::fcntl( errorPipe[pipeIndex], F_SETFD, FD_CLOEXEC ) == -1 )
+                {
+                    const Char * errorMessage = StdString::strerror( errno );
 
-                ::close( errorPipe[0] );
-                ::close( errorPipe[1] );
+                    LOGGER_ERROR( "unable to configure process pipe '%s': %s"
+                        , _executable
+                        , errorMessage
+                    );
 
-                return false;
+                    ::close( errorPipe[0] );
+                    ::close( errorPipe[1] );
+
+                    return false;
+                }
             }
 
             pid_t process = ::fork();
 
             if( process == -1 )
             {
+                const Char * errorMessage = StdString::strerror( errno );
+
                 LOGGER_ERROR( "unable to fork process '%s': %s"
                     , _executable
-                    , ::strerror( errno )
+                    , errorMessage
                 );
 
                 ::close( errorPipe[0] );
@@ -65,9 +76,11 @@ namespace Mengine
             {
                 ::close( errorPipe[0] );
 
-                ::execvp( _executable, const_cast<Char * const *>(_arguments) );
+                Char * const * arguments = const_cast<Char * const *>(_arguments);
 
-                const int executeError = errno;
+                ::execvp( _executable, arguments );
+
+                int executeError = errno;
                 (void)::write( errorPipe[1], &executeError, sizeof( executeError ) );
 
                 ::_exit( 127 );
@@ -84,9 +97,11 @@ namespace Mengine
                     continue;
                 }
 
+                const Char * errorMessage = StdString::strerror( errno );
+
                 LOGGER_ERROR( "unable to wait process '%s': %s"
                     , _executable
-                    , ::strerror( errno )
+                    , errorMessage
                 );
 
                 ::close( errorPipe[0] );
@@ -106,9 +121,11 @@ namespace Mengine
 
             if( executeErrorSize == sizeof( executeError ) )
             {
+                const Char * errorMessage = StdString::strerror( executeError );
+
                 LOGGER_ERROR( "unable to execute process '%s': %s"
                     , _executable
-                    , ::strerror( executeError )
+                    , errorMessage
                 );
 
                 return false;
@@ -116,9 +133,11 @@ namespace Mengine
 
             if( executeErrorSize == -1 )
             {
+                const Char * errorMessage = StdString::strerror( errno );
+
                 LOGGER_ERROR( "unable to read process result '%s': %s"
                     , _executable
-                    , ::strerror( errno )
+                    , errorMessage
                 );
 
                 return false;
@@ -162,5 +181,73 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        bool POSIXReadProcessOutput( const Char * _command, Char * const _output, size_t _capacity )
+        {
+            if( _capacity == 0 )
+            {
+                return false;
+            }
+
+            _output[0] = '\0';
+
+            StdIO::FILE * pipe = ::popen( _command, "r" );
+
+            if( pipe == nullptr )
+            {
+                return false;
+            }
+
+            size_t outputCapacity = _capacity - 1;
+            size_t outputSize = StdIO::fread( _output, 1, outputCapacity, pipe );
+            _output[outputSize] = '\0';
+
+            bool overflow = false;
+            constexpr size_t discardCapacity = 1024;
+            Char discard[discardCapacity];
+
+            for( ;; )
+            {
+                size_t discardSize = StdIO::fread( discard, 1, discardCapacity, pipe );
+
+                if( discardSize == 0 )
+                {
+                    break;
+                }
+
+                overflow = true;
+            }
+
+            int readError = StdIO::ferror( pipe );
+            int closeResult = ::pclose( pipe );
+
+            if( readError != 0 )
+            {
+                return false;
+            }
+
+            if( overflow == true )
+            {
+                return false;
+            }
+
+            if( closeResult == -1 )
+            {
+                return false;
+            }
+
+            if( WIFEXITED( closeResult ) == 0 )
+            {
+                return false;
+            }
+
+            if( WEXITSTATUS( closeResult ) != EXIT_SUCCESS )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
+    //////////////////////////////////////////////////////////////////////////
 }

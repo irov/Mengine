@@ -2976,7 +2976,7 @@ namespace Mengine
                         const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
                             ->getSolidMaterial( blend_mode, false );
 
-                        _renderPipeline->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FORWARD );
+                        _renderPipeline->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, EROF_NONE, MENGINE_DOCUMENT_FORWARD );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SOLID:
                     {
@@ -3021,7 +3021,7 @@ namespace Mengine
                             const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
                                 ->getSolidMaterial( blend_mode, false );
 
-                            _renderPipeline->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FORWARD );
+                            _renderPipeline->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, EROF_NONE, MENGINE_DOCUMENT_FORWARD );
                         }
                         else
                         {
@@ -3029,7 +3029,7 @@ namespace Mengine
 
                             const RenderMaterialInterfacePtr & material = shader_desc->materials[blend_mode][0];
 
-                            _renderPipeline->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FORWARD );
+                            _renderPipeline->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, EROF_NONE, MENGINE_DOCUMENT_FORWARD );
                         }
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SEQUENCE:
@@ -3155,7 +3155,7 @@ namespace Mengine
                         {
                             RenderMaterialInterfacePtr material = image_desc->materials[blend_mode];
 
-                            _renderPipeline->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FORWARD );
+                            _renderPipeline->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, EROF_NONE, MENGINE_DOCUMENT_FORWARD );
                         }
                         else
                         {
@@ -3172,7 +3172,7 @@ namespace Mengine
 
                             const RenderProgramVariableInterfacePtr & programVariable = shader_desc->programVariable;
 
-                            _renderPipeline->addRenderObject( &context, material, programVariable, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FORWARD );
+                            _renderPipeline->addRenderObject( &context, material, programVariable, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, EROF_NONE, MENGINE_DOCUMENT_FORWARD );
                         }
                     }break;
                 case AE_MOVIE_LAYER_TYPE_VIDEO:
@@ -3255,7 +3255,7 @@ namespace Mengine
 
                         const RenderMaterialInterfacePtr & material = surface->getMaterial();
 
-                        _renderPipeline->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FORWARD );
+                        _renderPipeline->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, EROF_NONE, MENGINE_DOCUMENT_FORWARD );
                     }break;
                 default:
                     break;
@@ -3376,7 +3376,7 @@ namespace Mengine
 
                         const RenderMaterialInterfacePtr & material = surfaceTrackMatte->getMaterial();
 
-                        _renderPipeline->addRenderObject( &context, material, programVariable, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FORWARD );
+                        _renderPipeline->addRenderObject( &context, material, programVariable, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, EROF_NONE, MENGINE_DOCUMENT_FORWARD );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SEQUENCE:
                     {
@@ -3504,7 +3504,7 @@ namespace Mengine
 
                         const RenderMaterialInterfacePtr & material = surfaceTrackMatte->getMaterial();
 
-                        _renderPipeline->addRenderObject( &context, material, programVariable, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FORWARD );
+                        _renderPipeline->addRenderObject( &context, material, programVariable, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, EROF_NONE, MENGINE_DOCUMENT_FORWARD );
                     }break;
                 default:
                     break;

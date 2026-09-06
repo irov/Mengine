@@ -18,6 +18,7 @@
 #include "Environment/Windows/WindowsIncluder.h"
 #include "Environment/Windows/Win32Helper.h"
 #include "Environment/Windows/Win32FileHelper.h"
+#include "Environment/Windows/Win32CreateProcess.h"
 
 #include "Win32CPUInfo.h"
 #include "Win32DynamicLibrary.h"
@@ -3401,6 +3402,13 @@ namespace Mengine
         }
 
         return dynamicLibrary;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32PlatformService::createProcess( const Char * _executable, const ArgumentStrings & _arguments, uint32_t * const _exitCode ) const
+    {
+        bool successful = Helper::Win32CreateProcess( _executable, _arguments, _exitCode );
+
+        return successful;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32PlatformService::getDesktopResolution( Resolution * const _resolution ) const

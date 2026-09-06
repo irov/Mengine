@@ -16,6 +16,7 @@
 #include "Environment/Windows/WindowsIncluder.h"
 #include "Environment/Windows/Win32Helper.h"
 #include "Environment/Windows/Win32FileHelper.h"
+#include "Environment/Windows/Win32CreateProcess.h"
 
 #include "Environment/GDK/GDKIncluder.h"
 
@@ -719,6 +720,13 @@ namespace Mengine
         }
 
         return dynamicLibrary;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool GDKPlatformService::createProcess( const Char * _executable, const ArgumentStrings & _arguments, uint32_t * const _exitCode ) const
+    {
+        bool successful = Helper::Win32CreateProcess( _executable, _arguments, _exitCode );
+
+        return successful;
     }
     //////////////////////////////////////////////////////////////////////////
     bool GDKPlatformService::getDesktopResolution( Resolution * const _resolution ) const

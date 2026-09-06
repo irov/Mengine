@@ -395,6 +395,10 @@
 #   endif
 #endif
 
+#ifndef MENGINE_MAX_PROCESS_ARGUMENTS
+#define MENGINE_MAX_PROCESS_ARGUMENTS 128
+#endif
+
 #ifndef MENGINE_MAX_URL
 #define MENGINE_MAX_URL 2083
 #endif

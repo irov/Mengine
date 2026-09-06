@@ -650,7 +650,7 @@ namespace Mengine
 
             new_context.transformation = this;
 
-            _renderPipeline->addRenderMesh( &new_context, m_material, nullptr, desc.vertexBuffer, desc.indexBuffer, vertex_count, (uint32_t)indices_count, 0, 0, MENGINE_DOCUMENT_FORWARD );
+            _renderPipeline->addRenderMesh( &new_context, m_material, nullptr, desc.vertexBuffer, desc.indexBuffer, vertex_count, indices_count, 0, 0, EROF_NONE, MENGINE_DOCUMENT_FORWARD );
         }
     }
     //////////////////////////////////////////////////////////////////////////

@@ -14,6 +14,7 @@
 
 #import "Environment/Apple/AppleDetail.h"
 #import "Environment/MacOS/MacOSUtils.h"
+#import "Environment/POSIX/POSIXCreateProcess.h"
 
 #import "Kernel/FilePath.h"
 #import "Kernel/PathHelper.h"
@@ -772,6 +773,23 @@ namespace Mengine
         );
 
         return nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool MacOSPlatformService::createProcess( const Char * _executable, const ArgumentStrings & _arguments, uint32_t * const _exitCode ) const
+    {
+        const Char * argv[MENGINE_MAX_PROCESS_ARGUMENTS + 2];
+        argv[0] = _executable;
+
+        for( size_t index = 0; index != _arguments.size(); ++index )
+        {
+            argv[index + 1] = _arguments[index];
+        }
+
+        argv[_arguments.size() + 1] = nullptr;
+
+        bool successful = Helper::POSIXCreateProcess( _executable, argv, _exitCode );
+
+        return successful;
     }
     //////////////////////////////////////////////////////////////////////////
     bool MacOSPlatformService::getDesktopResolution( Resolution * const _resolution ) const

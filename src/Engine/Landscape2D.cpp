@@ -138,6 +138,8 @@ namespace Mengine
             }
         }
 
+        const RenderProgramVariableInterfacePtr & programVariable = this->getProgramVariable();
+
         uint32_t elementVertexOffset = 0;
 
         for( const Landscape2DElement & el : elementsWM )
@@ -146,7 +148,7 @@ namespace Mengine
             {
                 const RenderVertex2D * vertices = this->getVerticesWM( elementVertexOffset );
 
-                _renderPipeline->addRenderQuad( _context, el.material, vertices, 4, &el.bb_wm, false, MENGINE_DOCUMENT_FORWARD );
+                _renderPipeline->addRenderQuad( _context, el.material, programVariable, vertices, 4, &el.bb_wm, EROF_NONE, MENGINE_DOCUMENT_FORWARD );
             }
 
             elementVertexOffset += 4;

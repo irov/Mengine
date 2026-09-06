@@ -2,6 +2,7 @@
 
 #include "Interface/TimelineServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderProgramVariableInterface.h"
 #include "Interface/InputServiceInterface.h"
 #include "Interface/MemoryInterface.h"
 #include "Interface/PackageInterface.h"
@@ -78,6 +79,7 @@
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/Soundable.h"
 #include "Kernel/Materialable.h"
+#include "Kernel/Vector.h"
 #include "Kernel/Surface.h"
 #include "Kernel/ResourceImageData.h"
 #include "Kernel/ResourceImageSequence.h"
@@ -100,6 +102,88 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+        typedef Vector<mt::vec4f> VectorRenderProgramVariableValues;
+        //////////////////////////////////////////////////////////////////////////
+        static RenderProgramVariableInterfacePtr createRenderProgramVariable()
+        {
+            RenderProgramVariableInterfacePtr programVariable = RENDER_SYSTEM()
+                ->createProgramVariableDynamic( 0u, 0u, MENGINE_DOCUMENT_PYTHON );
+
+            return programVariable;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool validateRenderProgramVariable( const ConstString & _uniform, const VectorRenderProgramVariableValues & _values )
+        {
+            if( _uniform.empty() == true )
+            {
+                LOGGER_ERROR( "invalid empty render program variable uniform" );
+
+                return false;
+            }
+
+            const Char * uniform = _uniform.c_str();
+            constexpr size_t uniformCapacity = 32;
+
+            if( _uniform.size() >= uniformCapacity )
+            {
+                LOGGER_ERROR( "render program variable uniform '%s' exceeds 31 characters"
+                    , uniform
+                );
+
+                return false;
+            }
+
+            if( _values.empty() == true )
+            {
+                LOGGER_ERROR( "render program variable uniform '%s' has no values"
+                    , uniform
+                );
+
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool setRenderProgramVertexVariables( RenderProgramVariableInterface * _variable, const ConstString & _uniform, uint32_t _index, const VectorRenderProgramVariableValues & _values )
+        {
+            if( Detail::validateRenderProgramVariable( _uniform, _values ) == false )
+            {
+                return false;
+            }
+
+            const Char * uniform = _uniform.c_str();
+            const mt::vec4f & firstValue = _values.front();
+            const float * values = firstValue.buff();
+            uint32_t valueCount = static_cast<uint32_t>(_values.size());
+
+            _variable->setVertexVariables( uniform, _index, values, 4u, valueCount );
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool setRenderProgramPixelVariables( RenderProgramVariableInterface * _variable, const ConstString & _uniform, uint32_t _index, const VectorRenderProgramVariableValues & _values )
+        {
+            if( Detail::validateRenderProgramVariable( _uniform, _values ) == false )
+            {
+                return false;
+            }
+
+            const Char * uniform = _uniform.c_str();
+            const mt::vec4f & firstValue = _values.front();
+            const float * values = firstValue.buff();
+            uint32_t valueCount = static_cast<uint32_t>(_values.size());
+
+            _variable->setPixelVariables( uniform, _index, values, 4u, valueCount );
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+    }
     //////////////////////////////////////////////////////////////////////////
     namespace
     {
@@ -2716,9 +2800,18 @@ namespace Mengine
             .def_proxy_static( "getLinearSpeed", scriptMethod, &KernelScriptMethod::s_Affectorable_getLinearSpeed )
             ;
 
+        pybind::interface_<RenderProgramVariableInterface, pybind::bases<Mixin>>( _kernel, "RenderProgramVariable" )
+            .def_static( "setVertexVariables", &Detail::setRenderProgramVertexVariables )
+            .def_static( "setPixelVariables", &Detail::setRenderProgramPixelVariables )
+            ;
+
+        pybind::def_function( _kernel, "createRenderProgramVariable", &Detail::createRenderProgramVariable );
+
         pybind::interface_<Materialable, pybind::bases<Mixin>>( _kernel, "Materialable" )
             .def( "setMaterialName", &Materialable::setMaterialName )
             .def( "getMaterialName", &Materialable::getMaterialName )
+            .def( "setProgramVariable", &Materialable::setProgramVariable )
+            .def( "getProgramVariable", &Materialable::getProgramVariable )
             .def( "setDisableTextureColor", &Materialable::setDisableTextureColor )
             .def( "getDisableTextureColor", &Materialable::getDisableTextureColor )
             .def( "setBlendMode", &Materialable::setBlendMode )

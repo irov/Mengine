@@ -16,12 +16,6 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    enum ERenderObjectFlag
-    {
-        RENDER_OBJECT_FLAG_NONE = 0x00000000,
-        RENDER_OBJECT_FLAG_DEBUG = 0x00000001
-    };
-    //////////////////////////////////////////////////////////////////////////
     BatchRenderPipeline::BatchRenderPipeline()
         : m_renderService( nullptr )
         , m_batchMode( ERBM_NORMAL )
@@ -129,7 +123,7 @@ namespace Mengine
         , const RenderVertexBufferInterfacePtr & _vertexBuffer
         , const RenderIndexBufferInterfacePtr & _indexBuffer
         , uint32_t _vertexCount, uint32_t _indexCount
-        , uint32_t _baseVertexIndex, uint32_t _startIndex, const DocumentInterfacePtr & _doc )
+        , uint32_t _baseVertexIndex, uint32_t _startIndex, uint32_t _flags, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
@@ -150,7 +144,7 @@ namespace Mengine
         }
 
 #if defined(MENGINE_DEBUG)
-        if( m_debugStepRenderMode == true /*&& _debug == false*/ )
+        if( m_debugStepRenderMode == true )
         {
             if( m_iterateRenderObjects++ >= m_debugLimitRenderObjects && m_debugLimitRenderObjects > 0 && m_debugStopRenderObjects == false )
             {
@@ -202,7 +196,7 @@ namespace Mengine
             ro.bb = bb;
         }
 
-        ro.flags = RENDER_OBJECT_FLAG_NONE;
+        ro.flags = _flags;
     }
     //////////////////////////////////////////////////////////////////////////
     void BatchRenderPipeline::addRenderObject( const RenderContext * _context
@@ -210,7 +204,7 @@ namespace Mengine
         , const RenderProgramVariableInterfacePtr & _programVariable
         , const RenderVertex2D * _vertices, uint32_t _vertexCount
         , const RenderIndex * _indices, uint32_t _indexCount
-        , const mt::box2f * _bb, bool _debug, const DocumentInterfacePtr & _doc )
+        , const mt::box2f * _bb, uint32_t _flags, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
@@ -241,7 +235,7 @@ namespace Mengine
         }
 
 #if defined(MENGINE_DEBUG)
-        if( m_debugStepRenderMode == true /*&& _debug == false*/ )
+        if( m_debugStepRenderMode == true )
         {
             if( m_iterateRenderObjects++ >= m_debugLimitRenderObjects && m_debugLimitRenderObjects > 0 && m_debugStopRenderObjects == false )
             {
@@ -264,9 +258,11 @@ namespace Mengine
         RenderPass & renderPass = this->requestRenderPass_( _context, batch, vertexBuffer, indexBuffer, vertexAttribute, _programVariable );
 
 #if defined(MENGINE_DEBUG)
+        bool debug = (_flags & EROF_DEBUG) != 0;
+
         if( STATISTIC_IS_ENABLED( STATISTIC_RENDER_PERFRAME_FILLRATE ) == true )
         {
-            if( _debug == false )
+            if( debug == false )
             {
                 EPrimitiveType primitiveType = _material->getPrimitiveType();
 
@@ -296,7 +292,7 @@ namespace Mengine
         RenderMaterialInterfacePtr rp_material = _material;
 
 #if defined(MENGINE_DEBUG)
-        if( m_debugStepRenderMode == true && _debug == false )
+        if( m_debugStepRenderMode == true && debug == false )
         {
             if( m_iterateRenderObjects == m_debugLimitRenderObjects && m_debugLimitRenderObjects > 0 && m_debugStopRenderObjects == false )
             {
@@ -384,12 +380,7 @@ namespace Mengine
             ro.bb = bb_homogenize;
         }
 
-        ro.flags = RENDER_OBJECT_FLAG_NONE;
-
-        if( _debug == true )
-        {
-            ro.flags |= RENDER_OBJECT_FLAG_DEBUG;
-        }
+        ro.flags = _flags;
     }
     //////////////////////////////////////////////////////////////////////////
     void BatchRenderPipeline::addRenderExternal( const RenderContext * _context
@@ -416,7 +407,7 @@ namespace Mengine
         }
 
 #if defined(MENGINE_DEBUG)
-        if( m_debugStepRenderMode == true /*&& _debug == false*/ )
+        if( m_debugStepRenderMode == true )
         {
             if( m_iterateRenderObjects++ >= m_debugLimitRenderObjects && m_debugLimitRenderObjects > 0 && m_debugStopRenderObjects == false )
             {
@@ -525,8 +516,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BatchRenderPipeline::addRenderQuad( const RenderContext * _context
         , const RenderMaterialInterfacePtr & _material
+        , const RenderProgramVariableInterfacePtr & _programVariable
         , const RenderVertex2D * _vertices, uint32_t _vertexCount
-        , const mt::box2f * _bb, bool _debug, const DocumentInterfacePtr & _doc )
+        , const mt::box2f * _bb, uint32_t _flags, const DocumentInterfacePtr & _doc )
     {
         uint32_t indicesCount = (_vertexCount / 4) * 6;
 
@@ -542,13 +534,13 @@ namespace Mengine
 
         RenderIndex * indices = m_indicesQuad.buff();
 
-        this->addRenderObject( _context, _material, nullptr, _vertices, _vertexCount, indices, indicesCount, _bb, _debug, _doc );
+        this->addRenderObject( _context, _material, _programVariable, _vertices, _vertexCount, indices, indicesCount, _bb, _flags, _doc );
     }
     //////////////////////////////////////////////////////////////////////////
     void BatchRenderPipeline::addRenderLine( const RenderContext * _context
         , const RenderMaterialInterfacePtr & _material
         , const RenderVertex2D * _vertices, uint32_t _vertexCount
-        , const mt::box2f * _bb, bool _debug, const DocumentInterfacePtr & _doc )
+        , const mt::box2f * _bb, uint32_t _flags, const DocumentInterfacePtr & _doc )
     {
         uint32_t indicesCount = _vertexCount;
 
@@ -564,7 +556,7 @@ namespace Mengine
 
         RenderIndex * indices = m_indicesLine.buff();
 
-        this->addRenderObject( _context, _material, nullptr, _vertices, _vertexCount, indices, indicesCount, _bb, _debug, _doc );
+        this->addRenderObject( _context, _material, nullptr, _vertices, _vertexCount, indices, indicesCount, _bb, _flags, _doc );
     }
     //////////////////////////////////////////////////////////////////////////
     void BatchRenderPipeline::enableDebugFillrateCalcMode( bool _enable )
@@ -658,7 +650,7 @@ namespace Mengine
 #if defined(MENGINE_MASTER_RELEASE_DISABLE)
         for( const DebugRenderObject & dro : m_debugRenderObjects )
         {
-            this->addRenderObject( &dro.context, dro.material, nullptr, dro.vertices, dro.vertexCount, dro.indices, dro.indexCount, nullptr, true, MENGINE_DOCUMENT_VALUE( dro.doc, nullptr ) );
+            this->addRenderObject( &dro.context, dro.material, nullptr, dro.vertices, dro.vertexCount, dro.indices, dro.indexCount, nullptr, EROF_DEBUG, MENGINE_DOCUMENT_VALUE( dro.doc, nullptr ) );
         }
 #endif
     }

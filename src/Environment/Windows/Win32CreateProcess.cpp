@@ -16,6 +16,132 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
+        namespace Detail
+        {
+            //////////////////////////////////////////////////////////////////////////
+            static bool appendCommandLineCharacters( WChar * const _command, size_t _capacity, size_t * const _size, WChar _character, size_t _count )
+            {
+                if( *_size >= _capacity )
+                {
+                    return false;
+                }
+
+                if( _count >= _capacity - *_size )
+                {
+                    return false;
+                }
+
+                for( size_t index = 0; index != _count; ++index )
+                {
+                    _command[(*_size)++] = _character;
+                }
+
+                _command[*_size] = L'\0';
+
+                return true;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            static bool appendCommandLineArgument( const WChar * _argument, WChar * const _command, size_t _capacity, size_t * const _size )
+            {
+                if( *_size != 0 )
+                {
+                    if( Detail::appendCommandLineCharacters( _command, _capacity, _size, L' ', 1 ) == false )
+                    {
+                        return false;
+                    }
+                }
+
+                if( Detail::appendCommandLineCharacters( _command, _capacity, _size, L'"', 1 ) == false )
+                {
+                    return false;
+                }
+
+                size_t backslashes = 0;
+
+                for( const WChar * character = _argument; *character != L'\0'; ++character )
+                {
+                    if( *character == L'\\' )
+                    {
+                        ++backslashes;
+
+                        continue;
+                    }
+
+                    size_t backslashCount = backslashes;
+
+                    if( *character == L'"' )
+                    {
+                        backslashCount = backslashes * 2 + 1;
+                    }
+
+                    if( Detail::appendCommandLineCharacters( _command, _capacity, _size, L'\\', backslashCount ) == false )
+                    {
+                        return false;
+                    }
+
+                    if( Detail::appendCommandLineCharacters( _command, _capacity, _size, *character, 1 ) == false )
+                    {
+                        return false;
+                    }
+
+                    backslashes = 0;
+                }
+
+                size_t trailingBackslashCount = backslashes * 2;
+
+                if( Detail::appendCommandLineCharacters( _command, _capacity, _size, L'\\', trailingBackslashCount ) == false )
+                {
+                    return false;
+                }
+
+                if( Detail::appendCommandLineCharacters( _command, _capacity, _size, L'"', 1 ) == false )
+                {
+                    return false;
+                }
+
+                return true;
+            }
+            //////////////////////////////////////////////////////////////////////////
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool Win32CreateProcess( const Char * _executable, const ArgumentStrings & _arguments, uint32_t * const _exitCode )
+        {
+            WPath executable = {L'\0'};
+
+            if( Helper::utf8ToUnicode( _executable, executable, MENGINE_MAX_PATH ) == false )
+            {
+                LOGGER_ERROR( "unable to convert process executable to Unicode" );
+
+                return false;
+            }
+
+            WChar command[MENGINE_MAX_COMMAND_LENGTH + 1] = {L'\0'};
+            size_t commandLength = 0;
+
+            for( size_t index = 0; index != _arguments.size(); ++index )
+            {
+                WChar argument[MENGINE_MAX_PATH + 2];
+
+                if( Helper::utf8ToUnicode( _arguments[index], argument, MENGINE_MAX_PATH + 2 ) == false )
+                {
+                    LOGGER_ERROR( "unable to convert process argument to Unicode" );
+
+                    return false;
+                }
+
+                if( Detail::appendCommandLineArgument( argument, command, MENGINE_MAX_COMMAND_LENGTH - 1, &commandLength ) == false )
+                {
+                    LOGGER_ERROR( "process command is too long" );
+
+                    return false;
+                }
+            }
+
+            bool result = Helper::Win32CreateProcessW( executable, command, true, _exitCode );
+
+            return result;
+        }
+        //////////////////////////////////////////////////////////////////////////
         bool Win32CreateProcessA( const Char * _process, const WChar * _command, bool _wait, uint32_t * const _exitCode )
         {
             LOGGER_INFO( "platform", "create process '%s' command: %ls"

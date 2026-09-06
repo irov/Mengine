@@ -29,10 +29,7 @@ namespace Mengine
         const RenderProgramVariableInterfacePtr & programVariable = m_owner->getProgramVariable();
         MENGINE_ASSERTION_MEMORY_PANIC( programVariable, "post-process fx render without program variable" );
 
-        _renderPipeline->addRenderObject( _context, material, programVariable
-            , vertices, 4u
-            , indices, 6u
-            , nullptr, false, MENGINE_DOCUMENT_FORWARD );
+        _renderPipeline->addRenderObject( _context, material, programVariable, vertices, 4u, indices, 6u, nullptr, EROF_NONE, MENGINE_DOCUMENT_FORWARD );
     }
     //////////////////////////////////////////////////////////////////////////
 }

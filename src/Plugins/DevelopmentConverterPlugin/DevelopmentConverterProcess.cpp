@@ -8,74 +8,37 @@
 
 #include "Kernel/Logger.h"
 
-#if defined(MENGINE_PLATFORM_WINDOWS)
-#   include "Kernel/UnicodeHelper.h"
-#endif
-
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        bool executeDevelopmentConverterProcess( const FilePath & _executable, const std::vector<String> & _arguments, uint32_t * const _exitCode )
+        bool executeDevelopmentConverterProcess( const FilePath & _executable, const ArgumentStrings & _arguments, uint32_t * const _exitCode )
         {
-            LOGGER_INFO( "convert", "execute converter command '%s'", _executable.c_str() );
+            const Char * executable = _executable.c_str();
+
+            LOGGER_INFO( "convert", "execute converter command '%s'", executable );
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
-            String command;
+            bool successful = Helper::Win32CreateProcess( executable, _arguments, _exitCode );
 
-            for( const String & argument : _arguments )
-            {
-                if( command.empty() == false )
-                {
-                    command += ' ';
-                }
-
-                command += '"';
-
-                for( const Char character : argument )
-                {
-                    if( character == '"' )
-                    {
-                        command += '\\';
-                    }
-
-                    command += character;
-                }
-
-                command += '"';
-            }
-
-            WString unicodeCommand;
-
-            if( Helper::utf8ToUnicode( command, &unicodeCommand ) == false )
-            {
-                return false;
-            }
-
-            if( Helper::Win32CreateProcessA( _executable.c_str(), unicodeCommand.c_str(), true, _exitCode ) == false )
-            {
-                return false;
-            }
+            return successful;
 #else
-            std::vector<const Char *> argv;
-            argv.reserve( _arguments.size() + 2 );
-            argv.emplace_back( _executable.c_str() );
+            const Char * argv[MENGINE_MAX_PROCESS_ARGUMENTS + 2];
+            argv[0] = executable;
 
-            for( const String & argument : _arguments )
+            for( size_t index = 0; index != _arguments.size(); ++index )
             {
-                argv.emplace_back( argument.c_str() );
+                argv[index + 1] = _arguments[index];
             }
 
-            argv.emplace_back( nullptr );
+            argv[_arguments.size() + 1] = nullptr;
 
-            if( Helper::POSIXCreateProcess( _executable.c_str(), argv.data(), _exitCode ) == false )
-            {
-                return false;
-            }
+            bool successful = Helper::POSIXCreateProcess( executable, argv, _exitCode );
+
+            return successful;
 #endif
-
-            return true;
         }
         //////////////////////////////////////////////////////////////////////////
     }

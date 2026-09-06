@@ -576,7 +576,7 @@ namespace Mengine
 
             const mt::box2f * bb = this->getBoundingBox();
 
-            _renderPipeline->addRenderObject( _context, material, nullptr, mesh_vertices, verticesCount, mesh_indices, trianglesCount, bb, false, MENGINE_DOCUMENT_FORWARD );
+            _renderPipeline->addRenderObject( _context, material, nullptr, mesh_vertices, verticesCount, mesh_indices, trianglesCount, bb, EROF_NONE, MENGINE_DOCUMENT_FORWARD );
 
             spSkeletonClipping_clipEnd( m_skeletonClipper, slot );
         }

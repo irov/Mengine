@@ -419,7 +419,14 @@ PLUGIN_EXPORT( Win32AntifreezeMonitor );
 PLUGIN_EXPORT( AndroidNativePython );
 #endif
 //////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_PLUGIN_MACOS_FINDPYTHON3_STATIC)
+PLUGIN_EXPORT( MacOSFindPython3 );
+#endif
+//////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_PLUGIN_XLSEXPORT_STATIC)
+PLUGIN_EXPORT( XlsExport );
+#endif
+//////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Bootstrapper, Mengine::Bootstrapper );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
@@ -1685,6 +1692,14 @@ namespace Mengine
     bool Bootstrapper::createStaticPlugins_()
     {
         LOGGER_INFO( "bootstrapper", "create plugins..." );
+
+#if defined(MENGINE_PLUGIN_MACOS_FINDPYTHON3_STATIC)
+        MENGINE_ADD_PLUGIN( MacOSFindPython3, "plugin MacOSFindPython3...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#if defined(MENGINE_PLUGIN_XLSEXPORT_STATIC)
+        MENGINE_ADD_PLUGIN( XlsExport, "plugin XlsExport...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
 
 #if defined(MENGINE_EXTERNAL_PLUGIN)
         MENGINE_ADD_PLUGIN( MENGINE_EXTERNAL_PLUGIN, "initialize external Game plugin [" MENGINE_PP_STRINGIZE( MENGINE_EXTERNAL_PLUGIN ) "]...", MENGINE_DOCUMENT_FACTORABLE );

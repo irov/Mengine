@@ -80,30 +80,13 @@ namespace Mengine
         void finalize() override;
 
     public:
-        void addRenderMesh( const RenderContext * _context
-            , const RenderMaterialInterfacePtr & _material
-            , const RenderProgramVariableInterfacePtr & _programVariable
-            , const RenderVertexBufferInterfacePtr & _vertexBuffer
-            , const RenderIndexBufferInterfacePtr & _indexBuffer
-            , uint32_t _vertexCount, uint32_t _indexCount
-            , uint32_t _baseVertexIndex, uint32_t _startIndex, const DocumentInterfacePtr & _doc ) override;
+        void addRenderMesh( const RenderContext * _context, const RenderMaterialInterfacePtr & _material, const RenderProgramVariableInterfacePtr & _programVariable, const RenderVertexBufferInterfacePtr & _vertexBuffer, const RenderIndexBufferInterfacePtr & _indexBuffer, uint32_t _vertexCount, uint32_t _indexCount, uint32_t _baseVertexIndex, uint32_t _startIndex, uint32_t _flags, const DocumentInterfacePtr & _doc ) override;
 
-        void addRenderObject( const RenderContext * _context
-            , const RenderMaterialInterfacePtr & _material
-            , const RenderProgramVariableInterfacePtr & _programVariable
-            , const RenderVertex2D * _vertices, uint32_t _vertexCount
-            , const RenderIndex * _indices, uint32_t _indexCount
-            , const mt::box2f * _bb, bool _debug, const DocumentInterfacePtr & _doc ) override;
+        void addRenderObject( const RenderContext * _context, const RenderMaterialInterfacePtr & _material, const RenderProgramVariableInterfacePtr & _programVariable, const RenderVertex2D * _vertices, uint32_t _vertexCount, const RenderIndex * _indices, uint32_t _indexCount, const mt::box2f * _bb, uint32_t _flags, const DocumentInterfacePtr & _doc ) override;
 
-        void addRenderQuad( const RenderContext * _context
-            , const RenderMaterialInterfacePtr & _material
-            , const RenderVertex2D * _vertices, uint32_t _vertexCount
-            , const mt::box2f * _bb, bool _debug, const DocumentInterfacePtr & _doc ) override;
+        void addRenderQuad( const RenderContext * _context, const RenderMaterialInterfacePtr & _material, const RenderProgramVariableInterfacePtr & _programVariable, const RenderVertex2D * _vertices, uint32_t _vertexCount, const mt::box2f * _bb, uint32_t _flags, const DocumentInterfacePtr & _doc ) override;
 
-        void addRenderLine( const RenderContext * _context
-            , const RenderMaterialInterfacePtr & _material
-            , const RenderVertex2D * _vertices, uint32_t _vertexCount
-            , const mt::box2f * _bb, bool _debug, const DocumentInterfacePtr & _doc ) override;
+        void addRenderLine( const RenderContext * _context, const RenderMaterialInterfacePtr & _material, const RenderVertex2D * _vertices, uint32_t _vertexCount, const mt::box2f * _bb, uint32_t _flags, const DocumentInterfacePtr & _doc ) override;
 
     public:
         void addRenderExternal( const RenderContext * _context

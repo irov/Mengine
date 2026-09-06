@@ -1,3 +1,0 @@
-LIBRARY "Win32XlsExportPlugin"
-EXPORTS
-    dllMengineCreatePlugin @1

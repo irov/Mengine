@@ -191,14 +191,14 @@ namespace Mengine
         {
             const WindowEdge & edge = m_edge[ResourceWindow_Background];
 
-            _renderPipeline->addRenderQuad( _context, edge.material, &vertices[0 * 4], 4, bb, false, MENGINE_DOCUMENT_FORWARD );
+            _renderPipeline->addRenderQuad( _context, edge.material, nullptr, &vertices[0 * 4], 4, bb, EROF_NONE, MENGINE_DOCUMENT_FORWARD );
         }
 
         for( uint32_t i = 1; i != ResourceWindow_Count; ++i )
         {
             const WindowEdge & edge = m_edge[i];
 
-            _renderPipeline->addRenderQuad( _context, edge.material, &vertices[i * 4], 4, bb, false, MENGINE_DOCUMENT_FORWARD );
+            _renderPipeline->addRenderQuad( _context, edge.material, nullptr, &vertices[i * 4], 4, bb, EROF_NONE, MENGINE_DOCUMENT_FORWARD );
         }
     }
     //////////////////////////////////////////////////////////////////////////

@@ -124,10 +124,10 @@ namespace Mengine
 
         VectorMetrics::size_type oldSize = m_metrics.size();
 
-        m_metrics.erase( StdAlgorithm::remove_if( m_metrics.begin(), m_metrics.end(), [_owner]( const MetricEntry & _entry )
+        StdAlgorithm::erase_if( m_metrics, [_owner]( const MetricEntry & _entry )
         {
             return _entry.snapshot.desc.owner == _owner;
-        } ), m_metrics.end() );
+        } );
 
         uint32_t count = (uint32_t)(oldSize - m_metrics.size());
 

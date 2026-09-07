@@ -34,10 +34,10 @@ namespace Mengine
         m_handlers.insert( m_handlers.end(), m_handlersAdd.begin(), m_handlersAdd.end() );
         m_handlersAdd.clear();
 
-        m_handlers.erase( StdAlgorithm::remove_if( m_handlers.begin(), m_handlers.end(), []( const GlobalHandlerDesc & _handle )
+        StdAlgorithm::erase_if( m_handlers, []( const GlobalHandlerDesc & _handle )
         {
             return _handle.dead;
-        } ), m_handlers.end() );
+        } );
 
         for( const GlobalHandlerDesc & desc : m_handlers )
         {
@@ -396,12 +396,10 @@ namespace Mengine
         m_handlers.insert( m_handlers.end(), m_handlersAdd.begin(), m_handlersAdd.end() );
         m_handlersAdd.clear();
 
-        VectorGlobalHandler::iterator it_erase = StdAlgorithm::remove_if( m_handlers.begin(), m_handlers.end(), []( const GlobalHandlerDesc & _handle )
+        StdAlgorithm::erase_if( m_handlers, []( const GlobalHandlerDesc & _handle )
         {
             return _handle.dead;
         } );
-
-        m_handlers.erase( it_erase, m_handlers.end() );
     }
     //////////////////////////////////////////////////////////////////////////
 }

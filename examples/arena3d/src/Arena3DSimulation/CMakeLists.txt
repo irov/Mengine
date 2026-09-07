@@ -24,7 +24,7 @@ add_library(Arena3DSimulation STATIC
 target_include_directories(Arena3DSimulation PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(Arena3DSimulation PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../../../../src)
 target_include_directories(Arena3DSimulation PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../../resources/Data/generated/include)
-target_compile_features(Arena3DSimulation PUBLIC cxx_std_17)
+target_compile_features(Arena3DSimulation PUBLIC cxx_std_20)
 target_compile_definitions(Arena3DSimulation PRIVATE MENGINE_LIBRARY_NAME="Arena3DSimulation" MENGINE_LIBRARY_STATIC)
 add_dependencies(Arena3DSimulation Arena3DContent)
 

@@ -2,7 +2,7 @@
 
 #include "Config/Char.h"
 
-#include <type_traits>
+#include "Config/StdDef.h"
 
 namespace Mengine
 {
@@ -14,10 +14,13 @@ namespace Mengine
 
     namespace Detail
     {
-        template<size_t N, typename = std::enable_if_t<(N <= MENGINE_MAX_THREAD_NAME + 1)>>
-        ThreadDescription validateThreadDescription( const Char( &nameA )[N], const WChar( &nameW )[N] )
+        template<size_t N>
+            requires (N <= MENGINE_MAX_THREAD_NAME + 1)
+        ThreadDescription validateThreadDescription( const Char( &_nameA )[N], const WChar( &_nameW )[N] )
         {
-            return ThreadDescription{nameA, nameW};
+            ThreadDescription desc{_nameA, _nameW};
+
+            return desc;
         }
     }
 }

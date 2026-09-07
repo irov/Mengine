@@ -55,15 +55,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void LifecycleService::_finalizeService()
     {
-        m_lifecycles.erase( StdAlgorithm::remove_if( m_lifecycles.begin(), m_lifecycles.end(), []( const LifecycleDesc & _desc )
+        StdAlgorithm::erase_if( m_lifecycles, []( const LifecycleDesc & _desc )
         {
             return _desc.lifecycle == nullptr;
-        } ), m_lifecycles.end() );
+        } );
 
-        m_lifecyclesAdd.erase( StdAlgorithm::remove_if( m_lifecyclesAdd.begin(), m_lifecyclesAdd.end(), []( const LifecycleDesc & _desc )
+        StdAlgorithm::erase_if( m_lifecyclesAdd, []( const LifecycleDesc & _desc )
         {
             return _desc.lifecycle == nullptr;
-        } ), m_lifecyclesAdd.end() );
+        } );
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
         for( const LifecycleDesc & desc : m_lifecycles )

@@ -202,7 +202,7 @@ namespace Mengine
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_memoryCacheMutex );
 
-        m_buffers.erase( StdAlgorithm::remove_if( m_buffers.begin(), m_buffers.end(), []( const CacheBufferMemory & _buffer )
+        StdAlgorithm::erase_if( m_buffers, []( const CacheBufferMemory & _buffer )
         {
             if( _buffer.lock == true )
             {
@@ -212,7 +212,7 @@ namespace Mengine
             Helper::deallocateMemory( _buffer.memory, "memory" );
 
             return true;
-        } ), m_buffers.end() );
+        } );
     }
     //////////////////////////////////////////////////////////////////////////
     MemoryBufferInterfacePtr MemoryService::createMemoryCacheBuffer( const DocumentInterfacePtr & _doc )

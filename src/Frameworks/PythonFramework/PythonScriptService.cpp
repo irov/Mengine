@@ -808,8 +808,7 @@ namespace Mengine
 
         for( const ScriptModulePackage & pack : _modules )
         {
-            m_bootstrapperModules.erase(
-                StdAlgorithm::remove_if( m_bootstrapperModules.begin(), m_bootstrapperModules.end(), [&pack]( const ScriptModulePackage & _pack )
+            StdAlgorithm::erase_if( m_bootstrapperModules, [&pack]( const ScriptModulePackage & _pack )
             {
                 if( _pack.module < pack.module )
                 {
@@ -825,9 +824,7 @@ namespace Mengine
                 }
 
                 return true;
-            } )
-                , m_bootstrapperModules.end()
-                );
+            } );
         }
     }
     //////////////////////////////////////////////////////////////////////////

@@ -20,6 +20,8 @@
 #include "Kernel/NodeCast.h"
 #include "Kernel/VocabularyHelper.h"
 
+#include "Config/StdIO.h"
+
 #include "figma/figma.hpp"
 
 #include "imgui.h"

@@ -156,6 +156,7 @@ src
     StdSetJMP.h
     StdException.h
     StdAlgorithm.h
+    StdBit.h
     StdNumeric.h
     StdIterator.h
     StdUtility.h

@@ -29,6 +29,8 @@ MESSAGE("CMAKE_SOURCE_DIR: ${CMAKE_SOURCE_DIR}")
 MESSAGE("CMAKE_BINARY_DIR: ${CMAKE_BINARY_DIR}")
 MESSAGE("*********************************************")
 
+INCLUDE(${CMAKE_CURRENT_LIST_DIR}/cxx_standard_template.cmake)
+
 MACRO(MESSAGE_COLOR COLOR TEXT)
     string(ASCII 27 ESCAPE)
     

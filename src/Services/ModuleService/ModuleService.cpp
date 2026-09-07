@@ -104,10 +104,10 @@ namespace Mengine
         {
             m_modules.emplace_back( module );
 
-            m_waits.erase( StdAlgorithm::remove_if( m_waits.begin(), m_waits.end(), [_name]( const WaitModuleDesc & _desc )
+            StdAlgorithm::erase_if( m_waits, [_name]( const WaitModuleDesc & _desc )
             {
                 return _desc.name == _name;
-            } ), m_waits.end() );
+            } );
         }
 
         return true;
@@ -135,10 +135,10 @@ namespace Mengine
 
         module->finalizeModule();
 
-        m_leaves.erase( StdAlgorithm::remove_if( m_leaves.begin(), m_leaves.end(), [_name]( const LeaveModuleDesc & _desc )
+        StdAlgorithm::erase_if( m_leaves, [_name]( const LeaveModuleDesc & _desc )
         {
             return _desc.name == _name;
-        } ), m_leaves.end() );
+        } );
 
         return true;
     }

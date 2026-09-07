@@ -3,6 +3,8 @@
 #include "Config/Config.h"
 
 #include <algorithm>
+#include <string>
+#include <vector>
 
 namespace Mengine
 {
@@ -11,6 +13,7 @@ namespace Mengine
         using std::find;
         using std::find_if;
         using std::remove_if;
+        using std::erase_if;
         using std::for_each;
         using std::transform;
         using std::generate_n;

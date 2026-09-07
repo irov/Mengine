@@ -628,8 +628,7 @@ namespace Mengine
 
         const FileGroupInterfacePtr & fileGroup = _content->getFileGroup();
 
-        m_packages.erase(
-            StdAlgorithm::remove_if( m_packages.begin(), m_packages.end(), [fileGroup]( const TextLocalePackagePtr & _pack )
+        StdAlgorithm::erase_if( m_packages, [fileGroup]( const TextLocalePackagePtr & _pack )
         {
             const ContentInterfacePtr & packContent = _pack->getContent();
 
@@ -641,7 +640,7 @@ namespace Mengine
             _pack->finalize();
 
             return true;
-        } ), m_packages.end() );
+        } );
 
         return true;
     }

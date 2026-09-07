@@ -111,12 +111,10 @@ namespace Mengine
             desc.lambda( desc.id );
         }
 
-        VectorTimers::iterator it_erase = StdAlgorithm::remove_if( m_timers.begin(), m_timers.end(), []( const TimerDesc & _desc )
+        StdAlgorithm::erase_if( m_timers, []( const TimerDesc & _desc )
         {
             return _desc.id == INVALID_UNIQUE_ID;
         } );
-
-        m_timers.erase( it_erase, m_timers.end() );
     }
     //////////////////////////////////////////////////////////////////////////
 }

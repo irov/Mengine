@@ -95,7 +95,7 @@ namespace Mengine
     template<class T>
     void ResourceCacher<T>::unlock()
     {
-        m_cachers.erase( StdAlgorithm::remove_if( m_cachers.begin(), m_cachers.end(), []( ResourceCacher<T>::ResourceCacherDesc & _desc )
+        StdAlgorithm::erase_if( m_cachers, []( ResourceCacher<T>::ResourceCacherDesc & _desc )
         {
             _desc.lock = false;
 
@@ -109,7 +109,7 @@ namespace Mengine
             _desc.value = nullptr;
 
             return true;
-        } ), m_cachers.end() );
+        } );
     }
     //////////////////////////////////////////////////////////////////////////
     template<class T>

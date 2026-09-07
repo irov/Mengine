@@ -192,19 +192,15 @@ namespace Mengine
             }
         }
 
-        VectorAreaOfInterestActors::iterator it_actors_erase = StdAlgorithm::remove_if( m_actors.begin(), m_actors.end(), []( const AreaOfInterestActorDesc & _desc )
+        StdAlgorithm::erase_if( m_actors, []( const AreaOfInterestActorDesc & _desc )
         {
             return _desc.dead;
         } );
 
-        m_actors.erase( it_actors_erase, m_actors.end() );
-
-        VectorAreaOfInterestTriggers::iterator it_triggers_erase = StdAlgorithm::remove_if( m_triggers.begin(), m_triggers.end(), []( const AreaOfInterestTriggerDesc & _desc )
+        StdAlgorithm::erase_if( m_triggers, []( const AreaOfInterestTriggerDesc & _desc )
         {
             return _desc.dead;
         } );
-
-        m_triggers.erase( it_triggers_erase, m_triggers.end() );
 
         for( const AreaOfInterestTriggerDesc & descTrigger : m_triggers )
         {

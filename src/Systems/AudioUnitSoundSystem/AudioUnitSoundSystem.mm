@@ -649,7 +649,10 @@ namespace Mengine
 
         _format->mSampleRate = _sampleRate;
         _format->mFormatID = kAudioFormatLinearPCM;
-        _format->mFormatFlags = kAudioFormatFlagsNativeFloatPacked | kAudioFormatFlagIsNonInterleaved;
+        AudioFormatFlags formatFlags = static_cast<AudioFormatFlags>(kAudioFormatFlagsNativeFloatPacked);
+        formatFlags |= static_cast<AudioFormatFlags>(kAudioFormatFlagIsNonInterleaved);
+
+        _format->mFormatFlags = formatFlags;
         _format->mBytesPerPacket = sizeof( Float32 );
         _format->mFramesPerPacket = 1;
         _format->mBytesPerFrame = sizeof( Float32 );

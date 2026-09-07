@@ -3,48 +3,42 @@
 #include "Kernel/String.h"
 #include "Kernel/Stringstream.h"
 
-#include <type_traits>
+#include "Config/StdUtility.h"
+#include "Config/TypeTraits.h"
 
 namespace Mengine
 {
     namespace Helper
     {
+        //////////////////////////////////////////////////////////////////////////
         namespace Detail
         {
-            // SFINAE helper to check if type can be streamed
-            // Check with std::decay_t<T> as const& to match real usage patterns
-            template<typename T, typename = void>
-            struct is_streamable : std::false_type {};
-
-            template<typename T>
-            struct is_streamable<T, std::void_t<decltype( std::declval<Stringstream &>() << std::declval<const std::decay_t<T> &>() )>> : std::true_type {};
-
-            // Helper function to output value if streamable
-            template<typename T>
-            typename std::enable_if<is_streamable<T>::value, Stringstream &>::type
-            outputArg( Stringstream & stream, T && arg )
+            //////////////////////////////////////////////////////////////////////////
+            template<class T>
+            void outputArg( Stringstream & _stream, T & _arg )
             {
-                stream << std::forward<T>( arg );
-                return stream;
+                if constexpr( requires ( Stringstream & _output, const TypeTraits::decay_t<T> & _value ) { _output << _value; } )
+                {
+                    _stream << StdUtility::forward<T>( _arg );
+                }
+                else
+                {
+                    _stream << "UNKNOWN";
+                }
             }
-
-            // Helper function to output "UNKNOWN" if not streamable
-            template<typename T>
-            typename std::enable_if<!is_streamable<T>::value, Stringstream &>::type
-            outputArg( Stringstream & stream, T && /*arg*/ )
-            {
-                stream << "UNKNOWN";
-                return stream;
-            }
+            //////////////////////////////////////////////////////////////////////////
         }
-
-        template<typename ... Args>
+        //////////////////////////////////////////////////////////////////////////
+        template<class ... Args>
         String argsToString( Args && ... _args )
         {
             Stringstream stream;
-            ((Detail::outputArg( stream, std::forward<Args>( _args ) ), stream << ", "), ...);
+            ((Detail::outputArg<Args>( stream, _args ), stream << ", "), ...);
 
-            return stream.str();
+            String result = stream.str();
+
+            return result;
         }
+        //////////////////////////////////////////////////////////////////////////
     }
 }

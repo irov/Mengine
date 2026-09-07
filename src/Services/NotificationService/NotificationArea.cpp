@@ -248,10 +248,10 @@ namespace Mengine
         {
             ++m_visiting;
 
-            m_observers.erase( StdAlgorithm::remove_if( m_observers.begin(), m_observers.end(), []( const ObserverDesc & _desc )
+            StdAlgorithm::erase_if( m_observers, []( const ObserverDesc & _desc )
             {
                 return _desc.observer == nullptr;
-            } ), m_observers.end() );
+            } );
 
             MENGINE_ASSERTION_FATAL( m_visiting != 0, "invalid visiting" );
 

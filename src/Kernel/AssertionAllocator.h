@@ -6,7 +6,7 @@
 #   include "Interface/AllocatorSystemInterface.h"
 #   include "Interface/UnknownAllocatorDebugReportInterface.h"
 
-#   define MENGINE_ASSERTION_ALLOCATOR(C) ([=](){\
+#   define MENGINE_ASSERTION_ALLOCATOR(C) ([&](){\
         Mengine::UnknownAllocatorDebugReportInterface * debugReport = ALLOCATOR_SYSTEM()->getUnknown();\
         if( debugReport == nullptr ){ return; }\
         size_t alloc_count = debugReport->findAllocatorReportInfo( C );\

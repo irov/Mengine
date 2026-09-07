@@ -254,7 +254,7 @@ namespace Mengine
 
                     resourceImage->release();
 
-                    m_materials.erase( StdAlgorithm::remove_if( m_materials.begin(), m_materials.end(), [resourceImage]( const MagicMaterialDesc & _desc )
+                    StdAlgorithm::erase_if( m_materials, [resourceImage]( const MagicMaterialDesc & _desc )
                     {
                         for( uint32_t index = 0; index != _desc.imageCount; ++index )
                         {
@@ -265,7 +265,7 @@ namespace Mengine
                         }
 
                         return false;
-                    } ), m_materials.end() );
+                    } );
 
                     m_atlases.erase( it_remove );
                 }break;

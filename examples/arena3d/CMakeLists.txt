@@ -1,6 +1,8 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.24)
 
 project(Arena3DHeadless LANGUAGES C CXX)
+
+include(${CMAKE_CURRENT_LIST_DIR}/../../cmake/cxx_standard_template.cmake)
 
 if(CMAKE_SIZEOF_VOID_P EQUAL 4)
     add_compile_definitions(MENGINE_ENVIRONMENT_ARCHITECTURE_X86)

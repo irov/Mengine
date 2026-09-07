@@ -5,7 +5,7 @@ branches:
   - master
 
 image:
-- Visual Studio 2019
+- Visual Studio 2022
 
 configuration:
 - Debug
@@ -14,19 +14,19 @@ configuration:
 environment:
   matrix:
     - ARCHITECTURE: Win32
-      GENERATOR: Visual Studio 16 2019
+      GENERATOR: Visual Studio 17 2022
       CMAKE_DEPENDENCIES_DIR: Depends_WIN32
       CMAKE_SOLUTION_DIR: Win32
     - ARCHITECTURE: x64
-      GENERATOR: Visual Studio 16 2019
+      GENERATOR: Visual Studio 17 2022
       CMAKE_DEPENDENCIES_DIR: Depends_WIN64
       CMAKE_SOLUTION_DIR: Win64
     - ARCHITECTURE: Win32
-      GENERATOR: Visual Studio 16 2019
+      GENERATOR: Visual Studio 17 2022
       CMAKE_DEPENDENCIES_DIR: Depends_WIN32
       CMAKE_SOLUTION_DIR: Tools_Win32
     - ARCHITECTURE: x64
-      GENERATOR: Visual Studio 16 2019
+      GENERATOR: Visual Studio 17 2022
       CMAKE_DEPENDENCIES_DIR: Depends_WIN64
       CMAKE_SOLUTION_DIR: Tools_Win64
       
@@ -50,14 +50,14 @@ build_script:
 - echo "Build %CMAKE_DEPENDENCIES_DIR%"
 - mkdir cmake_dependencies
 - cd cmake_dependencies
-- cmake -G "%GENERATOR%" -A %ARCHITECTURE% -S "..\cmake\%CMAKE_DEPENDENCIES_DIR%" -DCMAKE_BUILD_TYPE=%configuration% -DCMAKE_SYSTEM_VERSION="10.0.18362"
+- cmake -G "%GENERATOR%" -A %ARCHITECTURE% -S "..\cmake\%CMAKE_DEPENDENCIES_DIR%" -DCMAKE_BUILD_TYPE=%configuration%
 - cmake --build . -j 8 --config %configuration% -- /verbosity:minimal
 - cd ..
 
 - echo "Build Solution %CMAKE_SOLUTION_DIR%"
 - mkdir cmake_solution
 - cd cmake_solution
-- cmake -G "%GENERATOR%" -A %ARCHITECTURE% -S "..\cmake\%CMAKE_SOLUTION_DIR%" -DCMAKE_BUILD_TYPE=%configuration% -DCMAKE_SYSTEM_VERSION="10.0.18362"
+- cmake -G "%GENERATOR%" -A %ARCHITECTURE% -S "..\cmake\%CMAKE_SOLUTION_DIR%" -DCMAKE_BUILD_TYPE=%configuration%
 - cmake --build . -j 8 --config %configuration% -- /verbosity:minimal
 - cd ..
 

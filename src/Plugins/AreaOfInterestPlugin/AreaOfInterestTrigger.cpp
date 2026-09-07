@@ -40,12 +40,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AreaOfInterestTrigger::updateActors()
     {
-        VectorAreaOfInterestActors::iterator it_m_actors_erase = StdAlgorithm::remove_if( m_actors.begin(), m_actors.end(), []( const AreaOfInterestActorDesc & _desc )
+        StdAlgorithm::erase_if( m_actors, []( const AreaOfInterestActorDesc & _desc )
         {
             return _desc.dead;
         } );
-
-        m_actors.erase( it_m_actors_erase, m_actors.end() );
     }
     //////////////////////////////////////////////////////////////////////////
     bool AreaOfInterestTrigger::testActor( const AreaOfInterestActorPtr & _actor ) const

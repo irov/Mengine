@@ -1,5 +1,7 @@
 #include "ImGUIFrameworkPlugin.h"
 
+#include "Interface/ServiceInterface.h"
+
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/VocabularyHelper.h"
 #include "Kernel/PluginHelper.h"

@@ -198,10 +198,10 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static String normalizeFontName( String _value )
         {
-            _value.erase( StdAlgorithm::remove_if( _value.begin(), _value.end(), []( Char _ch )
+            StdAlgorithm::erase_if( _value, []( Char _ch )
             {
                 return _ch == ' ' || _ch == '-';
-            } ), _value.end() );
+            } );
 
             return Detail::toLowerString( _value );
         }

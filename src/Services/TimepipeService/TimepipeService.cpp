@@ -29,10 +29,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TimepipeService::_finalizeService()
     {
-        m_timepipe.erase( StdAlgorithm::remove_if( m_timepipe.begin(), m_timepipe.end(), []( const TimepipeDesc & _desc )
+        StdAlgorithm::erase_if( m_timepipe, []( const TimepipeDesc & _desc )
         {
             return _desc.timepipe == nullptr;
-        } ), m_timepipe.end() );
+        } );
 
 #if defined(MENGINE_DOCUMENT_ENABLE)
         for( const TimepipeDesc & desc : m_timepipe )
@@ -285,10 +285,10 @@ namespace Mengine
 
         m_timeendCallbacksAux.clear();
 
-        m_timepipe.erase( StdAlgorithm::remove_if( m_timepipe.begin(), m_timepipe.end(), []( const TimepipeDesc & _desc )
+        StdAlgorithm::erase_if( m_timepipe, []( const TimepipeDesc & _desc )
         {
             return _desc.timepipe == nullptr;
-        } ), m_timepipe.end() );
+        } );
     }
     //////////////////////////////////////////////////////////////////////////
 }

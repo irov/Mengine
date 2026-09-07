@@ -4,12 +4,8 @@
 #   define MENGINE_COMPILER_MSVC
 #   if _MSC_VER >= 1930
 #       define MENGINE_COMPILER_MSVC17
-#   elif _MSC_VER >= 1920
-#       define MENGINE_COMPILER_MSVC16
-#   elif _MSC_VER >= 1910
-#       define MENGINE_COMPILER_MSVC15
-#   elif _MSC_VER >= 1900
-#       define MENGINE_COMPILER_MSVC14
+#   elif !defined(__clang__)
+#       error "Mengine requires Visual Studio 2022 or newer (MSVC 19.30+)"
 #   endif
 #elif defined(__GNUC__)
 #   define MENGINE_COMPILER_GCC

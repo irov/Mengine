@@ -50,10 +50,10 @@ namespace Mengine
         m_schedulers.insert( m_schedulers.end(), m_schedulersAdd.begin(), m_schedulersAdd.end() );
         m_schedulersAdd.clear();
 
-        m_schedulers.erase( StdAlgorithm::remove_if( m_schedulers.begin(), m_schedulers.end(), []( const SchedulerEventDesc & _desc )
+        StdAlgorithm::erase_if( m_schedulers, []( const SchedulerEventDesc & _desc )
         {
             return _desc.dead;
-        } ), m_schedulers.end() );
+        } );
 
         for( const SchedulerEventDesc & desc : m_schedulers )
         {
@@ -342,12 +342,10 @@ namespace Mengine
             m_schedulersAdd.clear();
         }
 
-        VectorSchedulers::iterator it_erase = StdAlgorithm::remove_if( m_schedulers.begin(), m_schedulers.end(), []( const SchedulerEventDesc & _event )
+        StdAlgorithm::erase_if( m_schedulers, []( const SchedulerEventDesc & _event )
         {
             return _event.dead;
         } );
-
-        m_schedulers.erase( it_erase, m_schedulers.end() );
 
         for( SchedulerEventDesc & desc : m_schedulers )
         {

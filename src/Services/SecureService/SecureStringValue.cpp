@@ -3,12 +3,14 @@
 #include "Interface/SecureServiceInterface.h"
 
 #include "Kernel/CRC32.h"
+#include "Kernel/Array.h"
 #include "Kernel/Data.h"
 #include "Kernel/ContainerReader.h"
 #include "Kernel/ContainerWriter.h"
 #include "Kernel/Ravingcode.h"
 #include "Kernel/Hexadecimal.h"
 
+#include "Config/StdBit.h"
 #include "Config/StdIO.h"
 #include "Config/StdLib.h"
 #include "Config/StdString.h"
@@ -31,13 +33,10 @@ namespace Mengine
         const Char * value_str = _value.c_str();
         String::size_type value_size = _value.size();
 
-        union
-        {
-            uint32_t hash32;
-            uint8_t hash8[4];
-        };
+        uint32_t hash32 = Helper::makeCRC32( value_str, value_size );
 
-        hash32 = Helper::makeCRC32( value_str, value_size );
+        typedef Array<uint8_t, sizeof( uint32_t )> HashBytes;
+        HashBytes hash8 = StdBit::bit_cast<HashBytes>( hash32 );
 
         m_value.resize( value_size );
 
@@ -78,13 +77,8 @@ namespace Mengine
             return false;
         }
 
-        union
-        {
-            uint32_t hash32;
-            uint8_t hash8[4];
-        };
-
-        hash32 = m_hash;
+        typedef Array<uint8_t, sizeof( uint32_t )> HashBytes;
+        HashBytes hash8 = StdBit::bit_cast<HashBytes>( m_hash );
 
         _value->resize( value_size );
 

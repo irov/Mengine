@@ -215,9 +215,13 @@ int main( int argc, char ** argv )
                 const double dy = kf_fixed_to_double( target->position.y ) - kf_fixed_to_double( self->position.y );
                 const double dz = kf_fixed_to_double( target->position.z ) - kf_fixed_to_double( self->position.z );
                 const double horizontal = Mengine::StdMath::sqrt( dx * dx + dz * dz );
-                const kf_angle16_t targetYaw = kf_angle16_from_fixed_radians( kf_fixed_from_float( static_cast<float>(Mengine::StdMath::atan2( dx, dz )) ) );
+                double targetYawRadians = Mengine::StdMath::atan2( dx, dz );
+                kf_fixed_t targetYawFixed = kf_fixed_from_double( targetYawRadians );
+                kf_angle16_t targetYaw = kf_angle16_from_fixed_radians( targetYawFixed );
                 const kf_angle16_t desiredYaw = stateTick < avoidUntilTick ? avoidYaw : targetYaw;
-                const kf_sangle16_t desiredPitch = kf_sangle16_from_fixed_radians( kf_fixed_from_float( static_cast<float>(Mengine::StdMath::atan2( dy, horizontal )) ) );
+                double desiredPitchRadians = Mengine::StdMath::atan2( dy, horizontal );
+                kf_fixed_t desiredPitchFixed = kf_fixed_from_double( desiredPitchRadians );
+                kf_sangle16_t desiredPitch = kf_sangle16_from_fixed_radians( desiredPitchFixed );
                 Arena3D::CommandPayload look;
                 const int32_t yawDelta = static_cast<int16_t>(static_cast<uint16_t>(desiredYaw - self->yaw));
                 look.lookYaw = static_cast<kf_sangle16_t>(Mengine::StdAlgorithm::clamp<int32_t>( yawDelta, -4096, 4096 ));

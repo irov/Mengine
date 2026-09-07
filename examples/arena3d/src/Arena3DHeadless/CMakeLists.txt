@@ -9,12 +9,12 @@ src
 ADD_MENGINE_LIBRARY(Game)
 
 TARGET_INCLUDE_DIRECTORIES(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel ProviderService EnumeratorService StringizeService DocumentService StatisticService SocketService)
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel ProviderService EnumeratorService StringizeService DocumentService StatisticService SocketService ${MENGINE_SYSTEM_ALLOCATOR})
 
 if(MENGINE_TARGET_WINDOWS)
-    TARGET_LINK_LIBRARIES(${PROJECT_NAME} DebugAllocatorSystem Win32TimeSystem Win32ThreadSystem Win32SocketSystem ws2_32)
+    TARGET_LINK_LIBRARIES(${PROJECT_NAME} Win32TimeSystem Win32ThreadSystem Win32SocketSystem ws2_32)
 elseif(MENGINE_TARGET_MACOS OR MENGINE_TARGET_UNIX)
-    TARGET_LINK_LIBRARIES(${PROJECT_NAME} DebugAllocatorSystem POSIXTimeSystem POSIXThreadSystem POSIXSocketSystem)
+    TARGET_LINK_LIBRARIES(${PROJECT_NAME} POSIXTimeSystem POSIXThreadSystem POSIXSocketSystem)
 else()
     message(FATAL_ERROR "Arena3DHeadless requires Windows, macOS, or Unix")
 endif()

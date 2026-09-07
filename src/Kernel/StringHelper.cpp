@@ -49,33 +49,75 @@ namespace Mengine
             return String( buffer );
         }
         //////////////////////////////////////////////////////////////////////////
+        String stringInt64( int64_t _value )
+        {
+            constexpr size_t bufferCapacity = 20 + 1;
+            Char buffer[bufferCapacity] = {'\0'};
+            MENGINE_SNPRINTF( buffer, bufferCapacity, "%" MENGINE_PRId64, _value );
+
+            String result( buffer );
+
+            return result;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        String stringUInt32( uint32_t _value )
+        {
+            constexpr size_t bufferCapacity = 10 + 1;
+            Char buffer[bufferCapacity] = {'\0'};
+            MENGINE_SNPRINTF( buffer, bufferCapacity, "%" MENGINE_PRIu32, _value );
+
+            String result( buffer );
+
+            return result;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        String stringUInt64( uint64_t _value )
+        {
+            constexpr size_t bufferCapacity = 20 + 1;
+            Char buffer[bufferCapacity] = {'\0'};
+            MENGINE_SNPRINTF( buffer, bufferCapacity, "%" MENGINE_PRIu64, _value );
+
+            String result( buffer );
+
+            return result;
+        }
+        //////////////////////////////////////////////////////////////////////////
         String stringFloat( float _value )
+        {
+            String result = Helper::stringDouble( _value );
+
+            return result;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        String stringDouble( double _value )
         {
             Char buffer[2048 + 1] = {'\0'};
             MENGINE_SNPRINTF( buffer, 2048, "%.1024f", _value );
 
-            Char * float_point = StdString::strchr( buffer, '.' );
+            Char * decimalPoint = StdString::strchr( buffer, '.' );
 
-            if( float_point != nullptr )
+            if( decimalPoint != nullptr )
             {
-                size_t len = StdString::strlen( float_point );
+                size_t len = StdString::strlen( decimalPoint );
 
-                Char * end_buffer = float_point + len;
+                Char * endBuffer = decimalPoint + len;
 
-                --end_buffer;
+                --endBuffer;
 
-                for( ; end_buffer != float_point; --end_buffer )
+                for( ; endBuffer != decimalPoint; --endBuffer )
                 {
-                    if( *end_buffer != '0' )
+                    if( *endBuffer != '0' )
                     {
-                        *(end_buffer + 1) = 0;
+                        *(endBuffer + 1) = 0;
 
                         break;
                     }
                 }
             }
 
-            return String( buffer );
+            String result( buffer );
+
+            return result;
         }
         //////////////////////////////////////////////////////////////////////////
         void split( VectorString * const _outStrings, const String & _str, bool _trimDelims, const String & _delim )

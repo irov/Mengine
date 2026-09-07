@@ -1963,8 +1963,8 @@ namespace Mengine
             }break;
         case jpp::e_type::JPP_REAL:
             {
-                float valueDouble = _object;
-                *_out = Helper::stringFloat( valueDouble );
+                double valueDouble = _object;
+                *_out = Helper::stringDouble( valueDouble );
             }break;
         case jpp::e_type::JPP_FALSE:
             {

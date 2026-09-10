@@ -7,6 +7,7 @@
 #include "Interface/RenderSystemInterface.h"
 
 #include "RenderTexture.h"
+#include "RenderTexturePrefetchQueue.h"
 #include "DecoderRenderImageProvider.h"
 #include "DecoderRenderImageLoader.h"
 
@@ -24,6 +25,7 @@
 #include "Kernel/NotificationHelper.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/FactorableUnique.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( RenderTextureService, Mengine::RenderTextureService );
@@ -50,11 +52,40 @@ namespace Mengine
 
         m_textures.reserve( Engine_TextureHashTableSize );
 
+        m_prefetchQueue = Helper::makeFactorableUnique<RenderTexturePrefetchQueue>( MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_END_UPDATE, &RenderTextureService::notifyApplicationEndUpdate_, MENGINE_DOCUMENT_FACTORABLE );
+
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void RenderTextureService::_stopService()
+    {
+        m_prefetchQueue->stop();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void RenderTextureService::notifyApplicationEndUpdate_()
+    {
+        m_prefetchQueue->update();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    RenderTexturePrefetchInterfacePtr RenderTextureService::prefetchTexture( const ContentInterfacePtr & _content, uint32_t _codecFlags, const LambdaRenderTexturePrefetch & _callback, const DocumentInterfacePtr & _doc )
+    {
+        RenderTexturePrefetchInterfacePtr request = m_prefetchQueue->request( _content, _codecFlags, _callback, _doc );
+
+        return request;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void RenderTextureService::uploadPrefetchedTexture()
+    {
+        m_prefetchQueue->upload();
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderTextureService::_finalizeService()
     {
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_END_UPDATE );
+
+        m_prefetchQueue = nullptr;
+
         for( const MapRenderTextureEntry::value_type & value : m_textures )
         {
             RenderTextureInterface * texture = value.element;
@@ -113,7 +144,7 @@ namespace Mengine
         return RenderTextureInterfacePtr( texture );
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr RenderTextureService::createTexture( uint32_t _mipmaps, uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentInterfacePtr & _doc )
+    RenderTextureInterfacePtr RenderTextureService::createTexture( uint32_t _mipmaps, uint32_t _width, uint32_t _height, EPixelFormat _format, uint32_t _codecFlags, const DocumentInterfacePtr & _doc )
     {
         RenderImageInterfacePtr image = RENDER_SYSTEM()
             ->createImage( _mipmaps, _width, _height, 1, _format, _doc );
@@ -123,7 +154,7 @@ namespace Mengine
             , _height
         );
 
-        RenderTextureInterfacePtr texture = this->createRenderTexture( image, _width, _height, _doc );
+        RenderTextureInterfacePtr texture = this->createRenderTexture( image, _width, _height, _codecFlags, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( texture, "invalid create render texture %ux%u"
             , _width
@@ -276,7 +307,31 @@ namespace Mengine
 
         if( texture != nullptr )
         {
-            return RenderTextureInterfacePtr::from( texture );
+            if( texture->getCodecFlags() != _codecFlags )
+            {
+                LOGGER_ERROR( "incompatible codec flags for cached texture '%s'"
+                    , filePath.c_str()
+                );
+
+                return nullptr;
+            }
+
+            const ContentInterfacePtr & cachedContent = texture->getContent();
+            const ConstString & cachedCodecType = cachedContent->getCodecType();
+            const ConstString & codecType = _content->getCodecType();
+
+            if( cachedCodecType != codecType )
+            {
+                LOGGER_ERROR( "incompatible codec type for cached texture '%s'"
+                    , filePath.c_str()
+                );
+
+                return nullptr;
+            }
+
+            RenderTextureInterfacePtr cachedTexture = RenderTextureInterfacePtr::from( texture );
+
+            return cachedTexture;
         }
 
         if( SERVICE_IS_INITIALIZE( GraveyardServiceInterface ) == true )
@@ -286,6 +341,15 @@ namespace Mengine
 
             if( resurrect_texture != nullptr )
             {
+                if( resurrect_texture->getCodecFlags() != _codecFlags )
+                {
+                    LOGGER_ERROR( "incompatible codec flags for resurrected texture '%s'"
+                        , filePath.c_str()
+                    );
+
+                    return nullptr;
+                }
+
                 this->cacheFileTexture( _content, resurrect_texture );
 
                 return resurrect_texture;
@@ -320,7 +384,7 @@ namespace Mengine
             imageDesc.height = _height;
         }
 
-        RenderTextureInterfacePtr new_texture = this->createTexture( imageDesc.mipmaps, imageDesc.width, imageDesc.height, imageDesc.format, _doc );
+        RenderTextureInterfacePtr new_texture = this->createTexture( imageDesc.mipmaps, imageDesc.width, imageDesc.height, imageDesc.format, _codecFlags, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( new_texture, "create texture '%s' codec '%s'"
             , Helper::getContentFullPath( _content ).c_str()
@@ -375,7 +439,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr RenderTextureService::createRenderTexture( const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height, const DocumentInterfacePtr & _doc )
+    RenderTextureInterfacePtr RenderTextureService::createRenderTexture( const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height, uint32_t _codecFlags, const DocumentInterfacePtr & _doc )
     {
         UniqueId id = Helper::generateUniqueIdentity();
 
@@ -383,7 +447,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( texture, "invalid create render texture" );
 
-        texture->initialize( id, _image, _width, _height );
+        texture->initialize( id, _image, _width, _height, _codecFlags );
 
         return texture;
     }

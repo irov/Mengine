@@ -452,48 +452,46 @@ static volatile BOOL OPERATION_QUEUES_WORKING = YES;
     }];
 }
 
-+ (NSDictionary *)getNSDictionaryFromParams:(const Mengine::Params &) _params {
++ (id)getNSObjectFromParamVariant:(const Mengine::ParamVariant &)_variant {
+    id value = nil;
+
+    Mengine::Helper::visit( _variant
+        , [&value]( const Mengine::ParamNull & _element ) {
+            MENGINE_UNUSED( _element );
+
+            value = NSNull.null;
+        }, [&value]( const Mengine::ParamBool & _element ) {
+            value = [NSNumber numberWithBool:_element];
+        }, [&value]( const Mengine::ParamInteger & _element ) {
+            value = [NSNumber numberWithLongLong:_element];
+        }, [&value]( const Mengine::ParamDouble & _element ) {
+            value = [NSNumber numberWithDouble:_element];
+        }, [&value]( const Mengine::ParamString & _element ) {
+            value = [AppleString NSStringFromString:_element];
+        }, [&value]( const Mengine::ParamWString & _element ) {
+            value = [AppleString NSStringFromUnicode:_element];
+        }, [&value]( const Mengine::ParamConstString & _element ) {
+            value = [AppleString NSStringFromConstString:_element];
+        }, [&value]( const Mengine::ParamFilePath & _element ) {
+            value = [AppleString NSStringFromConstString:_element];
+        }, [&value]( const Mengine::ParamFactorablePtr & _element ) {
+            value = [[AppleFactorablePtr alloc] initWithValue:_element];
+        } );
+
+    return value;
+}
+
++ (NSDictionary *)getNSDictionaryFromParams:(const Mengine::Params &)_params {
     NSMutableDictionary * dictionary = [NSMutableDictionary dictionary];
-    
-    for( auto && [key, value] : _params ) {
-        NSString * ns_key = [AppleString NSStringFromConstString:key];
-        
-        Mengine::Helper::visit( value
-            , [dictionary, ns_key]( const Mengine::ParamNull & _element ) {
-                [dictionary setObject:[NSNull null]
-                               forKey:ns_key];
-            }, [dictionary, ns_key]( const Mengine::ParamBool & _element ) {
-                [dictionary setObject:[NSNumber numberWithBool:_element]
-                               forKey:ns_key];
-            }, [dictionary, ns_key]( const Mengine::ParamInteger & _element ) {
-                [dictionary setObject:[NSNumber numberWithLongLong:_element]
-                               forKey:ns_key];
-            }, [dictionary, ns_key]( const Mengine::ParamDouble & _element ) {
-                [dictionary setObject:[NSNumber numberWithDouble:_element]
-                               forKey:ns_key];
-            }, [dictionary, ns_key]( const Mengine::ParamString & _element ) {
-                NSString * ns_element = [AppleString NSStringFromString:_element];
-            
-                [dictionary setObject:ns_element
-                               forKey:ns_key];
-            }, [dictionary, ns_key]( const Mengine::ParamWString & _element ) {
-                NSString * ns_element = [AppleString NSStringFromUnicode:_element];
-            
-                [dictionary setObject:ns_element
-                               forKey:ns_key];
-            }, [dictionary, ns_key]( const Mengine::ParamConstString & _element ) {
-                NSString * ns_element = [AppleString NSStringFromConstString:_element];
-                
-                [dictionary setObject:ns_element
-                               forKey:ns_key];
-            }, [dictionary, ns_key]( const Mengine::ParamFactorablePtr & _element ) {
-                AppleFactorablePtr * ns_element = [[AppleFactorablePtr alloc] initWithValue:_element];
-                
-                [dictionary setObject:ns_element
-                               forKey:ns_key];
-            } );
+
+    for( const Mengine::Params::value_type & entry : _params ) {
+        NSString * key = [AppleString NSStringFromConstString:entry.first];
+        id value = [AppleDetail getNSObjectFromParamVariant:entry.second];
+
+        [dictionary setObject:value
+                       forKey:key];
     }
-    
+
     return dictionary;
 }
 

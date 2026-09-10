@@ -12,10 +12,6 @@ import org.Mengine.Base.MenginePluginExtensionInterface;
 import org.Mengine.Base.MenginePluginExtensionManager;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineUtils;
-import org.Mengine.Plugin.AdMob.Core.MengineAdMobBannerAdInterface;
-import org.Mengine.Plugin.AdMob.Core.MengineAdMobInterstitialAdInterface;
-import org.Mengine.Plugin.AdMob.Core.MengineAdMobPluginInterface;
-import org.Mengine.Plugin.AdMob.Core.MengineAdMobRewardedAdInterface;
 
 import org.pilot.sdk.Pilot;
 import org.pilot.sdk.PilotLayout;
@@ -26,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MengineAdMobPilotExtension implements MenginePluginExtensionInterface {
-    private MengineAdMobPluginInterface m_plugin;
     private MengineAdService m_adService;
 
     static {
@@ -35,9 +30,7 @@ public class MengineAdMobPilotExtension implements MenginePluginExtensionInterfa
 
     @Override
     public void onExtensionInitialize(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
-        m_plugin = (MengineAdMobPluginInterface) application.findService("AdMob");
-
-        if (m_plugin == null) {
+        if (application.findService("AdMob") == null) {
             throw new MengineServiceInvalidInitializeException("AdMob service not found");
         }
 
@@ -63,45 +56,66 @@ public class MengineAdMobPilotExtension implements MenginePluginExtensionInterfa
         PilotTab tab = ui.addTab("AdMob");
         PilotLayout root = tab.vertical();
 
-        MengineAdMobBannerAdInterface bannerAd = m_plugin.getBannerAd();
-        MengineAdMobInterstitialAdInterface interstitialAd = m_plugin.getInterstitialAd();
-        MengineAdMobRewardedAdInterface rewardedAd = m_plugin.getRewardedAd();
-
-        if (bannerAd != null) {
-            this.setupBanner(root, bannerAd);
-        }
-
-        this.setupAdPoints(root, interstitialAd, rewardedAd);
+        this.setupBanner(root);
+        this.setupTopper(root);
+        this.setupAdPoints(root);
     }
 
-    private void setupBanner(@NonNull PilotLayout root, @NonNull MengineAdMobBannerAdInterface bannerAd) {
+    private void setupBanner(@NonNull PilotLayout root) {
         root.addLabel("Banner").color("primary");
 
         PilotLayout statsRow = root.addHorizontal();
 
         statsRow.addStat("Can Show")
-            .valueProvider(() -> bannerAd.canYouShow() ? "Yes" : "No");
+            .valueProvider(() -> m_adService.canYouShowBanner() ? "Yes" : "No");
 
         statsRow.addStat("Size")
             .unit("px")
-            .valueProvider(() -> bannerAd.getWidthPx() + "x" + bannerAd.getHeightPx());
+            .valueProvider(() -> m_adService.getBannerWidth() + "x" + m_adService.getBannerHeight());
 
         PilotLayout btnsRow = root.addHorizontal();
 
         btnsRow.addButton("Show Banner")
             .variant("contained").color("success")
             .onClick(action -> {
-                bannerAd.show();
+                m_adService.showBanner();
             });
 
         btnsRow.addButton("Hide Banner")
             .variant("outlined").color("warning")
             .onClick(action -> {
-                bannerAd.hide();
+                m_adService.hideBanner();
             });
     }
 
-    private void setupAdPoints(@NonNull PilotLayout root, MengineAdMobInterstitialAdInterface interstitialAd, MengineAdMobRewardedAdInterface rewardedAd) {
+    private void setupTopper(@NonNull PilotLayout root) {
+        root.addLabel("Topper").color("primary");
+
+        PilotLayout statsRow = root.addHorizontal();
+
+        statsRow.addStat("Can Show")
+            .valueProvider(() -> m_adService.canYouShowTopper() ? "Yes" : "No");
+
+        statsRow.addStat("Size")
+            .unit("px")
+            .valueProvider(() -> m_adService.getTopperWidth() + "x" + m_adService.getTopperHeight());
+
+        PilotLayout btnsRow = root.addHorizontal();
+
+        btnsRow.addButton("Show Topper")
+            .variant("contained").color("success")
+            .onClick(action -> {
+                m_adService.showTopper();
+            });
+
+        btnsRow.addButton("Hide Topper")
+            .variant("outlined").color("warning")
+            .onClick(action -> {
+                m_adService.hideTopper();
+            });
+    }
+
+    private void setupAdPoints(@NonNull PilotLayout root) {
         List<MengineAdPointInterstitial> interstitialPoints = new ArrayList<>();
         List<MengineAdPointRewarded> rewardedPoints = new ArrayList<>();
         List<MengineAdPointAppOpen> appOpenPoints = new ArrayList<>();
@@ -115,7 +129,7 @@ public class MengineAdMobPilotExtension implements MenginePluginExtensionInterfa
 
             for (MengineAdPointInterstitial adPoint : interstitialPoints) {
                 PilotLayout content = root.addCollapsible(adPoint.getName());
-                this.setupInterstitialPoint(content, adPoint, interstitialAd);
+                this.setupInterstitialPoint(content, adPoint);
             }
         }
 
@@ -124,7 +138,7 @@ public class MengineAdMobPilotExtension implements MenginePluginExtensionInterfa
 
             for (MengineAdPointRewarded adPoint : rewardedPoints) {
                 PilotLayout content = root.addCollapsible(adPoint.getName());
-                this.setupRewardedPoint(content, adPoint, rewardedAd);
+                this.setupRewardedPoint(content, adPoint);
             }
         }
 
@@ -174,7 +188,7 @@ public class MengineAdMobPilotExtension implements MenginePluginExtensionInterfa
         return formatTimeMs(remaining);
     }
 
-    private void setupInterstitialPoint(@NonNull PilotLayout root, @NonNull MengineAdPointInterstitial adPoint, MengineAdMobInterstitialAdInterface interstitialAd) {
+    private void setupInterstitialPoint(@NonNull PilotLayout root, @NonNull MengineAdPointInterstitial adPoint) {
         String pointName = adPoint.getName();
 
         PilotLayout row1 = root.addHorizontal();
@@ -216,16 +230,14 @@ public class MengineAdMobPilotExtension implements MenginePluginExtensionInterfa
         row3.addStat("Install Offset")
             .valueProvider(() -> formatTimeMs(adPoint.getInstallTimeOffset()));
 
-        if (interstitialAd != null) {
-            root.addButton("Show [" + pointName + "]")
-                .variant("contained").color("primary")
-                .onClick(action -> {
-                    m_plugin.showInterstitial(pointName);
-                });
-        }
+        root.addButton("Show [" + pointName + "]")
+            .variant("contained").color("primary")
+            .onClick(action -> {
+                m_adService.showInterstitial(pointName);
+            });
     }
 
-    private void setupRewardedPoint(@NonNull PilotLayout root, @NonNull MengineAdPointRewarded adPoint, MengineAdMobRewardedAdInterface rewardedAd) {
+    private void setupRewardedPoint(@NonNull PilotLayout root, @NonNull MengineAdPointRewarded adPoint) {
         String pointName = adPoint.getName();
 
         PilotLayout row = root.addHorizontal();
@@ -242,13 +254,17 @@ public class MengineAdMobPilotExtension implements MenginePluginExtensionInterfa
                 return adPoint.getAttempts().getAttempts();
             });
 
-        if (rewardedAd != null) {
-            root.addButton("Show [" + pointName + "]")
-                .variant("contained").color("secondary")
-                .onClick(action -> {
-                    m_plugin.showRewarded(pointName);
-                });
-        }
+        root.addButton("Show [" + pointName + "]")
+            .variant("contained").color("primary")
+            .onClick(action -> {
+                m_adService.showRewarded(pointName);
+            });
+
+        root.addButton("Show rewarded interstitial [" + pointName + "]")
+            .variant("contained").color("secondary")
+            .onClick(action -> {
+                m_adService.showRewardedInterstitial(pointName);
+            });
     }
 
     private void setupAppOpenPoint(@NonNull PilotLayout root, @NonNull MengineAdPointAppOpen adPoint) {

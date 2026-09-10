@@ -2,7 +2,6 @@ package org.Mengine.Plugin.AppLovin.InterstitialAd;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Size;
-import androidx.annotation.StringRes;
 
 import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdExpirationListener;
@@ -20,33 +19,30 @@ import org.Mengine.Base.MengineAdMediation;
 import org.Mengine.Base.MengineAdResponseInterface;
 import org.Mengine.Base.MengineAdService;
 import org.Mengine.Base.MengineAnalyticsEventBuilderInterface;
-import org.Mengine.Base.MengineNative;
 import org.Mengine.Base.MengineNetwork;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineUtils;
+import org.Mengine.Base.MenginePlatformEventQueue;
+import org.Mengine.Base.MengineTag;
 import org.Mengine.Plugin.AppLovin.Core.MengineAppLovinBase;
 import org.Mengine.Plugin.AppLovin.Core.MengineAppLovinInterstitialAdInterface;
 import org.Mengine.Plugin.AppLovin.Core.MengineAppLovinPluginInterface;
-import org.json.JSONObject;
 
 import java.util.Map;
 
 public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implements MengineAppLovinInterstitialAdInterface, MaxAdListener, MaxAdRequestListener, MaxAdRevenueListener, MaxAdExpirationListener, MaxAdReviewListener {
     public static final MengineTag TAG = MengineTag.of("MNGAppLovinInterstitialAd");
 
-    public static final @StringRes int METADATA_INTERSTITIAL_ADUNITID = R.string.mengine_applovin_interstitial_adunitid;
 
     private MaxInterstitialAd m_interstitialAd;
 
     private boolean m_showing = false;
 
-    public MengineAppLovinInterstitialAd(@NonNull MengineAdService adService, @NonNull MengineAppLovinPluginInterface plugin) throws MengineServiceInvalidInitializeException {
-        super(adService, plugin, MaxAdFormat.INTERSTITIAL);
-
-        this.setAdUnitId(METADATA_INTERSTITIAL_ADUNITID, "InterstitialAdUnitId");
+    public MengineAppLovinInterstitialAd(@NonNull MengineAdService adService, @NonNull MengineAppLovinPluginInterface plugin, @NonNull String adUnitId) throws MengineServiceInvalidInitializeException {
+        super(adService, plugin, MaxAdFormat.INTERSTITIAL, adUnitId);
     }
 
-    protected MengineAnalyticsEventBuilderInterface buildInterstitialAdEvent(@Size(min = 1L, max = 40L) String event) {
+    protected MengineAnalyticsEventBuilderInterface buildInterstitialAdEvent(@Size(min = 1, max = 40) String event) {
         MengineAnalyticsEventBuilderInterface builder = this.buildAdEvent("mng_applovin_interstitial_" + event);
 
         return builder;

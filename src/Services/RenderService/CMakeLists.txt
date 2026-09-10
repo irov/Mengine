@@ -10,6 +10,19 @@ src
     RenderTexture.cpp
     RenderTextureService.h
     RenderTextureService.cpp
+    RenderTexturePrefetch.h
+    RenderTexturePrefetch.cpp
+    RenderTexturePrefetchQueueInterface.h
+    RenderTexturePrefetchQueue.h
+    RenderTexturePrefetchQueue.cpp
+    RenderTexturePrefetchJob.h
+    RenderTexturePrefetchJob.cpp
+    ThreadTaskPrefetchTexture.h
+    ThreadTaskPrefetchTexture.cpp
+    PrefetchedRenderImageLoader.h
+    PrefetchedRenderImageLoader.cpp
+    PrefetchedRenderImageProvider.h
+    PrefetchedRenderImageProvider.cpp
     DecoderRenderImageProvider.h
     DecoderRenderImageProvider.cpp
     DecoderRenderImageLoader.h

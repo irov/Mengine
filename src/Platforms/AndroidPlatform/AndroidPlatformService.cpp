@@ -25,6 +25,7 @@
 #include "Environment/Android/AndroidKernelServiceInterface.h"
 
 #include "AndroidAnalyticsEventProvider.h"
+#include "AndroidAttributionProvider.h"
 #include "AndroidProxyLogger.h"
 #include "AndroidDynamicLibrary.h"
 
@@ -978,6 +979,11 @@ namespace Mengine
         ANALYTICS_SERVICE()
             ->addEventProvider( m_analyticsEventProvider );
 
+        m_attributionProvider = Helper::makeFactorableUnique<AndroidAttributionProvider>( MENGINE_DOCUMENT_FACTORABLE );
+
+        ATTRIBUTION_SERVICE()
+            ->addProvider( m_attributionProvider );
+
         AndroidProxyLoggerPtr proxyLogger = Helper::makeFactorableUnique<AndroidProxyLogger>( MENGINE_DOCUMENT_FACTORABLE );
 
         if( LOGGER_SERVICE()
@@ -1024,6 +1030,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::_finalizeService()
     {
+        ATTRIBUTION_SERVICE()
+            ->removeProvider( m_attributionProvider );
+
+        m_attributionProvider = nullptr;
+
         LOGGER_INFO( "platform", "finalize" );
 
         g_androidPlatformActived = false;
@@ -1408,15 +1419,6 @@ namespace Mengine
         jboolean available = Helper::AndroidCallBooleanActivityMethod( jenv, "isNetworkAvailable", "()Z" );
 
         return available == JNI_TRUE;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::removeUserData()
-    {
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
-
-        Helper::AndroidCallVoidActivityMethod( jenv, "removeUserData", "()V" );
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::hasAccountDeletionRestart() const

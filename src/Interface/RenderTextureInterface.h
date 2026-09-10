@@ -17,6 +17,9 @@ namespace Mengine
         : public ServantInterface
     {
     public:
+        virtual uint32_t getCodecFlags() const = 0;
+
+    public:
         virtual void release() = 0;
 
     public:

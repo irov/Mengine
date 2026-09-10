@@ -12,7 +12,9 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_PLATFORM_IOS_ACCELEROMETER)
         static constexpr NSTimeInterval IOS_ACCELEROMETER_UPDATE_INTERVAL = 0.02;
+#endif
         //////////////////////////////////////////////////////////////////////////
         static Timestamp getTouchTimestamp( const UITouch * _touch )
         {
@@ -49,9 +51,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool iOSInput::initialize()
     {
+#if defined(MENGINE_PLATFORM_IOS_ACCELEROMETER)
         m_motionManager = [[CMMotionManager alloc] init];
 
         m_motionManager.accelerometerUpdateInterval = Detail::IOS_ACCELEROMETER_UPDATE_INTERVAL;
+#endif
 
         return true;
     }

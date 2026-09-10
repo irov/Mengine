@@ -9,7 +9,9 @@
 @property (nonatomic, strong) UIViewController * m_launchScreenViewController;
 @property (nonatomic, assign) CGRect m_safeAreaViewport;
 @property (nonatomic, assign) BOOL m_safeAreaViewportValid;
-@property (nonatomic, copy) iOSSafeAreaInsetsDidChangeCallback safeAreaInsetsDidChangeCallback;
+@property (nonatomic, copy) iOSSafeAreaViewportChangedCallback safeAreaViewportChangedCallback;
+
+- (void)updateSafeAreaViewport_;
 
 @end
 
@@ -18,29 +20,51 @@
 - (void)viewSafeAreaInsetsDidChange {
     [super viewSafeAreaInsetsDidChange];
 
-    UIEdgeInsets viewInsets = self.view.safeAreaInsets;
-    CGFloat scale = self.view.contentScaleFactor;
-    CGSize viewSize = self.view.bounds.size;
+    [self updateSafeAreaViewport_];
+}
+
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+
+    [self updateSafeAreaViewport_];
+}
+
+- (void)updateSafeAreaViewport_ {
+    CGRect viewport;
+    if ([self getSafeAreaViewport:&viewport] == NO) {
+        self.m_safeAreaViewportValid = NO;
+        return;
+    }
+
+    if (self.m_safeAreaViewportValid == YES && CGRectEqualToRect(self.m_safeAreaViewport, viewport) == YES) {
+        return;
+    }
+
+    self.m_safeAreaViewport = viewport;
+    self.m_safeAreaViewportValid = YES;
+
+    if (self.safeAreaViewportChangedCallback != nil) {
+        self.safeAreaViewportChangedCallback();
+    }
+}
+
+- (BOOL)getSafeAreaViewport:(CGRect * _Nonnull)viewport {
+    UIView * view = self.viewIfLoaded;
+
+    if (view == nil) {
+        return NO;
+    }
+
+    UIEdgeInsets viewInsets = view.safeAreaInsets;
+    CGFloat scale = view.contentScaleFactor;
+    CGSize viewSize = view.bounds.size;
 
     CGFloat beginX = viewInsets.left * scale;
     CGFloat beginY = viewInsets.top * scale;
     CGFloat endX = (viewSize.width - viewInsets.right) * scale;
     CGFloat endY = (viewSize.height - viewInsets.bottom) * scale;
 
-    self.m_safeAreaViewport = CGRectMake(beginX, beginY, endX - beginX, endY - beginY);
-    self.m_safeAreaViewportValid = YES;
-
-    if (self.safeAreaInsetsDidChangeCallback != nil) {
-        self.safeAreaInsetsDidChangeCallback();
-    }
-}
-
-- (BOOL)getSafeAreaViewport:(CGRect * _Nonnull)viewport {
-    if (self.m_safeAreaViewportValid == NO) {
-        return NO;
-    }
-
-    *viewport = self.m_safeAreaViewport;
+    *viewport = CGRectMake(beginX, beginY, endX - beginX, endY - beginY);
 
     return YES;
 }
@@ -50,7 +74,11 @@
 
     UIView * launchScreenView = self.m_launchScreenViewController.viewIfLoaded;
 
-    if (launchScreenView == nil || launchScreenView == view) {
+    if (launchScreenView == nil) {
+        return;
+    }
+
+    if (launchScreenView == view) {
         return;
     }
 

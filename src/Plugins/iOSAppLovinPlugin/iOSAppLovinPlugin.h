@@ -29,6 +29,7 @@
 - (iOSAppLovinRewardedDelegate *)getRewarded;
 
 @property (nonatomic, strong) iOSAppLovinBannerDelegate * m_bannerAd;
+@property (nonatomic, strong) iOSAppLovinBannerDelegate * m_topperAd;
 @property (nonatomic, strong) iOSAppLovinInterstitialDelegate * m_interstitialAd;
 @property (nonatomic, strong) iOSAppLovinRewardedDelegate * m_rewardedAd;
 

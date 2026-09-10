@@ -117,6 +117,8 @@ public class MengineAppsFlyerPlugin extends MengineService implements MengineLis
             return AppsFlyerAdNetworkEventType.INTERSTITIAL.toString();
         } else if (adType == MengineAdFormat.ADFORMAT_REWARDED) {
             return AppsFlyerAdNetworkEventType.REWARDED.toString();
+        } else if (adType == MengineAdFormat.ADFORMAT_REWARDED_INTERSTITIAL) {
+            return AppsFlyerAdNetworkEventType.REWARDED.toString();
         } else if (adType == MengineAdFormat.ADFORMAT_APPOPEN) {
             return AppsFlyerAdNetworkEventType.APP_OPEN.toString();
         } else if (adType == MengineAdFormat.ADFORMAT_NATIVE) {

@@ -23,19 +23,19 @@ public class MengineStatistic {
         }
     }
 
-    static public void setInteger(@Size(min = 1L, max = 40L) String key, long value) {
+    static public void setInteger(@Size(min = 1, max = 40) String key, long value) {
         synchronized (MengineStatistic.STATISTICS_LOCK) {
             MengineStatistic.STATISTICS.putLong(key, value);
         }
     }
 
-    static public long getInteger(@Size(min = 1L, max = 40L) String key, long defaultValue) {
+    static public long getInteger(@Size(min = 1, max = 40) String key, long defaultValue) {
         synchronized (MengineStatistic.STATISTICS_LOCK) {
             return MengineStatistic.STATISTICS.getLong(key, defaultValue);
         }
     }
 
-    static public void increaseInteger(@Size(min = 1L, max = 40L) String key, long value) {
+    static public void increaseInteger(@Size(min = 1, max = 40) String key, long value) {
         synchronized (MengineStatistic.STATISTICS_LOCK) {
             long v = MengineStatistic.STATISTICS.getLong(key, 0L);
             v += value;
@@ -43,7 +43,7 @@ public class MengineStatistic {
         }
     }
 
-    static public void decreaseInteger(@Size(min = 1L, max = 40L) String key, long value) {
+    static public void decreaseInteger(@Size(min = 1, max = 40) String key, long value) {
         synchronized (MengineStatistic.STATISTICS_LOCK) {
             long v = MengineStatistic.STATISTICS.getLong(key, 0L);
             v -= value;
@@ -51,19 +51,19 @@ public class MengineStatistic {
         }
     }
 
-    static public void setDouble(@Size(min = 1L, max = 40L) String key, double value) {
+    static public void setDouble(@Size(min = 1, max = 40) String key, double value) {
         synchronized (MengineStatistic.STATISTICS_LOCK) {
             MengineStatistic.STATISTICS.putDouble(key, value);
         }
     }
 
-    static public double getDouble(@Size(min = 1L, max = 40L) String key, double defaultValue) {
+    static public double getDouble(@Size(min = 1, max = 40) String key, double defaultValue) {
         synchronized (MengineStatistic.STATISTICS_LOCK) {
             return MengineStatistic.STATISTICS.getDouble(key, defaultValue);
         }
     }
 
-    static public void increaseDouble(@Size(min = 1L, max = 40L) String key, double value) {
+    static public void increaseDouble(@Size(min = 1, max = 40) String key, double value) {
         synchronized (MengineStatistic.STATISTICS_LOCK) {
             double v = MengineStatistic.STATISTICS.getDouble(key, 0.0);
             v += value;
@@ -71,7 +71,7 @@ public class MengineStatistic {
         }
     }
 
-    static public void decreaseDouble(@Size(min = 1L, max = 40L) String key, double value) {
+    static public void decreaseDouble(@Size(min = 1, max = 40) String key, double value) {
         synchronized (MengineStatistic.STATISTICS_LOCK) {
             double v = MengineStatistic.STATISTICS.getDouble(key, 0.0);
             v -= value;

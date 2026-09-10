@@ -12,6 +12,7 @@
 #import "Environment/iOS/iOSLog.h"
 
 #import "Plugins/iOSAdvertisementPlugin/iOSAdvertisementInterface.h"
+#import "Plugins/iOSFirebaseRemoteConfigPlugin/iOSFirebaseRemoteConfigInterface.h"
 
 #include "Config/Version.h"
 
@@ -28,9 +29,11 @@
 
     if (self) {
         self.m_bannerAd = nil;
+        self.m_topperAd = nil;
         self.m_interstitialAd = nil;
         self.m_rewardedAd = nil;
-        self.m_initialized = NO;
+        self.m_rewardedInterstitialAd = nil;
+        self.m_initializationAttempted = NO;
         self.m_consentCompleted = NO;
         self.m_canRequestAds = NO;
         self.m_appTrackingCompleted = NO;
@@ -104,7 +107,15 @@
 }
 
 - (void)tryInitializeAdMob {
-    if (self.m_initialized == YES || self.m_consentCompleted == NO || self.m_appTrackingCompleted == NO) {
+    if (self.m_initializationAttempted == YES) {
+        return;
+    }
+
+    if (self.m_consentCompleted == NO) {
+        return;
+    }
+
+    if (self.m_appTrackingCompleted == NO) {
         return;
     }
 
@@ -131,11 +142,58 @@
 }
 
 - (void)initializeAdMob {
-    if (self.m_initialized == YES) {
+    if (self.m_initializationAttempted == YES) {
         return;
     }
 
-    self.m_initialized = YES;
+    self.m_initializationAttempted = YES;
+
+    id<iOSFirebaseRemoteConfigInterface> remoteConfig = [iOSDetail getPluginDelegateOfProtocol:@protocol(iOSFirebaseRemoteConfigInterface)];
+    NSDictionary * adUnitConfig = [remoteConfig getRemoteConfigValue:@"admob_ad_units"];
+
+    if (adUnitConfig == nil) {
+        IOS_LOGGER_MESSAGE(@"[AdMob] no cached Remote Config admob_ad_units, skipping initialization for this session");
+
+        return;
+    }
+
+    Class dictionaryClass = [NSDictionary class];
+    BOOL validConfig = [adUnitConfig isKindOfClass:dictionaryClass];
+
+    if (validConfig == NO) {
+        IOS_LOGGER_ERROR(@"[AdMob] Remote Config admob_ad_units must be a JSON object");
+
+        return;
+    }
+
+    NSArray<NSString *> * formats = @[@"banner", @"topper", @"interstitial", @"rewarded", @"rewarded_interstitial"];
+    NSMutableDictionary<NSString *, NSString *> * adUnitIds = [NSMutableDictionary dictionary];
+
+    Class stringClass = [NSString class];
+
+    for (NSString * format in formats) {
+        id value = [adUnitConfig objectForKey:format];
+
+        if (value == nil) {
+            continue;
+        }
+
+        BOOL validId = [value isKindOfClass:stringClass];
+
+        if (validId == NO) {
+            IOS_LOGGER_ERROR(@"[AdMob] Remote Config admob_ad_units.%@ must be a string", format);
+
+            return;
+        }
+
+        NSString * adUnitId = [value copy];
+
+        if (adUnitId.length == 0) {
+            continue;
+        }
+
+        [adUnitIds setObject:adUnitId forKey:format];
+    }
 
     IOS_LOGGER_MESSAGE(@"[AdMob] initializing after ATT completion");
 
@@ -163,20 +221,26 @@
 
     [advertisement setProvider:self];
 
-    NSString * MengineiOSAdMobPlugin_BannerAdUnitId = nil;
-    NSString * MengineiOSAdMobPlugin_InterstitialAdUnitId = nil;
-    NSString * MengineiOSAdMobPlugin_RewardedAdUnitId = nil;
+    NSString * bannerAdUnitId = nil;
+    NSString * interstitialAdUnitId = nil;
+    NSString * rewardedAdUnitId = nil;
+    NSString * rewardedInterstitialAdUnitId = nil;
 
 #if defined(MENGINE_PLUGIN_IOS_ADMOB_BANNER)
-    MengineiOSAdMobPlugin_BannerAdUnitId = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"BannerAdUnitId" withDefault:nil];
+    bannerAdUnitId = [adUnitIds objectForKey:@"banner"];
+    NSString * topperAdUnitId = [adUnitIds objectForKey:@"topper"];
 #endif
 
 #if defined(MENGINE_PLUGIN_IOS_ADMOB_INTERSTITIAL)
-    MengineiOSAdMobPlugin_InterstitialAdUnitId = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"InterstitialAdUnitId" withDefault:nil];
+    interstitialAdUnitId = [adUnitIds objectForKey:@"interstitial"];
 #endif
 
 #if defined(MENGINE_PLUGIN_IOS_ADMOB_REWARDED)
-    MengineiOSAdMobPlugin_RewardedAdUnitId = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"RewardedAdUnitId" withDefault:nil];
+    rewardedAdUnitId = [adUnitIds objectForKey:@"rewarded"];
+#endif
+
+#if defined(MENGINE_PLUGIN_IOS_ADMOB_REWARDED_INTERSTITIAL)
+    rewardedInterstitialAdUnitId = [adUnitIds objectForKey:@"rewarded_interstitial"];
 #endif
 
     [GADMobileAds sharedInstance].audioVideoManager.audioSessionIsApplicationManaged = YES;
@@ -193,30 +257,38 @@
         [AppleDetail addMainQueueOperation:^{
             IOS_LOGGER_MESSAGE(@"[AdMob] plugin initialize complete");
 #if defined(MENGINE_PLUGIN_IOS_ADMOB_BANNER)
-            if (MengineiOSAdMobPlugin_BannerAdUnitId != nil) {
-                NSString * MengineiOSAdMobPlugin_BannerPlacement = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"BannerPlacement" withDefault:@"banner"];
+            BOOL bannerAdaptive = [AppleBundle getPluginConfigBoolean:@PLUGIN_BUNDLE_NAME withKey:@"BannerAdaptive" withDefault:YES];
 
-                BOOL MengineiOSAdMobPlugin_BannerAdaptive = [AppleBundle getPluginConfigBoolean:@PLUGIN_BUNDLE_NAME withKey:@"BannerAdaptive" withDefault:YES];
+            if (bannerAdUnitId != nil) {
+                NSString * bannerPlacement = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"BannerPlacement" withDefault:@"banner"];
 
-                iOSAdMobBannerDelegate * bannerAd = [[iOSAdMobBannerDelegate alloc] initWithAdUnitIdentifier:MengineiOSAdMobPlugin_BannerAdUnitId advertisement:advertisement placement:MengineiOSAdMobPlugin_BannerPlacement adaptive:MengineiOSAdMobPlugin_BannerAdaptive];
+                strongSelf.m_bannerAd = [[iOSAdMobBannerDelegate alloc] initWithAdUnitIdentifier:bannerAdUnitId advertisement:advertisement placement:bannerPlacement anchor:IOS_ADVERTISEMENT_BANNER_ANCHOR_BOTTOM adaptive:bannerAdaptive];
+            }
 
-                strongSelf.m_bannerAd = bannerAd;
+            if (topperAdUnitId != nil) {
+                strongSelf.m_topperAd = [[iOSAdMobBannerDelegate alloc] initWithAdUnitIdentifier:topperAdUnitId advertisement:advertisement placement:@"topper" anchor:IOS_ADVERTISEMENT_BANNER_ANCHOR_TOP adaptive:bannerAdaptive];
             }
 #endif
 
 #if defined(MENGINE_PLUGIN_IOS_ADMOB_INTERSTITIAL)
-            if (MengineiOSAdMobPlugin_InterstitialAdUnitId != nil) {
-                iOSAdMobInterstitialDelegate * interstitialAd = [[iOSAdMobInterstitialDelegate alloc] initWithAdUnitIdentifier:MengineiOSAdMobPlugin_InterstitialAdUnitId advertisement:advertisement];
+            if (interstitialAdUnitId != nil) {
+                iOSAdMobInterstitialDelegate * interstitialAd = [[iOSAdMobInterstitialDelegate alloc] initWithAdUnitIdentifier:interstitialAdUnitId advertisement:advertisement];
 
                 strongSelf.m_interstitialAd = interstitialAd;
             }
 #endif
 
 #if defined(MENGINE_PLUGIN_IOS_ADMOB_REWARDED)
-            if (MengineiOSAdMobPlugin_RewardedAdUnitId != nil) {
-                iOSAdMobRewardedDelegate * rewardedAd = [[iOSAdMobRewardedDelegate alloc] initWithAdUnitIdentifier:MengineiOSAdMobPlugin_RewardedAdUnitId advertisement:advertisement];
+            if (rewardedAdUnitId != nil) {
+                iOSAdMobRewardedDelegate * rewardedAd = [[iOSAdMobRewardedDelegate alloc] initWithAdUnitIdentifier:rewardedAdUnitId advertisement:advertisement];
 
                 strongSelf.m_rewardedAd = rewardedAd;
+            }
+#endif
+
+#if defined(MENGINE_PLUGIN_IOS_ADMOB_REWARDED_INTERSTITIAL)
+            if (rewardedInterstitialAdUnitId != nil) {
+                strongSelf.m_rewardedInterstitialAd = [[iOSAdMobRewardedInterstitialDelegate alloc] initWithAdUnitIdentifier:rewardedInterstitialAdUnitId advertisement:advertisement];
             }
 #endif
 
@@ -235,24 +307,32 @@
     return YES;
 }
 
-- (BOOL)showBanner {
+- (BOOL)isBannerLoaded {
     if (self.m_bannerAd == nil) {
         return NO;
     }
 
-    [self.m_bannerAd show];
+    if (self.m_bannerAd.m_bannerLoaded == NO) {
+        return NO;
+    }
 
     return YES;
 }
 
-- (BOOL)hideBanner {
+- (void)showBanner {
     if (self.m_bannerAd == nil) {
-        return NO;
+        return;
+    }
+
+    [self.m_bannerAd show];
+}
+
+- (void)hideBanner {
+    if (self.m_bannerAd == nil) {
+        return;
     }
 
     [self.m_bannerAd hide];
-
-    return YES;
 }
 
 - (BOOL)getBannerWidth:(uint32_t *)width height:(uint32_t *)height {
@@ -269,6 +349,56 @@
     return YES;
 }
 
+- (BOOL)hasTopper {
+    if (self.m_topperAd == nil) {
+        return NO;
+    }
+
+    return YES;
+}
+
+- (BOOL)isTopperLoaded {
+    if (self.m_topperAd == nil) {
+        return NO;
+    }
+
+    if (self.m_topperAd.m_bannerLoaded == NO) {
+        return NO;
+    }
+
+    return YES;
+}
+
+- (void)showTopper {
+    if (self.m_topperAd == nil) {
+        return;
+    }
+
+    [self.m_topperAd show];
+}
+
+- (void)hideTopper {
+    if (self.m_topperAd == nil) {
+        return;
+    }
+
+    [self.m_topperAd hide];
+}
+
+- (BOOL)getTopperWidth:(uint32_t *)width height:(uint32_t *)height {
+    if (self.m_topperAd == nil) {
+        return NO;
+    }
+
+    CGFloat widthPx = [self.m_topperAd getWidthPx];
+    CGFloat heightPx = [self.m_topperAd getHeightPx];
+
+    *width = widthPx;
+    *height = heightPx;
+
+    return YES;
+}
+
 - (BOOL)hasInterstitial {
     if (self.m_interstitialAd == nil) {
         return NO;
@@ -278,6 +408,18 @@
 }
 
 - (BOOL)canYouShowInterstitial:(NSString *)placement {
+    if ([self isShowingInterstitial] == YES) {
+        return NO;
+    }
+
+    if ([self isShowingRewarded] == YES) {
+        return NO;
+    }
+
+    if ([self isShowingRewardedInterstitial] == YES) {
+        return NO;
+    }
+
     if (self.m_interstitialAd == nil) {
         return NO;
     }
@@ -294,6 +436,18 @@
 }
 
 - (BOOL)showInterstitial:(NSString *)placement {
+    if ([self isShowingInterstitial] == YES) {
+        return NO;
+    }
+
+    if ([self isShowingRewarded] == YES) {
+        return NO;
+    }
+
+    if ([self isShowingRewardedInterstitial] == YES) {
+        return NO;
+    }
+
     if (self.m_interstitialAd == nil) {
         return NO;
     }
@@ -346,6 +500,18 @@
 }
 
 - (BOOL)canYouShowRewarded:(NSString *)placement {
+    if ([self isShowingInterstitial] == YES) {
+        return NO;
+    }
+
+    if ([self isShowingRewarded] == YES) {
+        return NO;
+    }
+
+    if ([self isShowingRewardedInterstitial] == YES) {
+        return NO;
+    }
+
     if (self.m_rewardedAd == nil) {
         return NO;
     }
@@ -362,6 +528,18 @@
 }
 
 - (BOOL)showRewarded:(NSString *)placement {
+    if ([self isShowingInterstitial] == YES) {
+        return NO;
+    }
+
+    if ([self isShowingRewarded] == YES) {
+        return NO;
+    }
+
+    if ([self isShowingRewardedInterstitial] == YES) {
+        return NO;
+    }
+
     if (self.m_rewardedAd == nil) {
         return NO;
     }
@@ -387,6 +565,44 @@
     }
 
     return YES;
+}
+
+- (BOOL)hasRewardedInterstitial {
+    return self.m_rewardedInterstitialAd != nil;
+}
+
+- (BOOL)canYouShowRewardedInterstitial:(NSString *)placement {
+    if ([self isShowingInterstitial] == YES) {
+        return NO;
+    }
+
+    if ([self isShowingRewarded] == YES) {
+        return NO;
+    }
+
+    if ([self isShowingRewardedInterstitial] == YES) {
+        return NO;
+    }
+
+    BOOL canShow = [self.m_rewardedInterstitialAd canYouShow:placement];
+
+    return canShow;
+}
+
+- (BOOL)showRewardedInterstitial:(NSString *)placement {
+    if ([self canYouShowRewardedInterstitial:placement] == NO) {
+        return NO;
+    }
+
+    BOOL shown = [self.m_rewardedInterstitialAd show:placement];
+
+    return shown;
+}
+
+- (BOOL)isShowingRewardedInterstitial {
+    BOOL showing = [self.m_rewardedInterstitialAd isShowing];
+
+    return showing;
 }
 
 @end

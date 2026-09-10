@@ -6,8 +6,6 @@
 
 @interface iOSAdvertisementRewardedPoint : iOSAdvertisementBasePoint
 
-- (instancetype)initWithName:(NSString *)name withJson:(NSDictionary *)json;
-
 - (BOOL)canOfferAd;
 - (BOOL)canYouShowAd;
 

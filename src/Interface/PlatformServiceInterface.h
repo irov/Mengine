@@ -159,7 +159,6 @@ namespace Mengine
 
         virtual bool completeDeleteAccount( EDeleteAccountResult _result ) = 0;
         virtual bool isNetworkAvailable() const = 0;
-        virtual void removeUserData() = 0;
 
         // Persists across the account-data reset and remains set until replacement authentication succeeds.
         virtual bool hasAccountDeletionRestart() const

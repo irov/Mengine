@@ -11,6 +11,7 @@
 #import "Environment/iOS/iOSTransparencyConsentParam.h"
 
 #import "Plugins/iOSAdvertisementPlugin/iOSAdvertisementInterface.h"
+#import "Plugins/iOSFirebaseRemoteConfigPlugin/iOSFirebaseRemoteConfigInterface.h"
 
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
 #   include "iOSAppLovinScriptEmbedding.h"
@@ -33,6 +34,7 @@
 
     if (self) {
         self.m_bannerAd = nil;
+        self.m_topperAd = nil;
         self.m_interstitialAd = nil;
         self.m_rewardedAd = nil;
 
@@ -155,6 +157,53 @@
 #endif
 }
 
+- (NSDictionary<NSString *, NSString *> *)getAdUnitIds {
+    id<iOSFirebaseRemoteConfigInterface> remoteConfig = [iOSDetail getPluginDelegateOfProtocol:@protocol(iOSFirebaseRemoteConfigInterface)];
+    NSDictionary * config = [remoteConfig getRemoteConfigValue:@"applovin_ad_units"];
+
+    if (config == nil) {
+        IOS_LOGGER_MESSAGE(@"[AppLovin] no cached Remote Config applovin_ad_units, no ad units for this session");
+
+        return @{};
+    }
+
+    Class dictionaryClass = [NSDictionary class];
+
+    if ([config isKindOfClass:dictionaryClass] == NO) {
+        IOS_LOGGER_ERROR(@"[AppLovin] Remote Config applovin_ad_units must be a JSON object");
+
+        return @{};
+    }
+
+    NSArray<NSString *> * formats = @[@"banner", @"topper", @"interstitial", @"rewarded"];
+    NSMutableDictionary<NSString *, NSString *> * adUnitIds = [NSMutableDictionary dictionary];
+    Class stringClass = [NSString class];
+
+    for (NSString * format in formats) {
+        id value = [config objectForKey:format];
+
+        if (value == nil) {
+            continue;
+        }
+
+        if ([value isKindOfClass:stringClass] == NO) {
+            IOS_LOGGER_ERROR(@"[AppLovin] Remote Config applovin_ad_units.%@ must be a string", format);
+
+            return @{};
+        }
+
+        NSString * adUnitId = [value copy];
+
+        if (adUnitId.length == 0) {
+            continue;
+        }
+
+        [adUnitIds setObject:adUnitId forKey:format];
+    }
+
+    return [adUnitIds copy];
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     if ([AppleBundle hasPluginConfig:@PLUGIN_BUNDLE_NAME] == NO) {
         IOS_LOGGER_ERROR(@"[ERROR] AppLovin plugin not found bundle config [%@]", @PLUGIN_BUNDLE_NAME);
@@ -234,32 +283,6 @@
 
     [advertisement setProvider:self];
 
-    NSMutableArray * adUnitIdentifiers = [NSMutableArray array];
-
-#if defined(MENGINE_PLUGIN_IOS_APPLOVIN_BANNER)
-        NSString * MengineiOSAppLovinPlugin_BannerAdUnitId = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"BannerAdUnitId" withDefault:nil];
-
-        if (MengineiOSAppLovinPlugin_BannerAdUnitId != nil) {
-            [adUnitIdentifiers addObject:MengineiOSAppLovinPlugin_BannerAdUnitId];
-        }
-#endif
-
-#if defined(MENGINE_PLUGIN_IOS_APPLOVIN_INTERSTITIAL)
-        NSString * MengineiOSAppLovinPlugin_InterstitialAdUnitId = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"InterstitialAdUnitId" withDefault:nil];
-
-        if (MengineiOSAppLovinPlugin_InterstitialAdUnitId != nil) {
-            [adUnitIdentifiers addObject:MengineiOSAppLovinPlugin_InterstitialAdUnitId];
-        }
-#endif
-
-#if defined(MENGINE_PLUGIN_IOS_APPLOVIN_REWARDED)
-        NSString * MengineiOSAppLovinPlugin_RewardedAdUnitId = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"RewardedAdUnitId" withDefault:nil];
-
-        if (MengineiOSAppLovinPlugin_RewardedAdUnitId != nil) {
-            [adUnitIdentifiers addObject:MengineiOSAppLovinPlugin_RewardedAdUnitId];
-        }
-#endif
-
     NSString * MengineiOSAppLovinPlugin_SdkKey = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"SdkKey" withDefault:nil];
 
     if (MengineiOSAppLovinPlugin_SdkKey == nil) {
@@ -268,84 +291,133 @@
         return NO;
     }
 
-    ALSdkInitializationConfiguration * initializationConfiguration = [ALSdkInitializationConfiguration configurationWithSdkKey:MengineiOSAppLovinPlugin_SdkKey builderBlock:^(ALSdkInitializationConfigurationBuilder * _Nonnull builder) {
-        builder.pluginVersion = [@"Mengine-v" stringByAppendingString:@MENGINE_ENGINE_VERSION_STRING];
-        builder.mediationProvider = ALMediationProviderMAX;
-        builder.adUnitIdentifiers = adUnitIdentifiers;
-#if defined(MENGINE_DEBUG)
-        if ([AppleDetail hasOption:@"applovin.test_device_advertising"] == YES) {
-            builder.testDeviceAdvertisingIdentifiers = @[[ASIdentifierManager sharedManager].advertisingIdentifier.UUIDString];
-        }
-#endif
-    }];
+    // Cached/default RC values are prepared in the plugins' post-launch callbacks.
+    [AppleDetail addMainQueueOperation:^{
+        NSDictionary<NSString *, NSString *> * adUnitIds = [self getAdUnitIds];
+        MENGINE_UNUSED( adUnitIds );
 
-    [[ALSdk shared] initializeWithConfiguration:initializationConfiguration completionHandler:^(ALSdkConfiguration *configuration) {
-        ALConsentFlowUserGeography consentFlowUserGeography = configuration.consentFlowUserGeography;
-        NSString * countryCode = configuration.countryCode;
-        ALAppTrackingTransparencyStatus appTrackingTransparencyStatus = configuration.appTrackingTransparencyStatus;
-        BOOL testModeEnabled = configuration.testModeEnabled;
-
-        IOS_LOGGER_MESSAGE(@"[AppLovin] plugin initialize complete");
-        IOS_LOGGER_MESSAGE(@"[AppLovin] consent flow user geography: %ld", consentFlowUserGeography);
-        IOS_LOGGER_MESSAGE(@"[AppLovin] country code: %@", countryCode);
-        IOS_LOGGER_MESSAGE(@"[AppLovin] app tracking transparency status: %ld", appTrackingTransparencyStatus);
-        IOS_LOGGER_MESSAGE(@"[AppLovin] test mode enabled: %d", testModeEnabled);
-
-        switch (consentFlowUserGeography) {
-            case ALConsentFlowUserGeographyGDPR:
-                [iOSTransparencyConsentParam setConsentFlowUserGeography:iOSConsentFlowUserGeographyGDPR];
-                break;
-            case ALConsentFlowUserGeographyOther:
-                [iOSTransparencyConsentParam setConsentFlowUserGeography:iOSConsentFlowUserGeographyOther];
-                break;
-            default:
-                break;
-        }
-
-        iOSTransparencyConsentParam * consent = [[iOSTransparencyConsentParam alloc] initFromUserDefaults];
-
-        [iOSDetail transparencyConsent:consent];
-
-#if defined(MENGINE_PLUGIN_IOS_APPLOVIN_MEDIATION_META)
-        BOOL ATTAllowed = [iOSDetail isAppTrackingTransparencyAllowed];
-        [FBAdSettings setAdvertiserTrackingEnabled:ATTAllowed];
-
-        IOS_LOGGER_MESSAGE(@"FBAdSettings setAdvertiserTrackingEnabled:%d", ATTAllowed);
-#endif
+        NSMutableArray * adUnitIdentifiers = [NSMutableArray array];
 
 #if defined(MENGINE_PLUGIN_IOS_APPLOVIN_BANNER)
-        if (MengineiOSAppLovinPlugin_BannerAdUnitId != nil) {
-            NSString * MengineiOSAppLovinPlugin_BannerPlacement = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"BannerPlacement" withDefault:@"banner"];
+            NSString * MengineiOSAppLovinPlugin_BannerAdUnitId = [adUnitIds objectForKey:@"banner"];
 
-            BOOL MengineiOSAppLovinPlugin_BannerAdaptive = [AppleBundle getPluginConfigBoolean:@PLUGIN_BUNDLE_NAME withKey:@"BannerAdaptive" withDefault:YES];
+            if (MengineiOSAppLovinPlugin_BannerAdUnitId != nil) {
+                [adUnitIdentifiers addObject:MengineiOSAppLovinPlugin_BannerAdUnitId];
+            }
+#endif
 
-            iOSAppLovinBannerDelegate * bannerAd = [[iOSAppLovinBannerDelegate alloc] initWithAdUnitIdentifier:MengineiOSAppLovinPlugin_BannerAdUnitId advertisement:advertisement placement:MengineiOSAppLovinPlugin_BannerPlacement adaptive:MengineiOSAppLovinPlugin_BannerAdaptive];
+#if defined(MENGINE_PLUGIN_IOS_APPLOVIN_TOPPER)
+            NSString * topperAdUnitId = [adUnitIds objectForKey:@"topper"];
 
-            self.m_bannerAd = bannerAd;
-        }
+            if (topperAdUnitId != nil) {
+                [adUnitIdentifiers addObject:topperAdUnitId];
+            }
 #endif
 
 #if defined(MENGINE_PLUGIN_IOS_APPLOVIN_INTERSTITIAL)
-        if (MengineiOSAppLovinPlugin_InterstitialAdUnitId != nil) {
-            iOSAppLovinInterstitialDelegate * interstitialAd = [[iOSAppLovinInterstitialDelegate alloc] initWithAdUnitIdentifier:MengineiOSAppLovinPlugin_InterstitialAdUnitId advertisement:advertisement];
+            NSString * MengineiOSAppLovinPlugin_InterstitialAdUnitId = [adUnitIds objectForKey:@"interstitial"];
 
-            self.m_interstitialAd = interstitialAd;
-        }
+            if (MengineiOSAppLovinPlugin_InterstitialAdUnitId != nil) {
+                [adUnitIdentifiers addObject:MengineiOSAppLovinPlugin_InterstitialAdUnitId];
+            }
 #endif
 
 #if defined(MENGINE_PLUGIN_IOS_APPLOVIN_REWARDED)
-        if (MengineiOSAppLovinPlugin_RewardedAdUnitId != nil) {
-            iOSAppLovinRewardedDelegate * rewardedAd = [[iOSAppLovinRewardedDelegate alloc] initWithAdUnitIdentifier:MengineiOSAppLovinPlugin_RewardedAdUnitId advertisement:advertisement];
+            NSString * MengineiOSAppLovinPlugin_RewardedAdUnitId = [adUnitIds objectForKey:@"rewarded"];
 
-            self.m_rewardedAd = rewardedAd;
-        }
+            if (MengineiOSAppLovinPlugin_RewardedAdUnitId != nil) {
+                [adUnitIdentifiers addObject:MengineiOSAppLovinPlugin_RewardedAdUnitId];
+            }
 #endif
 
-        [advertisement readyAdProvider];
+        ALSdkInitializationConfiguration * initializationConfiguration = [ALSdkInitializationConfiguration configurationWithSdkKey:MengineiOSAppLovinPlugin_SdkKey builderBlock:^(ALSdkInitializationConfigurationBuilder * _Nonnull builder) {
+            builder.pluginVersion = [@"Mengine-v" stringByAppendingString:@MENGINE_ENGINE_VERSION_STRING];
+            builder.mediationProvider = ALMediationProviderMAX;
+            builder.adUnitIdentifiers = adUnitIdentifiers;
+#if defined(MENGINE_DEBUG)
+            if ([AppleDetail hasOption:@"applovin.test_device_advertising"] == YES) {
+                builder.testDeviceAdvertisingIdentifiers = @[[ASIdentifierManager sharedManager].advertisingIdentifier.UUIDString];
+            }
+#endif
+        }];
 
-        if ([AppleDetail hasOption:@"applovin.show_mediation_debugger"] == YES) {
-            [[ALSdk shared] showMediationDebugger];
-        }
+        [[ALSdk shared] initializeWithConfiguration:initializationConfiguration completionHandler:^(ALSdkConfiguration *configuration) {
+            ALConsentFlowUserGeography consentFlowUserGeography = configuration.consentFlowUserGeography;
+            NSString * countryCode = configuration.countryCode;
+            ALAppTrackingTransparencyStatus appTrackingTransparencyStatus = configuration.appTrackingTransparencyStatus;
+            BOOL testModeEnabled = configuration.testModeEnabled;
+
+            IOS_LOGGER_MESSAGE(@"[AppLovin] plugin initialize complete");
+            IOS_LOGGER_MESSAGE(@"[AppLovin] consent flow user geography: %ld", consentFlowUserGeography);
+            IOS_LOGGER_MESSAGE(@"[AppLovin] country code: %@", countryCode);
+            IOS_LOGGER_MESSAGE(@"[AppLovin] app tracking transparency status: %ld", appTrackingTransparencyStatus);
+            IOS_LOGGER_MESSAGE(@"[AppLovin] test mode enabled: %d", testModeEnabled);
+
+            switch (consentFlowUserGeography) {
+                case ALConsentFlowUserGeographyGDPR:
+                    [iOSTransparencyConsentParam setConsentFlowUserGeography:iOSConsentFlowUserGeographyGDPR];
+                    break;
+                case ALConsentFlowUserGeographyOther:
+                    [iOSTransparencyConsentParam setConsentFlowUserGeography:iOSConsentFlowUserGeographyOther];
+                    break;
+                default:
+                    break;
+            }
+
+            iOSTransparencyConsentParam * consent = [[iOSTransparencyConsentParam alloc] initFromUserDefaults];
+
+            [iOSDetail transparencyConsent:consent];
+
+#if defined(MENGINE_PLUGIN_IOS_APPLOVIN_MEDIATION_META)
+            BOOL ATTAllowed = [iOSDetail isAppTrackingTransparencyAllowed];
+            [FBAdSettings setAdvertiserTrackingEnabled:ATTAllowed];
+
+            IOS_LOGGER_MESSAGE(@"FBAdSettings setAdvertiserTrackingEnabled:%d", ATTAllowed);
+#endif
+
+#if defined(MENGINE_PLUGIN_IOS_APPLOVIN_BANNER)
+            if (MengineiOSAppLovinPlugin_BannerAdUnitId != nil) {
+                NSString * MengineiOSAppLovinPlugin_BannerPlacement = [AppleBundle getPluginConfigString:@PLUGIN_BUNDLE_NAME withKey:@"BannerPlacement" withDefault:@"banner"];
+
+                BOOL MengineiOSAppLovinPlugin_BannerAdaptive = [AppleBundle getPluginConfigBoolean:@PLUGIN_BUNDLE_NAME withKey:@"BannerAdaptive" withDefault:YES];
+
+                iOSAppLovinBannerDelegate * bannerAd = [[iOSAppLovinBannerDelegate alloc] initWithAdUnitIdentifier:MengineiOSAppLovinPlugin_BannerAdUnitId advertisement:advertisement placement:MengineiOSAppLovinPlugin_BannerPlacement anchor:IOS_ADVERTISEMENT_BANNER_ANCHOR_BOTTOM adaptive:MengineiOSAppLovinPlugin_BannerAdaptive];
+
+                self.m_bannerAd = bannerAd;
+            }
+
+#endif
+
+#if defined(MENGINE_PLUGIN_IOS_APPLOVIN_TOPPER)
+            if (topperAdUnitId != nil) {
+                BOOL bannerAdaptive = [AppleBundle getPluginConfigBoolean:@PLUGIN_BUNDLE_NAME withKey:@"BannerAdaptive" withDefault:YES];
+
+                self.m_topperAd = [[iOSAppLovinBannerDelegate alloc] initWithAdUnitIdentifier:topperAdUnitId advertisement:advertisement placement:@"topper" anchor:IOS_ADVERTISEMENT_BANNER_ANCHOR_TOP adaptive:bannerAdaptive];
+            }
+#endif
+
+#if defined(MENGINE_PLUGIN_IOS_APPLOVIN_INTERSTITIAL)
+            if (MengineiOSAppLovinPlugin_InterstitialAdUnitId != nil) {
+                iOSAppLovinInterstitialDelegate * interstitialAd = [[iOSAppLovinInterstitialDelegate alloc] initWithAdUnitIdentifier:MengineiOSAppLovinPlugin_InterstitialAdUnitId advertisement:advertisement];
+
+                self.m_interstitialAd = interstitialAd;
+            }
+#endif
+
+#if defined(MENGINE_PLUGIN_IOS_APPLOVIN_REWARDED)
+            if (MengineiOSAppLovinPlugin_RewardedAdUnitId != nil) {
+                iOSAppLovinRewardedDelegate * rewardedAd = [[iOSAppLovinRewardedDelegate alloc] initWithAdUnitIdentifier:MengineiOSAppLovinPlugin_RewardedAdUnitId advertisement:advertisement];
+
+                self.m_rewardedAd = rewardedAd;
+            }
+#endif
+
+            [advertisement readyAdProvider];
+
+            if ([AppleDetail hasOption:@"applovin.show_mediation_debugger"] == YES) {
+                [[ALSdk shared] showMediationDebugger];
+            }
+        }];
     }];
 
     return YES;
@@ -361,24 +433,32 @@
     return YES;
 }
 
-- (BOOL)showBanner {
+- (BOOL)isBannerLoaded {
     if (self.m_bannerAd == nil) {
         return NO;
     }
 
-    [self.m_bannerAd show];
+    if (self.m_bannerAd.m_bannerLoaded == NO) {
+        return NO;
+    }
 
     return YES;
 }
 
-- (BOOL)hideBanner {
+- (void)showBanner {
     if (self.m_bannerAd == nil) {
-        return NO;
+        return;
+    }
+
+    [self.m_bannerAd show];
+}
+
+- (void)hideBanner {
+    if (self.m_bannerAd == nil) {
+        return;
     }
 
     [self.m_bannerAd hide];
-
-    return YES;
 }
 
 - (BOOL)getBannerWidth:(uint32_t *)width height:(uint32_t *)height {
@@ -392,6 +472,53 @@
     return YES;
 }
 
+- (BOOL)hasTopper {
+    if (self.m_topperAd == nil) {
+        return NO;
+    }
+
+    return YES;
+}
+
+- (BOOL)isTopperLoaded {
+    if (self.m_topperAd == nil) {
+        return NO;
+    }
+
+    if (self.m_topperAd.m_bannerLoaded == NO) {
+        return NO;
+    }
+
+    return YES;
+}
+
+- (void)showTopper {
+    if (self.m_topperAd == nil) {
+        return;
+    }
+
+    [self.m_topperAd show];
+}
+
+- (void)hideTopper {
+    if (self.m_topperAd == nil) {
+        return;
+    }
+
+    [self.m_topperAd hide];
+}
+
+- (BOOL)getTopperWidth:(uint32_t *)width height:(uint32_t *)height {
+    if (self.m_topperAd == nil) {
+        return NO;
+    }
+
+    *width = [self.m_topperAd getWidthPx];
+    *height = [self.m_topperAd getHeightPx];
+
+    return YES;
+}
+
 - (BOOL)hasInterstitial {
     if (self.m_interstitialAd == nil) {
         return NO;
@@ -401,6 +528,14 @@
 }
 
 - (BOOL)canYouShowInterstitial:(NSString *)placement {
+    if ([self isShowingInterstitial] == YES) {
+        return NO;
+    }
+
+    if ([self isShowingRewarded] == YES) {
+        return NO;
+    }
+
     if (self.m_interstitialAd == nil) {
         return NO;
     }
@@ -417,6 +552,14 @@
 }
 
 - (BOOL)showInterstitial:(NSString *)placement {
+    if ([self isShowingInterstitial] == YES) {
+        return NO;
+    }
+
+    if ([self isShowingRewarded] == YES) {
+        return NO;
+    }
+
     if (self.m_interstitialAd == nil) {
         return NO;
     }
@@ -469,6 +612,14 @@
 }
 
 - (BOOL)canYouShowRewarded:(NSString *)placement {
+    if ([self isShowingInterstitial] == YES) {
+        return NO;
+    }
+
+    if ([self isShowingRewarded] == YES) {
+        return NO;
+    }
+
     if (self.m_rewardedAd == nil) {
         return NO;
     }
@@ -485,6 +636,14 @@
 }
 
 - (BOOL)showRewarded:(NSString *)placement {
+    if ([self isShowingInterstitial] == YES) {
+        return NO;
+    }
+
+    if ([self isShowingRewarded] == YES) {
+        return NO;
+    }
+
     if (self.m_rewardedAd == nil) {
         return NO;
     }
@@ -513,5 +672,21 @@
 }
 
 
+
+- (BOOL)hasRewardedInterstitial {
+    return NO;
+}
+
+- (BOOL)canYouShowRewardedInterstitial:(NSString *)placement {
+    return NO;
+}
+
+- (BOOL)showRewardedInterstitial:(NSString *)placement {
+    return NO;
+}
+
+- (BOOL)isShowingRewardedInterstitial {
+    return NO;
+}
 
 @end

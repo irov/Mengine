@@ -5,6 +5,7 @@
 #import "Environment/iOS/iOSPluginLoggerDelegateInterface.h"
 #import "Environment/iOS/iOSPluginConfigDelegateInterface.h"
 #import "Environment/iOS/iOSPluginAnalyticDelegateInterface.h"
+#import "Environment/iOS/iOSPluginAttributionDelegateInterface.h"
 #import "Environment/iOS/iOSPluginUserIdDelegateInterface.h"
 #import "Environment/iOS/iOSPluginAdRevenueDelegateInterface.h"
 #import "Environment/iOS/iOSPluginAppTrackingTransparencyDelegateInterface.h"
@@ -17,6 +18,7 @@
 - (NSArray<iOSPluginLoggerDelegateInterface> * _Nonnull)getPluginLoggerDelegates;
 - (NSArray<iOSPluginConfigDelegateInterface> * _Nonnull)getPluginConfigDelegates;
 - (NSArray<iOSPluginAnalyticDelegateInterface> * _Nonnull)getPluginAnalyticDelegates;
+- (NSArray<iOSPluginAttributionDelegateInterface> * _Nonnull)getPluginAttributionDelegates;
 - (NSArray<iOSPluginUserIdDelegateInterface> * _Nonnull)getPluginUserIdDelegates;
 - (NSArray<iOSPluginAdRevenueDelegateInterface> * _Nonnull)getPluginAdRevenueDelegates;
 - (NSArray<iOSPluginAppTrackingTransparencyDelegateInterface> *_Nonnull)getPluginAppTrackingTransparencyDelegates;
@@ -32,6 +34,8 @@
 - (void)eventAnalytic:(NSString * _Nonnull)event category:(iOSAnalyticsEventCategory)category params:(NSDictionary * _Nonnull)params;
 - (void)eventAnalyticScreen:(NSString * _Nonnull)name type:(NSString * _Nonnull)type;
 - (void)eventAnalyticFlush;
+
+- (void)eventAttribution:(NSString * _Nonnull)name value:(id _Nonnull)value;
 
 - (void)eventSetUserId:(iOSUserParam * _Nonnull)userId;
 - (void)eventRemoveUserData;

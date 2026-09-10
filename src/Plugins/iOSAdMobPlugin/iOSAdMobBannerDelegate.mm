@@ -14,14 +14,17 @@
 - (instancetype _Nullable) initWithAdUnitIdentifier:(NSString * _Nonnull)adUnitId
                                       advertisement:(id<iOSAdvertisementInterface> _Nonnull)advertisement
                                           placement:(NSString * _Nonnull)placement
+                                             anchor:(EiOSAdvertisementBannerAnchor)anchor
                                            adaptive:(BOOL)adaptive {
-    self = [super initWithAdUnitIdentifier:adUnitId advertisement:advertisement];
+    self = [super initWithAdUnitIdentifier:adUnitId adFormat:@"banner" advertisement:advertisement];
 
     if (self == nil) {
         return nil;
     }
 
     self.m_bannerAdaptive = adaptive;
+    self.m_bannerLoaded = NO;
+    self.m_bannerShowRequested = NO;
     self.m_placement = placement;
 
     GADAdSize adSize;
@@ -55,7 +58,13 @@
 
     UIViewController * viewController = [iOSDetail getRootViewController];
 
-    if (viewController == nil || viewController.view == nil) {
+    if (viewController == nil) {
+        IOS_LOGGER_ERROR(@"[Error] iOSAdMobBannerDelegate invalid root view controller for adUnitId: %@", adUnitId);
+
+        return nil;
+    }
+
+    if (viewController.view == nil) {
         IOS_LOGGER_ERROR(@"[Error] iOSAdMobBannerDelegate invalid root view controller for adUnitId: %@", adUnitId);
 
         return nil;
@@ -64,27 +73,28 @@
     bannerView.delegate = self;
     bannerView.adSizeDelegate = self;
 
-    CGSize size = adSize.size;
+    UIView * gameView = viewController.view;
+    UILayoutGuide * safeArea = gameView.safeAreaLayoutGuide;
 
-    CGFloat banner_width = size.width;
-    CGFloat banner_height = size.height;
-
-    CGFloat screen_width = CGRectGetWidth(viewController.view.bounds);
-    CGFloat screen_height = CGRectGetHeight(viewController.view.bounds);
-
-    CGFloat bottomInset = viewController.view.safeAreaInsets.bottom;
-
-    CGFloat origin_x = (screen_width - banner_width) * 0.5f;
-    CGFloat origin_y = screen_height - bottomInset - banner_height;
-
-    CGRect rect = CGRectMake(origin_x, origin_y, banner_width, banner_height);
-
-    bannerView.frame = rect;
-
+    bannerView.translatesAutoresizingMaskIntoConstraints = NO;
     bannerView.backgroundColor = UIColor.clearColor;
-
-    [viewController.view addSubview:bannerView];
     bannerView.hidden = YES;
+
+    [gameView addSubview:bannerView];
+
+    NSLayoutConstraint * edgeConstraint;
+
+    switch (anchor) {
+    case IOS_ADVERTISEMENT_BANNER_ANCHOR_BOTTOM:
+        edgeConstraint = [bannerView.bottomAnchor constraintEqualToAnchor:safeArea.bottomAnchor];
+        break;
+    case IOS_ADVERTISEMENT_BANNER_ANCHOR_TOP:
+        edgeConstraint = [bannerView.topAnchor constraintEqualToAnchor:safeArea.topAnchor];
+        break;
+    }
+
+    NSLayoutConstraint * centerConstraint = [bannerView.centerXAnchor constraintEqualToAnchor:gameView.centerXAnchor];
+    [NSLayoutConstraint activateConstraints:@[centerConstraint, edgeConstraint]];
 
     self.m_bannerView = bannerView;
 
@@ -130,10 +140,14 @@
 }
 
 - (void) show {
-    self.m_bannerView.hidden = NO;
+    [self log:@"show" withParams:@{@"loaded": @(self.m_bannerLoaded)}];
+    self.m_bannerShowRequested = YES;
+    self.m_bannerView.hidden = self.m_bannerLoaded == NO;
 }
 
 - (void) hide {
+    [self log:@"hide"];
+    self.m_bannerShowRequested = NO;
     self.m_bannerView.hidden = YES;
 }
 
@@ -199,6 +213,9 @@
 #pragma mark - GADBannerViewDelegate
 
 - (void)bannerViewDidReceiveAd:(GADBannerView *)bannerView {
+    self.m_bannerLoaded = YES;
+    self.m_bannerView.hidden = self.m_bannerShowRequested == NO;
+
     NSDictionary<NSString *, id> * responseParams = [self getGADResponseInfoParams:bannerView.responseInfo];
 
     [self log:@"bannerViewDidReceiveAd" withParams:responseParams];
@@ -211,12 +228,22 @@
 }
 
 - (void)bannerView:(GADBannerView *)bannerView didFailToReceiveAdWithError:(NSError *)error {
+    self.m_bannerLoaded = NO;
+    self.m_bannerView.hidden = YES;
+
     [self log:@"bannerView:didFailToReceiveAdWithError" withError:error];
 
     [self eventBanner:@"load_failed" params:@{
         @"error": [self getGADAdErrorParams:error],
         @"error_code": @(error.code)
     }];
+
+    IOS_LOGGER_WARNING(@"[AdMob] banner unavailable: adUnitId=%@ domain=%@ code=%ld reason=%@; retry scheduled"
+        , self.m_adUnitId
+        , error.domain
+        , (long)error.code
+        , error.localizedDescription
+    );
 
     [self retryLoadAd];
 }

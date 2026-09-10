@@ -33,7 +33,6 @@ import java.util.Map;
 
 public class MengineAppLovinNativeAd extends MengineAppLovinBase implements MengineAppLovinNativeAdInterface, MaxAdRevenueListener, MaxAdReviewListener {
     public static final @StringRes int METADATA_NATIVE_PLACEMENT = R.string.mengine_applovin_native_placement;
-    public static final @StringRes int METADATA_NATIVE_ADUNITID = R.string.mengine_applovin_native_adunitid;
 
     protected final String m_placement;
 
@@ -44,17 +43,15 @@ public class MengineAppLovinNativeAd extends MengineAppLovinBase implements Meng
     protected volatile boolean m_visible = false;
     protected volatile boolean m_loaded = false;
 
-    public MengineAppLovinNativeAd(@NonNull MengineAdService adService, @NonNull MengineAppLovinPluginInterface plugin) throws MengineServiceInvalidInitializeException {
-        super(adService, plugin, MaxAdFormat.NATIVE);
-
-        this.setAdUnitId(METADATA_NATIVE_ADUNITID, "NativeAdUnitId");
+    public MengineAppLovinNativeAd(@NonNull MengineAdService adService, @NonNull MengineAppLovinPluginInterface plugin, @NonNull String adUnitId) throws MengineServiceInvalidInitializeException {
+        super(adService, plugin, MaxAdFormat.NATIVE, adUnitId);
 
         String MengineAppLovinPlugin_Native_Placement = plugin.getResourceString(METADATA_NATIVE_PLACEMENT);
 
         m_placement = MengineAppLovinPlugin_Native_Placement;
     }
 
-    protected MengineAnalyticsEventBuilderInterface buildNativeAdEvent(@Size(min = 1L, max = 40L) String event) {
+    protected MengineAnalyticsEventBuilderInterface buildNativeAdEvent(@Size(min = 1, max = 40) String event) {
         MengineAnalyticsEventBuilderInterface builder = this.buildAdEvent("mng_applovin_native_" + event)
             .addParameterString("placement", m_placement);
 

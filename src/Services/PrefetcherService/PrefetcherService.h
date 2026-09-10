@@ -27,6 +27,9 @@ namespace Mengine
         void _stopService() override;
 
     public:
+        bool addPrefetchTask( const ThreadTaskInterfacePtr & _task ) override;
+
+    public:
         bool prefetchImageDecoder( const ContentInterfacePtr & _content, const PrefetcherObserverInterfacePtr & _observer ) override;
         bool getImageDecoder( const ContentInterfacePtr & _content, ImageDecoderInterfacePtr * const _decoder ) override;
 

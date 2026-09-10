@@ -2,6 +2,7 @@ package org.Mengine.Base;
 
 public interface MengineAdProviderInterface {
     boolean hasBanner();
+    boolean isBannerLoaded();
 
     boolean canYouShowBanner();
     void showBanner();
@@ -9,6 +10,16 @@ public interface MengineAdProviderInterface {
 
     int getBannerWidth();
     int getBannerHeight();
+
+    boolean hasTopper();
+    boolean isTopperLoaded();
+
+    boolean canYouShowTopper();
+    void showTopper();
+    void hideTopper();
+
+    int getTopperWidth();
+    int getTopperHeight();
 
     boolean hasInterstitial();
 
@@ -22,6 +33,12 @@ public interface MengineAdProviderInterface {
     boolean canYouShowRewarded(String placement);
     boolean showRewarded(String placement);
     boolean isShowingRewarded();
+
+    boolean hasRewardedInterstitial();
+
+    boolean canYouShowRewardedInterstitial(String placement);
+    boolean showRewardedInterstitial(String placement);
+    boolean isShowingRewardedInterstitial();
 
     boolean hasAppOpen();
 

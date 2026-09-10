@@ -64,6 +64,8 @@
 }
 
 - (void)setProvider:(id<iOSAdvertisementProviderInterface>)provider {
+    [self.m_provider hideBanner];
+    [self.m_provider hideTopper];
     self.m_provider = provider;
 }
 
@@ -132,40 +134,40 @@
     return YES;
 }
 
-- (BOOL)showBanner {
+- (BOOL)isBannerLoaded {
     if (self.m_provider == nil) {
         return NO;
     }
 
-    BOOL noAds = [self getNoAds];
-
-    if (noAds == YES) {
+    if ([self getNoAds] == YES) {
         return NO;
     }
 
-    if ([self.m_provider showBanner] == NO) {
-        return NO;
-    }
+    BOOL loaded = [self.m_provider isBannerLoaded];
 
-    return YES;
+    return loaded;
 }
 
-- (BOOL)hideBanner {
+- (void)showBanner {
     if (self.m_provider == nil) {
-        return NO;
+        return;
     }
 
     BOOL noAds = [self getNoAds];
 
     if (noAds == YES) {
-        return NO;
+        return;
     }
 
-    if ([self.m_provider hideBanner] == NO) {
-        return NO;
+    [self.m_provider showBanner];
+}
+
+- (void)hideBanner {
+    if (self.m_provider == nil) {
+        return;
     }
 
-    return YES;
+    [self.m_provider hideBanner];
 }
 
 - (BOOL)getBannerWidth:(uint32_t *)width height:(uint32_t *)height {
@@ -180,6 +182,78 @@
     }
 
     if ([self.m_provider getBannerWidth:width height:height] == NO) {
+        return NO;
+    }
+
+    return YES;
+}
+
+- (BOOL)hasTopper {
+    if (self.m_provider == nil) {
+        return NO;
+    }
+
+    BOOL noAds = [self getNoAds];
+
+    if (noAds == YES) {
+        return NO;
+    }
+
+    if ([self.m_provider hasTopper] == NO) {
+        return NO;
+    }
+
+    return YES;
+}
+
+- (BOOL)isTopperLoaded {
+    if (self.m_provider == nil) {
+        return NO;
+    }
+
+    if ([self getNoAds] == YES) {
+        return NO;
+    }
+
+    BOOL loaded = [self.m_provider isTopperLoaded];
+
+    return loaded;
+}
+
+- (void)showTopper {
+    if (self.m_provider == nil) {
+        return;
+    }
+
+    BOOL noAds = [self getNoAds];
+
+    if (noAds == YES) {
+        return;
+    }
+
+    [self.m_provider showTopper];
+}
+
+- (void)hideTopper {
+    if (self.m_provider == nil) {
+        return;
+    }
+
+    [self.m_provider hideTopper];
+}
+
+- (BOOL)getTopperWidth:(uint32_t *)width height:(uint32_t *)height {
+    if (self.m_provider == nil) {
+        return NO;
+    }
+
+    BOOL noAds = [self getNoAds];
+
+    if (noAds == YES) {
+        return NO;
+    }
+
+    if ([self.m_provider getTopperWidth:width height:height] == NO) {
         return NO;
     }
 
@@ -205,6 +279,10 @@
 }
 
 - (BOOL)canYouShowInterstitial:(NSString *)placement {
+    if ([self isShowingFullscreenAd_] == YES) {
+        return NO;
+    }
+
     iOSAdvertisementInterstitialPoint * adPoint = [self getAdInterstitialPoint:placement];
 
     if (adPoint == nil) {
@@ -235,6 +313,10 @@
 }
 
 - (BOOL)showInterstitial:(NSString *)placement {
+    if ([self isShowingFullscreenAd_] == YES) {
+        return NO;
+    }
+
     iOSAdvertisementInterstitialPoint * adPoint = [self getAdInterstitialPoint:placement];
 
     if (adPoint == nil) {
@@ -295,16 +377,30 @@
     return YES;
 }
 
+- (BOOL)isShowingFullscreenAd_ {
+    if ([self.m_provider isShowingInterstitial] == YES) {
+        return YES;
+    }
+
+    if ([self.m_provider isShowingRewarded] == YES) {
+        return YES;
+    }
+
+    if ([self.m_provider isShowingRewardedInterstitial] == YES) {
+        return YES;
+    }
+
+    return NO;
+}
+
 - (BOOL)canOfferRewarded:(NSString *)placement {
     iOSAdvertisementRewardedPoint * adPoint = [self getAdRewardedPoint:placement];
 
-    if (adPoint == nil) {
-        IOS_LOGGER_ERROR(@"rewarded ad point '%@' not found", placement);
-
+    if (self.m_provider == nil) {
         return NO;
     }
 
-    if (self.m_provider == nil) {
+    if (adPoint == nil) {
         return NO;
     }
 
@@ -312,23 +408,27 @@
         return NO;
     }
 
-    if ([self.m_provider canOfferRewarded:placement] == NO) {
+    if ([self isShowingFullscreenAd_] == YES) {
         return NO;
     }
 
-    return YES;
+    BOOL canOffer = [self.m_provider canOfferRewarded:placement];
+
+    return canOffer;
 }
 
 - (BOOL)canYouShowRewarded:(NSString *)placement {
     iOSAdvertisementRewardedPoint * adPoint = [self getAdRewardedPoint:placement];
 
-    if (adPoint == nil) {
-        IOS_LOGGER_ERROR(@"rewarded ad point '%@' not found", placement);
-
+    if (self.m_provider == nil) {
         return NO;
     }
 
-    if (self.m_provider == nil) {
+    if (adPoint == nil) {
+        return NO;
+    }
+
+    if ([self isShowingFullscreenAd_] == YES) {
         return NO;
     }
 
@@ -336,19 +436,92 @@
         return NO;
     }
 
-    if ([self.m_provider canYouShowRewarded:placement] == NO) {
-        return NO;
-    }
+    BOOL canShow = [self.m_provider canYouShowRewarded:placement];
 
-    return YES;
+    return canShow;
 }
 
 - (BOOL)showRewarded:(NSString *)placement {
     iOSAdvertisementRewardedPoint * adPoint = [self getAdRewardedPoint:placement];
 
-    if (adPoint == nil) {
-        IOS_LOGGER_ERROR(@"rewarded ad point '%@' not found", placement);
+    if (self.m_provider == nil) {
+        return NO;
+    }
 
+    if (adPoint == nil) {
+        return NO;
+    }
+
+    if ([adPoint canOfferAd] == NO) {
+        return NO;
+    }
+
+    if ([self isShowingFullscreenAd_] == YES) {
+        return NO;
+    }
+
+    if ([self.m_provider showRewarded:placement] == NO) {
+        return NO;
+    }
+
+    self.m_lastShowRewarded = [AppleDetail getTimestamp];
+    self.m_countShowRewarded += 1;
+    [adPoint showAd];
+
+    return YES;
+}
+
+- (BOOL)isShowingRewarded {
+    if (self.m_provider == nil) {
+        return NO;
+    }
+
+    if ([self.m_provider isShowingRewarded] == YES) {
+        return YES;
+    }
+
+    if ([self.m_provider isShowingRewardedInterstitial] == YES) {
+        return YES;
+    }
+
+    return NO;
+}
+
+- (BOOL)hasRewardedInterstitial {
+    BOOL hasRewardedInterstitial = [self.m_provider hasRewardedInterstitial];
+
+    return hasRewardedInterstitial;
+}
+
+- (BOOL)canYouShowRewardedInterstitial:(NSString *)placement {
+    if ([self isShowingFullscreenAd_] == YES) {
+        return NO;
+    }
+
+    iOSAdvertisementRewardedPoint * adPoint = [self getAdRewardedPoint:placement];
+
+    if (adPoint == nil) {
+        IOS_LOGGER_ERROR(@"rewarded interstitial ad point '%@' not found", placement);
+        return NO;
+    }
+
+    if ([adPoint canYouShowAd] == NO) {
+        return NO;
+    }
+
+    BOOL canShow = [self.m_provider canYouShowRewardedInterstitial:placement];
+
+    return canShow;
+}
+
+- (BOOL)showRewardedInterstitial:(NSString *)placement {
+    if ([self isShowingFullscreenAd_] == YES) {
+        return NO;
+    }
+
+    iOSAdvertisementRewardedPoint * adPoint = [self getAdRewardedPoint:placement];
+
+    if (adPoint == nil) {
         return NO;
     }
 
@@ -356,7 +529,7 @@
         return NO;
     }
 
-    if ([self.m_provider showRewarded:placement] == NO) {
+    if ([self.m_provider showRewardedInterstitial:placement] == NO) {
         return NO;
     }
 
@@ -368,16 +541,10 @@
     return YES;
 }
 
-- (BOOL)isShowingRewarded {
-    if (self.m_provider == nil) {
-        return NO;
-    }
+- (BOOL)isShowingRewardedInterstitial {
+    BOOL showing = [self.m_provider isShowingRewardedInterstitial];
 
-    if ([self.m_provider isShowingRewarded] == NO) {
-        return NO;
-    }
-
-    return YES;
+    return showing;
 }
 
 #pragma mark - iOSPluginConfigDelegateInterface
@@ -494,6 +661,11 @@
 }
 
 - (void)onStopEnd {
+    [self setProvider:nil];
+    self.m_bannerCallback = nil;
+    self.m_interstitialCallback = nil;
+    self.m_rewardedCallback = nil;
+
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
     Mengine::Helper::removeScriptEmbedding<Mengine::iOSAdvertisementScriptEmbedding>();
 #endif

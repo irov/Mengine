@@ -17,7 +17,7 @@
 @implementation iOSAdMobInterstitialDelegate
 
 - (instancetype _Nullable) initWithAdUnitIdentifier:(NSString * _Nonnull)adUnitId advertisement:(id<iOSAdvertisementInterface> _Nonnull)advertisement {
-    self = [super initWithAdUnitIdentifier:adUnitId advertisement:advertisement];
+    self = [super initWithAdUnitIdentifier:adUnitId adFormat:@"interstitial" advertisement:advertisement];
 
     self.m_interstitialAd = nil;
 
@@ -191,6 +191,8 @@
         @"error": [self getGADAdErrorParams:error],
         @"error_code": @(error.code)
     }];
+
+    [self setAdFreeze:NO];
 
     self.m_showing = NO;
 

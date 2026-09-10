@@ -215,22 +215,21 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool iOSAdvertisement_showBanner()
+        static bool iOSAdvertisement_isBannerLoaded()
         {
-            if ([[iOSAdvertisementPlugin sharedInstance] showBanner] == NO) {
-                return false;
-            }
+            bool loaded = [[iOSAdvertisementPlugin sharedInstance] isBannerLoaded] == YES;
 
-            return true;
+            return loaded;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool iOSAdvertisement_hideBanner()
+        static void iOSAdvertisement_showBanner()
         {
-            if ([[iOSAdvertisementPlugin sharedInstance] hideBanner] == NO) {
-                return false;
-            }
-
-            return true;
+            [[iOSAdvertisementPlugin sharedInstance] showBanner];
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void iOSAdvertisement_hideBanner()
+        {
+            [[iOSAdvertisementPlugin sharedInstance] hideBanner];
         }
         //////////////////////////////////////////////////////////////////////////
         static PyObject * iOSAdvertisement_getBannerWidth( pybind::kernel_interface * _kernel )
@@ -257,6 +256,62 @@ namespace Mengine
             PyObject * py_height = pybind::ptr( _kernel, height );
 
             return py_height;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool iOSAdvertisement_hasTopper()
+        {
+            if ([[iOSAdvertisementPlugin sharedInstance] hasTopper] == NO) {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool iOSAdvertisement_isTopperLoaded()
+        {
+            bool loaded = [[iOSAdvertisementPlugin sharedInstance] isTopperLoaded] == YES;
+
+            return loaded;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void iOSAdvertisement_showTopper()
+        {
+            [[iOSAdvertisementPlugin sharedInstance] showTopper];
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void iOSAdvertisement_hideTopper()
+        {
+            [[iOSAdvertisementPlugin sharedInstance] hideTopper];
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static PyObject * iOSAdvertisement_getTopperWidth( pybind::kernel_interface * _kernel )
+        {
+            uint32_t width;
+            uint32_t height;
+            if ([[iOSAdvertisementPlugin sharedInstance] getTopperWidth:&width height:&height] == NO) {
+                PyObject * none = _kernel->ret_none();
+
+                return none;
+            }
+
+            PyObject * pyWidth = pybind::ptr( _kernel, width );
+
+            return pyWidth;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static PyObject * iOSAdvertisement_getTopperHeight( pybind::kernel_interface * _kernel )
+        {
+            uint32_t width;
+            uint32_t height;
+            if ([[iOSAdvertisementPlugin sharedInstance] getTopperWidth:&width height:&height] == NO) {
+                PyObject * none = _kernel->ret_none();
+
+                return none;
+            }
+
+            PyObject * pyHeight = pybind::ptr( _kernel, height );
+
+            return pyHeight;
         }
         //////////////////////////////////////////////////////////////////////////
         static bool iOSAdvertisement_hasInterstitial() {
@@ -330,6 +385,38 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        static bool iOSAdvertisement_hasRewardedInterstitial() {
+            if ([[iOSAdvertisementPlugin sharedInstance] hasRewardedInterstitial] == NO) {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool iOSAdvertisement_canYouShowRewardedInterstitial( NSString * _placement ) {
+            if ([[iOSAdvertisementPlugin sharedInstance] canYouShowRewardedInterstitial:_placement] == NO) {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool iOSAdvertisement_showRewardedInterstitial( NSString * _placement ) {
+            if ([[iOSAdvertisementPlugin sharedInstance] showRewardedInterstitial:_placement] == NO) {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool iOSAdvertisement_isShowingRewardedInterstitial() {
+            if ([[iOSAdvertisementPlugin sharedInstance] isShowingRewardedInterstitial] == NO) {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
         static bool iOSAdvertisement_getNoAds() {
             if ([[iOSAdvertisementPlugin sharedInstance] getNoAds] == NO) {
                 return false;
@@ -355,10 +442,18 @@ namespace Mengine
         pybind::def_function_args( _kernel, "iOSAdvertisementSetRewardedCallback", &Detail::iOSAdvertisement_setRewardedCallback );
 
         pybind::def_function( _kernel, "iOSAdvertisementHasBanner", &Detail::iOSAdvertisement_hasBanner );
+        pybind::def_function( _kernel, "iOSAdvertisementIsBannerLoaded", &Detail::iOSAdvertisement_isBannerLoaded );
         pybind::def_function( _kernel, "iOSAdvertisementShowBanner", &Detail::iOSAdvertisement_showBanner );
         pybind::def_function( _kernel, "iOSAdvertisementHideBanner", &Detail::iOSAdvertisement_hideBanner );
         pybind::def_function_kernel( _kernel, "iOSAdvertisementGetBannerWidth", &Detail::iOSAdvertisement_getBannerWidth );
         pybind::def_function_kernel( _kernel, "iOSAdvertisementGetBannerHeight", &Detail::iOSAdvertisement_getBannerHeight );
+
+        pybind::def_function( _kernel, "iOSAdvertisementHasTopper", &Detail::iOSAdvertisement_hasTopper );
+        pybind::def_function( _kernel, "iOSAdvertisementIsTopperLoaded", &Detail::iOSAdvertisement_isTopperLoaded );
+        pybind::def_function( _kernel, "iOSAdvertisementShowTopper", &Detail::iOSAdvertisement_showTopper );
+        pybind::def_function( _kernel, "iOSAdvertisementHideTopper", &Detail::iOSAdvertisement_hideTopper );
+        pybind::def_function_kernel( _kernel, "iOSAdvertisementGetTopperWidth", &Detail::iOSAdvertisement_getTopperWidth );
+        pybind::def_function_kernel( _kernel, "iOSAdvertisementGetTopperHeight", &Detail::iOSAdvertisement_getTopperHeight );
 
         pybind::def_function( _kernel, "iOSAdvertisementHasInterstitial", &Detail::iOSAdvertisement_hasInterstitial );
         pybind::def_function( _kernel, "iOSAdvertisementCanYouShowInterstitial", &Detail::iOSAdvertisement_canYouShowInterstitial );
@@ -371,6 +466,11 @@ namespace Mengine
         pybind::def_function( _kernel, "iOSAdvertisementShowRewarded", &Detail::iOSAdvertisement_showRewarded );
         pybind::def_function( _kernel, "iOSAdvertisementIsShowingRewarded", &Detail::iOSAdvertisement_isShowingRewarded );
 
+        pybind::def_function( _kernel, "iOSAdvertisementHasRewardedInterstitial", &Detail::iOSAdvertisement_hasRewardedInterstitial );
+        pybind::def_function( _kernel, "iOSAdvertisementCanYouShowRewardedInterstitial", &Detail::iOSAdvertisement_canYouShowRewardedInterstitial );
+        pybind::def_function( _kernel, "iOSAdvertisementShowRewardedInterstitial", &Detail::iOSAdvertisement_showRewardedInterstitial );
+        pybind::def_function( _kernel, "iOSAdvertisementIsShowingRewardedInterstitial", &Detail::iOSAdvertisement_isShowingRewardedInterstitial );
+
         pybind::def_function( _kernel, "iOSAdvertisementGetNoAds", &Detail::iOSAdvertisement_getNoAds );
 
         return true;
@@ -381,20 +481,37 @@ namespace Mengine
         _kernel->remove_from_module( "iOSAdvertisementSetBannerCallback", nullptr );
         _kernel->remove_from_module( "iOSAdvertisementSetInterstitialCallback", nullptr );
         _kernel->remove_from_module( "iOSAdvertisementSetRewardedCallback", nullptr );
+
         _kernel->remove_from_module( "iOSAdvertisementHasBanner", nullptr );
+        _kernel->remove_from_module( "iOSAdvertisementIsBannerLoaded", nullptr );
         _kernel->remove_from_module( "iOSAdvertisementShowBanner", nullptr );
         _kernel->remove_from_module( "iOSAdvertisementHideBanner", nullptr );
         _kernel->remove_from_module( "iOSAdvertisementGetBannerWidth", nullptr );
         _kernel->remove_from_module( "iOSAdvertisementGetBannerHeight", nullptr );
+
+        _kernel->remove_from_module( "iOSAdvertisementHasTopper", nullptr );
+        _kernel->remove_from_module( "iOSAdvertisementIsTopperLoaded", nullptr );
+        _kernel->remove_from_module( "iOSAdvertisementShowTopper", nullptr );
+        _kernel->remove_from_module( "iOSAdvertisementHideTopper", nullptr );
+        _kernel->remove_from_module( "iOSAdvertisementGetTopperWidth", nullptr );
+        _kernel->remove_from_module( "iOSAdvertisementGetTopperHeight", nullptr );
+
         _kernel->remove_from_module( "iOSAdvertisementHasInterstitial", nullptr );
         _kernel->remove_from_module( "iOSAdvertisementCanYouShowInterstitial", nullptr );
         _kernel->remove_from_module( "iOSAdvertisementShowInterstitial", nullptr );
         _kernel->remove_from_module( "iOSAdvertisementIsShowingInterstitial", nullptr );
+
         _kernel->remove_from_module( "iOSAdvertisementHasRewarded", nullptr );
         _kernel->remove_from_module( "iOSAdvertisementCanOfferRewarded", nullptr );
         _kernel->remove_from_module( "iOSAdvertisementCanYouShowRewarded", nullptr );
         _kernel->remove_from_module( "iOSAdvertisementShowRewarded", nullptr );
         _kernel->remove_from_module( "iOSAdvertisementIsShowingRewarded", nullptr );
+
+        _kernel->remove_from_module( "iOSAdvertisementHasRewardedInterstitial", nullptr );
+        _kernel->remove_from_module( "iOSAdvertisementCanYouShowRewardedInterstitial", nullptr );
+        _kernel->remove_from_module( "iOSAdvertisementShowRewardedInterstitial", nullptr );
+        _kernel->remove_from_module( "iOSAdvertisementIsShowingRewardedInterstitial", nullptr );
+
         _kernel->remove_from_module( "iOSAdvertisementGetNoAds", nullptr );
     }
     //////////////////////////////////////////////////////////////////////////

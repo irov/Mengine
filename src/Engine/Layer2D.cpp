@@ -248,7 +248,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( renderTargetImage, "invalid create render target image" );
 
         RenderTextureInterfacePtr renderTargetTexture = RENDERTEXTURE_SERVICE()
-            ->createRenderTexture( renderTargetImage, width, height, MENGINE_DOCUMENT_FACTORABLE );
+            ->createRenderTexture( renderTargetImage, width, height, DF_IMAGE_NONE, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( renderTargetTexture, "invalid create render texture [%u, %u]"
             , width

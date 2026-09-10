@@ -136,12 +136,12 @@ public class MengineService implements MengineServiceInterface {
     }
 
     @Override
-    public void setStatisticInteger(@Size(min = 1L, max = 40L) String key, long value) {
+    public void setStatisticInteger(@Size(min = 1, max = 40) String key, long value) {
         MengineStatistic.setInteger(key, value);
     }
 
     @Override
-    public void increaseStatisticInteger(@Size(min = 1L, max = 40L) String key, long value) {
+    public void increaseStatisticInteger(@Size(min = 1, max = 40) String key, long value) {
         if (value == 0L) {
             return;
         }
@@ -150,7 +150,7 @@ public class MengineService implements MengineServiceInterface {
     }
 
     @Override
-    public void decreaseStatisticInteger(@Size(min = 1L, max = 40L) String key, long value) {
+    public void decreaseStatisticInteger(@Size(min = 1, max = 40) String key, long value) {
         if (value == 0L) {
             return;
         }
@@ -159,12 +159,12 @@ public class MengineService implements MengineServiceInterface {
     }
 
     @Override
-    public void setStatisticDouble(@Size(min = 1L, max = 40L) String key, double value) {
+    public void setStatisticDouble(@Size(min = 1, max = 40) String key, double value) {
         MengineStatistic.setDouble(key, value);
     }
 
     @Override
-    public void increaseStatisticDouble(@Size(min = 1L, max = 40L) String key, double value) {
+    public void increaseStatisticDouble(@Size(min = 1, max = 40) String key, double value) {
         if (value == 0.0) {
             return;
         }
@@ -173,7 +173,7 @@ public class MengineService implements MengineServiceInterface {
     }
 
     @Override
-    public void decreaseStatisticDouble(@Size(min = 1L, max = 40L) String key, double value) {
+    public void decreaseStatisticDouble(@Size(min = 1, max = 40) String key, double value) {
         if (value == 0.0) {
             return;
         }
@@ -317,7 +317,7 @@ public class MengineService implements MengineServiceInterface {
     }
 
     @Override
-    public MengineAnalyticsEventBuilderInterface buildEvent(@Size(min = 1L, max = 40L) String name) {
+    public MengineAnalyticsEventBuilderInterface buildEvent(@Size(min = 1, max = 40) String name) {
         if (this.availableAnalytics() == false) {
             MengineAnalyticsEventBuilderInterface eventBuilderDummy = MengineAnalytics.buildEventDummy(name);
             eventBuilderDummy.addParameterString("service", m_serviceName);

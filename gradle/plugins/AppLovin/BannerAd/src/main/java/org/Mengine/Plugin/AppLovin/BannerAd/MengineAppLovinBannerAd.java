@@ -23,7 +23,6 @@ import com.applovin.sdk.AppLovinSdkUtils;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineAdService;
 import org.Mengine.Base.MengineAnalyticsEventBuilderInterface;
-import org.Mengine.Base.MengineFragmentRemoteConfig;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineUtils;
 import org.Mengine.Plugin.AppLovin.Core.MengineAppLovinBannerAdInterface;
@@ -35,7 +34,6 @@ import java.util.Map;
 
 public class MengineAppLovinBannerAd extends MengineAppLovinBase implements MengineAppLovinBannerAdInterface, MaxAdRequestListener, MaxAdViewAdListener, MaxAdRevenueListener, MaxAdReviewListener {
     public static final @StringRes int METADATA_BANNER_PLACEMENT = R.string.mengine_applovin_banner_placement;
-    public static final @StringRes int METADATA_BANNER_ADUNITID = R.string.mengine_applovin_banner_adunitid;
 
     protected final String m_placement;
 
@@ -44,14 +42,18 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements Meng
     protected volatile boolean m_visible = false;
     protected volatile boolean m_loaded = false;
 
-    public MengineAppLovinBannerAd(@NonNull MengineAdService adService, @NonNull MengineAppLovinPluginInterface plugin) throws MengineServiceInvalidInitializeException {
-        super(adService, plugin, MaxAdFormat.BANNER);
-
-        this.setAdUnitId(METADATA_BANNER_ADUNITID, "BannerAdUnitId");
+    public MengineAppLovinBannerAd(@NonNull MengineAdService adService, @NonNull MengineAppLovinPluginInterface plugin, @NonNull String adUnitId) throws MengineServiceInvalidInitializeException {
+        super(adService, plugin, MaxAdFormat.BANNER, adUnitId);
 
         String MengineAppLovinPlugin_Banner_Placement = plugin.getResourceString(METADATA_BANNER_PLACEMENT);
 
         m_placement = MengineAppLovinPlugin_Banner_Placement;
+    }
+
+    public MengineAppLovinBannerAd(@NonNull MengineAdService adService, @NonNull MengineAppLovinPluginInterface plugin, @NonNull String adUnitId, @NonNull String placement) {
+        super(adService, plugin, MaxAdFormat.BANNER, adUnitId);
+
+        m_placement = placement;
     }
 
     protected AppLovinSdkUtils.Size getBannerSize(@NonNull MengineActivity activity) {
@@ -60,7 +62,7 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements Meng
         return size;
     }
 
-    protected MengineAnalyticsEventBuilderInterface buildBannerAdEvent(@Size(min = 1L, max = 40L) String event) {
+    protected MengineAnalyticsEventBuilderInterface buildBannerAdEvent(@Size(min = 1, max = 40) String event) {
         MengineAnalyticsEventBuilderInterface builder = this.buildAdEvent("mng_applovin_banner_" + event)
             .addParameterString("placement", m_placement);
 
@@ -74,6 +76,10 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements Meng
     public int getWidthPx() {
         MengineActivity activity = m_plugin.getMengineActivity();
 
+        if (activity == null) {
+            return 0;
+        }
+
         AppLovinSdkUtils.Size size = this.getBannerSize(activity);
 
         int widthDp = size.getWidth();
@@ -84,6 +90,10 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements Meng
 
     public int getHeightPx() {
         MengineActivity activity = m_plugin.getMengineActivity();
+
+        if (activity == null) {
+            return 0;
+        }
 
         AppLovinSdkUtils.Size size = this.getBannerSize(activity);
 
@@ -119,7 +129,11 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements Meng
         int heightPx = AppLovinSdkUtils.dpToPx(activity, heightDp);
 
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, heightPx);
-        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        if (m_placement.equals("topper") == true) {
+            params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        } else {
+            params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        }
 
         adView.setLayoutParams(params);
 
@@ -144,6 +158,9 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements Meng
     @Override
     public void onActivityDestroy(@NonNull MengineActivity activity) {
         super.onActivityDestroy(activity);
+
+        m_loaded = false;
+        m_visible = false;
 
         if (m_adView != null) {
             m_adView.setListener(null);
@@ -231,25 +248,37 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements Meng
         adView.stopAutoRefresh();
     }
 
-    private void updateVisible() {
-        this.log("updateVisible", Map.of("show", m_visible));
+    private MengineAppLovinNonetBannersInterface getNonetBanners() {
+        if (m_placement.equals("topper") == true) {
+            return null;
+        }
 
         MengineAppLovinNonetBannersInterface nonetBanners = m_plugin.getNonetBanners();
 
-        if (m_visible == true) {
-            if (nonetBanners != null) {
-                if (m_loaded == true) {
-                    nonetBanners.hide();
+        return nonetBanners;
+    }
 
-                    if (m_adView != null) {
-                        this.enableAdView(m_adView);
-                    }
-                } else {
-                    nonetBanners.show();
+    private void updateVisible() {
+        this.log("updateVisible", Map.of("show", m_visible));
+
+        MengineAppLovinNonetBannersInterface nonetBanners = this.getNonetBanners();
+
+        if (m_visible == true) {
+            if (m_loaded == true) {
+                if (m_adView != null) {
+                    this.enableAdView(m_adView);
+                }
+
+                if (nonetBanners != null) {
+                    nonetBanners.hide();
                 }
             } else {
                 if (m_adView != null) {
-                    this.enableAdView(m_adView);
+                    this.disableAdView(m_adView);
+                }
+
+                if (nonetBanners != null) {
+                    nonetBanners.show();
                 }
             }
         } else {
@@ -263,12 +292,26 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements Meng
         }
     }
 
+    @Override
+    public View getView() {
+        return m_adView;
+    }
+
+    @Override
+    public boolean isLoaded() {
+        return m_loaded;
+    }
+
     public boolean canYouShow() {
         return m_loaded;
     }
 
     public void show() {
         MengineUtils.performOnMainThread(() -> {
+            if (m_adView == null) {
+                return;
+            }
+
             if (m_visible == true) {
                 return;
             }
@@ -317,15 +360,7 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements Meng
 
         this.setBannerState("loaded." + m_placement + "." + ad.getNetworkName());
 
-        if (m_visible == true) {
-            MengineAppLovinNonetBannersInterface nonetBanners = m_plugin.getNonetBanners();
-
-            if (nonetBanners != null) {
-                this.enableAdView(m_adView);
-
-                nonetBanners.hide();
-            }
-        }
+        this.updateVisible();
     }
 
     @Override
@@ -363,6 +398,8 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements Meng
 
     @Override
     public void onAdLoadFailed(@NonNull String adUnitId, @NonNull MaxError error) {
+        m_loaded = false;
+
         this.logMaxError("onAdLoadFailed", error);
 
         int errorCode = error.getCode();
@@ -376,15 +413,7 @@ public class MengineAppLovinBannerAd extends MengineAppLovinBase implements Meng
 
         this.setBannerState("load_failed." + m_placement + "." + errorCode);
 
-        if (m_visible == true) {
-            MengineAppLovinNonetBannersInterface nonetBanners = m_plugin.getNonetBanners();
-
-            if (nonetBanners != null) {
-                this.disableAdView(m_adView);
-
-                nonetBanners.show();
-            }
-        }
+        this.updateVisible();
     }
 
     @Override

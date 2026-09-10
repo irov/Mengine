@@ -146,7 +146,6 @@ namespace Mengine
         bool openDeleteAccount( const LambdaDeleteAccountAccepted & _accepted, const LambdaDeleteAccountCanceled & _canceled ) override;
         bool completeDeleteAccount( EDeleteAccountResult _result ) override;
         bool isNetworkAvailable() const override;
-        void removeUserData() override;
 
     protected:
         bool getSpecialFolderPath_( DWORD _flag, WChar * const _path ) const;

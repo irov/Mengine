@@ -12,6 +12,8 @@
 + (instancetype)sharedInstance;
 
 @property (nonatomic, assign) EiOSAppTrackingAuthorization m_status;
+@property (atomic, assign) iOSAppTrackingAuthorizationState m_authorizationState;
+@property (nonatomic, assign) BOOL m_requestInProgress;
 @property (nonatomic, strong) NSString * m_idfa;
 
 @end

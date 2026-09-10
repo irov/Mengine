@@ -1705,10 +1705,6 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void UnixPlatformService::removeUserData()
-    {
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool UnixPlatformService::updateDesktopWallpaper( const Char * _directoryPath, const Char * _filePath )
     {
         MENGINE_UNUSED( _directoryPath );

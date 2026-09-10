@@ -1456,8 +1456,4 @@ public class MengineActivity extends AppCompatActivity {
     public boolean isNetworkAvailable() {
         return MengineNetwork.isNetworkAvailable();
     }
-
-    public void removeUserData() {
-        MengineApplication.INSTANCE.removeUserData();
-    }
 }

@@ -917,7 +917,7 @@ namespace Mengine
             }
 
             RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
-                ->createRenderTexture( image, textureArray.width, textureArray.height, MENGINE_DOCUMENT_FACTORABLE );
+                ->createRenderTexture( image, textureArray.width, textureArray.height, DF_IMAGE_NONE, MENGINE_DOCUMENT_FACTORABLE );
 
             if( texture == nullptr )
             {

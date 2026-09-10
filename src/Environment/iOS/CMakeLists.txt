@@ -2,6 +2,8 @@ MENGINE_PROJECT(iOS)
 
 ADD_FILTER(
 src    
+    iOSAttribution.h
+    iOSAttribution.mm
     iOSDetail.h
     iOSDetail.mm
 	
@@ -55,6 +57,7 @@ src
     iOSPluginLoggerDelegateInterface.h
 	iOSPluginConfigDelegateInterface.h
     iOSPluginAnalyticDelegateInterface.h
+    iOSPluginAttributionDelegateInterface.h
 
     iOSSafeAreaProviderInterface.h
     iOSPlatformServiceExtensionInterface.h

@@ -12,19 +12,28 @@ namespace Mengine
 
     namespace Helper
     {
-        template<class... Ts>
-        struct Overloaded : Ts... 
-        { 
-            using Ts::operator()...;
+        template<class ... Ts>
+        struct Overloaded
+            : Ts ...
+        {
+            using Ts::operator() ...;
         };
 
-        template<class... Ts>
+        template<class ... Ts>
         Overloaded( Ts... ) -> Overloaded<Ts...>;
 
         template<class ... Types, class ... Lambdas>
         void visit( const Variant<Types ...> & _variant, Lambdas && ... _lambda )
         {
             std::visit( Helper::Overloaded{std::forward<Lambdas>( _lambda ) ...}, _variant );
+        }
+
+        template<class T, class ... Types>
+        bool is( const Variant<Types ...> & _variant )
+        {
+            bool result = std::holds_alternative<T>( _variant );
+
+            return result;
         }
 
         template<class ... Types, class T>

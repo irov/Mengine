@@ -41,6 +41,7 @@
 
 + (void)getParamsFromNSDictionary:(NSDictionary * _Nonnull)_in outParams:(Mengine::Params * const _Nonnull)_out;
 + (BOOL)getParamsFromJSON:(NSString * _Nonnull)_in outParams:(Mengine::Params * const _Nonnull)_out;
++ (id _Nonnull)getNSObjectFromParamVariant:(const Mengine::ParamVariant &)variant;
 + (NSDictionary * _Nonnull)getNSDictionaryFromParams:(const Mengine::Params &)params;
 + (void)getVectorStringFromNSArray:(NSArray<NSString *> * _Nonnull)_in outVectorString:(Mengine::VectorString * const _Nonnull)_out;
 + (NSArray<NSString *> * _Nonnull)getNSArrayFromVectorString:(const Mengine::VectorString &)strings;

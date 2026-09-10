@@ -17,6 +17,7 @@
 #include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/FactoryInterface.h"
 #include "Interface/AnalyticsEventProviderInterface.h"
+#include "Interface/AttributionServiceInterface.h"
 
 #import "Environment/iOS/iOSSafeAreaProviderInterface.h"
 #include "Environment/iOS/iOSPlatformServiceExtensionInterface.h"
@@ -153,7 +154,6 @@ namespace Mengine
         bool openDeleteAccount( const LambdaDeleteAccountAccepted & _accepted, const LambdaDeleteAccountCanceled & _canceled ) override;
         bool completeDeleteAccount( EDeleteAccountResult _result ) override;
         bool isNetworkAvailable() const override;
-        void removeUserData() override;
         bool hasAccountDeletionRestart() const override;
         void clearAccountDeletionRestart() override;
 
@@ -250,6 +250,7 @@ namespace Mengine
         StaticString<MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME> m_projectTitle;
         
         AnalyticsEventProviderInterfacePtr m_analyticsEventProvider;
+        AttributionProviderInterfacePtr m_attributionProvider;
 
         UIAlertController * m_deleteAccountProgressAlert;
         

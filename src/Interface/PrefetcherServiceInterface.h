@@ -28,6 +28,9 @@ namespace Mengine
         SERVICE_DECLARE( "PrefetcherService" )
 
     public:
+        virtual bool addPrefetchTask( const ThreadTaskInterfacePtr & _task ) = 0;
+
+    public:
         virtual bool prefetchImageDecoder( const ContentInterfacePtr & _content, const PrefetcherObserverInterfacePtr & _observer ) = 0;
         virtual bool getImageDecoder( const ContentInterfacePtr & _content, ImageDecoderInterfacePtr * const _decoder ) = 0;
 

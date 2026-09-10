@@ -169,6 +169,11 @@ Analytics
     AnalyticsServiceInterface.h
 )
 
+ADD_FILTER(
+Attribution
+    AttributionProviderInterface.h
+    AttributionServiceInterface.h
+)
 
 ADD_FILTER(
 Profiler
@@ -230,6 +235,7 @@ Render
     RenderImageLoaderInterface.h
     RenderImageProviderInterface.h
     RenderTextureInterface.h
+    RenderTexturePrefetchInterface.h
     RenderResolutionInterface.h
     RenderViewportInterface.h
     RenderCameraInterface.h

@@ -31,23 +31,20 @@ import java.util.Map;
 
 public class MengineAppLovinAppOpenAd extends MengineAppLovinBase implements MengineAppLovinAppOpenAdInterface, MaxAdListener, MaxAdRequestListener, MaxAdExpirationListener, MaxAdRevenueListener, MaxAdReviewListener {
     public static final @StringRes int METADATA_APPOPEN_PLACEMENT = R.string.mengine_applovin_appopen_placement;
-    public static final @StringRes int METADATA_APPOPEN_ADUNITID = R.string.mengine_applovin_appopen_adunitid;
 
     protected final String m_placement;
 
     protected MaxAppOpenAd m_appOpenAd;
 
-    public MengineAppLovinAppOpenAd(@NonNull MengineAdService adService, @NonNull MengineAppLovinPluginInterface plugin) throws MengineServiceInvalidInitializeException {
-        super(adService, plugin, MaxAdFormat.APP_OPEN);
-
-        this.setAdUnitId(METADATA_APPOPEN_ADUNITID, "AppOpenAdUnitId");
+    public MengineAppLovinAppOpenAd(@NonNull MengineAdService adService, @NonNull MengineAppLovinPluginInterface plugin, @NonNull String adUnitId) throws MengineServiceInvalidInitializeException {
+        super(adService, plugin, MaxAdFormat.APP_OPEN, adUnitId);
 
         String MengineAppLovinPlugin_AppOpen_Placement = plugin.getResourceString(METADATA_APPOPEN_PLACEMENT);
 
         m_placement = MengineAppLovinPlugin_AppOpen_Placement;
     }
 
-    protected MengineAnalyticsEventBuilderInterface buildAppOpenAdEvent(@Size(min = 1L, max = 40L) String event) {
+    protected MengineAnalyticsEventBuilderInterface buildAppOpenAdEvent(@Size(min = 1, max = 40) String event) {
         MengineAnalyticsEventBuilderInterface builder = this.buildAdEvent("mng_applovin_appopen_" + event)
             .addParameterString("placement", m_placement)
             ;

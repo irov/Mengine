@@ -13,6 +13,8 @@ src
     
     AndroidAnalyticsEventProvider.h
     AndroidAnalyticsEventProvider.cpp
+    AndroidAttributionProvider.h
+    AndroidAttributionProvider.cpp
     
     AndroidProxyLogger.h
     AndroidProxyLogger.cpp

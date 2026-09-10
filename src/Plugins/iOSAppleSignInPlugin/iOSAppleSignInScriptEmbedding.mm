@@ -55,7 +55,7 @@
         return;
     }
 
-    py_cb.call_args( userId, (NSInteger)state, self.m_args );
+    py_cb.call_args( userId, state, self.m_args );
 }
 
 - (void)onAppleSignInCredentialStateError:(NSString *)userId code:(NSInteger)code message:(NSString *)errorMessage {
@@ -122,15 +122,17 @@ namespace Mengine
             return [[iOSAppleSignInPlugin sharedInstance] checkCredentialState:userId] == YES;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool iOSAppleSignIn_showButton( int32_t _type, int32_t _style, float _x, float _y, float _width, float _height, float _cornerRadius )
+        static bool iOSAppleSignIn_showButton( iOSAppleSignInButtonType _type, iOSAppleSignInButtonStyle _style, float _x, float _y, float _width, float _height, float _cornerRadius )
         {
-            return [[iOSAppleSignInPlugin sharedInstance] showButtonWithType:(iOSAppleSignInButtonType)_type
-                                                                       style:(iOSAppleSignInButtonStyle)_style
-                                                                           x:(CGFloat)_x
-                                                                           y:(CGFloat)_y
-                                                                       width:(CGFloat)_width
-                                                                      height:(CGFloat)_height
-                                                                cornerRadius:(CGFloat)_cornerRadius] == YES;
+            bool successful = [[iOSAppleSignInPlugin sharedInstance] showButtonWithType:_type
+                                                                               style:_style
+                                                                                   x:(CGFloat)_x
+                                                                                   y:(CGFloat)_y
+                                                                               width:(CGFloat)_width
+                                                                              height:(CGFloat)_height
+                                                                        cornerRadius:(CGFloat)_cornerRadius] == YES;
+
+            return successful;
         }
         //////////////////////////////////////////////////////////////////////////
         static void iOSAppleSignIn_hideButton()
@@ -155,19 +157,25 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool iOSAppleSignInScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
-        pybind::def_const<int32_t>( _kernel, "IOS_APPLE_SIGNIN_CREDENTIAL_STATE_UNKNOWN", iOSAppleSignInCredentialStateUnknown );
-        pybind::def_const<int32_t>( _kernel, "IOS_APPLE_SIGNIN_CREDENTIAL_STATE_REVOKED", iOSAppleSignInCredentialStateRevoked );
-        pybind::def_const<int32_t>( _kernel, "IOS_APPLE_SIGNIN_CREDENTIAL_STATE_AUTHORIZED", iOSAppleSignInCredentialStateAuthorized );
-        pybind::def_const<int32_t>( _kernel, "IOS_APPLE_SIGNIN_CREDENTIAL_STATE_NOT_FOUND", iOSAppleSignInCredentialStateNotFound );
-        pybind::def_const<int32_t>( _kernel, "IOS_APPLE_SIGNIN_CREDENTIAL_STATE_TRANSFERRED", iOSAppleSignInCredentialStateTransferred );
+        pybind::enum_<iOSAppleSignInCredentialState>( _kernel, "iOSAppleSignInCredentialState" )
+            .def( "IOS_APPLE_SIGNIN_CREDENTIAL_STATE_UNKNOWN", iOSAppleSignInCredentialStateUnknown )
+            .def( "IOS_APPLE_SIGNIN_CREDENTIAL_STATE_REVOKED", iOSAppleSignInCredentialStateRevoked )
+            .def( "IOS_APPLE_SIGNIN_CREDENTIAL_STATE_AUTHORIZED", iOSAppleSignInCredentialStateAuthorized )
+            .def( "IOS_APPLE_SIGNIN_CREDENTIAL_STATE_NOT_FOUND", iOSAppleSignInCredentialStateNotFound )
+            .def( "IOS_APPLE_SIGNIN_CREDENTIAL_STATE_TRANSFERRED", iOSAppleSignInCredentialStateTransferred )
+            ;
 
-        pybind::def_const<int32_t>( _kernel, "IOS_APPLE_SIGNIN_BUTTON_TYPE_SIGN_IN", iOSAppleSignInButtonTypeSignIn );
-        pybind::def_const<int32_t>( _kernel, "IOS_APPLE_SIGNIN_BUTTON_TYPE_CONTINUE", iOSAppleSignInButtonTypeContinue );
-        pybind::def_const<int32_t>( _kernel, "IOS_APPLE_SIGNIN_BUTTON_TYPE_SIGN_UP", iOSAppleSignInButtonTypeSignUp );
+        pybind::enum_<iOSAppleSignInButtonType>( _kernel, "iOSAppleSignInButtonType" )
+            .def( "IOS_APPLE_SIGNIN_BUTTON_TYPE_SIGN_IN", iOSAppleSignInButtonTypeSignIn )
+            .def( "IOS_APPLE_SIGNIN_BUTTON_TYPE_CONTINUE", iOSAppleSignInButtonTypeContinue )
+            .def( "IOS_APPLE_SIGNIN_BUTTON_TYPE_SIGN_UP", iOSAppleSignInButtonTypeSignUp )
+            ;
 
-        pybind::def_const<int32_t>( _kernel, "IOS_APPLE_SIGNIN_BUTTON_STYLE_WHITE", iOSAppleSignInButtonStyleWhite );
-        pybind::def_const<int32_t>( _kernel, "IOS_APPLE_SIGNIN_BUTTON_STYLE_WHITE_OUTLINE", iOSAppleSignInButtonStyleWhiteOutline );
-        pybind::def_const<int32_t>( _kernel, "IOS_APPLE_SIGNIN_BUTTON_STYLE_BLACK", iOSAppleSignInButtonStyleBlack );
+        pybind::enum_<iOSAppleSignInButtonStyle>( _kernel, "iOSAppleSignInButtonStyle" )
+            .def( "IOS_APPLE_SIGNIN_BUTTON_STYLE_WHITE", iOSAppleSignInButtonStyleWhite )
+            .def( "IOS_APPLE_SIGNIN_BUTTON_STYLE_WHITE_OUTLINE", iOSAppleSignInButtonStyleWhiteOutline )
+            .def( "IOS_APPLE_SIGNIN_BUTTON_STYLE_BLACK", iOSAppleSignInButtonStyleBlack )
+            ;
 
         pybind::def_function_args( _kernel, "iOSAppleSignInSetProvider", &Detail::iOSAppleSignIn_setProvider );
         pybind::def_function( _kernel, "iOSAppleSignInLogin", &Detail::iOSAppleSignIn_login );

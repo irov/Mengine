@@ -3,6 +3,7 @@ package org.Mengine.Plugin.FirebaseRemoteConfig;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
@@ -163,11 +164,11 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
         JSONObject extraKeys = new JSONObject();
         for (Map.Entry<String, FirebaseRemoteConfigValue> entry : remoteValues.entrySet()) {
             String key = entry.getKey();
-            
+
             if (m_defaults.containsKey(key) == false) {
                 FirebaseRemoteConfigValue value = entry.getValue();
                 String value_string = value.asString();
-                
+
                 try {
                     extraKeys.put(key, value_string);
                 } catch (final JSONException e) {
@@ -186,6 +187,13 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
         }
 
         MengineFragmentRemoteConfig.INSTANCE.remoteConfigFetch(configs, ids);
+    }
+
+    @Nullable
+    public JSONObject getRemoteConfigValue(@NonNull String name) {
+        JSONObject value = MengineFragmentRemoteConfig.INSTANCE.getRemoteConfig(name);
+
+        return value;
     }
 
     protected void propagateRemoteConfigValues(boolean updated) {

@@ -1,6 +1,7 @@
 ADD_SUBDIRECTORY(AccountService)
 ADD_SUBDIRECTORY(AmplifierService)
 ADD_SUBDIRECTORY(AnalyticsService)
+ADD_SUBDIRECTORY(AttributionService)
 ADD_SUBDIRECTORY(ArchiveService)
 ADD_SUBDIRECTORY(ArrowService)
 ADD_SUBDIRECTORY(ChronometerService)

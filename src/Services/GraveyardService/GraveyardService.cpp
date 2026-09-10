@@ -30,7 +30,7 @@ namespace Mengine
     {
         m_graveyardTime = CONFIG_VALUE_FLOAT( "Engine", "GraveyardTime", 1000.f );
 
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RENDER_TEXTURE_DESTROY, &GraveyardService::onEngineTextureDestroy, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RENDER_TEXTURE_DESTROY, &GraveyardService::notifyRenderTextureDestroy_, MENGINE_DOCUMENT_FACTORABLE );
 
         TIMEPIPE_SERVICE()
             ->addTimepipe( TimepipeInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
@@ -116,6 +116,7 @@ namespace Mengine
         entry.image = _texture->getImage();
         entry.width = _texture->getWidth();
         entry.height = _texture->getHeight();
+        entry.codecFlags = _texture->getCodecFlags();
 
         entry.time = m_graveyardTime;
 
@@ -153,7 +154,7 @@ namespace Mengine
         RenderTextureGraveEntry & entry = *it_found;
 
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
-            ->createRenderTexture( entry.image, entry.width, entry.height, _doc );
+            ->createRenderTexture( entry.image, entry.width, entry.height, entry.codecFlags, _doc );
 
         entry.image = nullptr;
 
@@ -163,7 +164,7 @@ namespace Mengine
         return texture;
     }
     //////////////////////////////////////////////////////////////////////////
-    void GraveyardService::onEngineTextureDestroy( RenderTextureInterface * _texture )
+    void GraveyardService::notifyRenderTextureDestroy_( RenderTextureInterface * _texture )
     {
         this->buryTexture( _texture );
     }

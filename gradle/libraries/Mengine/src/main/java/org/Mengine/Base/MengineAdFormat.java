@@ -9,6 +9,7 @@ public class MengineAdFormat {
     public final static MengineAdFormat ADFORMAT_INTERSTITIAL = new MengineAdFormat("ADFORMAT_INTERSTITIAL");
     public final static MengineAdFormat ADFORMAT_APPOPEN = new MengineAdFormat("ADFORMAT_APPOPEN");
     public final static MengineAdFormat ADFORMAT_REWARDED = new MengineAdFormat("ADFORMAT_REWARDED");
+    public final static MengineAdFormat ADFORMAT_REWARDED_INTERSTITIAL = new MengineAdFormat("ADFORMAT_REWARDED_INTERSTITIAL");
     public final static MengineAdFormat ADFORMAT_NATIVE = new MengineAdFormat("ADFORMAT_NATIVE");
     public final static MengineAdFormat ADFORMAT_UNKNOWN = new MengineAdFormat("ADFORMAT_UNKNOWN");
 

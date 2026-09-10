@@ -2319,7 +2319,7 @@ namespace Mengine
         }
 
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
-            ->createRenderTexture( image, _width, _height, MENGINE_DOCUMENT_FACTORABLE );
+            ->createRenderTexture( image, _width, _height, DF_IMAGE_NONE, MENGINE_DOCUMENT_FACTORABLE );
 
         if( texture == nullptr )
         {
@@ -2366,7 +2366,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Figma::renderLayerTarget_( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, RenderLayerTargetDesc * _target, float _opacity ) const
     {
-        if( _target == nullptr || _target->material == nullptr || _opacity <= 0.f )
+        if( _target == nullptr )
+        {
+            return;
+        }
+
+        if( _target->material == nullptr )
+        {
+            return;
+        }
+
+        if( _opacity <= 0.f )
         {
             return;
         }
@@ -2390,13 +2400,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderTextureInterfacePtr Figma::createTextureFromPixels_( uint32_t _width, uint32_t _height, const void * _pixels, size_t _pitch ) const
     {
-        if( _width == 0 || _height == 0 || _pixels == nullptr )
+        if( _width == 0 || _height == 0 )
+        {
+            return nullptr;
+        }
+
+        if( _pixels == nullptr )
         {
             return nullptr;
         }
 
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
-            ->createTexture( 1, _width, _height, PF_A8R8G8B8, MENGINE_DOCUMENT_FACTORABLE );
+            ->createTexture( 1, _width, _height, PF_A8R8G8B8, DF_IMAGE_NONE, MENGINE_DOCUMENT_FACTORABLE );
 
         if( texture == nullptr )
         {
@@ -2448,14 +2463,24 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderTextureInterfacePtr Figma::createAssetTexture_( figma_document_t * _document, const figma_render_batch_desc_t & _batch ) const
     {
-        if( _document == nullptr || _batch.texture_key.size == 0 )
+        if( _document == nullptr )
+        {
+            return nullptr;
+        }
+
+        if( _batch.texture_key.size == 0 )
         {
             return nullptr;
         }
 
         figma_asset_desc_t asset{};
 
-        if( figma_document_find_asset( _document, _batch.texture_key, &asset ) == FIGMA_FALSE || asset.bytes.size == 0 )
+        if( figma_document_find_asset( _document, _batch.texture_key, &asset ) == FIGMA_FALSE )
+        {
+            return nullptr;
+        }
+
+        if( asset.bytes.size == 0 )
         {
             return nullptr;
         }
@@ -2514,7 +2539,12 @@ namespace Mengine
         const uint32_t height = dataInfo->height;
         const EPixelFormat format = dataInfo->format;
 
-        if( width == 0 || height == 0 || format == PF_UNKNOWN )
+        if( width == 0 || height == 0 )
+        {
+            return nullptr;
+        }
+
+        if( format == PF_UNKNOWN )
         {
             return nullptr;
         }
@@ -2531,8 +2561,10 @@ namespace Mengine
             return nullptr;
         }
 
+        uint32_t codecFlags = DF_IMAGE_PREMULTIPLY_ALPHA;
+
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
-            ->createTexture( 1, width, height, PF_A8R8G8B8, MENGINE_DOCUMENT_FACTORABLE );
+            ->createTexture( 1, width, height, PF_A8R8G8B8, codecFlags, MENGINE_DOCUMENT_FACTORABLE );
 
         if( texture == nullptr )
         {
@@ -2567,7 +2599,14 @@ namespace Mengine
 
         bool successful = false;
 
-        if( format == PF_R8G8B8 && codecType != STRINGIZE_STRING_LOCAL( "pngImage" ) )
+        bool convertRgb = false;
+
+        if( format == PF_R8G8B8 )
+        {
+            convertRgb = codecType != STRINGIZE_STRING_LOCAL( "pngImage" );
+        }
+
+        if( convertRgb == true )
         {
             const size_t sourcePitch = (size_t)width * 3;
             Data sourcePixels;
@@ -2578,7 +2617,7 @@ namespace Mengine
             data.size = sourcePixels.size();
             data.pitch = sourcePitch;
             data.format = PF_R8G8B8;
-            data.flags = DF_IMAGE_PREMULTIPLY_ALPHA;
+            data.flags = codecFlags;
             data.mipmap = 0;
 
             successful = decoder->decode( &data ) != 0;
@@ -2595,7 +2634,7 @@ namespace Mengine
             data.size = pitch * height;
             data.pitch = pitch;
             data.format = PF_A8R8G8B8;
-            data.flags = DF_IMAGE_PREMULTIPLY_ALPHA;
+            data.flags = codecFlags;
             data.mipmap = 0;
 
             successful = decoder->decode( &data ) != 0;
@@ -2619,7 +2658,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderTextureInterfacePtr Figma::createGeneratedTexture_( const figma_render_list_t * _renderList, uint32_t _batchIndex, const figma_render_generated_texture_desc_t & _desc ) const
     {
-        if( _renderList == nullptr || m_textRasterizer == nullptr )
+        if( _renderList == nullptr )
+        {
+            return nullptr;
+        }
+
+        if( m_textRasterizer == nullptr )
         {
             return nullptr;
         }
@@ -2701,14 +2745,22 @@ namespace Mengine
 
         String signature;
 
-        if( m_textRasterizer == nullptr || m_textRasterizer->makeTextSignature( _renderList, _batchIndex, generatedDesc, m_viewportScale, &signature ) == false )
+        if( m_textRasterizer == nullptr )
         {
             return nullptr;
         }
 
-        if( it_found != m_textureCache.end() && it_found->second.signature == signature )
+        if( m_textRasterizer->makeTextSignature( _renderList, _batchIndex, generatedDesc, m_viewportScale, &signature ) == false )
         {
-            return it_found->second.texture;
+            return nullptr;
+        }
+
+        if( it_found != m_textureCache.end() )
+        {
+            if( it_found->second.signature == signature )
+            {
+                return it_found->second.texture;
+            }
         }
 
         RenderTextureInterfacePtr generatedTexture = this->createGeneratedTexture_( _renderList, _batchIndex, generatedDesc );

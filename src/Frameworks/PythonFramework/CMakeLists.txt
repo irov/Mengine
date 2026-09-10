@@ -86,6 +86,8 @@ Wrapper
     NodeScriptEmbedding.cpp
     ResourceScriptEmbedding.h
     ResourceScriptEmbedding.cpp
+    AttributionScriptEmbedding.h
+    AttributionScriptEmbedding.cpp
     EngineScriptEmbedding.h
     EngineScriptEmbedding.cpp
     MathScriptEmbedding.h

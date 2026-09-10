@@ -140,7 +140,6 @@ namespace Mengine
         bool openDeleteAccount( const LambdaDeleteAccountAccepted & _accepted, const LambdaDeleteAccountCanceled & _canceled ) override;
         bool completeDeleteAccount( EDeleteAccountResult _result ) override;
         bool isNetworkAvailable() const override;
-        void removeUserData() override;
 
     public:
         bool updateDesktopWallpaper( const Char * _directoryPath, const Char * _filePath ) override;

@@ -4,6 +4,8 @@
 #include "Interface/ImageCodecInterface.h"
 #include "Interface/FactoryInterface.h"
 
+#include "RenderTexturePrefetchQueueInterface.h"
+
 #include "Kernel/ServiceBase.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/Hashtable2.h"
@@ -23,10 +25,15 @@ namespace Mengine
     public:
         bool _initializeService() override;
         void _finalizeService() override;
+        void _stopService() override;
 
     public:
-        RenderTextureInterfacePtr createTexture( uint32_t _mipmaps, uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentInterfacePtr & _doc ) override;
-        RenderTextureInterfacePtr createRenderTexture( const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height, const DocumentInterfacePtr & _doc ) override;
+        RenderTexturePrefetchInterfacePtr prefetchTexture( const ContentInterfacePtr & _content, uint32_t _codecFlags, const LambdaRenderTexturePrefetch & _callback, const DocumentInterfacePtr & _doc ) override;
+        void uploadPrefetchedTexture() override;
+
+    public:
+        RenderTextureInterfacePtr createTexture( uint32_t _mipmaps, uint32_t _width, uint32_t _height, EPixelFormat _format, uint32_t _codecFlags, const DocumentInterfacePtr & _doc ) override;
+        RenderTextureInterfacePtr createRenderTexture( const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height, uint32_t _codecFlags, const DocumentInterfacePtr & _doc ) override;
 
     public:
         RenderTextureInterfacePtr loadTexture( const ContentInterfacePtr & _content, uint32_t _codecFlags, uint32_t _width, uint32_t _height, const DocumentInterfacePtr & _doc ) override;
@@ -50,11 +57,15 @@ namespace Mengine
         void foreachTexture( const LambdaRenderTexture & _lambda ) const override;
 
     protected:
+        void notifyApplicationEndUpdate_();
+
         bool onRenderTextureDestroy_( RenderTextureInterface * _texture );
 
     protected:
         typedef Hashtable2<FileGroupInterfacePtr, FilePath, RenderTextureInterface *> MapRenderTextureEntry;
         MapRenderTextureEntry m_textures;
+
+        RenderTexturePrefetchQueueInterfacePtr m_prefetchQueue;
 
         FactoryInterfacePtr m_factoryRenderTexture;
         FactoryInterfacePtr m_factoryDecoderRenderImageProvider;

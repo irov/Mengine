@@ -130,6 +130,8 @@
 - (void)updateRemoteConfigValues:(FIRRemoteConfig *)remoteConfig {
     NSArray<NSString *> * remoteKeys = [remoteConfig allKeysFromSource:FIRRemoteConfigSourceDefault];
 
+    Class dictionaryClass = [NSDictionary class];
+
     NSMutableDictionary * configs = [NSMutableDictionary dictionary];
     NSMutableDictionary * ids = [NSMutableDictionary dictionary];
 
@@ -142,21 +144,29 @@
             continue;
         }
 
-        NSDictionary * json = [value JSONValue];
+        id jsonValue = [value JSONValue];
 
-        if (json == nil) {
-            IOS_LOGGER_ERROR(@"[ERROR] iOS Firebase Remote Config value is not JSON: %@", key);
+        if ([jsonValue isKindOfClass:dictionaryClass] == NO) {
+            IOS_LOGGER_ERROR(@"[ERROR] iOS Firebase Remote Config value is not a JSON object: %@", key);
 
             continue;
         }
+
+        NSDictionary * json = (NSDictionary *)jsonValue;
 
         [configs setObject:json forKey:key];
 
         id idValueObj = [json objectForKey:@"id"];
 
-        if (idValueObj != nil && [idValueObj isKindOfClass:[NSNumber class]] == YES) {
-            [ids setObject:(NSNumber *)idValueObj forKey:key];
+        if (idValueObj == nil) {
+            continue;
         }
+
+        if ([idValueObj isKindOfClass:[NSNumber class]] == NO) {
+            continue;
+        }
+
+        [ids setObject:(NSNumber *)idValueObj forKey:key];
     }
 
     @synchronized (self) {

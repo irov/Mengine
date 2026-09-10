@@ -31,6 +31,7 @@
 
     if (self) {
         self.m_completed = NO;
+        self.m_consentState = iOSUserMessagingPlatformConsentStatePending;
         self.m_completionHandlers = [NSMutableArray array];
     }
 
@@ -39,13 +40,16 @@
 
 #pragma mark - Details
 
-- (void)completedConsent {
+- (void)completedConsent:(BOOL)successful {
     self.m_completed = YES;
+    self.m_consentState = successful == YES ? iOSUserMessagingPlatformConsentStateCompleted : iOSUserMessagingPlatformConsentStateFailed;
 
-    iOSTransparencyConsentParam * consent = [[iOSTransparencyConsentParam alloc] initFromUserDefaults];
-    consent.TRANSPARENCYCONSENT_CANREQUESTADS = UMPConsentInformation.sharedInstance.canRequestAds;
+    if (successful == YES) {
+        iOSTransparencyConsentParam * consent = [[iOSTransparencyConsentParam alloc] initFromUserDefaults];
+        consent.TRANSPARENCYCONSENT_CANREQUESTADS = UMPConsentInformation.sharedInstance.canRequestAds;
 
-    [iOSDetail transparencyConsent:consent];
+        [iOSDetail transparencyConsent:consent];
+    }
 
     NSArray<void (^)(void)> * completionHandlers = [self.m_completionHandlers copy];
     [self.m_completionHandlers removeAllObjects];
@@ -117,6 +121,15 @@
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    [self requestConsentInfoUpdate];
+
+    return YES;
+}
+
+- (void)requestConsentInfoUpdate {
+    self.m_completed = NO;
+    self.m_consentState = iOSUserMessagingPlatformConsentStatePending;
+
     UMPRequestParameters * parameters = [[UMPRequestParameters alloc] init];
     parameters.tagForUnderAgeOfConsent = NO;
 
@@ -140,7 +153,7 @@
         if (error != nil) {
             IOS_LOGGER_MESSAGE(@"[UMP] requestConsentInfoUpdate error: %@", error);
 
-            [strongSelf completedConsent];
+            [strongSelf completedConsent:NO];
 
             return;
         }
@@ -152,21 +165,8 @@
 
             [iOSTransparencyConsentParam setConsentFlowUserGeography:iOSConsentFlowUserGeographyOther];
 
-            [strongSelf completedConsent];
-
-            return;
-        }
-
-        [iOSTransparencyConsentParam setConsentFlowUserGeography:iOSConsentFlowUserGeographyGDPR];
-
-        UMPFormStatus formStatus = UMPConsentInformation.sharedInstance.formStatus;
-
-        if (formStatus != UMPFormStatusAvailable) {
-            IOS_LOGGER_MESSAGE(@"[UMP] formStatus not available: %ld", (long)formStatus);
-
-            [strongSelf completedConsent];
-
-            return;
+        } else {
+            [iOSTransparencyConsentParam setConsentFlowUserGeography:iOSConsentFlowUserGeographyGDPR];
         }
 
         [iOSDetail addDidBecomeActiveOperationWithCompletion:^(void (^ _Nonnull completion)(void)) {
@@ -183,7 +183,7 @@
                 if (loadError != nil) {
                     IOS_LOGGER_MESSAGE(@"[UMP] loadAndPresentIfRequiredFromViewController error: %@", loadError);
 
-                    [strongSelf2 completedConsent];
+                    [strongSelf2 completedConsent:NO];
                     completion();
 
                     return;
@@ -192,17 +192,33 @@
                 IOS_LOGGER_MESSAGE(@"[UMP] loadAndPresentIfRequiredFromViewController completed");
 
                 // After form dismissal, UMP writes IABTCF_* to NSUserDefaults. Broadcast updated consent.
-                [strongSelf2 completedConsent];
+                [strongSelf2 completedConsent:YES];
                 completion();
             }];
         }];
     }];
 
-    return YES;
 }
 
 - (BOOL)isComplete {
     return self.m_completed;
+}
+
+- (iOSUserMessagingPlatformConsentState)getConsentState {
+    return self.m_consentState;
+}
+
+- (void)retryConsent {
+    if (self.m_consentState != iOSUserMessagingPlatformConsentStateFailed) {
+        return;
+    }
+
+    self.m_completed = NO;
+    self.m_consentState = iOSUserMessagingPlatformConsentStatePending;
+
+    [AppleDetail addMainQueueOperation:^{
+        [self requestConsentInfoUpdate];
+    }];
 }
 
 @end

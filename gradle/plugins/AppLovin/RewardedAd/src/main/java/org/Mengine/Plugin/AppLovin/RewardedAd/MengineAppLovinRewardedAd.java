@@ -2,7 +2,6 @@ package org.Mengine.Plugin.AppLovin.RewardedAd;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Size;
-import androidx.annotation.StringRes;
 
 import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdExpirationListener;
@@ -21,10 +20,11 @@ import org.Mengine.Base.MengineAdMediation;
 import org.Mengine.Base.MengineAdResponseInterface;
 import org.Mengine.Base.MengineAdService;
 import org.Mengine.Base.MengineAnalyticsEventBuilderInterface;
-import org.Mengine.Base.MengineNative;
 import org.Mengine.Base.MengineNetwork;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineUtils;
+import org.Mengine.Base.MenginePlatformEventQueue;
+import org.Mengine.Base.MengineTag;
 
 import org.Mengine.Plugin.AppLovin.Core.MengineAppLovinBase;
 import org.Mengine.Plugin.AppLovin.Core.MengineAppLovinPluginInterface;
@@ -35,19 +35,16 @@ import java.util.Map;
 public class MengineAppLovinRewardedAd extends MengineAppLovinBase implements MengineAppLovinRewardedAdInterface, MaxAdRequestListener, MaxRewardedAdListener, MaxAdRevenueListener, MaxAdExpirationListener, MaxAdReviewListener {
     public static final MengineTag TAG = MengineTag.of("MNGAppLovinRewardedAd");
 
-    public static final @StringRes int METADATA_REWARDED_ADUNITID = R.string.mengine_applovin_rewarded_adunitid;
 
     private MaxRewardedAd m_rewardedAd;
 
     private boolean m_showing = false;
 
-    public MengineAppLovinRewardedAd(@NonNull MengineAdService adService, @NonNull MengineAppLovinPluginInterface plugin) throws MengineServiceInvalidInitializeException {
-        super(adService, plugin, MaxAdFormat.REWARDED);
-
-        this.setAdUnitId(METADATA_REWARDED_ADUNITID, "RewardedAdUnitId");
+    public MengineAppLovinRewardedAd(@NonNull MengineAdService adService, @NonNull MengineAppLovinPluginInterface plugin, @NonNull String adUnitId) throws MengineServiceInvalidInitializeException {
+        super(adService, plugin, MaxAdFormat.REWARDED, adUnitId);
     }
 
-    protected MengineAnalyticsEventBuilderInterface buildRewardedAdEvent(@Size(min = 1L, max = 40L) String event) {
+    protected MengineAnalyticsEventBuilderInterface buildRewardedAdEvent(@Size(min = 1, max = 40) String event) {
         MengineAnalyticsEventBuilderInterface builder = this.buildAdEvent("mng_applovin_rewarded_" + event);
 
         return builder;

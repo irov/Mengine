@@ -46,7 +46,12 @@ bool is_png_file( const wchar_t * _path )
 //////////////////////////////////////////////////////////////////////////
 uint8_t * png_load_from_memory( const uint8_t * _buffer, size_t _size, uint32_t * const _width, uint32_t * const _height, uint32_t * const _channels )
 {
-    if( _buffer == nullptr || _size == 0 )
+    if( _buffer == nullptr )
+    {
+        return nullptr;
+    }
+
+    if( _size == 0 )
     {
         return nullptr;
     }
@@ -70,7 +75,9 @@ uint8_t * png_load_from_memory( const uint8_t * _buffer, size_t _size, uint32_t 
         return nullptr;
     }
 
-    if( png_image_finish_read( &image, NULL, pixels, 0, NULL ) != 0 )
+    int successful = png_image_finish_read( &image, nullptr, pixels, 0, nullptr );
+
+    if( successful == 0 )
     {
         ::free( pixels );
         png_image_free( &image );
@@ -80,7 +87,7 @@ uint8_t * png_load_from_memory( const uint8_t * _buffer, size_t _size, uint32_t 
 
     *_width = image.width;
     *_height = image.height;
-    *_channels = PNG_IMAGE_PIXEL_COMPONENT_SIZE( image.format );
+    *_channels = PNG_IMAGE_PIXEL_CHANNELS( image.format );
 
     png_image_free( &image );
 
@@ -89,7 +96,12 @@ uint8_t * png_load_from_memory( const uint8_t * _buffer, size_t _size, uint32_t 
 //////////////////////////////////////////////////////////////////////////
 const uint8_t * png_write_to_memory( const uint8_t * _buffer, size_t _size, uint32_t _width, uint32_t _height, uint32_t _channels, size_t * const _write )
 {
-    if( _buffer == nullptr || _width == 0 || _height == 0 )
+    if( _buffer == nullptr )
+    {
+        return nullptr;
+    }
+
+    if( _width == 0 || _height == 0 )
     {
         return nullptr;
     }
@@ -114,7 +126,7 @@ const uint8_t * png_write_to_memory( const uint8_t * _buffer, size_t _size, uint
     }
 
     png_alloc_size_t needed = 0;
-    if( png_image_write_to_memory( &image, nullptr, &needed, 0, _buffer, _size, nullptr ) == 0 )
+    if( png_image_write_to_memory( &image, nullptr, &needed, 0, _buffer, static_cast<png_int_32>(_size), nullptr ) == 0 )
     {
         png_image_free( &image );
 
@@ -137,6 +149,8 @@ const uint8_t * png_write_to_memory( const uint8_t * _buffer, size_t _size, uint
 
         return nullptr;
     }
+
+    png_image_free( &image );
 
     *_write = needed;
 

@@ -138,6 +138,8 @@
 
     self.m_logger = logger;
 
+    IOS_LOGGER_MESSAGE(@"[Datadog] initialized service=%@ site=%@", iOSDatadogPlugin_Service, iOSDatadogPlugin_Site);
+
     return YES;
 }
 
@@ -162,22 +164,43 @@
         return;
     }
 
+    if ((record.LOG_FILTER & Mengine::LFILTER_PROTECTED) != 0) {
+        return;
+    }
+
+    NSMutableDictionary * recordAttributes = [NSMutableDictionary dictionary];
+
+    NSString * category = record.LOG_CATEGORY;
+
+    if (category != nil) {
+        [recordAttributes setObject:category forKey:@"code.category"];
+    }
+
+    NSString * thread = record.LOG_THREAD;
+
+    if (thread != nil) {
+        [recordAttributes setObject:thread forKey:@"code.thread"];
+    }
+
 #ifdef MENGINE_DEBUG
-    NSDictionary * attributes = @{ @"mng_record": @{
-            @"code.category": record.LOG_CATEGORY,
-            @"code.thread": record.LOG_THREAD,
-            @"code.file": record.LOG_FILE,
-            @"code.line": @(record.LOG_LINE),
-            @"code.function": record.LOG_FUNCTION
-        }
-    };
-#else
-    NSDictionary * attributes = @{ @"mng_record": @{
-            @"code.category": record.LOG_CATEGORY,
-            @"code.thread": record.LOG_THREAD,
-        }
-    };
+    NSString * file = record.LOG_FILE;
+
+    if (file != nil) {
+        [recordAttributes setObject:file forKey:@"code.file"];
+    }
+
+    NSNumber * line = @(record.LOG_LINE);
+
+    [recordAttributes setObject:line forKey:@"code.line"];
+
+    NSString * function = record.LOG_FUNCTION;
+
+    if (function != nil) {
+        [recordAttributes setObject:function forKey:@"code.function"];
+    }
 #endif
+
+    NSDictionary * attributes = @{ @"mng_record": recordAttributes };
 
     switch (record.LOG_LEVEL) {
         case Mengine::LM_SILENT:

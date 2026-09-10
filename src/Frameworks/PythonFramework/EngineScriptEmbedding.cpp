@@ -1527,12 +1527,44 @@ namespace Mengine
                     ->setParticleEnable( _enabled );
             }
             //////////////////////////////////////////////////////////////////////////
+            pybind::list s_prefetchTextures( pybind::kernel_interface * _kernel, const ConstString & _fileGroupName, const pybind::list & _paths )
+            {
+                pybind::list requests( _kernel );
+                const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+                    ->getFileGroup( _fileGroupName );
+
+                for( const FilePath & path : _paths )
+                {
+                    ContentInterfacePtr content = Helper::makeFileContent( fileGroup, path, MENGINE_DOCUMENT_PYTHON );
+
+                    const ConstString & codecType = CODEC_SERVICE()
+                        ->findCodecType( path );
+                    content->setCodecType( codecType );
+
+                    RenderTexturePrefetchInterfacePtr request = RENDERTEXTURE_SERVICE()
+                        ->prefetchTexture( content, DF_IMAGE_NONE, nullptr, MENGINE_DOCUMENT_PYTHON );
+                    requests.append( request );
+                }
+
+                return requests;
+            }
+            //////////////////////////////////////////////////////////////////////////
             ResourceImageDefaultPtr s_createImageResource( const ConstString & _resourceName, const ConstString & _fileGroupName, const FilePath & _filePath, const mt::vec2f & _maxSize )
             {
                 const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
                     ->getFileGroup( _fileGroupName );
 
+                RenderTextureInterfacePtr cachedTexture;
+
+                if( _maxSize.x < 0.f || _maxSize.y < 0.f )
+                {
+                    ContentInterfacePtr cachedContent = Helper::makeFileContent( fileGroup, _filePath, MENGINE_DOCUMENT_PYTHON );
+                    cachedTexture = RENDERTEXTURE_SERVICE()
+                        ->getTexture( cachedContent );
+                }
+
 #if defined(MENGINE_DEBUG)
+                if( cachedTexture == nullptr )
                 {
                     InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, _filePath, false, false, MENGINE_DOCUMENT_PYTHON );
 
@@ -1605,7 +1637,12 @@ namespace Mengine
 
                 mt::vec2f maxSize;
 
-                if( _maxSize.x < 0.f || _maxSize.y < 0.f )
+                if( cachedTexture != nullptr )
+                {
+                    maxSize.x = float( cachedTexture->getWidth() );
+                    maxSize.y = float( cachedTexture->getHeight() );
+                }
+                else if( _maxSize.x < 0.f || _maxSize.y < 0.f )
                 {
                     ContentInterfacePtr content = Helper::makeFileContent( fileGroup, _filePath, MENGINE_DOCUMENT_PYTHON );
 
@@ -4294,27 +4331,23 @@ namespace Mengine
                 return val;
             }
             //////////////////////////////////////////////////////////////////////////
-            bool s_completeDeleteAccount( uint32_t _result )
+            bool s_completeDeleteAccount( EDeleteAccountResult _result )
             {
                 if( _result > DELETE_ACCOUNT_RESULT_COMPLETED )
                 {
                     return false;
                 }
 
-                return PLATFORM_SERVICE()
-                    ->completeDeleteAccount( (EDeleteAccountResult)_result );
+                bool successful = PLATFORM_SERVICE()
+                    ->completeDeleteAccount( _result );
+
+                return successful;
             }
             //////////////////////////////////////////////////////////////////////////
             bool s_isNetworkAvailable()
             {
                 return PLATFORM_SERVICE()
                     ->isNetworkAvailable();
-            }
-            //////////////////////////////////////////////////////////////////////////
-            void s_removeUserData()
-            {
-                PLATFORM_SERVICE()
-                    ->removeUserData();
             }
             //////////////////////////////////////////////////////////////////////////
             bool s_hasAccountDeletionRestart()
@@ -4593,6 +4626,20 @@ namespace Mengine
 
 
         pybind::def_functor( _kernel, "writeImageToFile", nodeScriptMethod, &EngineScriptMethod::s_writeImageToFile );
+        pybind::enum_<ERenderTexturePrefetchState>( _kernel, "ERenderTexturePrefetchState" )
+            .def( "ERTPS_QUEUED", ERenderTexturePrefetchState::ERTPS_QUEUED )
+            .def( "ERTPS_DECODING", ERenderTexturePrefetchState::ERTPS_DECODING )
+            .def( "ERTPS_READY_FOR_UPLOAD", ERenderTexturePrefetchState::ERTPS_READY_FOR_UPLOAD )
+            .def( "ERTPS_RESIDENT", ERenderTexturePrefetchState::ERTPS_RESIDENT )
+            .def( "ERTPS_FAILED", ERenderTexturePrefetchState::ERTPS_FAILED )
+            .def( "ERTPS_CANCELLED", ERenderTexturePrefetchState::ERTPS_CANCELLED )
+            ;
+
+        pybind::interface_<RenderTexturePrefetchInterface, pybind::bases<Mixin>>( _kernel, "RenderTexturePrefetchInterface" )
+            .def( "getState", &RenderTexturePrefetchInterface::getState )
+            .def( "cancel", &RenderTexturePrefetchInterface::cancel )
+            ;
+        pybind::def_functor_kernel( _kernel, "prefetchTextures", nodeScriptMethod, &EngineScriptMethod::s_prefetchTextures );
         pybind::def_functor( _kernel, "createImageResource", nodeScriptMethod, &EngineScriptMethod::s_createImageResource );
         pybind::def_functor( _kernel, "createImageSolidResource", nodeScriptMethod, &EngineScriptMethod::s_createImageSolidResource );
         pybind::def_functor( _kernel, "minimizeWindow", nodeScriptMethod, &EngineScriptMethod::s_minimizeWindow );
@@ -4706,7 +4753,6 @@ namespace Mengine
         pybind::def_functor( _kernel, "openDeleteAccount", nodeScriptMethod, &EngineScriptMethod::s_openDeleteAccount );
         pybind::def_functor( _kernel, "completeDeleteAccount", nodeScriptMethod, &EngineScriptMethod::s_completeDeleteAccount );
         pybind::def_functor( _kernel, "isNetworkAvailable", nodeScriptMethod, &EngineScriptMethod::s_isNetworkAvailable );
-        pybind::def_functor( _kernel, "removeUserData", nodeScriptMethod, &EngineScriptMethod::s_removeUserData );
         pybind::def_functor( _kernel, "hasAccountDeletionRestart", nodeScriptMethod, &EngineScriptMethod::s_hasAccountDeletionRestart );
         pybind::def_functor( _kernel, "clearAccountDeletionRestart", nodeScriptMethod, &EngineScriptMethod::s_clearAccountDeletionRestart );
 

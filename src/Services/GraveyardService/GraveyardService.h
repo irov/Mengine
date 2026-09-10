@@ -37,7 +37,7 @@ namespace Mengine
         RenderTextureInterfacePtr resurrectTexture( const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc ) override;
 
     protected:
-        void onEngineTextureDestroy( RenderTextureInterface * _texture );
+        void notifyRenderTextureDestroy_( RenderTextureInterface * _texture );
 
     protected:
         uint32_t m_count;
@@ -50,6 +50,7 @@ namespace Mengine
             RenderImageInterfacePtr image;
             uint32_t width;
             uint32_t height;
+            uint32_t codecFlags;
 
             float time;
         };

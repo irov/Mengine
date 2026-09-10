@@ -52,12 +52,12 @@ public interface MengineServiceInterface {
     long getOptionValueLong(@NonNull String option, long defaultValue);
     String getOptionValueString(@NonNull String option, String defaultValue);
 
-    void setStatisticInteger(@Size(min = 1L, max = 40L) String key, long value);
-    void increaseStatisticInteger(@Size(min = 1L, max = 40L) String key, long value);
-    void decreaseStatisticInteger(@Size(min = 1L, max = 40L) String key, long value);
-    void setStatisticDouble(@Size(min = 1L, max = 40L) String key, double value);
-    void increaseStatisticDouble(@Size(min = 1L, max = 40L) String key, double value);
-    void decreaseStatisticDouble(@Size(min = 1L, max = 40L) String key, double value);
+    void setStatisticInteger(@Size(min = 1, max = 40) String key, long value);
+    void increaseStatisticInteger(@Size(min = 1, max = 40) String key, long value);
+    void decreaseStatisticInteger(@Size(min = 1, max = 40) String key, long value);
+    void setStatisticDouble(@Size(min = 1, max = 40) String key, double value);
+    void increaseStatisticDouble(@Size(min = 1, max = 40) String key, double value);
+    void decreaseStatisticDouble(@Size(min = 1, max = 40) String key, double value);
 
     JSONObject getServiceConfig();
     String getServiceConfigOptString(@NonNull String key, @NonNull String defaultValue);
@@ -80,7 +80,7 @@ public interface MengineServiceInterface {
 
     void assertionError(@NonNull String format, Object ... args);
 
-    MengineAnalyticsEventBuilderInterface buildEvent(@Size(min = 1L, max = 40L) String name);
+    MengineAnalyticsEventBuilderInterface buildEvent(@Size(min = 1, max = 40) String name);
 
     void nativeCall(@NonNull String method, Object ... args);
 

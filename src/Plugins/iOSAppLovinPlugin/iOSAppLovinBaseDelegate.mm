@@ -148,8 +148,10 @@
 
     NSTimeInterval seconds = pow(2, MIN(6, self.m_requestAttempt));
 
+    __weak iOSAppLovinBaseDelegate * weakSelf = self;
+
     [AppleDetail addMainQueueOperation:^{
-        [self loadAd];
+        [weakSelf loadAd];
     } afterSeconds:seconds];
 }
 

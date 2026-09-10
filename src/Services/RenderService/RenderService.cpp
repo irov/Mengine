@@ -1,5 +1,6 @@
 #include "RenderService.h"
 
+#include "Interface/RenderTextureServiceInterface.h"
 #include "Interface/ImageCodecInterface.h"
 #include "Interface/WatchdogServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
@@ -265,7 +266,7 @@ namespace Mengine
         EPixelFormat format = PF_A8R8G8B8;
 
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
-            ->createTexture( mipmaps, width, height, format, MENGINE_DOCUMENT_FACTORABLE );
+            ->createTexture( mipmaps, width, height, format, DF_IMAGE_NONE, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( texture, "invalid create null texture [%u:%u]"
             , width
@@ -331,7 +332,7 @@ namespace Mengine
         EPixelFormat format = PF_A8R8G8B8;
 
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
-            ->createTexture( mipmaps, width, height, format, MENGINE_DOCUMENT_FACTORABLE );
+            ->createTexture( mipmaps, width, height, format, DF_IMAGE_NONE, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( texture, "invalid create null texture [%u:%u]"
             , width
@@ -653,6 +654,9 @@ namespace Mengine
         {
             return false;
         }
+
+        RENDERTEXTURE_SERVICE()
+            ->uploadPrefetchedTexture();
 
         this->restoreRenderSystemStates_();
 

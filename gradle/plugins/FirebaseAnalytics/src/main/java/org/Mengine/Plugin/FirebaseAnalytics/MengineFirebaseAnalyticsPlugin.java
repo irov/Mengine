@@ -3,6 +3,8 @@ package org.Mengine.Plugin.FirebaseAnalytics;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.Size;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 
@@ -26,12 +28,25 @@ import org.Mengine.Base.MengineUtils;
 
 import java.util.EnumMap;
 import java.util.Map;
+import org.Mengine.Base.MengineListenerAttribution;
 
-public class MengineFirebaseAnalyticsPlugin extends MengineService implements MengineListenerAnalytics, MengineListenerAdRevenue, MengineListenerTransparencyConsent, MengineListenerApplication, MengineListenerUser, MengineListenerGame, MengineListenerAcquisition {
+public class MengineFirebaseAnalyticsPlugin extends MengineService implements MengineListenerAttribution, MengineListenerAnalytics, MengineListenerAdRevenue, MengineListenerTransparencyConsent, MengineListenerApplication, MengineListenerUser, MengineListenerGame, MengineListenerAcquisition {
     public static final String SERVICE_NAME = "FBAnalytics";
     public static final boolean SERVICE_EMBEDDING = true;
 
     FirebaseAnalytics m_firebaseAnalytics;
+
+    @Override
+    public void onMengineAttribution(@NonNull MengineApplication application, @NonNull @Size(min = 1L, max = 22L) String name, @Nullable Object value) {
+        if (m_firebaseAnalytics == null) {
+            return;
+        }
+
+        String propertyName = "p_" + name;
+        @Size(max = 36L) String text = value == null ? null : String.valueOf(value);
+
+        m_firebaseAnalytics.setUserProperty(propertyName, text);
+    }
 
     @Override
     public void onAppPrepare(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
@@ -159,6 +174,8 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
             return "APPOPEN";
         } else if (adType == MengineAdFormat.ADFORMAT_REWARDED) {
             return "REWARDED";
+        } else if (adType == MengineAdFormat.ADFORMAT_REWARDED_INTERSTITIAL) {
+            return "REWARDED_INTERSTITIAL";
         } else if (adType == MengineAdFormat.ADFORMAT_NATIVE) {
             return "NATIVE";
         }

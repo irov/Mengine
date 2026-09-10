@@ -82,6 +82,7 @@ SERVICE_EXTERN( ConfigService );
 SERVICE_EXTERN( SettingsService );
 SERVICE_EXTERN( ArchiveService );
 SERVICE_EXTERN( AnalyticsService );
+SERVICE_EXTERN( AttributionService );
 SERVICE_EXTERN( ThreadService );
 SERVICE_EXTERN( SoundService );
 SERVICE_EXTERN( ModuleService );
@@ -740,6 +741,7 @@ namespace Mengine
 
         this->unregisterBaseTypes_();
 
+        SERVICE_FINALIZE( AttributionService );
         SERVICE_FINALIZE( AnalyticsService );
         SERVICE_FINALIZE( MetricService );
         SERVICE_FINALIZE( StatisticService );
@@ -821,6 +823,7 @@ namespace Mengine
         SERVICE_DESTROY( FileService );
         SERVICE_DESTROY( TimeSystem );
         SERVICE_DESTROY( TimepipeService );
+        SERVICE_DESTROY( AttributionService );
         SERVICE_DESTROY( AnalyticsService );
         SERVICE_DESTROY( MetricService );
         SERVICE_DESTROY( StatisticService );
@@ -1430,6 +1433,7 @@ namespace Mengine
 
         MENGINE_ADD_SERVICE( SecureService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( AnalyticsService, MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_SERVICE( AttributionService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( StatisticService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( MetricService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( TimerService, MENGINE_DOCUMENT_FACTORABLE );

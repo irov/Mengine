@@ -139,6 +139,7 @@ public abstract class MengineApplication extends Application {
         this.createFragment(MengineFragmentAcquisition.class);
         this.createFragment(MengineFragmentAdvertisingId.class);
         this.createFragment(MengineFragmentAnalytics.class);
+        this.createFragment(MengineFragmentAttribution.class);
         this.createFragment(MengineFragmentConnectivity.class);
         this.createFragment(MengineFragmentEngine.class);
         this.createFragment(MengineFragmentGame.class);
@@ -577,6 +578,7 @@ public abstract class MengineApplication extends Application {
     public void removeUserData() {
         MenginePreferences.clearPreferences();
 
+        MengineFragmentAttribution.INSTANCE.clearProject();
         MengineFragmentUser.INSTANCE.removeUserData();
 
         MengineNative.AndroidEnvironmentService_deleteCurrentAccount();

@@ -23,6 +23,7 @@
 #import "Environment/iOS/iOSKernelServiceInterface.h"
 
 #include "iOSAnalyticsEventProvider.h"
+#include "iOSAttributionProvider.h"
 
 #include "Kernel/FilePath.h"
 #include "Kernel/PathHelper.h"
@@ -426,7 +427,12 @@ namespace Mengine
 
         ANALYTICS_SERVICE()
             ->addEventProvider( m_analyticsEventProvider );
-        
+
+        m_attributionProvider = Helper::makeFactorableUnique<iOSAttributionProvider>( MENGINE_DOCUMENT_FACTORABLE );
+
+        ATTRIBUTION_SERVICE()
+            ->addProvider( m_attributionProvider );
+
         m_mainScreenScale = [UIScreen mainScreen].scale;
 
         return true;
@@ -497,6 +503,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::_finalizeService()
     {
+        ATTRIBUTION_SERVICE()
+            ->removeProvider( m_attributionProvider );
+
+        m_attributionProvider = nullptr;
+
         if( m_deleteAccountProgressAlert != nil )
         {
             [m_deleteAccountProgressAlert dismissViewControllerAnimated:NO completion:nil];
@@ -1029,6 +1040,9 @@ namespace Mengine
 
         if( removeUserData == true )
         {
+            ATTRIBUTION_SERVICE()
+                ->clearAttributions();
+
             if( [iOSApplication.sharedInstance removeUserDataForAccountDeletion] == NO )
             {
                 IOS_LOGGER_ERROR( @"failed to persist account deletion restart marker" );
@@ -1071,14 +1085,6 @@ namespace Mengine
     bool iOSPlatformService::isNetworkAvailable() const
     {
         return [[iOSNetwork sharedInstance] isNetworkAvailable] == YES;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void iOSPlatformService::removeUserData()
-    {
-        [iOSApplication.sharedInstance removeUserData];
-
-        ACCOUNT_SERVICE()
-            ->deleteCurrentAccount();
     }
     //////////////////////////////////////////////////////////////////////////
     bool iOSPlatformService::hasAccountDeletionRestart() const
@@ -1820,7 +1826,7 @@ namespace Mengine
             return;
         }
 
-        [m_safeAreaProvider setSafeAreaInsetsDidChangeCallback:^{
+        [m_safeAreaProvider setSafeAreaViewportChangedCallback:^{
             if( m_safeAreaViewportChangedCallback == nullptr )
             {
                 return;
@@ -1850,7 +1856,7 @@ namespace Mengine
             return;
         }
 
-        [m_safeAreaProvider setSafeAreaInsetsDidChangeCallback:nil];
+        [m_safeAreaProvider setSafeAreaViewportChangedCallback:nil];
         m_safeAreaProvider = nil;
     }
     //////////////////////////////////////////////////////////////////////////

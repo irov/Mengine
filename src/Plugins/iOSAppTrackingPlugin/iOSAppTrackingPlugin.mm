@@ -22,6 +22,8 @@
     self = [super init];
 
     self.m_status = EAATA_NOT_DETERMINED;
+    self.m_authorizationState = iOSAppTrackingAuthorizationStatePending;
+    self.m_requestInProgress = NO;
     self.m_idfa = IDFA_NOT_DETERMINED;
 
     return self;
@@ -53,6 +55,7 @@
     tracking.APPTRACKINGTRANSPARENCY_IDFA = self.m_idfa;
 
     [iOSDetail appTrackingTransparency:tracking];
+    self.m_authorizationState = iOSAppTrackingAuthorizationStateCompleted;
 }
 
 #pragma mark - iOSAppTrackingInterface
@@ -79,6 +82,11 @@
 }
 
 - (void)authorization {
+    if (self.m_requestInProgress == YES) {
+        return;
+    }
+
+    self.m_authorizationState = iOSAppTrackingAuthorizationStatePending;
     IOS_LOGGER_MESSAGE( @"request app tracking authorization" );
 
     ATTrackingManagerAuthorizationStatus currentStatus = [ATTrackingManager trackingAuthorizationStatus];
@@ -90,6 +98,7 @@
     }
 
     __weak iOSAppTrackingPlugin * weakSelf = self;
+    self.m_requestInProgress = YES;
 
     [iOSDetail addDidBecomeActiveOperationWithCompletion:^(void (^ _Nonnull completion)(void)) {
         iOSAppTrackingPlugin * strongSelf = weakSelf;
@@ -102,6 +111,7 @@
         ATTrackingManagerAuthorizationStatus status = [ATTrackingManager trackingAuthorizationStatus];
 
         if (status != ATTrackingManagerAuthorizationStatusNotDetermined) {
+            strongSelf.m_requestInProgress = NO;
             [strongSelf updateTrackingStatus:status];
             completion();
             return;
@@ -117,14 +127,26 @@
     [ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
         IOS_LOGGER_MESSAGE( @"app tracking authorization status: %lu", status );
 
-        [self updateTrackingStatus:status];
+        [AppleDetail addMainQueueOperation:^{
+            self.m_requestInProgress = NO;
 
-        completion();
+            if (status == ATTrackingManagerAuthorizationStatusNotDetermined) {
+                self.m_authorizationState = iOSAppTrackingAuthorizationStateFailed;
+            } else {
+                [self updateTrackingStatus:status];
+            }
+
+            completion();
+        }];
     }];
 }
 
 - (EiOSAppTrackingAuthorization)getAuthorizationStatus {
     return self.m_status;
+}
+
+- (iOSAppTrackingAuthorizationState)getAuthorizationState {
+    return self.m_authorizationState;
 }
 
 - (NSString *)getIDFA {

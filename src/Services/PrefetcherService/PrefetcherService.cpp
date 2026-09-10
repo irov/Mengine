@@ -136,6 +136,28 @@ namespace Mengine
         m_threads.clear();
     }
     //////////////////////////////////////////////////////////////////////////
+    bool PrefetcherService::addPrefetchTask( const ThreadTaskInterfacePtr & _task )
+    {
+        if( _task == nullptr )
+        {
+            return false;
+        }
+
+        if( m_threadQueue == nullptr )
+        {
+            return false;
+        }
+
+        if( m_threads.empty() == true )
+        {
+            return false;
+        }
+
+        m_threadQueue->addTask( _task );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool PrefetcherService::prefetchImageDecoder( const ContentInterfacePtr & _content, const PrefetcherObserverInterfacePtr & _observer )
     {
         if( this->isAvailableService() == false )
@@ -601,8 +623,14 @@ namespace Mengine
 
         ThreadTaskPrefetchPtr prefetcher = receiver->getPrefetcher();
 
-        if( prefetcher->isComplete() == false ||
-            prefetcher->isSuccessful() == false )
+        bool successful = false;
+
+        if( prefetcher->isComplete() == true )
+        {
+            successful = prefetcher->isSuccessful();
+        }
+
+        if( successful == false )
         {
             receiver->finalize();
 

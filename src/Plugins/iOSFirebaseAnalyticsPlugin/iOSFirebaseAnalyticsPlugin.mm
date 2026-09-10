@@ -1,6 +1,7 @@
 #import "iOSFirebaseAnalyticsPlugin.h"
 
 #import "Environment/Apple/AppleDetail.h"
+#import "Environment/iOS/iOSLog.h"
 
 #import "Environment/iOS/iOSApplication.h"
 #import "Environment/iOS/iOSDetail.h"
@@ -36,7 +37,30 @@
     self.m_analyticsEnabled = NO;
     [FIRAnalytics setAnalyticsCollectionEnabled:NO];
 
+    iOSTransparencyConsentParam * consent = [[iOSTransparencyConsentParam alloc] initFromUserDefaults];
+    if ([consent isPending] == NO) {
+        [self onTransparencyConsent:consent];
+    }
+
+    [self setupUserProperties];
+
     return YES;
+}
+
+#pragma mark - iOSPluginAttributionDelegateInterface
+
+- (void)onAttribution:(NSString *)name value:(id)value {
+    NSString * propertyName = [@"p_" stringByAppendingString:name];
+    NSString * string = nil;
+    if (value != nil && value != NSNull.null) {
+        if ([value isKindOfClass:NSNumber.class] == YES && CFGetTypeID((__bridge CFTypeRef)value) == CFBooleanGetTypeID()) {
+            string = [value boolValue] ? @"true" : @"false";
+        } else {
+            string = [value description];
+        }
+    }
+
+    [FIRAnalytics setUserPropertyString:string forName:propertyName];
 }
 
 - (void)setupUserProperties {
@@ -112,15 +136,8 @@
         FIRConsentTypeAdUserData : AD_USER_DATA ? FIRConsentStatusGranted : FIRConsentStatusDenied,
     }];
 
-    self.m_analyticsEnabled = NO;
-    [FIRAnalytics setAnalyticsCollectionEnabled:NO];
-
-    if (ANALYTICS_STORAGE == YES) {
-        [self setupUserProperties];
-
-        self.m_analyticsEnabled = YES;
-        [FIRAnalytics setAnalyticsCollectionEnabled:YES];
-    }
+    self.m_analyticsEnabled = ANALYTICS_STORAGE;
+    [FIRAnalytics setAnalyticsCollectionEnabled:ANALYTICS_STORAGE];
 }
 
 #pragma mark - iOSPluginAnalyticDelegateInterface

@@ -3,6 +3,7 @@
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/ScriptProviderServiceInterface.h"
 
+#include "AttributionScriptEmbedding.h"
 #include "ConstsScriptEmbedding.h"
 #include "EngineScriptEmbedding.h"
 #include "EntityScriptEmbedding.h"
@@ -149,6 +150,11 @@ namespace Mengine
             return false;
         }
 
+        if( Helper::addScriptEmbedding<AttributionScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return false;
+        }
+
         if( Helper::addScriptEmbedding<EngineScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
@@ -199,6 +205,9 @@ namespace Mengine
 
         SCRIPT_SERVICE()
             ->removeScriptEmbedding( AmplifierScriptEmbedding::getFactorableType() );
+
+        SCRIPT_SERVICE()
+            ->removeScriptEmbedding( AttributionScriptEmbedding::getFactorableType() );
 
         SCRIPT_SERVICE()
             ->removeScriptEmbedding( EngineScriptEmbedding::getFactorableType() );

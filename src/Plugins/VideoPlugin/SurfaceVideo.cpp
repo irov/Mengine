@@ -135,7 +135,7 @@ namespace Mengine
         m_decoderVideo->getSurfaceDimension( flags, &surfaceDimension );
 
         RenderTextureInterfacePtr dynamicTexture = RENDERTEXTURE_SERVICE()
-            ->createTexture( 1, surfaceDimension.width, surfaceDimension.height, surfaceDimension.format, MENGINE_DOCUMENT_FACTORABLE );
+            ->createTexture( 1, surfaceDimension.width, surfaceDimension.height, surfaceDimension.format, DF_IMAGE_NONE, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( dynamicTexture, "'%s' resource '%s' can`t create dynamic texture"
             , this->getName().c_str()

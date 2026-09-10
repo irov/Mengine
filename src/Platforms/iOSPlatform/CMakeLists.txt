@@ -1,5 +1,11 @@
 MENGINE_PROJECT(iOSPlatform)
 
+OPTION(MENGINE_PLATFORM_IOS_ACCELEROMETER "Enable iOS accelerometer input" OFF)
+
+IF(MENGINE_PLATFORM_IOS_ACCELEROMETER)
+    MENGINE_ADD_DEFINITION(MENGINE_PLATFORM_IOS_ACCELEROMETER)
+ENDIF()
+
 ADD_FILTER(
 src
     iOSPlatformService.h
@@ -14,6 +20,8 @@ src
     
     iOSAnalyticsEventProvider.h
     iOSAnalyticsEventProvider.mm
+    iOSAttributionProvider.h
+    iOSAttributionProvider.mm
 )
 
 ADD_FILTER(

@@ -5,8 +5,9 @@
 #import "Environment/iOS/iOSPluginAdRevenueDelegateInterface.h"
 #import "Environment/iOS/iOSPluginTransparencyConsentDelegateInterface.h"
 #import "Environment/iOS/iOSPluginAnalyticDelegateInterface.h"
+#import "Environment/iOS/iOSPluginAttributionDelegateInterface.h"
 
-@interface iOSFirebaseAnalyticsPlugin : NSObject<iOSPluginInterface, iOSPluginAdRevenueDelegateInterface, iOSPluginTransparencyConsentDelegateInterface, iOSPluginUserIdDelegateInterface, iOSPluginAnalyticDelegateInterface>
+@interface iOSFirebaseAnalyticsPlugin : NSObject<iOSPluginInterface, iOSPluginAdRevenueDelegateInterface, iOSPluginTransparencyConsentDelegateInterface, iOSPluginUserIdDelegateInterface, iOSPluginAnalyticDelegateInterface, iOSPluginAttributionDelegateInterface>
 
 + (instancetype)sharedInstance;
 

@@ -3,9 +3,9 @@
 #include "Interface/ServiceInterface.h"
 
 #include "Interface/RenderTextureInterface.h"
+#include "Interface/RenderTexturePrefetchInterface.h"
 #include "Interface/ContentInterface.h"
 #include "Interface/ImageCodecInterface.h"
-#include "Interface/ContentInterface.h"
 
 #include "Config/Lambda.h"
 
@@ -17,8 +17,12 @@ namespace Mengine
         SERVICE_DECLARE( "RenderTextureService" )
 
     public:
-        virtual RenderTextureInterfacePtr createTexture( uint32_t _mipmaps, uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentInterfacePtr & _doc ) = 0;
-        virtual RenderTextureInterfacePtr createRenderTexture( const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height, const DocumentInterfacePtr & _doc ) = 0;
+        virtual RenderTexturePrefetchInterfacePtr prefetchTexture( const ContentInterfacePtr & _content, uint32_t _codecFlags, const LambdaRenderTexturePrefetch & _callback, const DocumentInterfacePtr & _doc ) = 0;
+        virtual void uploadPrefetchedTexture() = 0;
+
+    public:
+        virtual RenderTextureInterfacePtr createTexture( uint32_t _mipmaps, uint32_t _width, uint32_t _height, EPixelFormat _format, uint32_t _codecFlags, const DocumentInterfacePtr & _doc ) = 0;
+        virtual RenderTextureInterfacePtr createRenderTexture( const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height, uint32_t _codecFlags, const DocumentInterfacePtr & _doc ) = 0;
 
     public:
         virtual RenderTextureInterfacePtr loadTexture( const ContentInterfacePtr & _content, uint32_t _codecFlags, uint32_t _width, uint32_t _height, const DocumentInterfacePtr & _doc ) = 0;

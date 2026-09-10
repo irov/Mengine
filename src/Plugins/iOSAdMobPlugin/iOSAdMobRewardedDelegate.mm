@@ -18,7 +18,7 @@
 @implementation iOSAdMobRewardedDelegate
 
 - (instancetype _Nullable) initWithAdUnitIdentifier:(NSString * _Nonnull)adUnitId advertisement:(id<iOSAdvertisementInterface> _Nonnull)advertisement {
-    self = [super initWithAdUnitIdentifier:adUnitId advertisement:advertisement];
+    self = [super initWithAdUnitIdentifier:adUnitId adFormat:@"rewarded" advertisement:advertisement];
 
     self.m_rewardedAd = nil;
 
@@ -99,6 +99,7 @@
 
     UIViewController * viewController = [iOSDetail getRootViewController];
 
+    __weak GADRewardedAd * weakAd = self.m_rewardedAd;
     __weak iOSAdMobRewardedDelegate * weakSelf = self;
 
     [self.m_rewardedAd presentFromRootViewController:viewController
@@ -106,6 +107,14 @@
         __strong iOSAdMobRewardedDelegate * strongSelf = weakSelf;
 
         if (strongSelf == nil) {
+            return;
+        }
+
+        if (strongSelf.m_showing == NO) {
+            return;
+        }
+
+        if (strongSelf.m_rewardedAd != weakAd) {
             return;
         }
 
@@ -236,6 +245,8 @@
         @"error": [self getGADAdErrorParams:error],
         @"error_code": @(error.code)
     }];
+
+    [self setAdFreeze:NO];
 
     [self destroyRewardedAd];
 

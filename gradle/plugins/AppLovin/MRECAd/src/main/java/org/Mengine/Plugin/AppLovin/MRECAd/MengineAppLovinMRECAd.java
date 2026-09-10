@@ -34,7 +34,6 @@ import java.util.Map;
 
 public class MengineAppLovinMRECAd extends MengineAppLovinBase implements MengineAppLovinMRECAdInterface, MaxAdRequestListener, MaxAdViewAdListener, MaxAdRevenueListener, MaxAdReviewListener {
     public static final @StringRes int METADATA_MREC_PLACEMENT = R.string.mengine_applovin_mrec_placement;
-    public static final @StringRes int METADATA_MREC_ADUNITID = R.string.mengine_applovin_mrec_adunitid;
 
     protected final String m_placement;
 
@@ -43,17 +42,15 @@ public class MengineAppLovinMRECAd extends MengineAppLovinBase implements Mengin
     protected volatile boolean m_visible = false;
     protected volatile boolean m_loaded = false;
 
-    public MengineAppLovinMRECAd(@NonNull MengineAdService adService, @NonNull MengineAppLovinPluginInterface plugin) throws MengineServiceInvalidInitializeException {
-        super(adService, plugin, MaxAdFormat.MREC);
-
-        this.setAdUnitId(METADATA_MREC_ADUNITID, "MRECAdUnitId");
+    public MengineAppLovinMRECAd(@NonNull MengineAdService adService, @NonNull MengineAppLovinPluginInterface plugin, @NonNull String adUnitId) throws MengineServiceInvalidInitializeException {
+        super(adService, plugin, MaxAdFormat.MREC, adUnitId);
 
         String MengineAppLovinPlugin_MREC_Placement = plugin.getResourceString(METADATA_MREC_PLACEMENT);
 
         m_placement = MengineAppLovinPlugin_MREC_Placement;
     }
 
-    protected MengineAnalyticsEventBuilderInterface buildMRECAdEvent(@Size(min = 1L, max = 40L) String event) {
+    protected MengineAnalyticsEventBuilderInterface buildMRECAdEvent(@Size(min = 1, max = 40) String event) {
         MengineAnalyticsEventBuilderInterface builder = this.buildAdEvent("mng_applovin_mrec_" + event)
             .addParameterString("placement", m_placement);
 

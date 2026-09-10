@@ -116,7 +116,6 @@ namespace Mengine
         bool openDeleteAccount( const LambdaDeleteAccountAccepted & _accepted, const LambdaDeleteAccountCanceled & _canceled ) override;
         bool completeDeleteAccount( EDeleteAccountResult _result ) override;
         bool isNetworkAvailable() const override;
-        void removeUserData() override;
         bool updateDesktopWallpaper( const Char * _directoryPath, const Char * _filePath ) override;
         bool createDirectoryUserPicture( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size ) override;
         bool createDirectoryUserMusic( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size ) override;

@@ -2,7 +2,6 @@ package org.Mengine.Plugin.AdMob.InterstitialAd;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Size;
-import androidx.annotation.StringRes;
 
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
@@ -21,9 +20,7 @@ import org.Mengine.Base.MengineAdService;
 import org.Mengine.Base.MengineAnalyticsEventBuilderInterface;
 import org.Mengine.Base.MengineNetwork;
 import org.Mengine.Base.MenginePlatformEventQueue;
-import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineTag;
-import org.Mengine.Base.MengineUtils;
 import org.Mengine.Plugin.AdMob.Core.MengineAdMobBase;
 import org.Mengine.Plugin.AdMob.Core.MengineAdMobInterstitialAdInterface;
 import org.Mengine.Plugin.AdMob.Core.MengineAdMobPluginInterface;
@@ -33,21 +30,18 @@ import java.util.Map;
 public class MengineAdMobInterstitialAd extends MengineAdMobBase implements MengineAdMobInterstitialAdInterface {
     public static final MengineTag TAG = MengineTag.of("MNGAdMobInterstitialAd");
 
-    public static final @StringRes int METADATA_INTERSTITIAL_ADUNITID = R.string.mengine_admob_interstitial_adunitid;
-
-    private InterstitialAd m_interstitialAd;
+    private LoadCallback m_loadCallback;
+    private volatile InterstitialAd m_interstitialAd;
     private OnPaidEventListener m_onPaidEventListener;
 
-    private boolean m_showing = false;
+    private volatile boolean m_showing = false;
     private String m_placement = "";
 
-    public MengineAdMobInterstitialAd(@NonNull MengineAdService adService, @NonNull MengineAdMobPluginInterface plugin) throws MengineServiceInvalidInitializeException {
-        super(adService, plugin, MengineAdFormat.ADFORMAT_INTERSTITIAL);
-
-        this.setAdUnitId(METADATA_INTERSTITIAL_ADUNITID, "InterstitialAdUnitId");
+    public MengineAdMobInterstitialAd(@NonNull MengineAdService adService, @NonNull MengineAdMobPluginInterface plugin, @NonNull String adUnitId) {
+        super(adService, plugin, MengineAdFormat.ADFORMAT_INTERSTITIAL, adUnitId);
     }
 
-    protected MengineAnalyticsEventBuilderInterface buildInterstitialAdEvent(@Size(min = 1L, max = 40L) String event) {
+    protected MengineAnalyticsEventBuilderInterface buildInterstitialAdEvent(@Size(min = 1, max = 40) String event) {
         MengineAnalyticsEventBuilderInterface builder = this.buildAdEvent("mng_admob_interstitial_" + event);
 
         return builder;
@@ -61,6 +55,8 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
     public void onActivityCreate(@NonNull MengineActivity activity) {
         super.onActivityCreate(activity);
 
+        m_loadCallback = new LoadCallback(this);
+
         this.log("create");
 
         this.setInterstitialState("init");
@@ -72,6 +68,11 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
     public void onActivityDestroy(@NonNull MengineActivity activity) {
         super.onActivityDestroy(activity);
 
+        if (m_loadCallback != null) {
+            m_loadCallback.destroy();
+            m_loadCallback = null;
+        }
+
         this.destroyInterstitialAd();
     }
 
@@ -81,6 +82,10 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
             m_interstitialAd.setOnPaidEventListener(null);
 
             m_interstitialAd = null;
+        }
+
+        if (m_showing == true) {
+            MenginePlatformEventQueue.pushFreezeEvent(TAG.toString(), false);
         }
 
         m_showing = false;
@@ -111,144 +116,7 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
         try {
             AdRequest adRequest = new AdRequest.Builder().build();
 
-            InterstitialAd.load(activity, m_adUnitId, adRequest, new InterstitialAdLoadCallback() {
-                @Override
-                public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
-                    MengineAdMobInterstitialAd.this.destroyInterstitialAd();
-
-                    m_interstitialAd = interstitialAd;
-
-                    m_interstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
-                        @Override
-                        public void onAdDismissedFullScreenContent() {
-                            m_interstitialAd = null;
-                            String placement = m_placement;
-                            m_placement = "";
-
-                            MengineAdMobInterstitialAd.this.log("onAdDismissedFullScreenContent");
-
-                            MengineAdMobInterstitialAd.this.buildInterstitialAdEvent("dismissed")
-                                .log();
-
-                            MengineAdMobInterstitialAd.this.setInterstitialState("dismissed");
-
-                            MenginePlatformEventQueue.pushFreezeEvent(TAG.toString(), false);
-
-                            m_showing = false;
-
-                            MengineUtils.performOnMainThread(() -> {
-                                MengineAdResponseInterface adResponse = m_adService.getAdResponse();
-
-                                adResponse.onAdShowSuccess(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_INTERSTITIAL, placement);
-
-                                MengineAdMobInterstitialAd.this.loadAd();
-                            });
-                        }
-
-                        @Override
-                        public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
-                            m_interstitialAd = null;
-                            String placement = m_placement;
-                            m_placement = "";
-
-                            MengineAdMobInterstitialAd.this.logAdError("onAdFailedToShowFullScreenContent", adError);
-
-                            int errorCode = adError.getCode();
-
-                            MengineAdMobInterstitialAd.this.buildInterstitialAdEvent("show_failed")
-                                .addParameterJSON("error", MengineAdMobInterstitialAd.this.getAdErrorParams(adError))
-                                .addParameterLong("error_code", errorCode)
-                                .log();
-
-                            MengineAdMobInterstitialAd.this.setInterstitialState("show_failed." + errorCode);
-
-                            m_showing = false;
-
-                            MengineUtils.performOnMainThread(() -> {
-                                MengineAdResponseInterface adResponse = m_adService.getAdResponse();
-
-                                adResponse.onAdShowFailed(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_INTERSTITIAL, placement, errorCode);
-
-                                MengineAdMobInterstitialAd.this.loadAd();
-                            });
-                        }
-
-                        @Override
-                        public void onAdShowedFullScreenContent() {
-                            MengineAdMobInterstitialAd.this.log("onAdShowedFullScreenContent");
-
-                            MengineAdMobInterstitialAd.this.buildInterstitialAdEvent("showed")
-                                .log();
-
-                            MengineAdMobInterstitialAd.this.setInterstitialState("showed");
-
-                            MenginePlatformEventQueue.pushFreezeEvent(TAG.toString(), true);
-                        }
-
-                        @Override
-                        public void onAdClicked() {
-                            MengineAdMobInterstitialAd.this.log("onAdClicked");
-
-                            MengineAdMobInterstitialAd.this.buildInterstitialAdEvent("clicked")
-                                .log();
-
-                            MengineAdMobInterstitialAd.this.setInterstitialState("clicked");
-                        }
-
-                        @Override
-                        public void onAdImpression() {
-                            MengineAdMobInterstitialAd.this.log("onAdImpression");
-
-                            MengineAdMobInterstitialAd.this.buildInterstitialAdEvent("impression")
-                                .log();
-
-                            MengineAdMobInterstitialAd.this.setInterstitialState("impression");
-                        }
-                    });
-
-                    m_interstitialAd.setOnPaidEventListener(adValue -> {
-                        MengineAdMobInterstitialAd.this.log("onPaidEvent");
-
-                        if (m_interstitialAd != null) {
-                            ResponseInfo responseInfo = m_interstitialAd.getResponseInfo();
-
-                            if (responseInfo != null) {
-                                long valueMicros = adValue.getValueMicros();
-                                double value = valueMicros / 1000000.0;
-
-                                MengineAdMobInterstitialAd.this.revenuePaid(responseInfo, MengineAdFormat.ADFORMAT_INTERSTITIAL, m_placement, value);
-                            }
-                        }
-                    });
-
-                    MengineAdMobInterstitialAd.this.log("onAdLoaded");
-
-                    MengineAdMobInterstitialAd.this.buildInterstitialAdEvent("loaded")
-                        .log();
-
-                    MengineAdMobInterstitialAd.this.setInterstitialState("loaded");
-
-                    m_requestAttempt = 0;
-                }
-
-                @Override
-                public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                    MengineAdMobInterstitialAd.this.destroyInterstitialAd();
-
-                    MengineAdMobInterstitialAd.this.logLoadAdError("onAdFailedToLoad", loadAdError);
-
-                    int errorCode = loadAdError.getCode();
-
-                    MengineAdMobInterstitialAd.this.buildInterstitialAdEvent("load_failed")
-                        .addParameterJSON("error", MengineAdMobInterstitialAd.this.getLoadAdErrorParams(loadAdError))
-                        .addParameterLong("error_code", errorCode)
-                        .log();
-
-                    MengineAdMobInterstitialAd.this.setInterstitialState("load_failed." + errorCode);
-
-                    MengineAdMobInterstitialAd.this.retryLoadAd();
-                }
-            });
+            InterstitialAd.load(activity, m_adUnitId, adRequest, m_loadCallback);
         } catch (final Exception e) {
             this.logError("loadAd", e);
 
@@ -262,12 +130,153 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
         }
     }
 
+    private void handleAdLoaded(@NonNull InterstitialAd interstitialAd) {
+        this.destroyInterstitialAd();
+
+        m_interstitialAd = interstitialAd;
+
+        m_interstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+            @Override
+            public void onAdDismissedFullScreenContent() {
+                m_interstitialAd = null;
+                String placement = m_placement;
+                m_placement = "";
+
+                MengineAdMobInterstitialAd.this.log("onAdDismissedFullScreenContent");
+
+                MengineAdMobInterstitialAd.this.buildInterstitialAdEvent("dismissed")
+                    .log();
+
+                MengineAdMobInterstitialAd.this.setInterstitialState("dismissed");
+
+                MenginePlatformEventQueue.pushFreezeEvent(TAG.toString(), false);
+
+                m_showing = false;
+
+                MengineAdMobInterstitialAd.this.performOnMainThread(() -> {
+                    MengineAdResponseInterface adResponse = m_adService.getAdResponse();
+
+                    adResponse.onAdShowSuccess(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_INTERSTITIAL, placement);
+
+                    MengineAdMobInterstitialAd.this.loadAd();
+                });
+            }
+
+            @Override
+            public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
+                m_interstitialAd = null;
+                String placement = m_placement;
+                m_placement = "";
+
+                MengineAdMobInterstitialAd.this.logAdError("onAdFailedToShowFullScreenContent", adError);
+
+                int errorCode = adError.getCode();
+
+                MengineAdMobInterstitialAd.this.buildInterstitialAdEvent("show_failed")
+                    .addParameterJSON("error", MengineAdMobInterstitialAd.this.getAdErrorParams(adError))
+                    .addParameterLong("error_code", errorCode)
+                    .log();
+
+                MengineAdMobInterstitialAd.this.setInterstitialState("show_failed." + errorCode);
+
+                MenginePlatformEventQueue.pushFreezeEvent(TAG.toString(), false);
+
+                m_showing = false;
+
+                MengineAdMobInterstitialAd.this.performOnMainThread(() -> {
+                    MengineAdResponseInterface adResponse = m_adService.getAdResponse();
+
+                    adResponse.onAdShowFailed(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_INTERSTITIAL, placement, errorCode);
+
+                    MengineAdMobInterstitialAd.this.loadAd();
+                });
+            }
+
+            @Override
+            public void onAdShowedFullScreenContent() {
+                MengineAdMobInterstitialAd.this.log("onAdShowedFullScreenContent");
+
+                MengineAdMobInterstitialAd.this.buildInterstitialAdEvent("showed")
+                    .log();
+
+                MengineAdMobInterstitialAd.this.setInterstitialState("showed");
+
+                MenginePlatformEventQueue.pushFreezeEvent(TAG.toString(), true);
+            }
+
+            @Override
+            public void onAdClicked() {
+                MengineAdMobInterstitialAd.this.log("onAdClicked");
+
+                MengineAdMobInterstitialAd.this.buildInterstitialAdEvent("clicked")
+                    .log();
+
+                MengineAdMobInterstitialAd.this.setInterstitialState("clicked");
+            }
+
+            @Override
+            public void onAdImpression() {
+                MengineAdMobInterstitialAd.this.log("onAdImpression");
+
+                MengineAdMobInterstitialAd.this.buildInterstitialAdEvent("impression")
+                    .log();
+
+                MengineAdMobInterstitialAd.this.setInterstitialState("impression");
+            }
+        });
+
+        m_interstitialAd.setOnPaidEventListener(adValue -> {
+            MengineAdMobInterstitialAd.this.log("onPaidEvent");
+
+            if (m_interstitialAd != null) {
+                ResponseInfo responseInfo = m_interstitialAd.getResponseInfo();
+
+                if (responseInfo != null) {
+                    long valueMicros = adValue.getValueMicros();
+                    double value = valueMicros / 1000000.0;
+
+                    MengineAdMobInterstitialAd.this.revenuePaid(responseInfo, MengineAdFormat.ADFORMAT_INTERSTITIAL, m_placement, value);
+                }
+            }
+        });
+
+        this.log("onAdLoaded");
+
+        this.buildInterstitialAdEvent("loaded")
+            .log();
+
+        this.setInterstitialState("loaded");
+
+        m_requestAttempt = 0;
+    }
+
+    private void handleAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+        this.destroyInterstitialAd();
+
+        this.logLoadAdError("onAdFailedToLoad", loadAdError);
+
+        int errorCode = loadAdError.getCode();
+
+        this.buildInterstitialAdEvent("load_failed")
+            .addParameterJSON("error", this.getLoadAdErrorParams(loadAdError))
+            .addParameterLong("error_code", errorCode)
+            .log();
+
+        this.setInterstitialState("load_failed." + errorCode);
+
+        this.retryLoadAd();
+    }
+
     public boolean canYouShowInterstitial(String placement) {
         if (MengineNetwork.isNetworkAvailable() == false) {
             return false;
         }
 
-        boolean ready = m_interstitialAd != null && m_showing == false;
+        boolean ready = m_interstitialAd != null;
+
+        if (m_showing == true) {
+            ready = false;
+        }
 
         this.log("canYouShowInterstitial", Map.of("placement", placement, "ready", ready));
 
@@ -288,7 +297,11 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
             return false;
         }
 
-        boolean ready = m_interstitialAd != null && m_showing == false;
+        boolean ready = m_interstitialAd != null;
+
+        if (m_showing == true) {
+            ready = false;
+        }
 
         this.log("showInterstitial", Map.of("placement", placement, "ready", ready));
 
@@ -306,9 +319,16 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
 
         InterstitialAd show_interstitialAd = m_interstitialAd;
 
-        MengineUtils.performOnMainThread(() -> {
+        boolean scheduled = this.performOnMainThread(() -> {
             show_interstitialAd.show(activity);
         });
+
+        if (scheduled == false) {
+            m_showing = false;
+            m_placement = "";
+
+            return false;
+        }
 
         return true;
     }
@@ -316,5 +336,35 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
     @Override
     public boolean isShowingInterstitial() {
         return m_showing;
+    }
+
+    private static class LoadCallback extends InterstitialAdLoadCallback {
+        private MengineAdMobInterstitialAd m_ad;
+
+        public LoadCallback(@NonNull MengineAdMobInterstitialAd ad) {
+            m_ad = ad;
+        }
+
+        public void destroy() {
+            m_ad = null;
+        }
+
+        @Override
+        public void onAdLoaded(@NonNull InterstitialAd ad) {
+            if (m_ad == null) {
+                return;
+            }
+
+            m_ad.handleAdLoaded(ad);
+        }
+
+        @Override
+        public void onAdFailedToLoad(@NonNull LoadAdError error) {
+            if (m_ad == null) {
+                return;
+            }
+
+            m_ad.handleAdFailedToLoad(error);
+        }
     }
 }

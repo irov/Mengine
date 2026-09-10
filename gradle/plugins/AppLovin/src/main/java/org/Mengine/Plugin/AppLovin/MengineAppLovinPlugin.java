@@ -22,6 +22,7 @@ import org.Mengine.Base.MengineAdProviderInterface;
 import org.Mengine.Base.MengineAdService;
 import org.Mengine.Base.MengineConsentFlowUserGeography;
 import org.Mengine.Base.MengineFragmentAdvertisingId;
+import org.Mengine.Base.MengineFragmentRemoteConfig;
 import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineListenerRemoteConfig;
 import org.Mengine.Base.MengineApplication;
@@ -47,6 +48,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 public class MengineAppLovinPlugin extends MengineService implements MengineAppLovinPluginInterface, MengineAdProviderInterface, MengineListenerApplication, MengineListenerActivity, MengineListenerEngine, MengineListenerRemoteConfig, MengineListenerTransparencyConsent, MengineTransparencyConsentProviderInterface {
@@ -68,6 +70,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
     private volatile boolean m_appLovinSdkInitialized = false;
 
     private MengineAppLovinBannerAdInterface m_bannerAd;
+    private MengineAppLovinBannerAdInterface m_topperAd;
     private MengineAppLovinInterstitialAdInterface m_interstitialAd;
     private MengineAppLovinRewardedAdInterface m_rewardedAd;
     private MengineAppLovinAppOpenAdInterface m_appOpenAd;
@@ -92,8 +95,8 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
     }
 
     @SuppressWarnings("unchecked")
-    protected <T extends MengineAppLovinAdInterface> T createAd(@NonNull MengineAdService adService, @NonNull List<? super String> adUnitIds, @NonNull String className) throws MengineServiceInvalidInitializeException {
-        T ad = (T)this.newInstance(className, true, adService, this);
+    protected <T extends MengineAppLovinAdInterface> T createAd(@NonNull String className, Object ... args) throws MengineServiceInvalidInitializeException {
+        T ad = (T)this.newInstance(className, true, args);
 
         if (ad == null) {
             this.invalidInitialize("not found AppLovin extension ad: %s"
@@ -101,11 +104,46 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
             );
         }
 
-        String adUnitId = ad.getAdUnitId();
-
-        adUnitIds.add(adUnitId);
+        m_ads.add(ad);
 
         return ad;
+    }
+
+    private Map<String, String> getAdUnitIds() {
+        JSONObject config = MengineFragmentRemoteConfig.INSTANCE.getRemoteConfig("applovin_ad_units");
+
+        if (config == null) {
+            this.logInfo("[AppLovin] no cached Remote Config applovin_ad_units, no ad units for this session");
+
+            return Map.of();
+        }
+
+        Map<String, String> adUnitIds = new HashMap<>();
+        String[] formats = {"banner", "topper", "interstitial", "rewarded", "appopen", "mrec", "native"};
+
+        for (String format : formats) {
+            Object value = config.opt(format);
+
+            if (value == null) {
+                continue;
+            }
+
+            if ((value instanceof String) == false) {
+                this.logError("[AppLovin] Remote Config applovin_ad_units.%s must be a string", format);
+
+                return Map.of();
+            }
+
+            String adUnitId = (String)value;
+
+            if (adUnitId.isEmpty() == true) {
+                continue;
+            }
+
+            adUnitIds.put(format, adUnitId);
+        }
+
+        return Map.copyOf(adUnitIds);
     }
 
     protected void createaMediation(@NonNull MengineApplication application, @NonNull String className) throws MengineServiceInvalidInitializeException {
@@ -123,49 +161,75 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
     }
 
     @Override
-    public void onAppCreate(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
+    public void onAppPost(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
         this.logInfo("[AppLovin SDK] version: %s", AppLovinSdk.VERSION);
 
         MengineAdService adService = application.getService(MengineAdService.class);
 
         boolean noAds = adService.getNoAds();
 
-        List<String> adUnitIds = new ArrayList<>();
+        Map<String, String> configuredAdUnitIds = this.getAdUnitIds();
 
         if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_BANNERAD == true && noAds == false) {
-            m_bannerAd = this.createAd(adService, adUnitIds, "org.Mengine.Plugin.AppLovin.BannerAd.MengineAppLovinBannerAd");
+            String adUnitId = configuredAdUnitIds.get("banner");
 
-            m_ads.add(m_bannerAd);
+            if (adUnitId != null) {
+                m_bannerAd = this.createAd("org.Mengine.Plugin.AppLovin.BannerAd.MengineAppLovinBannerAd", adService, this, adUnitId);
+            }
+        }
+
+        if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_TOPPERAD == true && noAds == false) {
+            String adUnitId = configuredAdUnitIds.get("topper");
+
+            if (adUnitId != null) {
+                m_topperAd = this.createAd("org.Mengine.Plugin.AppLovin.BannerAd.MengineAppLovinBannerAd", adService, this, adUnitId, "topper");
+            }
         }
 
         if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_INTERSTITIALAD == true && noAds == false) {
-            m_interstitialAd = this.createAd(adService, adUnitIds, "org.Mengine.Plugin.AppLovin.InterstitialAd.MengineAppLovinInterstitialAd");
+            String adUnitId = configuredAdUnitIds.get("interstitial");
 
-            m_ads.add(m_interstitialAd);
+            if (adUnitId != null) {
+                m_interstitialAd = this.createAd("org.Mengine.Plugin.AppLovin.InterstitialAd.MengineAppLovinInterstitialAd", adService, this, adUnitId);
+            }
         }
 
         if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_REWARDEDAD == true) {
-            m_rewardedAd = this.createAd(adService, adUnitIds, "org.Mengine.Plugin.AppLovin.RewardedAd.MengineAppLovinRewardedAd");
+            String adUnitId = configuredAdUnitIds.get("rewarded");
 
-            m_ads.add(m_rewardedAd);
+            if (adUnitId != null) {
+                m_rewardedAd = this.createAd("org.Mengine.Plugin.AppLovin.RewardedAd.MengineAppLovinRewardedAd", adService, this, adUnitId);
+            }
         }
 
         if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_APPOPENAD == true && noAds == false) {
-            m_appOpenAd = this.createAd(adService, adUnitIds, "org.Mengine.Plugin.AppLovin.AppOpenAd.MengineAppLovinAppOpenAd");
+            String adUnitId = configuredAdUnitIds.get("appopen");
 
-            m_ads.add(m_appOpenAd);
+            if (adUnitId != null) {
+                m_appOpenAd = this.createAd("org.Mengine.Plugin.AppLovin.AppOpenAd.MengineAppLovinAppOpenAd", adService, this, adUnitId);
+            }
         }
 
         if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_MRECAD == true && noAds == false) {
-            m_MRECAd = this.createAd(adService, adUnitIds, "org.Mengine.Plugin.AppLovin.MRECAd.MengineAppLovinMRECAd");
+            String adUnitId = configuredAdUnitIds.get("mrec");
 
-            m_ads.add(m_MRECAd);
+            if (adUnitId != null) {
+                m_MRECAd = this.createAd("org.Mengine.Plugin.AppLovin.MRECAd.MengineAppLovinMRECAd", adService, this, adUnitId);
+            }
         }
 
         if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_NATIVEAD == true && noAds == false) {
-            m_nativeAd = this.createAd(adService, adUnitIds, "org.Mengine.Plugin.AppLovin.NativeAd.MengineAppLovinNativeAd");
+            String adUnitId = configuredAdUnitIds.get("native");
 
-            m_ads.add(m_nativeAd);
+            if (adUnitId != null) {
+                m_nativeAd = this.createAd("org.Mengine.Plugin.AppLovin.NativeAd.MengineAppLovinNativeAd", adService, this, adUnitId);
+            }
+        }
+
+        List<String> adUnitIds = new ArrayList<>();
+
+        for (MengineAppLovinAdInterface ad : m_ads) {
+            adUnitIds.add(ad.getAdUnitId());
         }
 
         if (BuildConfig.MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_AMAZON == true) {
@@ -356,6 +420,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
     @Override
     public void onAppTerminate(@NonNull MengineApplication application) {
         m_bannerAd = null;
+        m_topperAd = null;
         m_interstitialAd = null;
         m_rewardedAd = null;
         m_appOpenAd = null;
@@ -452,7 +517,9 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
 
     @Override
     public boolean hasBanner() {
-        if (m_bannerAd == null) {
+        MengineAppLovinBannerAdInterface bannerAd = m_bannerAd;
+
+        if (bannerAd == null) {
             return false;
         }
 
@@ -460,12 +527,27 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
     }
 
     @Override
-    public boolean canYouShowBanner() {
-        if (m_bannerAd == null) {
+    public boolean isBannerLoaded() {
+        MengineAppLovinBannerAdInterface bannerAd = m_bannerAd;
+
+        if (bannerAd == null) {
             return false;
         }
 
-        if (m_bannerAd.canYouShow() == false) {
+        boolean loaded = bannerAd.isLoaded();
+
+        return loaded;
+    }
+
+    @Override
+    public boolean canYouShowBanner() {
+        MengineAppLovinBannerAdInterface bannerAd = m_bannerAd;
+
+        if (bannerAd == null) {
+            return false;
+        }
+
+        if (bannerAd.canYouShow() == false) {
             return false;
         }
 
@@ -474,55 +556,160 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
 
     @Override
     public void showBanner() {
-        if (m_bannerAd == null) {
-            this.logWarning("not found banner");
+        MengineAppLovinBannerAdInterface bannerAd = m_bannerAd;
 
+        if (bannerAd == null) {
             return;
         }
 
-        this.logInfo("banner show");
+        if (bannerAd.getView() == null) {
+            return;
+        }
 
-        m_bannerAd.show();
+        bannerAd.show();
     }
 
     @Override
     public void hideBanner() {
-        if (m_bannerAd == null) {
-            this.logWarning("not found banner");
+        MengineAppLovinBannerAdInterface bannerAd = m_bannerAd;
 
+        if (bannerAd == null) {
             return;
         }
 
-        this.logInfo("banner hide");
+        if (bannerAd.getView() == null) {
+            return;
+        }
 
-        m_bannerAd.hide();
+        bannerAd.hide();
     }
 
     @Override
     public int getBannerWidth() {
-        if (m_bannerAd == null) {
+        MengineAppLovinBannerAdInterface bannerAd = m_bannerAd;
+
+        if (bannerAd == null) {
             return 0;
         }
 
-        int widthPx = m_bannerAd.getWidthPx();
+        int widthPx = bannerAd.getWidthPx();
 
         return widthPx;
     }
 
     @Override
     public int getBannerHeight() {
-        if (m_bannerAd == null) {
+        MengineAppLovinBannerAdInterface bannerAd = m_bannerAd;
+
+        if (bannerAd == null) {
             return 0;
         }
 
-        int heightPx = m_bannerAd.getHeightPx();
+        int heightPx = bannerAd.getHeightPx();
+
+        return heightPx;
+    }
+
+    @Override
+    public boolean hasTopper() {
+        MengineAppLovinBannerAdInterface topperAd = m_topperAd;
+
+        if (topperAd == null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean isTopperLoaded() {
+        MengineAppLovinBannerAdInterface topperAd = m_topperAd;
+
+        if (topperAd == null) {
+            return false;
+        }
+
+        boolean loaded = topperAd.isLoaded();
+
+        return loaded;
+    }
+
+    @Override
+    public boolean canYouShowTopper() {
+        MengineAppLovinBannerAdInterface topperAd = m_topperAd;
+
+        if (topperAd == null) {
+            return false;
+        }
+
+        if (topperAd.canYouShow() == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public void showTopper() {
+        MengineAppLovinBannerAdInterface topperAd = m_topperAd;
+
+        if (topperAd == null) {
+            return;
+        }
+
+        if (topperAd.getView() == null) {
+            return;
+        }
+
+        topperAd.show();
+    }
+
+    @Override
+    public void hideTopper() {
+        MengineAppLovinBannerAdInterface topperAd = m_topperAd;
+
+        if (topperAd == null) {
+            return;
+        }
+
+        if (topperAd.getView() == null) {
+            return;
+        }
+
+        topperAd.hide();
+    }
+
+    @Override
+    public int getTopperWidth() {
+        MengineAppLovinBannerAdInterface topperAd = m_topperAd;
+
+        if (topperAd == null) {
+            return 0;
+        }
+
+        int widthPx = topperAd.getWidthPx();
+
+        return widthPx;
+    }
+
+    @Override
+    public int getTopperHeight() {
+        MengineAppLovinBannerAdInterface topperAd = m_topperAd;
+
+        if (topperAd == null) {
+            return 0;
+        }
+
+        int heightPx = topperAd.getHeightPx();
 
         return heightPx;
     }
 
     @Override
     public boolean hasInterstitial() {
-        if (m_interstitialAd == null) {
+        MengineAppLovinInterstitialAdInterface interstitialAd = m_interstitialAd;
+
+        if (interstitialAd == null) {
             return false;
         }
 
@@ -531,6 +718,10 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
 
     @Override
     public boolean canYouShowInterstitial(String placement) {
+        if (this.isShowingFullscreenAd() == true) {
+            return false;
+        }
+
         if (m_interstitialAd == null) {
             return false;
         }
@@ -543,7 +734,11 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
     }
 
     @Override
-    public boolean showInterstitial(String placement) {
+    public synchronized boolean showInterstitial(String placement) {
+        if (this.isShowingFullscreenAd() == true) {
+            return false;
+        }
+
         if (m_interstitialAd == null) {
             this.logWarning("invalid show unavailable interstitial placement: %s"
                 , placement
@@ -582,7 +777,9 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
 
     @Override
     public boolean hasRewarded() {
-        if (m_rewardedAd == null) {
+        MengineAppLovinRewardedAdInterface rewardedAd = m_rewardedAd;
+
+        if (rewardedAd == null) {
             return false;
         }
 
@@ -591,6 +788,10 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
 
     @Override
     public boolean canOfferRewarded(String placement) {
+        if (this.isShowingFullscreenAd() == true) {
+            return false;
+        }
+
         if (m_rewardedAd == null) {
             return false;
         }
@@ -604,6 +805,10 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
 
     @Override
     public boolean canYouShowRewarded(String placement) {
+        if (this.isShowingFullscreenAd() == true) {
+            return false;
+        }
+
         if (m_rewardedAd == null) {
             return false;
         }
@@ -616,7 +821,11 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
     }
 
     @Override
-    public boolean showRewarded(String placement) {
+    public synchronized boolean showRewarded(String placement) {
+        if (this.isShowingFullscreenAd() == true) {
+            return false;
+        }
+
         if (m_rewardedAd == null) {
             this.logWarning("invalid show unavailable rewarded placement: %s"
                 , placement
@@ -654,8 +863,46 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
     }
 
     @Override
+    public boolean hasRewardedInterstitial() {
+        return false;
+    }
+
+    @Override
+    public boolean canYouShowRewardedInterstitial(String placement) {
+        return false;
+    }
+
+    @Override
+    public boolean showRewardedInterstitial(String placement) {
+        return false;
+    }
+
+    @Override
+    public boolean isShowingRewardedInterstitial() {
+        return false;
+    }
+
+    private boolean isShowingFullscreenAd() {
+        if (this.isShowingInterstitial() == true) {
+            return true;
+        }
+
+        if (this.isShowingRewarded() == true) {
+            return true;
+        }
+
+        if (this.isShowingRewardedInterstitial() == true) {
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
     public boolean hasAppOpen() {
-        if (m_appOpenAd == null) {
+        MengineAppLovinAppOpenAdInterface appOpenAd = m_appOpenAd;
+
+        if (appOpenAd == null) {
             return false;
         }
 
@@ -698,7 +945,9 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
 
     @Override
     public boolean hasMREC() {
-        if (m_MRECAd == null) {
+        MengineAppLovinMRECAdInterface MRECAd = m_MRECAd;
+
+        if (MRECAd == null) {
             return false;
         }
 
@@ -790,7 +1039,9 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
 
     @Override
     public boolean hasNative() {
-        if (m_nativeAd == null) {
+        MengineAppLovinNativeAdInterface nativeAd = m_nativeAd;
+
+        if (nativeAd == null) {
             return false;
         }
 

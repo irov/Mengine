@@ -239,6 +239,8 @@
         @"ad": [self getMAAdParams:ad]
     }];
 
+    [self setAdFreeze:NO];
+
     self.m_showing = NO;
 
     id<iOSAdvertisementCallbackInterface> callback = [[iOSAppLovinPlugin sharedInstance] getAdvertisementRewardedCallback];

@@ -283,6 +283,38 @@ namespace Mengine
             return value_jobject;
         }
         //////////////////////////////////////////////////////////////////////////
+        jobject AndroidMakeJObjectParamVariant( JNIEnv * _jenv, const ParamVariant & _value )
+        {
+            jobject value = nullptr;
+
+            Helper::visit( _value
+                , []( const ParamNull & _element ) {
+                    MENGINE_UNUSED( _element );
+                }, [_jenv, &value]( const ParamBool & _element ) {
+                    value = Helper::AndroidMakeJObjectBoolean( _jenv, _element );
+                }, [_jenv, &value]( const ParamInteger & _element ) {
+                    value = Helper::AndroidMakeJObjectLong( _jenv, _element );
+                }, [_jenv, &value]( const ParamDouble & _element ) {
+                    value = Helper::AndroidMakeJObjectDouble( _jenv, _element );
+                }, [_jenv, &value]( const ParamString & _element ) {
+                    value = Helper::AndroidMakeJObjectString( _jenv, _element );
+                }, []( const ParamWString & _element ) {
+                    MENGINE_UNUSED( _element );
+
+                    MENGINE_ASSERTION_FATAL( false, "not support ParamWString" );
+                }, [_jenv, &value]( const ParamConstString & _element ) {
+                    value = Helper::AndroidMakeJObjectString( _jenv, _element );
+                }, [_jenv, &value]( const ParamFilePath & _element ) {
+                    value = Helper::AndroidMakeJObjectString( _jenv, _element );
+                }, []( const ParamFactorablePtr & _element ) {
+                    MENGINE_UNUSED( _element );
+
+                    MENGINE_ASSERTION_FATAL( false, "not support ParamFactorablePtr" );
+                } );
+
+            return value;
+        }
+        //////////////////////////////////////////////////////////////////////////
         jobject AndroidMakeJObjectArrayList( JNIEnv * _jenv, int32_t _count )
         {
             jclass jclass_ArrayList = Mengine_JNI_GetClassArrayList( _jenv );

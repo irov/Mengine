@@ -46,6 +46,7 @@ namespace Mengine
         {
             return Helper::AndroidMakeJObjectString( _jenv, _value.c_str() );
         }
+        MENGINE_NODISCARD jobject AndroidMakeJObjectParamVariant( JNIEnv * _jenv, const ParamVariant & _value );
         MENGINE_NODISCARD jobject AndroidMakeJObjectArrayList( JNIEnv * _jenv, int32_t _count );
         MENGINE_NODISCARD jobject AndroidMakeJObjectHashMap( JNIEnv * _jenv, int32_t _count );
         MENGINE_NODISCARD jobject AndroidMakeJObjectHashMap( JNIEnv * _jenv, int32_t _count );

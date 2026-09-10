@@ -9,9 +9,7 @@ import android.graphics.Color;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Size;
-import androidx.annotation.StringRes;
 
-import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
@@ -23,12 +21,8 @@ import com.google.android.gms.ads.ResponseInfo;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineAdFormat;
-import org.Mengine.Base.MengineAdResponseInterface;
 import org.Mengine.Base.MengineAdService;
 import org.Mengine.Base.MengineAnalyticsEventBuilderInterface;
-import org.Mengine.Base.MengineNative;
-import org.Mengine.Base.MengineNetwork;
-import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineUtils;
 import org.Mengine.Plugin.AdMob.Core.MengineAdMobBannerAdInterface;
 import org.Mengine.Plugin.AdMob.Core.MengineAdMobBase;
@@ -37,25 +31,22 @@ import org.Mengine.Plugin.AdMob.Core.MengineAdMobPluginInterface;
 import java.util.Map;
 
 public class MengineAdMobBannerAd extends MengineAdMobBase implements MengineAdMobBannerAdInterface, OnPaidEventListener {
-    public static final @StringRes int METADATA_BANNER_PLACEMENT = R.string.mengine_admob_banner_placement;
-    public static final @StringRes int METADATA_BANNER_ADUNITID = R.string.mengine_admob_banner_adunitid;
-
     protected final String m_placement;
 
     protected AdView m_adView;
-    protected AdSize m_adSize;
+    protected volatile AdSize m_adSize;
 
     protected volatile boolean m_visible = false;
     protected volatile boolean m_loaded = false;
 
-    public MengineAdMobBannerAd(@NonNull MengineAdService adService, @NonNull MengineAdMobPluginInterface plugin) throws MengineServiceInvalidInitializeException {
-        super(adService, plugin, MengineAdFormat.ADFORMAT_BANNER);
+    public MengineAdMobBannerAd(@NonNull MengineAdService adService, @NonNull MengineAdMobPluginInterface plugin, @NonNull String adUnitId) {
+        this(adService, plugin, adUnitId, plugin.getResourceString(R.string.mengine_admob_banner_placement));
+    }
 
-        this.setAdUnitId(METADATA_BANNER_ADUNITID, "BannerAdUnitId");
+    public MengineAdMobBannerAd(@NonNull MengineAdService adService, @NonNull MengineAdMobPluginInterface plugin, @NonNull String adUnitId, @NonNull String placement) {
+        super(adService, plugin, MengineAdFormat.ADFORMAT_BANNER, adUnitId);
 
-        String MengineAdMobPlugin_Banner_Placement = plugin.getResourceString(METADATA_BANNER_PLACEMENT);
-
-        m_placement = MengineAdMobPlugin_Banner_Placement;
+        m_placement = placement;
     }
 
     protected int getBannerWidthDp(@NonNull MengineActivity activity) {
@@ -94,7 +85,7 @@ public class MengineAdMobBannerAd extends MengineAdMobBase implements MengineAdM
         return adSize;
     }
 
-    protected MengineAnalyticsEventBuilderInterface buildBannerAdEvent(@Size(min = 1L, max = 40L) String event) {
+    protected MengineAnalyticsEventBuilderInterface buildBannerAdEvent(@Size(min = 1, max = 40) String event) {
         MengineAnalyticsEventBuilderInterface builder = this.buildAdEvent("mng_admob_banner_" + event)
             .addParameterString("placement", m_placement);
 
@@ -106,7 +97,9 @@ public class MengineAdMobBannerAd extends MengineAdMobBase implements MengineAdM
     }
 
     public int getWidthPx() {
-        if (m_adSize == null) {
+        AdSize adSize = m_adSize;
+
+        if (adSize == null) {
             return 0;
         }
 
@@ -116,13 +109,15 @@ public class MengineAdMobBannerAd extends MengineAdMobBase implements MengineAdM
             return 0;
         }
 
-        int widthPx = m_adSize.getWidthInPixels(activity);
+        int widthPx = adSize.getWidthInPixels(activity);
 
         return widthPx;
     }
 
     public int getHeightPx() {
-        if (m_adSize == null) {
+        AdSize adSize = m_adSize;
+
+        if (adSize == null) {
             return 0;
         }
 
@@ -132,7 +127,7 @@ public class MengineAdMobBannerAd extends MengineAdMobBase implements MengineAdM
             return 0;
         }
 
-        int heightPx = m_adSize.getHeightInPixels(activity);
+        int heightPx = adSize.getHeightInPixels(activity);
 
         return heightPx;
     }
@@ -144,6 +139,10 @@ public class MengineAdMobBannerAd extends MengineAdMobBase implements MengineAdM
         AdSize adSize = this.getBannerSize(activity);
 
         AdView adView = new AdView(activity);
+
+        m_adView = adView;
+        m_adSize = adSize;
+
         adView.setAdUnitId(m_adUnitId);
         adView.setAdSize(adSize);
 
@@ -210,6 +209,8 @@ public class MengineAdMobBannerAd extends MengineAdMobBase implements MengineAdM
 
             @Override
             public void onAdFailedToLoad(@NonNull LoadAdError error) {
+                m_loaded = false;
+
                 MengineAdMobBannerAd.this.logLoadAdError("onAdFailedToLoad", error);
 
                 int errorCode = error.getCode();
@@ -236,7 +237,11 @@ public class MengineAdMobBannerAd extends MengineAdMobBase implements MengineAdM
         adView.setOnPaidEventListener(this);
 
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        if (m_placement.equals("topper") == true) {
+            params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        } else {
+            params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        }
 
         adView.setLayoutParams(params);
 
@@ -245,9 +250,6 @@ public class MengineAdMobBannerAd extends MengineAdMobBase implements MengineAdM
 
         ViewGroup viewGroup = activity.getContentViewGroup();
         viewGroup.addView(adView);
-
-        m_adView = adView;
-        m_adSize = adSize;
 
         int widthDp = m_adSize.getWidth();
         int heightDp = m_adSize.getHeight();
@@ -263,12 +265,19 @@ public class MengineAdMobBannerAd extends MengineAdMobBase implements MengineAdM
     public void onActivityDestroy(@NonNull MengineActivity activity) {
         super.onActivityDestroy(activity);
 
+        m_loaded = false;
+        m_visible = false;
+        m_adSize = null;
+
         if (m_adView != null) {
             m_adView.setAdListener(null);
             m_adView.setOnPaidEventListener(null);
 
-            ViewGroup viewGroup = activity.getContentViewGroup();
-            viewGroup.removeView(m_adView);
+            ViewGroup viewGroup = (ViewGroup)m_adView.getParent();
+
+            if (viewGroup != null) {
+                viewGroup.removeView(m_adView);
+            }
 
             m_adView.destroy();
             m_adView = null;
@@ -349,8 +358,10 @@ public class MengineAdMobBannerAd extends MengineAdMobBase implements MengineAdM
         this.log("updateVisible", Map.of("show", m_visible));
 
         if (m_visible == true) {
-            if (m_adView != null && m_loaded == true) {
-                this.enableAdView(m_adView);
+            if (m_loaded == true) {
+                if (m_adView != null) {
+                    this.enableAdView(m_adView);
+                }
             }
         } else {
             if (m_adView != null) {
@@ -359,12 +370,26 @@ public class MengineAdMobBannerAd extends MengineAdMobBase implements MengineAdM
         }
     }
 
+    @Override
+    public View getView() {
+        return m_adView;
+    }
+
+    @Override
+    public boolean isLoaded() {
+        return m_loaded;
+    }
+
     public boolean canYouShow() {
         return m_loaded;
     }
 
     public void show() {
-        MengineUtils.performOnMainThread(() -> {
+        this.performOnMainThread(() -> {
+            if (m_adView == null) {
+                return;
+            }
+
             if (m_visible == true) {
                 return;
             }
@@ -376,7 +401,7 @@ public class MengineAdMobBannerAd extends MengineAdMobBase implements MengineAdM
     }
 
     public void hide() {
-        MengineUtils.performOnMainThread(() -> {
+        this.performOnMainThread(() -> {
             if (m_visible == false) {
                 return;
             }

@@ -38,7 +38,7 @@ namespace Mengine
                 , const mt::vec2f & _normal
                 , float _value ) override
             {
-                this->call_cb( (uint32_t)_type, _bodyA, _bodyB, _point, _normal, _value );
+                this->call_cb( _type, _bodyA, _bodyB, _point, _normal, _value );
             }
         };
         //////////////////////////////////////////////////////////////////////////
@@ -97,7 +97,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         static Box2DBodyInterfacePtr createBox2DBody( const Box2DWorldInterfacePtr & _world
-            , uint32_t _type
+            , EBox2DBodyType _type
             , const mt::vec2f & _position
             , float _angle
             , float _linearDamping
@@ -107,12 +107,24 @@ namespace Mengine
             , bool _fixedRotation
             , float _gravityScale )
         {
-            if( _world == nullptr || _world->isValid() == false || _type > EBOX2D_BODY_DYNAMIC )
+            if( _world == nullptr )
             {
                 return nullptr;
             }
 
-            return _world->createBodyType( (EBox2DBodyType)_type, _position, _angle, _linearDamping, _angularDamping, _allowSleep, _isBullet, _fixedRotation, _gravityScale, MENGINE_DOCUMENT_PYTHON );
+            if( _world->isValid() == false )
+            {
+                return nullptr;
+            }
+
+            if( _type != EBOX2D_BODY_STATIC && _type != EBOX2D_BODY_KINEMATIC && _type != EBOX2D_BODY_DYNAMIC )
+            {
+                return nullptr;
+            }
+
+            Box2DBodyInterfacePtr body = _world->createBodyType( _type, _position, _angle, _linearDamping, _angularDamping, _allowSleep, _isBullet, _fixedRotation, _gravityScale, MENGINE_DOCUMENT_PYTHON );
+
+            return body;
         }
         //////////////////////////////////////////////////////////////////////////
         static Box2DJointInterfacePtr createBox2DDistanceJoint( const Box2DWorldInterfacePtr & _world, const Box2DBodyInterfacePtr & _bodyA, const Box2DBodyInterfacePtr & _bodyB, const mt::vec2f & _offsetA, const mt::vec2f & _offsetB, bool _collide )
@@ -251,14 +263,19 @@ namespace Mengine
 
         pybind::interface_<Box2DContactListenerInterface, pybind::bases<Mixin>>( _kernel, "Box2DContactListener" );
 
-        pybind::def_const<uint32_t>( _kernel, "BOX2D_BODY_STATIC", EBOX2D_BODY_STATIC );
-        pybind::def_const<uint32_t>( _kernel, "BOX2D_BODY_KINEMATIC", EBOX2D_BODY_KINEMATIC );
-        pybind::def_const<uint32_t>( _kernel, "BOX2D_BODY_DYNAMIC", EBOX2D_BODY_DYNAMIC );
-        pybind::def_const<uint32_t>( _kernel, "BOX2D_CONTACT_BEGIN", EBOX2D_CONTACT_BEGIN );
-        pybind::def_const<uint32_t>( _kernel, "BOX2D_CONTACT_END", EBOX2D_CONTACT_END );
-        pybind::def_const<uint32_t>( _kernel, "BOX2D_SENSOR_BEGIN", EBOX2D_SENSOR_BEGIN );
-        pybind::def_const<uint32_t>( _kernel, "BOX2D_SENSOR_END", EBOX2D_SENSOR_END );
-        pybind::def_const<uint32_t>( _kernel, "BOX2D_CONTACT_HIT", EBOX2D_CONTACT_HIT );
+        pybind::enum_<EBox2DBodyType>( _kernel, "EBox2DBodyType" )
+            .def( "BOX2D_BODY_STATIC", EBOX2D_BODY_STATIC )
+            .def( "BOX2D_BODY_KINEMATIC", EBOX2D_BODY_KINEMATIC )
+            .def( "BOX2D_BODY_DYNAMIC", EBOX2D_BODY_DYNAMIC )
+            ;
+
+        pybind::enum_<EBox2DContactEventType>( _kernel, "EBox2DContactEventType" )
+            .def( "BOX2D_CONTACT_BEGIN", EBOX2D_CONTACT_BEGIN )
+            .def( "BOX2D_CONTACT_END", EBOX2D_CONTACT_END )
+            .def( "BOX2D_SENSOR_BEGIN", EBOX2D_SENSOR_BEGIN )
+            .def( "BOX2D_SENSOR_END", EBOX2D_SENSOR_END )
+            .def( "BOX2D_CONTACT_HIT", EBOX2D_CONTACT_HIT )
+            ;
 
         pybind::def_function( _kernel, "createBox2DWorld", &Detail::createBox2DWorld );
         pybind::def_function( _kernel, "destroyBox2DWorld", &Detail::destroyBox2DWorld );
@@ -281,6 +298,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Box2DScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
+        _kernel->remove_from_module( "BOX2D_BODY_STATIC", nullptr );
+        _kernel->remove_from_module( "BOX2D_BODY_KINEMATIC", nullptr );
+        _kernel->remove_from_module( "BOX2D_BODY_DYNAMIC", nullptr );
+        _kernel->remove_from_module( "BOX2D_CONTACT_BEGIN", nullptr );
+        _kernel->remove_from_module( "BOX2D_CONTACT_END", nullptr );
+        _kernel->remove_from_module( "BOX2D_SENSOR_BEGIN", nullptr );
+        _kernel->remove_from_module( "BOX2D_SENSOR_END", nullptr );
+        _kernel->remove_from_module( "BOX2D_CONTACT_HIT", nullptr );
+
         _kernel->remove_scope<Box2DContactListenerInterface>();
         _kernel->remove_scope<Box2DWorldInterface>();
         _kernel->remove_scope<Box2DJointInterface>();

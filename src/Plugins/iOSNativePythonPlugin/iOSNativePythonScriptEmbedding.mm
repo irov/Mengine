@@ -326,11 +326,6 @@ namespace Mengine
             }];
         }
         ///////////////////////////////////////////////////////////////////////
-        void iOSNativePython_removeUserData()
-        {
-            [iOSApplication.sharedInstance removeUserData];
-        }
-        ///////////////////////////////////////////////////////////////////////
         void iOSNativePython_setIdleTimerDisabled( bool _disabled )
         {
             UIApplication.sharedApplication.idleTimerDisabled = _disabled;
@@ -356,7 +351,6 @@ namespace Mengine
         pybind::def_function_args( _kernel, "waitSemaphore", &Detail::iOSNativePython_waitSemaphore );
         pybind::def_function_args( _kernel, "iOSNativePythonShowAreYouSureAlertDialog", &Detail::iOSNativePython_showAreYouSureAlertDialog );
         pybind::def_function_args( _kernel, "iOSNativePythonShowOkAlert", &Detail::iOSNativePython_showOkAlert );
-        pybind::def_function( _kernel, "iOSNativePythonRemoveUserData", &Detail::iOSNativePython_removeUserData );
         pybind::def_function( _kernel, "iOSNativePythonSetIdleTimerDisabled", &Detail::iOSNativePython_setIdleTimerDisabled );
 
         return true;

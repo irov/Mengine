@@ -3930,10 +3930,6 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32PlatformService::removeUserData()
-    {
-    }
-    //////////////////////////////////////////////////////////////////////////
     void Win32PlatformService::setActive_( bool _active )
     {
         if( m_active == _active )

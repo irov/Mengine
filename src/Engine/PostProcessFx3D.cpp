@@ -248,7 +248,7 @@ namespace Mengine
         );
 
         RenderTextureInterfacePtr sceneTexture = RENDERTEXTURE_SERVICE()
-            ->createRenderTexture( sceneImage, width, height, MENGINE_DOCUMENT_FACTORABLE );
+            ->createRenderTexture( sceneImage, width, height, DF_IMAGE_NONE, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( sceneTexture, "post-process fx '%s' invalid create render texture [%u, %u]"
             , this->getName().c_str()

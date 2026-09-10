@@ -1191,10 +1191,6 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void GDKPlatformService::removeUserData()
-    {
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool GDKPlatformService::updateDesktopWallpaper( const Char * _directoryPath, const Char * _filePath )
     {
         MENGINE_UNUSED( _directoryPath );

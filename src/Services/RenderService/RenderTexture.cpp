@@ -17,6 +17,7 @@ namespace Mengine
         , m_widthInv( 0.f )
         , m_heightInv( 0.f )
         , m_pow2( false )
+        , m_codecFlags( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -24,7 +25,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderTexture::initialize( UniqueId _id, const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height )
+    void RenderTexture::initialize( UniqueId _id, const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height, uint32_t _codecFlags )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _image, "invalid image" );
 
@@ -35,6 +36,7 @@ namespace Mengine
         m_createTimestamp = Helper::getSystemTimestamp();
 
         m_image = _image;
+        m_codecFlags = _codecFlags;
 
         m_width = _width;
         m_height = _height;
@@ -51,6 +53,11 @@ namespace Mengine
         mt::uv4_from_mask( &m_uv, mt::vec4f( 0.f, 0.f, u, v ) );
 
         m_pow2 = Helper::isTexturePow2( m_width ) == true && Helper::isTexturePow2( m_height ) == true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t RenderTexture::getCodecFlags() const
+    {
+        return m_codecFlags;
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderTexture::release()

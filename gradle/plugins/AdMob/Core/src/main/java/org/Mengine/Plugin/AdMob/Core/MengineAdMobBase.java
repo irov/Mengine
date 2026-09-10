@@ -1,8 +1,10 @@
 package org.Mengine.Plugin.AdMob.Core;
 
+import android.os.Handler;
+import android.os.Looper;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Size;
-import androidx.annotation.StringRes;
 
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdListener;
@@ -21,6 +23,7 @@ import org.Mengine.Base.MengineParamAdRevenue;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineUtils;
 
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -30,17 +33,21 @@ public class MengineAdMobBase extends AdListener implements MengineAdMobAdInterf
     protected final MengineAdMobPluginInterface m_plugin;
     protected final MengineAdFormat m_adFormat;
 
-    protected String m_adUnitId;
+    protected final String m_adUnitId;
+    private Handler m_retryHandler;
+    private final Object m_mainThreadLock = new Object();
+    private Map<Runnable, Handler> m_mainThreadTasks;
 
     protected int m_enumeratorRequest;
     protected int m_requestId;
     protected int m_requestAttempt;
     protected long m_requestTimestamp;
 
-    public MengineAdMobBase(@NonNull MengineAdService adService, @NonNull MengineAdMobPluginInterface plugin, @NonNull MengineAdFormat adFormat) {
+    public MengineAdMobBase(@NonNull MengineAdService adService, @NonNull MengineAdMobPluginInterface plugin, @NonNull MengineAdFormat adFormat, @NonNull String adUnitId) {
         m_adService = adService;
         m_plugin = plugin;
         m_adFormat = adFormat;
+        m_adUnitId = adUnitId;
 
         m_enumeratorRequest = 0;
         m_requestId = 0;
@@ -53,26 +60,6 @@ public class MengineAdMobBase extends AdListener implements MengineAdMobAdInterf
         return m_plugin;
     }
 
-    protected void setAdUnitId(@StringRes int METADATA_ADUNITID, @NonNull String configAdUnitId) throws MengineServiceInvalidInitializeException {
-        String metadataAdUnitId = m_plugin.getResourceString(METADATA_ADUNITID);
-
-        if (metadataAdUnitId.isEmpty() == true) {
-            this.invalidInitialize("meta %s not found"
-                , m_plugin.getResourceName(METADATA_ADUNITID)
-            );
-        }
-
-        String adUnitId = m_plugin.getServiceConfigOptString(configAdUnitId, metadataAdUnitId);
-
-        if (adUnitId == null) {
-            this.invalidInitialize("config %s is empty"
-                , configAdUnitId
-            );
-        }
-
-        m_adUnitId = adUnitId;
-    }
-
     @Override
     public String getAdUnitId() {
         return m_adUnitId;
@@ -80,27 +67,100 @@ public class MengineAdMobBase extends AdListener implements MengineAdMobAdInterf
 
     @Override
     public void onActivityCreate(@NonNull MengineActivity activity) {
-        //Empty
+        synchronized (m_mainThreadLock) {
+            m_mainThreadTasks = new HashMap<>();
+        }
     }
 
     @Override
     public void onActivityDestroy(@NonNull MengineActivity activity) {
-        //Empty
+        synchronized (m_mainThreadLock) {
+            if (m_mainThreadTasks != null) {
+                for (Handler handler : m_mainThreadTasks.values()) {
+                    handler.removeCallbacksAndMessages(null);
+                }
+
+                m_mainThreadTasks = null;
+            }
+        }
+
+        if (m_retryHandler != null) {
+            m_retryHandler.removeCallbacksAndMessages(null);
+            m_retryHandler = null;
+        }
     }
 
     public void loadAd() {
         // Empty
     }
 
+    protected boolean performOnMainThread(@NonNull Runnable runnable) {
+        synchronized (m_mainThreadLock) {
+            if (m_mainThreadTasks == null) {
+                return false;
+            }
+
+            if (Looper.myLooper() != Looper.getMainLooper()) {
+                Runnable task = new Runnable() {
+                    @Override
+                    public void run() {
+                        synchronized (m_mainThreadLock) {
+                            if (m_mainThreadTasks == null) {
+                                return;
+                            }
+
+                            m_mainThreadTasks.remove(this);
+                        }
+
+                        runnable.run();
+                    }
+                };
+
+                Handler handler = MengineUtils.performOnMainThread(task);
+
+                if (handler == null) {
+                    return false;
+                }
+
+                m_mainThreadTasks.put(task, handler);
+
+                return true;
+            }
+        }
+
+        runnable.run();
+
+        return true;
+    }
+
     protected void retryLoadAd() {
-        m_requestAttempt++;
+        this.performOnMainThread(() -> {
+            MengineActivity activity = m_plugin.getMengineActivity();
 
-        long duration = (long) Math.pow(2, Math.min(6, m_requestAttempt));
-        long delayMillis = TimeUnit.SECONDS.toMillis(duration);
+            if (activity == null) {
+                return;
+            }
 
-        MengineUtils.performOnMainThreadDelayed(() -> {
-            this.loadAd();
-        }, delayMillis);
+            if (m_retryHandler != null) {
+                m_retryHandler.removeCallbacksAndMessages(null);
+                m_retryHandler = null;
+            }
+
+            m_requestAttempt++;
+
+            long duration = (long)Math.pow(2, Math.min(6, m_requestAttempt));
+            long delayMillis = TimeUnit.SECONDS.toMillis(duration);
+
+            m_retryHandler = MengineUtils.performOnMainThreadDelayed(() -> {
+                m_retryHandler = null;
+
+                if (m_plugin.getMengineActivity() != activity) {
+                    return;
+                }
+
+                this.loadAd();
+            }, delayMillis);
+        });
     }
 
     protected int increaseRequestId() {
@@ -167,7 +227,7 @@ public class MengineAdMobBase extends AdListener implements MengineAdMobAdInterf
         m_plugin.setState(name, value);
     }
 
-    protected MengineAnalyticsEventBuilderInterface buildAdEvent(@Size(min = 1L, max = 40L) String name) {
+    protected MengineAnalyticsEventBuilderInterface buildAdEvent(@Size(min = 1, max = 40) String name) {
         long requestTime = this.getRequestTime();
 
         MengineAnalyticsEventBuilderInterface eventBuilder = m_plugin.buildEvent(name);

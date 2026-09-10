@@ -2,16 +2,6 @@
 
 @implementation iOSAdvertisementRewardedPoint
 
-- (instancetype)initWithName:(NSString *)name withJson:(NSDictionary *)json {
-    self = [super initWithName:name withJson:json];
-
-    if (self != nil) {
-        //ToDo
-    }
-
-    return self;
-}
-
 - (BOOL)canOfferAd {
     if ([self isEnabled] == NO) {
         return NO;

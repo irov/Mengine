@@ -38,6 +38,7 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
 @property (nonatomic, strong) NSMutableArray<iOSPluginLoggerDelegateInterface> * m_pluginLoggerDelegates;
 @property (nonatomic, strong) NSMutableArray<iOSPluginConfigDelegateInterface> * m_pluginConfigDelegates;
 @property (nonatomic, strong) NSMutableArray<iOSPluginAnalyticDelegateInterface> * m_pluginAnalyticDelegates;
+@property (nonatomic, strong) NSMutableArray<iOSPluginAttributionDelegateInterface> * m_pluginAttributionDelegates;
 @property (nonatomic, strong) NSMutableArray<iOSPluginUserIdDelegateInterface> * m_pluginUserIdDelegates;
 @property (nonatomic, strong) NSMutableArray<iOSPluginAdRevenueDelegateInterface> * m_pluginAdRevenueDelegates;
 @property (nonatomic, strong) NSMutableArray<iOSPluginAppTrackingTransparencyDelegateInterface> * m_pluginAppTrackingTransparencyDelegates;
@@ -72,6 +73,7 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
         self.m_pluginLoggerDelegates = [NSMutableArray<iOSPluginLoggerDelegateInterface> array];
         self.m_pluginConfigDelegates = [NSMutableArray<iOSPluginConfigDelegateInterface> array];
         self.m_pluginAnalyticDelegates = [NSMutableArray<iOSPluginAnalyticDelegateInterface> array];
+        self.m_pluginAttributionDelegates = [NSMutableArray<iOSPluginAttributionDelegateInterface> array];
         self.m_pluginUserIdDelegates = [NSMutableArray<iOSPluginUserIdDelegateInterface> array];
         self.m_pluginAdRevenueDelegates = [NSMutableArray<iOSPluginAdRevenueDelegateInterface> array];
         self.m_pluginAppTrackingTransparencyDelegates = [NSMutableArray<iOSPluginAppTrackingTransparencyDelegateInterface> array];
@@ -111,6 +113,10 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
                 [self.m_pluginAnalyticDelegates addObject:delegate];
             }
 
+            if ([delegate conformsToProtocol:@protocol(iOSPluginAttributionDelegateInterface)] == YES) {
+                [self.m_pluginAttributionDelegates addObject:delegate];
+            }
+
             if ([delegate conformsToProtocol:@protocol(iOSPluginUserIdDelegateInterface)] == YES) {
                 [self.m_pluginUserIdDelegates addObject:delegate];
             }
@@ -148,6 +154,10 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
 
 - (NSArray<iOSPluginAnalyticDelegateInterface> *)getPluginAnalyticDelegates {
     return self.m_pluginAnalyticDelegates;
+}
+
+- (NSArray<iOSPluginAttributionDelegateInterface> *)getPluginAttributionDelegates {
+    return self.m_pluginAttributionDelegates;
 }
 
 - (NSArray<iOSPluginUserIdDelegateInterface> *)getPluginUserIdDelegates {
@@ -226,6 +236,14 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
     @autoreleasepool {
         for (NSObject<iOSPluginAnalyticDelegateInterface> * delegate in self.m_pluginAnalyticDelegates) {
             [delegate onAnalyticFlush];
+        }
+    }
+}
+
+- (void)eventAttribution:(NSString *)name value:(id)value {
+    @autoreleasepool {
+        for (NSObject<iOSPluginAttributionDelegateInterface> * delegate in self.m_pluginAttributionDelegates) {
+            [delegate onAttribution:name value:value];
         }
     }
 }

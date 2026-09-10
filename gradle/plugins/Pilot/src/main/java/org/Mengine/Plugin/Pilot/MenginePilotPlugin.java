@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.Mengine.Base.MengineApplication;
-import org.Mengine.Base.MengineFragmentInAppPurchase;
 import org.Mengine.Base.MengineListenerAdRevenue;
 import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineListenerAnalytics;
@@ -171,6 +170,8 @@ public class MenginePilotPlugin extends MengineService implements MengineListene
             return "APPOPEN";
         } else if (adFormat == MengineAdFormat.ADFORMAT_REWARDED) {
             return "REWARDED";
+        } else if (adFormat == MengineAdFormat.ADFORMAT_REWARDED_INTERSTITIAL) {
+            return "REWARDED_INTERSTITIAL";
         } else if (adFormat == MengineAdFormat.ADFORMAT_NATIVE) {
             return "NATIVE";
         }

@@ -349,6 +349,7 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         if (m_noAds == true) {
             if (m_adProvider != null) {
                 m_adProvider.hideBanner();
+                m_adProvider.hideTopper();
             }
         }
     }
@@ -371,7 +372,24 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
             return false;
         }
 
-        return m_adProvider.hasBanner();
+        if (this.getNoAds() == true) {
+            return false;
+        }
+
+        boolean available = m_adProvider.hasBanner();
+
+        return available;
+    }
+
+    @Override
+    public boolean isBannerLoaded() {
+        if (this.hasBanner() == false) {
+            return false;
+        }
+
+        boolean loaded = m_adProvider.isBannerLoaded();
+
+        return loaded;
     }
 
     @Override
@@ -395,15 +413,7 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
 
     @Override
     public void showBanner() {
-        if (m_adProvider == null) {
-            return;
-        }
-
-        boolean noAds = this.getNoAds();
-
-        if (noAds == true) {
-            this.logInfo("no ads enabled. skip show banner ad");
-
+        if (this.hasBanner() == false) {
             return;
         }
 
@@ -415,14 +425,6 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
     @Override
     public void hideBanner() {
         if (m_adProvider == null) {
-            return;
-        }
-
-        boolean noAds = this.getNoAds();
-
-        if (noAds == true) {
-            this.logInfo("no ads enabled. skip hide banner ad");
-
             return;
         }
 
@@ -454,8 +456,101 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
     }
 
     @Override
+    public boolean hasTopper() {
+        if (m_adProvider == null) {
+            return false;
+        }
+
+        if (this.getNoAds() == true) {
+            return false;
+        }
+
+        boolean available = m_adProvider.hasTopper();
+
+        return available;
+    }
+
+    @Override
+    public boolean isTopperLoaded() {
+        if (this.hasTopper() == false) {
+            return false;
+        }
+
+        boolean loaded = m_adProvider.isTopperLoaded();
+
+        return loaded;
+    }
+
+    @Override
+    public boolean canYouShowTopper() {
+        if (m_adProvider == null) {
+            return false;
+        }
+
+        boolean noAds = this.getNoAds();
+
+        if (noAds == true) {
+            return false;
+        }
+
+        if (m_adProvider.canYouShowTopper() == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public void showTopper() {
+        if (this.hasTopper() == false) {
+            return;
+        }
+
+        this.logInfo("show topper ad");
+
+        m_adProvider.showTopper();
+    }
+
+    @Override
+    public void hideTopper() {
+        if (m_adProvider == null) {
+            return;
+        }
+
+        this.logInfo("hide topper ad");
+
+        m_adProvider.hideTopper();
+    }
+
+    @Override
+    public int getTopperWidth() {
+        if (m_adProvider == null) {
+            return 0;
+        }
+
+        int width = m_adProvider.getTopperWidth();
+
+        return width;
+    }
+
+    @Override
+    public int getTopperHeight() {
+        if (m_adProvider == null) {
+            return 0;
+        }
+
+        int height = m_adProvider.getTopperHeight();
+
+        return height;
+    }
+
+    @Override
     public boolean hasInterstitial() {
         if (m_adProvider == null) {
+            return false;
+        }
+
+        if (this.getNoAds() == true) {
             return false;
         }
 
@@ -477,6 +572,10 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         if (noAds == true) {
             this.logInfo("no ads enabled. skip can you show interstitial ad");
 
+            return false;
+        }
+
+        if (this.isShowingFullscreenAd() == true) {
             return false;
         }
 
@@ -519,6 +618,10 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
             return false;
         }
 
+        if (this.isShowingFullscreenAd() == true) {
+            return false;
+        }
+
         MengineAdPointInterstitial adPoint = this.getAdInterstitialPoint(placement);
 
         if (adPoint == null) {
@@ -544,17 +647,13 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
     }
 
     public boolean isShowingInterstitial() {
-        boolean noAds = this.getNoAds();
-
-        if (noAds == true) {
+        if (m_adProvider == null) {
             return false;
         }
 
-        if (m_adProvider.isShowingInterstitial() == false) {
-            return false;
-        }
+        boolean showing = m_adProvider.isShowingInterstitial();
 
-        return true;
+        return showing;
     }
 
     @Override
@@ -573,6 +672,10 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
     @Override
     public boolean canOfferRewarded(String placement) {
         if (m_adProvider == null) {
+            return false;
+        }
+
+        if (this.isShowingFullscreenAd() == true) {
             return false;
         }
 
@@ -609,6 +712,10 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
             return false;
         }
 
+        if (this.isShowingFullscreenAd() == true) {
+            return false;
+        }
+
         MengineAdPointRewarded adPoint = this.getAdRewardedPoint(placement);
 
         if (adPoint == null) {
@@ -642,6 +749,10 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
             return false;
         }
 
+        if (this.isShowingFullscreenAd() == true) {
+            return false;
+        }
+
         MengineAdPointRewarded adPoint = this.getAdRewardedPoint(placement);
 
         if (adPoint == null) {
@@ -667,11 +778,126 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
     }
 
     public boolean isShowingRewarded() {
-        if (m_adProvider.isShowingRewarded() == false) {
+        if (m_adProvider == null) {
+            return false;
+        }
+
+        if (m_adProvider.isShowingRewarded() == true) {
+            return true;
+        }
+
+        if (m_adProvider.isShowingRewardedInterstitial() == true) {
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean hasRewardedInterstitial() {
+        if (m_adProvider == null) {
+            return false;
+        }
+
+        if (m_adProvider.hasRewardedInterstitial() == false) {
             return false;
         }
 
         return true;
+    }
+
+    @Override
+    public boolean canYouShowRewardedInterstitial(String placement) {
+        if (m_adProvider == null) {
+            return false;
+        }
+
+        if (this.isShowingFullscreenAd() == true) {
+            return false;
+        }
+
+        MengineAdPointRewarded adPoint = this.getAdRewardedPoint(placement);
+
+        if (adPoint == null) {
+            this.logError("ad rewarded point '%s' not found", placement);
+
+            return false;
+        }
+
+        MengineApplication application = MengineApplication.INSTANCE;
+
+        if (adPoint.canYouShowAd(application) == false) {
+            this.logInfo("ad rewarded point '%s' can't show ad", placement);
+
+            return false;
+        }
+
+        if (m_adProvider.canYouShowRewardedInterstitial(placement) == false) {
+            this.logInfo("ad provider can't show rewarded ad for placement '%s'", placement);
+
+            return false;
+        }
+
+        this.logInfo("can show rewarded ad for placement '%s'", placement);
+
+        return true;
+    }
+
+    @Override
+    public boolean showRewardedInterstitial(String placement) {
+        if (m_adProvider == null) {
+            return false;
+        }
+
+        if (this.isShowingFullscreenAd() == true) {
+            return false;
+        }
+
+        MengineAdPointRewarded adPoint = this.getAdRewardedPoint(placement);
+
+        if (adPoint == null) {
+            this.logError("ad rewarded point '%s' not found", placement);
+
+            return false;
+        }
+
+        if (m_adProvider.showRewardedInterstitial(placement) == false) {
+            this.logInfo("ad provider can't show rewarded ad for placement '%s'", placement);
+
+            return false;
+        }
+
+        m_lastShowRewarded = MengineUtils.getTimestamp();
+        m_countShowRewarded += 1;
+
+        this.logInfo("show rewarded ad for placement '%s'", placement);
+
+        adPoint.showAd();
+
+        return true;
+    }
+
+    @Override
+    public boolean isShowingRewardedInterstitial() {
+        if (m_adProvider == null) {
+            return false;
+        }
+
+        boolean showing = m_adProvider.isShowingRewardedInterstitial();
+
+        return showing;
+    }
+
+    private boolean isShowingFullscreenAd() {
+        if (this.isShowingInterstitial() == true) {
+            return true;
+        }
+
+        if (this.isShowingRewarded() == true) {
+            return true;
+        }
+
+        return false;
     }
 
     @Override
@@ -692,6 +918,10 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         boolean noAds = this.getNoAds();
 
         if (noAds == true) {
+            return false;
+        }
+
+        if (this.isShowingFullscreenAd() == true) {
             return false;
         }
 
@@ -731,6 +961,10 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         boolean noAds = this.getNoAds();
 
         if (noAds == true) {
+            return false;
+        }
+
+        if (this.isShowingFullscreenAd() == true) {
             return false;
         }
 
@@ -1002,6 +1236,11 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
             this.increaseStatisticDouble("ad.rewarded.revenue." + placement, revenue);
 
             this.nativeCall("onAndroidAdServiceRewardedRevenuePaid", params);
+        } else if (format == MengineAdFormat.ADFORMAT_REWARDED_INTERSTITIAL) {
+            this.increaseStatisticDouble("ad.rewarded.revenue", revenue);
+            this.increaseStatisticDouble("ad.rewarded.revenue." + placement, revenue);
+
+            this.nativeCall("onAndroidAdServiceRewardedRevenuePaid", params);
         } else if (format == MengineAdFormat.ADFORMAT_APPOPEN) {
             this.increaseStatisticDouble("ad.appopen.revenue", revenue);
             this.increaseStatisticDouble("ad.appopen.revenue." + placement, revenue);
@@ -1031,6 +1270,11 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
             this.increaseStatisticInteger("ad.rewarded.show." + placement, 1);
 
             this.nativeCall("onAndroidAdServiceRewardedShowSuccess", params);
+        } else if (format == MengineAdFormat.ADFORMAT_REWARDED_INTERSTITIAL) {
+            this.increaseStatisticInteger("ad.rewarded.show", 1);
+            this.increaseStatisticInteger("ad.rewarded.show." + placement, 1);
+
+            this.nativeCall("onAndroidAdServiceRewardedShowSuccess", params);
         } else if (format == MengineAdFormat.ADFORMAT_APPOPEN) {
             this.increaseStatisticInteger("ad.appopen.show", 1);
             this.increaseStatisticInteger("ad.appopen.show." + placement, 1);
@@ -1054,6 +1298,8 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
             this.nativeCall("onAndroidAdServiceInterstitialShowFailed", params);
         } else if (format == MengineAdFormat.ADFORMAT_REWARDED) {
             this.nativeCall("onAndroidAdServiceRewardedShowFailed", params);
+        } else if (format == MengineAdFormat.ADFORMAT_REWARDED_INTERSTITIAL) {
+            this.nativeCall("onAndroidAdServiceRewardedShowFailed", params);
         } else if (format == MengineAdFormat.ADFORMAT_APPOPEN) {
             this.nativeCall("onAndroidAdServiceAppOpenShowFailed", params);
         } else if (format == MengineAdFormat.ADFORMAT_MREC) {
@@ -1068,6 +1314,11 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         Map<String, Object> params = Map.of("placement", placement, "label", label, "amount", amount);
 
         if (format == MengineAdFormat.ADFORMAT_REWARDED) {
+            this.increaseStatisticInteger("ad.rewarded.user_rewarded", 1);
+            this.increaseStatisticInteger("ad.rewarded.user_rewarded." + placement, 1);
+
+            this.nativeCall("onAndroidAdServiceRewardedUserRewarded", params);
+        } else if (format == MengineAdFormat.ADFORMAT_REWARDED_INTERSTITIAL) {
             this.increaseStatisticInteger("ad.rewarded.user_rewarded", 1);
             this.increaseStatisticInteger("ad.rewarded.user_rewarded." + placement, 1);
 

@@ -13,6 +13,7 @@
 - (instancetype _Nullable)initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitId
                                      advertisement:(id<iOSAdvertisementInterface> _Nonnull)advertisement
                                          placement:(NSString * _Nonnull) placement
+                                            anchor:(EiOSAdvertisementBannerAnchor)anchor
                                           adaptive:(BOOL) adaptive;
 
 - (void)show;
@@ -30,5 +31,7 @@
 @property (nonatomic, strong) NSString * _Nonnull m_placement;
 
 @property (assign) BOOL m_bannerAdaptive;
+@property (nonatomic, assign) BOOL m_bannerLoaded;
+@property (nonatomic, assign) BOOL m_bannerShowRequested;
 
 @end

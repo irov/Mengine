@@ -4,7 +4,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Size;
-import androidx.annotation.StringRes;
 
 import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdFormat;
@@ -26,7 +25,6 @@ import org.Mengine.Base.MengineLog;
 import org.Mengine.Base.MengineParamAdRevenue;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineUtils;
-import org.json.JSONObject;
 
 import java.util.List;
 import java.util.Locale;
@@ -38,17 +36,18 @@ public class MengineAppLovinBase implements MengineAppLovinAdInterface {
     protected final MengineAppLovinPluginInterface m_plugin;
     protected final MaxAdFormat m_adFormat;
 
-    protected String m_adUnitId;
+    protected final String m_adUnitId;
 
     protected int m_enumeratorRequest;
     protected int m_requestId;
     protected int m_requestAttempt;
     protected long m_requestTimestamp;
 
-    public MengineAppLovinBase(@NonNull MengineAdService adService, @NonNull MengineAppLovinPluginInterface plugin, MaxAdFormat adFormat) {
+    public MengineAppLovinBase(@NonNull MengineAdService adService, @NonNull MengineAppLovinPluginInterface plugin, @NonNull MaxAdFormat adFormat, @NonNull String adUnitId) {
         m_adService = adService;
         m_plugin = plugin;
         m_adFormat = adFormat;
+        m_adUnitId = adUnitId;
 
         m_enumeratorRequest = 0;
         m_requestId = 0;
@@ -59,26 +58,6 @@ public class MengineAppLovinBase implements MengineAppLovinAdInterface {
     @NonNull
     public MengineAppLovinPluginInterface getPlugin() {
         return m_plugin;
-    }
-
-    protected void setAdUnitId(@StringRes int METADATA_ADUNITID, @NonNull String configAdUnitId) throws MengineServiceInvalidInitializeException {
-        String metadataAdUnitId = m_plugin.getResourceString(METADATA_ADUNITID);
-
-        if (metadataAdUnitId.isEmpty() == true) {
-            this.invalidInitialize("meta %s not found"
-                , m_plugin.getResourceName(METADATA_ADUNITID)
-            );
-        }
-
-        String adUnitId = m_plugin.getServiceConfigOptString(configAdUnitId, metadataAdUnitId);
-
-        if (adUnitId == null) {
-            this.invalidInitialize("config %s is empty"
-                , configAdUnitId
-            );
-        }
-
-        m_adUnitId = adUnitId;
     }
 
     @Override
@@ -249,7 +228,7 @@ public class MengineAppLovinBase implements MengineAppLovinAdInterface {
         m_plugin.setState(name, value);
     }
 
-    protected MengineAnalyticsEventBuilderInterface buildAdEvent(@Size(min = 1L, max = 40L) String name) {
+    protected MengineAnalyticsEventBuilderInterface buildAdEvent(@Size(min = 1, max = 40) String name) {
         long requestTime = this.getRequestTime();
 
         MengineAnalyticsEventBuilderInterface eventBuilder = m_plugin.buildEvent(name);

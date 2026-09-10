@@ -17,6 +17,7 @@
 #include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/FactoryInterface.h"
 #include "Interface/AnalyticsEventProviderInterface.h"
+#include "Interface/AttributionServiceInterface.h"
 #include "Interface/LoggerInterface.h"
 
 #include "Environment/Android/AndroidIncluder.h"
@@ -149,7 +150,6 @@ namespace Mengine
         bool openDeleteAccount( const LambdaDeleteAccountAccepted & _accepted, const LambdaDeleteAccountCanceled & _canceled ) override;
         bool completeDeleteAccount( EDeleteAccountResult _result ) override;
         bool isNetworkAvailable() const override;
-        void removeUserData() override;
         bool hasAccountDeletionRestart() const override;
         void clearAccountDeletionRestart() override;
 
@@ -243,6 +243,7 @@ namespace Mengine
         Tags m_platformTags;
 
         AnalyticsEventProviderInterfacePtr m_analyticsEventProvider;
+        AttributionProviderInterfacePtr m_attributionProvider;
 
         FactoryInterfacePtr m_factoryDynamicLibraries;
 

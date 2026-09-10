@@ -8,11 +8,13 @@
 
 @implementation iOSAdMobBaseDelegate
 
-- (instancetype _Nullable) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitId
+- (instancetype _Nullable) initWithAdUnitIdentifier:(NSString * _Nonnull)adUnitId
+                                           adFormat:(NSString * _Nonnull)adFormat
                                       advertisement:(id<iOSAdvertisementInterface> _Nonnull)advertisement {
     self = [super init];
 
     self.m_adUnitId = adUnitId;
+    self.m_adFormat = adFormat;
     self.m_advertisement = advertisement;
 
     self.m_requestAttempt = 0;
@@ -70,29 +72,39 @@
 }
 
 - (void) log:(NSString * _Nonnull) method {
-    IOS_LOGGER_INFO(@"admob", @"[AdMob] %@: adUnitId: %@ request: %ld"
+    IOS_LOGGER_INFO(@"admob", @"[AdMob] %@: %@ adUnitId: %@ request: %ld attempt: %ld"
         , method
+        , self.m_adFormat
         , self.m_adUnitId
         , self.m_requestId
+        , self.m_requestAttempt
     );
 }
 
 - (void) log:(NSString * _Nonnull) method withParams:(NSDictionary * _Nonnull) params {
-    IOS_LOGGER_INFO(@"admob", @"[AdMob] %@: adUnitId: %@ request: %ld %@"
+    IOS_LOGGER_INFO(@"admob", @"[AdMob] %@: %@ adUnitId: %@ request: %ld attempt: %ld %@"
         , method
+        , self.m_adFormat
         , self.m_adUnitId
         , self.m_requestId
-        , [NSString stringWithFormat:@"%@", params]
+        , self.m_requestAttempt
+        , params
     );
 }
 
 - (void) log:(NSString * _Nonnull) method withError:(NSError * _Nonnull) error {
-    IOS_LOGGER_INFO(@"admob", @"[AdMob] %@: adUnitId: %@ request: %ld with error: %@"
+#if defined(MENGINE_DEBUG)
+    NSDictionary * errorParams = [self getGADAdErrorParams:error];
+
+    IOS_LOGGER_INFO(@"admob", @"[AdMob] %@: %@ adUnitId: %@ request: %ld attempt: %ld with error: %@"
         , method
+        , self.m_adFormat
         , self.m_adUnitId
         , self.m_requestId
-        , [NSString stringWithFormat:@"%@", [self getGADAdErrorParams:error]]
+        , self.m_requestAttempt
+        , errorParams
     );
+#endif
 }
 
 - (void) loadAd {
@@ -106,8 +118,10 @@
 
     NSTimeInterval delaySec = pow(2, MIN(6, self.m_requestAttempt));
 
+    __weak iOSAdMobBaseDelegate * weakSelf = self;
+
     [AppleDetail addMainQueueOperation:^{
-        [self loadAd];
+        [weakSelf loadAd];
     } afterSeconds:delaySec];
 }
 

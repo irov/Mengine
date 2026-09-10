@@ -20,7 +20,10 @@ namespace Mengine
         ~RenderTexture() override;
 
     public:
-        void initialize( UniqueId _id, const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height );
+        uint32_t getCodecFlags() const override;
+
+    public:
+        void initialize( UniqueId _id, const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height, uint32_t _codecFlags );
 
     public:
         void release() override;
@@ -65,6 +68,7 @@ namespace Mengine
         mt::uv4f m_uv;
 
         bool m_pow2;
+        uint32_t m_codecFlags;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<RenderTexture, RenderTextureInterface> RenderTexturePtr;

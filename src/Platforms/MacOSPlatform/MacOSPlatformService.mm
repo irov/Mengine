@@ -630,10 +630,6 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MacOSPlatformService::removeUserData()
-    {
-    }
-    //////////////////////////////////////////////////////////////////////////
     void MacOSPlatformService::stopPlatform()
     {
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_STOP );

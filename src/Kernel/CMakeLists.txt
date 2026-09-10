@@ -1048,6 +1048,9 @@ Core
     TimestampHelper.cpp
     TimestampHelper.h
 
+    TimeDog.cpp
+    TimeDog.h
+
     EnumeratorHelper.cpp
     EnumeratorHelper.h
 

@@ -14,10 +14,13 @@
 - (instancetype _Nullable) initWithAdUnitIdentifier:(NSString * _Nonnull)adUnitId
                                       advertisement:(id<iOSAdvertisementInterface> _Nonnull)advertisement
                                           placement:(NSString * _Nonnull)placement
+                                             anchor:(EiOSAdvertisementBannerAnchor)anchor
                                            adaptive:(BOOL)adaptive {
     self = [super initWithAdUnitIdentifier:adUnitId adFormat:MAAdFormat.banner advertisement:advertisement];
 
     self.m_bannerAdaptive = adaptive;
+    self.m_bannerLoaded = NO;
+    self.m_bannerShowRequested = NO;
 
     MAAdView * adView;
 
@@ -44,26 +47,44 @@
     adView.requestDelegate = self;
     adView.adReviewDelegate = self;
 
+    UIViewController * viewController = [iOSDetail getRootViewController];
+    UIView * gameView = viewController.view;
+    UILayoutGuide * safeArea = gameView.safeAreaLayoutGuide;
+
     CGSize size = [self getSize];
 
     CGFloat banner_height = size.height;
 
-    CGFloat screen_width = CGRectGetWidth(UIScreen.mainScreen.bounds);
-    CGFloat screen_height = CGRectGetHeight(UIScreen.mainScreen.bounds);
-
-    CGRect rect = CGRectMake(0, screen_height - banner_height, screen_width, banner_height);
-
-    adView.frame = rect;
+    adView.translatesAutoresizingMaskIntoConstraints = NO;
 
     adView.backgroundColor = UIColor.clearColor;
 
-    UIViewController * viewController = [iOSDetail getRootViewController];
-    [viewController.view addSubview:adView];
+    [gameView addSubview:adView];
     adView.hidden = YES;
+
+    NSLayoutConstraint * edgeConstraint;
+
+    switch (anchor) {
+    case IOS_ADVERTISEMENT_BANNER_ANCHOR_BOTTOM:
+        edgeConstraint = [adView.bottomAnchor constraintEqualToAnchor:safeArea.bottomAnchor];
+        break;
+    case IOS_ADVERTISEMENT_BANNER_ANCHOR_TOP:
+        edgeConstraint = [adView.topAnchor constraintEqualToAnchor:safeArea.topAnchor];
+        break;
+    }
+
+    NSLayoutConstraint * leftConstraint = [adView.leadingAnchor constraintEqualToAnchor:gameView.leadingAnchor];
+    NSLayoutConstraint * rightConstraint = [adView.trailingAnchor constraintEqualToAnchor:gameView.trailingAnchor];
+    NSLayoutConstraint * heightConstraint = [adView.heightAnchor constraintEqualToConstant:banner_height];
+    [NSLayoutConstraint activateConstraints:@[leftConstraint, rightConstraint, heightConstraint, edgeConstraint]];
 
     self.m_adView = adView;
 
 #if defined(MENGINE_PLUGIN_IOS_APPLOVIN_MEDIATION_AMAZON)
+    [gameView layoutIfNeeded];
+
+    CGRect rect = adView.frame;
+
     self.m_amazonLoader = [[iOSAppLovinBannerAmazonLoader alloc] initWithSlotId:amazonSlotId adView:self.m_adView rect:rect];
 #else
     [self loadAd];
@@ -96,12 +117,14 @@
 }
 
 - (void) show {
-    self.m_adView.hidden = NO;
+    self.m_bannerShowRequested = YES;
+    self.m_adView.hidden = self.m_bannerLoaded == NO;
 
     [self.m_adView startAutoRefresh];
 }
 
 - (void) hide {
+    self.m_bannerShowRequested = NO;
     self.m_adView.hidden = YES;
 
     [self.m_adView setExtraParameterForKey:@"allow_pause_auto_refresh_immediately" value:@"true"];
@@ -181,6 +204,9 @@
 #pragma mark - MAAdDelegate
 
 - (void) didLoadAd:(MAAd *)ad {
+    self.m_bannerLoaded = YES;
+    self.m_adView.hidden = self.m_bannerShowRequested == NO;
+
     [self log:@"didLoadAd" withMAAd:ad];
 
     [self eventBanner:@"loaded" params:@{
@@ -191,6 +217,9 @@
 }
 
 - (void) didFailToLoadAdForAdUnitIdentifier:(NSString *)adUnitIdentifier withError:(MAError *)error {
+    self.m_bannerLoaded = NO;
+    self.m_adView.hidden = YES;
+
     [self log:@"didFailToLoadAdForAdUnitIdentifier" withMAError:error];
 
     [self eventBanner:@"load_failed" params:@{

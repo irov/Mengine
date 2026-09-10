@@ -11,6 +11,7 @@
 #import "iOSAdMobBannerDelegate.h"
 #import "iOSAdMobInterstitialDelegate.h"
 #import "iOSAdMobRewardedDelegate.h"
+#import "iOSAdMobRewardedInterstitialDelegate.h"
 
 #import <GoogleMobileAds/GoogleMobileAds.h>
 
@@ -27,9 +28,11 @@
 - (iOSAdMobRewardedDelegate *)getRewarded;
 
 @property (nonatomic, strong) iOSAdMobBannerDelegate * m_bannerAd;
+@property (nonatomic, strong) iOSAdMobBannerDelegate * m_topperAd;
 @property (nonatomic, strong) iOSAdMobInterstitialDelegate * m_interstitialAd;
 @property (nonatomic, strong) iOSAdMobRewardedDelegate * m_rewardedAd;
-@property (nonatomic, assign) BOOL m_initialized;
+@property (nonatomic, strong) iOSAdMobRewardedInterstitialDelegate * m_rewardedInterstitialAd;
+@property (nonatomic, assign) BOOL m_initializationAttempted;
 @property (nonatomic, assign) BOOL m_consentCompleted;
 @property (nonatomic, assign) BOOL m_canRequestAds;
 @property (nonatomic, assign) BOOL m_appTrackingCompleted;

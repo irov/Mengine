@@ -11,7 +11,8 @@
 
 @interface iOSAdMobBaseDelegate : NSObject
 
-- (instancetype _Nullable) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitId
+- (instancetype _Nullable) initWithAdUnitIdentifier:(NSString * _Nonnull)adUnitId
+                                           adFormat:(NSString * _Nonnull)adFormat
                                       advertisement:(id<iOSAdvertisementInterface> _Nonnull)advertisement;
 
 - (void) loadAd;
@@ -35,6 +36,7 @@
 - (void) setAdFreeze:(BOOL)freeze;
 
 @property (nonatomic, strong) NSString * _Nonnull m_adUnitId;
+@property (nonatomic, strong) NSString * _Nonnull m_adFormat;
 @property (nonatomic, strong) id<iOSAdvertisementInterface> _Nonnull m_advertisement;
 
 @property (nonatomic, assign) NSInteger m_enumeratorRequest;

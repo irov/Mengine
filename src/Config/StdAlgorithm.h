@@ -34,5 +34,15 @@ namespace Mengine
         using std::min_element;
         using std::max_element;
         using std::swap;
+
+        template<class Container, class T>
+        bool container_has( const Container & _container, const T & _value )
+        {
+            typename Container::const_iterator it_begin = _container.begin();
+            typename Container::const_iterator it_end = _container.end();
+            bool exists = std::find( it_begin, it_end, _value ) != it_end;
+
+            return exists;
+        }
     }
 }

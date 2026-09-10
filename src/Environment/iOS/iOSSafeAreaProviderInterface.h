@@ -2,11 +2,11 @@
 
 #import <UIKit/UIKit.h>
 
-typedef void (^iOSSafeAreaInsetsDidChangeCallback)(void);
+typedef void (^iOSSafeAreaViewportChangedCallback)(void);
 
 @protocol iOSSafeAreaProviderInterface <NSObject>
 
 - (BOOL)getSafeAreaViewport:(CGRect * _Nonnull)viewport;
-- (void)setSafeAreaInsetsDidChangeCallback:(iOSSafeAreaInsetsDidChangeCallback _Nullable)callback;
+- (void)setSafeAreaViewportChangedCallback:(iOSSafeAreaViewportChangedCallback _Nullable)callback;
 
 @end

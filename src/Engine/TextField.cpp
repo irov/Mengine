@@ -75,8 +75,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TextField::_activate()
     {
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_LOCALE_PREPARE, &TextField::notifyChangeLocalePrepare_, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_LOCALE_POST, &TextField::notifyChangeLocalePost_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_DEBUG_TEXT_MODE, &TextField::notifyDebugMode_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_TEXT_ALIAS_ID, &TextField::notifyChangeTextAliasId_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_TEXT_ALIAS_ARGUMENTS, &TextField::notifyChangeTextAliasArguments_, MENGINE_DOCUMENT_FACTORABLE );
@@ -89,8 +87,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::_deactivate()
     {
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_LOCALE_PREPARE );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_LOCALE_POST );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_DEBUG_TEXT_MODE );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_TEXT_ALIAS_ID );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_TEXT_ALIAS_ARGUMENTS );
@@ -99,6 +95,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TextField::_compile()
     {
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_LOCALE_PREPARE, &TextField::notifyChangeLocalePrepare_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_LOCALE_POST, &TextField::notifyChangeLocalePost_, MENGINE_DOCUMENT_FACTORABLE );
+
         this->invalidateTextEntry();
 
         return true;
@@ -106,22 +105,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::_release()
     {
-        if( m_totalFont != nullptr )
-        {
-            m_totalFont->releaseFont();
-            m_totalFont = nullptr;
-        }
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_LOCALE_PREPARE );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_LOCALE_POST );
+
+        this->releaseFonts_();
 
         m_chunks.clear();
-
-        for( const CacheFont & cache : m_cacheFonts )
-        {
-            const FontInterfacePtr & font = cache.font;
-
-            font->releaseFont();
-        }
-
-        m_cacheFonts.clear();
 
         m_totalTextEntry = nullptr;
 
@@ -138,11 +127,8 @@ namespace Mengine
         m_vertexDataTextWM.swap( vertexDataTextWM );
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::notifyChangeLocalePrepare_( const ConstString & _prevLocale, const ConstString & _currentlocale )
+    void TextField::releaseFonts_()
     {
-        MENGINE_UNUSED( _prevLocale );
-        MENGINE_UNUSED( _currentlocale );
-
         if( m_totalFont != nullptr )
         {
             m_totalFont->releaseFont();
@@ -157,6 +143,14 @@ namespace Mengine
         }
 
         m_cacheFonts.clear();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::notifyChangeLocalePrepare_( const ConstString & _prevLocale, const ConstString & _currentlocale )
+    {
+        MENGINE_UNUSED( _prevLocale );
+        MENGINE_UNUSED( _currentlocale );
+
+        this->releaseFonts_();
     }
     //////////////////////////////////////////////////////////////////////////
     void TextField::notifyChangeLocalePost_( const ConstString & _prevLocale, const ConstString & _currentlocale )

@@ -181,6 +181,9 @@ namespace Mengine
         void _dispose() override;
 
     protected:
+        void releaseFonts_();
+
+    protected:
         void notifyChangeLocalePrepare_( const ConstString & _prevLocale, const ConstString & _currentlocale );
         void notifyChangeLocalePost_( const ConstString & _prevLocale, const ConstString & _currentlocale );
         void notifyDebugMode_( bool _debugMode );

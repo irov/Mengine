@@ -167,6 +167,10 @@ namespace Mengine
             m_effect->release();
         }
 
+        MENGINE_ASSERTION_FATAL( m_glyph != nullptr, "ttf font '%s' release after finalize (glyph is null)"
+            , this->getName().c_str()
+        );
+
         m_glyph->release();
     }
     //////////////////////////////////////////////////////////////////////////

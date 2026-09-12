@@ -124,6 +124,9 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             static const float FONTEFFECT_EDT_INF = 1e20f;
             //////////////////////////////////////////////////////////////////////////
+            constexpr uint32_t FONTEFFECT_BLUR_FIR_MAX_RADIUS = 8;
+            constexpr uint32_t FONTEFFECT_BLUR_BOX_PASSES = 4;
+            //////////////////////////////////////////////////////////////////////////
             static MENGINE_INLINE float clamp01( float _value )
             {
                 float value = mt::clampf( 0.f, _value, 1.f );
@@ -394,42 +397,18 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             //////////////////////////////////////////////////////////////////////////
             //////////////////////////////////////////////////////////////////////////
-            static void boxesForGauss( float _sigma, uint32_t _n, uint32_t * const _boxes )
+            static void boxBlurLineFractional( const float * _src, uint32_t _n, uint32_t _stride, float _radius, float * _dst, uint32_t _dstStride )
             {
-                float wIdeal = StdMath::sqrtf( (12.f * _sigma * _sigma / (float)_n) + 1.f );
+                int32_t radius = (int32_t)StdMath::floorf( _radius );
+                float fraction = _radius - (float)radius;
 
-                int32_t wl = (int32_t)StdMath::floorf( wIdeal );
-
-                if( wl % 2 == 0 )
-                {
-                    --wl;
-                }
-
-                int32_t wu = wl + 2;
-
-                float mIdeal = (12.f * _sigma * _sigma - (float)_n * (float)wl * (float)wl - 4.f * (float)_n * (float)wl - 3.f * (float)_n) / (-4.f * (float)wl - 4.f);
-
-                int32_t m = (int32_t)StdMath::floorf( mIdeal + 0.5f );
-
-                for( uint32_t i = 0; i != _n; ++i )
-                {
-                    int32_t w = ((int32_t)i < m) ? wl : wu;
-
-                    _boxes[i] = (uint32_t)((w - 1) / 2);
-                }
-            }
-            //////////////////////////////////////////////////////////////////////////
-            static void boxBlurLine( const float * _src, uint32_t _n, uint32_t _stride, uint32_t _radius, float * _dst, uint32_t _dstStride )
-            {
-                float window = (float)(_radius * 2 + 1);
-                float iarr = 1.f / window;
+                float window = (float)(radius * 2 + 1) + 2.f * fraction;
+                float windowInv = 1.f / window;
 
                 float acc = 0.f;
 
-                for( int32_t i = -(int32_t)_radius; i <= (int32_t)_radius; ++i )
+                for( int32_t index = -radius; index <= radius; ++index )
                 {
-                    int32_t index = i;
-
                     if( index < 0 )
                     {
                         continue;
@@ -445,10 +424,25 @@ namespace Mengine
 
                 for( uint32_t i = 0; i != _n; ++i )
                 {
-                    _dst[i * _dstStride] = acc * iarr;
+                    float edge = 0.f;
 
-                    int32_t add_index = (int32_t)i + (int32_t)_radius + 1;
-                    int32_t sub_index = (int32_t)i - (int32_t)_radius;
+                    int32_t left = (int32_t)i - radius - 1;
+                    int32_t right = (int32_t)i + radius + 1;
+
+                    if( left >= 0 )
+                    {
+                        edge += _src[(uint32_t)left * _stride];
+                    }
+
+                    if( right < (int32_t)_n )
+                    {
+                        edge += _src[(uint32_t)right * _stride];
+                    }
+
+                    _dst[i * _dstStride] = (acc + edge * fraction) * windowInv;
+
+                    int32_t add_index = (int32_t)i + radius + 1;
+                    int32_t sub_index = (int32_t)i - radius;
 
                     if( add_index < (int32_t)_n )
                     {
@@ -462,19 +456,62 @@ namespace Mengine
                 }
             }
             //////////////////////////////////////////////////////////////////////////
-            static void boxBlurPlane( const FontEffectPlane & _plane, uint32_t _radius, const FontEffectPlane & _tmp )
+            static void firBlurLine( const float * _src, uint32_t _n, uint32_t _stride, const float * _kernel, int32_t _radius, float * _dst, uint32_t _dstStride )
+            {
+                for( uint32_t i = 0; i != _n; ++i )
+                {
+                    float acc = 0.f;
+
+                    for( int32_t k = -_radius; k <= _radius; ++k )
+                    {
+                        int32_t index = (int32_t)i + k;
+
+                        if( index < 0 )
+                        {
+                            continue;
+                        }
+
+                        if( index >= (int32_t)_n )
+                        {
+                            continue;
+                        }
+
+                        acc += _src[(uint32_t)index * _stride] * _kernel[k + _radius];
+                    }
+
+                    _dst[i * _dstStride] = acc;
+                }
+            }
+            //////////////////////////////////////////////////////////////////////////
+            static void boxBlurPlaneFractional( const FontEffectPlane & _plane, float _radius, const FontEffectPlane & _tmp )
             {
                 uint32_t width = _plane.width;
                 uint32_t height = _plane.height;
 
                 for( uint32_t y = 0; y != height; ++y )
                 {
-                    Detail::boxBlurLine( _plane.data + y * width, width, 1, _radius, _tmp.data + y * width, 1 );
+                    Detail::boxBlurLineFractional( _plane.data + y * width, width, 1, _radius, _tmp.data + y * width, 1 );
                 }
 
                 for( uint32_t x = 0; x != width; ++x )
                 {
-                    Detail::boxBlurLine( _tmp.data + x, height, width, _radius, _plane.data + x, width );
+                    Detail::boxBlurLineFractional( _tmp.data + x, height, width, _radius, _plane.data + x, width );
+                }
+            }
+            //////////////////////////////////////////////////////////////////////////
+            static void firBlurPlane( const FontEffectPlane & _plane, const float * _kernel, int32_t _radius, const FontEffectPlane & _tmp )
+            {
+                uint32_t width = _plane.width;
+                uint32_t height = _plane.height;
+
+                for( uint32_t y = 0; y != height; ++y )
+                {
+                    Detail::firBlurLine( _plane.data + y * width, width, 1, _kernel, _radius, _tmp.data + y * width, 1 );
+                }
+
+                for( uint32_t x = 0; x != width; ++x )
+                {
+                    Detail::firBlurLine( _tmp.data + x, height, width, _kernel, _radius, _plane.data + x, width );
                 }
             }
             //////////////////////////////////////////////////////////////////////////
@@ -644,10 +681,20 @@ namespace Mengine
             {
                 float a = _alpha.data[index];
 
-                bool inside = (a >= 0.5f);
+                if( a >= 0.5f )
+                {
+                    float inner = a - 0.5f;
 
-                _tmp0.data[index] = inside ? 0.f : Detail::FONTEFFECT_EDT_INF;
-                _tmp1.data[index] = inside ? Detail::FONTEFFECT_EDT_INF : 0.f;
+                    _tmp0.data[index] = 0.f;
+                    _tmp1.data[index] = (a < 1.f) ? inner * inner : Detail::FONTEFFECT_EDT_INF;
+                }
+                else
+                {
+                    float outer = 0.5f - a;
+
+                    _tmp0.data[index] = (a > 0.f) ? outer * outer : Detail::FONTEFFECT_EDT_INF;
+                    _tmp1.data[index] = 0.f;
+                }
             }
 
             Detail::edt2d( _tmp0, _lineF, _lineD, _lineZ, _lineV );
@@ -655,27 +702,13 @@ namespace Mengine
 
             for( size_t index = 0; index != size; ++index )
             {
-                float a = _alpha.data[index];
-
                 float dOut2 = _tmp0.data[index];
                 float dIn2 = _tmp1.data[index];
 
-                float sdf;
+                float dOut = StdMath::sqrtf( dOut2 );
+                float dIn = StdMath::sqrtf( dIn2 );
 
-                if( dOut2 > 0.f )
-                {
-                    float dOut = StdMath::sqrtf( dOut2 );
-
-                    sdf = (dOut2 <= 1.f) ? (0.5f - a) : (dOut - 0.5f);
-                }
-                else
-                {
-                    float dIn = StdMath::sqrtf( dIn2 );
-
-                    sdf = (dIn2 <= 1.f) ? (0.5f - a) : -(dIn - 0.5f);
-                }
-
-                _sdf.data[index] = sdf;
+                _sdf.data[index] = dOut - dIn;
             }
         }
         //////////////////////////////////////////////////////////////////////////
@@ -734,41 +767,44 @@ namespace Mengine
             }
         }
         //////////////////////////////////////////////////////////////////////////
-        void fontEffectOffset( const FontEffectPlane & _src, int32_t _dx, int32_t _dy, const FontEffectPlane & _dst )
+        void fontEffectOffset( const FontEffectPlane & _src, float _dx, float _dy, const FontEffectPlane & _dst )
         {
             uint32_t width = _src.width;
             uint32_t height = _src.height;
 
+            int32_t ix = (int32_t)StdMath::floorf( _dx );
+            int32_t iy = (int32_t)StdMath::floorf( _dy );
+
+            float fx = _dx - (float)ix;
+            float fy = _dy - (float)iy;
+
             for( uint32_t y = 0; y != height; ++y )
             {
-                int32_t sy = (int32_t)y - _dy;
-
                 float * dst_row = _dst.data + (size_t)y * (size_t)width;
 
-                if( sy < 0 || sy >= (int32_t)height )
-                {
-                    for( uint32_t x = 0; x != width; ++x )
-                    {
-                        dst_row[x] = 0.f;
-                    }
+                int32_t sy0 = (int32_t)y - iy - 1;
+                int32_t sy1 = (int32_t)y - iy;
 
-                    continue;
-                }
-
-                const float * src_row = _src.data + (size_t)sy * (size_t)width;
+                const float * src_row0 = (sy0 >= 0 && sy0 < (int32_t)height) ? _src.data + (size_t)sy0 * (size_t)width : nullptr;
+                const float * src_row1 = (sy1 >= 0 && sy1 < (int32_t)height) ? _src.data + (size_t)sy1 * (size_t)width : nullptr;
 
                 for( uint32_t x = 0; x != width; ++x )
                 {
-                    int32_t sx = (int32_t)x - _dx;
+                    int32_t sx0 = (int32_t)x - ix - 1;
+                    int32_t sx1 = (int32_t)x - ix;
 
-                    if( sx < 0 || sx >= (int32_t)width )
-                    {
-                        dst_row[x] = 0.f;
+                    bool validX0 = (sx0 >= 0 && sx0 < (int32_t)width);
+                    bool validX1 = (sx1 >= 0 && sx1 < (int32_t)width);
 
-                        continue;
-                    }
+                    float v00 = (src_row0 != nullptr && validX0 == true) ? src_row0[sx0] : 0.f;
+                    float v10 = (src_row0 != nullptr && validX1 == true) ? src_row0[sx1] : 0.f;
+                    float v01 = (src_row1 != nullptr && validX0 == true) ? src_row1[sx0] : 0.f;
+                    float v11 = (src_row1 != nullptr && validX1 == true) ? src_row1[sx1] : 0.f;
 
-                    dst_row[x] = src_row[sx];
+                    float top = v00 * fx + v10 * (1.f - fx);
+                    float bottom = v01 * fx + v11 * (1.f - fx);
+
+                    dst_row[x] = top * fy + bottom * (1.f - fy);
                 }
             }
         }
@@ -780,19 +816,42 @@ namespace Mengine
                 return;
             }
 
-            uint32_t boxes[3];
-            Detail::boxesForGauss( _sigma, 3, boxes );
+            int32_t radius = (int32_t)StdMath::ceilf( 3.f * _sigma );
 
-            for( uint32_t index = 0; index != 3; ++index )
+            if( radius <= (int32_t)Detail::FONTEFFECT_BLUR_FIR_MAX_RADIUS )
             {
-                uint32_t radius = boxes[index];
+                float kernel[Detail::FONTEFFECT_BLUR_FIR_MAX_RADIUS * 2 + 1];
 
-                if( radius == 0 )
+                float sigmaInv = 1.f / (2.f * _sigma * _sigma);
+                float total = 0.f;
+
+                for( int32_t index = -radius; index <= radius; ++index )
                 {
-                    continue;
+                    float offset = (float)index;
+
+                    float weight = StdMath::expf( -offset * offset * sigmaInv );
+
+                    kernel[index + radius] = weight;
+                    total += weight;
                 }
 
-                Detail::boxBlurPlane( _plane, radius, _tmp );
+                float totalInv = 1.f / total;
+
+                for( int32_t index = 0; index != radius * 2 + 1; ++index )
+                {
+                    kernel[index] *= totalInv;
+                }
+
+                Detail::firBlurPlane( _plane, kernel, radius, _tmp );
+
+                return;
+            }
+
+            float boxRadius = (StdMath::sqrtf( 12.f * _sigma * _sigma / (float)Detail::FONTEFFECT_BLUR_BOX_PASSES + 1.f ) - 1.f) * 0.5f;
+
+            for( uint32_t pass = 0; pass != Detail::FONTEFFECT_BLUR_BOX_PASSES; ++pass )
+            {
+                Detail::boxBlurPlaneFractional( _plane, boxRadius, _tmp );
             }
         }
         //////////////////////////////////////////////////////////////////////////
@@ -1007,11 +1066,8 @@ namespace Mengine
             float dx = distance * StdMath::cosf( angleRad );
             float dy = -distance * StdMath::sinf( angleRad );
 
-            int32_t idx = (int32_t)StdMath::floorf( dx + 0.5f );
-            int32_t idy = (int32_t)StdMath::floorf( dy + 0.5f );
-
-            Helper::fontEffectOffset( _alpha, idx, idy, _work0 );
-            Helper::fontEffectOffset( _alpha, -idx, -idy, _work1 );
+            Helper::fontEffectOffset( _alpha, dx, dy, _work0 );
+            Helper::fontEffectOffset( _alpha, -dx, -dy, _work1 );
 
             size_t size = (size_t)_alpha.width * (size_t)_alpha.height;
 

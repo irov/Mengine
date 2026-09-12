@@ -113,7 +113,7 @@ namespace Mengine
         void fontEffectCoverageBand( const FontEffectPlane & _sdf, float _inner, float _outer, float _sharpness, const FontEffectPlane & _out );
         void fontEffectInvert( const FontEffectPlane & _src, const FontEffectPlane & _dst );
         void fontEffectMultiply( const FontEffectPlane & _plane, const FontEffectPlane & _mask );
-        void fontEffectOffset( const FontEffectPlane & _src, int32_t _dx, int32_t _dy, const FontEffectPlane & _dst );
+        void fontEffectOffset( const FontEffectPlane & _src, float _dx, float _dy, const FontEffectPlane & _dst );
 
         void fontEffectBlurPlane( const FontEffectPlane & _plane, float _sigma, const FontEffectPlane & _tmp );
         void fontEffectBlurImage( const FontEffectImage & _image, float _sigma, const FontEffectPlane & _tmp0, const FontEffectPlane & _tmp1 );

@@ -154,7 +154,9 @@ Values are converted to premultiplied-alpha internally; the JSON itself is alway
 
 ### Offset / vector fields
 
-`Offset` is read with `Helper::getJSONVec2f`: a 2-element array `[x, y]` or an object `{ "x": , "y": }`, in font pixels; `+x` is right, `+y` is down.
+`Offset` is read with `Helper::getJSONVec2f`: a 2-element array `[x, y]` or an object `{ "x": , "y": }`, in font pixels; `+x` is right, `+y` is down. Offsets are sampled at subpixel precision, so a fractional value moves the shape smoothly rather than snapping to whole pixels.
+
+`Blur` is a true Gaussian: a separable kernel while its radius stays small, and four fractional box passes beyond that, where the box width varies continuously with the radius so a growing blur does not step. Distances are measured from a distance field seeded with the rasterizer's own subpixel coverage rather than from a thresholded mask, which is what keeps outline, spread, bevel and the `Distance` gradient smooth along an edge.
 
 ## Worked example
 

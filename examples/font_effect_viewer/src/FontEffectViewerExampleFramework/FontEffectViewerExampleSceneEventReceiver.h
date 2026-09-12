@@ -76,6 +76,7 @@ namespace Mengine
 
     protected:
         void rebuildPreview_();
+        void measureGlyphTime_();
         void destroyPreview_();
 
     protected:
@@ -137,6 +138,7 @@ namespace Mengine
 
         bool m_dirty;
         String m_status;
+        String m_glyphTime;
 
         bool m_mcpHandlerRegistered;
     };

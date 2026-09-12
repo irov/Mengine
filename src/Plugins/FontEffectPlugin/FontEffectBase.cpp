@@ -43,11 +43,6 @@ namespace Mengine
             EFESI_EFFECT
         };
         //////////////////////////////////////////////////////////////////////////
-        static int32_t roundToInt( float _value )
-        {
-            return (int32_t)StdMath::floorf( _value + 0.5f );
-        }
-        //////////////////////////////////////////////////////////////////////////
         static float getEffectExtent( const FontEffectStyleDesc & _effect )
         {
             switch( _effect.type )
@@ -999,10 +994,10 @@ namespace Mengine
 
                     if( effect.type == EFET_SHADOW )
                     {
-                        int32_t dx = Detail::roundToInt( effect.offset.x * sample );
-                        int32_t dy = Detail::roundToInt( effect.offset.y * sample );
+                        float dx = effect.offset.x * sample;
+                        float dy = effect.offset.y * sample;
 
-                        if( dx != 0 || dy != 0 )
+                        if( dx != 0.f || dy != 0.f )
                         {
                             Helper::fontEffectOffset( work0, dx, dy, work1 );
                             Helper::fontEffectPlaneCopy( work1, work0 );
@@ -1032,10 +1027,10 @@ namespace Mengine
 
                     if( effect.type == EFET_INNER_SHADOW )
                     {
-                        int32_t dx = Detail::roundToInt( effect.offset.x * sample );
-                        int32_t dy = Detail::roundToInt( effect.offset.y * sample );
+                        float dx = effect.offset.x * sample;
+                        float dy = effect.offset.y * sample;
 
-                        if( dx != 0 || dy != 0 )
+                        if( dx != 0.f || dy != 0.f )
                         {
                             Helper::fontEffectOffset( work0, dx, dy, work1 );
                             Helper::fontEffectPlaneCopy( work1, work0 );

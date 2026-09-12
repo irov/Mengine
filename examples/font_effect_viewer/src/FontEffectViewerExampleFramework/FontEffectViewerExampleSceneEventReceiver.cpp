@@ -10,6 +10,10 @@
 #include "Plugins/FontEffectPlugin/FontEffectPluginInterface.h"
 #include "Plugins/FontEffectPlugin/FontEffectDataInterface.h"
 #include "Plugins/FontEffectPlugin/FontEffectSerialization.h"
+
+#include "Kernel/TimestampHelper.h"
+
+#include "Config/StdIO.h"
 #include "Plugins/TTFPlugin/TTFFont.h"
 #include "Plugins/TTFPlugin/TTFFontGlyph.h"
 #include "Plugins/MCPPlugin/MCPInterface.h"
@@ -1158,6 +1162,8 @@ namespace Mengine
             return;
         }
 
+        this->measureGlyphTime_();
+
         m_font->releaseFont();
 
         if( m_previewCanvas == nullptr )
@@ -1194,6 +1200,38 @@ namespace Mengine
         {
             m_status = "OK";
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void FontEffectViewerExampleSceneEventReceiver::measureGlyphTime_()
+    {
+        U32String codes;
+        size_t textLength = StdString::strlen( m_textInput );
+
+        if( m_font->prepareText( m_textInput, textLength, &codes ) == false )
+        {
+            return;
+        }
+
+        if( codes.empty() == true )
+        {
+            return;
+        }
+
+        double timeBegin = Helper::getElapsedTime();
+
+        if( m_font->prepareGlyph( codes, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        {
+            return;
+        }
+
+        double timeEnd = Helper::getElapsedTime();
+
+        double microseconds = (timeEnd - timeBegin) * 1000.0 / (double)codes.size();
+
+        Char buffer[64] = {'\0'};
+        MENGINE_SNPRINTF( buffer, 64, "%.0f us/glyph", microseconds );
+
+        m_glyphTime = buffer;
     }
     //////////////////////////////////////////////////////////////////////////
     void FontEffectViewerExampleSceneEventReceiver::renderGlyphPreview_( const ImGUIRenderProviderInterfacePtr & _provider )
@@ -1724,6 +1762,12 @@ namespace Mengine
 
         ImGui::Separator();
         ImGui::TextWrapped( "%s", m_status.c_str() );
+
+        if( m_glyphTime.empty() == false )
+        {
+            ImGui::SameLine();
+            ImGui::TextDisabled( "%s", m_glyphTime.c_str() );
+        }
 
         ImGui::EndChild();
 

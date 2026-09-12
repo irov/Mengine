@@ -41,9 +41,12 @@ namespace Mengine
         {
             switch( _effect.type )
             {
+            case EFET_FILL:
+                return 0.f;
             case EFET_OUTLINE:
                 return _effect.width + _effect.sharpness + 1.f;
             case EFET_SHADOW:
+            case EFET_INNER_SHADOW:
                 {
                     float offset_x = StdMath::fabsf( _effect.offset.x );
                     float offset_y = StdMath::fabsf( _effect.offset.y );
@@ -53,13 +56,12 @@ namespace Mengine
                     return extent;
                 }
             case EFET_GLOW:
+            case EFET_INNER_GLOW:
                 return _effect.spread + 3.f * _effect.blur + 1.f;
             case EFET_BEVEL:
                 return _effect.size + _effect.soften + 1.f;
             case EFET_BLUR:
                 return 3.f * _effect.blur + 1.f;
-            default:
-                break;
             }
 
             return 0.f;
@@ -78,6 +80,53 @@ namespace Mengine
             }
 
             *_field = _value;
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool setRange( float * const _field, float _value, float _min, float _max, const Char * _name )
+        {
+            if( (_value >= _min) == false )
+            {
+                LOGGER_ERROR( "font effect invalid %s %f"
+                    , _name
+                    , _value
+                );
+
+                return false;
+            }
+
+            if( (_value <= _max) == false )
+            {
+                LOGGER_ERROR( "font effect invalid %s %f"
+                    , _name
+                    , _value
+                );
+
+                return false;
+            }
+
+            *_field = _value;
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool setAngle( float * const _field, float _value, const Char * _name )
+        {
+            float angle;
+            if( setRange( &angle, _value, -MENGINE_FONTEFFECT_MAX_ANGLE, MENGINE_FONTEFFECT_MAX_ANGLE, _name ) == false )
+            {
+                return false;
+            }
+
+            float normalized = StdMath::fmodf( angle, 360.f );
+
+            if( normalized < 0.f )
+            {
+                normalized += 360.f;
+            }
+
+            *_field = normalized;
 
             return true;
         }
@@ -186,6 +235,16 @@ namespace Mengine
             ++layoutCount;
         }
 
+        if( layoutCount > MENGINE_FONTEFFECT_MAX_LAYERS )
+        {
+            LOGGER_ERROR( "font effect invalid desc: %u enabled layers, max %u"
+                , layoutCount
+                , MENGINE_FONTEFFECT_MAX_LAYERS
+            );
+
+            return false;
+        }
+
         if( layoutCount == 0 )
         {
             m_defaultFill = true;
@@ -229,6 +288,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FontEffectBase::setupDesc( const FontEffectDesc & _desc )
     {
+        m_desc.layers.clear();
+
         for( const FontEffectLayerDesc & layer : _desc.layers )
         {
             uint32_t layerIndex;
@@ -360,8 +421,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void FontEffectBase::_release()
     {
-        m_desc.layers.clear();
-
         m_scratch.clear();
 
         VectorFontEffectExportBuffer exportBuffer;
@@ -383,6 +442,45 @@ namespace Mengine
         Helper::fontEffectSignedDistance( alpha, sdf, tmp0, tmp1, m_scratch.getLine( 0 ), m_scratch.getLine( 1 ), m_scratch.getLine( 2 ), m_scratch.getLine( 3 ) );
 
         m_sdfValid = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void FontEffectBase::makeGradientContext_( const FontEffectGradientDesc & _gradient, uint32_t _width, uint32_t _rows, int32_t _top, uint32_t _height, FontEffectGradientContext * const _context ) const
+    {
+        float sample = (float)m_effectSample;
+        float padding = (float)m_padding;
+
+        float angleRad = _gradient.angle * mt::constant::deg2rad;
+
+        float dirX = StdMath::cosf( angleRad );
+        float dirY = StdMath::sinf( angleRad );
+
+        float glyphWidth = (float)_width;
+        float glyphHeight = (float)_rows;
+
+        float centerX = padding + glyphWidth * 0.5f;
+        float centerY;
+        float extent;
+
+        if( _gradient.space == EFEGS_FONT )
+        {
+            float fontHeight = (float)_height * sample;
+
+            centerY = padding + (float)_top - fontHeight * 0.5f;
+
+            extent = StdMath::fabsf( glyphWidth * dirX ) + StdMath::fabsf( fontHeight * dirY );
+        }
+        else
+        {
+            centerY = padding + glyphHeight * 0.5f;
+
+            extent = StdMath::fabsf( glyphWidth * dirX ) + StdMath::fabsf( glyphHeight * dirY );
+        }
+
+        _context->dirX = dirX;
+        _context->dirY = dirY;
+        _context->centerX = centerX;
+        _context->centerY = centerY;
+        _context->extentInv = (extent > 0.f) ? 1.f / extent : 1.f;
     }
     //////////////////////////////////////////////////////////////////////////
     bool FontEffectBase::applyLayer_( const FontEffectLayerDesc & _layer, uint32_t _layoutIndex, uint32_t _width, uint32_t _rows, uint32_t _channel, int32_t _left, int32_t _top, uint32_t _height, const LambdaFontEffectProvider & _provider )
@@ -413,43 +511,25 @@ namespace Mengine
             {
             case EFET_FILL:
                 {
-                    if( _channel == 4 )
+                    bool useGradient = (effect.gradient.enabled == true && effect.gradient.stops.empty() == false);
+
+                    FontEffectGradientContext context;
+
+                    if( useGradient == true )
+                    {
+                        this->makeGradientContext_( effect.gradient, _width, _rows, _top, _height, &context );
+                    }
+
+                    if( _channel == 4 && useGradient == true )
+                    {
+                        Helper::fontEffectTintImageGradient( source, effect.gradient, context, effect.opacity, effectImage );
+                    }
+                    else if( _channel == 4 )
                     {
                         Helper::fontEffectTintImage( source, effect.color, effect.opacity, effectImage );
                     }
-                    else if( effect.gradient.enabled == true && effect.gradient.stops.empty() == false )
+                    else if( useGradient == true )
                     {
-                        FontEffectGradientContext context;
-
-                        float angle_rad = effect.gradient.angle * mt::constant::deg2rad;
-
-                        context.dirX = StdMath::cosf( angle_rad );
-                        context.dirY = StdMath::sinf( angle_rad );
-
-                        float glyph_w = (float)_width;
-                        float glyph_h = (float)_rows;
-
-                        if( effect.gradient.space == EFEGS_FONT )
-                        {
-                            float font_h = (float)_height * sample;
-
-                            context.centerX = (float)padding + glyph_w * 0.5f;
-                            context.centerY = (float)padding + (float)_top - font_h * 0.5f;
-
-                            float extent = StdMath::fabsf( glyph_w * context.dirX ) + StdMath::fabsf( font_h * context.dirY );
-
-                            context.extentInv = (extent > 0.f) ? 1.f / extent : 1.f;
-                        }
-                        else
-                        {
-                            context.centerX = (float)padding + glyph_w * 0.5f;
-                            context.centerY = (float)padding + glyph_h * 0.5f;
-
-                            float extent = StdMath::fabsf( glyph_w * context.dirX ) + StdMath::fabsf( glyph_h * context.dirY );
-
-                            context.extentInv = (extent > 0.f) ? 1.f / extent : 1.f;
-                        }
-
                         Helper::fontEffectColorizeGradient( alpha, effect.gradient, context, effect.opacity, effectImage );
                     }
                     else
@@ -504,7 +584,19 @@ namespace Mengine
             case EFET_INNER_SHADOW:
             case EFET_INNER_GLOW:
                 {
-                    Helper::fontEffectInvert( alpha, work0 );
+                    if( effect.spread > 0.f )
+                    {
+                        this->ensureSignedDistance_();
+
+                        FontEffectPlane sdf = m_scratch.getPlane( Detail::EFESP_SDF );
+
+                        Helper::fontEffectCoverage( sdf, -effect.spread * sample, 0.f, work1 );
+                        Helper::fontEffectInvert( work1, work0 );
+                    }
+                    else
+                    {
+                        Helper::fontEffectInvert( alpha, work0 );
+                    }
 
                     if( effect.type == EFET_INNER_SHADOW )
                     {
@@ -536,8 +628,6 @@ namespace Mengine
                 {
                     Helper::fontEffectBlurImage( accumulator, effect.blur * sample, tmp0, tmp1 );
                 }break;
-            default:
-                break;
             }
         }
 
@@ -775,7 +865,7 @@ namespace Mengine
             return false;
         }
 
-        if( _type >= __EFET_MAX__ )
+        if( _type >= MENGINE_FONTEFFECT_TYPE_MAX )
         {
             LOGGER_ERROR( "font effect invalid type %u"
                 , _type
@@ -873,7 +963,18 @@ namespace Mengine
             return false;
         }
 
-        effect->offset = _offset;
+        mt::vec2f offset;
+        if( Detail::setRange( &offset.x, _offset.x, -MENGINE_FONTEFFECT_MAX_OFFSET, MENGINE_FONTEFFECT_MAX_OFFSET, "effect offset x" ) == false )
+        {
+            return false;
+        }
+
+        if( Detail::setRange( &offset.y, _offset.y, -MENGINE_FONTEFFECT_MAX_OFFSET, MENGINE_FONTEFFECT_MAX_OFFSET, "effect offset y" ) == false )
+        {
+            return false;
+        }
+
+        effect->offset = offset;
 
         return true;
     }
@@ -915,9 +1016,9 @@ namespace Mengine
             return false;
         }
 
-        effect->depth = _depth;
+        bool successful = Detail::setRange( &effect->depth, _depth, -MENGINE_FONTEFFECT_MAX_SIZE, MENGINE_FONTEFFECT_MAX_SIZE, "effect depth" );
 
-        return true;
+        return successful;
     }
     //////////////////////////////////////////////////////////////////////////
     bool FontEffectBase::setEffectSize( uint32_t _layerIndex, uint32_t _effectIndex, float _size )
@@ -957,9 +1058,9 @@ namespace Mengine
             return false;
         }
 
-        effect->angle = _angle;
+        bool successful = Detail::setAngle( &effect->angle, _angle, "effect angle" );
 
-        return true;
+        return successful;
     }
     //////////////////////////////////////////////////////////////////////////
     bool FontEffectBase::setEffectAltitude( uint32_t _layerIndex, uint32_t _effectIndex, float _altitude )
@@ -971,9 +1072,9 @@ namespace Mengine
             return false;
         }
 
-        effect->altitude = _altitude;
+        bool successful = Detail::setRange( &effect->altitude, _altitude, 0.f, 90.f, "effect altitude" );
 
-        return true;
+        return successful;
     }
     //////////////////////////////////////////////////////////////////////////
     bool FontEffectBase::setEffectHighlight( uint32_t _layerIndex, uint32_t _effectIndex, const Color & _color )
@@ -1027,9 +1128,9 @@ namespace Mengine
             return false;
         }
 
-        effect->gradient.angle = _angle;
+        bool successful = Detail::setAngle( &effect->gradient.angle, _angle, "effect gradient angle" );
 
-        return true;
+        return successful;
     }
     //////////////////////////////////////////////////////////////////////////
     bool FontEffectBase::setEffectGradientSpace( uint32_t _layerIndex, uint32_t _effectIndex, EFontEffectGradientSpace _space )
@@ -1041,7 +1142,7 @@ namespace Mengine
             return false;
         }
 
-        if( _space >= __EFEGS_MAX__ )
+        if( _space >= MENGINE_FONTEFFECT_GRADIENT_SPACE_MAX )
         {
             LOGGER_ERROR( "font effect invalid gradient space %u"
                 , _space
@@ -1064,12 +1165,18 @@ namespace Mengine
             return false;
         }
 
+        float t;
+        if( Detail::setRange( &t, _t, 0.f, 1.f, "effect gradient stop" ) == false )
+        {
+            return false;
+        }
+
         VectorFontEffectGradientStops & stops = effect->gradient.stops;
 
-        if( stops.empty() == false && _t < stops.back().t )
+        if( stops.empty() == false && t < stops.back().t )
         {
             LOGGER_ERROR( "font effect gradient stops unsorted %f < %f"
-                , _t
+                , t
                 , stops.back().t
             );
 
@@ -1077,7 +1184,7 @@ namespace Mengine
         }
 
         FontEffectGradientStop stop;
-        stop.t = _t;
+        stop.t = t;
         stop.color = _color;
 
         stops.emplace_back( stop );

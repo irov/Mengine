@@ -14,6 +14,7 @@
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/MemoryStreamHelper.h"
 #include "Kernel/Logger.h"
+#include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionObservable.h"
 #include "Kernel/ConstStringHelper.h"
@@ -289,6 +290,12 @@ namespace Mengine
         {
             uint32_t layoutCount = this->getLayoutCount();
 
+            MENGINE_ASSERTION_FATAL( layoutCount <= MENGINE_TTF_FONT_MAX_LAYOUTS, "font '%s' invalid layout count %u max %u"
+                , this->getName().c_str()
+                , layoutCount
+                , MENGINE_TTF_FONT_MAX_LAYOUTS
+            );
+
             for( uint32_t index = 0; index != layoutCount; ++index )
             {
                 TTFGlyphQuad & quad = ttf_glyph.quads[index];
@@ -313,6 +320,11 @@ namespace Mengine
         {
             m_effect->apply( glyph_bitmap.width, glyph_bitmap.rows, glyph_bitmap.pitch, glyph_bitmap.buffer, bitmap_channel, glyph->bitmap_left, glyph->bitmap_top, m_height, [texture_border, &ttf_glyph, sampleInv, _doc]( uint32_t _index, int32_t _x, int32_t _y, uint32_t _width, uint32_t _height, const void * _buffer, uint32_t _pitch, uint32_t _bytespp )
             {
+                MENGINE_ASSERTION_FATAL( _index < MENGINE_TTF_FONT_MAX_LAYOUTS, "invalid font effect layout index %u max %u"
+                    , _index
+                    , MENGINE_TTF_FONT_MAX_LAYOUTS
+                );
+
                 TTFFontTextureGlyphProvider provider( _width, _height, _buffer, _pitch, _bytespp );
 
                 mt::uv4f uv;

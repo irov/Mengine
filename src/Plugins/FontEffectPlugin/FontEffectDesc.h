@@ -9,6 +9,18 @@
 #define MENGINE_FONTEFFECT_MAX_LAYERS 4
 #endif
 
+#ifndef MENGINE_FONTEFFECT_MAX_OFFSET
+#define MENGINE_FONTEFFECT_MAX_OFFSET 256.f
+#endif
+
+#ifndef MENGINE_FONTEFFECT_MAX_SIZE
+#define MENGINE_FONTEFFECT_MAX_SIZE 256.f
+#endif
+
+#ifndef MENGINE_FONTEFFECT_MAX_ANGLE
+#define MENGINE_FONTEFFECT_MAX_ANGLE 36000.f
+#endif
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -21,18 +33,18 @@ namespace Mengine
         EFET_INNER_SHADOW,
         EFET_INNER_GLOW,
         EFET_BEVEL,
-        EFET_BLUR,
-
-        __EFET_MAX__
+        EFET_BLUR
     };
+    //////////////////////////////////////////////////////////////////////////
+#define MENGINE_FONTEFFECT_TYPE_MAX (Mengine::EFET_BLUR + 1)
     //////////////////////////////////////////////////////////////////////////
     enum EFontEffectGradientSpace : uint32_t
     {
         EFEGS_GLYPH = 0,
-        EFEGS_FONT,
-
-        __EFEGS_MAX__
+        EFEGS_FONT
     };
+    //////////////////////////////////////////////////////////////////////////
+#define MENGINE_FONTEFFECT_GRADIENT_SPACE_MAX (Mengine::EFEGS_FONT + 1)
     //////////////////////////////////////////////////////////////////////////
     struct FontEffectGradientStop
     {

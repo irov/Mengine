@@ -97,6 +97,7 @@ namespace Mengine
         void fontEffectColorize( const FontEffectPlane & _coverage, const Color & _color, float _opacity, const FontEffectImage & _out );
         void fontEffectColorizeGradient( const FontEffectPlane & _coverage, const FontEffectGradientDesc & _gradient, const FontEffectGradientContext & _context, float _opacity, const FontEffectImage & _out );
         void fontEffectTintImage( const FontEffectImage & _src, const Color & _color, float _opacity, const FontEffectImage & _out );
+        void fontEffectTintImageGradient( const FontEffectImage & _src, const FontEffectGradientDesc & _gradient, const FontEffectGradientContext & _context, float _opacity, const FontEffectImage & _out );
 
         void fontEffectBevel( const FontEffectPlane & _sdf, const FontEffectPlane & _alpha, const FontEffectStyleDesc & _effect, float _sample, const FontEffectPlane & _tmp0, const FontEffectPlane & _tmp1, const FontEffectImage & _out );
 

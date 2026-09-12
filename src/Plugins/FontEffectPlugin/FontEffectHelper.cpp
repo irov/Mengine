@@ -6,7 +6,7 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static const Char * const FontEffectTypeNames[__EFET_MAX__] = {
+        static const Char * const FontEffectTypeNames[MENGINE_FONTEFFECT_TYPE_MAX] = {
             "Fill",
             "Outline",
             "Shadow",
@@ -17,7 +17,7 @@ namespace Mengine
             "Blur"
         };
         //////////////////////////////////////////////////////////////////////////
-        static const Char * const FontEffectGradientSpaceNames[__EFEGS_MAX__] = {
+        static const Char * const FontEffectGradientSpaceNames[MENGINE_FONTEFFECT_GRADIENT_SPACE_MAX] = {
             "Glyph",
             "Font"
         };
@@ -29,7 +29,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         const Char * getFontEffectTypeName( EFontEffectType _type )
         {
-            if( _type >= __EFET_MAX__ )
+            if( _type >= MENGINE_FONTEFFECT_TYPE_MAX )
             {
                 return "";
             }
@@ -41,7 +41,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         const Char * getFontEffectGradientSpaceName( EFontEffectGradientSpace _space )
         {
-            if( _space >= __EFEGS_MAX__ )
+            if( _space >= MENGINE_FONTEFFECT_GRADIENT_SPACE_MAX )
             {
                 return "";
             }

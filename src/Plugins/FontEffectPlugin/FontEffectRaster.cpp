@@ -1,5 +1,6 @@
 #include "FontEffectRaster.h"
 
+#include "Config/StdAssert.h"
 #include "Config/StdMath.h"
 #include "Config/StdString.h"
 
@@ -84,6 +85,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     FontEffectPlane FontEffectScratch::getPlane( uint32_t _index )
     {
+        assert( _index < MAX_PLANES );
+
         FontEffectPlane plane;
         plane.width = m_width;
         plane.height = m_height;
@@ -94,6 +97,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     FontEffectImage FontEffectScratch::getImage( uint32_t _index )
     {
+        assert( _index < MAX_IMAGES );
+
         FontEffectImage image;
         image.width = m_width;
         image.height = m_height;
@@ -104,7 +109,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float * FontEffectScratch::getLine( uint32_t _index )
     {
-        return m_lines[_index].data();
+        assert( _index < MAX_LINES );
+
+        float * line = m_lines[_index].data();
+
+        return line;
     }
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
@@ -506,7 +515,7 @@ namespace Mengine
         {
             size_t size = (size_t)_sdf.width * (size_t)_sdf.height;
 
-            float ramp = (_sharpness > 1.f) ? _sharpness : 1.f;
+            float ramp = 1.f + _sharpness;
             float rampInv = 1.f / ramp;
 
             for( size_t index = 0; index != size; ++index )
@@ -709,6 +718,38 @@ namespace Mengine
                 dst[1] = src[1] * g * a;
                 dst[2] = src[2] * b * a;
                 dst[3] = src[3] * a;
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void fontEffectTintImageGradient( const FontEffectImage & _src, const FontEffectGradientDesc & _gradient, const FontEffectGradientContext & _context, float _opacity, const FontEffectImage & _out )
+        {
+            uint32_t width = _src.width;
+            uint32_t height = _src.height;
+
+            for( uint32_t y = 0; y != height; ++y )
+            {
+                for( uint32_t x = 0; x != width; ++x )
+                {
+                    size_t index = (size_t)y * (size_t)width + x;
+
+                    const float * src = _src.data + index * 4;
+                    float * dst = _out.data + index * 4;
+
+                    float dx = ((float)x + 0.5f) - _context.centerX;
+                    float dy = ((float)y + 0.5f) - _context.centerY;
+
+                    float t = (dx * _context.dirX + dy * _context.dirY) * _context.extentInv + 0.5f;
+
+                    float rgba[4];
+                    Detail::evaluateGradient( _gradient, Detail::clamp01( t ), rgba );
+
+                    float a = rgba[3] * _opacity;
+
+                    dst[0] = src[0] * rgba[0] * a;
+                    dst[1] = src[1] * rgba[1] * a;
+                    dst[2] = src[2] * rgba[2] * a;
+                    dst[3] = src[3] * a;
+                }
             }
         }
         //////////////////////////////////////////////////////////////////////////

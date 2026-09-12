@@ -39,14 +39,14 @@
 
 namespace Mengine
 {
-    namespace
+    namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
         constexpr uint32_t SAMPLE_COUNT = 3;
-        static const uint32_t s_sampleValues[SAMPLE_COUNT] = {1, 2, 4};
-        static const Char * s_sampleNames[SAMPLE_COUNT] = {"1", "2", "4"};
+        static const uint32_t SAMPLE_VALUES[SAMPLE_COUNT] = {1, 2, 4};
+        static const Char * SAMPLE_NAMES[SAMPLE_COUNT] = {"1", "2", "4"};
         //////////////////////////////////////////////////////////////////////////
-        static bool s_splitFullPath( const String & _fullPath, String * const _folder, String * const _file )
+        static bool splitFullPath( const String & _fullPath, String * const _folder, String * const _file )
         {
             String::size_type slash = _fullPath.find_last_of( '/' );
 
@@ -66,7 +66,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        static FilePath s_makeFilePath( const String & _path )
+        static FilePath makeFilePath( const String & _path )
         {
             if( _path.empty() == true )
             {
@@ -78,7 +78,7 @@ namespace Mengine
             return filePath;
         }
         //////////////////////////////////////////////////////////////////////////
-        static void s_unmountFolder( const ConstString & _groupName )
+        static void unmountFolder( const ConstString & _groupName )
         {
             FileGroupInterfacePtr mountedFileGroup;
             if( FILE_SERVICE()
@@ -91,13 +91,13 @@ namespace Mengine
                 ->unmountFileGroup( _groupName );
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_mountFolder( const ConstString & _groupName, const String & _folder, FileGroupInterfacePtr * const _fileGroup )
+        static bool mountFolder( const ConstString & _groupName, const String & _folder, FileGroupInterfacePtr * const _fileGroup )
         {
-            s_unmountFolder( _groupName );
+            unmountFolder( _groupName );
 
             FileGroupInterfacePtr mountedFileGroup;
             if( FILE_SERVICE()
-                ->mountFileGroup( _groupName, nullptr, nullptr, s_makeFilePath( _folder ), STRINGIZE_STRING_LOCAL( "global" ), &mountedFileGroup, false, MENGINE_DOCUMENT_FUNCTION ) == false )
+                ->mountFileGroup( _groupName, nullptr, nullptr, makeFilePath( _folder ), STRINGIZE_STRING_LOCAL( "global" ), &mountedFileGroup, false, MENGINE_DOCUMENT_FUNCTION ) == false )
             {
                 return false;
             }
@@ -107,7 +107,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        static int s_findString( const VectorString & _values, const Char * _value )
+        static int findString( const VectorString & _values, const Char * _value )
         {
             for( VectorString::size_type index = 0; index != _values.size(); ++index )
             {
@@ -120,7 +120,7 @@ namespace Mengine
             return -1;
         }
         //////////////////////////////////////////////////////////////////////////
-        static jpp::object s_dumpFontEffectVec2( const mt::vec2f & _value )
+        static jpp::object dumpFontEffectVec2( const mt::vec2f & _value )
         {
             jpp::array j_a = jpp::make_array();
 
@@ -130,7 +130,7 @@ namespace Mengine
             return j_a.to_object();
         }
         //////////////////////////////////////////////////////////////////////////
-        static jpp::object s_dumpFontEffectGradient( const FontEffectGradientDesc & _gradient )
+        static jpp::object dumpFontEffectGradient( const FontEffectGradientDesc & _gradient )
         {
             jpp::object j_gradient = jpp::make_object();
 
@@ -155,7 +155,7 @@ namespace Mengine
             return j_gradient;
         }
         //////////////////////////////////////////////////////////////////////////
-        static jpp::object s_dumpFontEffectEffect( const FontEffectStyleDesc & _effect )
+        static jpp::object dumpFontEffectEffect( const FontEffectStyleDesc & _effect )
         {
             jpp::object j_effect = jpp::make_object();
 
@@ -171,7 +171,7 @@ namespace Mengine
 
                     if( _effect.gradient.enabled == true || _effect.gradient.stops.empty() == false )
                     {
-                        j_effect.set( "Gradient", s_dumpFontEffectGradient( _effect.gradient ) );
+                        j_effect.set( "Gradient", dumpFontEffectGradient( _effect.gradient ) );
                     }
                 }break;
             case EFET_OUTLINE:
@@ -184,7 +184,7 @@ namespace Mengine
             case EFET_INNER_SHADOW:
                 {
                     j_effect.set( "Color", _effect.color );
-                    j_effect.set( "Offset", s_dumpFontEffectVec2( _effect.offset ) );
+                    j_effect.set( "Offset", dumpFontEffectVec2( _effect.offset ) );
                     j_effect.set( "Blur", _effect.blur );
                     j_effect.set( "Spread", _effect.spread );
                 }break;
@@ -209,14 +209,12 @@ namespace Mengine
                 {
                     j_effect.set( "Blur", _effect.blur );
                 }break;
-            default:
-                break;
             }
 
             return j_effect;
         }
         //////////////////////////////////////////////////////////////////////////
-        static jpp::object s_dumpFontEffectLayer( const FontEffectLayerDesc & _layer )
+        static jpp::object dumpFontEffectLayer( const FontEffectLayerDesc & _layer )
         {
             jpp::object j_layer = jpp::make_object();
 
@@ -227,7 +225,7 @@ namespace Mengine
 
             for( const FontEffectStyleDesc & effect : _layer.styles )
             {
-                jpp::object j_effect = s_dumpFontEffectEffect( effect );
+                jpp::object j_effect = dumpFontEffectEffect( effect );
 
                 j_effects.push_back( j_effect );
             }
@@ -237,7 +235,7 @@ namespace Mengine
             return j_layer;
         }
         //////////////////////////////////////////////////////////////////////////
-        static jpp::object s_dumpFontEffectDesc( const FontEffectDesc & _desc )
+        static jpp::object dumpFontEffectDesc( const FontEffectDesc & _desc )
         {
             jpp::object j_desc = jpp::make_object();
 
@@ -245,7 +243,7 @@ namespace Mengine
 
             for( const FontEffectLayerDesc & layer : _desc.layers )
             {
-                jpp::object j_layer = s_dumpFontEffectLayer( layer );
+                jpp::object j_layer = dumpFontEffectLayer( layer );
 
                 j_layers.push_back( j_layer );
             }
@@ -415,8 +413,8 @@ namespace Mengine
         m_glyphFileGroup = nullptr;
         m_presetsFileGroup = nullptr;
 
-        s_unmountFolder( STRINGIZE_STRING_LOCAL( "FontEffectViewerGlyphs" ) );
-        s_unmountFolder( STRINGIZE_STRING_LOCAL( "FontEffectViewerPresets" ) );
+        Detail::unmountFolder( STRINGIZE_STRING_LOCAL( "FontEffectViewerGlyphs" ) );
+        Detail::unmountFolder( STRINGIZE_STRING_LOCAL( "FontEffectViewerPresets" ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void FontEffectViewerExampleSceneEventReceiver::registerMCPHandler_()
@@ -480,13 +478,13 @@ namespace Mengine
         _result->set( "zoom", m_previewZoom );
         _result->set( "pan_x", m_previewPan.x );
         _result->set( "pan_y", m_previewPan.y );
-        _result->set( "sample", s_sampleValues[m_sampleIndex] );
+        _result->set( "sample", Detail::SAMPLE_VALUES[m_sampleIndex] );
         _result->set( "text", m_textInput );
         _result->set( "dirty", m_dirty );
         _result->set( "status", m_status.c_str() );
         _result->set( "font_compiled", m_font != nullptr && m_font->isCompileFont() == true );
         _result->set( "layout_count", m_font != nullptr && m_font->isCompileFont() == true ? m_font->getLayoutCount() : 0U );
-        _result->set( "desc", s_dumpFontEffectDesc( m_desc ) );
+        _result->set( "desc", Detail::dumpFontEffectDesc( m_desc ) );
     }
     //////////////////////////////////////////////////////////////////////////
     bool FontEffectViewerExampleSceneEventReceiver::onMCPCall( const jpp::object & _arguments, jpp::object * const _result )
@@ -502,7 +500,7 @@ namespace Mengine
             {
                 const Char * preset = j_preset;
 
-                int index = s_findString( m_presetNames, preset );
+                int index = Detail::findString( m_presetNames, preset );
 
                 if( index < 0 )
                 {
@@ -519,7 +517,7 @@ namespace Mengine
             {
                 const Char * glyph = j_glyph;
 
-                int index = s_findString( m_glyphNames, glyph );
+                int index = Detail::findString( m_glyphNames, glyph );
 
                 if( index < 0 )
                 {
@@ -637,9 +635,9 @@ namespace Mengine
             {
                 uint32_t sample = j_sample;
 
-                for( int sampleIndex = 0; sampleIndex != (int)SAMPLE_COUNT; ++sampleIndex )
+                for( int sampleIndex = 0; sampleIndex != (int)Detail::SAMPLE_COUNT; ++sampleIndex )
                 {
-                    if( s_sampleValues[sampleIndex] == sample )
+                    if( Detail::SAMPLE_VALUES[sampleIndex] == sample )
                     {
                         m_sampleIndex = sampleIndex;
                         m_dirty = true;
@@ -822,7 +820,7 @@ namespace Mengine
         m_showGlyphPreview = settings.get( "show_glyph_preview", m_showGlyphPreview );
         m_noEffect = settings.get( "no_effect", m_noEffect );
 
-        if( m_sampleIndex < 0 || m_sampleIndex >= (int)SAMPLE_COUNT )
+        if( m_sampleIndex < 0 || m_sampleIndex >= (int)Detail::SAMPLE_COUNT )
         {
             m_sampleIndex = 1;
         }
@@ -903,7 +901,7 @@ namespace Mengine
         m_presets = presets;
         m_presetNames = names;
 
-        int index = s_findString( m_presetNames, _preferredPreset );
+        int index = Detail::findString( m_presetNames, _preferredPreset );
 
         if( index < 0 && m_presetNames.empty() == false )
         {
@@ -932,9 +930,9 @@ namespace Mengine
         const String & name = m_presetNames[_index];
         const FontEffectViewerExamplePresetEntryDesc & entry = m_presets[_index];
 
-        for( int sampleIndex = 0; sampleIndex != (int)SAMPLE_COUNT; ++sampleIndex )
+        for( int sampleIndex = 0; sampleIndex != (int)Detail::SAMPLE_COUNT; ++sampleIndex )
         {
-            if( s_sampleValues[sampleIndex] == entry.sample )
+            if( Detail::SAMPLE_VALUES[sampleIndex] == entry.sample )
             {
                 m_sampleIndex = sampleIndex;
             }
@@ -957,7 +955,7 @@ namespace Mengine
         String folder;
         String file;
 
-        if( s_splitFullPath( String( _fullPath ), &folder, &file ) == false )
+        if( Detail::splitFullPath( String( _fullPath ), &folder, &file ) == false )
         {
             m_status = "Invalid JSON path";
 
@@ -965,14 +963,14 @@ namespace Mengine
         }
 
         FileGroupInterfacePtr fileGroup;
-        if( s_mountFolder( STRINGIZE_STRING_LOCAL( "FontEffectViewerPresets" ), folder, &fileGroup ) == false )
+        if( Detail::mountFolder( STRINGIZE_STRING_LOCAL( "FontEffectViewerPresets" ), folder, &fileGroup ) == false )
         {
             m_status = "Failed to mount JSON folder";
 
             return false;
         }
 
-        ContentInterfacePtr content = Helper::makeFileContent( fileGroup, s_makeFilePath( file ), MENGINE_DOCUMENT_FACTORABLE );
+        ContentInterfacePtr content = Helper::makeFileContent( fileGroup, Detail::makeFilePath( file ), MENGINE_DOCUMENT_FACTORABLE );
 
         if( this->setPresetsContent_( content, m_presetNameInput ) == false )
         {
@@ -991,11 +989,11 @@ namespace Mengine
     {
         FontEffectViewerExamplePresetEntryDesc entry;
         entry.desc = m_desc;
-        entry.sample = s_sampleValues[m_sampleIndex];
+        entry.sample = Detail::SAMPLE_VALUES[m_sampleIndex];
 
         const Char * presetName = m_presetNameInput[0] != '\0' ? m_presetNameInput : "Effect";
 
-        int index = s_findString( m_presetNames, presetName );
+        int index = Detail::findString( m_presetNames, presetName );
 
         if( index < 0 )
         {
@@ -1017,7 +1015,7 @@ namespace Mengine
         String folder;
         String file;
 
-        if( s_splitFullPath( String( _fullPath ), &folder, &file ) == false )
+        if( Detail::splitFullPath( String( _fullPath ), &folder, &file ) == false )
         {
             m_status = "Invalid save path";
 
@@ -1025,7 +1023,7 @@ namespace Mengine
         }
 
         FileGroupInterfacePtr fileGroup;
-        if( s_mountFolder( STRINGIZE_STRING_LOCAL( "FontEffectViewerPresets" ), folder, &fileGroup ) == false )
+        if( Detail::mountFolder( STRINGIZE_STRING_LOCAL( "FontEffectViewerPresets" ), folder, &fileGroup ) == false )
         {
             m_status = "Failed to mount save folder";
 
@@ -1043,7 +1041,7 @@ namespace Mengine
         {
             const FontEffectViewerExamplePresetEntryDesc & entry = m_presets[index];
 
-            jpp::object j_effect = s_dumpFontEffectDesc( entry.desc );
+            jpp::object j_effect = Detail::dumpFontEffectDesc( entry.desc );
 
             j_effect.set( "Sample", entry.sample );
 
@@ -1052,7 +1050,7 @@ namespace Mengine
 
         root.set( "Effects", j_effects );
 
-        if( Helper::writeJSONFile( root, fileGroup, s_makeFilePath( file ), false, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        if( Helper::writeJSONFile( root, fileGroup, Detail::makeFilePath( file ), false, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             m_status = "Failed to write JSON";
 
@@ -1074,7 +1072,7 @@ namespace Mengine
         String folder;
         String file;
 
-        if( s_splitFullPath( String( _fullPath ), &folder, &file ) == false )
+        if( Detail::splitFullPath( String( _fullPath ), &folder, &file ) == false )
         {
             m_status = "Invalid TTF path";
 
@@ -1082,7 +1080,7 @@ namespace Mengine
         }
 
         FileGroupInterfacePtr fileGroup;
-        if( s_mountFolder( STRINGIZE_STRING_LOCAL( "FontEffectViewerGlyphs" ), folder, &fileGroup ) == false )
+        if( Detail::mountFolder( STRINGIZE_STRING_LOCAL( "FontEffectViewerGlyphs" ), folder, &fileGroup ) == false )
         {
             m_status = "Failed to mount TTF folder";
 
@@ -1115,7 +1113,7 @@ namespace Mengine
             return false;
         }
 
-        ContentInterfacePtr content = Helper::makeFileContent( fileGroup, s_makeFilePath( file ), MENGINE_DOCUMENT_FACTORABLE );
+        ContentInterfacePtr content = Helper::makeFileContent( fileGroup, Detail::makeFilePath( file ), MENGINE_DOCUMENT_FACTORABLE );
 
         content->setDataflow( dataflow );
 
@@ -1262,7 +1260,7 @@ namespace Mengine
         if( m_noEffect == false )
         {
             effect = FONTEFFECT_SERVICE()
-                ->createFontEffect( m_desc, s_sampleValues[m_sampleIndex], MENGINE_DOCUMENT_FACTORABLE );
+                ->createFontEffect( m_desc, Detail::SAMPLE_VALUES[m_sampleIndex], MENGINE_DOCUMENT_FACTORABLE );
 
             if( effect == nullptr || effect->isValid() == false )
             {
@@ -1818,7 +1816,7 @@ namespace Mengine
             }
 
             changed |= ImGui::SliderInt( "Height", &m_height, 8, 200 );
-            changed |= ImGui::Combo( "Sample", &m_sampleIndex, s_sampleNames, 3 );
+            changed |= ImGui::Combo( "Sample", &m_sampleIndex, Detail::SAMPLE_NAMES, 3 );
             changed |= ImGui::ColorEdit4( "Font color", m_fontColor, ImGuiColorEditFlags_AlphaBar );
             changed |= ImGui::Checkbox( "No effect", &m_noEffect );
 

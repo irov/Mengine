@@ -19,6 +19,10 @@
 #define MENGINE_TTF_FONT_GLYPH_HASH_SIZE 37
 #endif
 
+#ifndef MENGINE_TTF_FONT_MAX_LAYOUTS
+#define MENGINE_TTF_FONT_MAX_LAYOUTS 4
+#endif
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -122,7 +126,7 @@ namespace Mengine
 
             float advance;
 
-            TTFGlyphQuad quads[4];
+            TTFGlyphQuad quads[MENGINE_TTF_FONT_MAX_LAYOUTS];
         };
 
         typedef Vector<TTFGlyph> VectorTTFGlyphs;

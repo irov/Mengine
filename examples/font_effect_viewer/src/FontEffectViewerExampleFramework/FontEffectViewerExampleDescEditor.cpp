@@ -9,7 +9,7 @@
 
 namespace Mengine
 {
-    namespace
+    namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
         enum EEditorAction
@@ -21,7 +21,7 @@ namespace Mengine
             EEA_DUPLICATE
         };
         //////////////////////////////////////////////////////////////////////////
-        static bool s_colorEdit( const Char * _label, Color * const _color )
+        static bool colorEdit( const Char * _label, Color * const _color )
         {
             float v[4] = {_color->getR(), _color->getG(), _color->getB(), _color->getA()};
 
@@ -35,7 +35,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_dragSize( const Char * _label, float * const _value, float _max )
+        static bool dragSize( const Char * _label, float * const _value, float _max )
         {
             bool changed = ImGui::DragFloat( _label, _value, 0.05f, 0.f, _max, "%.2f" );
 
@@ -47,7 +47,7 @@ namespace Mengine
             return changed;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_renderGradient( FontEffectGradientDesc * const _gradient )
+        static bool renderGradient( FontEffectGradientDesc * const _gradient )
         {
             bool changed = false;
 
@@ -64,14 +64,14 @@ namespace Mengine
 
             int space = (int)_gradient->space;
 
-            const Char * spaceNames[__EFEGS_MAX__];
+            const Char * spaceNames[MENGINE_FONTEFFECT_GRADIENT_SPACE_MAX];
 
-            for( uint32_t spaceIndex = 0; spaceIndex != __EFEGS_MAX__; ++spaceIndex )
+            for( uint32_t spaceIndex = 0; spaceIndex != MENGINE_FONTEFFECT_GRADIENT_SPACE_MAX; ++spaceIndex )
             {
                 spaceNames[spaceIndex] = Helper::getFontEffectGradientSpaceName( (EFontEffectGradientSpace)spaceIndex );
             }
 
-            if( ImGui::Combo( "Space", &space, spaceNames, __EFEGS_MAX__ ) == true )
+            if( ImGui::Combo( "Space", &space, spaceNames, MENGINE_FONTEFFECT_GRADIENT_SPACE_MAX ) == true )
             {
                 _gradient->space = (EFontEffectGradientSpace)space;
                 changed = true;
@@ -91,7 +91,7 @@ namespace Mengine
                 changed |= ImGui::DragFloat( "T", &stop.t, 0.01f, 0.f, 1.f, "%.2f" );
 
                 ImGui::SameLine();
-                changed |= s_colorEdit( "##stopcolor", &stop.color );
+                changed |= colorEdit( "##stopcolor", &stop.color );
 
                 ImGui::SameLine();
                 if( ImGui::SmallButton( "X" ) == true )
@@ -123,7 +123,7 @@ namespace Mengine
             return changed;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_renderEffectFields( FontEffectStyleDesc * const _effect )
+        static bool renderEffectFields( FontEffectStyleDesc * const _effect )
         {
             bool changed = false;
 
@@ -136,61 +136,59 @@ namespace Mengine
             {
             case EFET_FILL:
                 {
-                    changed |= s_colorEdit( "Color", &_effect->color );
-                    changed |= s_renderGradient( &_effect->gradient );
+                    changed |= colorEdit( "Color", &_effect->color );
+                    changed |= renderGradient( &_effect->gradient );
                 }break;
             case EFET_OUTLINE:
                 {
-                    changed |= s_colorEdit( "Color", &_effect->color );
-                    changed |= s_dragSize( "Width", &_effect->width, 64.f );
-                    changed |= s_dragSize( "Sharpness", &_effect->sharpness, 16.f );
+                    changed |= colorEdit( "Color", &_effect->color );
+                    changed |= dragSize( "Width", &_effect->width, 64.f );
+                    changed |= dragSize( "Sharpness", &_effect->sharpness, 16.f );
                 }break;
             case EFET_SHADOW:
                 {
-                    changed |= s_colorEdit( "Color", &_effect->color );
+                    changed |= colorEdit( "Color", &_effect->color );
                     changed |= ImGui::DragFloat2( "Offset", &_effect->offset.x, 0.1f, -64.f, 64.f, "%.1f" );
-                    changed |= s_dragSize( "Blur", &_effect->blur, 32.f );
-                    changed |= s_dragSize( "Spread", &_effect->spread, 32.f );
+                    changed |= dragSize( "Blur", &_effect->blur, 32.f );
+                    changed |= dragSize( "Spread", &_effect->spread, 32.f );
                 }break;
             case EFET_GLOW:
                 {
-                    changed |= s_colorEdit( "Color", &_effect->color );
-                    changed |= s_dragSize( "Blur", &_effect->blur, 32.f );
-                    changed |= s_dragSize( "Spread", &_effect->spread, 32.f );
+                    changed |= colorEdit( "Color", &_effect->color );
+                    changed |= dragSize( "Blur", &_effect->blur, 32.f );
+                    changed |= dragSize( "Spread", &_effect->spread, 32.f );
                 }break;
             case EFET_INNER_SHADOW:
                 {
-                    changed |= s_colorEdit( "Color", &_effect->color );
+                    changed |= colorEdit( "Color", &_effect->color );
                     changed |= ImGui::DragFloat2( "Offset", &_effect->offset.x, 0.1f, -64.f, 64.f, "%.1f" );
-                    changed |= s_dragSize( "Blur", &_effect->blur, 32.f );
+                    changed |= dragSize( "Blur", &_effect->blur, 32.f );
                 }break;
             case EFET_INNER_GLOW:
                 {
-                    changed |= s_colorEdit( "Color", &_effect->color );
-                    changed |= s_dragSize( "Blur", &_effect->blur, 32.f );
+                    changed |= colorEdit( "Color", &_effect->color );
+                    changed |= dragSize( "Blur", &_effect->blur, 32.f );
                 }break;
             case EFET_BEVEL:
                 {
-                    changed |= s_dragSize( "Depth", &_effect->depth, 16.f );
-                    changed |= s_dragSize( "Size", &_effect->size, 32.f );
-                    changed |= s_dragSize( "Soften", &_effect->soften, 16.f );
+                    changed |= dragSize( "Depth", &_effect->depth, 16.f );
+                    changed |= dragSize( "Size", &_effect->size, 32.f );
+                    changed |= dragSize( "Soften", &_effect->soften, 16.f );
                     changed |= ImGui::SliderFloat( "Angle", &_effect->angle, 0.f, 360.f, "%.0f" );
                     changed |= ImGui::SliderFloat( "Altitude", &_effect->altitude, 0.f, 90.f, "%.0f" );
-                    changed |= s_colorEdit( "Highlight", &_effect->highlight );
-                    changed |= s_colorEdit( "Shadow", &_effect->shadow );
+                    changed |= colorEdit( "Highlight", &_effect->highlight );
+                    changed |= colorEdit( "Shadow", &_effect->shadow );
                 }break;
             case EFET_BLUR:
                 {
-                    changed |= s_dragSize( "Blur", &_effect->blur, 32.f );
+                    changed |= dragSize( "Blur", &_effect->blur, 32.f );
                 }break;
-            default:
-                break;
             }
 
             return changed;
         }
         //////////////////////////////////////////////////////////////////////////
-        static EEditorAction s_renderOrderButtons( bool _canUp, bool _canDown, bool _duplicate )
+        static EEditorAction renderOrderButtons( bool _canUp, bool _canDown, bool _duplicate )
         {
             EEditorAction action = EEA_NONE;
 
@@ -230,7 +228,7 @@ namespace Mengine
             return action;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_renderLayer( FontEffectLayerDesc * const _layer )
+        static bool renderLayer( FontEffectLayerDesc * const _layer )
         {
             bool changed = false;
 
@@ -263,7 +261,7 @@ namespace Mengine
                 {
                     ImGui::Indent();
 
-                    EEditorAction effectAction = s_renderOrderButtons( index > 0, index + 1 < effects.size(), true );
+                    EEditorAction effectAction = renderOrderButtons( index > 0, index + 1 < effects.size(), true );
 
                     if( effectAction != EEA_NONE )
                     {
@@ -271,7 +269,7 @@ namespace Mengine
                         action = effectAction;
                     }
 
-                    changed |= s_renderEffectFields( &effect );
+                    changed |= renderEffectFields( &effect );
 
                     ImGui::Unindent();
                 }
@@ -306,7 +304,7 @@ namespace Mengine
                         FontEffectStyleDesc copy = effects[index];
                         effects.insert( effects.begin() + index + 1, copy );
                     }break;
-                default:
+                case EEA_NONE:
                     break;
                 }
 
@@ -315,15 +313,15 @@ namespace Mengine
 
             static int s_newEffectType = 0;
 
-            const Char * typeNames[__EFET_MAX__];
+            const Char * typeNames[MENGINE_FONTEFFECT_TYPE_MAX];
 
-            for( uint32_t typeIndex = 0; typeIndex != __EFET_MAX__; ++typeIndex )
+            for( uint32_t typeIndex = 0; typeIndex != MENGINE_FONTEFFECT_TYPE_MAX; ++typeIndex )
             {
                 typeNames[typeIndex] = Helper::getFontEffectTypeName( (EFontEffectType)typeIndex );
             }
 
             ImGui::SetNextItemWidth( 140.f );
-            ImGui::Combo( "##neweffect", &s_newEffectType, typeNames, __EFET_MAX__ );
+            ImGui::Combo( "##neweffect", &s_newEffectType, typeNames, MENGINE_FONTEFFECT_TYPE_MAX );
 
             ImGui::SameLine();
 
@@ -359,7 +357,8 @@ namespace Mengine
                 case EFET_BLUR:
                     effect.blur = 1.f;
                     break;
-                default:
+                case EFET_FILL:
+                case EFET_BEVEL:
                     break;
                 }
 
@@ -379,7 +378,7 @@ namespace Mengine
         VectorFontEffectLayerDescs & layers = _desc->layers;
 
         int actionIndex = -1;
-        EEditorAction action = EEA_NONE;
+        Detail::EEditorAction action = Detail::EEA_NONE;
 
         for( VectorFontEffectLayerDescs::size_type index = 0; index != layers.size(); ++index )
         {
@@ -397,16 +396,16 @@ namespace Mengine
 
             if( open == true )
             {
-                EEditorAction layerAction = s_renderOrderButtons( index > 0, index + 1 < layers.size(), false );
+                Detail::EEditorAction layerAction = Detail::renderOrderButtons( index > 0, index + 1 < layers.size(), false );
 
-                if( layerAction != EEA_NONE )
+                if( layerAction != Detail::EEA_NONE )
                 {
                     actionIndex = (int)index;
                     action = layerAction;
                 }
 
                 ImGui::Indent();
-                changed |= s_renderLayer( &layer );
+                changed |= Detail::renderLayer( &layer );
                 ImGui::Unindent();
             }
 
@@ -419,23 +418,24 @@ namespace Mengine
 
             switch( action )
             {
-            case EEA_UP:
+            case Detail::EEA_UP:
                 {
                     FontEffectLayerDesc tmp = layers[index - 1];
                     layers[index - 1] = layers[index];
                     layers[index] = tmp;
                 }break;
-            case EEA_DOWN:
+            case Detail::EEA_DOWN:
                 {
                     FontEffectLayerDesc tmp = layers[index + 1];
                     layers[index + 1] = layers[index];
                     layers[index] = tmp;
                 }break;
-            case EEA_REMOVE:
+            case Detail::EEA_REMOVE:
                 {
                     layers.erase( layers.begin() + index );
                 }break;
-            default:
+            case Detail::EEA_DUPLICATE:
+            case Detail::EEA_NONE:
                 break;
             }
 

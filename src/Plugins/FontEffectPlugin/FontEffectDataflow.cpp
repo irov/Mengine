@@ -22,7 +22,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool parseTypeName( const Char * _name, EFontEffectType * const _type )
         {
-            for( uint32_t index = 0; index != __EFET_MAX__; ++index )
+            for( uint32_t index = 0; index != MENGINE_FONTEFFECT_TYPE_MAX; ++index )
             {
                 const Char * name = Helper::getFontEffectTypeName( (EFontEffectType)index );
 
@@ -41,7 +41,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool parseGradientSpaceName( const Char * _name, EFontEffectGradientSpace * const _space )
         {
-            for( uint32_t index = 0; index != __EFEGS_MAX__; ++index )
+            for( uint32_t index = 0; index != MENGINE_FONTEFFECT_GRADIENT_SPACE_MAX; ++index )
             {
                 const Char * name = Helper::getFontEffectGradientSpaceName( (EFontEffectGradientSpace)index );
 

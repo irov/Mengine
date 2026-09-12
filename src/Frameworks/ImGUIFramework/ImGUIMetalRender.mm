@@ -444,6 +444,9 @@ static void MengineImGUIMetalRenderDrawCallbackSetSamplerNearest( const ImDrawLi
         indexBufferOffset += (size_t)drawList->IdxBuffer.Size * sizeof( ImDrawIdx );
     }
 
+    RENDER_SYSTEM()
+        ->removeScissor();
+
     MengineImGUIMetalContext * context = m_context;
 
     [commandBuffer addCompletedHandler:^(id<MTLCommandBuffer>)

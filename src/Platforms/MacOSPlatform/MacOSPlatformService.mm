@@ -12,6 +12,7 @@
 #import "Interface/DateTimeSystemInterface.h"
 #import "Interface/ThreadServiceInterface.h"
 
+#import "Environment/Apple/AppleBundle.h"
 #import "Environment/Apple/AppleDetail.h"
 #import "Environment/MacOS/MacOSUtils.h"
 #import "Environment/POSIX/POSIXCreateProcess.h"
@@ -117,9 +118,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t MacOSPlatformService::getUserPath( Char * const _userPath ) const
     {
-        PathString Project_Company = CONFIG_VALUE_PATHSTRING( "Project", "Company", "UNKNOWN" );
-        PathString Project_Name = CONFIG_VALUE_PATHSTRING( "Project", "Name", "UNKNOWN" );
-
         NSArray * paths = NSSearchPathForDirectoriesInDomains( NSApplicationSupportDirectory, NSUserDomainMask, YES );
 
         if( [paths count] == 0 )
@@ -129,7 +127,18 @@ namespace Mengine
             return 0;
         }
 
-        NSString * userPath = [NSString pathWithComponents:@[[paths objectAtIndex:0], @(Project_Company.c_str()), @(Project_Name.c_str())]];
+        NSString * bundleIdentifier = [AppleBundle getIdentifier];
+
+        if( bundleIdentifier == nil )
+        {
+            LOGGER_ERROR( "macOS application has no bundle identifier" );
+
+            StdString::strcpy_safe( _userPath, "", MENGINE_MAX_PATH );
+
+            return 0;
+        }
+
+        NSString * userPath = [[paths objectAtIndex:0] stringByAppendingPathComponent:bundleIdentifier];
 
         Path extraPreferencesFolderName = {'\0'};
         size_t ExtraPreferencesFolderNameLen = this->getExtraPreferencesFolderName( extraPreferencesFolderName );

@@ -144,6 +144,8 @@ namespace Mengine
         bool getSafeAreaViewport( Viewport * const _viewport ) const override;
         void setSafeAreaViewportChangedCallback( const LambdaSafeAreaViewportChanged & _callback ) override;
 
+        bool getDisplayCutoutViewport( Viewport * const _viewport ) const override;
+
     public:
         bool openUrlInDefaultBrowser( const Char * _url ) override;
         bool openMail( const Char * _email, const Char * _subject, const Char * _body, const Char * _technically ) override;
@@ -202,6 +204,7 @@ namespace Mengine
         void androidNativeControllerButtonEvent( jlong _eventTime, jint _deviceId, jint _keyCode, jfloat _value, jboolean _isDown ) override;
         void androidNativeControllerAxisEvent( jlong _eventTime, jint _deviceId, jint _axis, jfloat _value ) override;
         void androidNativeSafeAreaViewportEvent( jfloat _beginX, jfloat _beginY, jfloat _endX, jfloat _endY ) override;
+        void androidNativeDisplayCutoutViewportEvent( jboolean _valid, jfloat _beginX, jfloat _beginY, jfloat _endX, jfloat _endY ) override;
         void androidNativeTextEvent( jlong _eventTime, jint _unicode ) override;
         void androidNativePauseEvent( jfloat _x, jfloat _y ) override;
         void androidNativeResumeEvent( jfloat _x, jfloat _y ) override;
@@ -287,6 +290,9 @@ namespace Mengine
         Viewport m_safeAreaViewport;
         LambdaSafeAreaViewportChanged m_safeAreaViewportChangedCallback;
         bool m_safeAreaViewportValid;
+
+        Viewport m_displayCutoutViewport;
+        bool m_displayCutoutViewportValid;
 
         LambdaDeleteAccountAccepted m_deleteAccountAccepted;
         LambdaDeleteAccountCanceled m_deleteAccountCanceled;

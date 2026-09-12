@@ -1140,6 +1140,13 @@ namespace Mengine
         (void)_callback;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool GDKPlatformService::getDisplayCutoutViewport( Viewport * const _viewport ) const
+    {
+        MENGINE_UNUSED( _viewport );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool GDKPlatformService::openUrlInDefaultBrowser( const Char * _url )
     {
         WPath unicode_url = {L'\0'};

@@ -13,6 +13,7 @@ import android.os.SystemClock;
 import android.util.SparseBooleanArray;
 import android.util.SparseIntArray;
 import android.view.Display;
+import android.view.DisplayCutout;
 import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -73,7 +74,35 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
             this.dispatchSafeAreaViewportLegacy(view, windowInsets);
         }
 
+        this.dispatchDisplayCutoutViewport(windowInsets);
+
         return windowInsets;
+    }
+
+    private void dispatchDisplayCutoutViewport(WindowInsets windowInsets) {
+        Rect cutout = null;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            DisplayCutout displayCutout = windowInsets.getDisplayCutout();
+
+            if (displayCutout != null) {
+                cutout = displayCutout.getBoundingRectTop();
+            }
+        }
+
+        if (cutout == null || cutout.isEmpty() == true) {
+            MengineNative.AndroidPlatform_displayCutoutViewportEvent(false, 0.f, 0.f, 0.f, 0.f);
+
+            return;
+        }
+
+        MengineNative.AndroidPlatform_displayCutoutViewportEvent(
+            true,
+            (float)cutout.left,
+            (float)cutout.top,
+            (float)cutout.right,
+            (float)cutout.bottom
+        );
     }
 
     @RequiresApi(Build.VERSION_CODES.R)

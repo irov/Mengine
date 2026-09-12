@@ -1038,6 +1038,22 @@ namespace Mengine
                     ->getSafeAreaViewport();
             }
             //////////////////////////////////////////////////////////////////////////
+            PyObject * s_getDisplayCutoutViewport( pybind::kernel_interface * _kernel )
+            {
+                Viewport viewport;
+                if( APPLICATION_SERVICE()
+                    ->getDisplayCutoutViewport( &viewport ) == false )
+                {
+                    PyObject * py_none = _kernel->ret_none();
+
+                    return py_none;
+                }
+
+                PyObject * py_viewport = pybind::ptr( _kernel, viewport );
+
+                return py_viewport;
+            }
+            //////////////////////////////////////////////////////////////////////////
             void s_setNopause( bool _value )
             {
                 return APPLICATION_SERVICE()
@@ -4647,6 +4663,7 @@ namespace Mengine
         pybind::def_functor( _kernel, "getCurrentResolution", nodeScriptMethod, &EngineScriptMethod::s_getCurrentResolution );
         pybind::def_functor( _kernel, "getContentResolution", nodeScriptMethod, &EngineScriptMethod::s_getContentResolution );
         pybind::def_functor( _kernel, "getSafeAreaViewport", nodeScriptMethod, &EngineScriptMethod::s_getSafeAreaViewport );
+        pybind::def_functor_kernel( _kernel, "getDisplayCutoutViewport", nodeScriptMethod, &EngineScriptMethod::s_getDisplayCutoutViewport );
         pybind::def_functor( _kernel, "getHotSpotImageSize", nodeScriptMethod, &EngineScriptMethod::s_getHotSpotImageSize );
 
         pybind::def_functor( _kernel, "setNopause", nodeScriptMethod, &EngineScriptMethod::s_setNopause );

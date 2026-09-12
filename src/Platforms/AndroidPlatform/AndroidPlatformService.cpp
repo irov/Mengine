@@ -376,6 +376,19 @@ extern "C"
         platformExtension->androidNativeSafeAreaViewportEvent( beginX, beginY, endX, endY );
     }
     ///////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1displayCutoutViewportEvent )(JNIEnv * env, jclass cls, jboolean valid, jfloat beginX, jfloat beginY, jfloat endX, jfloat endY)
+    {
+        if( g_androidPlatformActived == false )
+        {
+            return;
+        }
+
+        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        platformExtension->androidNativeDisplayCutoutViewportEvent( valid, beginX, beginY, endX, endY );
+    }
+    ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1textEvent )(JNIEnv * env, jclass cls, jlong eventTime, jint unicode)
     {
         if( g_androidPlatformActived == false )
@@ -790,6 +803,7 @@ namespace Mengine
         , m_lastFingerY( 0.f )
         , m_lastFingerPressure( 0.f )
         , m_safeAreaViewportValid( false )
+        , m_displayCutoutViewportValid( false )
         , m_prevTime( 0.0 )
         , m_pauseUpdatingTime( -1.f )
         , m_active( false )
@@ -935,6 +949,18 @@ namespace Mengine
     void AndroidPlatformService::setSafeAreaViewportChangedCallback( const LambdaSafeAreaViewportChanged & _callback )
     {
         m_safeAreaViewportChangedCallback = _callback;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AndroidPlatformService::getDisplayCutoutViewport( Viewport * const _viewport ) const
+    {
+        if( m_displayCutoutViewportValid == false )
+        {
+            return false;
+        }
+
+        *_viewport = m_displayCutoutViewport;
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::_initializeService()
@@ -3127,6 +3153,19 @@ namespace Mengine
         {
             m_safeAreaViewportChangedCallback( m_safeAreaViewport );
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::androidNativeDisplayCutoutViewportEvent( jboolean _valid, jfloat _beginX, jfloat _beginY, jfloat _endX, jfloat _endY )
+    {
+        if( _valid == JNI_FALSE )
+        {
+            m_displayCutoutViewportValid = false;
+
+            return;
+        }
+
+        m_displayCutoutViewport = Viewport( _beginX, _beginY, _endX, _endY );
+        m_displayCutoutViewportValid = true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeTextEvent( jlong _eventTime, jint _unicode )

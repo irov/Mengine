@@ -93,6 +93,7 @@ namespace Mengine
 
         const Viewport & getRenderViewport() const override;
         const Viewport & getSafeAreaViewport() const override;
+        bool getDisplayCutoutViewport( Viewport * const _viewport ) const override;
         void setContentResolution( const Resolution & _resolution ) override;
         const Resolution & getContentResolution() const override;
 

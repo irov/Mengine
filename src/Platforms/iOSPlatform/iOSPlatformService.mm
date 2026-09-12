@@ -313,6 +313,13 @@ namespace Mengine
         m_safeAreaViewportChangedCallback = _callback;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool iOSPlatformService::getDisplayCutoutViewport( Viewport * const _viewport ) const
+    {
+        MENGINE_UNUSED( _viewport );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool iOSPlatformService::_initializeService()
     {
         m_beginTime = Helper::getSystemTimestamp();

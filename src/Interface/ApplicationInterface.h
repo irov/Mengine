@@ -97,6 +97,7 @@ namespace Mengine
         virtual const Viewport & getRenderViewport() const = 0;
 
         virtual const Viewport & getSafeAreaViewport() const = 0;
+        virtual bool getDisplayCutoutViewport( Viewport * const _viewport ) const = 0;
 
         virtual void setContentResolution( const Resolution & _resolution ) = 0;
         virtual const Resolution & getContentResolution() const = 0;

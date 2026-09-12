@@ -992,6 +992,13 @@ namespace Mengine
         (void)_callback;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool UnixPlatformService::getDisplayCutoutViewport( Viewport * const _viewport ) const
+    {
+        MENGINE_UNUSED( _viewport );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool UnixPlatformService::getNoFullscreen() const
     {
         return false;

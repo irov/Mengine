@@ -1010,6 +1010,13 @@ namespace Mengine
         (void)_callback;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Win32PlatformService::getDisplayCutoutViewport( Viewport * const _viewport ) const
+    {
+        MENGINE_UNUSED( _viewport );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     const Tags & Win32PlatformService::getPlatformTags() const
     {
         return m_platformTags;

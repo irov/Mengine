@@ -148,6 +148,8 @@ namespace Mengine
         virtual bool getSafeAreaViewport( Viewport * const _viewport ) const = 0;
         virtual void setSafeAreaViewportChangedCallback( const LambdaSafeAreaViewportChanged & _callback ) = 0;
 
+        virtual bool getDisplayCutoutViewport( Viewport * const _viewport ) const = 0;
+
     public:
         virtual bool openUrlInDefaultBrowser( const Char * _url ) = 0;
         virtual bool openMail( const Char * _email, const Char * _subject, const Char * _body, const Char * _technically ) = 0;

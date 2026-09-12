@@ -2093,6 +2093,14 @@ namespace Mengine
         return m_safeAreaViewport;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Application::getDisplayCutoutViewport( Viewport * const _viewport ) const
+    {
+        bool successful = PLATFORM_SERVICE()
+            ->getDisplayCutoutViewport( _viewport );
+
+        return successful;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Application::calcRenderViewport_( float * const _aspect, Viewport * const _viewport ) const
     {
         const Resolution & currentWindowResolution = this->getCurrentWindowResolution();

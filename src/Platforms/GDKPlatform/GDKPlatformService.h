@@ -127,6 +127,8 @@ namespace Mengine
         bool getSafeAreaViewport( Viewport * const _viewport ) const override;
         void setSafeAreaViewportChangedCallback( const LambdaSafeAreaViewportChanged & _callback ) override;
 
+        bool getDisplayCutoutViewport( Viewport * const _viewport ) const override;
+
     public:
         bool openUrlInDefaultBrowser( const Char * _url ) override;
         bool openMail( const Char * _email, const Char * _subject, const Char * _body, const Char * _technically ) override;

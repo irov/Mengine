@@ -259,6 +259,13 @@ namespace Mengine
         (void)_callback;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool MacOSPlatformService::getDisplayCutoutViewport( Viewport * const _viewport ) const
+    {
+        MENGINE_UNUSED( _viewport );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool MacOSPlatformService::_initializeService()
     {
         m_beginTime = Helper::getSystemTimestamp();

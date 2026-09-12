@@ -4,6 +4,8 @@
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/ColorHelper.h"
+#include "Kernel/Hexadecimal.h"
+#include "Kernel/StringLength.h"
 
 #include "Config/Typeinfo.h"
 
@@ -290,6 +292,36 @@ namespace Mengine
                     float a = _json.get( "a", 1.f );
 
                     *_value = Helper::makeColorF( r, g, b, a );
+
+                    return true;
+                }
+
+                if( _json.is_type_string() == true )
+                {
+                    const Char * value_str = _json;
+
+                    if( value_str[0] != '#' )
+                    {
+                        return false;
+                    }
+
+                    const Char * hexadecimal = value_str + 1;
+
+                    size_t hexadecimal_size = Helper::stringLength( hexadecimal );
+
+                    if( hexadecimal_size != 6 && hexadecimal_size != 8 )
+                    {
+                        return false;
+                    }
+
+                    uint8_t channels[4] = {0, 0, 0, 255};
+
+                    if( Helper::decodeHexadecimal( hexadecimal, hexadecimal_size, channels, sizeof( channels ), nullptr ) == false )
+                    {
+                        return false;
+                    }
+
+                    *_value = Helper::makeColor8( channels[0], channels[1], channels[2], channels[3] );
 
                     return true;
                 }

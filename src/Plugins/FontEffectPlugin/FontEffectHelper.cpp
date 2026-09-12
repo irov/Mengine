@@ -23,6 +23,19 @@ namespace Mengine
             "Font"
         };
         //////////////////////////////////////////////////////////////////////////
+        static const Char * const FontEffectBlendModeNames[MENGINE_FONTEFFECT_BLEND_MODE_MAX] = {
+            "Normal",
+            "Multiply",
+            "Screen",
+            "Overlay",
+            "Darken",
+            "Lighten",
+            "Add",
+            "Subtract",
+            "Difference",
+            "Erase"
+        };
+        //////////////////////////////////////////////////////////////////////////
         static const Char * const FontEffectOutlinePositionNames[MENGINE_FONTEFFECT_OUTLINE_POSITION_MAX] = {
             "Outside",
             "Center",
@@ -62,6 +75,18 @@ namespace Mengine
             }
 
             const Char * name = Detail::FontEffectSpaceNames[_space];
+
+            return name;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const Char * getFontEffectBlendModeName( EFontEffectBlendMode _mode )
+        {
+            if( _mode >= MENGINE_FONTEFFECT_BLEND_MODE_MAX )
+            {
+                return "";
+            }
+
+            const Char * name = Detail::FontEffectBlendModeNames[_mode];
 
             return name;
         }

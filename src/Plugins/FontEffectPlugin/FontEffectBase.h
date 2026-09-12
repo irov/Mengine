@@ -48,11 +48,15 @@ namespace Mengine
         bool addLayer( uint32_t * const _layerIndex );
         bool setLayerEnabled( uint32_t _layerIndex, bool _enabled );
         bool setLayerOpacity( uint32_t _layerIndex, float _opacity );
+        bool setLayerBlendMode( uint32_t _layerIndex, EFontEffectBlendMode _blendMode );
+        bool setLayerKnockout( uint32_t _layerIndex, bool _knockout );
+        bool setLayerMerge( uint32_t _layerIndex, bool _merge );
 
     public:
         bool addEffect( uint32_t _layerIndex, EFontEffectType _type, uint32_t * const _effectIndex );
         bool setEffectEnabled( uint32_t _layerIndex, uint32_t _effectIndex, bool _enabled );
         bool setEffectOpacity( uint32_t _layerIndex, uint32_t _effectIndex, float _opacity );
+        bool setEffectBlendMode( uint32_t _layerIndex, uint32_t _effectIndex, EFontEffectBlendMode _blendMode );
         bool setEffectColor( uint32_t _layerIndex, uint32_t _effectIndex, const Color & _color );
         bool setEffectWidth( uint32_t _layerIndex, uint32_t _effectIndex, float _width );
         bool setEffectSharpness( uint32_t _layerIndex, uint32_t _effectIndex, float _sharpness );
@@ -98,7 +102,8 @@ namespace Mengine
         bool setupEffectGradient_( uint32_t _layerIndex, uint32_t _effectIndex, const FontEffectGradientDesc & _gradient );
 
     protected:
-        bool applyLayer_( const FontEffectLayerDesc & _layer, uint32_t _layoutIndex, uint32_t _width, uint32_t _rows, uint32_t _channel, int32_t _left, int32_t _top, uint32_t _height, const LambdaFontEffectProvider & _provider );
+        void composeLayer_( const FontEffectLayerDesc & _layer, uint32_t _width, uint32_t _rows, uint32_t _channel, int32_t _top, uint32_t _height );
+        bool flushLayout_( uint32_t _layoutIndex, int32_t _left, int32_t _top, const LambdaFontEffectProvider & _provider );
         void makeGradientContext_( const FontEffectGradientDesc & _gradient, uint32_t _width, uint32_t _rows, int32_t _top, uint32_t _height, FontEffectGradientContext * const _context ) const;
         void ensureSignedDistance_();
 

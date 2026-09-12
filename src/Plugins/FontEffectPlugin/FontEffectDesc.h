@@ -47,6 +47,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 #define MENGINE_FONTEFFECT_SPACE_MAX (Mengine::EFES_FONT + 1)
     //////////////////////////////////////////////////////////////////////////
+    enum EFontEffectBlendMode : uint32_t
+    {
+        EFEBM_NORMAL = 0,
+        EFEBM_MULTIPLY,
+        EFEBM_SCREEN,
+        EFEBM_OVERLAY,
+        EFEBM_DARKEN,
+        EFEBM_LIGHTEN,
+        EFEBM_ADD,
+        EFEBM_SUBTRACT,
+        EFEBM_DIFFERENCE,
+        EFEBM_ERASE
+    };
+    //////////////////////////////////////////////////////////////////////////
+#define MENGINE_FONTEFFECT_BLEND_MODE_MAX (Mengine::EFEBM_ERASE + 1)
+    //////////////////////////////////////////////////////////////////////////
     enum EFontEffectOutlinePosition : uint32_t
     {
         EFEOP_OUTSIDE = 0,
@@ -93,6 +109,7 @@ namespace Mengine
         EFontEffectType type = EFET_FILL;
         bool enabled = true;
         float opacity = 1.f;
+        EFontEffectBlendMode blendMode = EFEBM_NORMAL;
 
         Color color = Color( 1.f, 1.f, 1.f, 1.f );
 
@@ -125,6 +142,9 @@ namespace Mengine
     {
         bool enabled = true;
         float opacity = 1.f;
+        EFontEffectBlendMode blendMode = EFEBM_NORMAL;
+        bool knockout = false;
+        bool merge = false;
         VectorFontEffectStyleDescs styles;
     };
     //////////////////////////////////////////////////////////////////////////

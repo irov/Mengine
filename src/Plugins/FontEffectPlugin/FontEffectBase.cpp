@@ -29,6 +29,7 @@ namespace Mengine
         {
             EFESI_SOURCE = 0,
             EFESI_ACCUMULATOR,
+            EFESI_LAYER,
             EFESI_EFFECT
         };
         //////////////////////////////////////////////////////////////////////////
@@ -261,6 +262,7 @@ namespace Mengine
         }
 
         uint32_t layoutCount = 0;
+        bool firstLayer = true;
 
         for( const FontEffectLayerDesc & layer : m_desc.layers )
         {
@@ -269,7 +271,12 @@ namespace Mengine
                 continue;
             }
 
-            ++layoutCount;
+            if( firstLayer == true || layer.merge == false )
+            {
+                ++layoutCount;
+            }
+
+            firstLayer = false;
         }
 
         if( layoutCount > MENGINE_FONTEFFECT_MAX_LAYERS )
@@ -331,6 +338,11 @@ namespace Mengine
         }
 
         if( this->setEffectOpacity( _layerIndex, _effectIndex, _effect.opacity ) == false )
+        {
+            return false;
+        }
+
+        if( this->setEffectBlendMode( _layerIndex, _effectIndex, _effect.blendMode ) == false )
         {
             return false;
         }
@@ -498,6 +510,21 @@ namespace Mengine
                 return false;
             }
 
+            if( this->setLayerBlendMode( layerIndex, layer.blendMode ) == false )
+            {
+                return false;
+            }
+
+            if( this->setLayerKnockout( layerIndex, layer.knockout ) == false )
+            {
+                return false;
+            }
+
+            if( this->setLayerMerge( layerIndex, layer.merge ) == false )
+            {
+                return false;
+            }
+
             for( const FontEffectStyleDesc & effect : layer.styles )
             {
                 uint32_t effectIndex;
@@ -599,10 +626,9 @@ namespace Mengine
         _context->radiusInv = (radius > 0.f) ? 1.f / radius : 1.f;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FontEffectBase::applyLayer_( const FontEffectLayerDesc & _layer, uint32_t _layoutIndex, uint32_t _width, uint32_t _rows, uint32_t _channel, int32_t _left, int32_t _top, uint32_t _height, const LambdaFontEffectProvider & _provider )
+    void FontEffectBase::composeLayer_( const FontEffectLayerDesc & _layer, uint32_t _width, uint32_t _rows, uint32_t _channel, int32_t _top, uint32_t _height )
     {
         float sample = (float)m_effectSample;
-        uint32_t padding = m_padding;
 
         FontEffectPlane alpha = m_scratch.getPlane( Detail::EFESP_ALPHA );
         FontEffectPlane tmp0 = m_scratch.getPlane( Detail::EFESP_TMP0 );
@@ -611,10 +637,10 @@ namespace Mengine
         FontEffectPlane work1 = m_scratch.getPlane( Detail::EFESP_WORK1 );
 
         FontEffectImage source = m_scratch.getImage( Detail::EFESI_SOURCE );
-        FontEffectImage accumulator = m_scratch.getImage( Detail::EFESI_ACCUMULATOR );
+        FontEffectImage layerImage = m_scratch.getImage( Detail::EFESI_LAYER );
         FontEffectImage effectImage = m_scratch.getImage( Detail::EFESI_EFFECT );
 
-        Helper::fontEffectImageClear( accumulator );
+        Helper::fontEffectImageClear( layerImage );
 
         for( const FontEffectStyleDesc & effect : _layer.styles )
         {
@@ -661,7 +687,7 @@ namespace Mengine
                         Helper::fontEffectColorize( alpha, effect.color, effect.opacity, effectImage );
                     }
 
-                    Helper::fontEffectCompositeOver( accumulator, effectImage );
+                    Helper::fontEffectComposite( layerImage, effectImage, effect.blendMode );
                 }break;
             case EFET_OUTLINE:
                 {
@@ -687,7 +713,7 @@ namespace Mengine
 
                     Helper::fontEffectCoverageBand( sdf, inner, outer, effect.sharpness * sample, work0 );
                     Helper::fontEffectColorize( work0, effect.color, effect.opacity, effectImage );
-                    Helper::fontEffectCompositeOver( accumulator, effectImage );
+                    Helper::fontEffectComposite( layerImage, effectImage, effect.blendMode );
                 }break;
             case EFET_SHADOW:
             case EFET_GLOW:
@@ -719,7 +745,7 @@ namespace Mengine
 
                     Helper::fontEffectBlurPlane( work0, effect.blur * sample, tmp0 );
                     Helper::fontEffectColorize( work0, effect.color, effect.opacity, effectImage );
-                    Helper::fontEffectCompositeOver( accumulator, effectImage );
+                    Helper::fontEffectComposite( layerImage, effectImage, effect.blendMode );
                 }break;
             case EFET_INNER_SHADOW:
             case EFET_INNER_GLOW:
@@ -753,7 +779,7 @@ namespace Mengine
                     Helper::fontEffectBlurPlane( work0, effect.blur * sample, tmp0 );
                     Helper::fontEffectMultiply( work0, alpha );
                     Helper::fontEffectColorize( work0, effect.color, effect.opacity, effectImage );
-                    Helper::fontEffectCompositeOver( accumulator, effectImage );
+                    Helper::fontEffectComposite( layerImage, effectImage, effect.blendMode );
                 }break;
             case EFET_BEVEL:
                 {
@@ -762,21 +788,28 @@ namespace Mengine
                     FontEffectPlane sdf = m_scratch.getPlane( Detail::EFESP_SDF );
 
                     Helper::fontEffectBevel( sdf, alpha, effect, sample, work0, tmp0, effectImage );
-                    Helper::fontEffectCompositeOver( accumulator, effectImage );
+                    Helper::fontEffectComposite( layerImage, effectImage, effect.blendMode );
                 }break;
             case EFET_BLUR:
                 {
-                    Helper::fontEffectBlurImage( accumulator, effect.blur * sample, tmp0, tmp1 );
+                    Helper::fontEffectBlurImage( layerImage, effect.blur * sample, tmp0, tmp1 );
                 }break;
             case EFET_SATIN:
                 {
                     Helper::fontEffectSatin( alpha, effect, sample, work0, work1, tmp0, effectImage );
-                    Helper::fontEffectCompositeOver( accumulator, effectImage );
+                    Helper::fontEffectComposite( layerImage, effectImage, effect.blendMode );
                 }break;
             }
         }
 
-        Helper::fontEffectImageOpacity( accumulator, _layer.opacity );
+        Helper::fontEffectImageOpacity( layerImage, _layer.opacity );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FontEffectBase::flushLayout_( uint32_t _layoutIndex, int32_t _left, int32_t _top, const LambdaFontEffectProvider & _provider )
+    {
+        uint32_t padding = m_padding;
+
+        FontEffectImage accumulator = m_scratch.getImage( Detail::EFESI_ACCUMULATOR );
 
         FontEffectRect rect;
         if( Helper::fontEffectTightCrop( accumulator, &rect ) == false )
@@ -846,40 +879,72 @@ namespace Mengine
             Helper::fontEffectImportBGRA( _buffer, _width, _rows, _pitch, padding, alpha, source );
         }
 
+        FontEffectImage accumulator = m_scratch.getImage( Detail::EFESI_ACCUMULATOR );
+        FontEffectImage layerImage = m_scratch.getImage( Detail::EFESI_LAYER );
+
+        VectorFontEffectLayerDescs defaultLayers;
+
         if( m_defaultFill == true )
         {
             FontEffectLayerDesc layer;
-            layer.enabled = true;
-            layer.opacity = 1.f;
 
             FontEffectStyleDesc fill;
             fill.type = EFET_FILL;
 
             layer.styles.emplace_back( fill );
 
-            if( this->applyLayer_( layer, 0, _width, _rows, _channel, _left, _top, _height, _provider ) == false )
-            {
-                return false;
-            }
-
-            return true;
+            defaultLayers.emplace_back( layer );
         }
 
-        uint32_t layoutIndex = 0;
+        const VectorFontEffectLayerDescs & layers = (m_defaultFill == true) ? defaultLayers : m_desc.layers;
 
-        for( const FontEffectLayerDesc & layer : m_desc.layers )
+        uint32_t layoutIndex = 0;
+        bool openLayout = false;
+
+        for( const FontEffectLayerDesc & layer : layers )
         {
             if( layer.enabled == false )
             {
                 continue;
             }
 
-            if( this->applyLayer_( layer, layoutIndex, _width, _rows, _channel, _left, _top, _height, _provider ) == false )
+            this->composeLayer_( layer, _width, _rows, _channel, _top, _height );
+
+            bool startLayout = (openLayout == false || layer.merge == false);
+
+            if( startLayout == true )
+            {
+                if( openLayout == true )
+                {
+                    if( this->flushLayout_( layoutIndex, _left, _top, _provider ) == false )
+                    {
+                        return false;
+                    }
+
+                    ++layoutIndex;
+                }
+
+                Helper::fontEffectImageCopy( layerImage, accumulator );
+
+                openLayout = true;
+            }
+            else
+            {
+                Helper::fontEffectComposite( accumulator, layerImage, layer.blendMode );
+            }
+
+            if( layer.knockout == true )
+            {
+                Helper::fontEffectKnockout( accumulator, alpha );
+            }
+        }
+
+        if( openLayout == true )
+        {
+            if( this->flushLayout_( layoutIndex, _left, _top, _provider ) == false )
             {
                 return false;
             }
-
-            ++layoutIndex;
         }
 
         return true;
@@ -1001,6 +1066,48 @@ namespace Mengine
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool FontEffectBase::setLayerBlendMode( uint32_t _layerIndex, EFontEffectBlendMode _blendMode )
+    {
+        FontEffectLayerDesc * layer = this->getLayer_( _layerIndex );
+
+        if( layer == nullptr )
+        {
+            return false;
+        }
+
+        bool successful = Detail::setEnum( (uint32_t *)&layer->blendMode, _blendMode, MENGINE_FONTEFFECT_BLEND_MODE_MAX, "layer blend mode" );
+
+        return successful;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FontEffectBase::setLayerKnockout( uint32_t _layerIndex, bool _knockout )
+    {
+        FontEffectLayerDesc * layer = this->getLayer_( _layerIndex );
+
+        if( layer == nullptr )
+        {
+            return false;
+        }
+
+        layer->knockout = _knockout;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FontEffectBase::setLayerMerge( uint32_t _layerIndex, bool _merge )
+    {
+        FontEffectLayerDesc * layer = this->getLayer_( _layerIndex );
+
+        if( layer == nullptr )
+        {
+            return false;
+        }
+
+        layer->merge = _merge;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool FontEffectBase::addEffect( uint32_t _layerIndex, EFontEffectType _type, uint32_t * const _effectIndex )
     {
         FontEffectLayerDesc * layer = this->getLayer_( _layerIndex );
@@ -1053,6 +1160,20 @@ namespace Mengine
         }
 
         bool successful = Detail::setPositive( &effect->opacity, _opacity, "effect opacity" );
+
+        return successful;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FontEffectBase::setEffectBlendMode( uint32_t _layerIndex, uint32_t _effectIndex, EFontEffectBlendMode _blendMode )
+    {
+        FontEffectStyleDesc * effect = this->getEffect_( _layerIndex, _effectIndex );
+
+        if( effect == nullptr )
+        {
+            return false;
+        }
+
+        bool successful = Detail::setEnum( (uint32_t *)&effect->blendMode, _blendMode, MENGINE_FONTEFFECT_BLEND_MODE_MAX, "effect blend mode" );
 
         return successful;
     }

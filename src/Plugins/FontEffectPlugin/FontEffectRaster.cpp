@@ -144,6 +144,49 @@ namespace Mengine
                 return dither;
             }
             //////////////////////////////////////////////////////////////////////////
+            static float blendChannel( EFontEffectBlendMode _mode, float _cb, float _cs )
+            {
+                switch( _mode )
+                {
+                case EFEBM_MULTIPLY:
+                    return _cb * _cs;
+                case EFEBM_SCREEN:
+                    return _cb + _cs - _cb * _cs;
+                case EFEBM_OVERLAY:
+                    {
+                        if( _cb <= 0.5f )
+                        {
+                            return 2.f * _cb * _cs;
+                        }
+
+                        return 1.f - 2.f * (1.f - _cb) * (1.f - _cs);
+                    }
+                case EFEBM_DARKEN:
+                    return (_cb < _cs) ? _cb : _cs;
+                case EFEBM_LIGHTEN:
+                    return (_cb > _cs) ? _cb : _cs;
+                case EFEBM_ADD:
+                    {
+                        float sum = _cb + _cs;
+
+                        return (sum > 1.f) ? 1.f : sum;
+                    }
+                case EFEBM_SUBTRACT:
+                    {
+                        float difference = _cb - _cs;
+
+                        return (difference < 0.f) ? 0.f : difference;
+                    }
+                case EFEBM_DIFFERENCE:
+                    return StdMath::fabsf( _cb - _cs );
+                case EFEBM_NORMAL:
+                case EFEBM_ERASE:
+                    break;
+                }
+
+                return _cs;
+            }
+            //////////////////////////////////////////////////////////////////////////
             static float gradientT( const FontEffectGradientDesc & _gradient, const FontEffectGradientContext & _context, uint32_t _x, uint32_t _y, float _sdf )
             {
                 float dx = ((float)_x + 0.5f) - _context.centerX;
@@ -978,21 +1021,87 @@ namespace Mengine
             }
         }
         //////////////////////////////////////////////////////////////////////////
-        void fontEffectCompositeOver( const FontEffectImage & _dst, const FontEffectImage & _src )
+        void fontEffectComposite( const FontEffectImage & _dst, const FontEffectImage & _src, EFontEffectBlendMode _mode )
         {
             size_t size = (size_t)_dst.width * (size_t)_dst.height;
+
+            if( _mode == EFEBM_NORMAL )
+            {
+                for( size_t index = 0; index != size; ++index )
+                {
+                    const float * src = _src.data + index * 4;
+                    float * dst = _dst.data + index * 4;
+
+                    float ia = 1.f - src[3];
+
+                    dst[0] = src[0] + dst[0] * ia;
+                    dst[1] = src[1] + dst[1] * ia;
+                    dst[2] = src[2] + dst[2] * ia;
+                    dst[3] = src[3] + dst[3] * ia;
+                }
+
+                return;
+            }
+
+            if( _mode == EFEBM_ERASE )
+            {
+                for( size_t index = 0; index != size; ++index )
+                {
+                    const float * src = _src.data + index * 4;
+                    float * dst = _dst.data + index * 4;
+
+                    float ia = 1.f - src[3];
+
+                    dst[0] *= ia;
+                    dst[1] *= ia;
+                    dst[2] *= ia;
+                    dst[3] *= ia;
+                }
+
+                return;
+            }
 
             for( size_t index = 0; index != size; ++index )
             {
                 const float * src = _src.data + index * 4;
                 float * dst = _dst.data + index * 4;
 
-                float ia = 1.f - src[3];
+                float as = src[3];
+                float ab = dst[3];
 
-                dst[0] = src[0] + dst[0] * ia;
-                dst[1] = src[1] + dst[1] * ia;
-                dst[2] = src[2] + dst[2] * ia;
-                dst[3] = src[3] + dst[3] * ia;
+                float asInv = (as > 0.f) ? 1.f / as : 0.f;
+                float abInv = (ab > 0.f) ? 1.f / ab : 0.f;
+
+                float ao = as + ab * (1.f - as);
+
+                for( uint32_t channel = 0; channel != 3; ++channel )
+                {
+                    float cs = src[channel] * asInv;
+                    float cb = dst[channel] * abInv;
+
+                    float blended = Detail::blendChannel( _mode, cb, cs );
+
+                    dst[channel] = (1.f - ab) * as * cs + (1.f - as) * ab * cb + as * ab * blended;
+                }
+
+                dst[3] = ao;
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void fontEffectKnockout( const FontEffectImage & _image, const FontEffectPlane & _mask )
+        {
+            size_t size = (size_t)_image.width * (size_t)_image.height;
+
+            for( size_t index = 0; index != size; ++index )
+            {
+                float ia = 1.f - Detail::clamp01( _mask.data[index] );
+
+                float * px = _image.data + index * 4;
+
+                px[0] *= ia;
+                px[1] *= ia;
+                px[2] *= ia;
+                px[3] *= ia;
             }
         }
         //////////////////////////////////////////////////////////////////////////

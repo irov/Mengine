@@ -61,7 +61,7 @@ namespace Mengine
 
     public:
         static const uint32_t MAX_PLANES = 8;
-        static const uint32_t MAX_IMAGES = 3;
+        static const uint32_t MAX_IMAGES = 4;
         static const uint32_t MAX_LINES = 4;
 
     protected:
@@ -106,7 +106,8 @@ namespace Mengine
 
         void fontEffectBevel( const FontEffectPlane & _sdf, const FontEffectPlane & _alpha, const FontEffectStyleDesc & _effect, float _sample, const FontEffectPlane & _tmp0, const FontEffectPlane & _tmp1, const FontEffectImage & _out );
 
-        void fontEffectCompositeOver( const FontEffectImage & _dst, const FontEffectImage & _src );
+        void fontEffectComposite( const FontEffectImage & _dst, const FontEffectImage & _src, EFontEffectBlendMode _mode );
+        void fontEffectKnockout( const FontEffectImage & _image, const FontEffectPlane & _mask );
         void fontEffectImageOpacity( const FontEffectImage & _image, float _opacity );
 
         bool fontEffectTightCrop( const FontEffectImage & _image, FontEffectRect * const _rect );

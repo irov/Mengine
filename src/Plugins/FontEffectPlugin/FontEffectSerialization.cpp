@@ -53,6 +53,25 @@ namespace Mengine
                 return false;
             }
             //////////////////////////////////////////////////////////////////////////
+            static bool parseBlendModeName( const Char * _name, EFontEffectBlendMode * const _mode )
+            {
+                for( uint32_t index = 0; index != MENGINE_FONTEFFECT_BLEND_MODE_MAX; ++index )
+                {
+                    const Char * name = Helper::getFontEffectBlendModeName( (EFontEffectBlendMode)index );
+
+                    if( StdString::strcmp( name, _name ) != 0 )
+                    {
+                        continue;
+                    }
+
+                    *_mode = (EFontEffectBlendMode)index;
+
+                    return true;
+                }
+
+                return false;
+            }
+            //////////////////////////////////////////////////////////////////////////
             static bool parseOutlinePositionName( const Char * _name, EFontEffectOutlinePosition * const _position )
             {
                 for( uint32_t index = 0; index != MENGINE_FONTEFFECT_OUTLINE_POSITION_MAX; ++index )
@@ -225,6 +244,17 @@ namespace Mengine
                 _effect->enabled = _json.get( "Enabled", true );
                 _effect->opacity = _json.get( "Opacity", 1.f );
 
+                const Char * blend_name = _json.get( "BlendMode", "Normal" );
+
+                if( Detail::parseBlendModeName( blend_name, &_effect->blendMode ) == false )
+                {
+                    LOGGER_ERROR( "font effect invalid blend mode '%s'"
+                        , blend_name
+                    );
+
+                    return false;
+                }
+
                 Helper::getJSONColor( _json, "Color", &_effect->color );
 
                 jpp::object j_gradient;
@@ -278,9 +308,12 @@ namespace Mengine
 
                 const Char * type_name = Helper::getFontEffectTypeName( _effect.type );
 
+                const Char * blend_name = Helper::getFontEffectBlendModeName( _effect.blendMode );
+
                 j_effect.set( "Type", type_name );
                 j_effect.set( "Enabled", _effect.enabled );
                 j_effect.set( "Opacity", _effect.opacity );
+                j_effect.set( "BlendMode", blend_name );
 
                 switch( _effect.type )
                 {
@@ -361,6 +394,19 @@ namespace Mengine
 
                 _layer->enabled = _json.get( "Enabled", true );
                 _layer->opacity = _json.get( "Opacity", 1.f );
+                _layer->knockout = _json.get( "Knockout", false );
+                _layer->merge = _json.get( "Merge", false );
+
+                const Char * blend_name = _json.get( "BlendMode", "Normal" );
+
+                if( Detail::parseBlendModeName( blend_name, &_layer->blendMode ) == false )
+                {
+                    LOGGER_ERROR( "font effect layer invalid blend mode '%s'"
+                        , blend_name
+                    );
+
+                    return false;
+                }
 
                 _layer->styles.clear();
 
@@ -393,8 +439,13 @@ namespace Mengine
             {
                 jpp::object j_layer = jpp::make_object();
 
+                const Char * blend_name = Helper::getFontEffectBlendModeName( _layer.blendMode );
+
                 j_layer.set( "Enabled", _layer.enabled );
                 j_layer.set( "Opacity", _layer.opacity );
+                j_layer.set( "BlendMode", blend_name );
+                j_layer.set( "Knockout", _layer.knockout );
+                j_layer.set( "Merge", _layer.merge );
 
                 jpp::array j_effects = jpp::make_array();
 

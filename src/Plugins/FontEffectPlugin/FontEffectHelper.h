@@ -9,6 +9,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         const Char * getFontEffectTypeName( EFontEffectType _type );
         const Char * getFontEffectSpaceName( EFontEffectSpace _space );
+        const Char * getFontEffectBlendModeName( EFontEffectBlendMode _mode );
         const Char * getFontEffectOutlinePositionName( EFontEffectOutlinePosition _position );
         const Char * getFontEffectGradientTypeName( EFontEffectGradientType _type );
         //////////////////////////////////////////////////////////////////////////

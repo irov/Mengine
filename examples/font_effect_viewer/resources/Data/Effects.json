@@ -120,6 +120,39 @@
                     ]
                 }
             ]
+        },
+        "HollowBadge": {
+            "Layers": [
+                {
+                    "Knockout": true,
+                    "Effects": [
+                        { "Type": "Shadow", "Color": [0, 0, 0, 180], "Offset": [0, 3], "Blur": 3.0 },
+                        { "Type": "Outline", "Color": [255, 255, 255, 255], "Width": 2.5 },
+                        { "Type": "Fill", "Color": [255, 255, 255, 255] }
+                    ]
+                }
+            ]
+        },
+        "MergedScreen": {
+            "Sample": 2,
+            "Layers": [
+                {
+                    "Effects": [
+                        { "Type": "Fill", "Color": [40, 60, 140, 255] }
+                    ]
+                },
+                {
+                    "Merge": true,
+                    "BlendMode": "Screen",
+                    "Effects": [
+                        { "Type": "Fill", "Gradient": { "Type": "Linear", "Angle": 90,
+                            "Stops": [
+                                { "T": 0.0, "Color": [255, 180, 60, 255] },
+                                { "T": 1.0, "Color": [20, 20, 20, 255] }
+                            ] } }
+                    ]
+                }
+            ]
         }
     }
 }

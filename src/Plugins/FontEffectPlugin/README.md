@@ -64,6 +64,9 @@ Every entry inside a presets file's `Effects` map, and every `FontEffectDesc` bu
 | Field | Type | Default | Notes |
 |---|---|---|---|
 | `Enabled` | bool | `true` | A disabled layer is skipped entirely (no `TTFGlyph` quad is produced for it) but still counts toward the 4-layer limit. |
+| `BlendMode` | string | `"Normal"` | How this layer composites onto the layout it merges into. Only meaningful together with `Merge`, since a layer that starts its own layout has nothing beneath it. |
+| `Knockout` | bool | `false` | After the layer is composited, the glyph's own alpha is erased from the layout, which produces hollow text keeping only what falls outside the glyph — an outline, a shadow, a glow. |
+| `Merge` | bool | `false` | Composites this layer into the previous layer's layout instead of starting a new one. The merged pair share one `TTFGlyph` quad, which is what makes a layer `BlendMode` expressible at all: separate layouts are blended by the render material, not by this rasterizer. The first enabled layer always starts a layout regardless of the flag. |
 | `Opacity` | float | `1.0` | Multiplies the whole composited layer's alpha. Must be `>= 0`; no upper clamp. |
 | `Effects` | array of **effect** | `[]` | Rendered in array order, each one composited `over` the previous within the same layer (`Blur` instead re-blurs everything composited so far in the layer). A layer with no enabled effects still produces one transparent-if-empty output; there is no fallback fill unless you put one in the array. |
 
@@ -82,6 +85,7 @@ Common to every type:
 | `Type` | string | — | One of `Fill`, `Outline`, `Shadow`, `Glow`, `InnerShadow`, `InnerGlow`, `Bevel`, `Blur`, `Satin`. Case-sensitive, exact match; an unrecognized value fails to load. |
 | `Enabled` | bool | `true` | A disabled effect is skipped. |
 | `Opacity` | float | `1.0` | Must be `>= 0`. |
+| `BlendMode` | string | `"Normal"` | How this effect composites onto the effects before it in the same layer: `Normal`, `Multiply`, `Screen`, `Overlay`, `Darken`, `Lighten`, `Add`, `Subtract`, `Difference` or `Erase`. `Subtract` is what `FEPlugin` calls `op_blend_subtract`; `Erase` removes the effect's alpha from what is underneath, which is how a fill punches a hole through the effects below it. |
 
 Per-type fields (all sizes/offsets/blur/spread are in font pixels at the effect's `Height`, independent of `sample`). Every `Color` field defaults to opaque white (`[255,255,255,255]`) when omitted:
 
@@ -122,6 +126,8 @@ Per-type fields (all sizes/offsets/blur/spread are in font pixels at the effect'
 | `Dither` | bool | `false` | Adds one 8-bit least significant bit of ordered noise at the point of quantization, which removes banding on long ramps. |
 | `Space` | string | `"Glyph"` | `"Glyph"` (gradient spans each glyph individually) or `"Font"` (gradient spans the whole rendered text run, glyphs sample their own slice of it). |
 | `Stops` | array of `{ "T": float, "Color": color }` | `[]` | `T` in `0..1` along the gradient axis, ascending order (both the range and the order are validated). At least one stop is required when `Enabled` is `true`. |
+
+Layers map one to one onto `TTFGlyph::quads`, and separate quads are blended by the render material rather than by this rasterizer. A layer `BlendMode` therefore only takes effect when the layer is merged into the previous one; `Merge` is what puts two layers in the same quad. `getLayoutCount()` counts enabled layers that start a layout, so merging reduces it.
 
 `Position` changes what an outline paints. Before it existed, an outline filled everything within `Width` of the glyph edge, interior included, so the glyph body took the outline colour and whatever `Fill` followed had to paint over it. `"Outside"` now paints a true ring outside the edge. Every bundled preset draws an opaque `Fill` in the same layer, so they render identically; a preset whose fill is translucent, or which has no fill at all, will look different.
 

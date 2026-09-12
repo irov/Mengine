@@ -1,5 +1,7 @@
 #include "FontEffectViewerExampleDescEditor.h"
 
+#include "Config/StdAssert.h"
+
 #include "Plugins/FontEffectPlugin/FontEffectDesc.h"
 #include "Plugins/FontEffectPlugin/FontEffectHelper.h"
 
@@ -47,9 +49,13 @@ namespace Mengine
             return changed;
         }
         //////////////////////////////////////////////////////////////////////////
+        constexpr uint32_t ENUM_COMBO_MAX_NAMES = 16;
+        //////////////////////////////////////////////////////////////////////////
         static bool enumCombo( const Char * _label, uint32_t * const _value, uint32_t _count, const Char * ( *_name )( uint32_t ) )
         {
-            const Char * names[MENGINE_FONTEFFECT_TYPE_MAX];
+            assert( _count <= ENUM_COMBO_MAX_NAMES );
+
+            const Char * names[ENUM_COMBO_MAX_NAMES];
 
             for( uint32_t index = 0; index != _count; ++index )
             {
@@ -78,6 +84,13 @@ namespace Mengine
         static const Char * gradientTypeName( uint32_t _index )
         {
             const Char * name = Helper::getFontEffectGradientTypeName( (EFontEffectGradientType)_index );
+
+            return name;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static const Char * blendModeName( uint32_t _index )
+        {
+            const Char * name = Helper::getFontEffectBlendModeName( (EFontEffectBlendMode)_index );
 
             return name;
         }
@@ -165,6 +178,7 @@ namespace Mengine
             ImGui::SameLine();
             ImGui::SetNextItemWidth( 120.f );
             changed |= ImGui::SliderFloat( "Opacity", &_effect->opacity, 0.f, 1.f, "%.2f" );
+            changed |= enumCombo( "Blend", (uint32_t *)&_effect->blendMode, MENGINE_FONTEFFECT_BLEND_MODE_MAX, &blendModeName );
 
             switch( _effect->type )
             {
@@ -279,6 +293,10 @@ namespace Mengine
             ImGui::SameLine();
             ImGui::SetNextItemWidth( 120.f );
             changed |= ImGui::SliderFloat( "Opacity", &_layer->opacity, 0.f, 1.f, "%.2f" );
+            changed |= enumCombo( "Blend", (uint32_t *)&_layer->blendMode, MENGINE_FONTEFFECT_BLEND_MODE_MAX, &blendModeName );
+            changed |= ImGui::Checkbox( "Knockout", &_layer->knockout );
+            ImGui::SameLine();
+            changed |= ImGui::Checkbox( "Merge", &_layer->merge );
 
             VectorFontEffectStyleDescs & effects = _layer->styles;
 

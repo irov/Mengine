@@ -70,7 +70,7 @@ namespace Mengine
     public:
         bool setEffectGradientEnabled( uint32_t _layerIndex, uint32_t _effectIndex, bool _enabled );
         bool setEffectGradientAngle( uint32_t _layerIndex, uint32_t _effectIndex, float _angle );
-        bool setEffectGradientSpace( uint32_t _layerIndex, uint32_t _effectIndex, EFontEffectGradientSpace _space );
+        bool setEffectGradientSpace( uint32_t _layerIndex, uint32_t _effectIndex, EFontEffectSpace _space );
         bool addEffectGradientStop( uint32_t _layerIndex, uint32_t _effectIndex, float _t, const Color & _color );
 
     protected:

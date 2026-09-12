@@ -461,7 +461,7 @@ namespace Mengine
         float centerY;
         float extent;
 
-        if( _gradient.space == EFEGS_FONT )
+        if( _gradient.space == EFES_FONT )
         {
             float fontHeight = (float)_height * sample;
 
@@ -1133,7 +1133,7 @@ namespace Mengine
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FontEffectBase::setEffectGradientSpace( uint32_t _layerIndex, uint32_t _effectIndex, EFontEffectGradientSpace _space )
+    bool FontEffectBase::setEffectGradientSpace( uint32_t _layerIndex, uint32_t _effectIndex, EFontEffectSpace _space )
     {
         FontEffectStyleDesc * effect = this->getEffect_( _layerIndex, _effectIndex );
 
@@ -1142,7 +1142,7 @@ namespace Mengine
             return false;
         }
 
-        if( _space >= MENGINE_FONTEFFECT_GRADIENT_SPACE_MAX )
+        if( _space >= MENGINE_FONTEFFECT_SPACE_MAX )
         {
             LOGGER_ERROR( "font effect invalid gradient space %u"
                 , _space

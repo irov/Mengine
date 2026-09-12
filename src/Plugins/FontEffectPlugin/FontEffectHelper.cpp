@@ -17,7 +17,7 @@ namespace Mengine
             "Blur"
         };
         //////////////////////////////////////////////////////////////////////////
-        static const Char * const FontEffectGradientSpaceNames[MENGINE_FONTEFFECT_GRADIENT_SPACE_MAX] = {
+        static const Char * const FontEffectSpaceNames[MENGINE_FONTEFFECT_SPACE_MAX] = {
             "Glyph",
             "Font"
         };
@@ -39,14 +39,14 @@ namespace Mengine
             return name;
         }
         //////////////////////////////////////////////////////////////////////////
-        const Char * getFontEffectGradientSpaceName( EFontEffectGradientSpace _space )
+        const Char * getFontEffectSpaceName( EFontEffectSpace _space )
         {
-            if( _space >= MENGINE_FONTEFFECT_GRADIENT_SPACE_MAX )
+            if( _space >= MENGINE_FONTEFFECT_SPACE_MAX )
             {
                 return "";
             }
 
-            const Char * name = Detail::FontEffectGradientSpaceNames[_space];
+            const Char * name = Detail::FontEffectSpaceNames[_space];
 
             return name;
         }

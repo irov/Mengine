@@ -64,16 +64,16 @@ namespace Mengine
 
             int space = (int)_gradient->space;
 
-            const Char * spaceNames[MENGINE_FONTEFFECT_GRADIENT_SPACE_MAX];
+            const Char * spaceNames[MENGINE_FONTEFFECT_SPACE_MAX];
 
-            for( uint32_t spaceIndex = 0; spaceIndex != MENGINE_FONTEFFECT_GRADIENT_SPACE_MAX; ++spaceIndex )
+            for( uint32_t spaceIndex = 0; spaceIndex != MENGINE_FONTEFFECT_SPACE_MAX; ++spaceIndex )
             {
-                spaceNames[spaceIndex] = Helper::getFontEffectGradientSpaceName( (EFontEffectGradientSpace)spaceIndex );
+                spaceNames[spaceIndex] = Helper::getFontEffectSpaceName( (EFontEffectSpace)spaceIndex );
             }
 
-            if( ImGui::Combo( "Space", &space, spaceNames, MENGINE_FONTEFFECT_GRADIENT_SPACE_MAX ) == true )
+            if( ImGui::Combo( "Space", &space, spaceNames, MENGINE_FONTEFFECT_SPACE_MAX ) == true )
             {
-                _gradient->space = (EFontEffectGradientSpace)space;
+                _gradient->space = (EFontEffectSpace)space;
                 changed = true;
             }
 

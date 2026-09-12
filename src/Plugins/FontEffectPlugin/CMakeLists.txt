@@ -12,6 +12,9 @@ src
     FontEffectHelper.h
     FontEffectHelper.cpp
 
+    FontEffectSerialization.h
+    FontEffectSerialization.cpp
+
 
     FontEffectDataInterface.h
     FontEffectData.h

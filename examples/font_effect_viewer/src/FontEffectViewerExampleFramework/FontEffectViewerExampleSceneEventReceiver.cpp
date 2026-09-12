@@ -9,7 +9,7 @@
 
 #include "Plugins/FontEffectPlugin/FontEffectPluginInterface.h"
 #include "Plugins/FontEffectPlugin/FontEffectDataInterface.h"
-#include "Plugins/FontEffectPlugin/FontEffectHelper.h"
+#include "Plugins/FontEffectPlugin/FontEffectSerialization.h"
 #include "Plugins/TTFPlugin/TTFFont.h"
 #include "Plugins/TTFPlugin/TTFFontGlyph.h"
 #include "Plugins/MCPPlugin/MCPInterface.h"
@@ -118,139 +118,6 @@ namespace Mengine
             }
 
             return -1;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static jpp::object dumpFontEffectVec2( const mt::vec2f & _value )
-        {
-            jpp::array j_a = jpp::make_array();
-
-            j_a.push_back( _value.x );
-            j_a.push_back( _value.y );
-
-            return j_a.to_object();
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static jpp::object dumpFontEffectGradient( const FontEffectGradientDesc & _gradient )
-        {
-            jpp::object j_gradient = jpp::make_object();
-
-            j_gradient.set( "Enabled", _gradient.enabled );
-            j_gradient.set( "Angle", _gradient.angle );
-            j_gradient.set( "Space", Helper::getFontEffectGradientSpaceName( _gradient.space ) );
-
-            jpp::array j_stops = jpp::make_array();
-
-            for( const FontEffectGradientStop & stop : _gradient.stops )
-            {
-                jpp::object j_stop = jpp::make_object();
-
-                j_stop.set( "T", stop.t );
-                j_stop.set( "Color", stop.color );
-
-                j_stops.push_back( j_stop );
-            }
-
-            j_gradient.set( "Stops", j_stops.to_object() );
-
-            return j_gradient;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static jpp::object dumpFontEffectEffect( const FontEffectStyleDesc & _effect )
-        {
-            jpp::object j_effect = jpp::make_object();
-
-            j_effect.set( "Type", Helper::getFontEffectTypeName( _effect.type ) );
-            j_effect.set( "Enabled", _effect.enabled );
-            j_effect.set( "Opacity", _effect.opacity );
-
-            switch( _effect.type )
-            {
-            case EFET_FILL:
-                {
-                    j_effect.set( "Color", _effect.color );
-
-                    if( _effect.gradient.enabled == true || _effect.gradient.stops.empty() == false )
-                    {
-                        j_effect.set( "Gradient", dumpFontEffectGradient( _effect.gradient ) );
-                    }
-                }break;
-            case EFET_OUTLINE:
-                {
-                    j_effect.set( "Color", _effect.color );
-                    j_effect.set( "Width", _effect.width );
-                    j_effect.set( "Sharpness", _effect.sharpness );
-                }break;
-            case EFET_SHADOW:
-            case EFET_INNER_SHADOW:
-                {
-                    j_effect.set( "Color", _effect.color );
-                    j_effect.set( "Offset", dumpFontEffectVec2( _effect.offset ) );
-                    j_effect.set( "Blur", _effect.blur );
-                    j_effect.set( "Spread", _effect.spread );
-                }break;
-            case EFET_GLOW:
-            case EFET_INNER_GLOW:
-                {
-                    j_effect.set( "Color", _effect.color );
-                    j_effect.set( "Blur", _effect.blur );
-                    j_effect.set( "Spread", _effect.spread );
-                }break;
-            case EFET_BEVEL:
-                {
-                    j_effect.set( "Depth", _effect.depth );
-                    j_effect.set( "Size", _effect.size );
-                    j_effect.set( "Soften", _effect.soften );
-                    j_effect.set( "Angle", _effect.angle );
-                    j_effect.set( "Altitude", _effect.altitude );
-                    j_effect.set( "Highlight", _effect.highlight );
-                    j_effect.set( "Shadow", _effect.shadow );
-                }break;
-            case EFET_BLUR:
-                {
-                    j_effect.set( "Blur", _effect.blur );
-                }break;
-            }
-
-            return j_effect;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static jpp::object dumpFontEffectLayer( const FontEffectLayerDesc & _layer )
-        {
-            jpp::object j_layer = jpp::make_object();
-
-            j_layer.set( "Enabled", _layer.enabled );
-            j_layer.set( "Opacity", _layer.opacity );
-
-            jpp::array j_effects = jpp::make_array();
-
-            for( const FontEffectStyleDesc & effect : _layer.styles )
-            {
-                jpp::object j_effect = dumpFontEffectEffect( effect );
-
-                j_effects.push_back( j_effect );
-            }
-
-            j_layer.set( "Effects", j_effects.to_object() );
-
-            return j_layer;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static jpp::object dumpFontEffectDesc( const FontEffectDesc & _desc )
-        {
-            jpp::object j_desc = jpp::make_object();
-
-            jpp::array j_layers = jpp::make_array();
-
-            for( const FontEffectLayerDesc & layer : _desc.layers )
-            {
-                jpp::object j_layer = dumpFontEffectLayer( layer );
-
-                j_layers.push_back( j_layer );
-            }
-
-            j_desc.set( "Layers", j_layers.to_object() );
-
-            return j_desc;
         }
         //////////////////////////////////////////////////////////////////////////
     }
@@ -484,7 +351,11 @@ namespace Mengine
         _result->set( "status", m_status.c_str() );
         _result->set( "font_compiled", m_font != nullptr && m_font->isCompileFont() == true );
         _result->set( "layout_count", m_font != nullptr && m_font->isCompileFont() == true ? m_font->getLayoutCount() : 0U );
-        _result->set( "desc", Detail::dumpFontEffectDesc( m_desc ) );
+
+        jpp::object j_desc;
+        Helper::dumpFontEffectDesc( m_desc, &j_desc );
+
+        _result->set( "desc", j_desc );
     }
     //////////////////////////////////////////////////////////////////////////
     bool FontEffectViewerExampleSceneEventReceiver::onMCPCall( const jpp::object & _arguments, jpp::object * const _result )
@@ -1041,7 +912,8 @@ namespace Mengine
         {
             const FontEffectViewerExamplePresetEntryDesc & entry = m_presets[index];
 
-            jpp::object j_effect = Detail::dumpFontEffectDesc( entry.desc );
+            jpp::object j_effect;
+            Helper::dumpFontEffectDesc( entry.desc, &j_effect );
 
             j_effect.set( "Sample", entry.sample );
 

@@ -38,13 +38,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 #define MENGINE_FONTEFFECT_TYPE_MAX (Mengine::EFET_BLUR + 1)
     //////////////////////////////////////////////////////////////////////////
-    enum EFontEffectGradientSpace : uint32_t
+    enum EFontEffectSpace : uint32_t
     {
-        EFEGS_GLYPH = 0,
-        EFEGS_FONT
+        EFES_GLYPH = 0,
+        EFES_FONT
     };
     //////////////////////////////////////////////////////////////////////////
-#define MENGINE_FONTEFFECT_GRADIENT_SPACE_MAX (Mengine::EFEGS_FONT + 1)
+#define MENGINE_FONTEFFECT_SPACE_MAX (Mengine::EFES_FONT + 1)
     //////////////////////////////////////////////////////////////////////////
     struct FontEffectGradientStop
     {
@@ -58,7 +58,7 @@ namespace Mengine
     {
         bool enabled = false;
         float angle = 90.f;
-        EFontEffectGradientSpace space = EFEGS_GLYPH;
+        EFontEffectSpace space = EFES_GLYPH;
         VectorFontEffectGradientStops stops;
     };
     //////////////////////////////////////////////////////////////////////////

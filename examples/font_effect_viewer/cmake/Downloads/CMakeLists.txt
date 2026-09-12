@@ -1,0 +1,13 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 3.24)
+
+OPTION(MENGINE_DOWNLOADS_SILENT "Mengine download silent" OFF)
+
+PROJECT(Downloads)
+
+SET(PROJECT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../..)
+SET(MENGINE_DOWNLOADS_PATH "${PROJECT_DIR}/resources/Data/.downloads" CACHE STRING "MENGINE_DOWNLOADS_PATH" FORCE)
+
+include(./../../../../cmake/download_template.cmake)
+
+DOWNLOAD_FILE(fonts https://github.com/googlefonts/roboto-2/raw/main/src/hinted/Roboto-Bold.ttf Roboto-Bold.ttf)
+DOWNLOAD_FILE(fonts https://github.com/googlefonts/roboto-2/raw/main/LICENSE Roboto_license.txt)

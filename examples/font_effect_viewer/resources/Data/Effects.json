@@ -1,0 +1,74 @@
+{
+    "Version": 1,
+    "Effects": {
+        "GoldTitle": {
+            "Sample": 2,
+            "Layers": [
+                {
+                    "Enabled": true,
+                    "Opacity": 1.0,
+                    "Effects": [
+                        { "Type": "Shadow", "Color": [0, 0, 0, 160], "Offset": [2, 3], "Blur": 3.0, "Spread": 0.0 },
+                        { "Type": "Outline", "Color": [40, 20, 0, 255], "Width": 2.0, "Sharpness": 0.5 },
+                        { "Type": "Fill", "Color": [255, 220, 80, 255] }
+                    ]
+                },
+                {
+                    "Enabled": true,
+                    "Opacity": 1.0,
+                    "Effects": [
+                        {
+                            "Type": "Fill",
+                            "Color": [255, 255, 255, 255],
+                            "Gradient": {
+                                "Enabled": true,
+                                "Angle": 90,
+                                "Space": "Glyph",
+                                "Stops": [
+                                    { "T": 0.0, "Color": [255, 240, 160, 255] },
+                                    { "T": 1.0, "Color": [200, 120, 0, 255] }
+                                ]
+                            }
+                        },
+                        { "Type": "InnerShadow", "Color": [0, 0, 0, 120], "Offset": [0, 2], "Blur": 2.0 },
+                        { "Type": "Bevel", "Depth": 2.0, "Size": 3.0, "Soften": 1.0, "Angle": 120, "Altitude": 30, "Highlight": [255, 255, 255, 200], "Shadow": [0, 0, 0, 160] },
+                        { "Type": "Glow", "Enabled": false, "Color": [255, 200, 0, 255], "Blur": 4.0, "Spread": 1.0, "Opacity": 0.6 }
+                    ]
+                }
+            ]
+        },
+        "HudOutline": {
+            "Layers": [
+                {
+                    "Effects": [
+                        { "Type": "Outline", "Color": "#000000", "Width": 1.5 },
+                        { "Type": "Fill", "Color": "#FFFFFFFF" }
+                    ]
+                }
+            ]
+        },
+        "NeonGlow": {
+            "Sample": 2,
+            "Layers": [
+                {
+                    "Effects": [
+                        { "Type": "Glow", "Color": [0, 200, 255, 255], "Blur": 6.0, "Spread": 1.0 },
+                        { "Type": "Fill", "Color": [220, 250, 255, 255] },
+                        { "Type": "InnerGlow", "Color": [0, 120, 255, 255], "Blur": 3.0, "Opacity": 0.8 }
+                    ]
+                }
+            ]
+        },
+        "SoftShadow": {
+            "Layers": [
+                {
+                    "Effects": [
+                        { "Type": "Shadow", "Color": [0, 0, 0, 140], "Offset": [3, 3], "Blur": 4.0 },
+                        { "Type": "Fill", "Color": [255, 255, 255, 255] },
+                        { "Type": "Blur", "Blur": 0.5 }
+                    ]
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,15 @@
+{
+    "GAME_FONTS": {
+        "Font": [ "Preview" ]
+    },
+
+    "Preview": {
+        "Type": "TTF",
+        "Glyph": "RobotoBold",
+        "Height": 48,
+        "FEType": "FontEffectFile",
+        "FEPath": "Effects.json",
+        "FEName": "GoldTitle",
+        "FESample": 2
+    }
+}

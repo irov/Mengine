@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/UnknownInterface.h"
+#include "Interface/FontEffectInterface.h"
 #include "Interface/MemoryInterface.h"
 
 #include "Kernel/FilePath.h"
@@ -10,11 +11,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class UnknownFEInterface
-        : public UnknownInterface
+        : public UnknownFontEffectFileInterface
     {
-    public:
-        virtual void setEffectName( const ConstString & _effectName ) = 0;
-        virtual const ConstString & getEffectName() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     class UnknownFEFileInterface

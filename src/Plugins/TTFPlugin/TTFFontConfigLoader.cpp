@@ -4,8 +4,6 @@
 #include "Interface/FileServiceInterface.h"
 #include "Interface/FontServiceInterface.h"
 
-#include "Plugins/FEPlugin/FEInterface.h"
-
 #include "TTFFont.h"
 
 #include "Kernel/ConfigHelper.h"
@@ -15,7 +13,6 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ContentHelper.h"
 #include "Kernel/PrototypeHelper.h"
-#include "Kernel/VocabularyHelper.h"
 
 namespace Mengine
 {
@@ -92,8 +89,16 @@ namespace Mengine
         FilePath FEPath;
         if( _config->hasValue( name.c_str(), "FEPath", FilePath::none(), &FEPath ) == true )
         {
-            FontEffectInterfacePtr fontEffet = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "FontEffect" ), STRINGIZE_STRING_LOCAL( "FEFile" ), _doc );
+            ConstString FEType;
+            _config->hasValue( name.c_str(), "FEType", STRINGIZE_STRING_LOCAL( "FEFile" ), &FEType );
+
+            FontEffectInterfacePtr fontEffect = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "FontEffect" ), FEType, _doc );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( fontEffect, "ttf font '%s' invalid create font effect '%s'"
+                , name.c_str()
+                , FEType.c_str()
+            );
 
             ContentInterfacePtr content = Helper::makeFileContent( _fileGroup, FEPath, _doc );
 
@@ -101,13 +106,7 @@ namespace Mengine
                 , FEPath.c_str()
             );
 
-            DataflowInterfacePtr dataflowFE = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "feFont" ) );
-
-            content->setDataflow( dataflowFE );
-
-            fontEffet->setContent( content );
-
-            UnknownFEFileInterface * unknownFE = fontEffet->getDynamicUnknown();
+            fontEffect->setContent( content );
 
             ConstString FEName;
             if( _config->hasValue( name.c_str(), "FEName", ConstString::none(), &FEName ) == false )
@@ -119,15 +118,22 @@ namespace Mengine
                 return false;
             }
 
-            unknownFE->setEffectName( FEName );
+            UnknownFontEffectFileInterface * unknownFontEffect = fontEffect->getDynamicUnknown();
+
+            MENGINE_ASSERTION_MEMORY_PANIC( unknownFontEffect, "ttf font '%s' font effect '%s' is not file based"
+                , name.c_str()
+                , FEType.c_str()
+            );
+
+            unknownFontEffect->setEffectName( FEName );
 
             uint32_t FESample;
             if( _config->hasValueInteger( name.c_str(), "FESample", MENGINE_UINT32_C(0), &FESample ) == true )
             {
-                fontEffet->setEffectSample( FESample );
+                fontEffect->setEffectSample( FESample );
             }
 
-            font->setEffect( fontEffet );
+            font->setEffect( fontEffect );
         }
 
         return true;

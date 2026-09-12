@@ -69,7 +69,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TTFFont::setEffect( const FontEffectInterfacePtr & _effect )
     {
+        if( m_effect == _effect )
+        {
+            return;
+        }
+
+        MENGINE_ASSERTION_FATAL( this->isCompile() == false, "font '%s' set effect while compiled"
+            , this->getName().c_str()
+        );
+
         m_effect = _effect;
+
+        this->clearGlyphs_();
     }
     //////////////////////////////////////////////////////////////////////////
     const FontEffectInterfacePtr & TTFFont::getEffect() const

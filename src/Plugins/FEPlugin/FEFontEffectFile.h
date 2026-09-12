@@ -17,6 +17,9 @@ namespace Mengine
         ~FEFontEffectFile() override;
 
     public:
+        void setContent( const ContentInterfacePtr & _content ) override;
+
+    public:
         bool _compile() override;
         void _release() override;
 

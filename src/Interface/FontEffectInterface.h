@@ -1,16 +1,26 @@
 #pragma once
 
 #include "Interface/ServantInterface.h"
+#include "Interface/UnknownInterface.h"
 #include "Interface/PrefetcherObserverInterface.h"
 #include "Interface/ContentInterface.h"
 
 #include "Kernel/Unknowable.h"
+#include "Kernel/ConstString.h"
 #include "Kernel/CompilableReference.h"
 
 #include "Config/Lambda.h"
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    class UnknownFontEffectFileInterface
+        : public UnknownInterface
+    {
+    public:
+        virtual void setEffectName( const ConstString & _effectName ) = 0;
+        virtual const ConstString & getEffectName() const = 0;
+    };
     //////////////////////////////////////////////////////////////////////////
     class FontEffectInterface
         : public ServantInterface

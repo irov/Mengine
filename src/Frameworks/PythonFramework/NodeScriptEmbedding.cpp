@@ -11,6 +11,7 @@
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/SchedulerInterface.h"
 #include "Interface/FontInterface.h"
+#include "Interface/FontEffectInterface.h"
 #include "Interface/AccountInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/TextServiceInterface.h"
@@ -926,6 +927,15 @@ namespace Mengine
                 .def( "getFontBearingYA", &FontInterface::getFontBearingYA )
                 .def( "getFontSpacing", &FontInterface::getFontSpacing )
                 .def( "getFontPremultiply", &FontInterface::getFontPremultiply )
+                .def( "setEffect", &FontInterface::setEffect )
+                .def( "getEffect", &FontInterface::getEffect )
+                ;
+
+            pybind::interface_<FontEffectInterface, pybind::bases<ServantInterface>>( _kernel, "FontEffectInterface" )
+                .def( "setEffectSample", &FontEffectInterface::setEffectSample )
+                .def( "getEffectSample", &FontEffectInterface::getEffectSample )
+                .def( "getLayoutCount", &FontEffectInterface::getLayoutCount )
+                .def( "isValid", &FontEffectInterface::isValid )
                 ;
 
             pybind::enum_<ETextHorizontAlign>( _kernel, "ETextHorizontAlign" )

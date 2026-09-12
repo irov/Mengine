@@ -1,0 +1,3 @@
+LIBRARY	"FontEffectPlugin"
+EXPORTS
+    dllMengineCreatePlugin @1

@@ -316,6 +316,10 @@ PLUGIN_EXPORT( TTF );
 PLUGIN_EXPORT( FE );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_PLUGIN_FONTEFFECT_STATIC)
+PLUGIN_EXPORT( FontEffect );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLUGIN_NODEDEBUGGER_STATIC)
 PLUGIN_EXPORT( NodeDebugger );
 #endif
@@ -1851,6 +1855,10 @@ namespace Mengine
 
 #if defined(MENGINE_PLUGIN_FE_STATIC)
         MENGINE_ADD_PLUGIN( FE, "plugin FE...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#if defined(MENGINE_PLUGIN_FONTEFFECT_STATIC)
+        MENGINE_ADD_PLUGIN( FontEffect, "plugin FontEffect...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #if defined(MENGINE_PLUGIN_STEAM_STATIC)

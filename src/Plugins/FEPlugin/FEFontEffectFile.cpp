@@ -2,6 +2,7 @@
 
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Dataflow.h"
+#include "Kernel/VocabularyHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 #include "Kernel/FileGroupHelper.h"
@@ -17,6 +18,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     FEFontEffectFile::~FEFontEffectFile()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void FEFontEffectFile::setContent( const ContentInterfacePtr & _content )
+    {
+        FEFontEffectBase::setContent( _content );
+
+        DataflowInterfacePtr dataflow = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "feFont" ) );
+
+        _content->setDataflow( dataflow );
     }
     //////////////////////////////////////////////////////////////////////////
     bool FEFontEffectFile::_compile()

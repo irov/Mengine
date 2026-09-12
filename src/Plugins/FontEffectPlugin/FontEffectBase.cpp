@@ -1,7 +1,17 @@
 #include "FontEffectBase.h"
 
+#include "Interface/CodecServiceInterface.h"
+#include "Interface/ImageCodecInterface.h"
+#include "Interface/MemoryServiceInterface.h"
+#include "Interface/FileServiceInterface.h"
+
 #include "Kernel/Logger.h"
 #include "Kernel/ProfilerHelper.h"
+#include "Kernel/ContentHelper.h"
+#include "Kernel/PixelFormatHelper.h"
+#include "Kernel/VocabularyHelper.h"
+#include "Kernel/ConstStringHelper.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "Config/StdMath.h"
 
@@ -43,6 +53,7 @@ namespace Mengine
             switch( _effect.type )
             {
             case EFET_FILL:
+            case EFET_PATTERN:
                 return 0.f;
             case EFET_OUTLINE:
                 {
@@ -327,6 +338,11 @@ namespace Mengine
 
         m_padding = (uint32_t)StdMath::ceilf( extent * (float)m_effectSample );
 
+        if( this->compilePatterns_() == false )
+        {
+            return false;
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -488,6 +504,46 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool FontEffectBase::setupEffectPattern_( uint32_t _layerIndex, uint32_t _effectIndex, const FontEffectPatternDesc & _pattern )
+    {
+        if( this->setEffectPatternFilePath( _layerIndex, _effectIndex, _pattern.filePath ) == false )
+        {
+            return false;
+        }
+
+        if( this->setEffectPatternCodecType( _layerIndex, _effectIndex, _pattern.codecType ) == false )
+        {
+            return false;
+        }
+
+        if( this->setEffectPatternSpace( _layerIndex, _effectIndex, _pattern.space ) == false )
+        {
+            return false;
+        }
+
+        if( this->setEffectPatternTile( _layerIndex, _effectIndex, _pattern.tile ) == false )
+        {
+            return false;
+        }
+
+        if( this->setEffectPatternScale( _layerIndex, _effectIndex, _pattern.scale ) == false )
+        {
+            return false;
+        }
+
+        if( this->setEffectPatternOffset( _layerIndex, _effectIndex, _pattern.offset ) == false )
+        {
+            return false;
+        }
+
+        if( this->setEffectPatternAngle( _layerIndex, _effectIndex, _pattern.angle ) == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool FontEffectBase::setupDesc( const FontEffectDesc & _desc )
     {
         m_desc.layers.clear();
@@ -547,6 +603,11 @@ namespace Mengine
                 {
                     return false;
                 }
+
+                if( this->setupEffectPattern_( layerIndex, effectIndex, effect.pattern ) == false )
+                {
+                    return false;
+                }
             }
         }
 
@@ -555,6 +616,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void FontEffectBase::_release()
     {
+        m_patterns.clear();
+
         m_scratch.clear();
 
         VectorFontEffectExportBuffer exportBuffer;
@@ -576,6 +639,209 @@ namespace Mengine
         Helper::fontEffectSignedDistance( alpha, sdf, tmp0, tmp1, m_scratch.getLine( 0 ), m_scratch.getLine( 1 ), m_scratch.getLine( 2 ), m_scratch.getLine( 3 ) );
 
         m_sdfValid = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    FileGroupInterfacePtr FontEffectBase::getPatternFileGroup_() const
+    {
+        if( m_content != nullptr )
+        {
+            const FileGroupInterfacePtr & fileGroup = m_content->getFileGroup();
+
+            return fileGroup;
+        }
+
+        FileGroupInterfacePtr defaultFileGroup = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FileGroup" ), ConstString::none() );
+
+        return defaultFileGroup;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FontEffectBase::compilePattern_( const FilePath & _filePath, const ConstString & _codecType )
+    {
+        MapFontEffectPatternImages::const_iterator it_found = m_patterns.find( _filePath );
+
+        if( it_found != m_patterns.end() )
+        {
+            return true;
+        }
+
+        FileGroupInterfacePtr fileGroup = this->getPatternFileGroup_();
+
+        ContentInterfacePtr content = Helper::makeFileContent( fileGroup, _filePath, MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( content, "font effect invalid make pattern content '%s'"
+            , _filePath.c_str()
+        );
+
+        if( _codecType.empty() == false )
+        {
+            content->setCodecType( _codecType );
+        }
+        else
+        {
+            const ConstString & findCodecType = Helper::findContentCodecType( content );
+
+            content->setCodecType( findCodecType );
+        }
+
+        InputStreamInterfacePtr stream = content->openInputStreamFile( false, false, MENGINE_DOCUMENT_FACTORABLE );
+
+        if( stream == nullptr )
+        {
+            LOGGER_ERROR( "font effect invalid open pattern '%s'"
+                , _filePath.c_str()
+            );
+
+            return false;
+        }
+
+        const ConstString & codecType = content->getCodecType();
+
+        ImageDecoderInterfacePtr decoder = CODEC_SERVICE()
+            ->createDecoder( codecType, MENGINE_DOCUMENT_FACTORABLE );
+
+        if( decoder == nullptr )
+        {
+            LOGGER_ERROR( "font effect invalid create decoder '%s' for pattern '%s'"
+                , codecType.c_str()
+                , _filePath.c_str()
+            );
+
+            return false;
+        }
+
+        if( decoder->prepareData( content, stream ) == false )
+        {
+            LOGGER_ERROR( "font effect invalid prepare pattern '%s'"
+                , _filePath.c_str()
+            );
+
+            return false;
+        }
+
+        const ImageCodecDataInfo * dataInfo = decoder->getCodecDataInfo();
+
+        uint32_t width = dataInfo->width;
+        uint32_t height = dataInfo->height;
+
+        if( width == 0 || height == 0 )
+        {
+            LOGGER_ERROR( "font effect empty pattern '%s'"
+                , _filePath.c_str()
+            );
+
+            return false;
+        }
+
+        size_t pitch = (size_t)width * 4;
+        size_t bufferSize = pitch * (size_t)height;
+
+        VectorFontEffectPatternSource buffer;
+        buffer.resize( bufferSize );
+
+        ImageDecoderData data;
+        data.buffer = buffer.data();
+        data.size = bufferSize;
+        data.pitch = pitch;
+        data.format = PF_A8R8G8B8;
+        data.flags = DF_IMAGE_PREMULTIPLY_ALPHA;
+        data.mipmap = 0;
+
+        if( decoder->decode( &data ) == 0 )
+        {
+            LOGGER_ERROR( "font effect invalid decode pattern '%s'"
+                , _filePath.c_str()
+            );
+
+            return false;
+        }
+
+        FontEffectPatternImage image;
+        image.width = width;
+        image.height = height;
+        image.data.resize( (size_t)width * (size_t)height * 4 );
+
+        for( size_t index = 0; index != (size_t)width * (size_t)height; ++index )
+        {
+            const uint8_t * texel = buffer.data() + index * 4;
+            float * pixel = image.data.data() + index * 4;
+
+            pixel[0] = (float)texel[2] * (1.f / 255.f);
+            pixel[1] = (float)texel[1] * (1.f / 255.f);
+            pixel[2] = (float)texel[0] * (1.f / 255.f);
+            pixel[3] = (float)texel[3] * (1.f / 255.f);
+        }
+
+        m_patterns.emplace( _filePath, image );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FontEffectBase::compilePatterns_()
+    {
+        for( const FontEffectLayerDesc & layer : m_desc.layers )
+        {
+            for( const FontEffectStyleDesc & effect : layer.styles )
+            {
+                if( effect.type != EFET_PATTERN )
+                {
+                    continue;
+                }
+
+                if( effect.enabled == false )
+                {
+                    continue;
+                }
+
+                if( effect.pattern.filePath.empty() == true )
+                {
+                    LOGGER_ERROR( "font effect pattern without path" );
+
+                    return false;
+                }
+
+                if( this->compilePattern_( effect.pattern.filePath, effect.pattern.codecType ) == false )
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void FontEffectBase::makePatternContext_( const FontEffectPatternDesc & _pattern, const FontEffectPatternImage & _image, uint32_t _width, uint32_t _rows, int32_t _top, uint32_t _height, FontEffectPatternContext * const _context ) const
+    {
+        float sample = (float)m_effectSample;
+        float padding = (float)m_padding;
+
+        float angleRad = _pattern.angle * mt::constant::deg2rad;
+
+        float glyphWidth = (float)_width;
+        float glyphHeight = (float)_rows;
+
+        float originX = padding + _pattern.offset.x * sample;
+        float originY = padding + _pattern.offset.y * sample;
+
+        if( _pattern.space == EFES_FONT )
+        {
+            originY = padding + (float)_top - (float)_height * sample + _pattern.offset.y * sample;
+        }
+
+        float patternWidth = (float)_image.width * _pattern.scale * sample;
+        float patternHeight = (float)_image.height * _pattern.scale * sample;
+
+        if( _pattern.tile == EFEPT_STRETCH )
+        {
+            patternWidth = (_pattern.space == EFES_FONT) ? glyphWidth : glyphWidth;
+            patternHeight = (_pattern.space == EFES_FONT) ? (float)_height * sample : glyphHeight;
+        }
+
+        _context->originX = originX;
+        _context->originY = originY;
+        _context->invWidth = (patternWidth > 0.f) ? 1.f / patternWidth : 1.f;
+        _context->invHeight = (patternHeight > 0.f) ? 1.f / patternHeight : 1.f;
+        _context->cosAngle = StdMath::cosf( angleRad );
+        _context->sinAngle = StdMath::sinf( angleRad );
     }
     //////////////////////////////////////////////////////////////////////////
     void FontEffectBase::makeGradientContext_( const FontEffectGradientDesc & _gradient, uint32_t _width, uint32_t _rows, int32_t _top, uint32_t _height, FontEffectGradientContext * const _context ) const
@@ -793,6 +1059,23 @@ namespace Mengine
             case EFET_BLUR:
                 {
                     Helper::fontEffectBlurImage( layerImage, effect.blur * sample, tmp0, tmp1 );
+                }break;
+            case EFET_PATTERN:
+                {
+                    MapFontEffectPatternImages::const_iterator it_found = m_patterns.find( effect.pattern.filePath );
+
+                    if( it_found == m_patterns.end() )
+                    {
+                        break;
+                    }
+
+                    const FontEffectPatternImage & patternImage = it_found->second;
+
+                    FontEffectPatternContext context;
+                    this->makePatternContext_( effect.pattern, patternImage, _width, _rows, _top, _height, &context );
+
+                    Helper::fontEffectPattern( alpha, patternImage, context, effect.pattern.tile, effect.color, effect.opacity, effectImage );
+                    Helper::fontEffectComposite( layerImage, effectImage, effect.blendMode );
                 }break;
             case EFET_SATIN:
                 {
@@ -1543,6 +1826,115 @@ namespace Mengine
         effect->gradient.dither = _dither;
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FontEffectBase::setEffectPatternFilePath( uint32_t _layerIndex, uint32_t _effectIndex, const FilePath & _filePath )
+    {
+        FontEffectStyleDesc * effect = this->getEffect_( _layerIndex, _effectIndex );
+
+        if( effect == nullptr )
+        {
+            return false;
+        }
+
+        effect->pattern.filePath = _filePath;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FontEffectBase::setEffectPatternCodecType( uint32_t _layerIndex, uint32_t _effectIndex, const ConstString & _codecType )
+    {
+        FontEffectStyleDesc * effect = this->getEffect_( _layerIndex, _effectIndex );
+
+        if( effect == nullptr )
+        {
+            return false;
+        }
+
+        effect->pattern.codecType = _codecType;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FontEffectBase::setEffectPatternSpace( uint32_t _layerIndex, uint32_t _effectIndex, EFontEffectSpace _space )
+    {
+        FontEffectStyleDesc * effect = this->getEffect_( _layerIndex, _effectIndex );
+
+        if( effect == nullptr )
+        {
+            return false;
+        }
+
+        bool successful = Detail::setEnum( (uint32_t *)&effect->pattern.space, _space, MENGINE_FONTEFFECT_SPACE_MAX, "effect pattern space" );
+
+        return successful;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FontEffectBase::setEffectPatternTile( uint32_t _layerIndex, uint32_t _effectIndex, EFontEffectPatternTile _tile )
+    {
+        FontEffectStyleDesc * effect = this->getEffect_( _layerIndex, _effectIndex );
+
+        if( effect == nullptr )
+        {
+            return false;
+        }
+
+        bool successful = Detail::setEnum( (uint32_t *)&effect->pattern.tile, _tile, MENGINE_FONTEFFECT_PATTERN_TILE_MAX, "effect pattern tile" );
+
+        return successful;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FontEffectBase::setEffectPatternScale( uint32_t _layerIndex, uint32_t _effectIndex, float _scale )
+    {
+        FontEffectStyleDesc * effect = this->getEffect_( _layerIndex, _effectIndex );
+
+        if( effect == nullptr )
+        {
+            return false;
+        }
+
+        bool successful = Detail::setRange( &effect->pattern.scale, _scale, 0.f, MENGINE_FONTEFFECT_MAX_SIZE, "effect pattern scale" );
+
+        return successful;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FontEffectBase::setEffectPatternOffset( uint32_t _layerIndex, uint32_t _effectIndex, const mt::vec2f & _offset )
+    {
+        FontEffectStyleDesc * effect = this->getEffect_( _layerIndex, _effectIndex );
+
+        if( effect == nullptr )
+        {
+            return false;
+        }
+
+        mt::vec2f offset;
+        if( Detail::setRange( &offset.x, _offset.x, -MENGINE_FONTEFFECT_MAX_OFFSET, MENGINE_FONTEFFECT_MAX_OFFSET, "effect pattern offset x" ) == false )
+        {
+            return false;
+        }
+
+        if( Detail::setRange( &offset.y, _offset.y, -MENGINE_FONTEFFECT_MAX_OFFSET, MENGINE_FONTEFFECT_MAX_OFFSET, "effect pattern offset y" ) == false )
+        {
+            return false;
+        }
+
+        effect->pattern.offset = offset;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FontEffectBase::setEffectPatternAngle( uint32_t _layerIndex, uint32_t _effectIndex, float _angle )
+    {
+        FontEffectStyleDesc * effect = this->getEffect_( _layerIndex, _effectIndex );
+
+        if( effect == nullptr )
+        {
+            return false;
+        }
+
+        bool successful = Detail::setAngle( &effect->pattern.angle, _angle, "effect pattern angle" );
+
+        return successful;
     }
     //////////////////////////////////////////////////////////////////////////
     bool FontEffectBase::addEffectGradientStop( uint32_t _layerIndex, uint32_t _effectIndex, float _t, const Color & _color )

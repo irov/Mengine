@@ -3,6 +3,8 @@
 #include "FontEffectHelper.h"
 
 #include "Kernel/JSONDataHelper.h"
+#include "Kernel/ConstStringHelper.h"
+#include "Kernel/FilePathHelper.h"
 #include "Kernel/Logger.h"
 
 #include "Config/StdString.h"
@@ -84,6 +86,25 @@ namespace Mengine
                     }
 
                     *_position = (EFontEffectOutlinePosition)index;
+
+                    return true;
+                }
+
+                return false;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            static bool parsePatternTileName( const Char * _name, EFontEffectPatternTile * const _tile )
+            {
+                for( uint32_t index = 0; index != MENGINE_FONTEFFECT_PATTERN_TILE_MAX; ++index )
+                {
+                    const Char * name = Helper::getFontEffectPatternTileName( (EFontEffectPatternTile)index );
+
+                    if( StdString::strcmp( name, _name ) != 0 )
+                    {
+                        continue;
+                    }
+
+                    *_tile = (EFontEffectPatternTile)index;
 
                     return true;
                 }
@@ -221,6 +242,75 @@ namespace Mengine
                 *_json = j_gradient;
             }
             //////////////////////////////////////////////////////////////////////////
+            static bool loadPattern( const jpp::object & _json, FontEffectPatternDesc * const _pattern )
+            {
+                if( _json.is_type_object() == false )
+                {
+                    LOGGER_ERROR( "font effect pattern is not object" );
+
+                    return false;
+                }
+
+                const Char * path = _json.get( "Path", "" );
+
+                _pattern->filePath = Helper::stringizeFilePath( path );
+
+                const Char * codec = _json.get( "Codec", "" );
+
+                _pattern->codecType = Helper::stringizeString( codec );
+
+                _pattern->scale = _json.get( "Scale", 1.f );
+
+                Helper::getJSONVec2f( _json, "Offset", &_pattern->offset );
+
+                _pattern->angle = _json.get( "Angle", 0.f );
+
+                const Char * tile_name = _json.get( "Tile", "Tile" );
+
+                if( Detail::parsePatternTileName( tile_name, &_pattern->tile ) == false )
+                {
+                    LOGGER_ERROR( "font effect pattern invalid tile '%s'"
+                        , tile_name
+                    );
+
+                    return false;
+                }
+
+                const Char * space_name = _json.get( "Space", "Glyph" );
+
+                if( Detail::parseSpaceName( space_name, &_pattern->space ) == false )
+                {
+                    LOGGER_ERROR( "font effect pattern invalid space '%s'"
+                        , space_name
+                    );
+
+                    return false;
+                }
+
+                return true;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            static void dumpPattern( const FontEffectPatternDesc & _pattern, jpp::object * const _json )
+            {
+                jpp::object j_pattern = jpp::make_object();
+
+                const Char * tile_name = Helper::getFontEffectPatternTileName( _pattern.tile );
+                const Char * space_name = Helper::getFontEffectSpaceName( _pattern.space );
+
+                jpp::object j_offset;
+                Detail::dumpVec2f( _pattern.offset, &j_offset );
+
+                j_pattern.set( "Path", _pattern.filePath.c_str() );
+                j_pattern.set( "Codec", _pattern.codecType.c_str() );
+                j_pattern.set( "Space", space_name );
+                j_pattern.set( "Tile", tile_name );
+                j_pattern.set( "Scale", _pattern.scale );
+                j_pattern.set( "Offset", j_offset );
+                j_pattern.set( "Angle", _pattern.angle );
+
+                *_json = j_pattern;
+            }
+            //////////////////////////////////////////////////////////////////////////
             static bool loadEffect( const jpp::object & _json, FontEffectStyleDesc * const _effect )
             {
                 if( _json.is_type_object() == false )
@@ -256,6 +346,17 @@ namespace Mengine
                 }
 
                 Helper::getJSONColor( _json, "Color", &_effect->color );
+
+                jpp::object j_pattern;
+                if( _json.exist( "Pattern", &j_pattern ) == true )
+                {
+                    if( Detail::loadPattern( j_pattern, &_effect->pattern ) == false )
+                    {
+                        LOGGER_ERROR( "font effect invalid pattern" );
+
+                        return false;
+                    }
+                }
 
                 jpp::object j_gradient;
                 if( _json.exist( "Gradient", &j_gradient ) == true )
@@ -369,6 +470,14 @@ namespace Mengine
                 case EFET_BLUR:
                     {
                         j_effect.set( "Blur", _effect.blur );
+                    }break;
+                case EFET_PATTERN:
+                    {
+                        jpp::object j_pattern;
+                        Detail::dumpPattern( _effect.pattern, &j_pattern );
+
+                        j_effect.set( "Color", _effect.color );
+                        j_effect.set( "Pattern", j_pattern );
                     }break;
                 case EFET_SATIN:
                     {

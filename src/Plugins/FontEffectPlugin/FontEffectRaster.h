@@ -31,6 +31,27 @@ namespace Mengine
         uint32_t height = 0;
     };
     //////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
+    typedef Vector<float> VectorFontEffectPatternBuffer;
+    typedef Vector<uint8_t> VectorFontEffectPatternSource;
+    //////////////////////////////////////////////////////////////////////////
+    struct FontEffectPatternImage
+    {
+        uint32_t width = 0;
+        uint32_t height = 0;
+        VectorFontEffectPatternBuffer data;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    struct FontEffectPatternContext
+    {
+        float originX = 0.f;
+        float originY = 0.f;
+        float invWidth = 1.f;
+        float invHeight = 1.f;
+        float cosAngle = 1.f;
+        float sinAngle = 0.f;
+    };
+    //////////////////////////////////////////////////////////////////////////
     struct FontEffectGradientContext
     {
         float centerX = 0.f;
@@ -101,6 +122,8 @@ namespace Mengine
         void fontEffectColorizeGradient( const FontEffectPlane & _coverage, const FontEffectPlane & _sdf, const FontEffectGradientDesc & _gradient, const FontEffectGradientContext & _context, float _opacity, const FontEffectImage & _out );
         void fontEffectTintImage( const FontEffectImage & _src, const Color & _color, float _opacity, const FontEffectImage & _out );
         void fontEffectTintImageGradient( const FontEffectImage & _src, const FontEffectPlane & _sdf, const FontEffectGradientDesc & _gradient, const FontEffectGradientContext & _context, float _opacity, const FontEffectImage & _out );
+
+        void fontEffectPattern( const FontEffectPlane & _coverage, const FontEffectPatternImage & _pattern, const FontEffectPatternContext & _context, EFontEffectPatternTile _tile, const Color & _color, float _opacity, const FontEffectImage & _out );
 
         void fontEffectSatin( const FontEffectPlane & _alpha, const FontEffectStyleDesc & _effect, float _sample, const FontEffectPlane & _work0, const FontEffectPlane & _work1, const FontEffectPlane & _tmp0, const FontEffectImage & _out );
 

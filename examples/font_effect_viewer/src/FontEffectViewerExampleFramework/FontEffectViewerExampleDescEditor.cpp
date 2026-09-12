@@ -1,6 +1,9 @@
 #include "FontEffectViewerExampleDescEditor.h"
 
 #include "Config/StdAssert.h"
+#include "Config/StdString.h"
+
+#include "Kernel/FilePathHelper.h"
 
 #include "Plugins/FontEffectPlugin/FontEffectDesc.h"
 #include "Plugins/FontEffectPlugin/FontEffectHelper.h"
@@ -84,6 +87,13 @@ namespace Mengine
         static const Char * gradientTypeName( uint32_t _index )
         {
             const Char * name = Helper::getFontEffectGradientTypeName( (EFontEffectGradientType)_index );
+
+            return name;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static const Char * patternTileName( uint32_t _index )
+        {
+            const Char * name = Helper::getFontEffectPatternTileName( (EFontEffectPatternTile)_index );
 
             return name;
         }
@@ -231,6 +241,24 @@ namespace Mengine
             case EFET_BLUR:
                 {
                     changed |= dragSize( "Blur", &_effect->blur, 32.f );
+                }break;
+            case EFET_PATTERN:
+                {
+                    Char pathBuffer[MENGINE_MAX_PATH] = {'\0'};
+                    StdString::strcpy_safe( pathBuffer, _effect->pattern.filePath.c_str(), MENGINE_MAX_PATH );
+
+                    if( ImGui::InputText( "Path", pathBuffer, MENGINE_MAX_PATH ) == true )
+                    {
+                        _effect->pattern.filePath = Helper::stringizeFilePath( pathBuffer );
+                        changed = true;
+                    }
+
+                    changed |= colorEdit( "Color", &_effect->color );
+                    changed |= enumCombo( "Tile", (uint32_t *)&_effect->pattern.tile, MENGINE_FONTEFFECT_PATTERN_TILE_MAX, &patternTileName );
+                    changed |= dragSize( "Scale", &_effect->pattern.scale, 8.f );
+                    changed |= ImGui::DragFloat2( "Offset", &_effect->pattern.offset.x, 0.1f, -64.f, 64.f, "%.1f" );
+                    changed |= ImGui::SliderFloat( "Angle", &_effect->pattern.angle, 0.f, 360.f, "%.0f" );
+                    changed |= enumCombo( "Space", (uint32_t *)&_effect->pattern.space, MENGINE_FONTEFFECT_SPACE_MAX, &spaceName );
                 }break;
             case EFET_SATIN:
                 {
@@ -417,6 +445,9 @@ namespace Mengine
                     break;
                 case EFET_BLUR:
                     effect.blur = 1.f;
+                    break;
+                case EFET_PATTERN:
+                    effect.color = Color( 1.f, 1.f, 1.f, 1.f );
                     break;
                 case EFET_SATIN:
                     effect.color = Color( 0.f, 0.f, 0.f, 0.5f );

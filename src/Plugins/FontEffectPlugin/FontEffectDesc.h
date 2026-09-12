@@ -2,6 +2,8 @@
 
 #include "Kernel/Color.h"
 #include "Kernel/Vector.h"
+#include "Kernel/FilePath.h"
+#include "Kernel/ConstString.h"
 
 #include "math/vec2.h"
 
@@ -34,10 +36,11 @@ namespace Mengine
         EFET_INNER_GLOW,
         EFET_BEVEL,
         EFET_BLUR,
-        EFET_SATIN
+        EFET_SATIN,
+        EFET_PATTERN
     };
     //////////////////////////////////////////////////////////////////////////
-#define MENGINE_FONTEFFECT_TYPE_MAX (Mengine::EFET_SATIN + 1)
+#define MENGINE_FONTEFFECT_TYPE_MAX (Mengine::EFET_PATTERN + 1)
     //////////////////////////////////////////////////////////////////////////
     enum EFontEffectSpace : uint32_t
     {
@@ -72,6 +75,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 #define MENGINE_FONTEFFECT_OUTLINE_POSITION_MAX (Mengine::EFEOP_INSIDE + 1)
     //////////////////////////////////////////////////////////////////////////
+    enum EFontEffectPatternTile : uint32_t
+    {
+        EFEPT_TILE = 0,
+        EFEPT_MIRROR,
+        EFEPT_CLAMP,
+        EFEPT_STRETCH
+    };
+    //////////////////////////////////////////////////////////////////////////
+#define MENGINE_FONTEFFECT_PATTERN_TILE_MAX (Mengine::EFEPT_STRETCH + 1)
+    //////////////////////////////////////////////////////////////////////////
     enum EFontEffectGradientType : uint32_t
     {
         EFEGT_LINEAR = 0,
@@ -104,6 +117,17 @@ namespace Mengine
         VectorFontEffectGradientStops stops;
     };
     //////////////////////////////////////////////////////////////////////////
+    struct FontEffectPatternDesc
+    {
+        FilePath filePath = FilePath::none();
+        ConstString codecType = ConstString::none();
+        EFontEffectSpace space = EFES_GLYPH;
+        EFontEffectPatternTile tile = EFEPT_TILE;
+        float scale = 1.f;
+        mt::vec2f offset = mt::vec2f( 0.f, 0.f );
+        float angle = 0.f;
+    };
+    //////////////////////////////////////////////////////////////////////////
     struct FontEffectStyleDesc
     {
         EFontEffectType type = EFET_FILL;
@@ -114,6 +138,7 @@ namespace Mengine
         Color color = Color( 1.f, 1.f, 1.f, 1.f );
 
         FontEffectGradientDesc gradient;
+        FontEffectPatternDesc pattern;
 
         float width = 1.f;
         float sharpness = 0.f;

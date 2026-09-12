@@ -124,6 +124,13 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             static const float FONTEFFECT_EDT_INF = 1e20f;
             //////////////////////////////////////////////////////////////////////////
+            static MENGINE_INLINE float clamp01( float _value )
+            {
+                float value = mt::clampf( 0.f, _value, 1.f );
+
+                return value;
+            }
+            //////////////////////////////////////////////////////////////////////////
             static const uint8_t FONTEFFECT_BAYER8[64] = {
                  0, 32,  8, 40,  2, 34, 10, 42,
                 48, 16, 56, 24, 50, 18, 58, 26,
@@ -142,6 +149,60 @@ namespace Mengine
                 float dither = (float)value * (1.f / 64.f) - 0.5f;
 
                 return dither;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            static float wrapPattern( float _value, EFontEffectPatternTile _tile )
+            {
+                switch( _tile )
+                {
+                case EFEPT_TILE:
+                    return _value - StdMath::floorf( _value );
+                case EFEPT_MIRROR:
+                    {
+                        float half = _value * 0.5f;
+                        float fraction = half - StdMath::floorf( half );
+
+                        return 1.f - StdMath::fabsf( 2.f * fraction - 1.f );
+                    }
+                case EFEPT_CLAMP:
+                case EFEPT_STRETCH:
+                    break;
+                }
+
+                return clamp01( _value );
+            }
+            //////////////////////////////////////////////////////////////////////////
+            static void samplePattern( const FontEffectPatternImage & _pattern, float _u, float _v, float * const _rgba )
+            {
+                float x = _u * (float)_pattern.width - 0.5f;
+                float y = _v * (float)_pattern.height - 0.5f;
+
+                int32_t x0 = (int32_t)StdMath::floorf( x );
+                int32_t y0 = (int32_t)StdMath::floorf( y );
+
+                float fx = x - (float)x0;
+                float fy = y - (float)y0;
+
+                int32_t maxX = (int32_t)_pattern.width - 1;
+                int32_t maxY = (int32_t)_pattern.height - 1;
+
+                int32_t cx0 = (x0 < 0) ? 0 : ((x0 > maxX) ? maxX : x0);
+                int32_t cy0 = (y0 < 0) ? 0 : ((y0 > maxY) ? maxY : y0);
+                int32_t cx1 = (x0 + 1 < 0) ? 0 : ((x0 + 1 > maxX) ? maxX : x0 + 1);
+                int32_t cy1 = (y0 + 1 < 0) ? 0 : ((y0 + 1 > maxY) ? maxY : y0 + 1);
+
+                const float * p00 = _pattern.data.data() + ((size_t)cy0 * (size_t)_pattern.width + (size_t)cx0) * 4;
+                const float * p10 = _pattern.data.data() + ((size_t)cy0 * (size_t)_pattern.width + (size_t)cx1) * 4;
+                const float * p01 = _pattern.data.data() + ((size_t)cy1 * (size_t)_pattern.width + (size_t)cx0) * 4;
+                const float * p11 = _pattern.data.data() + ((size_t)cy1 * (size_t)_pattern.width + (size_t)cx1) * 4;
+
+                for( uint32_t channel = 0; channel != 4; ++channel )
+                {
+                    float top = p00[channel] + (p10[channel] - p00[channel]) * fx;
+                    float bottom = p01[channel] + (p11[channel] - p01[channel]) * fx;
+
+                    _rgba[channel] = top + (bottom - top) * fy;
+                }
             }
             //////////////////////////////////////////////////////////////////////////
             static float blendChannel( EFontEffectBlendMode _mode, float _cb, float _cs )
@@ -234,13 +295,6 @@ namespace Mengine
                 }
 
                 return t;
-            }
-            //////////////////////////////////////////////////////////////////////////
-            static MENGINE_INLINE float clamp01( float _value )
-            {
-                float value = mt::clampf( 0.f, _value, 1.f );
-
-                return value;
             }
             //////////////////////////////////////////////////////////////////////////
             // Felzenszwalb & Huttenlocher 1D squared euclidean distance transform
@@ -337,6 +391,8 @@ namespace Mengine
                     }
                 }
             }
+            //////////////////////////////////////////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////////
             //////////////////////////////////////////////////////////////////////////
             static void boxesForGauss( float _sigma, uint32_t _n, uint32_t * const _boxes )
             {
@@ -886,6 +942,58 @@ namespace Mengine
                     dst[1] = src[1] * rgba[1] * a;
                     dst[2] = src[2] * rgba[2] * a;
                     dst[3] = src[3] * a;
+                }
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void fontEffectPattern( const FontEffectPlane & _coverage, const FontEffectPatternImage & _pattern, const FontEffectPatternContext & _context, EFontEffectPatternTile _tile, const Color & _color, float _opacity, const FontEffectImage & _out )
+        {
+            uint32_t width = _coverage.width;
+            uint32_t height = _coverage.height;
+
+            float r = _color.getR();
+            float g = _color.getG();
+            float b = _color.getB();
+            float a = _color.getA() * _opacity;
+
+            for( uint32_t y = 0; y != height; ++y )
+            {
+                for( uint32_t x = 0; x != width; ++x )
+                {
+                    size_t index = (size_t)y * (size_t)width + x;
+
+                    float coverage = Detail::clamp01( _coverage.data[index] );
+
+                    float * px = _out.data + index * 4;
+
+                    if( coverage <= 0.f )
+                    {
+                        px[0] = 0.f;
+                        px[1] = 0.f;
+                        px[2] = 0.f;
+                        px[3] = 0.f;
+
+                        continue;
+                    }
+
+                    float dx = ((float)x + 0.5f) - _context.originX;
+                    float dy = ((float)y + 0.5f) - _context.originY;
+
+                    float rx = dx * _context.cosAngle + dy * _context.sinAngle;
+                    float ry = dy * _context.cosAngle - dx * _context.sinAngle;
+
+                    float u = Detail::wrapPattern( rx * _context.invWidth, _tile );
+                    float v = Detail::wrapPattern( ry * _context.invHeight, _tile );
+
+                    float rgba[4];
+                    Detail::samplePattern( _pattern, u, v, rgba );
+
+                    float alpha = rgba[3] * a * coverage;
+
+                    px[0] = rgba[0] * r * a * coverage;
+                    px[1] = rgba[1] * g * a * coverage;
+                    px[2] = rgba[2] * b * a * coverage;
+                    px[3] = alpha;
                 }
             }
         }

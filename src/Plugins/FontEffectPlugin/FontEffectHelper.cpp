@@ -15,7 +15,8 @@ namespace Mengine
             "InnerGlow",
             "Bevel",
             "Blur",
-            "Satin"
+            "Satin",
+            "Pattern"
         };
         //////////////////////////////////////////////////////////////////////////
         static const Char * const FontEffectSpaceNames[MENGINE_FONTEFFECT_SPACE_MAX] = {
@@ -40,6 +41,13 @@ namespace Mengine
             "Outside",
             "Center",
             "Inside"
+        };
+        //////////////////////////////////////////////////////////////////////////
+        static const Char * const FontEffectPatternTileNames[MENGINE_FONTEFFECT_PATTERN_TILE_MAX] = {
+            "Tile",
+            "Mirror",
+            "Clamp",
+            "Stretch"
         };
         //////////////////////////////////////////////////////////////////////////
         static const Char * const FontEffectGradientTypeNames[MENGINE_FONTEFFECT_GRADIENT_TYPE_MAX] = {
@@ -99,6 +107,18 @@ namespace Mengine
             }
 
             const Char * name = Detail::FontEffectOutlinePositionNames[_position];
+
+            return name;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const Char * getFontEffectPatternTileName( EFontEffectPatternTile _tile )
+        {
+            if( _tile >= MENGINE_FONTEFFECT_PATTERN_TILE_MAX )
+            {
+                return "";
+            }
+
+            const Char * name = Detail::FontEffectPatternTileNames[_tile];
 
             return name;
         }

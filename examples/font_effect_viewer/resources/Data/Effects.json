@@ -153,6 +153,18 @@
                     ]
                 }
             ]
+        },
+        "StripedGold": {
+            "Sample": 2,
+            "Layers": [
+                {
+                    "Effects": [
+                        { "Type": "Outline", "Color": [50, 25, 0, 255], "Width": 2.0 },
+                        { "Type": "Pattern", "Pattern": { "Path": "pattern_stripes.png", "Tile": "Tile", "Scale": 1.0, "Angle": 30 } },
+                        { "Type": "InnerShadow", "Color": [60, 30, 0, 160], "Offset": [0, 2], "Blur": 2.0 }
+                    ]
+                }
+            ]
         }
     }
 }

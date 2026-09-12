@@ -37,7 +37,9 @@ namespace Mengine
         float centerY = 0.f;
         float dirX = 0.f;
         float dirY = 1.f;
+        float angle = 0.f;
         float extentInv = 1.f;
+        float radiusInv = 1.f;
     };
     //////////////////////////////////////////////////////////////////////////
     class FontEffectScratch
@@ -87,6 +89,7 @@ namespace Mengine
         void fontEffectSignedDistance( const FontEffectPlane & _alpha, const FontEffectPlane & _sdf, const FontEffectPlane & _tmp0, const FontEffectPlane & _tmp1, float * _lineF, float * _lineD, float * _lineZ, float * _lineV );
 
         void fontEffectCoverage( const FontEffectPlane & _sdf, float _width, float _sharpness, const FontEffectPlane & _out );
+        void fontEffectCoverageBand( const FontEffectPlane & _sdf, float _inner, float _outer, float _sharpness, const FontEffectPlane & _out );
         void fontEffectInvert( const FontEffectPlane & _src, const FontEffectPlane & _dst );
         void fontEffectMultiply( const FontEffectPlane & _plane, const FontEffectPlane & _mask );
         void fontEffectOffset( const FontEffectPlane & _src, int32_t _dx, int32_t _dy, const FontEffectPlane & _dst );
@@ -95,9 +98,11 @@ namespace Mengine
         void fontEffectBlurImage( const FontEffectImage & _image, float _sigma, const FontEffectPlane & _tmp0, const FontEffectPlane & _tmp1 );
 
         void fontEffectColorize( const FontEffectPlane & _coverage, const Color & _color, float _opacity, const FontEffectImage & _out );
-        void fontEffectColorizeGradient( const FontEffectPlane & _coverage, const FontEffectGradientDesc & _gradient, const FontEffectGradientContext & _context, float _opacity, const FontEffectImage & _out );
+        void fontEffectColorizeGradient( const FontEffectPlane & _coverage, const FontEffectPlane & _sdf, const FontEffectGradientDesc & _gradient, const FontEffectGradientContext & _context, float _opacity, const FontEffectImage & _out );
         void fontEffectTintImage( const FontEffectImage & _src, const Color & _color, float _opacity, const FontEffectImage & _out );
-        void fontEffectTintImageGradient( const FontEffectImage & _src, const FontEffectGradientDesc & _gradient, const FontEffectGradientContext & _context, float _opacity, const FontEffectImage & _out );
+        void fontEffectTintImageGradient( const FontEffectImage & _src, const FontEffectPlane & _sdf, const FontEffectGradientDesc & _gradient, const FontEffectGradientContext & _context, float _opacity, const FontEffectImage & _out );
+
+        void fontEffectSatin( const FontEffectPlane & _alpha, const FontEffectStyleDesc & _effect, float _sample, const FontEffectPlane & _work0, const FontEffectPlane & _work1, const FontEffectPlane & _tmp0, const FontEffectImage & _out );
 
         void fontEffectBevel( const FontEffectPlane & _sdf, const FontEffectPlane & _alpha, const FontEffectStyleDesc & _effect, float _sample, const FontEffectPlane & _tmp0, const FontEffectPlane & _tmp1, const FontEffectImage & _out );
 

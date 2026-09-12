@@ -33,10 +33,11 @@ namespace Mengine
         EFET_INNER_SHADOW,
         EFET_INNER_GLOW,
         EFET_BEVEL,
-        EFET_BLUR
+        EFET_BLUR,
+        EFET_SATIN
     };
     //////////////////////////////////////////////////////////////////////////
-#define MENGINE_FONTEFFECT_TYPE_MAX (Mengine::EFET_BLUR + 1)
+#define MENGINE_FONTEFFECT_TYPE_MAX (Mengine::EFET_SATIN + 1)
     //////////////////////////////////////////////////////////////////////////
     enum EFontEffectSpace : uint32_t
     {
@@ -45,6 +46,26 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
 #define MENGINE_FONTEFFECT_SPACE_MAX (Mengine::EFES_FONT + 1)
+    //////////////////////////////////////////////////////////////////////////
+    enum EFontEffectOutlinePosition : uint32_t
+    {
+        EFEOP_OUTSIDE = 0,
+        EFEOP_CENTER,
+        EFEOP_INSIDE
+    };
+    //////////////////////////////////////////////////////////////////////////
+#define MENGINE_FONTEFFECT_OUTLINE_POSITION_MAX (Mengine::EFEOP_INSIDE + 1)
+    //////////////////////////////////////////////////////////////////////////
+    enum EFontEffectGradientType : uint32_t
+    {
+        EFEGT_LINEAR = 0,
+        EFEGT_REFLECTED,
+        EFEGT_RADIAL,
+        EFEGT_ANGLE,
+        EFEGT_DISTANCE
+    };
+    //////////////////////////////////////////////////////////////////////////
+#define MENGINE_FONTEFFECT_GRADIENT_TYPE_MAX (Mengine::EFEGT_DISTANCE + 1)
     //////////////////////////////////////////////////////////////////////////
     struct FontEffectGradientStop
     {
@@ -57,7 +78,12 @@ namespace Mengine
     struct FontEffectGradientDesc
     {
         bool enabled = false;
+        EFontEffectGradientType type = EFEGT_LINEAR;
         float angle = 90.f;
+        mt::vec2f center = mt::vec2f( 0.f, 0.f );
+        float scale = 1.f;
+        bool reverse = false;
+        bool dither = false;
         EFontEffectSpace space = EFES_GLYPH;
         VectorFontEffectGradientStops stops;
     };
@@ -74,11 +100,15 @@ namespace Mengine
 
         float width = 1.f;
         float sharpness = 0.f;
+        EFontEffectOutlinePosition position = EFEOP_OUTSIDE;
 
         mt::vec2f offset = mt::vec2f( 0.f, 0.f );
 
         float blur = 0.f;
         float spread = 0.f;
+
+        float distance = 0.f;
+        bool invert = false;
 
         float depth = 1.f;
         float size = 2.f;

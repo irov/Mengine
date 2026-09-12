@@ -79,7 +79,7 @@ Common to every type:
 
 | Field | Type | Default | Notes |
 |---|---|---|---|
-| `Type` | string | — | One of `Fill`, `Outline`, `Shadow`, `Glow`, `InnerShadow`, `InnerGlow`, `Bevel`, `Blur`. Case-sensitive, exact match; an unrecognized value fails to load. |
+| `Type` | string | — | One of `Fill`, `Outline`, `Shadow`, `Glow`, `InnerShadow`, `InnerGlow`, `Bevel`, `Blur`, `Satin`. Case-sensitive, exact match; an unrecognized value fails to load. |
 | `Enabled` | bool | `true` | A disabled effect is skipped. |
 | `Opacity` | float | `1.0` | Must be `>= 0`. |
 
@@ -88,11 +88,12 @@ Per-type fields (all sizes/offsets/blur/spread are in font pixels at the effect'
 | Type | Fields |
 |---|---|
 | `Fill` | `Color` (solid fill; ignored if `Gradient.Enabled` is true); `Gradient` — see below. |
-| `Outline` | `Color`; `Width` (float, default `1.0`, `>= 0`); `Sharpness` (float, default `0.0`, `>= 0` — 0 is a hard edge, larger values soften the outline's own edge). |
+| `Outline` | `Color`; `Width` (float, default `1.0`, `>= 0`); `Sharpness` (float, default `0.0`, `>= 0` — 0 is a hard edge, larger values soften the outline's own edge); `Position` (string, default `"Outside"` — `"Outside"`, `"Center"` or `"Inside"`, where the stroke sits relative to the glyph edge). |
 | `Shadow`, `InnerShadow` | `Color`; `Offset` (`[x, y]`, default `[0, 0]`, `+y` is down); `Blur` (float, default `0.0`, `>= 0`); `Spread` (float, default `0.0`, `>= 0` — grows/shrinks the shape before blurring; `InnerShadow` still accepts it but the inner mask ignores growth beyond the glyph). |
 | `Glow`, `InnerGlow` | `Color`; `Blur` (float, default `0.0`, `>= 0`); `Spread` (float, default `0.0`, `>= 0`). |
 | `Bevel` | `Depth` (float, default `1.0`); `Size` (float, default `2.0`, `>= 0` — bevel ramp width); `Soften` (float, default `0.0`, `>= 0` — blurs the ramp's normal map); `Angle` (float degrees, default `120.0` — light direction); `Altitude` (float degrees, default `30.0` — light elevation); `Highlight` (color, default `[255,255,255,191]`); `Shadow` (color, default `[0,0,0,127]`). |
 | `Blur` | `Blur` (float, default `0.0`, `>= 0` — re-blurs the layer's accumulated result so far; has no effect as the first effect in a layer, since there is nothing to blur yet). |
+| `Satin` | `Color`; `Distance` (float, default `0.0` — how far the two interfering copies of the glyph are displaced); `Angle` (float degrees, default `120.0` — displacement direction); `Blur` (float, default `0.0`, `>= 0`); `Invert` (bool, default `false`). The result is masked by the glyph, so satin only ever paints inside it. |
 
 `Width`, `Sharpness`, `Blur`, `Spread`, `Size`, `Soften` must all be `>= 0`; a negative value fails validation.
 
@@ -113,9 +114,16 @@ Per-type fields (all sizes/offsets/blur/spread are in font pixels at the effect'
 | Field | Type | Default | Notes |
 |---|---|---|---|
 | `Enabled` | bool | `false` | When `false` (or the whole `Gradient` object is absent), `Fill` uses its plain `Color` instead. |
-| `Angle` | float degrees | `90.0` | Gradient direction; `90` runs top to bottom. |
+| `Type` | string | `"Linear"` | `"Linear"`, `"Reflected"` (mirrored around the centre), `"Radial"`, `"Angle"` (sweep around the centre) or `"Distance"` (ramp follows the distance from the glyph edge inward — the shape burst `FEPlugin` calls `fill_radial`). |
+| `Angle` | float degrees | `90.0` | Gradient direction; `90` runs top to bottom. Used by `Linear`, `Reflected` and `Angle`. |
+| `Center` | `[x, y]` | `[0, 0]` | Shifts the gradient origin, in units of half the gradient space; `[0, 0]` is centred, `[-1, 0]` moves it to the left edge. |
+| `Scale` | float | `1.0` | Stretches the gradient over a larger distance; smaller values concentrate the ramp. Must be `>= 0`. |
+| `Reverse` | bool | `false` | Mirrors the stop positions. |
+| `Dither` | bool | `false` | Adds one 8-bit least significant bit of ordered noise at the point of quantization, which removes banding on long ramps. |
 | `Space` | string | `"Glyph"` | `"Glyph"` (gradient spans each glyph individually) or `"Font"` (gradient spans the whole rendered text run, glyphs sample their own slice of it). |
-| `Stops` | array of `{ "T": float, "Color": color }` | `[]` | `T` in `0..1` along the gradient axis, ascending order (validation rejects an unsorted list). At least one stop is required when `Enabled` is `true`. |
+| `Stops` | array of `{ "T": float, "Color": color }` | `[]` | `T` in `0..1` along the gradient axis, ascending order (both the range and the order are validated). At least one stop is required when `Enabled` is `true`. |
+
+`Position` changes what an outline paints. Before it existed, an outline filled everything within `Width` of the glyph edge, interior included, so the glyph body took the outline colour and whatever `Fill` followed had to paint over it. `"Outside"` now paints a true ring outside the edge. Every bundled preset draws an opaque `Fill` in the same layer, so they render identically; a preset whose fill is translucent, or which has no fill at all, will look different.
 
 ### Color
 

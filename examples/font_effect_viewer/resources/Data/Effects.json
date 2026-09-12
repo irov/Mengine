@@ -69,6 +69,57 @@
                     ]
                 }
             ]
+        },
+        "InsetOutline": {
+            "Layers": [
+                {
+                    "Effects": [
+                        { "Type": "Fill", "Color": [255, 210, 90, 255] },
+                        { "Type": "Outline", "Color": [60, 25, 0, 255], "Width": 3.0, "Position": "Inside" }
+                    ]
+                }
+            ]
+        },
+        "BurstGradient": {
+            "Sample": 2,
+            "Layers": [
+                {
+                    "Effects": [
+                        { "Type": "Fill", "Gradient": { "Type": "Distance", "Scale": 0.25, "Dither": true,
+                            "Stops": [
+                                { "T": 0.0, "Color": [40, 20, 0, 255] },
+                                { "T": 1.0, "Color": [255, 240, 170, 255] }
+                            ] } }
+                    ]
+                }
+            ]
+        },
+        "RadialFill": {
+            "Sample": 2,
+            "Layers": [
+                {
+                    "Effects": [
+                        { "Type": "Outline", "Color": [0, 0, 0, 255], "Width": 1.5 },
+                        { "Type": "Fill", "Gradient": { "Type": "Radial", "Center": [0.0, -0.3], "Scale": 0.8,
+                            "Stops": [
+                                { "T": 0.0, "Color": [255, 255, 255, 255] },
+                                { "T": 1.0, "Color": [80, 120, 255, 255] }
+                            ] } }
+                    ]
+                }
+            ]
+        },
+        "SatinSilk": {
+            "Sample": 2,
+            "Layers": [
+                {
+                    "Effects": [
+                        { "Type": "Fill", "Color": [180, 60, 90, 255] },
+                        { "Type": "Satin", "Color": [255, 210, 230, 160], "Distance": 6.0, "Angle": 120, "Blur": 4.0 },
+                        { "Type": "Outline", "Color": [60, 10, 25, 255], "Width": 1.5 }
+                    ]
+                }
+            ]
         }
     }
 }

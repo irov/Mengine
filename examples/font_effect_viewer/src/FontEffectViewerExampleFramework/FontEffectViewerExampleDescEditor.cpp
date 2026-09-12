@@ -47,6 +47,48 @@ namespace Mengine
             return changed;
         }
         //////////////////////////////////////////////////////////////////////////
+        static bool enumCombo( const Char * _label, uint32_t * const _value, uint32_t _count, const Char * ( *_name )( uint32_t ) )
+        {
+            const Char * names[MENGINE_FONTEFFECT_TYPE_MAX];
+
+            for( uint32_t index = 0; index != _count; ++index )
+            {
+                names[index] = _name( index );
+            }
+
+            int value = (int)*_value;
+
+            if( ImGui::Combo( _label, &value, names, (int)_count ) == false )
+            {
+                return false;
+            }
+
+            *_value = (uint32_t)value;
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static const Char * spaceName( uint32_t _index )
+        {
+            const Char * name = Helper::getFontEffectSpaceName( (EFontEffectSpace)_index );
+
+            return name;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static const Char * gradientTypeName( uint32_t _index )
+        {
+            const Char * name = Helper::getFontEffectGradientTypeName( (EFontEffectGradientType)_index );
+
+            return name;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static const Char * outlinePositionName( uint32_t _index )
+        {
+            const Char * name = Helper::getFontEffectOutlinePositionName( (EFontEffectOutlinePosition)_index );
+
+            return name;
+        }
+        //////////////////////////////////////////////////////////////////////////
         static bool renderGradient( FontEffectGradientDesc * const _gradient )
         {
             bool changed = false;
@@ -60,22 +102,14 @@ namespace Mengine
 
             ImGui::Indent();
 
+            changed |= enumCombo( "Type", (uint32_t *)&_gradient->type, MENGINE_FONTEFFECT_GRADIENT_TYPE_MAX, &gradientTypeName );
             changed |= ImGui::SliderFloat( "Angle", &_gradient->angle, 0.f, 360.f, "%.0f" );
-
-            int space = (int)_gradient->space;
-
-            const Char * spaceNames[MENGINE_FONTEFFECT_SPACE_MAX];
-
-            for( uint32_t spaceIndex = 0; spaceIndex != MENGINE_FONTEFFECT_SPACE_MAX; ++spaceIndex )
-            {
-                spaceNames[spaceIndex] = Helper::getFontEffectSpaceName( (EFontEffectSpace)spaceIndex );
-            }
-
-            if( ImGui::Combo( "Space", &space, spaceNames, MENGINE_FONTEFFECT_SPACE_MAX ) == true )
-            {
-                _gradient->space = (EFontEffectSpace)space;
-                changed = true;
-            }
+            changed |= ImGui::DragFloat2( "Center", &_gradient->center.x, 0.01f, -1.f, 1.f, "%.2f" );
+            changed |= dragSize( "Scale", &_gradient->scale, 8.f );
+            changed |= ImGui::Checkbox( "Reverse", &_gradient->reverse );
+            ImGui::SameLine();
+            changed |= ImGui::Checkbox( "Dither", &_gradient->dither );
+            changed |= enumCombo( "Space", (uint32_t *)&_gradient->space, MENGINE_FONTEFFECT_SPACE_MAX, &spaceName );
 
             int removeIndex = -1;
 
@@ -144,6 +178,7 @@ namespace Mengine
                     changed |= colorEdit( "Color", &_effect->color );
                     changed |= dragSize( "Width", &_effect->width, 64.f );
                     changed |= dragSize( "Sharpness", &_effect->sharpness, 16.f );
+                    changed |= enumCombo( "Position", (uint32_t *)&_effect->position, MENGINE_FONTEFFECT_OUTLINE_POSITION_MAX, &outlinePositionName );
                 }break;
             case EFET_SHADOW:
                 {
@@ -182,6 +217,14 @@ namespace Mengine
             case EFET_BLUR:
                 {
                     changed |= dragSize( "Blur", &_effect->blur, 32.f );
+                }break;
+            case EFET_SATIN:
+                {
+                    changed |= colorEdit( "Color", &_effect->color );
+                    changed |= ImGui::DragFloat( "Distance", &_effect->distance, 0.1f, -64.f, 64.f, "%.1f" );
+                    changed |= ImGui::SliderFloat( "Angle", &_effect->angle, 0.f, 360.f, "%.0f" );
+                    changed |= dragSize( "Blur", &_effect->blur, 32.f );
+                    changed |= ImGui::Checkbox( "Invert", &_effect->invert );
                 }break;
             }
 
@@ -356,6 +399,12 @@ namespace Mengine
                     break;
                 case EFET_BLUR:
                     effect.blur = 1.f;
+                    break;
+                case EFET_SATIN:
+                    effect.color = Color( 0.f, 0.f, 0.f, 0.5f );
+                    effect.distance = 4.f;
+                    effect.angle = 120.f;
+                    effect.blur = 3.f;
                     break;
                 case EFET_FILL:
                 case EFET_BEVEL:

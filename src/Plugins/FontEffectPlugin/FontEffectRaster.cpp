@@ -124,6 +124,75 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             static const float FONTEFFECT_EDT_INF = 1e20f;
             //////////////////////////////////////////////////////////////////////////
+            static const uint8_t FONTEFFECT_BAYER8[64] = {
+                 0, 32,  8, 40,  2, 34, 10, 42,
+                48, 16, 56, 24, 50, 18, 58, 26,
+                12, 44,  4, 36, 14, 46,  6, 38,
+                60, 28, 52, 20, 62, 30, 54, 22,
+                 3, 35, 11, 43,  1, 33,  9, 41,
+                51, 19, 59, 27, 49, 17, 57, 25,
+                15, 47,  7, 39, 13, 45,  5, 37,
+                63, 31, 55, 23, 61, 29, 53, 21
+            };
+            //////////////////////////////////////////////////////////////////////////
+            static MENGINE_INLINE float bayer8( uint32_t _x, uint32_t _y )
+            {
+                uint8_t value = FONTEFFECT_BAYER8[(_y % 8) * 8 + (_x % 8)];
+
+                float dither = (float)value * (1.f / 64.f) - 0.5f;
+
+                return dither;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            static float gradientT( const FontEffectGradientDesc & _gradient, const FontEffectGradientContext & _context, uint32_t _x, uint32_t _y, float _sdf )
+            {
+                float dx = ((float)_x + 0.5f) - _context.centerX;
+                float dy = ((float)_y + 0.5f) - _context.centerY;
+
+                float scaleInv = (_gradient.scale > 0.f) ? 1.f / _gradient.scale : 1.f;
+
+                float t = 0.f;
+
+                switch( _gradient.type )
+                {
+                case EFEGT_LINEAR:
+                    {
+                        t = (dx * _context.dirX + dy * _context.dirY) * _context.extentInv * scaleInv + 0.5f;
+                    }break;
+                case EFEGT_REFLECTED:
+                    {
+                        float projection = (dx * _context.dirX + dy * _context.dirY) * _context.extentInv * scaleInv;
+
+                        t = StdMath::fabsf( projection ) * 2.f;
+                    }break;
+                case EFEGT_RADIAL:
+                    {
+                        float distance = StdMath::sqrtf( dx * dx + dy * dy );
+
+                        t = distance * _context.radiusInv * scaleInv;
+                    }break;
+                case EFEGT_ANGLE:
+                    {
+                        float direction = StdMath::atan2f( dy, dx ) - _context.angle;
+
+                        float turn = direction * mt::constant::inv_two_pi + 0.5f;
+
+                        t = turn - StdMath::floorf( turn );
+                    }break;
+                case EFEGT_DISTANCE:
+                    {
+                        t = -_sdf * _context.radiusInv * scaleInv;
+                    }break;
+                }
+
+                if( _gradient.reverse == true )
+                {
+                    t = 1.f - t;
+                }
+
+                return t;
+            }
+            //////////////////////////////////////////////////////////////////////////
             static MENGINE_INLINE float clamp01( float _value )
             {
                 float value = mt::clampf( 0.f, _value, 1.f );
@@ -528,6 +597,24 @@ namespace Mengine
             }
         }
         //////////////////////////////////////////////////////////////////////////
+        void fontEffectCoverageBand( const FontEffectPlane & _sdf, float _inner, float _outer, float _sharpness, const FontEffectPlane & _out )
+        {
+            size_t size = (size_t)_sdf.width * (size_t)_sdf.height;
+
+            float ramp = 1.f + _sharpness;
+            float rampInv = 1.f / ramp;
+
+            for( size_t index = 0; index != size; ++index )
+            {
+                float sdf = _sdf.data[index];
+
+                float outer = (_outer - sdf) * rampInv + 0.5f;
+                float inner = (sdf - _inner) * rampInv + 0.5f;
+
+                _out.data[index] = Detail::clamp01( outer ) * Detail::clamp01( inner );
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
         void fontEffectInvert( const FontEffectPlane & _src, const FontEffectPlane & _dst )
         {
             size_t size = (size_t)_src.width * (size_t)_src.height;
@@ -657,7 +744,7 @@ namespace Mengine
             }
         }
         //////////////////////////////////////////////////////////////////////////
-        void fontEffectColorizeGradient( const FontEffectPlane & _coverage, const FontEffectGradientDesc & _gradient, const FontEffectGradientContext & _context, float _opacity, const FontEffectImage & _out )
+        void fontEffectColorizeGradient( const FontEffectPlane & _coverage, const FontEffectPlane & _sdf, const FontEffectGradientDesc & _gradient, const FontEffectGradientContext & _context, float _opacity, const FontEffectImage & _out )
         {
             uint32_t width = _coverage.width;
             uint32_t height = _coverage.height;
@@ -682,13 +769,21 @@ namespace Mengine
                         continue;
                     }
 
-                    float dx = ((float)x + 0.5f) - _context.centerX;
-                    float dy = ((float)y + 0.5f) - _context.centerY;
+                    float sdf = (_sdf.data != nullptr) ? _sdf.data[index] : 0.f;
 
-                    float t = (dx * _context.dirX + dy * _context.dirY) * _context.extentInv + 0.5f;
+                    float t = Detail::gradientT( _gradient, _context, x, y, sdf );
 
                     float rgba[4];
                     Detail::evaluateGradient( _gradient, Detail::clamp01( t ), rgba );
+
+                    if( _gradient.dither == true )
+                    {
+                        float dither = Detail::bayer8( x, y ) * (1.f / 255.f);
+
+                        rgba[0] = Detail::clamp01( rgba[0] + dither );
+                        rgba[1] = Detail::clamp01( rgba[1] + dither );
+                        rgba[2] = Detail::clamp01( rgba[2] + dither );
+                    }
 
                     float a = rgba[3] * _opacity * c;
 
@@ -721,7 +816,7 @@ namespace Mengine
             }
         }
         //////////////////////////////////////////////////////////////////////////
-        void fontEffectTintImageGradient( const FontEffectImage & _src, const FontEffectGradientDesc & _gradient, const FontEffectGradientContext & _context, float _opacity, const FontEffectImage & _out )
+        void fontEffectTintImageGradient( const FontEffectImage & _src, const FontEffectPlane & _sdf, const FontEffectGradientDesc & _gradient, const FontEffectGradientContext & _context, float _opacity, const FontEffectImage & _out )
         {
             uint32_t width = _src.width;
             uint32_t height = _src.height;
@@ -735,10 +830,9 @@ namespace Mengine
                     const float * src = _src.data + index * 4;
                     float * dst = _out.data + index * 4;
 
-                    float dx = ((float)x + 0.5f) - _context.centerX;
-                    float dy = ((float)y + 0.5f) - _context.centerY;
+                    float sdf = (_sdf.data != nullptr) ? _sdf.data[index] : 0.f;
 
-                    float t = (dx * _context.dirX + dy * _context.dirY) * _context.extentInv + 0.5f;
+                    float t = Detail::gradientT( _gradient, _context, x, y, sdf );
 
                     float rgba[4];
                     Detail::evaluateGradient( _gradient, Detail::clamp01( t ), rgba );
@@ -751,6 +845,35 @@ namespace Mengine
                     dst[3] = src[3] * a;
                 }
             }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void fontEffectSatin( const FontEffectPlane & _alpha, const FontEffectStyleDesc & _effect, float _sample, const FontEffectPlane & _work0, const FontEffectPlane & _work1, const FontEffectPlane & _tmp0, const FontEffectImage & _out )
+        {
+            float angleRad = _effect.angle * mt::constant::deg2rad;
+
+            float distance = _effect.distance * _sample;
+
+            float dx = distance * StdMath::cosf( angleRad );
+            float dy = -distance * StdMath::sinf( angleRad );
+
+            int32_t idx = (int32_t)StdMath::floorf( dx + 0.5f );
+            int32_t idy = (int32_t)StdMath::floorf( dy + 0.5f );
+
+            Helper::fontEffectOffset( _alpha, idx, idy, _work0 );
+            Helper::fontEffectOffset( _alpha, -idx, -idy, _work1 );
+
+            size_t size = (size_t)_alpha.width * (size_t)_alpha.height;
+
+            for( size_t index = 0; index != size; ++index )
+            {
+                float interference = StdMath::fabsf( _work0.data[index] - _work1.data[index] );
+
+                _work0.data[index] = (_effect.invert == true) ? 1.f - interference : interference;
+            }
+
+            Helper::fontEffectBlurPlane( _work0, _effect.blur * _sample, _tmp0 );
+            Helper::fontEffectMultiply( _work0, _alpha );
+            Helper::fontEffectColorize( _work0, _effect.color, _effect.opacity, _out );
         }
         //////////////////////////////////////////////////////////////////////////
         void fontEffectBevel( const FontEffectPlane & _sdf, const FontEffectPlane & _alpha, const FontEffectStyleDesc & _effect, float _sample, const FontEffectPlane & _tmp0, const FontEffectPlane & _tmp1, const FontEffectImage & _out )

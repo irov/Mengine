@@ -14,12 +14,27 @@ namespace Mengine
             "InnerShadow",
             "InnerGlow",
             "Bevel",
-            "Blur"
+            "Blur",
+            "Satin"
         };
         //////////////////////////////////////////////////////////////////////////
         static const Char * const FontEffectSpaceNames[MENGINE_FONTEFFECT_SPACE_MAX] = {
             "Glyph",
             "Font"
+        };
+        //////////////////////////////////////////////////////////////////////////
+        static const Char * const FontEffectOutlinePositionNames[MENGINE_FONTEFFECT_OUTLINE_POSITION_MAX] = {
+            "Outside",
+            "Center",
+            "Inside"
+        };
+        //////////////////////////////////////////////////////////////////////////
+        static const Char * const FontEffectGradientTypeNames[MENGINE_FONTEFFECT_GRADIENT_TYPE_MAX] = {
+            "Linear",
+            "Reflected",
+            "Radial",
+            "Angle",
+            "Distance"
         };
         //////////////////////////////////////////////////////////////////////////
     }
@@ -47,6 +62,30 @@ namespace Mengine
             }
 
             const Char * name = Detail::FontEffectSpaceNames[_space];
+
+            return name;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const Char * getFontEffectOutlinePositionName( EFontEffectOutlinePosition _position )
+        {
+            if( _position >= MENGINE_FONTEFFECT_OUTLINE_POSITION_MAX )
+            {
+                return "";
+            }
+
+            const Char * name = Detail::FontEffectOutlinePositionNames[_position];
+
+            return name;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const Char * getFontEffectGradientTypeName( EFontEffectGradientType _type )
+        {
+            if( _type >= MENGINE_FONTEFFECT_GRADIENT_TYPE_MAX )
+            {
+                return "";
+            }
+
+            const Char * name = Detail::FontEffectGradientTypeNames[_type];
 
             return name;
         }

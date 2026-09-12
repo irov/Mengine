@@ -53,6 +53,44 @@ namespace Mengine
                 return false;
             }
             //////////////////////////////////////////////////////////////////////////
+            static bool parseOutlinePositionName( const Char * _name, EFontEffectOutlinePosition * const _position )
+            {
+                for( uint32_t index = 0; index != MENGINE_FONTEFFECT_OUTLINE_POSITION_MAX; ++index )
+                {
+                    const Char * name = Helper::getFontEffectOutlinePositionName( (EFontEffectOutlinePosition)index );
+
+                    if( StdString::strcmp( name, _name ) != 0 )
+                    {
+                        continue;
+                    }
+
+                    *_position = (EFontEffectOutlinePosition)index;
+
+                    return true;
+                }
+
+                return false;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            static bool parseGradientTypeName( const Char * _name, EFontEffectGradientType * const _type )
+            {
+                for( uint32_t index = 0; index != MENGINE_FONTEFFECT_GRADIENT_TYPE_MAX; ++index )
+                {
+                    const Char * name = Helper::getFontEffectGradientTypeName( (EFontEffectGradientType)index );
+
+                    if( StdString::strcmp( name, _name ) != 0 )
+                    {
+                        continue;
+                    }
+
+                    *_type = (EFontEffectGradientType)index;
+
+                    return true;
+                }
+
+                return false;
+            }
+            //////////////////////////////////////////////////////////////////////////
             static void dumpVec2f( const mt::vec2f & _value, jpp::object * const _json )
             {
                 jpp::array j_value = jpp::make_array();
@@ -74,6 +112,22 @@ namespace Mengine
 
                 _gradient->enabled = _json.get( "Enabled", true );
                 _gradient->angle = _json.get( "Angle", 90.f );
+                _gradient->scale = _json.get( "Scale", 1.f );
+                _gradient->reverse = _json.get( "Reverse", false );
+                _gradient->dither = _json.get( "Dither", false );
+
+                Helper::getJSONVec2f( _json, "Center", &_gradient->center );
+
+                const Char * type_name = _json.get( "Type", "Linear" );
+
+                if( Detail::parseGradientTypeName( type_name, &_gradient->type ) == false )
+                {
+                    LOGGER_ERROR( "font effect gradient invalid type '%s'"
+                        , type_name
+                    );
+
+                    return false;
+                }
 
                 const Char * space_name = _json.get( "Space", "Glyph" );
 
@@ -116,11 +170,19 @@ namespace Mengine
             {
                 jpp::object j_gradient = jpp::make_object();
 
-                j_gradient.set( "Enabled", _gradient.enabled );
-                j_gradient.set( "Angle", _gradient.angle );
-
+                const Char * type_name = Helper::getFontEffectGradientTypeName( _gradient.type );
                 const Char * space_name = Helper::getFontEffectSpaceName( _gradient.space );
 
+                jpp::object j_center;
+                Detail::dumpVec2f( _gradient.center, &j_center );
+
+                j_gradient.set( "Enabled", _gradient.enabled );
+                j_gradient.set( "Type", type_name );
+                j_gradient.set( "Angle", _gradient.angle );
+                j_gradient.set( "Center", j_center );
+                j_gradient.set( "Scale", _gradient.scale );
+                j_gradient.set( "Reverse", _gradient.reverse );
+                j_gradient.set( "Dither", _gradient.dither );
                 j_gradient.set( "Space", space_name );
 
                 jpp::array j_stops = jpp::make_array();
@@ -179,10 +241,24 @@ namespace Mengine
                 _effect->width = _json.get( "Width", 1.f );
                 _effect->sharpness = _json.get( "Sharpness", 0.f );
 
+                const Char * position_name = _json.get( "Position", "Outside" );
+
+                if( Detail::parseOutlinePositionName( position_name, &_effect->position ) == false )
+                {
+                    LOGGER_ERROR( "font effect invalid outline position '%s'"
+                        , position_name
+                    );
+
+                    return false;
+                }
+
                 Helper::getJSONVec2f( _json, "Offset", &_effect->offset );
 
                 _effect->blur = _json.get( "Blur", 0.f );
                 _effect->spread = _json.get( "Spread", 0.f );
+
+                _effect->distance = _json.get( "Distance", 0.f );
+                _effect->invert = _json.get( "Invert", false );
 
                 _effect->depth = _json.get( "Depth", 1.f );
                 _effect->size = _json.get( "Size", 2.f );
@@ -222,9 +298,12 @@ namespace Mengine
                     }break;
                 case EFET_OUTLINE:
                     {
+                        const Char * position_name = Helper::getFontEffectOutlinePositionName( _effect.position );
+
                         j_effect.set( "Color", _effect.color );
                         j_effect.set( "Width", _effect.width );
                         j_effect.set( "Sharpness", _effect.sharpness );
+                        j_effect.set( "Position", position_name );
                     }break;
                 case EFET_SHADOW:
                 case EFET_INNER_SHADOW:
@@ -257,6 +336,14 @@ namespace Mengine
                 case EFET_BLUR:
                     {
                         j_effect.set( "Blur", _effect.blur );
+                    }break;
+                case EFET_SATIN:
+                    {
+                        j_effect.set( "Color", _effect.color );
+                        j_effect.set( "Distance", _effect.distance );
+                        j_effect.set( "Angle", _effect.angle );
+                        j_effect.set( "Blur", _effect.blur );
+                        j_effect.set( "Invert", _effect.invert );
                     }break;
                 }
 

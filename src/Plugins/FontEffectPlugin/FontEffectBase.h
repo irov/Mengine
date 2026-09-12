@@ -56,9 +56,12 @@ namespace Mengine
         bool setEffectColor( uint32_t _layerIndex, uint32_t _effectIndex, const Color & _color );
         bool setEffectWidth( uint32_t _layerIndex, uint32_t _effectIndex, float _width );
         bool setEffectSharpness( uint32_t _layerIndex, uint32_t _effectIndex, float _sharpness );
+        bool setEffectOutlinePosition( uint32_t _layerIndex, uint32_t _effectIndex, EFontEffectOutlinePosition _position );
         bool setEffectOffset( uint32_t _layerIndex, uint32_t _effectIndex, const mt::vec2f & _offset );
         bool setEffectBlur( uint32_t _layerIndex, uint32_t _effectIndex, float _blur );
         bool setEffectSpread( uint32_t _layerIndex, uint32_t _effectIndex, float _spread );
+        bool setEffectDistance( uint32_t _layerIndex, uint32_t _effectIndex, float _distance );
+        bool setEffectInvert( uint32_t _layerIndex, uint32_t _effectIndex, bool _invert );
         bool setEffectDepth( uint32_t _layerIndex, uint32_t _effectIndex, float _depth );
         bool setEffectSize( uint32_t _layerIndex, uint32_t _effectIndex, float _size );
         bool setEffectSoften( uint32_t _layerIndex, uint32_t _effectIndex, float _soften );
@@ -69,7 +72,12 @@ namespace Mengine
 
     public:
         bool setEffectGradientEnabled( uint32_t _layerIndex, uint32_t _effectIndex, bool _enabled );
+        bool setEffectGradientType( uint32_t _layerIndex, uint32_t _effectIndex, EFontEffectGradientType _type );
         bool setEffectGradientAngle( uint32_t _layerIndex, uint32_t _effectIndex, float _angle );
+        bool setEffectGradientCenter( uint32_t _layerIndex, uint32_t _effectIndex, const mt::vec2f & _center );
+        bool setEffectGradientScale( uint32_t _layerIndex, uint32_t _effectIndex, float _scale );
+        bool setEffectGradientReverse( uint32_t _layerIndex, uint32_t _effectIndex, bool _reverse );
+        bool setEffectGradientDither( uint32_t _layerIndex, uint32_t _effectIndex, bool _dither );
         bool setEffectGradientSpace( uint32_t _layerIndex, uint32_t _effectIndex, EFontEffectSpace _space );
         bool addEffectGradientStop( uint32_t _layerIndex, uint32_t _effectIndex, float _t, const Color & _color );
 
@@ -83,6 +91,11 @@ namespace Mengine
 
     protected:
         void applySampleHint_( uint32_t _sample );
+
+    protected:
+        bool setupEffectCommon_( uint32_t _layerIndex, uint32_t _effectIndex, const FontEffectStyleDesc & _effect );
+        bool setupEffectBevel_( uint32_t _layerIndex, uint32_t _effectIndex, const FontEffectStyleDesc & _effect );
+        bool setupEffectGradient_( uint32_t _layerIndex, uint32_t _effectIndex, const FontEffectGradientDesc & _gradient );
 
     protected:
         bool applyLayer_( const FontEffectLayerDesc & _layer, uint32_t _layoutIndex, uint32_t _width, uint32_t _rows, uint32_t _channel, int32_t _left, int32_t _top, uint32_t _height, const LambdaFontEffectProvider & _provider );

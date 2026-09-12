@@ -44,7 +44,19 @@ namespace Mengine
             case EFET_FILL:
                 return 0.f;
             case EFET_OUTLINE:
-                return _effect.width + _effect.sharpness + 1.f;
+                {
+                    switch( _effect.position )
+                    {
+                    case EFEOP_OUTSIDE:
+                        return _effect.width + _effect.sharpness + 1.f;
+                    case EFEOP_CENTER:
+                        return _effect.width * 0.5f + _effect.sharpness + 1.f;
+                    case EFEOP_INSIDE:
+                        return _effect.sharpness + 1.f;
+                    }
+
+                    return 0.f;
+                }
             case EFET_SHADOW:
             case EFET_INNER_SHADOW:
                 {
@@ -62,6 +74,14 @@ namespace Mengine
                 return _effect.size + _effect.soften + 1.f;
             case EFET_BLUR:
                 return 3.f * _effect.blur + 1.f;
+            case EFET_SATIN:
+                {
+                    float distance = StdMath::fabsf( _effect.distance );
+
+                    float extent = distance + 3.f * _effect.blur + 1.f;
+
+                    return extent;
+                }
             }
 
             return 0.f;
@@ -99,6 +119,23 @@ namespace Mengine
             if( (_value <= _max) == false )
             {
                 LOGGER_ERROR( "font effect invalid %s %f"
+                    , _name
+                    , _value
+                );
+
+                return false;
+            }
+
+            *_field = _value;
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool setEnum( uint32_t * const _field, uint32_t _value, uint32_t _max, const Char * _name )
+        {
+            if( _value >= _max )
+            {
+                LOGGER_ERROR( "font effect invalid %s %u"
                     , _name
                     , _value
                 );
@@ -286,6 +323,159 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool FontEffectBase::setupEffectCommon_( uint32_t _layerIndex, uint32_t _effectIndex, const FontEffectStyleDesc & _effect )
+    {
+        if( this->setEffectEnabled( _layerIndex, _effectIndex, _effect.enabled ) == false )
+        {
+            return false;
+        }
+
+        if( this->setEffectOpacity( _layerIndex, _effectIndex, _effect.opacity ) == false )
+        {
+            return false;
+        }
+
+        if( this->setEffectColor( _layerIndex, _effectIndex, _effect.color ) == false )
+        {
+            return false;
+        }
+
+        if( this->setEffectWidth( _layerIndex, _effectIndex, _effect.width ) == false )
+        {
+            return false;
+        }
+
+        if( this->setEffectSharpness( _layerIndex, _effectIndex, _effect.sharpness ) == false )
+        {
+            return false;
+        }
+
+        if( this->setEffectOutlinePosition( _layerIndex, _effectIndex, _effect.position ) == false )
+        {
+            return false;
+        }
+
+        if( this->setEffectOffset( _layerIndex, _effectIndex, _effect.offset ) == false )
+        {
+            return false;
+        }
+
+        if( this->setEffectBlur( _layerIndex, _effectIndex, _effect.blur ) == false )
+        {
+            return false;
+        }
+
+        if( this->setEffectSpread( _layerIndex, _effectIndex, _effect.spread ) == false )
+        {
+            return false;
+        }
+
+        if( this->setEffectDistance( _layerIndex, _effectIndex, _effect.distance ) == false )
+        {
+            return false;
+        }
+
+        if( this->setEffectInvert( _layerIndex, _effectIndex, _effect.invert ) == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FontEffectBase::setupEffectBevel_( uint32_t _layerIndex, uint32_t _effectIndex, const FontEffectStyleDesc & _effect )
+    {
+        if( this->setEffectDepth( _layerIndex, _effectIndex, _effect.depth ) == false )
+        {
+            return false;
+        }
+
+        if( this->setEffectSize( _layerIndex, _effectIndex, _effect.size ) == false )
+        {
+            return false;
+        }
+
+        if( this->setEffectSoften( _layerIndex, _effectIndex, _effect.soften ) == false )
+        {
+            return false;
+        }
+
+        if( this->setEffectAngle( _layerIndex, _effectIndex, _effect.angle ) == false )
+        {
+            return false;
+        }
+
+        if( this->setEffectAltitude( _layerIndex, _effectIndex, _effect.altitude ) == false )
+        {
+            return false;
+        }
+
+        if( this->setEffectHighlight( _layerIndex, _effectIndex, _effect.highlight ) == false )
+        {
+            return false;
+        }
+
+        if( this->setEffectShadow( _layerIndex, _effectIndex, _effect.shadow ) == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FontEffectBase::setupEffectGradient_( uint32_t _layerIndex, uint32_t _effectIndex, const FontEffectGradientDesc & _gradient )
+    {
+        if( this->setEffectGradientEnabled( _layerIndex, _effectIndex, _gradient.enabled ) == false )
+        {
+            return false;
+        }
+
+        if( this->setEffectGradientType( _layerIndex, _effectIndex, _gradient.type ) == false )
+        {
+            return false;
+        }
+
+        if( this->setEffectGradientAngle( _layerIndex, _effectIndex, _gradient.angle ) == false )
+        {
+            return false;
+        }
+
+        if( this->setEffectGradientCenter( _layerIndex, _effectIndex, _gradient.center ) == false )
+        {
+            return false;
+        }
+
+        if( this->setEffectGradientScale( _layerIndex, _effectIndex, _gradient.scale ) == false )
+        {
+            return false;
+        }
+
+        if( this->setEffectGradientReverse( _layerIndex, _effectIndex, _gradient.reverse ) == false )
+        {
+            return false;
+        }
+
+        if( this->setEffectGradientDither( _layerIndex, _effectIndex, _gradient.dither ) == false )
+        {
+            return false;
+        }
+
+        if( this->setEffectGradientSpace( _layerIndex, _effectIndex, _gradient.space ) == false )
+        {
+            return false;
+        }
+
+        for( const FontEffectGradientStop & stop : _gradient.stops )
+        {
+            if( this->addEffectGradientStop( _layerIndex, _effectIndex, stop.t, stop.color ) == false )
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool FontEffectBase::setupDesc( const FontEffectDesc & _desc )
     {
         m_desc.layers.clear();
@@ -316,102 +506,19 @@ namespace Mengine
                     return false;
                 }
 
-                if( this->setEffectEnabled( layerIndex, effectIndex, effect.enabled ) == false )
+                if( this->setupEffectCommon_( layerIndex, effectIndex, effect ) == false )
                 {
                     return false;
                 }
 
-                if( this->setEffectOpacity( layerIndex, effectIndex, effect.opacity ) == false )
+                if( this->setupEffectBevel_( layerIndex, effectIndex, effect ) == false )
                 {
                     return false;
                 }
 
-                if( this->setEffectColor( layerIndex, effectIndex, effect.color ) == false )
+                if( this->setupEffectGradient_( layerIndex, effectIndex, effect.gradient ) == false )
                 {
                     return false;
-                }
-
-                if( this->setEffectWidth( layerIndex, effectIndex, effect.width ) == false )
-                {
-                    return false;
-                }
-
-                if( this->setEffectSharpness( layerIndex, effectIndex, effect.sharpness ) == false )
-                {
-                    return false;
-                }
-
-                if( this->setEffectOffset( layerIndex, effectIndex, effect.offset ) == false )
-                {
-                    return false;
-                }
-
-                if( this->setEffectBlur( layerIndex, effectIndex, effect.blur ) == false )
-                {
-                    return false;
-                }
-
-                if( this->setEffectSpread( layerIndex, effectIndex, effect.spread ) == false )
-                {
-                    return false;
-                }
-
-                if( this->setEffectDepth( layerIndex, effectIndex, effect.depth ) == false )
-                {
-                    return false;
-                }
-
-                if( this->setEffectSize( layerIndex, effectIndex, effect.size ) == false )
-                {
-                    return false;
-                }
-
-                if( this->setEffectSoften( layerIndex, effectIndex, effect.soften ) == false )
-                {
-                    return false;
-                }
-
-                if( this->setEffectAngle( layerIndex, effectIndex, effect.angle ) == false )
-                {
-                    return false;
-                }
-
-                if( this->setEffectAltitude( layerIndex, effectIndex, effect.altitude ) == false )
-                {
-                    return false;
-                }
-
-                if( this->setEffectHighlight( layerIndex, effectIndex, effect.highlight ) == false )
-                {
-                    return false;
-                }
-
-                if( this->setEffectShadow( layerIndex, effectIndex, effect.shadow ) == false )
-                {
-                    return false;
-                }
-
-                if( this->setEffectGradientEnabled( layerIndex, effectIndex, effect.gradient.enabled ) == false )
-                {
-                    return false;
-                }
-
-                if( this->setEffectGradientAngle( layerIndex, effectIndex, effect.gradient.angle ) == false )
-                {
-                    return false;
-                }
-
-                if( this->setEffectGradientSpace( layerIndex, effectIndex, effect.gradient.space ) == false )
-                {
-                    return false;
-                }
-
-                for( const FontEffectGradientStop & stop : effect.gradient.stops )
-                {
-                    if( this->addEffectGradientStop( layerIndex, effectIndex, stop.t, stop.color ) == false )
-                    {
-                        return false;
-                    }
                 }
             }
         }
@@ -476,11 +583,20 @@ namespace Mengine
             extent = StdMath::fabsf( glyphWidth * dirX ) + StdMath::fabsf( glyphHeight * dirY );
         }
 
+        float spaceHeight = (_gradient.space == EFES_FONT) ? (float)_height * sample : glyphHeight;
+
+        float radius = 0.5f * StdMath::sqrtf( glyphWidth * glyphWidth + spaceHeight * spaceHeight );
+
+        centerX += _gradient.center.x * glyphWidth * 0.5f;
+        centerY += _gradient.center.y * spaceHeight * 0.5f;
+
         _context->dirX = dirX;
         _context->dirY = dirY;
+        _context->angle = angleRad;
         _context->centerX = centerX;
         _context->centerY = centerY;
         _context->extentInv = (extent > 0.f) ? 1.f / extent : 1.f;
+        _context->radiusInv = (radius > 0.f) ? 1.f / radius : 1.f;
     }
     //////////////////////////////////////////////////////////////////////////
     bool FontEffectBase::applyLayer_( const FontEffectLayerDesc & _layer, uint32_t _layoutIndex, uint32_t _width, uint32_t _rows, uint32_t _channel, int32_t _left, int32_t _top, uint32_t _height, const LambdaFontEffectProvider & _provider )
@@ -514,15 +630,23 @@ namespace Mengine
                     bool useGradient = (effect.gradient.enabled == true && effect.gradient.stops.empty() == false);
 
                     FontEffectGradientContext context;
+                    FontEffectPlane gradientSdf;
 
                     if( useGradient == true )
                     {
                         this->makeGradientContext_( effect.gradient, _width, _rows, _top, _height, &context );
+
+                        if( effect.gradient.type == EFEGT_DISTANCE )
+                        {
+                            this->ensureSignedDistance_();
+
+                            gradientSdf = m_scratch.getPlane( Detail::EFESP_SDF );
+                        }
                     }
 
                     if( _channel == 4 && useGradient == true )
                     {
-                        Helper::fontEffectTintImageGradient( source, effect.gradient, context, effect.opacity, effectImage );
+                        Helper::fontEffectTintImageGradient( source, gradientSdf, effect.gradient, context, effect.opacity, effectImage );
                     }
                     else if( _channel == 4 )
                     {
@@ -530,7 +654,7 @@ namespace Mengine
                     }
                     else if( useGradient == true )
                     {
-                        Helper::fontEffectColorizeGradient( alpha, effect.gradient, context, effect.opacity, effectImage );
+                        Helper::fontEffectColorizeGradient( alpha, gradientSdf, effect.gradient, context, effect.opacity, effectImage );
                     }
                     else
                     {
@@ -545,7 +669,23 @@ namespace Mengine
 
                     FontEffectPlane sdf = m_scratch.getPlane( Detail::EFESP_SDF );
 
-                    Helper::fontEffectCoverage( sdf, effect.width * sample, effect.sharpness * sample, work0 );
+                    float width = effect.width * sample;
+
+                    float inner = 0.f;
+                    float outer = width;
+
+                    if( effect.position == EFEOP_CENTER )
+                    {
+                        inner = -width * 0.5f;
+                        outer = width * 0.5f;
+                    }
+                    else if( effect.position == EFEOP_INSIDE )
+                    {
+                        inner = -width;
+                        outer = 0.f;
+                    }
+
+                    Helper::fontEffectCoverageBand( sdf, inner, outer, effect.sharpness * sample, work0 );
                     Helper::fontEffectColorize( work0, effect.color, effect.opacity, effectImage );
                     Helper::fontEffectCompositeOver( accumulator, effectImage );
                 }break;
@@ -627,6 +767,11 @@ namespace Mengine
             case EFET_BLUR:
                 {
                     Helper::fontEffectBlurImage( accumulator, effect.blur * sample, tmp0, tmp1 );
+                }break;
+            case EFET_SATIN:
+                {
+                    Helper::fontEffectSatin( alpha, effect, sample, work0, work1, tmp0, effectImage );
+                    Helper::fontEffectCompositeOver( accumulator, effectImage );
                 }break;
             }
         }
@@ -1152,6 +1297,129 @@ namespace Mengine
         }
 
         effect->gradient.space = _space;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FontEffectBase::setEffectOutlinePosition( uint32_t _layerIndex, uint32_t _effectIndex, EFontEffectOutlinePosition _position )
+    {
+        FontEffectStyleDesc * effect = this->getEffect_( _layerIndex, _effectIndex );
+
+        if( effect == nullptr )
+        {
+            return false;
+        }
+
+        bool successful = Detail::setEnum( (uint32_t *)&effect->position, _position, MENGINE_FONTEFFECT_OUTLINE_POSITION_MAX, "effect outline position" );
+
+        return successful;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FontEffectBase::setEffectDistance( uint32_t _layerIndex, uint32_t _effectIndex, float _distance )
+    {
+        FontEffectStyleDesc * effect = this->getEffect_( _layerIndex, _effectIndex );
+
+        if( effect == nullptr )
+        {
+            return false;
+        }
+
+        bool successful = Detail::setRange( &effect->distance, _distance, -MENGINE_FONTEFFECT_MAX_OFFSET, MENGINE_FONTEFFECT_MAX_OFFSET, "effect distance" );
+
+        return successful;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FontEffectBase::setEffectInvert( uint32_t _layerIndex, uint32_t _effectIndex, bool _invert )
+    {
+        FontEffectStyleDesc * effect = this->getEffect_( _layerIndex, _effectIndex );
+
+        if( effect == nullptr )
+        {
+            return false;
+        }
+
+        effect->invert = _invert;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FontEffectBase::setEffectGradientType( uint32_t _layerIndex, uint32_t _effectIndex, EFontEffectGradientType _type )
+    {
+        FontEffectStyleDesc * effect = this->getEffect_( _layerIndex, _effectIndex );
+
+        if( effect == nullptr )
+        {
+            return false;
+        }
+
+        bool successful = Detail::setEnum( (uint32_t *)&effect->gradient.type, _type, MENGINE_FONTEFFECT_GRADIENT_TYPE_MAX, "effect gradient type" );
+
+        return successful;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FontEffectBase::setEffectGradientCenter( uint32_t _layerIndex, uint32_t _effectIndex, const mt::vec2f & _center )
+    {
+        FontEffectStyleDesc * effect = this->getEffect_( _layerIndex, _effectIndex );
+
+        if( effect == nullptr )
+        {
+            return false;
+        }
+
+        mt::vec2f center;
+        if( Detail::setRange( &center.x, _center.x, -1.f, 1.f, "effect gradient center x" ) == false )
+        {
+            return false;
+        }
+
+        if( Detail::setRange( &center.y, _center.y, -1.f, 1.f, "effect gradient center y" ) == false )
+        {
+            return false;
+        }
+
+        effect->gradient.center = center;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FontEffectBase::setEffectGradientScale( uint32_t _layerIndex, uint32_t _effectIndex, float _scale )
+    {
+        FontEffectStyleDesc * effect = this->getEffect_( _layerIndex, _effectIndex );
+
+        if( effect == nullptr )
+        {
+            return false;
+        }
+
+        bool successful = Detail::setRange( &effect->gradient.scale, _scale, 0.f, MENGINE_FONTEFFECT_MAX_SIZE, "effect gradient scale" );
+
+        return successful;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FontEffectBase::setEffectGradientReverse( uint32_t _layerIndex, uint32_t _effectIndex, bool _reverse )
+    {
+        FontEffectStyleDesc * effect = this->getEffect_( _layerIndex, _effectIndex );
+
+        if( effect == nullptr )
+        {
+            return false;
+        }
+
+        effect->gradient.reverse = _reverse;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FontEffectBase::setEffectGradientDither( uint32_t _layerIndex, uint32_t _effectIndex, bool _dither )
+    {
+        FontEffectStyleDesc * effect = this->getEffect_( _layerIndex, _effectIndex );
+
+        if( effect == nullptr )
+        {
+            return false;
+        }
+
+        effect->gradient.dither = _dither;
 
         return true;
     }

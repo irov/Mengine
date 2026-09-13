@@ -48,6 +48,12 @@ namespace Mengine
         Path
     };
     //////////////////////////////////////////////////////////////////////////
+    enum class EGraphicsNineSliceMode : uint8_t
+    {
+        Stretch,
+        Tile
+    };
+    //////////////////////////////////////////////////////////////////////////
     enum class EGraphicsPathMarkerType : uint8_t
     {
         None,
@@ -143,6 +149,7 @@ namespace Mengine
         virtual void drawRect( const mt::vec2f & _point, float _width, float _height ) = 0;
         virtual void drawRoundedRect( const mt::vec2f & _point, float _width, float _height, float _radius ) = 0;
         virtual void drawRoundedRectVarying( const mt::vec2f & _point, float _width, float _height, const mt::vec4f & _radii ) = 0;
+        virtual void drawNineSlice( const mt::vec2f & _point, float _width, float _height, const mt::vec2f & _sourceSize, const mt::vec4f & _uv, const mt::vec4f & _insets, EGraphicsNineSliceMode _edgeMode, EGraphicsNineSliceMode _centerMode ) = 0;
         virtual void drawRoundedPolygon( const Polygon & _polygon, float _radius ) = 0;
         virtual void drawPolyline( const Polygon & _polygon, bool _closed ) = 0;
         virtual void drawStyledPolyline( const VectorGraphicsPathPoints & _points, bool _closed ) = 0;

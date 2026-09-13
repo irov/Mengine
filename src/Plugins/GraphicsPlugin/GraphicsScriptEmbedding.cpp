@@ -37,6 +37,9 @@ namespace Mengine
         pybind::enum_<EGraphicsUVMode>( _kernel, "GraphicsUVMode" )
             .def( "GRAPHICS_UV_BOUNDS", EGraphicsUVMode::Bounds )
             .def( "GRAPHICS_UV_PATH", EGraphicsUVMode::Path );
+        pybind::enum_<EGraphicsNineSliceMode>( _kernel, "GraphicsNineSliceMode" )
+            .def( "GRAPHICS_NINE_SLICE_STRETCH", EGraphicsNineSliceMode::Stretch )
+            .def( "GRAPHICS_NINE_SLICE_TILE", EGraphicsNineSliceMode::Tile );
         pybind::enum_<EGraphicsPathMarkerType>( _kernel, "GraphicsPathMarkerType" )
             .def( "GRAPHICS_MARKER_NONE", EGraphicsPathMarkerType::None )
             .def( "GRAPHICS_MARKER_FILLED_ARROW", EGraphicsPathMarkerType::FilledArrow )
@@ -135,6 +138,7 @@ namespace Mengine
             .def( "drawRect", &Graphics::drawRect )
             .def( "drawRoundedRect", &Graphics::drawRoundedRect )
             .def( "drawRoundedRectVarying", &Graphics::drawRoundedRectVarying )
+            .def( "drawNineSlice", &Graphics::drawNineSlice )
             .def( "drawRoundedPolygon", &Graphics::drawRoundedPolygon )
             .def( "drawPolyline", &Graphics::drawPolyline )
             .def( "drawStyledPolyline", &Graphics::drawStyledPolyline )

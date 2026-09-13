@@ -106,6 +106,7 @@ namespace Mengine
         void drawRect( const mt::vec2f & _point, float _width, float _height ) override;
         void drawRoundedRect( const mt::vec2f & _point, float _width, float _height, float _radius ) override;
         void drawRoundedRectVarying( const mt::vec2f & _point, float _width, float _height, const mt::vec4f & _radii ) override;
+        void drawNineSlice( const mt::vec2f & _point, float _width, float _height, const mt::vec2f & _sourceSize, const mt::vec4f & _uv, const mt::vec4f & _insets, EGraphicsNineSliceMode _edgeMode, EGraphicsNineSliceMode _centerMode ) override;
         void drawRoundedPolygon( const Polygon & _polygon, float _radius ) override;
         void drawPolyline( const Polygon & _polygon, bool _closed ) override;
         void drawStyledPolyline( const VectorGraphicsPathPoints & _points, bool _closed ) override;

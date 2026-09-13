@@ -457,6 +457,13 @@ namespace Mengine
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Graphics::drawNineSlice( const mt::vec2f & _point, float _width, float _height, const mt::vec2f & _sourceSize, const mt::vec4f & _uv, const mt::vec4f & _insets, EGraphicsNineSliceMode _edgeMode, EGraphicsNineSliceMode _centerMode )
+    {
+        GP_CALL( gp_nine_slice, (m_canvas, _point.x, _point.y, _width, _height, _sourceSize.x, _sourceSize.y, _uv.x, _uv.y, _uv.z, _uv.w, _insets.x, _insets.y, _insets.z, _insets.w, static_cast<gp_nine_slice_mode_t>(_edgeMode), static_cast<gp_nine_slice_mode_t>(_centerMode)) );
+
+        m_invalidateLocalVertex2D = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Graphics::drawRoundedPolygon( const Polygon & _polygon, float _radius )
     {
         const VectorPoints & points = _polygon.getPoints();

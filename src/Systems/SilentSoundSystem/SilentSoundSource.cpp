@@ -212,16 +212,26 @@ namespace Mengine
             return 0.f;
         }
 
-        if( m_pausing == true )
+        float position = m_time;
+        if( m_pausing == false )
         {
-            return m_time;
+            position = m_soundBuffer->getTimePosition( m_sourceId );
+
+            if( mt::equal_f_z( position ) == true && mt::equal_f_z( m_time ) == false )
+            {
+                position = m_time;
+            }
         }
 
-        float position = m_soundBuffer->getTimePosition( m_sourceId );
-
-        if( mt::equal_f_z( position ) == true && mt::equal_f_z( m_time ) == false )
+        // The wall clock can advance past the clip end between service updates.
+        float duration = m_soundBuffer->getTimeDuration();
+        if( m_loop == true && duration > 0.f )
         {
-            position = m_time;
+            position = StdMath::fmodf( position, duration );
+        }
+        else if( position > duration )
+        {
+            position = duration;
         }
 
         return position;

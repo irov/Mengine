@@ -475,7 +475,7 @@ namespace Arena3D
         kf_fixed_t sinYaw;
         kf_fixed_t cosYaw;
         kf_angle16_sin_cos( player.yaw, &sinYaw, &cosYaw );
-        kf_vec3_t wish;
+        kf_vec3_t wish{};
         if( player.inputMask & Detail::inputBit( InputButton::Forward ) )
         {
             wish.x = kf_fixed_add( wish.x, sinYaw );
@@ -747,7 +747,7 @@ namespace Arena3D
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Simulation::emit_( EventType type, uint32_t actorId, uint32_t targetId, WeaponType weapon, const kf_vec3_t & position, int32_t amount )
+    void Simulation::emit_( EventType _type, uint32_t _actorId, uint32_t _targetId, WeaponType _weapon, const kf_vec3_t & _position, int32_t _amount, const kf_vec3_t & _endPosition )
     {
         if( m_events.size() == MaximumEventsPerTick )
         {
@@ -757,12 +757,13 @@ namespace Arena3D
         ServerEvent event;
         event.id = (m_state.tick << 32) | m_eventOrdinal++;
         event.tick = m_state.tick;
-        event.type = type;
-        event.actorId = actorId;
-        event.targetId = targetId;
-        event.weapon = weapon;
-        event.position = position;
-        event.amount = amount;
+        event.type = _type;
+        event.actorId = _actorId;
+        event.targetId = _targetId;
+        event.weapon = _weapon;
+        event.position = _position;
+        event.amount = _amount;
+        event.endPosition = _endPosition;
         m_events.emplace_back( event );
     }
     //////////////////////////////////////////////////////////////////////////

@@ -4,21 +4,21 @@
 #include "Arena3DCanonicalWriter.h"
 #include "Arena3DPcg32.h"
 
-#include "kinefix/kinefix.hpp"
-
 #include "Kernel/Data.h"
 #include "Kernel/Vector.h"
 
 #include "Config/StdDef.h"
 #include "Config/StdInt.h"
 
+#include "kinefix/kinefix.hpp"
+
 namespace Arena3D
 {
     //////////////////////////////////////////////////////////////////////////
     constexpr uint32_t CommandFormatVersion = 3;
     constexpr uint32_t SnapshotFormatVersion = 7;
-    constexpr uint32_t ReplayFormatVersion = 6;
-    constexpr uint32_t SimulationVersion = 13;
+    constexpr uint32_t ReplayFormatVersion = 7;
+    constexpr uint32_t SimulationVersion = 16;
     constexpr uint32_t DeterministicMathVersion = 5;
     constexpr uint32_t ConfigFormatVersion = 3;
     constexpr uint32_t CollisionFormatVersion = 4;

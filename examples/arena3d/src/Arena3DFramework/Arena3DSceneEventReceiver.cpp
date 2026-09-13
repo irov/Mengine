@@ -1,13 +1,4 @@
 #include "Arena3DSceneEventReceiver.h"
-#include "Arena3DHelper.h"
-
-#include "Engine/DirectionalLight3D.h"
-#include "Engine/Mesh3D.h"
-#include "Engine/PointLight3D.h"
-#include "Engine/PostProcessFx3D.h"
-#include "Engine/SoundEmitter.h"
-
-#include "GLTFImporterInterface.h"
 
 #include "Interface/ApplicationInterface.h"
 #include "Interface/CodecServiceInterface.h"
@@ -19,11 +10,21 @@
 #include "Interface/SocketServiceInterface.h"
 #include "Interface/SocketSystemInterface.h"
 
+#include "Arena3DGeneratedModels.h"
+#include "Arena3DGeneratedVisuals.h"
+#include "Arena3DHelper.h"
+#include "GLTFImporterInterface.h"
+
+#include "Engine/DirectionalLight3D.h"
+#include "Engine/Mesh3D.h"
+#include "Engine/PostProcessFx3D.h"
+#include "Engine/SoundEmitter.h"
+
 #include "Kernel/AssertionMemoryPanic.h"
-#include "Kernel/FactorableUnique.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/ContentHelper.h"
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/FactorableUnique.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/GlobalInputHandlerHelper.h"
 #include "Kernel/Logger.h"
@@ -48,6 +49,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
+        //////////////////////////////////////////////////////////////////////////
+        constexpr float PRESENTATION_PERIOD = 125.6637061f;
+        constexpr float RECOIL_RECOVERY_SPEED = 5.f;
+        constexpr float MUZZLE_FLASH_DURATION = 0.065f;
+        constexpr float BARREL_SPIN_SPEED = 32.f;
+        constexpr float BARREL_SPIN_DECELERATION = 22.f;
         //////////////////////////////////////////////////////////////////////////
         static constexpr size_t weaponIndex( Arena3D::WeaponType _weapon )
         {
@@ -103,7 +110,8 @@ namespace Mengine
         , m_hitFlash( 0.f )
         , m_warningFlash( 0.f )
         , m_stepCameraOffset( 0.f )
-        , m_stepCameraTime( 0.f )
+        , m_stepCameraVelocity( 0.f )
+        , m_cameraFootHeight( 0.f )
         , m_viewModelTransition( ViewModelTransition::Ready )
         , m_displayedWeapon( Arena3D::WeaponType::Nailgun )
         , m_pendingWeapon( Arena3D::WeaponType::Nailgun )
@@ -128,18 +136,24 @@ namespace Mengine
         m_session.reset( 1, UINT64_C(0xA3E4D01920260714) );
         m_previousState = m_session.client().state();
         m_currentState = m_previousState;
+
+        const Arena3D::PlayerState & player = this->localPlayer_( m_currentState );
+        m_cameraFootHeight = kf_fixed_to_float( player.position.y );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Arena3DSceneEventReceiver::onEntityCreate( const EntityBehaviorInterfacePtr & _behavior, Entity * _entity )
     {
         MENGINE_UNUSED( _behavior );
+
         m_scene = Helper::staticNodeCast<Scene *>( _entity );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Arena3DSceneEventReceiver::onEntityDestroy( const EntityBehaviorInterfacePtr & _behavior )
     {
         MENGINE_UNUSED( _behavior );
+
         this->unregisterInput_();
         this->setCursorCaptured_( false );
 
@@ -161,8 +175,10 @@ namespace Mengine
             {
                 node->removeFromParent();
             }
+
             pool.clear();
         }
+
         for( auto & pool : m_explosionClouds )
         {
             for( ExplosionCloudVisual & cloud : pool )
@@ -171,30 +187,48 @@ namespace Mengine
                 {
                     cloud.node->removeFromParent();
                 }
+
                 cloud = ExplosionCloudVisual{};
             }
         }
+
         for( ImpactFlashVisual & flash : m_impactFlashes )
         {
             if( flash.node != nullptr )
             {
                 flash.node->removeFromParent();
             }
+
             flash = ImpactFlashVisual{};
         }
+
+        for( RailTrailVisualDesc & trail : m_railTrails )
+        {
+            if( trail.node != nullptr )
+            {
+                trail.node->removeFromParent();
+            }
+
+            trail = RailTrailVisualDesc{};
+        }
+
         for( DecalVisual & decal : m_decals )
         {
             if( decal.node != nullptr )
             {
                 decal.node->removeFromParent();
             }
+
             decal.node = nullptr;
+
             if( decal.resource != nullptr )
             {
                 decal.resource->finalize();
             }
+
             decal = DecalVisual{};
         }
+
         for( DeathBurstVisual & burst : m_deathBursts )
         {
             for( NodePtr & node : burst.nodes )
@@ -205,77 +239,17 @@ namespace Mengine
                     node = nullptr;
                 }
             }
+
             burst = DeathBurstVisual{};
         }
+
         if( m_hud != nullptr )
         {
             m_hud->finalize();
             m_hud = nullptr;
         }
-        for( NodePtr & node : m_viewModels )
-        {
-            if( node != nullptr )
-            {
-                node->removeFromParent();
-                node = nullptr;
-            }
-        }
-        for( NodePtr & node : m_pickupNodes )
-        {
-            if( node != nullptr )
-            {
-                node->removeFromParent();
-                node = nullptr;
-            }
-        }
-        for( NodePtr & node : m_soundEmitters )
-        {
-            if( node != nullptr )
-            {
-                node->removeFromParent();
-                node = nullptr;
-            }
-        }
-        for( SurfaceSoundPtr & sound : m_sounds )
-        {
-            sound = nullptr;
-        }
-        for( NodePtr & node : m_turretBarrelNodes )
-        {
-            if( node != nullptr )
-            {
-                node->removeFromParent();
-                node = nullptr;
-            }
-        }
-        for( NodePtr & node : m_turretBaseNodes )
-        {
-            if( node != nullptr )
-            {
-                node->removeFromParent();
-                node = nullptr;
-            }
-        }
-        for( NodePtr & node : m_playerNodes )
-        {
-            if( node != nullptr )
-            {
-                node->removeFromParent();
-                node = nullptr;
-            }
-        }
-        for( auto & layer : m_arenaChunkNodes )
-        {
-            for( NodePtr & node : layer )
-            {
-                if( node != nullptr )
-                {
-                    node->removeFromParent();
-                    node = nullptr;
-                }
-            }
-        }
-        for( NodePtr & node : m_pointLights )
+
+        for( NodePtr & node : m_muzzleNodes )
         {
             if( node != nullptr )
             {
@@ -284,7 +258,80 @@ namespace Mengine
             }
         }
 
+        if( m_barrelNode != nullptr )
+        {
+            m_barrelNode->removeFromParent();
+            m_barrelNode = nullptr;
+        }
+
+        for( NodePtr & node : m_viewModels )
+        {
+            if( node != nullptr )
+            {
+                node->removeFromParent();
+                node = nullptr;
+            }
+        }
+
+        for( NodePtr & node : m_pickupNodes )
+        {
+            if( node != nullptr )
+            {
+                node->removeFromParent();
+                node = nullptr;
+            }
+        }
+
+        for( NodePtr & node : m_soundEmitters )
+        {
+            if( node != nullptr )
+            {
+                node->removeFromParent();
+                node = nullptr;
+            }
+        }
+
+        for( SurfaceSoundPtr & sound : m_sounds )
+        {
+            sound = nullptr;
+        }
+
+        for( NodePtr & node : m_turretBarrelNodes )
+        {
+            if( node != nullptr )
+            {
+                node->removeFromParent();
+                node = nullptr;
+            }
+        }
+
+        for( NodePtr & node : m_turretBaseNodes )
+        {
+            if( node != nullptr )
+            {
+                node->removeFromParent();
+                node = nullptr;
+            }
+        }
+
+        for( NodePtr & node : m_playerNodes )
+        {
+            if( node != nullptr )
+            {
+                node->removeFromParent();
+                node = nullptr;
+            }
+        }
+
+        for( const NodePtr & node : m_arenaChunkNodes )
+        {
+            node->removeFromParent();
+        }
+
+        m_arenaChunkNodes.clear();
+
         const NodePtr nodes[] = {m_skyNode, m_lavaNode, m_directionalLight, m_worldCamera, m_viewModelCamera, m_postProcess};
+
         for( const NodePtr & node : nodes )
         {
             if( node != nullptr )
@@ -307,14 +354,26 @@ namespace Mengine
                 resource->finalize();
             }
         }
+
         m_resources.clear();
+
         m_tileTexture = nullptr;
-        m_stoneTexture = nullptr;
-        m_metalTexture = nullptr;
         m_hazardTexture = nullptr;
         m_emissiveTexture = nullptr;
         m_decalTexture = nullptr;
         m_whiteTexture = nullptr;
+        m_grenadeTexture = nullptr;
+
+        for( ResourceImagePtr & texture : m_weaponTextures )
+        {
+            texture = nullptr;
+        }
+
+        for( ResourceImagePtr & texture : m_pickupTextures )
+        {
+            texture = nullptr;
+        }
+
         m_skyResource = nullptr;
         m_lavaResource = nullptr;
         m_impactResource = nullptr;
@@ -325,98 +384,131 @@ namespace Mengine
     {
         const FileGroupInterfacePtr & fileGroup = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FileGroup" ), ConstString::none() );
         GLTFImporterServiceInterface * importer = GLTF_IMPORTER_SERVICE();
+
         if( fileGroup == nullptr || importer == nullptr )
         {
             return nullptr;
         }
 
         const FilePath path = Helper::stringizeFilePath( _path );
+
         if( fileGroup->existFile( path, true ) == false )
         {
             LOGGER_ERROR( "Arena3D missing generated model '%s'", _path );
+
             return nullptr;
         }
 
-        ResourceMesh3DPtr resource = PROTOTYPE_SERVICE()->generatePrototype(
+        ResourceMesh3DPtr resource = PROTOTYPE_SERVICE()
+            ->generatePrototype(
             STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceMesh3D" ), MENGINE_DOCUMENT_FACTORABLE );
+
         MENGINE_ASSERTION_MEMORY_PANIC( resource, "Arena3D failed to allocate ResourceMesh3D" );
 
         mt::mat4f identity;
         mt::ident_m4( &identity );
+
         ContentInterfacePtr content = Helper::makeFileContent( fileGroup, path, MENGINE_DOCUMENT_FACTORABLE );
+
         if( importer->importMesh( content, identity, 0, resource ) == false )
         {
             return nullptr;
         }
+
         resource->setName( _name );
+
         if( resource->initialize() == false )
         {
             return nullptr;
         }
+
         m_resources.emplace_back( resource );
+
         return resource;
     }
     //////////////////////////////////////////////////////////////////////////
     ResourceImagePtr Arena3DSceneEventReceiver::importTexture_( const Char * _path, const ConstString & _name )
     {
         const FileGroupInterfacePtr & fileGroup = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FileGroup" ), ConstString::none() );
+
         if( fileGroup == nullptr )
         {
             return nullptr;
         }
+
         const FilePath path = Helper::stringizeFilePath( _path );
+
         if( fileGroup->existFile( path, true ) == false )
         {
             return nullptr;
         }
 
         ContentInterfacePtr content = Helper::makeFileContent( fileGroup, path, MENGINE_DOCUMENT_FACTORABLE );
-        content->setCodecType( CODEC_SERVICE()->findCodecType( path ) );
-        ResourceImageDefaultPtr image = PROTOTYPE_SERVICE()->generatePrototype(
+        content->setCodecType( CODEC_SERVICE()
+            ->findCodecType( path ) );
+
+        ResourceImageDefaultPtr image = PROTOTYPE_SERVICE()
+            ->generatePrototype(
             STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ), MENGINE_DOCUMENT_FACTORABLE );
+
         MENGINE_ASSERTION_MEMORY_PANIC( image, "Arena3D failed to allocate texture '%s'", _path );
+
         image->setName( _name );
         image->setContent( content );
+
         mt::uv4f uvImage;
         mt::uv4f uvAlpha;
         image->setUV( 0, uvImage );
         image->setUV( 1, uvAlpha );
         image->setMaxSize( {64.f, 64.f} );
         image->setSize( {64.f, 64.f} );
+
         if( image->initialize() == false )
         {
             return nullptr;
         }
+
         m_resources.emplace_back( image );
+
         return image;
     }
     //////////////////////////////////////////////////////////////////////////
     SurfaceSoundPtr Arena3DSceneEventReceiver::importSound_( const Char * _path, const ConstString & _name, NodePtr * _emitter )
     {
         const FileGroupInterfacePtr & fileGroup = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FileGroup" ), ConstString::none() );
+
         if( fileGroup == nullptr )
         {
             return nullptr;
         }
+
         const FilePath path = Helper::stringizeFilePath( _path );
+
         if( fileGroup->existFile( path, true ) == false )
         {
             return nullptr;
         }
 
         ContentInterfacePtr content = Helper::makeFileContent( fileGroup, path, MENGINE_DOCUMENT_FACTORABLE );
-        content->setCodecType( CODEC_SERVICE()->findCodecType( path ) );
-        ResourceSoundPtr resource = PROTOTYPE_SERVICE()->generatePrototype(
+        content->setCodecType( CODEC_SERVICE()
+            ->findCodecType( path ) );
+
+        ResourceSoundPtr resource = PROTOTYPE_SERVICE()
+            ->generatePrototype(
             STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceSound" ), MENGINE_DOCUMENT_FACTORABLE );
+
         MENGINE_ASSERTION_MEMORY_PANIC( resource, "Arena3D failed to allocate sound '%s'", _path );
+
         resource->setName( _name );
         resource->setContent( content );
         resource->setStreamable( false );
         resource->setDefaultVolume( 0.55f );
+
         if( resource->initialize() == false )
         {
             return nullptr;
         }
+
         m_resources.emplace_back( resource );
 
         SurfaceSoundPtr surface = Helper::generateSurfaceFactorable<SurfaceSound>( MENGINE_DOCUMENT_FACTORABLE );
@@ -424,35 +516,51 @@ namespace Mengine
         surface->setResourceSound( resource );
         surface->getAnimation()->setLoop( false );
 
-        NodePtr emitter = PROTOTYPE_SERVICE()->generatePrototype(
+        NodePtr emitter = PROTOTYPE_SERVICE()
+            ->generatePrototype(
             STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "SoundEmitter" ), MENGINE_DOCUMENT_FACTORABLE );
+
         Helper::staticNodeCast<SoundEmitter *>( emitter.get() )->setSurfaceSound( surface );
+
         m_scene->addChild( emitter );
+
         *_emitter = emitter;
+
         return surface;
     }
     //////////////////////////////////////////////////////////////////////////
     NodePtr Arena3DSceneEventReceiver::createMeshNode_( const ConstString & _name, const ResourceMesh3DPtr & _mesh,
         const ResourceImagePtr & _image, const ConstString & _material, const RenderCameraProjectionPtr & _camera, Node * _parent )
     {
-        NodePtr node = PROTOTYPE_SERVICE()->generatePrototype(
+        NodePtr node = PROTOTYPE_SERVICE()
+            ->generatePrototype(
             STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Mesh3D" ), MENGINE_DOCUMENT_FACTORABLE );
+
         MENGINE_ASSERTION_MEMORY_PANIC( node, "Arena3D failed to allocate Mesh3D '%s'", _name.c_str() );
+
         node->setName( _name );
+
         Mesh3D * mesh = Helper::staticNodeCast<Mesh3D *>( node.get() );
         mesh->setResourceMesh3D( _mesh );
         mesh->setResourceImage( _image );
         mesh->setMaterialName( _material );
+
         node->getRender()->setRenderCamera( _camera );
+
         _parent->addChild( node );
+
         return node;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Arena3DSceneEventReceiver::onEntityPreparation( const EntityBehaviorInterfacePtr & _behavior )
     {
         MENGINE_UNUSED( _behavior );
+
         this->initializeNetwork_();
-        const Resolution & resolution = APPLICATION_SERVICE()->getContentResolution();
+
+        const Resolution & resolution = APPLICATION_SERVICE()
+            ->getContentResolution();
+
         const float width = resolution.getWidthF();
         const float height = resolution.getHeightF();
         const float aspect = width / height;
@@ -461,15 +569,19 @@ namespace Mengine
         // RenderCameraProjection expects a vertical FOV in radians.
         const float quakeArenaFov = 2.f * StdMath::atanf( 1.f / aspect );
 
-        NodePtr post = PROTOTYPE_SERVICE()->generatePrototype(
+        NodePtr post = PROTOTYPE_SERVICE()
+            ->generatePrototype(
             STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "PostProcessFx3D" ), MENGINE_DOCUMENT_FACTORABLE );
+
         MENGINE_ASSERTION_MEMORY_PANIC( post, "Arena3D failed to create post process" );
+
         PostProcessFx3D * postFx = Helper::staticNodeCast<PostProcessFx3D *>( post.get() );
         postFx->setMaterialName( STRINGIZE_STRING_LOCAL( "Arena3D_PostProcess" ) );
         postFx->setSize( {width, height} );
-        postFx->setExposure( 1.08f );
+        postFx->setExposure( 1.f );
         postFx->setVignette( 0.10f, 0.78f );
-        postFx->setChromaticOffset( 0.05f );
+        postFx->setChromaticOffset( 0.f );
+
         m_scene->addChild( post );
         m_postProcess = post;
 
@@ -479,6 +591,7 @@ namespace Mengine
         m_worldCamera->setCameraNear( 0.05f );
         m_worldCamera->setCameraFar( 180.f );
         m_worldCamera->setCameraRightSign( -1.f );
+
         post->addChild( m_worldCamera );
 
         // Quake III renders the first-person gun as a dedicated depth-hacked
@@ -493,49 +606,47 @@ namespace Mengine
         m_viewModelCamera->setCameraNear( 0.01f );
         m_viewModelCamera->setCameraFar( 8.f );
         m_viewModelCamera->setCameraRightSign( -1.f );
+
         m_scene->addChild( m_viewModelCamera );
 
         m_tileTexture = this->importTexture_( "generated/textures/tile.png", STRINGIZE_STRING_LOCAL( "Arena3D_Tile" ) );
-        m_stoneTexture = this->importTexture_( "generated/textures/stone.png", STRINGIZE_STRING_LOCAL( "Arena3D_Stone" ) );
-        m_metalTexture = this->importTexture_( "generated/textures/metal.png", STRINGIZE_STRING_LOCAL( "Arena3D_Metal" ) );
         m_hazardTexture = this->importTexture_( "generated/textures/hazard.png", STRINGIZE_STRING_LOCAL( "Arena3D_Hazard" ) );
         m_emissiveTexture = this->importTexture_( "generated/textures/emissive.png", STRINGIZE_STRING_LOCAL( "Arena3D_Emissive" ) );
         m_decalTexture = this->importTexture_( "generated/textures/decal.png", STRINGIZE_STRING_LOCAL( "Arena3D_Decal" ) );
         m_whiteTexture = this->importTexture_( "generated/textures/white.png", STRINGIZE_STRING_LOCAL( "Arena3D_White" ) );
-        if( m_tileTexture == nullptr || m_stoneTexture == nullptr || m_metalTexture == nullptr ||
-            m_hazardTexture == nullptr || m_emissiveTexture == nullptr || m_decalTexture == nullptr || m_whiteTexture == nullptr ) return false;
 
-        static const Char * arenaLayerNames[] = {"stone", "metal", "emissive"};
-        for( size_t layer = 0; layer != ArenaVisualLayerCount; ++layer )
+        if( m_tileTexture == nullptr || m_hazardTexture == nullptr || m_emissiveTexture == nullptr ||
+            m_decalTexture == nullptr || m_whiteTexture == nullptr )
         {
-            for( size_t index = 0; index != ArenaChunkCount; ++index )
-            {
-                Char path[256];
-                MENGINE_SNPRINTF( path, 256, "generated/models/arena01/%s_chunk_%zu.glb", arenaLayerNames[layer], index );
-                m_arenaChunkResources[layer][index] = this->importMesh_( path,
-                    Helper::stringizeStringFormat( "Arena3D_Arena01_%s_Chunk_%u", arenaLayerNames[layer], static_cast<uint32_t>(index) ) );
-                if( m_arenaChunkResources[layer][index] == nullptr )
-                {
-                    return false;
-                }
-            }
+            return false;
         }
+
         m_skyResource = this->importMesh_( "generated/models/sky.glb", STRINGIZE_STRING_LOCAL( "Arena3D_Sky" ) );
+
         if( m_skyResource == nullptr )
         {
             return false;
         }
-        m_lavaResource = this->importMesh_( "generated/models/lava.glb", STRINGIZE_STRING_LOCAL( "Arena3D_Lava" ) );
-        if( m_lavaResource == nullptr )
+
+        if( Arena3DGenerated::HAS_LAVA == true )
         {
-            return false;
+            m_lavaResource = this->importMesh_( "generated/models/lava.glb", STRINGIZE_STRING_LOCAL( "Arena3D_Lava" ) );
+
+            if( m_lavaResource == nullptr )
+            {
+                return false;
+            }
         }
+
         m_playerResource = this->importMesh_( "generated/models/player.glb", STRINGIZE_STRING_LOCAL( "Arena3D_Player" ) );
+
         if( m_playerResource == nullptr )
         {
             return false;
         }
+
         m_turretBaseResource = this->importMesh_( "generated/models/turrets/base.glb", STRINGIZE_STRING_LOCAL( "Arena3D_TurretBase" ) );
+
         if( m_turretBaseResource == nullptr )
         {
             return false;
@@ -547,42 +658,73 @@ namespace Mengine
             const ConstString turretName = Helper::stringizeStringFormat( "Arena3D_Turret_%s", Detail::weaponName( weapon ) );
             const ConstString projectileResourceName = Helper::stringizeStringFormat( "Arena3D_Projectile_%s", Detail::weaponName( weapon ) );
             const ConstString weaponResourceName = Helper::stringizeStringFormat( "Arena3D_Weapon_%s", Detail::weaponName( weapon ) );
+
             Char path[256];
             MENGINE_SNPRINTF( path, 256, "generated/models/turrets/%s.glb", Detail::weaponName( weapon ) );
             m_turretResources[index] = this->importMesh_( path, turretName );
+
             MENGINE_SNPRINTF( path, 256, "generated/models/projectiles/%s.glb", Detail::projectileName( weapon ) );
             m_projectileResources[index] = this->importMesh_( path, projectileResourceName );
+
             MENGINE_SNPRINTF( path, 256, "generated/models/weapons/%s.glb", Detail::weaponName( weapon ) );
             m_weaponResources[index] = this->importMesh_( path, weaponResourceName );
+
+            const Char * weaponName = Detail::weaponName( weapon );
+            MENGINE_SNPRINTF( path, 256, "generated/textures/weapon_%s.png", weaponName );
+            ConstString textureName = Helper::stringizeStringFormat( "Arena3D_WeaponSkin_%s", weaponName );
+            m_weaponTextures[index] = this->importTexture_( path, textureName );
+
+            if( m_weaponTextures[index] == nullptr )
+            {
+                return false;
+            }
+
             if( m_turretResources[index] == nullptr || m_projectileResources[index] == nullptr || m_weaponResources[index] == nullptr )
             {
                 return false;
             }
         }
-        static const Char * pickupNames[] = {"health", "armor", "ammo"};
-        for( size_t index = 0; index != 3; ++index )
+
+        static const Char * pickupNames[] = {"health", "armor", "ammo_nailgun", "ammo_rocket", "ammo_railgun", "ammo_plasmagun", "ammo_grenade", "ammo_shotgun"};
+
+        for( size_t index = 0; index != m_pickupResources.size(); ++index )
         {
             Char path[256];
             MENGINE_SNPRINTF( path, 256, "generated/models/pickups/%s.glb", pickupNames[index] );
             m_pickupResources[index] = this->importMesh_( path, Helper::stringizeStringFormat( "Arena3D_Pickup_%s", pickupNames[index] ) );
+
+            MENGINE_SNPRINTF( path, 256, "generated/textures/%s.png", pickupNames[index] );
+            ConstString textureName = Helper::stringizeStringFormat( "Arena3D_PickupSkin_%s", pickupNames[index] );
+            m_pickupTextures[index] = this->importTexture_( path, textureName );
+
+            if( m_pickupTextures[index] == nullptr )
+            {
+                return false;
+            }
+
             if( m_pickupResources[index] == nullptr )
             {
                 return false;
             }
         }
+
         static const Char * explosionNames[] = {"rocket", "plasma", "grenade"};
+
         for( size_t index = 0; index != ExplosionTypeCount; ++index )
         {
             Char path[256];
             MENGINE_SNPRINTF( path, 256, "generated/models/effects/%s_explosion.glb", explosionNames[index] );
             m_explosionResources[index] = this->importMesh_( path,
                 Helper::stringizeStringFormat( "Arena3D_Explosion_%s", explosionNames[index] ) );
+
             if( m_explosionResources[index] == nullptr )
             {
                 return false;
             }
         }
+
         m_impactResource = this->importMesh_( "generated/models/effects/impact.glb", STRINGIZE_STRING_LOCAL( "Arena3D_Impact" ) );
+
         if( m_impactResource == nullptr )
         {
             return false;
@@ -590,85 +732,128 @@ namespace Mengine
 
         static const Char * soundNames[] = {"nailgun_fire", "rocket_fire", "railgun_charge", "railgun_fire", "plasma_fire", "grenade_fire",
             "shotgun_fire", "impact", "pickup", "jump", "landing", "death", "warning"};
+
         for( size_t index = 0; index != 13; ++index )
         {
             Char path[256];
             MENGINE_SNPRINTF( path, 256, "generated/audio/%s.wav", soundNames[index] );
             m_sounds[index] = this->importSound_( path, Helper::stringizeStringFormat( "Arena3D_Sound_%s", soundNames[index] ), &m_soundEmitters[index] );
+
             if( m_sounds[index] == nullptr )
             {
                 return false;
             }
         }
 
+        m_grenadeTexture = this->importTexture_( "generated/textures/grenade.png", STRINGIZE_STRING_LOCAL( "Arena3D_GrenadeSkin" ) );
+
+        if( m_grenadeTexture == nullptr )
+        {
+            return false;
+        }
+
         const ConstString litMaterial = Detail::materialForQuantization( m_lightQuantization );
         m_skyNode = this->createMeshNode_( STRINGIZE_STRING_LOCAL( "Arena3D_Sky" ), m_skyResource, m_whiteTexture,
             STRINGIZE_STRING_LOCAL( "Arena3D_Sky" ), m_worldCamera, post.get() );
-        m_lavaNode = this->createMeshNode_( STRINGIZE_STRING_LOCAL( "Arena3D_Lava" ), m_lavaResource, m_hazardTexture,
-            STRINGIZE_STRING_LOCAL( "Arena3D_Emissive" ), m_worldCamera, post.get() );
-        const ResourceImagePtr arenaLayerTextures[] = {m_stoneTexture, m_metalTexture, m_emissiveTexture};
-        const ConstString arenaLayerMaterials[] = {litMaterial, litMaterial, STRINGIZE_STRING_LOCAL( "Arena3D_Emissive" )};
-        for( size_t layer = 0; layer != ArenaVisualLayerCount; ++layer )
+
+        if( m_lavaResource != nullptr )
         {
-            for( size_t index = 0; index != ArenaChunkCount; ++index )
+            Node * postNode = post.get();
+            m_lavaNode = this->createMeshNode_( STRINGIZE_STRING_LOCAL( "Arena3D_Lava" ), m_lavaResource, m_hazardTexture,
+                STRINGIZE_STRING_LOCAL( "Arena3D_Emissive" ), m_worldCamera, postNode );
+        }
+
+        for( const Arena3DGenerated::ArenaMaterialDesc & visual : Arena3DGenerated::ARENA_MATERIALS )
+        {
+            ConstString textureName = Helper::stringizeStringFormat( "Arena3D_%s", visual.name );
+            ResourceImagePtr texture = this->importTexture_( visual.texture, textureName );
+
+            if( texture == nullptr )
             {
-                m_arenaChunkNodes[layer][index] = this->createMeshNode_(
-                    Helper::stringizeStringFormat( "Arena01_%s_Chunk_%u", arenaLayerNames[layer], static_cast<uint32_t>(index) ),
-                    m_arenaChunkResources[layer][index], arenaLayerTextures[layer], arenaLayerMaterials[layer], m_worldCamera, post.get() );
+                return false;
+            }
+
+            ConstString material = STRINGIZE_STRING_LOCAL( "Arena3D_Quake" );
+
+            for( const Char * meshPath : visual.meshes )
+            {
+                if( meshPath == nullptr )
+                {
+                    continue;
+                }
+
+                ConstString meshName = Helper::stringizeString( meshPath );
+                ResourceMesh3DPtr resource = this->importMesh_( meshPath, meshName );
+
+                if( resource == nullptr )
+                {
+                    return false;
+                }
+
+                Node * postNode = post.get();
+                NodePtr node = this->createMeshNode_( meshName, resource, texture, material, m_worldCamera, postNode );
+
+                if( node == nullptr )
+                {
+                    return false;
+                }
+
+                m_arenaChunkNodes.emplace_back( node );
             }
         }
 
-        NodePtr directional = PROTOTYPE_SERVICE()->generatePrototype(
+        NodePtr directional = PROTOTYPE_SERVICE()
+            ->generatePrototype(
             STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "DirectionalLight3D" ), MENGINE_DOCUMENT_FACTORABLE );
+
         DirectionalLight3D * light = Helper::staticNodeCast<DirectionalLight3D *>( directional.get() );
-        light->setLightDirection( {-0.42f, -1.f, -0.24f} );
-        light->setLightColor( {1.f, 0.93f, 0.82f} );
-        light->setLightIntensity( 0.92f );
-        light->setLightAmbient( {0.34f, 0.39f, 0.50f} );
+        light->setLightDirection( {-0.262f, -0.643f, -0.720f} );
+        light->setLightColor( {1.f, 0.86f, 0.48f} );
+        light->setLightIntensity( 0.7f );
+        light->setLightAmbient( {0.5f, 0.5f, 0.5f} );
+
         post->addChild( directional );
         m_directionalLight = directional;
-
-        static const mt::vec3f pointPositions[] = {
-            {-20.f, 4.5f, -20.f}, {20.f, 4.5f, -20.f}, {-20.f, 4.5f, 20.f}, {20.f, 4.5f, 20.f}};
-        static const mt::vec3f pointColors[] = {
-            {0.18f, 0.55f, 1.f}, {1.f, 0.42f, 0.18f}, {0.22f, 1.f, 0.68f}, {0.62f, 0.32f, 1.f}};
-        for( size_t index = 0; index != m_pointLights.size(); ++index )
-        {
-            NodePtr point = PROTOTYPE_SERVICE()->generatePrototype(
-                STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "PointLight3D" ), MENGINE_DOCUMENT_FACTORABLE );
-            PointLight3D * pointLight = Helper::staticNodeCast<PointLight3D *>( point.get() );
-            pointLight->setLightRadius( 27.f );
-            pointLight->setLightColor( pointColors[index] );
-            pointLight->setLightIntensity( 0.62f );
-            point->getTransformation()->setLocalPosition( pointPositions[index] );
-            post->addChild( point );
-            m_pointLights[index] = point;
-        }
 
         for( size_t index = 0; index != Arena3D::MaximumTurrets; ++index )
         {
             const Arena3D::TurretStateData & turret = m_currentState.turrets[index];
             m_turretBaseNodes[index] = this->createMeshNode_( Helper::stringizeStringFormat( "TurretBase_%u", turret.id ),
                 m_turretBaseResource, m_tileTexture, litMaterial, m_worldCamera, post.get() );
+
             m_turretBarrelNodes[index] = this->createMeshNode_( Helper::stringizeStringFormat( "TurretBarrel_%u", turret.id ),
                 m_turretResources[Detail::weaponIndex( turret.weapon )], m_emissiveTexture,
                 STRINGIZE_STRING_LOCAL( "Arena3D_Emissive" ), m_worldCamera, m_turretBaseNodes[index].get() );
+
             m_turretBarrelNodes[index]->getTransformation()->setLocalPosition( {0.f, 0.62f, 0.f} );
         }
+
         for( size_t index = 0; index != Arena3D::MaximumPlayers; ++index )
         {
             m_playerNodes[index] = this->createMeshNode_( Helper::stringizeStringFormat( "Player_%u", static_cast<uint32_t>(index) ),
                 m_playerResource, m_tileTexture, litMaterial, m_worldCamera, post.get() );
+
             m_playerNodes[index]->getTransformation()->setLocalPosition( {0.f, -10000.f, 0.f} );
         }
+
         for( size_t index = 0; index != Arena3D::MaximumPickups; ++index )
         {
             const Arena3D::PickupStateData & pickup = m_currentState.pickups[index];
-            m_pickupNodes[index] = this->createMeshNode_( Helper::stringizeStringFormat( "Pickup_%u", pickup.id ),
-                m_pickupResources[static_cast<size_t>(pickup.type)], m_emissiveTexture,
-                STRINGIZE_STRING_LOCAL( "Arena3D_Emissive" ), m_worldCamera, post.get() );
-            m_pickupNodes[index]->getTransformation()->setLocalScale( {0.7f, 0.7f, 0.7f} );
+            size_t resourceIndex = pickup.type == Arena3D::PickupType::Ammo
+                ? 2 + Detail::weaponIndex( pickup.weapon )
+                : static_cast<size_t>(pickup.type);
+
+            ConstString nodeName = Helper::stringizeStringFormat( "Pickup_%u", pickup.id );
+            Node * postNode = post.get();
+            m_pickupNodes[index] = this->createMeshNode_( nodeName, m_pickupResources[resourceIndex], m_pickupTextures[resourceIndex],
+                STRINGIZE_STRING_LOCAL( "Arena3D_Weapon" ), m_worldCamera, postNode );
+
+            if( m_pickupNodes[index] == nullptr )
+            {
+                return false;
+            }
         }
+
         for( size_t type = 0; type != ExplosionTypeCount; ++type )
         {
             for( size_t slot = 0; slot != ExplosionCloudsPerType; ++slot )
@@ -677,52 +862,148 @@ namespace Mengine
                 cloud.node = this->createMeshNode_( Helper::stringizeStringFormat( "Explosion_%u_%u",
                     static_cast<uint32_t>(type), static_cast<uint32_t>(slot) ), m_explosionResources[type], m_whiteTexture,
                     STRINGIZE_STRING_LOCAL( "Arena3D_Explosion" ), m_worldCamera, post.get() );
+
                 cloud.node->getTransformation()->setLocalPosition( {0.f, -10000.f, 0.f} );
                 cloud.node->getTransformation()->setLocalScale( {0.001f, 0.001f, 0.001f} );
             }
         }
+
         for( size_t index = 0; index != m_impactFlashes.size(); ++index )
         {
             ImpactFlashVisual & flash = m_impactFlashes[index];
             flash.node = this->createMeshNode_( Helper::stringizeStringFormat( "Impact_%u", static_cast<uint32_t>(index) ),
                 m_impactResource, m_whiteTexture, STRINGIZE_STRING_LOCAL( "Arena3D_Impact" ), m_worldCamera, post.get() );
+
             flash.node->getTransformation()->setLocalPosition( {0.f, -10000.f, 0.f} );
             flash.node->getTransformation()->setLocalScale( {0.001f, 0.001f, 0.001f} );
+
             flash.node->getRender()->setLocalColorRGBA( 1.f, 1.f, 1.f, 0.f );
         }
+
+        ResourceMesh3DPtr railTrailResource = this->importMesh_( "generated/models/effects/rail_trail.glb", STRINGIZE_STRING_LOCAL( "Arena3D_RailTrail" ) );
+
+        if( railTrailResource == nullptr )
+        {
+            return false;
+        }
+
+        Node * effectsParent = post.get();
+
+        for( size_t index = 0; index != m_railTrails.size(); ++index )
+        {
+            RailTrailVisualDesc & trail = m_railTrails[index];
+            uint32_t slot = static_cast<uint32_t>(index);
+            ConstString name = Helper::stringizeStringFormat( "RailTrail_%u", slot );
+
+            trail.node = this->createMeshNode_( name, railTrailResource, m_whiteTexture,
+                STRINGIZE_STRING_LOCAL( "Arena3D_Trail" ), m_worldCamera, effectsParent );
+        }
+
+        this->clearRailTrails_();
+
         for( size_t burstIndex = 0; burstIndex != m_deathBursts.size(); ++burstIndex )
         {
             DeathBurstVisual & burst = m_deathBursts[burstIndex];
+
             for( size_t shardIndex = 0; shardIndex != burst.nodes.size(); ++shardIndex )
             {
                 NodePtr node = this->createMeshNode_( Helper::stringizeStringFormat( "DeathShard_%u_%u", static_cast<uint32_t>(burstIndex), static_cast<uint32_t>(shardIndex) ),
                     m_impactResource, m_tileTexture, litMaterial, m_worldCamera, post.get() );
+
                 node->getTransformation()->setLocalPosition( {0.f, -10000.f, 0.f} );
                 node->getTransformation()->setLocalScale( {0.001f, 0.001f, 0.001f} );
+
                 node->getRender()->setLocalColorRGBA( 0.7f, 0.12f, 0.06f, 0.f );
+
                 burst.nodes[shardIndex] = node;
             }
         }
+
         for( size_t index = 0; index != Arena3D::WeaponTypeCount; ++index )
         {
             m_viewModels[index] = this->createMeshNode_( Helper::stringizeStringFormat( "ViewModel_%u", static_cast<uint32_t>(index) ),
-                m_weaponResources[index], m_tileTexture, STRINGIZE_STRING_LOCAL( "Arena3D_ViewModel" ), m_viewModelCamera, m_scene );
-            m_viewModels[index]->getTransformation()->setLocalScale( {0.36f, 0.36f, 0.36f} );
+                m_weaponResources[index], m_weaponTextures[index], STRINGIZE_STRING_LOCAL( "Arena3D_ViewModel" ), m_viewModelCamera, m_scene );
+
+            if( m_viewModels[index] == nullptr )
+            {
+                return false;
+            }
+        }
+
+        ResourceMesh3DPtr barrelResource = this->importMesh_( "generated/models/weapons/barrel.glb", STRINGIZE_STRING_LOCAL( "Arena3D_Barrel" ) );
+
+        if( barrelResource == nullptr )
+        {
+            return false;
+        }
+
+        ResourceImagePtr barrelTexture = this->importTexture_( "generated/textures/barrel.png", STRINGIZE_STRING_LOCAL( "Arena3D_BarrelSkin" ) );
+
+        if( barrelTexture == nullptr )
+        {
+            return false;
+        }
+
+        Node * weaponNode = m_viewModels[0].get();
+        m_barrelNode = this->createMeshNode_( STRINGIZE_STRING_LOCAL( "WeaponBarrel" ), barrelResource, barrelTexture,
+            STRINGIZE_STRING_LOCAL( "Arena3D_ViewModel" ), m_viewModelCamera, weaponNode );
+
+        if( m_barrelNode == nullptr )
+        {
+            return false;
+        }
+
+        TransformationInterface * barrelTransformation = m_barrelNode->getTransformation();
+        barrelTransformation->setLocalPosition( Arena3DGenerated::BARREL_POSITION );
+
+        ResourceMesh3DPtr muzzleResource = this->importMesh_( "generated/models/effects/muzzle.glb", STRINGIZE_STRING_LOCAL( "Arena3D_Muzzle" ) );
+
+        if( muzzleResource == nullptr )
+        {
+            return false;
+        }
+
+        ResourceImagePtr muzzleTexture = this->importTexture_( "generated/textures/muzzle.png", STRINGIZE_STRING_LOCAL( "Arena3D_MuzzleSkin" ) );
+
+        if( muzzleTexture == nullptr )
+        {
+            return false;
+        }
+
+        for( size_t index = 0; index != m_muzzleNodes.size(); ++index )
+        {
+            uint32_t weaponIndex = static_cast<uint32_t>(index);
+            ConstString nodeName = Helper::stringizeStringFormat( "WeaponMuzzle_%u", weaponIndex );
+            Node * parent = m_viewModels[index].get();
+            m_muzzleNodes[index] = this->createMeshNode_( nodeName, muzzleResource, muzzleTexture,
+                STRINGIZE_STRING_LOCAL( "Arena3D_Impact" ), m_viewModelCamera, parent );
+
+            if( m_muzzleNodes[index] == nullptr )
+            {
+                return false;
+            }
+
+            TransformationInterface * transformation = m_muzzleNodes[index]->getTransformation();
+            transformation->setLocalPosition( Arena3DGenerated::MUZZLE_POSITIONS[index] );
         }
 
         m_hud = Helper::makeFactorableUnique<Arena3DHud>( MENGINE_DOCUMENT_FACTORABLE );
         m_hud->initialize( m_scene, width, height );
 
-        this->syncPresentation_( 1.f );
+        this->syncPresentation_( 1.f, 0.f );
         this->registerInput_();
         this->setCursorCaptured_( true );
+
         m_timepipe = Helper::addTimepipe(
             [this]( const UpdateContext * context )
             {
                 this->update_( context );
             },
             MENGINE_DOCUMENT_FACTORABLE );
-        LOGGER_MESSAGE( "Arena3D ready: generated Arena01, %s client", m_networkMode == true ? "dedicated-server network" : "100 Hz deterministic local" );
+
+        const Char * clientMode = m_networkMode == true ? "dedicated-server network" : "100 Hz deterministic local";
+        LOGGER_MESSAGE( "Arena3D ready: %s, %s client", Arena3DGenerated::LEVEL_NAME, clientMode );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -928,17 +1209,21 @@ namespace Mengine
 
         if( _captured == true )
         {
-            APPLICATION_SERVICE()->setCursorMode( false );
+            APPLICATION_SERVICE()
+                ->setCursorMode( false );
 
-            if( PLATFORM_SERVICE()->setCursorCapture( true ) == false )
+            if( PLATFORM_SERVICE()
+                ->setCursorCapture( true ) == false )
             {
                 LOGGER_WARNING( "Arena3D platform does not support cursor capture" );
             }
         }
         else
         {
-            PLATFORM_SERVICE()->setCursorCapture( false );
-            APPLICATION_SERVICE()->setCursorMode( true );
+            PLATFORM_SERVICE()
+                ->setCursorCapture( false );
+            APPLICATION_SERVICE()
+                ->setCursorMode( true );
         }
 
         LOGGER_MESSAGE( "Arena3D cursor capture: %s", _captured == true ? "on" : "off" );
@@ -960,14 +1245,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Arena3DSceneEventReceiver::initializeNetwork_()
     {
-        if( OPTIONS_SERVICE()->hasOption( "arena3d-server", true ) == false )
+        if( OPTIONS_SERVICE()
+            ->hasOption( "arena3d-server", true ) == false )
         {
             return;
         }
 
-        const Char * host = OPTIONS_SERVICE()->getOptionValue( "arena3d-server", "127.0.0.1" );
-        const uint32_t portValue = OPTIONS_SERVICE()->getOptionUInt32( "arena3d-port", 27960 );
-        const Char * name = OPTIONS_SERVICE()->getOptionValue( "arena3d-name", "human" );
+        const Char * host = OPTIONS_SERVICE()
+            ->getOptionValue( "arena3d-server", "127.0.0.1" );
+        const uint32_t portValue = OPTIONS_SERVICE()
+            ->getOptionUInt32( "arena3d-port", 27960 );
+        const Char * name = OPTIONS_SERVICE()
+            ->getOptionValue( "arena3d-name", "human" );
         if( portValue == 0 || portValue > UINT16_MAX )
         {
             LOGGER_ERROR( "Arena3D invalid network port: %u", portValue );
@@ -1078,7 +1367,6 @@ namespace Mengine
         this->advancePresentationAnimations_( static_cast<float>(elapsed) * 0.001f );
         m_sourceTimeMs += static_cast<uint64_t>(elapsed);
         m_accumulatorMs += elapsed;
-        bool stateAdvanced = false;
 
         if( m_networkMode == true )
         {
@@ -1093,7 +1381,6 @@ namespace Mengine
                     m_previousState = networkState;
                     m_currentState = networkState;
                     m_accumulatorMs = 0.0;
-                    stateAdvanced = true;
                 }
                 else
                 {
@@ -1105,7 +1392,6 @@ namespace Mengine
                     m_previousState = m_currentState;
                     m_networkClient->tick();
                     m_currentState = m_networkClient->simulation().state();
-                    stateAdvanced = true;
                     m_accumulatorMs -= Arena3D::TickMilliseconds;
                 }
                 this->processEvents_();
@@ -1123,62 +1409,64 @@ namespace Mengine
                     break;
                 }
                 m_currentState = m_session.client().state();
-                stateAdvanced = true;
                 this->processEvents_();
                 m_accumulatorMs -= Arena3D::TickMilliseconds;
             }
         }
 
-        const Arena3D::PlayerState & previousPlayer = this->localPlayer_( m_previousState );
-        const Arena3D::PlayerState & currentPlayer = this->localPlayer_( m_currentState );
-        if( stateAdvanced == true && previousPlayer.grounded == true && currentPlayer.grounded == true )
-        {
-            const kf_fixed_t stepDelta = kf_fixed_sub( currentPlayer.position.y, previousPlayer.position.y );
-            const kf_fixed_t maximumStep = kf_fixed_add( this->activeSimulation_().config().stepHeight, kf_fixed_from_float( 0.02f ) );
-            if( kf_fixed_abs( stepDelta ) > kf_fixed_from_float( 0.001f ) && kf_fixed_abs( stepDelta ) <= maximumStep )
-            {
-                const float maximumOffset = kf_fixed_to_float( this->activeSimulation_().config().stepHeight ) * 2.f;
-                m_stepCameraOffset = Mengine::StdAlgorithm::max( -maximumOffset, Mengine::StdAlgorithm::min( maximumOffset,
-                    m_stepCameraOffset + kf_fixed_to_float( stepDelta ) ) );
-                m_stepCameraTime = 0.2f;
-            }
-        }
-
         this->observeWeaponSelection_();
+
         m_hitFlash = Mengine::StdAlgorithm::max( 0.f, m_hitFlash - static_cast<float>(elapsed) * 0.004f );
         m_warningFlash = Mengine::StdAlgorithm::max( 0.f, m_warningFlash - static_cast<float>(elapsed) * 0.001f );
-        this->updateExplosionClouds_( static_cast<float>(elapsed) * 0.001f );
-        this->updateImpactEffects_( static_cast<float>(elapsed) * 0.001f );
-        this->updateDeathBursts_( static_cast<float>(elapsed) * 0.001f );
+
+        float effectSeconds = static_cast<float>(elapsed) * 0.001f;
+        this->updateExplosionClouds_( effectSeconds );
+        this->updateImpactEffects_( effectSeconds );
+        this->updateRailTrails_( effectSeconds );
+        this->updateDeathBursts_( effectSeconds );
+
         m_hud->update( static_cast<float>(elapsed) * 0.001f, m_worldCamera, m_presentedCameraPosition, m_presentedCameraDirection );
         Helper::staticNodeCast<PostProcessFx3D *>( m_postProcess.get() )->setHitFlash( {1.f, 0.12f, 0.04f}, m_hitFlash );
+
         const double interpolationPeriod = Arena3D::TickMilliseconds;
         const float alpha = static_cast<float>(Mengine::StdAlgorithm::max( 0.0, Mengine::StdAlgorithm::min( 1.0, m_accumulatorMs / interpolationPeriod ) ));
-        this->syncPresentation_( alpha );
+        this->syncPresentation_( alpha, effectSeconds );
     }
     //////////////////////////////////////////////////////////////////////////
     void Arena3DSceneEventReceiver::advancePresentationAnimations_( float _seconds )
     {
-        if( m_stepCameraTime > 0.f )
-        {
-            const float previousTime = m_stepCameraTime;
-            m_stepCameraTime = Mengine::StdAlgorithm::max( 0.f, m_stepCameraTime - _seconds );
-            m_stepCameraOffset *= m_stepCameraTime / previousTime;
-        }
+        float presentationTime = m_presentationTime + _seconds;
+        m_presentationTime = StdMath::fmodf( presentationTime, Detail::PRESENTATION_PERIOD );
+
+        float weaponKick = m_weaponKick - _seconds * Detail::RECOIL_RECOVERY_SPEED;
+        m_weaponKick = StdAlgorithm::max( 0.f, weaponKick );
+
+        float muzzleTime = m_muzzleTime - _seconds;
+        m_muzzleTime = StdAlgorithm::max( 0.f, muzzleTime );
+
+        float barrelSpeed = m_barrelSpeed - _seconds * Detail::BARREL_SPIN_DECELERATION;
+        m_barrelSpeed = StdAlgorithm::max( 0.f, barrelSpeed );
+
+        float barrelAngle = m_barrelAngle + m_barrelSpeed * _seconds;
+        m_barrelAngle = StdMath::fmodf( barrelAngle, mt::constant::two_pi );
 
         float remaining = _seconds;
+
         while( remaining > 0.f && m_viewModelTransition != ViewModelTransition::Ready )
         {
             const float duration = m_viewModelTransition == ViewModelTransition::Lowering ? 0.2f : 0.25f;
             const float advance = Mengine::StdAlgorithm::min( remaining, duration - m_viewModelTransitionTime );
+
             m_viewModelTransitionTime += advance;
             remaining -= advance;
+
             if( m_viewModelTransitionTime < duration )
             {
                 break;
             }
 
             m_viewModelTransitionTime = 0.f;
+
             if( m_viewModelTransition == ViewModelTransition::Lowering )
             {
                 m_displayedWeapon = m_pendingWeapon;
@@ -1216,26 +1504,57 @@ namespace Mengine
     void Arena3DSceneEventReceiver::processEvents_()
     {
         const uint64_t matchId = m_currentState.matchId;
+
         if( m_presentedMatchId != matchId )
         {
             m_presentedMatchId = matchId;
             m_lastPresentedEventId = UINT64_MAX;
+
             m_stepCameraOffset = 0.f;
-            m_stepCameraTime = 0.f;
+            m_stepCameraVelocity = 0.f;
+
+            const Arena3D::PlayerState & player = this->localPlayer_( m_currentState );
+            m_cameraFootHeight = kf_fixed_to_float( player.position.y );
+
+            m_weaponKick = 0.f;
+            m_muzzleTime = 0.f;
+            m_barrelSpeed = 0.f;
+
             this->clearImpactEffects_();
+            this->clearRailTrails_();
             this->clearDeathBursts_();
             m_hud->clearDamageNumbers();
         }
+
         const Arena3D::PlayerState & localPlayer = this->localPlayer_( m_currentState );
+
         for( const Arena3D::ServerEvent & event : this->activeEvents_() )
         {
             if( m_lastPresentedEventId != UINT64_MAX && event.id <= m_lastPresentedEventId )
             {
                 continue;
             }
+
             m_lastPresentedEventId = event.id;
+
             if( event.type == Arena3D::EventType::Shot )
             {
+                if( event.weapon == Arena3D::WeaponType::Railgun )
+                {
+                    this->spawnRailTrail_( event );
+                }
+
+                if( event.actorId == localPlayer.id && event.weapon == m_displayedWeapon )
+                {
+                    m_weaponKick = 1.f;
+                    m_muzzleTime = Detail::MUZZLE_FLASH_DURATION;
+
+                    if( event.weapon == Arena3D::WeaponType::Nailgun )
+                    {
+                        m_barrelSpeed = Detail::BARREL_SPIN_SPEED;
+                    }
+                }
+
                 static const size_t weaponSounds[] = {0, 1, 3, 4, 5, 6};
                 this->playSound_( weaponSounds[Detail::weaponIndex( event.weapon )] );
             }

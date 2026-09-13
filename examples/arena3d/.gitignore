@@ -1,4 +1,8 @@
 resources/.generated/
+resources/.downloads/
 resources/Data/generated/
 resources/Data/shaders/
 solutions/
+tools/__pycache__/
+.mengine/.cache/
+.mengine/local.json

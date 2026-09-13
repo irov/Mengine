@@ -11,7 +11,7 @@ namespace Arena3D
 {
     //////////////////////////////////////////////////////////////////////////
     constexpr uint32_t NetworkWireMagic = UINT32_C(0x574E3341);
-    constexpr uint32_t NetworkProtocolVersion = 2;
+    constexpr uint32_t NetworkProtocolVersion = 3;
     constexpr uint32_t NetworkStateFrameTicks = 10;
     constexpr uint32_t NetworkEventHistoryTicks = 100;
     constexpr size_t NetworkMaximumFrameEvents = MaximumEventsPerTick;

@@ -326,6 +326,11 @@ namespace Mengine
             }];
         }
         ///////////////////////////////////////////////////////////////////////
+        static void iOSNativePython_impactFeedback( int32_t _style, float _intensity )
+        {
+            [iOSDetail impactFeedback:_style intensity:_intensity];
+        }
+        ///////////////////////////////////////////////////////////////////////
         void iOSNativePython_setIdleTimerDisabled( bool _disabled )
         {
             UIApplication.sharedApplication.idleTimerDisabled = _disabled;
@@ -352,12 +357,14 @@ namespace Mengine
         pybind::def_function_args( _kernel, "iOSNativePythonShowAreYouSureAlertDialog", &Detail::iOSNativePython_showAreYouSureAlertDialog );
         pybind::def_function_args( _kernel, "iOSNativePythonShowOkAlert", &Detail::iOSNativePython_showOkAlert );
         pybind::def_function( _kernel, "iOSNativePythonSetIdleTimerDisabled", &Detail::iOSNativePython_setIdleTimerDisabled );
+        pybind::def_function( _kernel, "iOSNativePythonImpactFeedback", &Detail::iOSNativePython_impactFeedback );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSNativePythonScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
+        _kernel->remove_from_module( "iOSNativePythonImpactFeedback", nullptr );
         pybind::unregistration_type_cast<NSString *>( _kernel );
         pybind::unregistration_type_cast<NSDictionary *>( _kernel );
         pybind::unregistration_type_cast<NSSet *>( _kernel );

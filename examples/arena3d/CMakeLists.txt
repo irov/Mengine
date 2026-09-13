@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.24)
 
 project(Arena3DHeadless LANGUAGES C CXX)
 
+enable_testing()
+
 include(${CMAKE_CURRENT_LIST_DIR}/../../cmake/cxx_standard_template.cmake)
 
 if(CMAKE_SIZEOF_VOID_P EQUAL 4)
@@ -13,6 +15,9 @@ else()
 endif()
 
 find_package(Python3 REQUIRED COMPONENTS Interpreter)
+
+include(cmake/downloads/content.cmake)
+arena3d_download_content()
 
 set(ARENA3D_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 set(ARENA3D_GENERATED ${ARENA3D_ROOT}/resources/Data/generated)

@@ -24,11 +24,15 @@
         }
     ],
     "VertexShader": [
+        { "Name": "Arena3D_Vertex_Quake", "File": { "Path": "Materials/DX11_Vertex_Quake.hlsl", "Converter": "text2vso11", "Compile": true } },
+        { "Name": "Arena3D_Vertex_Weapon", "File": { "Path": "Materials/DX11_Vertex_Weapon.hlsl", "Converter": "text2vso11", "Compile": true } },
         { "Name": "Arena3D_Vertex_Lit", "File": { "Path": "Materials/DX11_Vertex_Lit.hlsl", "Converter": "text2vso11", "Compile": true } },
         { "Name": "Arena3D_Vertex_Unlit", "File": { "Path": "Materials/DX11_Vertex_Unlit.hlsl", "Converter": "text2vso11", "Compile": true } },
         { "Name": "Arena3D_Vertex_Post", "File": { "Path": "Materials/DX11_Vertex_Post.hlsl", "Converter": "text2vso11", "Compile": true } }
     ],
     "FragmentShader": [
+        { "Name": "Arena3D_Fragment_Quake", "File": { "Path": "Materials/DX11_Fragment_Quake.hlsl", "Converter": "text2pso11", "Compile": true } },
+        { "Name": "Arena3D_Fragment_Weapon", "File": { "Path": "Materials/DX11_Fragment_Weapon.hlsl", "Converter": "text2pso11", "Compile": true } },
         { "Name": "Arena3D_Fragment_Lit2", "File": { "Path": "Materials/DX11_Fragment_Lit2.hlsl", "Converter": "text2pso11", "Compile": true } },
         { "Name": "Arena3D_Fragment_Lit4", "File": { "Path": "Materials/DX11_Fragment_Lit4.hlsl", "Converter": "text2pso11", "Compile": true } },
         { "Name": "Arena3D_Fragment_Lit8", "File": { "Path": "Materials/DX11_Fragment_Lit8.hlsl", "Converter": "text2pso11", "Compile": true } },
@@ -37,6 +41,9 @@
         { "Name": "Arena3D_Fragment_Post", "File": { "Path": "Materials/DX11_Fragment_Post.hlsl", "Converter": "text2pso11", "Compile": true } }
     ],
     "Program": [
+        { "Name": "Arena3D_Program_Quake", "VertexShader": { "Name": "Arena3D_Vertex_Quake" }, "FragmentShader": { "Name": "Arena3D_Fragment_Quake" }, "VertexAttribute": { "Name": "Arena3D_Vertex3D_Static" }, "Sampler": { "Count": 1 } },
+        { "Name": "Arena3D_Program_Weapon", "VertexShader": { "Name": "Arena3D_Vertex_Weapon" }, "FragmentShader": { "Name": "Arena3D_Fragment_Weapon" }, "VertexAttribute": { "Name": "Arena3D_Vertex3D_Static" }, "Sampler": { "Count": 1 } },
+
         { "Name": "Arena3D_Program_Lit2", "VertexShader": { "Name": "Arena3D_Vertex_Lit" }, "FragmentShader": { "Name": "Arena3D_Fragment_Lit2" }, "VertexAttribute": { "Name": "Arena3D_Vertex3D_Static" }, "Sampler": { "Count": 1 } },
         { "Name": "Arena3D_Program_Lit4", "VertexShader": { "Name": "Arena3D_Vertex_Lit" }, "FragmentShader": { "Name": "Arena3D_Fragment_Lit4" }, "VertexAttribute": { "Name": "Arena3D_Vertex3D_Static" }, "Sampler": { "Count": 1 } },
         { "Name": "Arena3D_Program_Lit8", "VertexShader": { "Name": "Arena3D_Vertex_Lit" }, "FragmentShader": { "Name": "Arena3D_Fragment_Lit8" }, "VertexAttribute": { "Name": "Arena3D_Vertex3D_Static" }, "Sampler": { "Count": 1 } },
@@ -45,13 +52,16 @@
         { "Name": "Arena3D_Program_Post", "VertexShader": { "Name": "Arena3D_Vertex_Post" }, "FragmentShader": { "Name": "Arena3D_Fragment_Post" }, "VertexAttribute": { "Name": "Arena3D_Vertex2D_UV1" }, "Sampler": { "Count": 1 } }
     ],
     "Material": [
+        { "Name": "Arena3D_Quake", "AlphaBlend": { "Enable": false }, "DepthBufferTest": { "Enable": true }, "DepthBufferWrite": { "Enable": true }, "BlendFactor": { "Source": "ONE", "Dest": "ZERO" }, "TextureStages": [{ "Stage": 0, "AddressMode": { "U": "CLAMP", "V": "CLAMP" } }], "Program": { "Name": "Arena3D_Program_Quake" } },
+        { "Name": "Arena3D_Weapon", "AlphaBlend": { "Enable": false }, "DepthBufferTest": { "Enable": true }, "DepthBufferWrite": { "Enable": true }, "BlendFactor": { "Source": "ONE", "Dest": "ZERO" }, "TextureStages": [{ "Stage": 0, "AddressMode": { "U": "CLAMP", "V": "CLAMP" } }], "Program": { "Name": "Arena3D_Program_Weapon" } },
+
         { "Name": "Arena3D_OpaqueLit2", "AlphaBlend": { "Enable": false }, "DepthBufferTest": { "Enable": true }, "DepthBufferWrite": { "Enable": true }, "BlendFactor": { "Source": "ONE", "Dest": "ZERO" }, "TextureStages": [{ "Stage": 0, "AddressMode": { "U": "WRAP", "V": "WRAP" } }], "Program": { "Name": "Arena3D_Program_Lit2" } },
         { "Name": "Arena3D_OpaqueLit4", "AlphaBlend": { "Enable": false }, "DepthBufferTest": { "Enable": true }, "DepthBufferWrite": { "Enable": true }, "BlendFactor": { "Source": "ONE", "Dest": "ZERO" }, "TextureStages": [{ "Stage": 0, "AddressMode": { "U": "WRAP", "V": "WRAP" } }], "Program": { "Name": "Arena3D_Program_Lit4" } },
         { "Name": "Arena3D_OpaqueLit8", "AlphaBlend": { "Enable": false }, "DepthBufferTest": { "Enable": true }, "DepthBufferWrite": { "Enable": true }, "BlendFactor": { "Source": "ONE", "Dest": "ZERO" }, "TextureStages": [{ "Stage": 0, "AddressMode": { "U": "WRAP", "V": "WRAP" } }], "Program": { "Name": "Arena3D_Program_Lit8" } },
         { "Name": "Arena3D_OpaqueLitContinuous", "AlphaBlend": { "Enable": false }, "DepthBufferTest": { "Enable": true }, "DepthBufferWrite": { "Enable": true }, "BlendFactor": { "Source": "ONE", "Dest": "ZERO" }, "TextureStages": [{ "Stage": 0, "AddressMode": { "U": "WRAP", "V": "WRAP" } }], "Program": { "Name": "Arena3D_Program_LitContinuous" } },
         { "Name": "Arena3D_Sky", "AlphaBlend": { "Enable": false }, "DepthBufferTest": { "Enable": true }, "DepthBufferWrite": { "Enable": false }, "BlendFactor": { "Source": "ONE", "Dest": "ZERO" }, "Program": { "Name": "Arena3D_Program_Unlit" } },
         { "Name": "Arena3D_Emissive", "AlphaBlend": { "Enable": false }, "DepthBufferTest": { "Enable": true }, "DepthBufferWrite": { "Enable": true }, "BlendFactor": { "Source": "ONE", "Dest": "ZERO" }, "TextureStages": [{ "Stage": 0, "AddressMode": { "U": "WRAP", "V": "WRAP" } }], "Program": { "Name": "Arena3D_Program_Unlit" } },
-        { "Name": "Arena3D_ViewModel", "AlphaBlend": { "Enable": false }, "DepthBufferTest": { "Enable": true }, "DepthBufferWrite": { "Enable": true }, "BlendFactor": { "Source": "ONE", "Dest": "ZERO" }, "Program": { "Name": "Arena3D_Program_Unlit" } },
+        { "Name": "Arena3D_ViewModel", "AlphaBlend": { "Enable": false }, "DepthBufferTest": { "Enable": true }, "DepthBufferWrite": { "Enable": true }, "BlendFactor": { "Source": "ONE", "Dest": "ZERO" }, "Program": { "Name": "Arena3D_Program_Weapon" } },
         { "Name": "Arena3D_Trail", "AlphaBlend": { "Enable": true }, "DepthBufferTest": { "Enable": true }, "DepthBufferWrite": { "Enable": false }, "BlendFactor": { "Source": "SOURCE_ALPHA", "Dest": "ONE" }, "Program": { "Name": "Arena3D_Program_Unlit" } },
         { "Name": "Arena3D_Explosion", "AlphaBlend": { "Enable": true }, "DepthBufferTest": { "Enable": true }, "DepthBufferWrite": { "Enable": false }, "BlendFactor": { "Source": "SOURCE_ALPHA", "Dest": "ONE_MINUS_SOURCE_ALPHA" }, "Program": { "Name": "Arena3D_Program_Unlit" } },
         { "Name": "Arena3D_Impact", "AlphaBlend": { "Enable": true }, "DepthBufferTest": { "Enable": true }, "DepthBufferWrite": { "Enable": false }, "BlendFactor": { "Source": "SOURCE_ALPHA", "Dest": "ONE" }, "Program": { "Name": "Arena3D_Program_Unlit" } },

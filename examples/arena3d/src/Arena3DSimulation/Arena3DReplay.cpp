@@ -30,31 +30,67 @@ namespace Arena3D
                 reader->readU32( &checksum->random ) && reader->readU32( &checksum->full );
         }
         //////////////////////////////////////////////////////////////////////////
-        static void writeEvent( CanonicalWriter * writer, const ServerEvent & event )
+        static void writeEvent( CanonicalWriter * _writer, const ServerEvent & _event )
         {
-            writer->writeU64( event.id );
-            writer->writeU64( event.tick );
-            writer->writeU8( static_cast<uint8_t>(event.type) );
-            writer->writeU32( event.actorId );
-            writer->writeU32( event.targetId );
-            writer->writeU8( static_cast<uint8_t>(event.weapon) );
-            writer->writeVector( event.position );
-            writer->writeI32( event.amount );
+            _writer->writeU64( _event.id );
+            _writer->writeU64( _event.tick );
+            uint8_t type = static_cast<uint8_t>(_event.type);
+            _writer->writeU8( type );
+            _writer->writeU32( _event.actorId );
+            _writer->writeU32( _event.targetId );
+            uint8_t weapon = static_cast<uint8_t>(_event.weapon);
+            _writer->writeU8( weapon );
+            _writer->writeVector( _event.position );
+            _writer->writeI32( _event.amount );
+            _writer->writeVector( _event.endPosition );
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool readEvent( CanonicalReader * reader, ServerEvent * event )
+        static bool readEvent( CanonicalReader * _reader, ServerEvent * _event )
         {
             uint8_t type = 0;
             uint8_t weapon = 0;
-            if( reader->readU64( &event->id ) == false || reader->readU64( &event->tick ) == false || reader->readU8( &type ) == false ||
-                reader->readU32( &event->actorId ) == false || reader->readU32( &event->targetId ) == false || reader->readU8( &weapon ) == false ||
-                reader->readVector( &event->position ) == false || reader->readI32( &event->amount ) == false ) return false;
+            if( _reader->readU64( &_event->id ) == false )
+            {
+                return false;
+            }
+            if( _reader->readU64( &_event->tick ) == false )
+            {
+                return false;
+            }
+            if( _reader->readU8( &type ) == false )
+            {
+                return false;
+            }
+            if( _reader->readU32( &_event->actorId ) == false )
+            {
+                return false;
+            }
+            if( _reader->readU32( &_event->targetId ) == false )
+            {
+                return false;
+            }
+            if( _reader->readU8( &weapon ) == false )
+            {
+                return false;
+            }
+            if( _reader->readVector( &_event->position ) == false )
+            {
+                return false;
+            }
+            if( _reader->readI32( &_event->amount ) == false )
+            {
+                return false;
+            }
+            if( _reader->readVector( &_event->endPosition ) == false )
+            {
+                return false;
+            }
             if( type > static_cast<uint8_t>(EventType::Impact) || weapon >= WeaponTypeCount )
             {
                 return false;
             }
-            event->type = static_cast<EventType>(type);
-            event->weapon = static_cast<WeaponType>(weapon);
+            _event->type = static_cast<EventType>(type);
+            _event->weapon = static_cast<WeaponType>(weapon);
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
@@ -62,7 +98,8 @@ namespace Arena3D
         {
             return left.id == right.id && left.tick == right.tick && left.type == right.type && left.actorId == right.actorId &&
                 left.targetId == right.targetId && left.weapon == right.weapon && left.position.x == right.position.x &&
-                left.position.y == right.position.y && left.position.z == right.position.z && left.amount == right.amount;
+                left.position.y == right.position.y && left.position.z == right.position.z && left.amount == right.amount &&
+                left.endPosition.x == right.endPosition.x && left.endPosition.y == right.endPosition.y && left.endPosition.z == right.endPosition.z;
         }
         //////////////////////////////////////////////////////////////////////////
     }

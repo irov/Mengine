@@ -1,8 +1,12 @@
 #pragma once
 
+#include "Interface/TimepipeInterface.h"
+
 #include "Arena3DHud.h"
 #include "Arena3DNetworkClient.h"
 #include "Arena3DSession.h"
+
+#include "Engine/ResourceMesh3D.h"
 
 #include "Kernel/Array.h"
 #include "Kernel/DummySceneEventReceiver.h"
@@ -19,12 +23,8 @@
 #include "Kernel/Vector.h"
 #include "Kernel/VectorResources.h"
 
-#include "Engine/ResourceMesh3D.h"
-
-#include "Interface/TimepipeInterface.h"
-
-#include "Config/UniqueId.h"
 #include "Config/StdInt.h"
+#include "Config/UniqueId.h"
 
 namespace Mengine
 {
@@ -36,23 +36,20 @@ namespace Mengine
     private:
         static constexpr size_t ExplosionTypeCount = 3;
         static constexpr size_t ExplosionCloudsPerType = 8;
-        static constexpr size_t ArenaVisualLayerCount = 3;
-        static constexpr size_t ArenaChunkCount = 4;
         static constexpr size_t ImpactFlashCount = 64;
+        static constexpr size_t RailTrailCount = 64;
         static constexpr size_t DecalCount = 256;
         static constexpr size_t GrenadeImpactCount = 32;
         static constexpr size_t DeathBurstCount = 8;
         static constexpr size_t DeathShardCount = 6;
+        //////////////////////////////////////////////////////////////////////////
         typedef Array<NodePtr, DeathShardCount> ArrayDeathShardNode;
         typedef Array<mt::vec3f, DeathShardCount> ArrayDeathShardVector;
-        typedef Array<NodePtr, 4> ArrayPointLightNode;
-        typedef Array<ResourceMesh3DPtr, ArenaChunkCount> ArrayArenaChunkResource;
-        typedef Array<ArrayArenaChunkResource, ArenaVisualLayerCount> ArrayArenaVisualLayerResource;
         typedef Array<ResourceMesh3DPtr, Arena3D::WeaponTypeCount> ArrayWeaponResource;
-        typedef Array<ResourceMesh3DPtr, 3> ArrayPickupResource;
+        typedef Array<ResourceMesh3DPtr, 2 + Arena3D::WeaponTypeCount> ArrayPickupResource;
+        typedef Array<ResourceImagePtr, 2 + Arena3D::WeaponTypeCount> ArrayPickupTexture;
+        typedef Array<ResourceImagePtr, Arena3D::WeaponTypeCount> ArrayWeaponTexture;
         typedef Array<ResourceMesh3DPtr, ExplosionTypeCount> ArrayExplosionResource;
-        typedef Array<NodePtr, ArenaChunkCount> ArrayArenaChunkNode;
-        typedef Array<ArrayArenaChunkNode, ArenaVisualLayerCount> ArrayArenaVisualLayerNode;
         typedef Array<NodePtr, Arena3D::MaximumPlayers> ArrayPlayerNode;
         typedef Array<NodePtr, Arena3D::MaximumTurrets> ArrayTurretNode;
         typedef Vector<NodePtr> VectorNodePtr;
@@ -80,6 +77,13 @@ namespace Mengine
             float duration = 0.f;
             float startScale = 0.f;
             float endScale = 0.f;
+            bool active = false;
+        };
+        //////////////////////////////////////////////////////////////////////////
+        struct RailTrailVisualDesc
+        {
+            NodePtr node;
+            float age = 0.f;
             bool active = false;
         };
         //////////////////////////////////////////////////////////////////////////
@@ -111,6 +115,7 @@ namespace Mengine
         typedef Array<ExplosionCloudVisual, ExplosionCloudsPerType> ArrayExplosionCloud;
         typedef Array<ArrayExplosionCloud, ExplosionTypeCount> ArrayExplosionCloudType;
         typedef Array<ImpactFlashVisual, ImpactFlashCount> ArrayImpactFlash;
+        typedef Array<RailTrailVisualDesc, RailTrailCount> ArrayRailTrail;
         typedef Array<DecalVisual, DecalCount> ArrayDecal;
         typedef Array<GrenadeImpactVisual, GrenadeImpactCount> ArrayGrenadeImpact;
         typedef Array<DeathBurstVisual, DeathBurstCount> ArrayDeathBurst;
@@ -154,8 +159,8 @@ namespace Mengine
         void update_( const UpdateContext * _context );
         void advancePresentationAnimations_( float _seconds );
         void observeWeaponSelection_();
-        void syncPresentation_( float _alpha );
-        void syncCamera_( const Arena3D::PlayerState & _player, float _alpha );
+        void syncPresentation_( float _alpha, float _seconds );
+        void syncCamera_( const Arena3D::PlayerState & _player, float _alpha, float _seconds );
         void syncPlayers_( float _alpha );
         void syncArenaChunks_();
         void syncTurrets_();
@@ -166,14 +171,17 @@ namespace Mengine
         void processEvents_();
         void spawnExplosionCloud_( const Arena3D::ServerEvent & _event );
         void spawnImpactFlash_( const Arena3D::ServerEvent & _event );
+        void spawnRailTrail_( const Arena3D::ServerEvent & _event );
         void spawnDecal_( const Arena3D::ServerEvent & _event );
         void rememberGrenadeImpact_( const Arena3D::ServerEvent & _event );
         void spawnGrenadeExplosionDecal_( const Arena3D::ServerEvent & _event );
         void spawnDeathBurst_( const Arena3D::ServerEvent & _event );
         void updateExplosionClouds_( float _seconds );
         void updateImpactEffects_( float _seconds );
+        void updateRailTrails_( float _seconds );
         void updateDeathBursts_( float _seconds );
         void clearImpactEffects_();
+        void clearRailTrails_();
         void clearDeathBursts_();
         void playSound_( size_t _index );
         void parkUnused_( VectorNodePtr & _pool, uint32_t _activeCount );
@@ -183,15 +191,12 @@ namespace Mengine
         Scene * m_scene;
         NodePtr m_postProcess;
         NodePtr m_directionalLight;
-        ArrayPointLightNode m_pointLights;
         NodePtr m_skyNode;
         NodePtr m_lavaNode;
         RenderCameraProjectionPtr m_worldCamera;
         RenderCameraProjectionPtr m_viewModelCamera;
 
         ResourceImagePtr m_tileTexture;
-        ResourceImagePtr m_stoneTexture;
-        ResourceImagePtr m_metalTexture;
         ResourceImagePtr m_hazardTexture;
         ResourceImagePtr m_emissiveTexture;
         ResourceImagePtr m_decalTexture;
@@ -200,24 +205,29 @@ namespace Mengine
         ResourceMesh3DPtr m_skyResource;
         ResourceMesh3DPtr m_lavaResource;
         ResourceMesh3DPtr m_playerResource;
-        ArrayArenaVisualLayerResource m_arenaChunkResources;
         ResourceMesh3DPtr m_turretBaseResource;
         ArrayWeaponResource m_turretResources;
         ArrayWeaponResource m_projectileResources;
         ArrayWeaponResource m_weaponResources;
         ArrayPickupResource m_pickupResources;
+        ArrayWeaponTexture m_weaponTextures;
+        ArrayPickupTexture m_pickupTextures;
+        ResourceImagePtr m_grenadeTexture;
         ArrayExplosionResource m_explosionResources;
         ResourceMesh3DPtr m_impactResource;
 
-        ArrayArenaVisualLayerNode m_arenaChunkNodes;
+        VectorNodePtr m_arenaChunkNodes;
         ArrayPlayerNode m_playerNodes;
         ArrayTurretNode m_turretBaseNodes;
         ArrayTurretNode m_turretBarrelNodes;
         ArrayProjectilePool m_projectilePools;
         ArrayViewModelNode m_viewModels;
+        ArrayViewModelNode m_muzzleNodes;
+        NodePtr m_barrelNode;
         ArrayPickupNode m_pickupNodes;
         ArrayExplosionCloudType m_explosionClouds;
         ArrayImpactFlash m_impactFlashes;
+        ArrayRailTrail m_railTrails;
         ArrayDecal m_decals;
         ArrayGrenadeImpact m_grenadeImpacts;
         ArrayDeathBurst m_deathBursts;
@@ -242,17 +252,24 @@ namespace Mengine
         float m_hitFlash;
         float m_warningFlash;
         float m_stepCameraOffset;
-        float m_stepCameraTime;
+        float m_stepCameraVelocity;
+        float m_cameraFootHeight;
         ViewModelTransition m_viewModelTransition;
         Arena3D::WeaponType m_displayedWeapon;
         Arena3D::WeaponType m_pendingWeapon;
         float m_viewModelTransitionTime;
+        float m_presentationTime = 0.f;
+        float m_weaponKick = 0.f;
+        float m_muzzleTime = 0.f;
+        float m_barrelSpeed = 0.f;
+        float m_barrelAngle = 0.f;
         uint32_t m_drawCalls;
         uint32_t m_visibleChunks;
         uint32_t m_visiblePlayers;
         uint32_t m_visibleProjectiles;
         uint32_t m_visibleExplosionClouds;
         uint32_t m_visibleImpactFlashes;
+        uint32_t m_visibleRailTrails = 0;
         uint32_t m_visibleDecals;
         uint32_t m_visibleDeathShards;
         uint8_t m_lightQuantization;

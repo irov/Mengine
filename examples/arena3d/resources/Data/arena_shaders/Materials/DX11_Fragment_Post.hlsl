@@ -7,7 +7,8 @@ float4 main(PSInput input) : SV_TARGET
     float2 chroma = direction * ExposureVignetteChromatic.w * ScreenInfo.z;
     float3 color = float3(texture0.Sample(sampler0, input.uv0 + chroma).r, texture0.Sample(sampler0, input.uv0).g, texture0.Sample(sampler0, input.uv0 - chroma).b);
     color *= ExposureVignetteChromatic.x;
-    color /= 1.0 + color;
+    // Quake lightmaps already contain display-referred LDR lighting.
+    color = pow(max(color, 0.0), 1.0 / 1.3);
     float softness = max(ExposureVignetteChromatic.z, 0.0001);
     float vignette = saturate((length(direction) * 1.4142136 - (1.0 - softness)) / softness);
     color *= 1.0 - vignette * ExposureVignetteChromatic.y;

@@ -1,0 +1,222 @@
+[
+  {
+    "path": "COPYING",
+    "url": "https://openarena.ws/svn/!svn/bc/951/COPYING",
+    "sha256": "32b1062f7da84967e7019d01ab805935caa7ab7321a7ced0e30ebe75e5df1670"
+  },
+  {
+    "path": "CREDITS",
+    "url": "https://openarena.ws/svn/!svn/bc/951/CREDITS",
+    "sha256": "8d5229bb2d123f3f27182ad7553b219eccf94f9859d509337ce9d52e03d786b4"
+  },
+  {
+    "path": "models/ammo/grenade1.md3",
+    "url": "https://openarena.ws/svn/!svn/bc/951/models/ammo/grenade1.md3",
+    "sha256": "5832f988ba1cb9a267bbe6f9b76a3c115f90897fae62973b96ef232f287d0442"
+  },
+  {
+    "path": "models/powerups/ammo/CREDITS",
+    "url": "https://openarena.ws/svn/!svn/bc/951/models/powerups/ammo/CREDITS",
+    "sha256": "dbf2237f88816387c6ae497178596731afe064a8d6b2d85378be87ae3900609e"
+  },
+  {
+    "path": "models/powerups/ammo/ammobox.tga",
+    "url": "https://openarena.ws/svn/!svn/bc/951/models/powerups/ammo/ammobox.tga",
+    "sha256": "14cc08b2ac441f1d23c5f9be84e5dadf758eb212c9a3659c99e0cd8bba6348e1"
+  },
+  {
+    "path": "models/powerups/ammo/grenadeam.md3",
+    "url": "https://openarena.ws/svn/!svn/bc/951/models/powerups/ammo/grenadeam.md3",
+    "sha256": "473247d3552a3dc635ef37b9aa40b41d8d767f2b3c1a0eb2e5f0f2911cea25cc"
+  },
+  {
+    "path": "models/powerups/ammo/grenammo2.tga",
+    "url": "https://openarena.ws/svn/!svn/bc/951/models/powerups/ammo/grenammo2.tga",
+    "sha256": "96721e9c512ceb13c6ccbc32a1b028a61be58b7e8ea693a6bd60c2ea244941bb"
+  },
+  {
+    "path": "models/powerups/ammo/machammo2.tga",
+    "url": "https://openarena.ws/svn/!svn/bc/951/models/powerups/ammo/machammo2.tga",
+    "sha256": "56c2722c557dae9f4a688ec9ddfdf1d521fdf0fdf7daec7905df67a78b71b964"
+  },
+  {
+    "path": "models/powerups/ammo/machinegunam.md3",
+    "url": "https://openarena.ws/svn/!svn/bc/951/models/powerups/ammo/machinegunam.md3",
+    "sha256": "b7b58b928a3db0f6fd5ee68d2776803ed297c9f2acaa33b7b615e33f526e47b0"
+  },
+  {
+    "path": "models/powerups/ammo/plasammo2.tga",
+    "url": "https://openarena.ws/svn/!svn/bc/951/models/powerups/ammo/plasammo2.tga",
+    "sha256": "a1745007f042fec63598cd89608b38b12d4392c349b81389794d25fd3e256239"
+  },
+  {
+    "path": "models/powerups/ammo/plasmaam.md3",
+    "url": "https://openarena.ws/svn/!svn/bc/951/models/powerups/ammo/plasmaam.md3",
+    "sha256": "2250ae8c763e6bea9318af0fcebc52c464a30071215e5b12226bb4ee12966782"
+  },
+  {
+    "path": "models/powerups/ammo/railammo2.tga",
+    "url": "https://openarena.ws/svn/!svn/bc/951/models/powerups/ammo/railammo2.tga",
+    "sha256": "ec6de9f35ed09db1bd6eff713202f04f7a47f8fce240b3bc5467201a61baa3a8"
+  },
+  {
+    "path": "models/powerups/ammo/railgunam.md3",
+    "url": "https://openarena.ws/svn/!svn/bc/951/models/powerups/ammo/railgunam.md3",
+    "sha256": "5bde0dd74afdfa03e7df6955d71673c7fd4ba567875d9b11d78e923cc9370061"
+  },
+  {
+    "path": "models/powerups/ammo/rockammo2.tga",
+    "url": "https://openarena.ws/svn/!svn/bc/951/models/powerups/ammo/rockammo2.tga",
+    "sha256": "fde0a6e8eeaa6019ec7e54245f33a728d9c256a1cf8d3b9f7f3c4aa498b6e721"
+  },
+  {
+    "path": "models/powerups/ammo/rocketam.md3",
+    "url": "https://openarena.ws/svn/!svn/bc/951/models/powerups/ammo/rocketam.md3",
+    "sha256": "e0609989d0a71d29c473bfb90cdf91afa43ef09c197ba30e9445de92b663f150"
+  },
+  {
+    "path": "models/powerups/ammo/shotammo2.tga",
+    "url": "https://openarena.ws/svn/!svn/bc/951/models/powerups/ammo/shotammo2.tga",
+    "sha256": "0f13fa47d6460a06ec34ef9859797bfc4007d875a32e572187f8b7ce19d10f88"
+  },
+  {
+    "path": "models/powerups/ammo/shotgunam.md3",
+    "url": "https://openarena.ws/svn/!svn/bc/951/models/powerups/ammo/shotgunam.md3",
+    "sha256": "3bdfc5e4a78435c550dd51114c177b6279891feda29897b4aac49c86dbb16c92"
+  },
+  {
+    "path": "models/powerups/armor/armor_yel.md3",
+    "url": "https://openarena.ws/svn/!svn/bc/951/models/powerups/armor/armor_yel.md3",
+    "sha256": "3c8755ceae779f3047b0ef7db86686daf081088e1a29a1ab975b2cdbb58d8f2b"
+  },
+  {
+    "path": "models/powerups/armor/yellowarmor.tga",
+    "url": "https://openarena.ws/svn/!svn/bc/951/models/powerups/armor/yellowarmor.tga",
+    "sha256": "fa8d8409b0db3ad4ea8932f324396c0e3fdf8b092e55b2c8b1081eeeb4a2f1d1"
+  },
+  {
+    "path": "models/weapons2/grenadel/grenadel.md3",
+    "url": "https://openarena.ws/svn/!svn/bc/951/models/weapons2/grenadel/grenadel.md3",
+    "sha256": "8b89c3a7f1bb2ea7e12db15da56716e36ad8fa41ccc487e95f6f379a1668ed92"
+  },
+  {
+    "path": "models/weapons2/grenadel/grenadel.tga",
+    "url": "https://openarena.ws/svn/!svn/bc/951/models/weapons2/grenadel/grenadel.tga",
+    "sha256": "3d9964fbf53d03dba0928b7a6501f478aae71d55d6b2993e1cbbfa12ce487bf7"
+  },
+  {
+    "path": "models/weapons2/grenadel/newgren.tga",
+    "url": "https://openarena.ws/svn/!svn/bc/951/models/weapons2/grenadel/newgren.tga",
+    "sha256": "2d61caa889800b5297b1bcb5a632b2c4928debdc78de472acb915b80e0afc1d0"
+  },
+  {
+    "path": "models/weapons2/machinegun/machinegun.md3",
+    "url": "https://openarena.ws/svn/!svn/bc/951/models/weapons2/machinegun/machinegun.md3",
+    "sha256": "575f5a9fb400fc01928be3992c19e73f870bcd16d6a31c43f7f73c894b3d2d11"
+  },
+  {
+    "path": "models/weapons2/machinegun/machinegun_barrel.md3",
+    "url": "https://openarena.ws/svn/!svn/bc/951/models/weapons2/machinegun/machinegun_barrel.md3",
+    "sha256": "5c76250c8834e1a0da729841ee006b8e6a6fc7c931aa9a9ae7a2a93e2de3c894"
+  },
+  {
+    "path": "models/weapons2/machinegun/mgun.tga",
+    "url": "https://openarena.ws/svn/!svn/bc/951/models/weapons2/machinegun/mgun.tga",
+    "sha256": "61dfdd5ebe4476aa97a3a99a0ef2a01d8fd07d97e255b2d71598348ef32dfeaf"
+  },
+  {
+    "path": "models/weapons2/machinegun/sight.tga",
+    "url": "https://openarena.ws/svn/!svn/bc/951/models/weapons2/machinegun/sight.tga",
+    "sha256": "cc2a5c142dde302e8da085d0fd00d8f337ca679e5ae9eab670e0eda51ca36d52"
+  },
+  {
+    "path": "models/weapons2/plasma/plasma.md3",
+    "url": "https://openarena.ws/svn/!svn/bc/951/models/weapons2/plasma/plasma.md3",
+    "sha256": "cab689e0af7f9c8383bd21fcbbc1b13d772daee2956621ca1e0e733b5abaa794"
+  },
+  {
+    "path": "models/weapons2/plasma/skin.tga",
+    "url": "https://openarena.ws/svn/!svn/bc/951/models/weapons2/plasma/skin.tga",
+    "sha256": "b38c0177056ec58c76318b6398f7c2ac34d04096e3cf7d4cf7be1b783f7a2c4f"
+  },
+  {
+    "path": "models/weapons2/railgun/railgun.md3",
+    "url": "https://openarena.ws/svn/!svn/bc/951/models/weapons2/railgun/railgun.md3",
+    "sha256": "d3607f078b678dabafe9c72878ea172109fb6aa2a3ebc4680033d17c1bdde575"
+  },
+  {
+    "path": "models/weapons2/railgun/scrolly.tga",
+    "url": "https://openarena.ws/svn/!svn/bc/951/models/weapons2/railgun/scrolly.tga",
+    "sha256": "c7ea3870fd32f38768eeb7a62b2feae576c9cbc33ed9a1d9deba783e75ca2557"
+  },
+  {
+    "path": "models/weapons2/railgun/skin.tga",
+    "url": "https://openarena.ws/svn/!svn/bc/951/models/weapons2/railgun/skin.tga",
+    "sha256": "63124ed65c0e3c0bdbf718246add301ba3c068094d55b640a675857be30389c7"
+  },
+  {
+    "path": "models/weapons2/rocketl/rocketl.md3",
+    "url": "https://openarena.ws/svn/!svn/bc/951/models/weapons2/rocketl/rocketl.md3",
+    "sha256": "64ba952b41ad573099a35beb27786853ab372eafe585d8f579f9094019385fc0"
+  },
+  {
+    "path": "models/weapons2/rocketl/skin.tga",
+    "url": "https://openarena.ws/svn/!svn/bc/951/models/weapons2/rocketl/skin.tga",
+    "sha256": "fe9638fbbee7a6db2f51410bac518e73eaeda72948229747966e7a445c0b302d"
+  },
+  {
+    "path": "models/weapons2/shotgun/shotgun.md3",
+    "url": "https://openarena.ws/svn/!svn/bc/951/models/weapons2/shotgun/shotgun.md3",
+    "sha256": "ec594d8168b4853b3529a69ecfa49c60179208d21659fb323850bc6122f8b86b"
+  },
+  {
+    "path": "models/weapons2/shotgun/shotgun.tga",
+    "url": "https://openarena.ws/svn/!svn/bc/951/models/weapons2/shotgun/shotgun.tga",
+    "sha256": "71d411f97fd1992ac1680deb05b3d8fa4c96846ad5251a3e7ce5c78aa772b2e3"
+  },
+  {
+    "path": "scripts/ammo.shader",
+    "url": "https://openarena.ws/svn/!svn/bc/951/scripts/ammo.shader",
+    "sha256": "a70fd793a7335ab6c059c5b34c12a71c784502532daff2ff6452c4932b49736c"
+  },
+  {
+    "path": "scripts/item_health.shader",
+    "url": "https://openarena.ws/svn/!svn/bc/951/scripts/item_health.shader",
+    "sha256": "a2ee8c737e9fa72b1cd7772a0083bd632855ed322d5ec5806e9e96706f5fe8dd"
+  },
+  {
+    "path": "scripts/weapon_grenadelauncher.shader",
+    "url": "https://openarena.ws/svn/!svn/bc/951/scripts/weapon_grenadelauncher.shader",
+    "sha256": "19935643139239a38c027859d886cba8142060f8484617c9fd85923a9ae7f835"
+  },
+  {
+    "path": "scripts/weapon_machinegun.shader",
+    "url": "https://openarena.ws/svn/!svn/bc/951/scripts/weapon_machinegun.shader",
+    "sha256": "586d8db081cb08d034c3591401910ef4110413f03b4c83118711237a7e25b0d8"
+  },
+  {
+    "path": "scripts/weapon_plasma.shader",
+    "url": "https://openarena.ws/svn/!svn/bc/951/scripts/weapon_plasma.shader",
+    "sha256": "4963da9c170a5dac882726a43aa27fd378166f575b901f7403d530332c5a696b"
+  },
+  {
+    "path": "scripts/weapon_railgun.shader",
+    "url": "https://openarena.ws/svn/!svn/bc/951/scripts/weapon_railgun.shader",
+    "sha256": "6d97bbaf20875ccbf25b0cfc36f06d1baaba0a94b6e080506784941765474fcb"
+  },
+  {
+    "path": "scripts/weapon_rocketlauncher.shader",
+    "url": "https://openarena.ws/svn/!svn/bc/951/scripts/weapon_rocketlauncher.shader",
+    "sha256": "bf9e9a135a60d39d0d63ebe3f8d2362e5c54b2c675d527c11bb0f7297b8f8d50"
+  },
+  {
+    "path": "scripts/weapon_shotgun.shader",
+    "url": "https://openarena.ws/svn/!svn/bc/951/scripts/weapon_shotgun.shader",
+    "sha256": "dfb18fbf0d0295eb3bd25aebca271dfa9a65d67ef7bbe46929477b30f5402ba4"
+  },
+  {
+    "path": "models/weapons2/machinegun/f_machinegun2.tga",
+    "url": "https://openarena.ws/svn/!svn/bc/951/models/weapons2/machinegun/f_machinegun2.tga",
+    "sha256": "918f6f6e9d8c1813468a8d5c0199eb86bdc218fb55f82ac23cb89681b2a96e55"
+  }
+]

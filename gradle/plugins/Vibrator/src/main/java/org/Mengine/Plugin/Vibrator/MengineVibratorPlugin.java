@@ -15,6 +15,8 @@ import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.os.VibratorManager;
+import android.view.HapticFeedbackConstants;
+import android.view.View;
 
 import java.util.List;
 
@@ -31,7 +33,7 @@ public class MengineVibratorPlugin extends MengineService implements MengineList
     public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) {
         Vibrator vibrator = activity.getSystemService(Vibrator.class);
 
-        if (vibrator.hasVibrator() == false) {
+        if (vibrator == null || vibrator.hasVibrator() == false) {
             this.logInfo("vibrator not found");
 
             return;
@@ -55,6 +57,34 @@ public class MengineVibratorPlugin extends MengineService implements MengineList
         int version = bundle.getInt("version", 0);
 
         m_mute = bundle.getBoolean("mute", false);
+    }
+
+    public void impact(int strength) {
+        MengineActivity activity = this.getMengineActivity();
+        if (activity == null || m_mute == true || strength < 0 || strength > 2) {
+            return;
+        }
+
+        activity.runOnUiThread(() -> {
+            if (this.getMengineActivity() != activity || activity.isFinishing() == true || m_mute == true) {
+                return;
+            }
+
+            View view = activity.getWindow().getDecorView();
+            int feedback;
+            if (strength == 0) {
+                feedback = Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE
+                    ? HapticFeedbackConstants.SEGMENT_FREQUENT_TICK : HapticFeedbackConstants.CLOCK_TICK;
+            } else if (strength == 1) {
+                feedback = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                    ? HapticFeedbackConstants.CONTEXT_CLICK : HapticFeedbackConstants.KEYBOARD_TAP;
+            } else {
+                feedback = HapticFeedbackConstants.LONG_PRESS;
+            }
+
+            // No IGNORE flags: the View and system haptics settings remain authoritative.
+            view.performHapticFeedback(feedback);
+        });
     }
 
     public boolean vibrateOneShot(long milliseconds) {

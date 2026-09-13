@@ -6,6 +6,9 @@ set(PROJECT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../..)
 set(PROJECT_TEMP_DIR ${CMAKE_BINARY_DIR}/solutions)
 set(MENGINE_CMAKE_DIR ${PROJECT_DIR}/../../cmake/Win64_DX11)
 
+include(../downloads/content.cmake)
+arena3d_download_content()
+
 # Resource discovery happens at configure time on the application targets.
 find_package(Python3 REQUIRED COMPONENTS Interpreter)
 execute_process(

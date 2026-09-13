@@ -47,6 +47,8 @@
 
 + (BOOL)hasSystemWindows;
 
++ (void)impactFeedback:(NSInteger)style intensity:(CGFloat)intensity;
+
 + (NSString * _Nonnull)pathForTemporaryFileWithPrefix:(NSString * _Nonnull)prefix ext:(NSString * _Nonnull)ext;
 
 + (void)showOkAlertWithTitle:(NSString * _Nonnull)title

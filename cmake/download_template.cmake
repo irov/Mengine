@@ -33,6 +33,40 @@ macro(DOWNLOAD_FILE NAME URL FILE)
     endif()
 endmacro()
 
+function(DOWNLOAD_FILE_HASH NAME URL FILE SHA256)
+    set(DESTINATION "${MENGINE_DOWNLOADS_PATH}/${NAME}/${FILE}")
+
+    if(EXISTS "${DESTINATION}")
+        file(SHA256 "${DESTINATION}" ACTUAL_SHA256)
+        if(ACTUAL_SHA256 STREQUAL SHA256)
+            return()
+        endif()
+    endif()
+
+    get_filename_component(DESTINATION_DIRECTORY "${DESTINATION}" DIRECTORY)
+    file(MAKE_DIRECTORY "${DESTINATION_DIRECTORY}")
+    message(STATUS "Download ${NAME}/${FILE}")
+    file(DOWNLOAD "${URL}" "${DESTINATION}.part"
+        STATUS DOWNLOAD_STATUS
+        TLS_VERIFY ON
+        TIMEOUT 120
+        INACTIVITY_TIMEOUT 30
+    )
+    list(GET DOWNLOAD_STATUS 0 DOWNLOAD_CODE)
+    if(NOT DOWNLOAD_CODE EQUAL 0)
+        file(REMOVE "${DESTINATION}.part")
+        message(FATAL_ERROR "Download ${NAME}/${FILE} failed: ${DOWNLOAD_STATUS}")
+    endif()
+
+    file(SHA256 "${DESTINATION}.part" ACTUAL_SHA256)
+    if(NOT ACTUAL_SHA256 STREQUAL SHA256)
+        file(REMOVE "${DESTINATION}.part")
+        message(FATAL_ERROR "Download ${NAME}/${FILE} SHA-256 mismatch: ${ACTUAL_SHA256}")
+    endif()
+
+    file(RENAME "${DESTINATION}.part" "${DESTINATION}")
+endfunction()
+
 macro(DOWNLOAD_GDRIVE_FOLDER NAME FOLDER_ID DEST)
     # Downloads every file from a public Google Drive folder into DEST.
     # The public 'embeddedfolderview' page is parsed to discover each file id and

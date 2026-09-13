@@ -75,6 +75,7 @@ namespace Arena3D
         WeaponType weapon = WeaponType::Nailgun;
         kf_vec3_t position;
         int32_t amount = 0;
+        kf_vec3_t endPosition{};
     };
     //////////////////////////////////////////////////////////////////////////
     typedef Mengine::Vector<ServerEvent> VectorServerEvent;
@@ -277,13 +278,13 @@ namespace Arena3D
         void finalizeEvents_();
         void firePlayerWeapon_( PlayerState * player, WeaponType weapon );
         void fireTurretWeapon_( TurretStateData * turret, const PlayerState & targetPlayer );
-        void fireRail_( uint32_t ownerId, const kf_vec3_t & origin, const kf_vec3_t & direction, int32_t damage );
+        void fireRail_( uint32_t _ownerId, uint32_t _targetId, const kf_vec3_t & _origin, const kf_vec3_t & _direction, int32_t _damage );
         bool spawnProjectile_( uint32_t ownerId, WeaponType weapon, const kf_vec3_t & origin, const kf_vec3_t & direction, uint64_t shotId, uint32_t launchDelayTicks );
         kf_vec3_t viewDirection_( const PlayerState & player ) const;
         kf_vec3_t spreadDirection_( const kf_vec3_t & direction, kf_fixed_t spread, uint64_t shotId ) const;
         void queueDamage_( uint32_t targetId, uint32_t sourceId, WeaponType weapon, const kf_vec3_t & origin, int32_t damage, kf_fixed_t knockback );
         void queueExplosion_( const ProjectileState & projectile, uint32_t ignoredTargetId = 0 );
-        void emit_( EventType type, uint32_t actorId, uint32_t targetId, WeaponType weapon, const kf_vec3_t & position, int32_t amount );
+        void emit_( EventType _type, uint32_t _actorId, uint32_t _targetId, WeaponType _weapon, const kf_vec3_t & _position, int32_t _amount, const kf_vec3_t & _endPosition = {} );
         void serializePlayers_( CanonicalWriter * writer ) const;
         void serializeProjectiles_( CanonicalWriter * writer ) const;
         void serializeTurrets_( CanonicalWriter * writer ) const;

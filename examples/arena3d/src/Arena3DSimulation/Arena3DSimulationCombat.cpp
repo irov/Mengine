@@ -12,6 +12,13 @@ namespace Arena3D
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
+        constexpr kf_fixed_t GRENADE_AUDIBLE_IMPACT_SPEED = -KF_FIXED_SCALE * 8 / 10;
+        constexpr kf_fixed_t GRENADE_CONTACT_SEPARATION = KF_FIXED_SCALE * 3 / 1000;
+        constexpr kf_fixed_t GRENADE_BOUNCE_IMPULSE = KF_FIXED_SCALE * 155 / 100;
+        constexpr kf_fixed_t GRENADE_FRICTION = KF_FIXED_SCALE * 8 / 10;
+        constexpr kf_fixed_t GRENADE_FLOOR_NORMAL = KF_FIXED_SCALE * 7 / 10;
+        constexpr kf_fixed_t GRENADE_SETTLE_SPEED_SQUARED = KF_FIXED_SCALE * 25 / 16;
+        //////////////////////////////////////////////////////////////////////////
         static constexpr size_t weaponIndex( WeaponType _weapon )
         {
             return static_cast<size_t>(_weapon);
@@ -132,13 +139,23 @@ namespace Arena3D
                 {
                     continue;
                 }
-                ++player.railChargeTicks;
-                if( player.railChargeTicks == m_config.weapons[Detail::weaponIndex( WeaponType::Railgun )].chargeTicks )
+
+                uint32_t chargeTicks = m_config.weapons[index].chargeTicks;
+
+                if( player.railChargeTicks < chargeTicks )
                 {
-                    this->firePlayerWeapon_( &player, weapon );
-                    player.fireConsumed = true;
-                    player.railChargeTicks = 0;
+                    ++player.railChargeTicks;
+
+                    if( player.railChargeTicks < chargeTicks )
+                    {
+                        continue;
+                    }
                 }
+
+                this->firePlayerWeapon_( &player, weapon );
+                player.fireConsumed = true;
+                player.railChargeTicks = 0;
+
                 continue;
             }
 
@@ -200,13 +217,15 @@ namespace Arena3D
 
         --player.ammo[index];
         player.cooldown[index] = config.cooldownTicks;
-        this->emit_( EventType::Shot, player.id, 0, weapon, origin, 0 );
 
         if( weapon == WeaponType::Railgun )
         {
-            this->fireRail_( player.id, origin, direction, config.damage );
+            this->fireRail_( player.id, 0, origin, direction, config.damage );
+
             return;
         }
+
+        this->emit_( EventType::Shot, player.id, 0, weapon, origin, 0 );
 
         uint32_t count = config.pelletCount;
         kf_fixed_t spread = 0;
@@ -268,14 +287,18 @@ namespace Arena3D
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Simulation::fireRail_( uint32_t ownerId, const kf_vec3_t & origin, const kf_vec3_t & direction, int32_t damage )
+    void Simulation::fireRail_( uint32_t _ownerId, uint32_t _targetId, const kf_vec3_t & _origin, const kf_vec3_t & _direction, int32_t _damage )
     {
         const kf_fixed_t maximumDistance = kf_fixed_from_int( 80 );
-        const kf_ray_t ray{origin, direction, maximumDistance};
+        const kf_ray_t ray{_origin, _direction, maximumDistance};
+
         kf_hit_t worldHit{};
         const bool hitWorld = kf_world_raycast( Arena3DGenerated::CollisionColliders,
             Arena3DGenerated::CollisionColliderCount, &ray, &worldHit ) == KF_TRUE;
+
         const kf_fixed_t worldDistance = hitWorld == true ? worldHit.distance : maximumDistance;
+        kf_vec3_t endPosition = hitWorld == true ? worldHit.position : kf_vec3_add_mul( _origin, _direction, maximumDistance );
+        this->emit_( EventType::Shot, _ownerId, _targetId, WeaponType::Railgun, _origin, 0, endPosition );
 
         struct RailTarget
         {
@@ -283,13 +306,15 @@ namespace Arena3D
             uint32_t id;
             kf_vec3_t position;
         };
+
         typedef Mengine::Array<RailTarget, MaximumPlayers + MaximumTurrets> ArrayRailTarget;
 
         ArrayRailTarget targets{};
         size_t count = 0;
+
         for( const PlayerState & player : m_state.players )
         {
-            if( player.active == false || player.alive == false || player.id == ownerId )
+            if( player.active == false || player.alive == false || player.id == _ownerId )
             {
                 continue;
             }
@@ -303,7 +328,7 @@ namespace Arena3D
             targets[count++] = {actorHit.distance, player.id, actorHit.position};
         }
 
-        if( this->findPlayer( ownerId ) != nullptr )
+        if( this->findPlayer( _ownerId ) != nullptr )
         {
             for( const TurretStateData & turret : m_state.turrets )
             {
@@ -328,13 +353,13 @@ namespace Arena3D
         const kf_fixed_t knockback = m_config.weapons[Detail::weaponIndex( WeaponType::Railgun )].knockback;
         for( size_t index = 0; index != count; ++index )
         {
-            this->queueDamage_( targets[index].id, ownerId, WeaponType::Railgun, origin, damage, knockback );
-            this->emit_( EventType::Hit, ownerId, targets[index].id, WeaponType::Railgun, targets[index].position, damage );
+            this->queueDamage_( targets[index].id, _ownerId, WeaponType::Railgun, _origin, _damage, knockback );
+            this->emit_( EventType::Hit, _ownerId, targets[index].id, WeaponType::Railgun, targets[index].position, _damage );
         }
 
         if( hitWorld == true )
         {
-            this->emit_( EventType::Impact, ownerId, worldHit.object_id, WeaponType::Railgun,
+            this->emit_( EventType::Impact, _ownerId, worldHit.object_id, WeaponType::Railgun,
                 worldHit.position, static_cast<int32_t>(Detail::impactNormal( worldHit.normal )) );
         }
     }
@@ -452,13 +477,18 @@ namespace Arena3D
         direction = kf_vec3_normalize( {kf_fixed_add( direction.x, error ), direction.y, kf_fixed_sub( direction.z, error )} );
         turret->state = TurretState::Firing;
         turret->cooldownTicks = config.cooldownTicks + 20;
-        this->emit_( EventType::Shot, turret->id, targetPlayer.id, turret->weapon, origin, 0 );
 
         if( turret->weapon == WeaponType::Railgun )
         {
-            this->fireRail_( turret->id, origin, direction, Mengine::StdAlgorithm::max( 1, config.damage / 4 ) );
+            int32_t scaledDamage = config.damage / 4;
+            int32_t damage = Mengine::StdAlgorithm::max( 1, scaledDamage );
+            this->fireRail_( turret->id, targetPlayer.id, origin, direction, damage );
+
             return;
         }
+
+        this->emit_( EventType::Shot, turret->id, targetPlayer.id, turret->weapon, origin, 0 );
+
         const uint32_t count = config.pelletCount;
         for( uint32_t projectile = 0; projectile != count; ++projectile )
         {
@@ -494,7 +524,15 @@ namespace Arena3D
                 projectile.active = false;
                 continue;
             }
+
             --projectile.lifetimeTicks;
+
+            // A settled grenade keeps its fuse, but no longer integrates gravity.
+            if( projectile.weapon == WeaponType::GrenadeLauncher && projectile.gravity == 0 )
+            {
+                continue;
+            }
+
             projectile.velocity.y = kf_fixed_sub_mul( projectile.velocity.y, projectile.gravity, tickSeconds );
             const kf_vec3_t previous = projectile.position;
             const kf_vec3_t displacement = kf_vec3_mul( projectile.velocity, tickSeconds );
@@ -592,26 +630,41 @@ namespace Arena3D
 
             if( hitWorld == true && projectile.weapon == WeaponType::GrenadeLauncher )
             {
-                const kf_vec3_t normal = worldHit.normal;
-                const kf_fixed_t normalVelocity = kf_vec3_dot( projectile.velocity, normal );
-                if( normalVelocity < kf_fixed_from_ratio( -1, 10 ) )
+                kf_vec3_t normal = worldHit.normal;
+                kf_fixed_t normalVelocity = kf_vec3_dot( projectile.velocity, normal );
+
+                if( normalVelocity < Detail::GRENADE_AUDIBLE_IMPACT_SPEED )
                 {
-                    const kf_vec3_t contact = kf_vec3_sub_mul( projectile.position, normal, projectile.radius );
+                    kf_vec3_t contact = kf_vec3_sub_mul( projectile.position, normal, projectile.radius );
+                    ImpactNormal impact = Detail::impactNormal( normal );
+                    int32_t impactCode = static_cast<int32_t>(impact);
                     this->emit_( EventType::Impact, projectile.ownerId, worldHit.object_id, projectile.weapon,
-                        contact, static_cast<int32_t>(Detail::impactNormal( worldHit.normal )) );
+                        contact, impactCode );
                 }
+
+                // Sweeps can report the previous contact at fraction zero.
+                // Separate the sphere and never reverse an outgoing velocity.
+                projectile.position = kf_vec3_add_mul( projectile.position, normal, Detail::GRENADE_CONTACT_SEPARATION );
+
                 if( normalVelocity < 0 )
                 {
-                    projectile.velocity = kf_vec3_sub_mul( projectile.velocity, normal, kf_fixed_mul( normalVelocity, kf_fixed_from_ratio( 155, 100 ) ) );
+                    kf_fixed_t impulse = kf_fixed_mul( normalVelocity, Detail::GRENADE_BOUNCE_IMPULSE );
+                    projectile.velocity = kf_vec3_sub_mul( projectile.velocity, normal, impulse );
+                    projectile.velocity.x = kf_fixed_mul( projectile.velocity.x, Detail::GRENADE_FRICTION );
+                    projectile.velocity.z = kf_fixed_mul( projectile.velocity.z, Detail::GRENADE_FRICTION );
                 }
-                else
+
+                kf_fixed_t speedSquared = kf_vec3_length_squared( projectile.velocity );
+
+                if( normal.y >= Detail::GRENADE_FLOOR_NORMAL && speedSquared <= Detail::GRENADE_SETTLE_SPEED_SQUARED )
                 {
-                    projectile.velocity = kf_vec3_mul( projectile.velocity, kf_fixed_from_ratio( -55, 100 ) );
+                    projectile.velocity = {};
+                    projectile.gravity = 0;
                 }
-                projectile.velocity.x = kf_fixed_mul( projectile.velocity.x, kf_fixed_from_ratio( 8, 10 ) );
-                projectile.velocity.z = kf_fixed_mul( projectile.velocity.z, kf_fixed_from_ratio( 8, 10 ) );
+
                 continue;
             }
+
             if( hitWorld == true )
             {
                 const kf_vec3_t normal = worldHit.normal;

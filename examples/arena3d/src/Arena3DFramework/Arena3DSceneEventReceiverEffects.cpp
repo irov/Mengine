@@ -21,6 +21,11 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
+        constexpr float RAIL_TRAIL_DURATION = 1.5f;
+        constexpr float RAIL_TRAIL_MUZZLE_RIGHT = 0.38f;
+        constexpr float RAIL_TRAIL_MUZZLE_DOWN = 0.22f;
+        constexpr float RAIL_TRAIL_MUZZLE_FORWARD = 0.8f;
+        //////////////////////////////////////////////////////////////////////////
         static constexpr size_t weaponIndex( Arena3D::WeaponType _weapon )
         {
             return static_cast<size_t>(_weapon);
@@ -235,6 +240,134 @@ namespace Mengine
             return resource;
         }
         //////////////////////////////////////////////////////////////////////////
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Arena3DSceneEventReceiver::spawnRailTrail_( const Arena3D::ServerEvent & _event )
+    {
+        mt::vec3f start = Helper::kinefixVec3ToVec3f( _event.position );
+        mt::vec3f end = Helper::kinefixVec3ToVec3f( _event.endPosition );
+        mt::vec3f direction = end - start;
+        float length = mt::length_v3( direction );
+
+        if( length < StdMath::constant_eps )
+        {
+            return;
+        }
+
+        direction *= 1.f / length;
+
+        const Arena3D::PlayerState & localPlayer = this->localPlayer_( m_currentState );
+
+        if( _event.actorId == localPlayer.id )
+        {
+            mt::vec3f right( direction.z, 0.f, -direction.x );
+            float horizontalLength = mt::length_v3( right );
+
+            if( horizontalLength > StdMath::constant_eps )
+            {
+                right *= 1.f / horizontalLength;
+            }
+            else
+            {
+                right = {1.f, 0.f, 0.f};
+            }
+
+            mt::vec3f up;
+            mt::cross_v3_v3_norm( &up, direction, right );
+
+            float muzzleDistanceRatio = length / Detail::RAIL_TRAIL_MUZZLE_FORWARD;
+            float muzzleBlend = StdAlgorithm::min( 1.f, muzzleDistanceRatio );
+            start += (right * Detail::RAIL_TRAIL_MUZZLE_RIGHT - up * Detail::RAIL_TRAIL_MUZZLE_DOWN + direction * Detail::RAIL_TRAIL_MUZZLE_FORWARD) * muzzleBlend;
+
+            direction = end - start;
+            length = mt::length_v3( direction );
+        }
+
+        RailTrailVisualDesc * selected = nullptr;
+
+        for( RailTrailVisualDesc & trail : m_railTrails )
+        {
+            if( trail.active == false )
+            {
+                selected = &trail;
+
+                break;
+            }
+
+            if( selected == nullptr || trail.age > selected->age )
+            {
+                selected = &trail;
+            }
+        }
+
+        if( selected == nullptr )
+        {
+            return;
+        }
+
+        selected->age = 0.f;
+        selected->active = true;
+
+        mt::vec3f up = direction.x * direction.x + direction.z * direction.z > StdMath::constant_eps
+            ? mt::vec3f( 0.f, 1.f, 0.f )
+            : mt::vec3f( 0.f, 0.f, 1.f );
+
+        TransformationInterface * transformation = selected->node->getTransformation();
+        transformation->setLocalPosition( start );
+        transformation->setLocalScale( {length, 1.f, 1.f} );
+        transformation->setDirection( direction, up );
+
+        RenderInterface * render = selected->node->getRender();
+        render->setLocalAlpha( 1.f );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Arena3DSceneEventReceiver::updateRailTrails_( float _seconds )
+    {
+        m_visibleRailTrails = 0;
+
+        for( RailTrailVisualDesc & trail : m_railTrails )
+        {
+            if( trail.active == false )
+            {
+                continue;
+            }
+
+            trail.age += _seconds;
+            RenderInterface * render = trail.node->getRender();
+
+            if( trail.age >= Detail::RAIL_TRAIL_DURATION )
+            {
+                trail.active = false;
+                render->setLocalAlpha( 0.f );
+
+                continue;
+            }
+
+            float remaining = 1.f - trail.age / Detail::RAIL_TRAIL_DURATION;
+            float alpha = remaining * remaining;
+            render->setLocalAlpha( alpha );
+
+            ++m_visibleRailTrails;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Arena3DSceneEventReceiver::clearRailTrails_()
+    {
+        for( RailTrailVisualDesc & trail : m_railTrails )
+        {
+            trail.active = false;
+            trail.age = 0.f;
+
+            if( trail.node == nullptr )
+            {
+                continue;
+            }
+
+            RenderInterface * render = trail.node->getRender();
+            render->setLocalAlpha( 0.f );
+        }
+
+        m_visibleRailTrails = 0;
     }
     //////////////////////////////////////////////////////////////////////////
     void Arena3DSceneEventReceiver::spawnExplosionCloud_( const Arena3D::ServerEvent & _event )

@@ -2,11 +2,21 @@
 
 Arena3D is a self-contained Mengine 3D arena example. Gameplay runs in a 100 Hz fixed-point simulation which has no dependency on Mengine scene, rendering, sound, wall-clock time, or render FPS. Deterministic math and physics come from the pure C `kinefix` dependency. The Mengine framework can use either the in-process deterministic session or the same UDP client used by standalone bots against a dedicated authoritative server.
 
-The example targets macOS/Metal and Windows x64/DX11. Arena presentation and authoritative collision are generated as separate assets: collision stays a compact deterministic brush set, while the render arena uses denser chamfered geometry, twelve material chunks, world-scaled UVs, per-corner vertex colors, and independent stone, metal, emissive and hazard textures. Low-poly weapons, articulated turret modules, projectiles, pickups, textures, and WAV effects use the same procedural pipeline; Blender and external asset packs are not required.
+The example targets macOS/Metal and Windows x64/DX11. Its arena is generated offline from the downloaded **q3dm6ish_v2** map, a free retexture of aardappel's q3dm6ish by TRaK. The compiled BSP geometry, fourteen TRaK2 textures, original UV sets and 76 baked lightmaps are converted to material-separated GLB meshes and PNG atlases. Mengine samples the original lightmaps per pixel, including their shadows and light pools. The initial spawn overlooks the main hall. The three original jump-pad routes and spawn/item positions are adapted to Arena3D gameplay.
 
-Arena01 is an original multi-level layout inspired by the flow of classic arena shooters: a central atrium with twin stairs, asymmetric rail/armor balconies, a rocket bridge, three jump-pad routes, a damaging lava basin, and a real bottomless fall route backed by an authoritative kill volume. It does not contain copied Quake geometry, textures, or sounds.
+The map and textures are GPL-2.0-or-later content; see [the asset notices](content/third_party/q3dm6ish_v2/README.md), original author readme, license, and download hashes. No Quake III installation, Blender or external Python packages are required. The first CMake configuration downloads assets into the ignored `resources/.downloads` directory and verifies every SHA-256. Subsequent builds use the verified cache offline. Only source manifests and attribution are stored in Git; models, textures, the map, compiled BSP and generated resources must not be committed. Weapons, six ammunition types, the grenade projectile and armor use [OpenArena MD3 models and skins](content/third_party/openarena_models/README.md). The nailgun uses its machinegun model. The example animates weapon recoil, idle/walk motion, muzzle flashes, the separate machinegun barrel, floating/rotating pickups and airborne grenades. Actors, health packs, effects and sky are generated locally. Arbitrary Quake shader scripts and MD3 skeletal/frame animation are not interpreted at runtime.
+
+Rendering preserves the original slanted brush faces. The existing deterministic controller uses AABBs: axial brushes are exact, while bevels and ramps are sliced at quarter-unit intervals. This is a collision approximation, not a Quake BSP implementation. Changing the level also changes content CRCs, so earlier replays are incompatible.
 
 ## Quick start
+
+Download or repair the asset cache explicitly (also done by CMake configuration):
+
+```sh
+bash examples/arena3d/build/downloads/downloads.sh
+```
+
+On Windows run `examples\arena3d\build\downloads\downloads.bat`. Missing or changed files are downloaded to a temporary file and installed only after their hash matches the manifest.
 
 Headless core and replay tool:
 
@@ -65,6 +75,28 @@ bin/Mengine_Xcode_MacOS/Xcode/Debug/MacOSApplication.app/Contents/MacOS/MacOSApp
 
 Without `arena3d-server`, the application retains the local session mode.
 
+## MCP verification
+
+The example's `.mengine/mcp.json` points to the application produced by the existing macOS Debug build scripts. Run the Mengine-MCP server with this descriptor (or open `examples/arena3d` as its workspace), then use `app_launch` with `appId: "arena3d"`, `profileId: "macos-debug"`, and `mode: "hidden_render"`. Keep the client connected while calling `frame_capture`, `logs_read`, and virtual input tools; finish with `app_stop`. This native C++ example does not register a script handler. Use the direct `open` command above for an interactive window that should remain on screen.
+
+The importer checks run with:
+
+```sh
+python3 -m unittest discover -s examples/arena3d/tools -p 'test_arena3d_quake_map.py'
+python3 examples/arena3d/tools/arena3d_content.py check
+```
+
+Movement and weapon regression checks (map stairs up/down and step limits; Railgun click, trail endpoints, replay serialization, damage, wall occlusion, cooldown and optional charge; grenade drop, forward throw, wall bounce, fuse timing and snapshot determinism):
+
+```sh
+sh examples/arena3d/build/headless/build_headless.sh Debug
+ctest --test-dir examples/arena3d/solutions/headless/Debug --output-on-failure
+```
+
+Grenades separate from contacts, damp their bounces, and stop below a speed threshold on floors. Their fuse continues while resting. Railgun fires once on press with a one-second cooldown; a nonzero `charge_ticks` configuration can enable charging. Its blue-white trail stays in world space and fades over 1.5 seconds. The authoritative shot endpoint stops at the first wall and is preserved in network events and replays.
+
+The character steps over ledges up to 18 Quake units (0.5625 at the map's 1:32 scale), including the map's 16-unit stairs. Camera height uses a critically damped response to each rendered rise, preserving smooth upward motion across successive stairs even when several simulation ticks share a frame. Jump and fall movement retain their simulation trajectory. Simulation version 16, replay format 7 and network protocol 3 reject incompatible older recordings and peers.
+
 ## Controls
 
 | Input | Action |
@@ -73,7 +105,7 @@ Without `arena3d-server`, the application retains the local session mode.
 | Space | Jump / bunny-hop |
 | Left Ctrl | Crouch |
 | Mouse | Look |
-| Left mouse | Fire / charge |
+| Left mouse | Fire |
 | 1–6 | Nailgun, Rocket Launcher, Railgun, Plasmagun, Grenade Launcher, Shotgun |
 | Q / E | Previous / next weapon with available ammo |
 | Esc | Pause and release the mouse / resume and capture it again |
@@ -105,12 +137,12 @@ The authoritative order is commands → weapon timers → turret AI → player m
 Generated files are written to `resources/Data/generated` and intentionally ignored by Git:
 
 - indexed GLB meshes with embedded buffers, positions, hard normals, UV0, vertex colors, and indices;
-- independent `stone`, `metal`, and `emissive` arena chunk layers; decorative polygons never enter authoritative collision;
+- BSP material chunks with two UV sets; each texture atlas holds a repeating diffuse tile and the corresponding original lightmaps; sky and render-only entities do not enter authoritative collision;
 - pooled per-weapon impact flashes and generated scorch decals which follow the authoritative contact point and surface normal, then fade after 12 seconds;
-- 64×64 tile, hazard, emissive, and white PNGs;
+- losslessly converted TRaK2 PNGs at their original sizes, plus procedural actor/effect textures;
 - generated mono PCM WAV effects;
 - canonical config, level, and convex collision binaries with CRCs;
-- a generated C++ contract containing the exact Q16.16 config, binary-angle spawn/turret yaw, pickups, jump pads, hazard volumes, collision AABBs, and content CRCs.
+- generated C++ contracts describing material chunks and the exact Q16.16 config, spawn/turret yaw, pickups, jump pads, hazard volumes, collision AABBs, and content CRCs.
 
 See [CONTENT.md](docs/CONTENT.md) to extend arenas or weapons, [DETERMINISM.md](docs/DETERMINISM.md) for the math/replay contract, and [NETWORKING.md](docs/NETWORKING.md) for transport and process usage.
 

@@ -85,19 +85,52 @@ namespace Arena3D
             return output->size() == uncompressedSize;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool readEvent( CanonicalReader * reader, ServerEvent * event )
+        static bool readEvent( CanonicalReader * _reader, ServerEvent * _event )
         {
             uint8_t type = 0;
             uint8_t weapon = 0;
-            if( reader->readU64( &event->id ) == false || reader->readU64( &event->tick ) == false || reader->readU8( &type ) == false ||
-                reader->readU32( &event->actorId ) == false || reader->readU32( &event->targetId ) == false || reader->readU8( &weapon ) == false ||
-                reader->readVector( &event->position ) == false || reader->readI32( &event->amount ) == false ) return false;
+            if( _reader->readU64( &_event->id ) == false )
+            {
+                return false;
+            }
+            if( _reader->readU64( &_event->tick ) == false )
+            {
+                return false;
+            }
+            if( _reader->readU8( &type ) == false )
+            {
+                return false;
+            }
+            if( _reader->readU32( &_event->actorId ) == false )
+            {
+                return false;
+            }
+            if( _reader->readU32( &_event->targetId ) == false )
+            {
+                return false;
+            }
+            if( _reader->readU8( &weapon ) == false )
+            {
+                return false;
+            }
+            if( _reader->readVector( &_event->position ) == false )
+            {
+                return false;
+            }
+            if( _reader->readI32( &_event->amount ) == false )
+            {
+                return false;
+            }
+            if( _reader->readVector( &_event->endPosition ) == false )
+            {
+                return false;
+            }
             if( type > static_cast<uint8_t>(EventType::Impact) || weapon >= WeaponTypeCount )
             {
                 return false;
             }
-            event->type = static_cast<EventType>(type);
-            event->weapon = static_cast<WeaponType>(weapon);
+            _event->type = static_cast<EventType>(type);
+            _event->weapon = static_cast<WeaponType>(weapon);
             return true;
         }
         //////////////////////////////////////////////////////////////////////////

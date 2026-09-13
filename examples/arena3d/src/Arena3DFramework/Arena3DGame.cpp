@@ -1,8 +1,8 @@
 #include "Arena3DGame.h"
 
-#include "Arena3DSceneEventReceiver.h"
-
 #include "Interface/SceneServiceInterface.h"
+
+#include "Arena3DSceneEventReceiver.h"
 
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/DocumentHelper.h"
@@ -19,13 +19,20 @@ namespace Mengine
         Arena3DSceneEventReceiverPtr receiver = Helper::makeFactorableUnique<Arena3DSceneEventReceiver>( MENGINE_DOCUMENT_FACTORABLE );
         ScenePtr scene = Helper::makeScene( receiver, MENGINE_DOCUMENT_FACTORABLE );
         scene->setName( STRINGIZE_STRING_LOCAL( "Arena3DScene" ) );
-        SCENE_SERVICE()->setCurrentScene( scene, false, false, nullptr );
+        SCENE_SERVICE()
+            ->setCurrentScene( scene, false, false, nullptr );
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Arena3DGame::_finalizeGame()
     {
-        SCENE_SERVICE()->removeCurrentScene( true, nullptr );
+        // Bootstrapper may already have finalized SceneService during shutdown.
+        if( SERVICE_IS_INITIALIZE( SceneServiceInterface ) == false )
+        {
+            return;
+        }
+        SCENE_SERVICE()
+            ->removeCurrentScene( true, nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
 }

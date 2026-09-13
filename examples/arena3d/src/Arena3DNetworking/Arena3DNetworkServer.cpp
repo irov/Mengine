@@ -84,16 +84,19 @@ namespace Arena3D
             return output;
         }
         //////////////////////////////////////////////////////////////////////////
-        static void writeEvent( CanonicalWriter * writer, const ServerEvent & event )
+        static void writeEvent( CanonicalWriter * _writer, const ServerEvent & _event )
         {
-            writer->writeU64( event.id );
-            writer->writeU64( event.tick );
-            writer->writeU8( static_cast<uint8_t>(event.type) );
-            writer->writeU32( event.actorId );
-            writer->writeU32( event.targetId );
-            writer->writeU8( static_cast<uint8_t>(event.weapon) );
-            writer->writeVector( event.position );
-            writer->writeI32( event.amount );
+            _writer->writeU64( _event.id );
+            _writer->writeU64( _event.tick );
+            uint8_t type = static_cast<uint8_t>(_event.type);
+            _writer->writeU8( type );
+            _writer->writeU32( _event.actorId );
+            _writer->writeU32( _event.targetId );
+            uint8_t weapon = static_cast<uint8_t>(_event.weapon);
+            _writer->writeU8( weapon );
+            _writer->writeVector( _event.position );
+            _writer->writeI32( _event.amount );
+            _writer->writeVector( _event.endPosition );
         }
         //////////////////////////////////////////////////////////////////////////
     }

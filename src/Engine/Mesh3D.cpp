@@ -140,7 +140,9 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( m_programVariable, "mesh3d failed to create program variable" );
 
-        m_uniformUpload.assign( (4 + MENGINE_LIGHTING3D_UPLOAD_BLOCK_VEC4_COUNT) * 4u, 0.f );
+        constexpr uint32_t uniformVec4 = 4u + MENGINE_LIGHTING3D_UPLOAD_BLOCK_VEC4_COUNT + 1u;
+        constexpr uint32_t uniformFloats = uniformVec4 * 4u;
+        m_uniformUpload.assign( uniformFloats, 0.f );
 
         return true;
     }
@@ -200,7 +202,15 @@ namespace Mengine
         RENDER_SERVICE()
             ->packLighting3DUploadBlock( dst + 16 );
 
-        const uint32_t totalVec4 = 4u + MENGINE_LIGHTING3D_UPLOAD_BLOCK_VEC4_COUNT;
+        constexpr uint32_t colorOffset = (4u + MENGINE_LIGHTING3D_UPLOAD_BLOCK_VEC4_COUNT) * 4u;
+        Color color;
+        this->calcTotalColor( &color );
+        dst[colorOffset + 0] = color.getR();
+        dst[colorOffset + 1] = color.getG();
+        dst[colorOffset + 2] = color.getB();
+        dst[colorOffset + 3] = color.getA();
+
+        constexpr uint32_t totalVec4 = 4u + MENGINE_LIGHTING3D_UPLOAD_BLOCK_VEC4_COUNT + 1u;
 
         m_programVariable->setVertexVariables( "Mesh3DUniforms", 4u, dst, 4u, totalVec4 );
 

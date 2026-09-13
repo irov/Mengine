@@ -3,8 +3,8 @@
 
 The source JSON stores all simulation decimals as strings.  This tool converts
 them directly to Q16.16 and creates the low-poly GLB, PNG, WAV and canonical
-binary files consumed by the example.  No Blender installation or downloaded
-gameplay assets are required.
+binary files consumed by the example. Download the GPL Quake assets through
+the example's downloads target first; subsequent conversion works offline.
 """
 
 from __future__ import annotations
@@ -23,6 +23,9 @@ from decimal import Decimal, InvalidOperation, ROUND_DOWN
 from pathlib import Path
 from typing import Iterable, Sequence
 
+import arena3d_quake_map as quake
+import arena3d_quake_assets as assets
+
 
 FORMAT_VERSION = 2
 LEVEL_FORMAT_VERSION = 4
@@ -33,7 +36,10 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_SOURCE = ROOT / "content" / "arena3d_source.json"
 DEFAULT_OUTPUT = ROOT / "resources" / "Data" / "generated"
 WEAPON_NAMES = ("nailgun", "rocket", "railgun", "plasmagun", "grenade", "shotgun")
-ARENA_VISUAL_LAYERS = ("stone", "metal", "emissive")
+QUAKE_ROOT = ROOT / "resources" / ".downloads" / "q3dm6ish_v2"
+QUAKE_MAP = QUAKE_ROOT / "q3dm6ish_v2.map"
+MODEL_ROOT = ROOT / "resources" / ".downloads" / "openarena_models"
+NOTICES_ROOT = ROOT / "content" / "third_party"
 
 
 def fixed(value: str) -> int:
@@ -66,6 +72,7 @@ class Mesh:
     colors: list[tuple[float, float, float, float]] = field(default_factory=list)
     uvs: list[tuple[float, float]] = field(default_factory=list)
     indices: list[int] = field(default_factory=list)
+    lightmap_uvs: list[tuple[float, float]] = field(default_factory=list)
 
     def vertex(self, position: Sequence[float], normal: Sequence[float], color: Sequence[float], uv: Sequence[float]) -> int:
         index = len(self.positions)
@@ -119,25 +126,6 @@ def scale_color(color: Sequence[float], factor: float) -> tuple[float, float, fl
     return tuple(max(0.0, min(1.0, color[channel] * factor)) for channel in range(3)) + (float(color[3]),)
 
 
-def add_shaded_box(mesh: Mesh, center: Sequence[float], size: Sequence[float], color: Sequence[float], texture_density: float = 0.25) -> None:
-    cx, cy, cz = center
-    hx, hy, hz = (size[0] * 0.5, size[1] * 0.5, size[2] * 0.5)
-    faces = (
-        (((cx - hx, cy - hy, cz - hz), (cx - hx, cy + hy, cz - hz), (cx + hx, cy + hy, cz - hz), (cx + hx, cy - hy, cz - hz)), (0, 0, -1), (size[0], size[1]), 0.86),
-        (((cx + hx, cy - hy, cz + hz), (cx + hx, cy + hy, cz + hz), (cx - hx, cy + hy, cz + hz), (cx - hx, cy - hy, cz + hz)), (0, 0, 1), (size[0], size[1]), 0.94),
-        (((cx - hx, cy - hy, cz + hz), (cx - hx, cy + hy, cz + hz), (cx - hx, cy + hy, cz - hz), (cx - hx, cy - hy, cz - hz)), (-1, 0, 0), (size[2], size[1]), 0.78),
-        (((cx + hx, cy - hy, cz - hz), (cx + hx, cy + hy, cz - hz), (cx + hx, cy + hy, cz + hz), (cx + hx, cy - hy, cz + hz)), (1, 0, 0), (size[2], size[1]), 0.90),
-        (((cx - hx, cy + hy, cz - hz), (cx - hx, cy + hy, cz + hz), (cx + hx, cy + hy, cz + hz), (cx + hx, cy + hy, cz - hz)), (0, 1, 0), (size[0], size[2]), 1.08),
-        (((cx - hx, cy - hy, cz + hz), (cx - hx, cy - hy, cz - hz), (cx + hx, cy - hy, cz - hz), (cx + hx, cy - hy, cz + hz)), (0, -1, 0), (size[0], size[2]), 0.60),
-    )
-    coordinate_seed = int(round((cx + 64.0) * 8.0)) * 31 + int(round((cy + 16.0) * 8.0)) * 17 + int(round((cz + 64.0) * 8.0)) * 13
-    object_variation = ((coordinate_seed & 7) - 3) * 0.012
-    corner_variation = (-0.035, 0.015, 0.045, -0.010)
-    for points, normal, dimensions, face_factor in faces:
-        colors = tuple(scale_color(color, face_factor + object_variation + variation) for variation in corner_variation)
-        add_textured_quad(mesh, points, normal, colors, world_uvs(points, normal, texture_density))
-
-
 def add_chamfered_box_y(mesh: Mesh, center: Sequence[float], size: Sequence[float], bevel: float, color: Sequence[float], texture_density: float = 0.25) -> None:
     cx, cy, cz = center
     hx, hy, hz = (size[0] * 0.5, size[1] * 0.5, size[2] * 0.5)
@@ -173,97 +161,6 @@ def add_chamfered_box_y(mesh: Mesh, center: Sequence[float], size: Sequence[floa
         bottom_following = (cx + following[0], cy - hy, cz + following[1])
         add_triangle(mesh, (top_center, top_following, top_current), top_color)
         add_triangle(mesh, (bottom_center, bottom_current, bottom_following), bottom_color)
-
-
-def add_extruded_polygon_y(mesh: Mesh, footprint: Sequence[Sequence[float]], bottom: float, top: float, color: Sequence[float], texture_density: float = 0.25) -> None:
-    if len(footprint) < 3 or top <= bottom:
-        return
-    center_x = sum(point[0] for point in footprint) / len(footprint)
-    center_z = sum(point[1] for point in footprint) / len(footprint)
-    top_center = (center_x, top, center_z)
-    bottom_center = (center_x, bottom, center_z)
-    for index, current in enumerate(footprint):
-        following = footprint[(index + 1) % len(footprint)]
-        dx = following[0] - current[0]
-        dz = following[1] - current[1]
-        length = math.sqrt(dx * dx + dz * dz)
-        if length < 1e-8:
-            continue
-        normal = (dz / length, 0.0, -dx / length)
-        side_points = (
-            (current[0], bottom, current[1]), (current[0], top, current[1]),
-            (following[0], top, following[1]), (following[0], bottom, following[1]),
-        )
-        side_factor = 0.80 + 0.13 * max(0.0, normal[0]) + 0.08 * max(0.0, normal[2])
-        side_colors = tuple(scale_color(color, side_factor + variation) for variation in (-0.02, 0.015, 0.03, -0.01))
-        add_textured_quad(mesh, side_points, normal, side_colors, world_uvs(side_points, normal, texture_density))
-
-        top_current = (current[0], top, current[1])
-        top_following = (following[0], top, following[1])
-        bottom_current = (current[0], bottom, current[1])
-        bottom_following = (following[0], bottom, following[1])
-        add_textured_triangle(mesh, (top_center, top_following, top_current), (scale_color(color, 1.08),) * 3,
-            tuple((point[0] * texture_density, point[2] * texture_density) for point in (top_center, top_following, top_current)))
-        add_textured_triangle(mesh, (bottom_center, bottom_current, bottom_following), (scale_color(color, 0.58),) * 3,
-            tuple((point[0] * texture_density, point[2] * texture_density) for point in (bottom_center, bottom_current, bottom_following)))
-
-
-def add_wedge_z(mesh: Mesh, center_x: float, width: float, start_z: float, length: float, bottom: float, low_height: float, high_height: float, color: Sequence[float], texture_density: float = 0.25) -> None:
-    if width <= 0.0 or length <= 0.0 or high_height <= low_height:
-        return
-    x0 = center_x - width * 0.5
-    x1 = center_x + width * 0.5
-    z0 = start_z
-    z1 = start_z + length
-    a = (x0, bottom, z0)
-    b = (x1, bottom, z0)
-    c = (x0, bottom, z1)
-    d = (x1, bottom, z1)
-    al = (x0, bottom + low_height, z0)
-    bl = (x1, bottom + low_height, z0)
-    ch = (x0, bottom + high_height, z1)
-    dh = (x1, bottom + high_height, z1)
-    slope = high_height - low_height
-    top_length = math.sqrt(length * length + slope * slope)
-    top_normal = (0.0, length / top_length, -slope / top_length)
-    top_points = (al, ch, dh, bl)
-    add_textured_quad(mesh, top_points, top_normal, (scale_color(color, 1.06),) * 4, world_uvs(top_points, top_normal, texture_density))
-    add_textured_triangle(mesh, (a, c, ch), (scale_color(color, 0.76),) * 3, ((0.0, 0.0), (length * texture_density, 0.0), (length * texture_density, high_height * texture_density)))
-    add_textured_triangle(mesh, (a, ch, al), (scale_color(color, 0.82),) * 3, ((0.0, 0.0), (length * texture_density, high_height * texture_density), (0.0, low_height * texture_density)))
-    add_textured_triangle(mesh, (b, bl, dh), (scale_color(color, 0.92),) * 3, ((0.0, 0.0), (0.0, low_height * texture_density), (length * texture_density, high_height * texture_density)))
-    add_textured_triangle(mesh, (b, dh, d), (scale_color(color, 0.88),) * 3, ((0.0, 0.0), (length * texture_density, high_height * texture_density), (length * texture_density, 0.0)))
-    add_colored_quad(mesh, (a, al, bl, b), (0.0, 0.0, -1.0), (scale_color(color, 0.72),) * 4, (width * texture_density, low_height * texture_density))
-    add_colored_quad(mesh, (c, d, dh, ch), (0.0, 0.0, 1.0), (scale_color(color, 0.92),) * 4, (width * texture_density, high_height * texture_density))
-
-
-def add_arch_z(mesh: Mesh, center_x: float, spring_y: float, center_z: float, inner_radius: float, thickness: float, depth: float, segments: int, color: Sequence[float], texture_density: float = 0.25) -> None:
-    if inner_radius <= 0.0 or thickness <= 0.0 or depth <= 0.0 or segments < 3:
-        return
-    outer_radius = inner_radius + thickness
-    front_z = center_z - depth * 0.5
-    back_z = center_z + depth * 0.5
-    for segment in range(segments):
-        angle0 = math.pi * segment / segments
-        angle1 = math.pi * (segment + 1) / segments
-        cos0, sin0 = math.cos(angle0), math.sin(angle0)
-        cos1, sin1 = math.cos(angle1), math.sin(angle1)
-        inner0_front = (center_x + cos0 * inner_radius, spring_y + sin0 * inner_radius, front_z)
-        inner1_front = (center_x + cos1 * inner_radius, spring_y + sin1 * inner_radius, front_z)
-        outer0_front = (center_x + cos0 * outer_radius, spring_y + sin0 * outer_radius, front_z)
-        outer1_front = (center_x + cos1 * outer_radius, spring_y + sin1 * outer_radius, front_z)
-        inner0_back = (inner0_front[0], inner0_front[1], back_z)
-        inner1_back = (inner1_front[0], inner1_front[1], back_z)
-        outer0_back = (outer0_front[0], outer0_front[1], back_z)
-        outer1_back = (outer1_front[0], outer1_front[1], back_z)
-        face_uvs = ((angle0 * outer_radius * texture_density, 0.0), (angle0 * inner_radius * texture_density, thickness * texture_density),
-            (angle1 * inner_radius * texture_density, thickness * texture_density), (angle1 * outer_radius * texture_density, 0.0))
-        add_textured_quad(mesh, (outer0_front, inner0_front, inner1_front, outer1_front), (0.0, 0.0, -1.0), (scale_color(color, 0.94),) * 4, face_uvs)
-        add_textured_quad(mesh, (outer0_back, outer1_back, inner1_back, inner0_back), (0.0, 0.0, 1.0), (scale_color(color, 1.02),) * 4, face_uvs)
-        middle_angle = (angle0 + angle1) * 0.5
-        outer_normal = (math.cos(middle_angle), math.sin(middle_angle), 0.0)
-        inner_normal = (-outer_normal[0], -outer_normal[1], 0.0)
-        add_colored_quad(mesh, (outer0_front, outer1_front, outer1_back, outer0_back), outer_normal, (scale_color(color, 0.88),) * 4, ((angle1 - angle0) * outer_radius * texture_density, depth * texture_density))
-        add_colored_quad(mesh, (inner0_back, inner1_back, inner1_front, inner0_front), inner_normal, (scale_color(color, 0.72),) * 4, ((angle1 - angle0) * inner_radius * texture_density, depth * texture_density))
 
 
 def add_cylinder(mesh: Mesh, center: Sequence[float], radius: float, height: float, sides: int, color: Sequence[float]) -> None:
@@ -410,6 +307,11 @@ def write_glb(path: Path, mesh: Mesh) -> None:
     normal = append(mesh.normals, 3, "VEC3", 34962)
     color = append(mesh.colors, 4, "VEC4", 34962)
     uv = append(mesh.uvs, 2, "VEC2", 34962)
+    attributes = {"POSITION": pos, "NORMAL": normal, "COLOR_0": color, "TEXCOORD_0": uv}
+    if mesh.lightmap_uvs:
+        if len(mesh.lightmap_uvs) != len(mesh.positions):
+            raise ValueError("missing lightmap coordinates")
+        attributes["TEXCOORD_1"] = append(mesh.lightmap_uvs, 2, "VEC2", 34962)
     align4(binary)
     index_offset = len(binary)
     binary.extend(struct.pack(f"<{len(mesh.indices)}I", *mesh.indices))
@@ -423,7 +325,7 @@ def write_glb(path: Path, mesh: Mesh) -> None:
         "buffers": [{"byteLength": len(binary)}],
         "bufferViews": views,
         "accessors": accessors,
-        "meshes": [{"name": path.stem, "primitives": [{"attributes": {"POSITION": pos, "NORMAL": normal, "COLOR_0": color, "TEXCOORD_0": uv}, "indices": index_accessor, "mode": 4}]}],
+        "meshes": [{"name": path.stem, "primitives": [{"attributes": attributes, "indices": index_accessor, "mode": 4}]}],
         "nodes": [{"mesh": 0}],
         "scenes": [{"nodes": [0]}],
         "scene": 0,
@@ -477,273 +379,90 @@ def write_tone(path: Path, frequency: float, duration: float, decay: float = 4.0
 
 
 def arena_collision() -> list[tuple[int, tuple[float, float, float], tuple[float, float, float]]]:
-    brushes: list[tuple[int, tuple[float, float, float], tuple[float, float, float]]] = []
-
-    def solid(center: tuple[float, float, float], size: tuple[float, float, float]) -> None:
-        brushes.append((len(brushes) + 1, center, size))
-
-    def stairs_z(x: float, start_z: float, count: int, direction: float = 1.0) -> None:
-        depth = 0.62
-        rise = 0.25
-        for index in range(count):
-            top = rise * (index + 1)
-            z = start_z + direction * depth * index
-            solid((x, top * 0.5, z), (2.8, top, depth + 0.04))
-
-    # Collision is authored independently from presentation. Keep it simple,
-    # stable and conservative even when the visible architecture is rebuilt.
-    solid((0, -0.5, -20), (63, 1, 24))
-    solid((-22, -0.5, 8), (20, 1, 32))
-    solid((0, -0.5, 0), (24, 1, 16))
-    solid((22, -0.5, -2), (20, 1, 12))
-    solid((22, -0.5, 18), (20, 1, 12))
-    solid((0, -0.5, 28), (63, 1, 8))
-    solid((22, -3.0, 8), (20, 1, 8))
-
-    for x in (-16, 16):
-        solid((x, 6, -32), (32, 12, 1))
-        solid((x, 6, 32), (32, 12, 1))
-    for z in (-16, 16):
-        solid((-32, 6, z), (1, 12, 32))
-        solid((32, 6, z), (1, 12, 32))
-    solid((-12, 2.0, 16), (1, 4, 16))
-    solid((12, 2.0, 8), (1, 4, 16))
-    solid((12, 2.0, 20), (1, 4, 8))
-    solid((0, 1.5, -8), (13, 3, 1))
-
-    stairs_z(-7.2, -5.8, 16)
-    stairs_z(7.2, -5.8, 16)
-    solid((0, 3.75, 14), (10, 0.5, 20))
-    solid((-5.5, 2.0, 14), (1, 4, 20))
-    solid((5.5, 2.0, 14), (1, 4, 20))
-
-    solid((-24, 5.75, 13), (14, 0.5, 18))
-    solid((-30.5, 3.0, 13), (1, 6, 18))
-    solid((22, 4.75, 18), (18, 0.5, 12))
-    solid((0, 4.75, -11), (24, 0.5, 4))
-    solid((-18, 4.75, -11), (12, 0.5, 4))
-    solid((18, 4.75, -11), (12, 0.5, 4))
-
-    for x, z in ((-10, -10), (10, -10), (-9, -17), (9, -17), (-20, -2), (20, -2), (-20, 24), (20, 24)):
-        cover_size = 4.0 if (x, z) in ((-10, -10), (10, -10)) else 3.5
-        solid((x, 1.25, z), (cover_size, 2.5, cover_size))
-    for x in (-4, 4):
-        solid((x, 2.0, 12), (1.2, 4, 1.2))
-    for x in (-28, -20):
-        solid((x, 3.0, 7), (1, 6, 1))
-    for x in (16, 28):
-        solid((x, 2.5, 17), (1, 5, 1))
-
+    brushes = []
+    for entity in quake.read_map(QUAKE_MAP):
+        if entity.properties["classname"] not in ("worldspawn", "func_group"):
+            continue
+        for brush in entity.brushes:
+            if any(face.texture == "trak2/bigorbit" for face in brush.faces):
+                continue
+            for minimum, maximum in quake.collision_boxes(brush):
+                a, b = quake.world(minimum), quake.world(maximum)
+                center = tuple(round((a[i] + b[i]) * 0.5, 6) for i in range(3))
+                size = tuple(round(abs(b[i] - a[i]), 6) for i in range(3))
+                brushes.append((len(brushes) + 1, center, size))
     return brushes
 
 
-def arena_mesh(level: dict) -> tuple[Mesh, dict[str, list[Mesh]]]:
-    mesh = Mesh()
-    layers = {name: [Mesh() for _ in range(4)] for name in ARENA_VISUAL_LAYERS}
-    floor = (0.66, 0.69, 0.74, 1.0)
-    wall = (0.74, 0.76, 0.80, 1.0)
-    dark_stone = (0.34, 0.40, 0.48, 1.0)
-    blue_stone = (0.42, 0.52, 0.62, 1.0)
-    cover = (0.28, 0.58, 0.62, 1.0)
-    stair = (0.68, 0.44, 0.19, 1.0)
-    metal = (0.62, 0.69, 0.76, 1.0)
-    dark_metal = (0.27, 0.34, 0.42, 1.0)
-    glow = (0.15, 1.0, 0.82, 1.0)
+def arena_mesh(output: Path) -> tuple[Mesh, dict[str, list[Mesh]]]:
+    bsp = assets.read_bsp(QUAKE_ROOT / "q3dm6ish_v2.bsp")
+    mesh, layers = Mesh(), {}
+    for shader_index, shader in enumerate(bsp.shaders):
+        name = shader.rsplit("/", 1)[-1]
+        if not name.startswith("trak2_"):
+            continue
+        faces = [face for face in bsp.faces if face[0] == shader_index]
+        pages = sorted({face[7] for face in faces if face[7] >= 0})
+        # One image holds the repeating albedo tile and this material's original
+        # BSP lightmaps. Both UV sets sample it; Mesh3D needs no extra sampler.
+        height = 1 << (512 + ((len(pages) + 3) // 4) * 128 - 1).bit_length()
+        pixels = bytearray(512 * height * 4)
+        width, source_height, source = quake.read_tga(QUAKE_ROOT / "textures" / f"{name}.tga")
+        for y in range(512):
+            for x in range(512):
+                sx, sy = int(((x - 1) % 510) * width / 510), int(((y - 1) % 510) * source_height / 510)
+                offset = (sy * width + sx) * 4
+                pixels[(y * 512 + x) * 4:(y * 512 + x + 1) * 4] = source[offset:offset + 3] + b"\xff"
+        for slot, page in enumerate(pages):
+            lm = bsp.lightmaps[page]
+            for y in range(128):
+                for x in range(128):
+                    dst = ((512 + slot // 4 * 128 + y) * 512 + slot % 4 * 128 + x) * 4
+                    src = (y * 128 + x) * 3
+                    pixels[dst:dst + 4] = (b"\xff" * 3 if name.startswith("trak2_light") else lm[src:src + 3]) + b"\xff"
+        write_png(output / "textures" / f"{name}.png", 512, height, pixels)
+        layers[name] = [Mesh() for _ in range(4)]
+        for face in faces:
+            vertices = bsp.vertices[face[3]:face[3] + face[4]]
+            center = quake.world(tuple(sum(v[i] for v in vertices) / len(vertices) for i in range(3)))
+            chunk = (1 if center[0] >= 0 else 0) + (2 if center[2] >= 0 else 0)
+            target = layers[name][chunk]
+            for destination in (mesh, target):
+                base = len(destination.positions)
+                for vertex in vertices:
+                    normal = (vertex[7], vertex[9], -vertex[8])
+                    destination.vertex(quake.world(vertex[:3]), normal, (1, 1, 1, 1), vertex[3:5])
+                    slot = pages.index(face[7]) if face[7] >= 0 else 0
+                    uv = ((slot % 4 * 128 + vertex[5] * 128) / 512,
+                          (512 + slot // 4 * 128 + vertex[6] * 128) / height)
+                    destination.lightmap_uvs.append(uv)
+                for i in range(face[5], face[5] + face[6], 3):
+                    # BSP clockwise winding becomes Mengine's outward winding.
+                    destination.indices.extend(base + bsp.indices[j] for j in (i, i + 2, i + 1))
+    return mesh, dict(sorted(layers.items()))
 
-    def chunk_index(center: Sequence[float]) -> int:
-        return (1 if center[0] >= 0 else 0) + (2 if center[2] >= 0 else 0)
 
-    def visual_box(layer: str, center: tuple[float, float, float], size: tuple[float, float, float], color: tuple[float, float, float, float], texture_density: float = 0.25) -> None:
-        add_shaded_box(mesh, center, size, color, texture_density)
-        add_shaded_box(layers[layer][chunk_index(center)], center, size, color, texture_density)
-
-    def visual_chamfered_box(layer: str, center: tuple[float, float, float], size: tuple[float, float, float], bevel: float, color: tuple[float, float, float, float]) -> None:
-        add_chamfered_box_y(mesh, center, size, bevel, color)
-        add_chamfered_box_y(layers[layer][chunk_index(center)], center, size, bevel, color)
-
-    def visual_cylinder(layer: str, center: tuple[float, float, float], radius: float, height: float, sides: int, color: tuple[float, float, float, float]) -> None:
-        add_cylinder(mesh, center, radius, height, sides, color)
-        add_cylinder(layers[layer][chunk_index(center)], center, radius, height, sides, color)
-
-    def visual_cylinder_z(layer: str, center: tuple[float, float, float], radius: float, length: float, sides: int, color: tuple[float, float, float, float]) -> None:
-        add_cylinder_z(mesh, center, radius, length, sides, color)
-        add_cylinder_z(layers[layer][chunk_index(center)], center, radius, length, sides, color)
-
-    def visual_prism(layer: str, footprint: Sequence[Sequence[float]], bottom: float, top: float, color: tuple[float, float, float, float], texture_density: float = 0.25) -> None:
-        center = (sum(point[0] for point in footprint) / len(footprint), (bottom + top) * 0.5, sum(point[1] for point in footprint) / len(footprint))
-        add_extruded_polygon_y(mesh, footprint, bottom, top, color, texture_density)
-        add_extruded_polygon_y(layers[layer][chunk_index(center)], footprint, bottom, top, color, texture_density)
-
-    def visual_wedge_z(layer: str, center_x: float, width: float, start_z: float, length: float, bottom: float, low_height: float, high_height: float, color: tuple[float, float, float, float]) -> None:
-        center = (center_x, bottom + high_height * 0.5, start_z + length * 0.5)
-        add_wedge_z(mesh, center_x, width, start_z, length, bottom, low_height, high_height, color, 0.4)
-        add_wedge_z(layers[layer][chunk_index(center)], center_x, width, start_z, length, bottom, low_height, high_height, color, 0.4)
-
-    def visual_arch_z(layer: str, center_x: float, spring_y: float, center_z: float, inner_radius: float, thickness: float, depth: float, segments: int, color: tuple[float, float, float, float]) -> None:
-        center = (center_x, spring_y + inner_radius, center_z)
-        add_arch_z(mesh, center_x, spring_y, center_z, inner_radius, thickness, depth, segments, color, 0.5)
-        add_arch_z(layers[layer][chunk_index(center)], center_x, spring_y, center_z, inner_radius, thickness, depth, segments, color, 0.5)
-
-    def regular_polygon(center_x: float, center_z: float, radius: float, sides: int, rotation: float = math.pi / 8.0) -> tuple[tuple[float, float], ...]:
-        return tuple((center_x + math.cos(rotation + side * math.tau / sides) * radius,
-            center_z + math.sin(rotation + side * math.tau / sides) * radius) for side in range(sides))
-
-    def oriented_rectangle(center_x: float, center_z: float, half_length: float, half_width: float, angle: float) -> tuple[tuple[float, float], ...]:
-        forward = (math.cos(angle), math.sin(angle))
-        side = (-forward[1], forward[0])
-        return tuple((center_x + forward[0] * along * half_length + side[0] * across * half_width,
-            center_z + forward[1] * along * half_length + side[1] * across * half_width)
-            for along, across in ((-1.0, -1.0), (1.0, -1.0), (1.0, 1.0), (-1.0, 1.0)))
-
-    def stairs_z(x: float, start_z: float, count: int, direction: float = 1.0) -> None:
-        depth = 0.62
-        rise = 0.25
-        for index in range(count):
-            top = rise * (index + 1)
-            z = start_z + direction * depth * index
-            visual_box("stone", (x, top * 0.5, z), (2.8, top, depth + 0.04), stair, 0.55)
-            visual_box("metal", (x, top - 0.045, z + direction * depth * 0.47), (2.86, 0.09, 0.11), metal, 1.4)
-        if direction > 0.0:
-            start_edge = start_z - depth * 0.52
-            total_length = depth * count + 0.04
-            for side_x in (x - 1.52, x + 1.52):
-                visual_wedge_z("metal", side_x, 0.22, start_edge, total_length, 0.0, 0.18, rise * count + 0.18, dark_metal)
-
-    # The presentation shell deliberately does not emit collision. UV density
-    # is based on world dimensions, so long walls tile instead of stretching a
-    # single square across the entire face.
-    visual_box("stone", (0, -0.5, -20), (63, 1, 24), floor)
-    visual_box("stone", (-22, -0.5, 8), (20, 1, 32), floor)
-    visual_box("stone", (0, -0.5, 0), (24, 1, 16), floor)
-    visual_box("stone", (22, -0.5, -2), (20, 1, 12), floor)
-    visual_box("stone", (22, -0.5, 18), (20, 1, 12), floor)
-    visual_box("stone", (0, -0.5, 28), (63, 1, 8), floor)
-    visual_box("metal", (22, -3.0, 8), (20, 1, 8), dark_metal)
-
-    for x in (-16, 16):
-        visual_box("stone", (x, 6, -32), (32, 12, 1), wall)
-        visual_box("stone", (x, 6, 32), (32, 12, 1), wall)
-    for z in (-16, 16):
-        visual_box("stone", (-32, 6, z), (1, 12, 32), wall)
-        visual_box("stone", (32, 6, z), (1, 12, 32), wall)
-    visual_box("stone", (-12, 2.0, 16), (1, 4, 16), wall)
-    visual_box("stone", (12, 2.0, 8), (1, 4, 16), wall)
-    visual_box("stone", (12, 2.0, 20), (1, 4, 8), wall)
-    visual_box("metal", (0, 1.5, -8), (13, 3, 1), dark_metal)
-
-    stairs_z(-7.2, -5.8, 16)
-    stairs_z(7.2, -5.8, 16)
-    visual_box("stone", (0, 3.75, 14), (10, 0.5, 20), wall)
-    visual_box("metal", (-5.5, 2.0, 14), (1, 4, 20), dark_metal)
-    visual_box("metal", (5.5, 2.0, 14), (1, 4, 20), dark_metal)
-
-    visual_box("stone", (-24, 5.75, 13), (14, 0.5, 18), wall)
-    visual_box("metal", (-30.5, 3.0, 13), (1, 6, 18), dark_metal)
-    visual_box("stone", (22, 4.75, 18), (18, 0.5, 12), wall)
-    visual_box("stone", (0, 4.75, -11), (24, 0.5, 4), wall)
-    visual_box("stone", (-18, 4.75, -11), (12, 0.5, 4), wall)
-    visual_box("stone", (18, 4.75, -11), (12, 0.5, 4), wall)
-
-    # Central courtyard art pass. Thin nested octagons and radial emissive
-    # markers sit on the existing floor brush, so the authoritative surface
-    # and movement remain unchanged while the room gains a readable landmark.
-    visual_prism("stone", regular_polygon(0.0, -18.0, 6.4, 8), 0.004, 0.026, dark_stone, 0.55)
-    visual_prism("metal", regular_polygon(0.0, -18.0, 5.72, 8), 0.026, 0.046, dark_metal, 0.8)
-    visual_prism("stone", regular_polygon(0.0, -18.0, 5.12, 8), 0.046, 0.064, blue_stone, 0.65)
-    for marker in range(8):
-        angle = marker * math.tau / 8.0
-        marker_x = math.cos(angle) * 4.64
-        marker_z = -18.0 + math.sin(angle) * 4.64
-        visual_prism("emissive", oriented_rectangle(marker_x, marker_z, 0.58, 0.075, angle), 0.064, 0.084, glow, 1.0)
-
-    # The upper route is framed as a stone portal rather than a rectangular
-    # tunnel mouth. Its pillars cover the existing side-wall brushes and the
-    # repeated metal ribs live entirely above the playable corridor.
-    visual_chamfered_box("stone", (-5.10, 2.0, 4.15), (0.80, 4.0, 1.18), 0.16, blue_stone)
-    visual_chamfered_box("stone", (5.10, 2.0, 4.15), (0.80, 4.0, 1.18), 0.16, blue_stone)
-    for pillar_x in (-5.10, 5.10):
-        visual_chamfered_box("metal", (pillar_x, 0.18, 4.15), (1.10, 0.36, 1.44), 0.18, dark_metal)
-        visual_chamfered_box("metal", (pillar_x, 3.86, 4.15), (1.12, 0.28, 1.42), 0.18, metal)
-    visual_arch_z("stone", 0.0, 4.0, 4.15, 4.70, 0.80, 0.68, 14, blue_stone)
-    for rib_z in (8.0, 13.2, 18.4, 23.2):
-        visual_arch_z("metal", 0.0, 4.0, rib_z, 4.82, 0.18, 0.16, 14, metal)
-        visual_box("emissive", (0.0, 9.00, rib_z - 0.10), (1.30, 0.10, 0.06), glow, 1.2)
-
-    # Structural layers below the upper platform keep the broad collision slab
-    # but visually turn it into a supported bridge.
-    for beam_z in (5.2, 9.4, 13.6, 17.8, 22.0):
-        visual_chamfered_box("metal", (0.0, 3.44, beam_z), (10.5, 0.22, 0.34), 0.08, dark_metal)
-    for pillar_x in (-4.0, 4.0):
-        visual_chamfered_box("stone", (pillar_x, 0.16, 12.0), (1.55, 0.32, 1.55), 0.28, dark_stone)
-        visual_chamfered_box("stone", (pillar_x, 3.82, 12.0), (1.48, 0.28, 1.48), 0.24, blue_stone)
-
-    # The solid central barrier becomes a reactor facade. Every protruding part
-    # remains inside or directly against its existing collision box.
-    for tower_x in (-5.72, 5.72):
-        visual_chamfered_box("metal", (tower_x, 1.50, -8.0), (1.25, 3.35, 1.34), 0.22, dark_metal)
-        visual_box("emissive", (tower_x, 1.52, -8.69), (0.22, 1.65, 0.05), glow, 1.0)
-    visual_cylinder_z("metal", (0.0, 1.50, -8.59), 1.62, 0.18, 16, dark_metal)
-    visual_cylinder_z("metal", (0.0, 1.50, -8.70), 1.28, 0.08, 16, metal)
-    visual_cylinder_z("emissive", (0.0, 1.50, -8.76), 0.92, 0.055, 16, glow)
-    for reactor_x in (-3.55, 3.55):
-        visual_box("metal", (reactor_x, 1.5, -8.69), (1.65, 0.20, 0.08), metal, 1.2)
-        visual_box("emissive", (reactor_x, 1.5, -8.75), (0.82, 0.07, 0.035), glow, 1.2)
-
-    # Covers use chamfered presentation meshes while collision stays a cheap
-    # conservative box. Pillars are twelve-sided visually but retain AABBs in
-    # the deterministic world.
-    for x, z in ((-10, -10), (10, -10), (-9, -17), (9, -17), (-20, -2), (20, -2), (-20, 24), (20, 24)):
-        cover_size = 4.0 if (x, z) in ((-10, -10), (10, -10)) else 3.5
-        visual_chamfered_box("stone", (x, 1.25, z), (cover_size, 2.5, cover_size), 0.42, cover)
-        visual_box("metal", (x, 2.38, z), (cover_size * 0.72, 0.14, cover_size * 0.72), metal, 1.25)
-    for x in (-4, 4):
-        visual_cylinder("metal", (x, 2.0, 12), 0.6, 4, 12, dark_metal)
-    for x in (-28, -20):
-        visual_cylinder("metal", (x, 3.0, 7), 0.5, 6, 12, dark_metal)
-    for x in (16, 28):
-        visual_cylinder("metal", (x, 2.5, 17), 0.5, 5, 12, dark_metal)
-
-    # Non-colliding architectural detail: wall ribs, platform edge beams and
-    # luminous navigation panels. These add silhouette and surface variation
-    # without changing movement, sweeps or replay CRCs.
-    for z, inner_z in ((-32, -31.45), (32, 31.45)):
-        for x in (-16, 16):
-            for y in (2.25, 7.75):
-                visual_box("metal", (x, y, inner_z), (30.5, 0.20, 0.10), metal, 1.5)
-            visual_chamfered_box("stone", (x, 9.55, inner_z), (31.0, 0.62, 0.48), 0.18, blue_stone)
-            for offset in (-12, -6, 0, 6, 12):
-                visual_chamfered_box("stone", (x + offset, 5.0, inner_z), (0.64, 8.65, 0.46), 0.15, dark_stone)
-                visual_box("metal", (x + offset, 5.0, inner_z - (0.06 if inner_z > 0.0 else -0.06)), (0.16, 6.25, 0.10), metal, 1.5)
-            for offset in (-9, -3, 3, 9):
-                visual_chamfered_box("metal", (x + offset, 5.0, inner_z), (4.65, 3.65, 0.16), 0.18, dark_metal)
-    for x, inner_x in ((-32, -31.45), (32, 31.45)):
-        for z in (-16, 16):
-            for y in (2.25, 7.75):
-                visual_box("metal", (inner_x, y, z), (0.10, 0.20, 30.5), metal, 1.5)
-            visual_chamfered_box("stone", (inner_x, 9.55, z), (0.48, 0.62, 31.0), 0.18, blue_stone)
-            for offset in (-12, -6, 0, 6, 12):
-                visual_chamfered_box("stone", (inner_x, 5.0, z + offset), (0.46, 8.65, 0.64), 0.15, dark_stone)
-                visual_box("metal", (inner_x - (0.06 if inner_x > 0.0 else -0.06), 5.0, z + offset), (0.10, 6.25, 0.16), metal, 1.5)
-            for offset in (-9, -3, 3, 9):
-                visual_chamfered_box("metal", (inner_x, 5.0, z + offset), (0.16, 3.65, 4.65), 0.18, dark_metal)
-
-    for center, size in (
-        ((-4.92, 3.78, 14), (0.16, 0.20, 19.4)), ((4.92, 3.78, 14), (0.16, 0.20, 19.4)),
-        ((-24, 5.79, 4.08), (13.4, 0.18, 0.16)), ((-24, 5.79, 21.92), (13.4, 0.18, 0.16)),
-        ((22, 4.79, 12.08), (17.4, 0.18, 0.16)), ((22, 4.79, 23.92), (17.4, 0.18, 0.16)),
-    ):
-        visual_box("metal", center, size, metal, 1.5)
-
-    for x, z in ((-20, -20), (20, -20), (-20, 24), (20, 24)):
-        visual_box("emissive", (x, 0.025, z), (5.0, 0.05, 0.16), glow, 1.0)
-    for x, z in ((-16, -31.38), (16, -31.38), (-16, 31.38), (16, 31.38)):
-        visual_box("emissive", (x, 4.5, z), (3.6, 0.55, 0.08), glow, 1.0)
-
-    for pad in level["jump_pads"]:
-        position = tuple(float(component) for component in pad["position"])
-        size = tuple(float(component) for component in pad["size"])
-        visual_chamfered_box("emissive", (position[0], position[1] + 0.04, position[2]), (size[0], 0.08, size[2]), 0.22, glow)
-    return mesh, layers
+def write_visual_header(path: Path, layers: dict[str, list[Mesh]], has_lava: bool, level_name: str) -> None:
+    lines = [
+        "#pragma once", "", '#include "Config/Char.h"', "", "namespace Arena3DGenerated", "{",
+        "    //////////////////////////////////////////////////////////////////////////",
+        "    struct ArenaMaterialDesc", "    {",
+        "        const Mengine::Char * name;", "        const Mengine::Char * texture;",
+        "        const Mengine::Char * meshes[4];", "    };",
+        "    //////////////////////////////////////////////////////////////////////////",
+        "    inline constexpr ArenaMaterialDesc ARENA_MATERIALS[] =", "    {",
+    ]
+    for name, chunks in layers.items():
+        meshes = [f'"generated/models/arena01/{name}_chunk_{i}.glb"' if chunk.indices else "nullptr" for i, chunk in enumerate(chunks)]
+        lines.append(f'        {{"{name}", "generated/textures/{name}.png", {{{", ".join(meshes)}}}}},')
+    lines.extend([
+        "    };", "    //////////////////////////////////////////////////////////////////////////",
+        f"    inline constexpr bool HAS_LAVA = {'true' if has_lava else 'false'};",
+        f'    inline constexpr const Mengine::Char * LEVEL_NAME = {json.dumps(level_name)};',
+        "    //////////////////////////////////////////////////////////////////////////", "}", "",
+    ])
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("\n".join(lines), encoding="utf-8")
 
 
 def lava_mesh(level: dict) -> Mesh:
@@ -798,24 +517,105 @@ def sky_mesh() -> Mesh:
     return mesh
 
 
-def weapon_mesh(name: str) -> Mesh:
-    palette = {
-        "nailgun": (0.45, 0.75, 0.95, 1), "rocket": (0.95, 0.35, 0.12, 1),
-        "railgun": (0.65, 0.25, 0.95, 1), "plasmagun": (0.10, 0.95, 0.70, 1),
-        "grenade": (0.55, 0.75, 0.20, 1), "shotgun": (0.95, 0.70, 0.20, 1),
-    }
+# MD3 material stages are flattened to their diffuse skins. Environment-map
+# passes remain a presentation approximation; transparent glass/laser overlays
+# are omitted, while the rail energy surface retains its source texture.
+WEAPON_MODELS = {
+    'nailgun': ('machinegun/machinegun', ('machinegun/mgun', 'machinegun/sight')),
+    'rocket': ('rocketl/rocketl', ('rocketl/skin',)),
+    'railgun': ('railgun/railgun', ('railgun/skin', 'railgun/scrolly', None)),
+    'plasmagun': ('plasma/plasma', ('plasma/skin',)),
+    'grenade': ('grenadel/grenadel', ('grenadel/newgren',)),
+    'shotgun': ('shotgun/shotgun', ('shotgun/shotgun', None)),
+}
+AMMO_MODELS = ('machinegunam', 'rocketam', 'railgunam', 'plasmaam', 'grenadeam', 'shotgunam')
+AMMO_SKINS = ('machammo2', 'rockammo2', 'railammo2', 'plasammo2', 'grenammo2', 'shotammo2')
+
+
+def imported_model(path: Path, skins, output: Path, centered: bool = False):
+    surfaces, tags = assets.read_md3(path)
+    if len(skins) != len(surfaces):
+        raise ValueError(f'material count differs: {path}')
+    height = 512 * (1 << (len(skins) - 1).bit_length())
+    pixels = bytearray(512 * height * 4)
     mesh = Mesh()
-    color = palette[name]
-    add_box(mesh, (0, 0, 0), (0.55, 0.38, 1.4), color)
-    add_box(mesh, (0, -0.28, -0.2), (0.3, 0.65, 0.35), (0.16, 0.18, 0.22, 1))
-    if name in ("rocket", "railgun", "plasmagun"):
-        add_cylinder_z(mesh, (0, 0.08, 0.9), 0.18 if name != "railgun" else 0.11, 0.9, 8, color)
-    elif name == "shotgun":
-        for x in (-0.13, 0.13):
-            add_cylinder_z(mesh, (x, 0.08, 0.9), 0.09, 0.9, 8, color)
-    else:
-        add_box(mesh, (0, 0.06, 0.8), (0.18, 0.18, 0.8), color)
-    return mesh
+    for slot, (surface, skin) in enumerate(zip(surfaces, skins)):
+        if skin is None:
+            continue
+        width, source_height, source = quake.read_tga(MODEL_ROOT / f'{skin}.tga')
+        for y in range(512):
+            sy = min(source_height - 1, int(y * source_height / 512))
+            for x in range(512):
+                sx = min(width - 1, int(x * width / 512))
+                source_offset = (sy * width + sx) * 4
+                destination = ((slot * 512 + y) * 512 + x) * 4
+                alpha = source[source_offset + 3] if skin.endswith('/sight') else 255
+                pixels[destination:destination + 4] = source[source_offset:source_offset + 3] + bytes((alpha,))
+        base = len(mesh.positions)
+        for point, normal, uv in zip(surface.positions, surface.normals, surface.uvs):
+            lighting = (1, 1, 1, 1)
+            if 'energy' in surface.shader:
+                lighting = (0.55, 0.8, 1, 1)
+            mesh.vertex(point, normal, lighting, (max(0.001, min(0.999, uv[0])), (slot * 512 + max(0.5, min(511.5, uv[1] * 512))) / height))
+        for triangle in surface.triangles:
+            # MD3 model winding already agrees with its outward vertex normals.
+            mesh.indices.extend(base + i for i in triangle)
+    if centered:
+        center = tuple((min(p[i] for p in mesh.positions) + max(p[i] for p in mesh.positions)) * 0.5 for i in range(3))
+        mesh.positions = [tuple(p[i] - center[i] for i in range(3)) for p in mesh.positions]
+    write_png(output, 512, height, pixels)
+    return mesh, tags
+
+
+def build_models(output: Path) -> None:
+    muzzle_tags = []
+    barrel_tag = None
+    for name, (model, skins) in WEAPON_MODELS.items():
+        mesh, tags = imported_model(MODEL_ROOT / f'models/weapons2/{model}.md3',
+            tuple(f'models/weapons2/{s}' if s else None for s in skins), output / 'textures' / f'weapon_{name}.png')
+        write_glb(output / 'models' / 'weapons' / f'{name}.glb', mesh)
+        muzzle_tags.append(tags['tag_flash'][0])
+        if name == 'nailgun':
+            barrel_tag = tags['tag_barrel'][0]
+    barrel, _ = imported_model(MODEL_ROOT / 'models/weapons2/machinegun/machinegun_barrel.md3',
+        ('models/weapons2/machinegun/mgun',), output / 'textures' / 'barrel.png')
+    write_glb(output / 'models' / 'weapons' / 'barrel.glb', barrel)
+    for name, model, label in zip(WEAPON_NAMES, AMMO_MODELS, AMMO_SKINS):
+        mesh, _ = imported_model(MODEL_ROOT / f'models/powerups/ammo/{model}.md3',
+            ('models/powerups/ammo/ammobox', f'models/powerups/ammo/{label}'),
+            output / 'textures' / f'ammo_{name}.png', centered=True)
+        write_glb(output / 'models' / 'pickups' / f'ammo_{name}.glb', mesh)
+    armor, _ = imported_model(MODEL_ROOT / 'models/powerups/armor/armor_yel.md3',
+        ('models/powerups/armor/yellowarmor',), output / 'textures' / 'armor.png', centered=True)
+    write_glb(output / 'models' / 'pickups' / 'armor.glb', armor)
+    grenade, _ = imported_model(MODEL_ROOT / 'models/ammo/grenade1.md3',
+        ('models/weapons2/grenadel/grenadel',), output / 'textures' / 'grenade.png', centered=True)
+    # Keep the visual inside the existing 0.16 m simulation radius.
+    grenade.positions = [tuple(c * 0.65 for c in p) for p in grenade.positions]
+    write_glb(output / 'models' / 'projectiles' / 'grenade.glb', grenade)
+    health = Mesh()
+    add_chamfered_box_y(health, (0, 0, 0), (0.56, 0.70, 0.20), 0.035, (0.86, 0.88, 0.92, 1))
+    add_box(health, (0, 0, -0.12), (0.10, 0.40, 0.06), (0.1, 1, 0.65, 1))
+    add_box(health, (0, 0, -0.12), (0.35, 0.11, 0.06), (0.1, 1, 0.65, 1))
+    add_box(health, (0, 0, 0.12), (0.10, 0.40, 0.06), (0.1, 1, 0.65, 1))
+    add_box(health, (0, 0, 0.12), (0.35, 0.11, 0.06), (0.1, 1, 0.65, 1))
+    write_glb(output / 'models' / 'pickups' / 'health.glb', health)
+    write_png(output / 'textures' / 'health.png', 1, 1, b'\xff' * 4)
+    flash = Mesh()
+    points = ((-0.14, -0.14, 0), (-0.14, 0.14, 0), (0.14, 0.14, 0), (0.14, -0.14, 0))
+    add_quad(flash, points, (0, 0, -1), (1, 1, 1, 1))
+    write_glb(output / 'models' / 'effects' / 'muzzle.glb', flash)
+    width, height, pixels = quake.read_tga(MODEL_ROOT / 'models/weapons2/machinegun/f_machinegun2.tga')
+    write_png(output / 'textures' / 'muzzle.png', width, height, pixels)
+    lines = ['#pragma once', '', '#include "math/vec3.h"', '', 'namespace Arena3DGenerated', '{',
+             '    //////////////////////////////////////////////////////////////////////////', '    inline const mt::vec3f MUZZLE_POSITIONS[] =', '    {']
+    def vector(point):
+        return '{' + ', '.join(f'{x:.8f}f' for x in point) + '}'
+    lines += [f'        {vector(p)},' for p in muzzle_tags]
+    lines += ['    };', '    //////////////////////////////////////////////////////////////////////////',
+              f'    inline const mt::vec3f BARREL_POSITION = {vector(barrel_tag)};',
+              '    //////////////////////////////////////////////////////////////////////////', '}', '']
+    (output / 'include' / 'Arena3DGeneratedModels.h').write_text('\n'.join(lines))
 
 
 def player_mesh() -> Mesh:
@@ -839,7 +639,7 @@ def turret_mesh(module: str) -> Mesh:
         add_cylinder(mesh, (0, 0.35, 0), 0.75, 0.7, 8, (0.22, 0.25, 0.30, 1))
         add_box(mesh, (0, 0.8, 0), (0.8, 0.35, 0.8), (0.35, 0.40, 0.48, 1))
         return mesh
-    colors = {name: weapon_mesh(name).colors[0] for name in WEAPON_NAMES}
+    colors = {name: (0.18, 0.25, 0.32, 1) for name in WEAPON_NAMES}
     add_box(mesh, (0, 0, 0), (0.65, 0.45, 0.65), colors[module])
     add_cylinder_z(mesh, (0, 0, 0.65), 0.12, 0.9, 8, colors[module])
     return mesh
@@ -870,6 +670,14 @@ def explosion_cloud_mesh(name: str) -> Mesh:
     add_octahedron(mesh, (0.0, 0.0, 0.0), 0.52, colors[0])
     add_octahedron(mesh, (0.30, 0.16, 0.10), 0.36, colors[1])
     add_octahedron(mesh, (-0.24, 0.10, -0.18), 0.31, colors[2])
+    return mesh
+
+
+def rail_trail_mesh() -> Mesh:
+    mesh = Mesh()
+    add_cylinder_x(mesh, (0.5, 0, 0), 0.018, 1, 8, (0.65, 0.90, 1.0, 1.0))
+    add_cylinder_x(mesh, (0.5, 0, 0), 0.055, 1, 12, (0.08, 0.45, 1.0, 0.28))
+    add_cylinder_x(mesh, (0.5, 0, 0), 0.095, 1, 12, (0.03, 0.20, 1.0, 0.10))
     return mesh
 
 
@@ -1200,6 +1008,11 @@ def make_audio(output: Path) -> None:
 
 
 def build(source_path: Path, output: Path) -> None:
+    for manifest in NOTICES_ROOT.glob("*/sources.json"):
+        for entry in json.loads(manifest.read_text(encoding="utf-8")):
+            path = ROOT / "resources" / ".downloads" / manifest.parent.name / entry["path"]
+            if not path.is_file() or hashlib.sha256(path.read_bytes()).hexdigest() != entry["sha256"]:
+                raise ValueError(f"Missing or changed asset: {path}. Run build/downloads/downloads.sh (or downloads.bat) first.")
     source = json.loads(source_path.read_text(encoding="utf-8"))
     if source.get("format_version") != FORMAT_VERSION:
         raise ValueError("unsupported content source version")
@@ -1207,17 +1020,19 @@ def build(source_path: Path, output: Path) -> None:
         shutil.rmtree(output)
     output.mkdir(parents=True)
 
-    arena, visual_layers = arena_mesh(source["level"])
+    arena, visual_layers = arena_mesh(output)
     brushes = arena_collision()
     write_glb(output / "models" / "arena01.glb", arena)
     write_glb(output / "models" / "sky.glb", sky_mesh())
-    write_glb(output / "models" / "lava.glb", lava_mesh(source["level"]))
+    lava = lava_mesh(source["level"])
+    if lava.indices:
+        write_glb(output / "models" / "lava.glb", lava)
+    write_visual_header(output / "include" / "Arena3DGeneratedVisuals.h", visual_layers, bool(lava.indices), source["level"]["id"])
     write_glb(output / "models" / "player.glb", player_mesh())
     for layer, chunks in visual_layers.items():
         for index, chunk in enumerate(chunks):
-            write_glb(output / "models" / "arena01" / f"{layer}_chunk_{index}.glb", chunk)
-    for name in WEAPON_NAMES:
-        write_glb(output / "models" / "weapons" / f"{name}.glb", weapon_mesh(name))
+            if chunk.indices:
+                write_glb(output / "models" / "arena01" / f"{layer}_chunk_{index}.glb", chunk)
     write_glb(output / "models" / "turrets" / "base.glb", turret_mesh("base"))
     for name in WEAPON_NAMES:
         write_glb(output / "models" / "turrets" / f"{name}.glb", turret_mesh(name))
@@ -1226,14 +1041,22 @@ def build(source_path: Path, output: Path) -> None:
     for name in ("rocket", "plasma", "grenade"):
         write_glb(output / "models" / "effects" / f"{name}_explosion.glb", explosion_cloud_mesh(name))
     write_glb(output / "models" / "effects" / "impact.glb", impact_flash_mesh())
+    write_glb(output / "models" / "effects" / "rail_trail.glb", rail_trail_mesh())
     write_glb(output / "models" / "effects" / "decal.glb", decal_mesh())
-    for name, color in (("health", (0.9, 0.12, 0.16, 1)), ("armor", (0.12, 0.55, 0.95, 1)), ("ammo", (0.95, 0.72, 0.16, 1))):
-        mesh = Mesh()
-        add_box(mesh, (0, 0, 0), (0.55, 0.55, 0.55), color)
-        write_glb(output / "models" / "pickups" / f"{name}.glb", mesh)
+    build_models(output)
 
     make_textures(output)
     make_audio(output)
+    notices = output / "licenses" / "q3dm6ish_v2"
+    notices.mkdir(parents=True)
+    for name in ("COPYING", "README.md", "README.original.txt", "sources.json"):
+        shutil.copyfile(NOTICES_ROOT / "q3dm6ish_v2" / name, notices / name)
+    model_notices = output / "licenses" / "openarena_models"
+    model_notices.mkdir(parents=True)
+    for name in ("COPYING", "README.md", "sources.json"):
+        shutil.copyfile(NOTICES_ROOT / "openarena_models" / name, model_notices / name)
+    shutil.copyfile(MODEL_ROOT / "CREDITS", model_notices / "CREDITS")
+    shutil.copyfile(MODEL_ROOT / "models/powerups/ammo/CREDITS", model_notices / "CREDITS.ammo")
     config_crc = write_config(output / "data" / "arena3d.config.bin", source)
     collision_crc = write_collision(output / "data" / "arena01.collision.bin", brushes)
     level_crc = write_level(output / "data" / "arena01.level.bin", source["level"], collision_crc, config_crc)
@@ -1244,12 +1067,13 @@ def build(source_path: Path, output: Path) -> None:
         "level": source["level"]["id"],
         "visual": "models/arena01.glb",
         "sky": "models/sky.glb",
-        "lava": "models/lava.glb",
+        "lava": "models/lava.glb" if lava.indices else None,
         "player": "models/player.glb",
         "impact": "models/effects/impact.glb",
+        "rail_trail": "models/effects/rail_trail.glb",
         "decal": "models/effects/decal.glb",
         "chunk_layers": {
-            layer: [f"models/arena01/{layer}_chunk_{index}.glb" for index in range(len(chunks))]
+            layer: [f"models/arena01/{layer}_chunk_{index}.glb" for index, chunk in enumerate(chunks) if chunk.indices]
             for layer, chunks in visual_layers.items()
         },
         "collision": "data/arena01.collision.bin",
@@ -1327,17 +1151,18 @@ def validate(source_path: Path, output: Path) -> None:
     if not (output / "include" / "Arena3DGeneratedCollision.h").is_file():
         raise ValueError("missing generated collision header")
     manifest = json.loads((output / "manifest.json").read_text(encoding="utf-8"))
-    if set(manifest.get("chunk_layers", {})) != set(ARENA_VISUAL_LAYERS):
-        raise ValueError("arena visual layers are missing or out of canonical order")
-    for layer in ARENA_VISUAL_LAYERS:
+    if not manifest.get("chunk_layers"):
+        raise ValueError("arena visual layers are missing")
+    for layer in manifest["chunk_layers"]:
         paths = manifest["chunk_layers"][layer]
-        if len(paths) != 4 or any(not (output / path).is_file() for path in paths):
+        if not 1 <= len(paths) <= 4 or any(not (output / path).is_file() for path in paths):
             raise ValueError(f"invalid arena visual layer {layer}")
     for path in sorted((output / "models").rglob("*.glb")):
         document = glb_document(path)
         primitive = document["meshes"][0]["primitives"][0]
         required = {"POSITION", "NORMAL", "COLOR_0", "TEXCOORD_0"}
-        if set(primitive["attributes"]) != required or "indices" not in primitive:
+        attributes = set(primitive["attributes"])
+        if not required <= attributes or attributes - required - {"TEXCOORD_1"} or "indices" not in primitive:
             raise ValueError(f"unsupported GLB attributes: {path}")
     for key, magic in (("collision", b"A3CL"), ("config", b"A3CF"), ("level_data", b"A3LV")):
         path = output / manifest[key]

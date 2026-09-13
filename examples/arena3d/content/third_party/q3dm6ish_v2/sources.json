@@ -1,0 +1,87 @@
+[
+  {
+    "path": "q3dm6ish_v2.map",
+    "url": "https://openarena.ws/svn/source/assets/maps/q3dm6ish_v2.map",
+    "sha256": "526672a8f543f0f8f0821195dde10bbe9e6c878d16ba794fe0930a9fe0fdddac"
+  },
+  {
+    "path": "textures/trak2_crete1a.tga",
+    "url": "https://opengameart.org/sites/default/files/trak2_crete1a.tga",
+    "sha256": "16381a549d989648eab76abbb6527d42c9de9ff782a315e1f948823daf34afc4"
+  },
+  {
+    "path": "textures/trak2_crete1c.tga",
+    "url": "https://opengameart.org/sites/default/files/trak2_crete1c.tga",
+    "sha256": "39629db1c35a36edb935fcda54f355afe293ba1fadb79c2da251fda6748ffbf7"
+  },
+  {
+    "path": "textures/trak2_light1a.tga",
+    "url": "https://opengameart.org/sites/default/files/trak2_light1a.tga",
+    "sha256": "38415fe2e658633bc4da83b476aadc1fe733cdae00dc4e6b61162586524fec87"
+  },
+  {
+    "path": "textures/trak2_light1b.tga",
+    "url": "https://opengameart.org/sites/default/files/trak2_light1b.tga",
+    "sha256": "64a6a6ed7dea4643138fabc7c1d5ebebe0a7b2b10c62e7661f09d711468ada63"
+  },
+  {
+    "path": "textures/trak2_plate1a.tga",
+    "url": "https://opengameart.org/sites/default/files/trak2_plate1a.tga",
+    "sha256": "6e630240429366b5dbd9d9651ca1ad0df8d3b151726134f3535d76a5aaf5b2df"
+  },
+  {
+    "path": "textures/trak2_tile2f.tga",
+    "url": "https://opengameart.org/sites/default/files/trak2_tile2f.tga",
+    "sha256": "31b562b8e16f28925b2f2ca81366b41b1b6f5161ba99be40f77189ab1637f58d"
+  },
+  {
+    "path": "textures/trak2_trim1a.tga",
+    "url": "https://opengameart.org/sites/default/files/trak2_trim1a.tga",
+    "sha256": "dac8a948195aa124d1a4c92b8ae21fffb2c19b53258f416e324782ab07728eef"
+  },
+  {
+    "path": "textures/trak2_trim2c.tga",
+    "url": "https://opengameart.org/sites/default/files/trak2_trim2c.tga",
+    "sha256": "a9bd4fe19daa29ffcf8d86db287efdb2504efe31dfee896de6aacfb135ef3633"
+  },
+  {
+    "path": "textures/trak2_trim2f.tga",
+    "url": "https://opengameart.org/sites/default/files/trak2_trim2f.tga",
+    "sha256": "9a822a8c293e462a60960687d127e5aca9d25d94e5fade02bc492154aa334e6c"
+  },
+  {
+    "path": "textures/trak2_trim2g.tga",
+    "url": "https://opengameart.org/sites/default/files/trak2_trim2g.tga",
+    "sha256": "7cc190122e5d29f4366fe8c9a63e763dc3114d6b9d9b1926e7206ef30e1ed16f"
+  },
+  {
+    "path": "textures/trak2_trim5d.tga",
+    "url": "https://opengameart.org/sites/default/files/trak2_trim5d.tga",
+    "sha256": "4cd47e45e4d95c26ffa5b7d89f39d22c36ca2ce4a31ea086bc0af959570f3ef5"
+  },
+  {
+    "path": "textures/trak2_wall1b.tga",
+    "url": "https://opengameart.org/sites/default/files/trak2_wall1b.tga",
+    "sha256": "676dc695299942086e67e728ecc7eac6cf7b85fd93aa8a63ee22f55ded1aa1b9"
+  },
+  {
+    "path": "textures/trak2_wall2a.tga",
+    "url": "https://opengameart.org/sites/default/files/trak2_wall2a.tga",
+    "sha256": "5cb014c449f8d290af8092d204480f53ac56bdfdb382c4d9f64eaf80533b9551"
+  },
+  {
+    "path": "textures/trak2_wall3a.tga",
+    "url": "https://opengameart.org/sites/default/files/trak2_wall3a.tga",
+    "sha256": "2c54bd64719e02cc414eda35eb65cfff81aaaf9327b44faf51fd8ce6d2ffde5c"
+  },
+  {
+    "path": "q3dm6ish_v2.bsp",
+    "url": "https://openarena.ws/svn/!svn/bc/888/maps/q3dm6ish_v2.bsp",
+    "sha256": "dd469d3ff0baa95ec75507fdd43f93c14aa389f64419b88b17f7af94d58a61fb"
+  },
+  {
+    "path": "trak2.shader",
+    "url": "https://openarena.ws/svn/scripts/trak2.shader",
+    "sha256": "af4cdb0c0e50dec39758db3a3f9e5a2ba0353b44f0597f7392d629f36bd1e6b1"
+  }
+]

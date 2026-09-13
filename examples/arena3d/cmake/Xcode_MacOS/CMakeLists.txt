@@ -6,6 +6,9 @@ set(PROJECT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../..)
 set(PROJECT_TEMP_DIR ${CMAKE_BINARY_DIR}/solutions)
 set(MENGINE_CMAKE_DIR ${PROJECT_DIR}/../../cmake/Xcode_MacOS)
 
+include(../downloads/content.cmake)
+arena3d_download_content()
+
 # MacOSApplication discovers package files while CMake configures. Generate the
 # package here as well as through Arena3DContent so a clean checkout bundles it.
 find_package(Python3 REQUIRED COMPONENTS Interpreter)

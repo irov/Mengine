@@ -35,7 +35,8 @@ ADD_MENGINE_COCOAPOD("Google-Mobile-Ads-SDK" "NO-GIT" "13.9.0")
 
 ADD_MENGINE_APPLE_APPLICATION_DELEGATE("iOSAdMobPlugin")
 
-ADD_MENGINE_SKADNETWORKITEMS_PLIST_FILE("${CMAKE_CURRENT_SOURCE_DIR}/SKAdNetworkItems.plist")
+ADD_MENGINE_DOWNLOAD_SKADNETWORKITEMS_PLIST("https://raw.githubusercontent.com/googleads/googleads-mobile-unity/main/source/plugin/Assets/GoogleMobileAds/Editor/GoogleMobileAdsSKAdNetworkItems.xml"
+    CONVERTER "${CMAKE_CURRENT_SOURCE_DIR}/convert_skadnetworkitems_plist.py")
 
 if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
     TARGET_LINK_LIBRARIES(${PROJECT_NAME} Python)

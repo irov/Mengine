@@ -15,6 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (atomic, assign) BOOL m_completed;
 @property (atomic, assign) iOSUserMessagingPlatformConsentState m_consentState;
+@property (atomic, assign) NSInteger m_retryAttempt;
 @property (nonatomic, strong) NSMutableArray<void (^)(void)> * m_completionHandlers;
 
 @end

@@ -38,11 +38,14 @@
     [FIRAnalytics setAnalyticsCollectionEnabled:NO];
 
     iOSTransparencyConsentParam * consent = [[iOSTransparencyConsentParam alloc] initFromUserDefaults];
-    if ([consent isPending] == NO) {
-        [self onTransparencyConsent:consent];
+
+    if ([consent isPending] == YES) {
+        IOS_LOGGER_MESSAGE( @"[FirebaseAnalytics] collection disabled: transparency consent pending" );
+
+        return YES;
     }
 
-    [self setupUserProperties];
+    [self onTransparencyConsent:consent];
 
     return YES;
 }
@@ -138,6 +141,19 @@
 
     self.m_analyticsEnabled = ANALYTICS_STORAGE;
     [FIRAnalytics setAnalyticsCollectionEnabled:ANALYTICS_STORAGE];
+
+    IOS_LOGGER_MESSAGE( @"[FirebaseAnalytics] collection %@ [ad_storage: %@ ad_personalization: %@ ad_user_data: %@]"
+        , ANALYTICS_STORAGE == YES ? @"enabled" : @"disabled"
+        , AD_STORAGE == YES ? @"granted" : @"denied"
+        , AD_PERSONALIZATION == YES ? @"granted" : @"denied"
+        , AD_USER_DATA == YES ? @"granted" : @"denied"
+    );
+
+    if (ANALYTICS_STORAGE == NO) {
+        return;
+    }
+
+    [self setupUserProperties];
 }
 
 #pragma mark - iOSPluginAnalyticDelegateInterface

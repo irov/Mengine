@@ -32,6 +32,7 @@
     if (self) {
         self.m_completed = NO;
         self.m_consentState = iOSUserMessagingPlatformConsentStatePending;
+        self.m_retryAttempt = 0;
         self.m_completionHandlers = [NSMutableArray array];
     }
 
@@ -48,7 +49,11 @@
         iOSTransparencyConsentParam * consent = [[iOSTransparencyConsentParam alloc] initFromUserDefaults];
         consent.TRANSPARENCYCONSENT_CANREQUESTADS = UMPConsentInformation.sharedInstance.canRequestAds;
 
+        self.m_retryAttempt = 0;
+
         [iOSDetail transparencyConsent:consent];
+    } else {
+        [self scheduleRetryConsent];
     }
 
     NSArray<void (^)(void)> * completionHandlers = [self.m_completionHandlers copy];
@@ -59,6 +64,23 @@
             completion();
         }
     }];
+}
+
+- (void)scheduleRetryConsent {
+    self.m_retryAttempt += 1;
+
+    NSTimeInterval delaySec = pow(2, MIN(6, self.m_retryAttempt));
+
+    IOS_LOGGER_MESSAGE(@"[UMP] schedule consent retry attempt %ld after %.0f seconds"
+        , (long)self.m_retryAttempt
+        , delaySec
+    );
+
+    __weak iOSUserMessagingPlatformPlugin * weakSelf = self;
+
+    [AppleDetail addMainQueueOperation:^{
+        [weakSelf retryConsent];
+    } afterSeconds:delaySec];
 }
 
 - (void)waitForConsentCompletion:(void (^ _Nonnull)(void))completion {
@@ -212,6 +234,8 @@
     if (self.m_consentState != iOSUserMessagingPlatformConsentStateFailed) {
         return;
     }
+
+    IOS_LOGGER_MESSAGE(@"[UMP] retry consent info update");
 
     self.m_completed = NO;
     self.m_consentState = iOSUserMessagingPlatformConsentStatePending;

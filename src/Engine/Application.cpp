@@ -80,6 +80,11 @@
 #include "Kernel/ShapeQuadFixed.h"
 #include "Kernel/ShapeQuadFlex.h"
 #include "Kernel/ShapeNinePatch.h"
+#include "Kernel/ShapeThreePatchHorizontal.h"
+#include "Kernel/ShapeThreePatchVertical.h"
+#include "Kernel/SpriteSlice3Horizontal.h"
+#include "Kernel/SpriteSlice3Vertical.h"
+#include "Kernel/SpriteSlice9.h"
 #include "Kernel/SurfaceSound.h"
 #include "Kernel/SurfaceImage.h"
 #include "Kernel/SurfaceImageSequence.h"
@@ -593,6 +598,11 @@ namespace Mengine
         NODE_FACTORY( ShapeQuadFixed );
         NODE_FACTORY( ShapeQuadFlex );
         NODE_FACTORY( ShapeNinePatch );
+        NODE_FACTORY( ShapeThreePatchHorizontal );
+        NODE_FACTORY( ShapeThreePatchVertical );
+        NODE_FACTORY( SpriteSlice3Horizontal );
+        NODE_FACTORY( SpriteSlice3Vertical );
+        NODE_FACTORY( SpriteSlice9 );
 
 #undef NODE_FACTORY
 
@@ -663,6 +673,11 @@ namespace Mengine
         NODE_FACTORY( ShapeQuadFixed );
         NODE_FACTORY( ShapeQuadFlex );
         NODE_FACTORY( ShapeNinePatch );
+        NODE_FACTORY( ShapeThreePatchHorizontal );
+        NODE_FACTORY( ShapeThreePatchVertical );
+        NODE_FACTORY( SpriteSlice3Horizontal );
+        NODE_FACTORY( SpriteSlice3Vertical );
+        NODE_FACTORY( SpriteSlice9 );
 
 #undef NODE_FACTORY
 

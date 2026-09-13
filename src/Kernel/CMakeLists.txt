@@ -443,6 +443,20 @@ Shape\\\\ShapeQuad
     ShapeQuadFlex.h
     ShapeNinePatch.cpp
     ShapeNinePatch.h
+    ShapeThreePatchHorizontal.cpp
+    ShapeThreePatchHorizontal.h
+    ShapeThreePatchVertical.cpp
+    ShapeThreePatchVertical.h
+)
+
+ADD_FILTER(
+SpriteSlice
+    SpriteSlice3Horizontal.cpp
+    SpriteSlice3Horizontal.h
+    SpriteSlice3Vertical.cpp
+    SpriteSlice3Vertical.h
+    SpriteSlice9.cpp
+    SpriteSlice9.h
 )
 
 ADD_FILTER(

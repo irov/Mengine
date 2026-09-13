@@ -86,6 +86,11 @@
 #include "Kernel/ShapeQuadFlex.h"
 #include "Kernel/ShapeQuadSize.h"
 #include "Kernel/ShapeNinePatch.h"
+#include "Kernel/ShapeThreePatchHorizontal.h"
+#include "Kernel/ShapeThreePatchVertical.h"
+#include "Kernel/SpriteSlice3Horizontal.h"
+#include "Kernel/SpriteSlice3Vertical.h"
+#include "Kernel/SpriteSlice9.h"
 #include "Kernel/SurfaceSound.h"
 #include "Kernel/SurfaceImage.h"
 #include "Kernel/SurfaceImageSequence.h"
@@ -1200,6 +1205,68 @@ namespace Mengine
                 .def( "getMinimumSize", &ShapeNinePatch::getMinimumSize )
                 ;
 
+            pybind::interface_<ShapeThreePatchHorizontal, pybind::bases<Shape>>( _kernel, "ShapeThreePatchHorizontal", false )
+                .def( "setSize", &ShapeThreePatchHorizontal::setSize )
+                .def( "getSize", &ShapeThreePatchHorizontal::getSize )
+                .def( "removeSize", &ShapeThreePatchHorizontal::removeSize )
+                .def( "hasSize", &ShapeThreePatchHorizontal::hasSize )
+                .def( "setCapInsets", &ShapeThreePatchHorizontal::setCapInsets )
+                .def( "getCapInsets", &ShapeThreePatchHorizontal::getCapInsets )
+                .def( "getMinimumSize", &ShapeThreePatchHorizontal::getMinimumSize )
+                ;
+
+            pybind::interface_<ShapeThreePatchVertical, pybind::bases<Shape>>( _kernel, "ShapeThreePatchVertical", false )
+                .def( "setSize", &ShapeThreePatchVertical::setSize )
+                .def( "getSize", &ShapeThreePatchVertical::getSize )
+                .def( "removeSize", &ShapeThreePatchVertical::removeSize )
+                .def( "hasSize", &ShapeThreePatchVertical::hasSize )
+                .def( "setCapInsets", &ShapeThreePatchVertical::setCapInsets )
+                .def( "getCapInsets", &ShapeThreePatchVertical::getCapInsets )
+                .def( "getMinimumSize", &ShapeThreePatchVertical::getMinimumSize )
+                ;
+
+            pybind::interface_<SpriteSlice3Horizontal, pybind::bases<Node>>( _kernel, "SpriteSlice3Horizontal", false )
+                .def( "setSurfacePart", &SpriteSlice3Horizontal::setSurfacePart )
+                .def( "getSurfacePart", &SpriteSlice3Horizontal::getSurfacePart )
+                .def( "removeSurfacePart", &SpriteSlice3Horizontal::removeSurfacePart )
+                .def( "setPartOffset", &SpriteSlice3Horizontal::setPartOffset )
+                .def( "getPartOffset", &SpriteSlice3Horizontal::getPartOffset )
+                .def( "setSize", &SpriteSlice3Horizontal::setSize )
+                .def( "getSize", &SpriteSlice3Horizontal::getSize )
+                .def( "removeSize", &SpriteSlice3Horizontal::removeSize )
+                .def( "hasSize", &SpriteSlice3Horizontal::hasSize )
+                .def( "getMinimumSize", &SpriteSlice3Horizontal::getMinimumSize )
+                .def( "getNaturalSize", &SpriteSlice3Horizontal::getNaturalSize )
+                ;
+
+            pybind::interface_<SpriteSlice3Vertical, pybind::bases<Node>>( _kernel, "SpriteSlice3Vertical", false )
+                .def( "setSurfacePart", &SpriteSlice3Vertical::setSurfacePart )
+                .def( "getSurfacePart", &SpriteSlice3Vertical::getSurfacePart )
+                .def( "removeSurfacePart", &SpriteSlice3Vertical::removeSurfacePart )
+                .def( "setPartOffset", &SpriteSlice3Vertical::setPartOffset )
+                .def( "getPartOffset", &SpriteSlice3Vertical::getPartOffset )
+                .def( "setSize", &SpriteSlice3Vertical::setSize )
+                .def( "getSize", &SpriteSlice3Vertical::getSize )
+                .def( "removeSize", &SpriteSlice3Vertical::removeSize )
+                .def( "hasSize", &SpriteSlice3Vertical::hasSize )
+                .def( "getMinimumSize", &SpriteSlice3Vertical::getMinimumSize )
+                .def( "getNaturalSize", &SpriteSlice3Vertical::getNaturalSize )
+                ;
+
+            pybind::interface_<SpriteSlice9, pybind::bases<Node>>( _kernel, "SpriteSlice9", false )
+                .def( "setSurfacePart", &SpriteSlice9::setSurfacePart )
+                .def( "getSurfacePart", &SpriteSlice9::getSurfacePart )
+                .def( "removeSurfacePart", &SpriteSlice9::removeSurfacePart )
+                .def( "setPartOffset", &SpriteSlice9::setPartOffset )
+                .def( "getPartOffset", &SpriteSlice9::getPartOffset )
+                .def( "setSize", &SpriteSlice9::setSize )
+                .def( "getSize", &SpriteSlice9::getSize )
+                .def( "removeSize", &SpriteSlice9::removeSize )
+                .def( "hasSize", &SpriteSlice9::hasSize )
+                .def( "getMinimumSize", &SpriteSlice9::getMinimumSize )
+                .def( "getNaturalSize", &SpriteSlice9::getNaturalSize )
+                ;
+
             pybind::interface_<Landscape2D, pybind::bases<Node, Materialable>>( _kernel, "Landscape2D", false )
                 .def( "setBackParts", &Landscape2D::setBackParts )
                 ;
@@ -1503,6 +1570,11 @@ namespace Mengine
         SCRIPT_CLASS_WRAPPING( ShapeQuadFixed );
         SCRIPT_CLASS_WRAPPING( ShapeQuadFlex );
         SCRIPT_CLASS_WRAPPING( ShapeNinePatch );
+        SCRIPT_CLASS_WRAPPING( ShapeThreePatchHorizontal );
+        SCRIPT_CLASS_WRAPPING( ShapeThreePatchVertical );
+        SCRIPT_CLASS_WRAPPING( SpriteSlice3Horizontal );
+        SCRIPT_CLASS_WRAPPING( SpriteSlice3Vertical );
+        SCRIPT_CLASS_WRAPPING( SpriteSlice9 );
 
         SCRIPT_CLASS_WRAPPING( Window );
 
@@ -1573,6 +1645,11 @@ namespace Mengine
         UNSCRIPT_CLASS_WRAPPING( ShapeQuadFixed );
         UNSCRIPT_CLASS_WRAPPING( ShapeQuadFlex );
         UNSCRIPT_CLASS_WRAPPING( ShapeNinePatch );
+        UNSCRIPT_CLASS_WRAPPING( ShapeThreePatchHorizontal );
+        UNSCRIPT_CLASS_WRAPPING( ShapeThreePatchVertical );
+        UNSCRIPT_CLASS_WRAPPING( SpriteSlice3Horizontal );
+        UNSCRIPT_CLASS_WRAPPING( SpriteSlice3Vertical );
+        UNSCRIPT_CLASS_WRAPPING( SpriteSlice9 );
 
         UNSCRIPT_CLASS_WRAPPING( Window );
 

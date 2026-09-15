@@ -236,10 +236,6 @@ PLUGIN_EXPORT( NodeDebugRender );
 PLUGIN_EXPORT( DebugPanel );
 #endif
 //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLUGIN_LAYOUTEDITOR_STATIC)
-PLUGIN_EXPORT( LayoutEditor );
-#endif
-//////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLUGIN_RESOURCEPREFETCHER_STATIC)
 PLUGIN_EXPORT( ResourcePrefetcher );
 #endif
@@ -352,8 +348,8 @@ PLUGIN_EXPORT( SimpleFramework );
 PLUGIN_EXPORT( UIFramework );
 #endif
 //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLUGIN_IMGUIFRAMEWORK_STATIC)
-PLUGIN_EXPORT( ImGUIFramework );
+#if defined(MENGINE_PLUGIN_MOSAICFRAMEWORK_STATIC)
+PLUGIN_EXPORT( MosaicFramework );
 #endif
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLUGIN_JSON_STATIC)
@@ -1678,8 +1674,8 @@ namespace Mengine
         MENGINE_ADD_FRAMEWORK( GOAPFramework, "plugin GOAPFramework...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
-#if defined(MENGINE_PLUGIN_IMGUIFRAMEWORK_STATIC)
-        MENGINE_ADD_FRAMEWORK( ImGUIFramework, "plugin ImGUIFramework...", MENGINE_DOCUMENT_FACTORABLE );
+#if defined(MENGINE_PLUGIN_MOSAICFRAMEWORK_STATIC)
+        MENGINE_ADD_FRAMEWORK( MosaicFramework, "plugin MosaicFramework...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #if defined(MENGINE_PLUGIN_PYTHONFRAMEWORK_STATIC)
@@ -1721,9 +1717,6 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( DebugPanel, "plugin DebugPanel...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
-#if defined(MENGINE_PLUGIN_LAYOUTEDITOR_STATIC)
-        MENGINE_ADD_PLUGIN( LayoutEditor, "plugin LayoutEditor...", MENGINE_DOCUMENT_FACTORABLE );
-#endif
 
 #if defined(MENGINE_PLUGIN_RESOURCEPREFETCHER_STATIC)
         MENGINE_ADD_PLUGIN( ResourcePrefetcher, "plugin ResourcePrefetcher...", MENGINE_DOCUMENT_FACTORABLE );

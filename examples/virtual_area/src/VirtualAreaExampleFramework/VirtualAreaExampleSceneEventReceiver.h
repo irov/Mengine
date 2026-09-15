@@ -2,7 +2,11 @@
 
 #include "Engine/VirtualArea.h"
 
-#include "Frameworks/ImGUIFramework/ImGUIRender.h"
+#include "Frameworks/MosaicFramework/MosaicRender.h"
+
+#include "Kernel/String.h"
+#include "Kernel/Deque.h"
+#include "Kernel/Vector.h"
 
 #include "Kernel/DummySceneEventReceiver.h"
 #include "Kernel/Scene.h"
@@ -32,13 +36,16 @@ namespace Mengine
         void rebuildFrame_();
         void rebuildContent_();
         void clearNodes_( Vector<NodePtr> * const _nodes );
-        void renderControls_( const ImGUIRenderProviderInterfacePtr & _provider );
+        void renderControls_( Mosaic::Context * _ui );
 
     protected:
         Scene * m_scene;
 
         VirtualAreaPtr m_virtualArea;
-        ImGUIRenderPtr m_imguiRender;
+        MosaicRenderPtr m_mosaicRender;
+
+        typedef Deque<String> DequeReadout;
+        DequeReadout m_readout;
 
         Vector<NodePtr> m_contentNodes;
         Vector<NodePtr> m_frameNodes;

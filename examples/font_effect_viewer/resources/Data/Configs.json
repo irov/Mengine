@@ -25,6 +25,16 @@
         ]
     },
 
+    "Modules": {
+        "Name": [
+            "MosaicModule"
+        ]
+    },
+
+    "Mosaic": {
+        "FontName": "MosaicUI"
+    },
+
     "Frameworks": {
         "Name": [
             "FontEffectViewerExampleFramework"

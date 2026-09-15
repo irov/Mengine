@@ -1,0 +1,3 @@
+LIBRARY "MosaicFrameworkPlugin"
+EXPORTS
+    dllMengineCreatePlugin @1

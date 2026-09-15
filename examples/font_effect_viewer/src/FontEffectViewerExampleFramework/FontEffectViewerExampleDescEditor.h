@@ -2,9 +2,11 @@
 
 #include "Plugins/FontEffectPlugin/FontEffectDesc.h"
 
+#include "Mosaic/Mosaic.hpp"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    bool FontEffectViewerExampleRenderDescEditor( FontEffectDesc * const _desc );
+    bool FontEffectViewerExampleRenderDescEditor( Mosaic::Context * _ui, FontEffectDesc * const _desc );
     //////////////////////////////////////////////////////////////////////////
 }

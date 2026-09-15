@@ -1,12 +1,13 @@
 #pragma once
 
-#include "Frameworks/ImGUIFramework/ImGUIRender.h"
+#include "Frameworks/MosaicFramework/MosaicRender.h"
 
 #include "Plugins/FigmaPlugin/FigmaInterface.h"
 #include "Plugins/FigmaPlugin/ResourceFigma.h"
 
 #include "Interface/FileGroupInterface.h"
 
+#include "Kernel/Deque.h"
 #include "Kernel/DummySceneEventReceiver.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/Scene.h"
@@ -32,7 +33,7 @@ namespace Mengine
         void onEntityDeactivate( const EntityBehaviorInterfacePtr & _behavior ) override;
 
     protected:
-        void renderControls_( const ImGUIRenderProviderInterfacePtr & _provider );
+        void renderControls_( Mosaic::Context * _ui );
         void syncPathInputs_();
         void loadSettings_();
         void saveSettings_() const;
@@ -47,7 +48,7 @@ namespace Mengine
     protected:
         Scene * m_scene;
 
-        ImGUIRenderPtr m_imguiRender;
+        MosaicRenderPtr m_mosaicRender;
         NodePtr m_figmaNode;
         ResourceFigmaPtr m_figmaResource;
         UnknownFigmaInterface * m_figmaUnknown;
@@ -65,6 +66,9 @@ namespace Mengine
         int32_t m_entryIndex;
         int32_t m_playbackRateIndex;
         String m_status;
+
+        typedef Deque<String> DequeReadout;
+        DequeReadout m_readout;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<FigmaViewerExampleSceneEventReceiver> FigmaViewerExampleSceneEventReceiverPtr;

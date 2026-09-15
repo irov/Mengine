@@ -2,7 +2,7 @@
 
 #include "Engine/VirtualArea.h"
 
-#include "Frameworks/ImGUIFramework/ImGUIRender.h"
+#include "Frameworks/MosaicFramework/MosaicRender.h"
 
 #include "Plugins/TiledMapPlugin/ResourceTiledMap.h"
 #include "Plugins/TiledMapPlugin/TiledMap2D.h"
@@ -56,14 +56,14 @@ namespace Mengine
         ResourceTiledMapPtr createMapResource_( const FilePath & _path );
         void updateContentBounds_();
         void clearMap_();
-        void renderControls_( const ImGUIRenderProviderInterfacePtr & _provider );
+        void renderControls_( Mosaic::Context * _ui );
 
     protected:
         Scene * m_scene;
 
         VirtualAreaPtr m_virtualArea;
         TiledMap2DPtr m_tiledMap;
-        ImGUIRenderPtr m_imguiRender;
+        MosaicRenderPtr m_mosaicRender;
         VectorResources m_resources;
         VectorTiledMapExampleDescs m_examples;
 

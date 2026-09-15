@@ -3,6 +3,8 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/UnknownInterface.h"
 #include "Interface/FileGroupInterface.h"
+#include "Interface/ContentInterface.h"
+#include "Interface/FontGlyphInterface.h"
 #include "Interface/RenderTextureInterface.h"
 
 #include "Kernel/Mixin.h"
@@ -17,9 +19,16 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class UnknownTTFFontInterface
+    class UnknownTTFFontGlyphInterface
         : public UnknownInterface
     {
+    public:
+        virtual void setGlyphContent( const ContentInterfacePtr & _glyphContent ) = 0;
+        virtual const ContentInterfacePtr & getGlyphContent() const = 0;
+
+    public:
+        virtual void setLicenseContent( const ContentInterfacePtr & _licenseContent ) = 0;
+        virtual const ContentInterfacePtr & getLicenseContent() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     class TTFTextureGlyphProviderInterface

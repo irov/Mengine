@@ -214,4 +214,4 @@ Values are converted to premultiplied-alpha internally; the JSON itself is alway
 
 ## Editor
 
-`examples/font_effect_viewer` is an ImGui-based viewer/editor for this format: load and save presets files, edit every field above with live preview, pick a glyph/TTF and text, and zoom the preview canvas. It writes exactly the schema documented here.
+`examples/font_effect_viewer` is a Mosaic-based viewer/editor for this format: load and save presets files, edit every field above with live preview, pick a glyph/TTF and text, and zoom the preview canvas. It writes exactly the schema documented here.

@@ -1,3 +1,0 @@
-LIBRARY "LayoutEditorPlugin"
-EXPORTS
-   dllMengineCreatePlugin @1

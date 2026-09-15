@@ -21,7 +21,9 @@
 #include "Config/StdAlgorithm.h"
 #include "Config/StdString.h"
 
-#include "imgui.h"
+#include "Mosaic/Mosaic.hpp"
+
+#include "Config/StdIO.h"
 
 namespace Mengine
 {
@@ -88,19 +90,19 @@ namespace Mengine
             return false;
         }
 
-        ImGUIRenderPtr imguiRender = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ImGUIRender" ), MENGINE_DOCUMENT_FACTORABLE );
+        MosaicRenderPtr mosaicRender = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MosaicRender" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( imguiRender, "invalid create ImGUIRender" );
+        MENGINE_ASSERTION_MEMORY_PANIC( mosaicRender, "invalid create MosaicRender" );
 
-        imguiRender->setName( STRINGIZE_STRING_LOCAL( "TiledMapExampleImGUI" ) );
-        imguiRender->setProvider( [this]( const ImGUIRenderProviderInterfacePtr & _provider )
+        mosaicRender->setName( STRINGIZE_STRING_LOCAL( "TiledMapExampleMosaic" ) );
+        mosaicRender->setProvider( [this]( Mosaic::Context * _ui )
         {
-            this->renderControls_( _provider );
+            this->renderControls_( _ui );
         } );
 
-        m_scene->addChild( imguiRender );
-        m_imguiRender = imguiRender;
+        m_scene->addChild( mosaicRender );
+        m_mosaicRender = mosaicRender;
 
         return true;
     }
@@ -120,10 +122,10 @@ namespace Mengine
 
         this->clearMap_();
 
-        if( m_imguiRender != nullptr )
+        if( m_mosaicRender != nullptr )
         {
-            m_imguiRender->dispose();
-            m_imguiRender = nullptr;
+            m_mosaicRender->dispose();
+            m_mosaicRender = nullptr;
         }
 
         if( m_virtualArea != nullptr )
@@ -559,56 +561,66 @@ namespace Mengine
         m_resources.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void TiledMapExampleSceneEventReceiver::renderControls_( const ImGUIRenderProviderInterfacePtr & _provider )
+    void TiledMapExampleSceneEventReceiver::renderControls_( Mosaic::Context * _ui )
     {
-        MENGINE_UNUSED( _provider );
+        Mosaic::WindowOptions options;
+        options.initialBounds = {16.f, 12.f, 980.f, 76.f};
+        options.fitContentHeight = true;
+        options.backgroundAlpha = 0.92f;
+        options.movable = false;
+        options.resizable = false;
 
-        ImGui::SetNextWindowPos( ImVec2( 16.f, 12.f ), ImGuiCond_Always );
-        ImGui::SetNextWindowSize( ImVec2( 980.f, 76.f ), ImGuiCond_Always );
-        ImGui::SetNextWindowBgAlpha( 0.92f );
+        Mosaic::WindowScope window = Mosaic::window( _ui, "Official Tiled maps / Texture2DArray", options );
 
-        const ImGuiWindowFlags flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse;
-
-        if( ImGui::Begin( "Official Tiled maps / Texture2DArray", nullptr, flags ) == false )
+        if( window.visible() == false )
         {
-            ImGui::End();
-
             return;
         }
 
-        if( ImGui::Button( "Previous" ) == true )
+        if( Mosaic::button( _ui, "Previous" ).clicked() == true )
         {
             this->loadMap_( (m_mapIndex + (uint32_t)m_examples.size() - 1) % (uint32_t)m_examples.size() );
         }
 
-        ImGui::SameLine();
+        Mosaic::sameLine( _ui );
 
-        if( ImGui::Button( "Next" ) == true )
+        if( Mosaic::button( _ui, "Next" ).clicked() == true )
         {
             this->loadMap_( (m_mapIndex + 1) % (uint32_t)m_examples.size() );
         }
 
-        ImGui::SameLine();
-        ImGui::Text( "%u/%u  %s  [excluded: %u]", m_mapIndex + 1, (uint32_t)m_examples.size(), m_examples[m_mapIndex].title.c_str(), m_excludedMapCount );
+        Mosaic::sameLine( _ui );
+
+        Char caption[256] = {'\0'};
+        MENGINE_SNPRINTF( caption, sizeof( caption ) - 1, "%u/%u  %s  [excluded: %u]"
+            , m_mapIndex + 1
+            , (uint32_t)m_examples.size()
+            , m_examples[m_mapIndex].title.c_str()
+            , m_excludedMapCount
+        );
+
+        Mosaic::text( _ui, caption );
 
         if( m_tiledMap != nullptr )
         {
-            ImGui::Text( "%s  %ux%u  tiles: %u  batches: %u  arrays: %u  array layers: %u  texture memory: %llu bytes",
-                Detail::s_orientationName( m_tiledMap->getOrientation() ),
-                m_tiledMap->getColumnCount(),
-                m_tiledMap->getRowCount(),
-                m_tiledMap->getTileCount(),
-                m_tiledMap->getBatchCount(),
-                m_tiledMap->getTextureArrayCount(),
-                m_tiledMap->getTextureArrayLayerCount(),
-                (unsigned long long)m_tiledMap->getResidentTextureMemoryBytes() );
+            Char statistic[512] = {'\0'};
+            MENGINE_SNPRINTF( statistic, sizeof( statistic ) - 1, "%s  %ux%u  tiles: %u  batches: %u  arrays: %u  array layers: %u  texture memory: %llu bytes"
+                , Detail::s_orientationName( m_tiledMap->getOrientation() )
+                , m_tiledMap->getColumnCount()
+                , m_tiledMap->getRowCount()
+                , m_tiledMap->getTileCount()
+                , m_tiledMap->getBatchCount()
+                , m_tiledMap->getTextureArrayCount()
+                , m_tiledMap->getTextureArrayLayerCount()
+                , (unsigned long long)m_tiledMap->getResidentTextureMemoryBytes()
+            );
+
+            Mosaic::text( _ui, statistic );
         }
         else if( m_error.empty() == false )
         {
-            ImGui::TextUnformatted( m_error.c_str() );
+            Mosaic::text( _ui, m_error.c_str() );
         }
-
-        ImGui::End();
     }
     //////////////////////////////////////////////////////////////////////////
 }

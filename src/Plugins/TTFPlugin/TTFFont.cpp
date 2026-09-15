@@ -58,15 +58,6 @@ namespace Mengine
         return m_ftlibrary;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TTFFont::setTTFFontGlyph( const TTFFontGlyphPtr & _glyph )
-    {
-        m_glyph = _glyph;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const TTFFontGlyphPtr & TTFFont::getTTFFontGlyph() const
-    {
-        return m_glyph;
-    }
     //////////////////////////////////////////////////////////////////////////
     void TTFFont::setEffect( const FontEffectInterfacePtr & _effect )
     {
@@ -130,7 +121,9 @@ namespace Mengine
             return false;
         }
 
-        if( m_glyph->compile() == false )
+        TTFFontGlyph * glyph = m_glyph.getT<TTFFontGlyph *>();
+
+        if( glyph->compile() == false )
         {
             return false;
         }
@@ -183,7 +176,9 @@ namespace Mengine
             , this->getName().c_str()
         );
 
-        m_glyph->release();
+        TTFFontGlyph * glyph = m_glyph.getT<TTFFontGlyph *>();
+
+        glyph->release();
     }
     //////////////////////////////////////////////////////////////////////////
     bool TTFFont::_prefetch( const PrefetcherObserverInterfacePtr & _observer )
@@ -370,7 +365,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TTFFont::_validateGlyphes( const U32String & _codes ) const
     {
-        const TTFFontGlyphPtr & ttfGlyph = this->getTTFFontGlyph();
+        const TTFFontGlyph * ttfGlyph = m_glyph.getT<const TTFFontGlyph *>();
 
         const ContentInterfacePtr & content = ttfGlyph->getGlyphContent();
 
@@ -485,7 +480,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TTFFont::loadFaceGlyph_( GlyphCode _code, FT_Face * const _face ) const
     {
-        const TTFDataInterfacePtr dataTTF = m_glyph->getTTFData();
+        const TTFFontGlyph * fontGlyph = m_glyph.getT<const TTFFontGlyph *>();
+
+        const TTFDataInterfacePtr dataTTF = fontGlyph->getTTFData();
 
         FT_Face face = this->getFTFace( dataTTF );
 
@@ -560,7 +557,9 @@ namespace Mengine
             return true;
         }
 
-        const TTFDataInterfacePtr dataTTF = m_glyph->getTTFData();
+        const TTFFontGlyph * fontGlyph = m_glyph.getT<const TTFFontGlyph *>();
+
+        const TTFDataInterfacePtr dataTTF = fontGlyph->getTTFData();
 
         FT_Face face = this->getFTFace( dataTTF );
 

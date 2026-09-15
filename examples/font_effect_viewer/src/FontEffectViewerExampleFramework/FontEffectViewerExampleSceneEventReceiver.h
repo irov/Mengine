@@ -9,13 +9,14 @@
 
 #include "FontEffectViewerExamplePreviewCanvas.h"
 
-#include "Frameworks/ImGUIFramework/ImGUIRender.h"
+#include "Frameworks/MosaicFramework/MosaicRender.h"
 
 #include "Plugins/FontEffectPlugin/FontEffectDesc.h"
 #include "Plugins/MCPPlugin/MCPHandlerInterface.h"
 
 #include "Kernel/DummySceneEventReceiver.h"
 #include "Kernel/Scene.h"
+#include "Kernel/Deque.h"
 #include "Kernel/Vector.h"
 #include "Kernel/String.h"
 #include "Kernel/VectorString.h"
@@ -85,9 +86,10 @@ namespace Mengine
         void zoomPreviewAt_( float _newZoom, float _cursorOffsetX, float _cursorOffsetY );
 
     protected:
-        void renderControls_( const ImGUIRenderProviderInterfacePtr & _provider );
-        void renderPreviewCanvas_( const ImGUIRenderProviderInterfacePtr & _provider );
-        void renderGlyphPreview_( const ImGUIRenderProviderInterfacePtr & _provider );
+        void renderControls_( Mosaic::Context * _ui );
+        void textLine_( Mosaic::Context * _ui, bool _disabled, const Char * _format, ... );
+        void renderPreviewCanvas_( Mosaic::Context * _ui );
+        void renderGlyphPreview_( Mosaic::Context * _ui );
         void dumpGlyphs_();
 
     protected:
@@ -97,14 +99,16 @@ namespace Mengine
     protected:
         Scene * m_scene;
 
-        ImGUIRenderPtr m_imguiRender;
+        MosaicRenderPtr m_mosaicRender;
         TextFieldPtr m_textField;
 
         FontEffectViewerExamplePreviewCanvasPtr m_previewCanvas;
         float m_previewZoom;
         mt::vec2f m_previewPan;
         bool m_previewPanning;
-        float m_sidebarWidth;
+
+        mt::vec2f m_previewPanAnchor;
+        float m_sidebarRatio;
 
         FontInterfacePtr m_font;
         FontGlyphInterfacePtr m_glyph;
@@ -138,6 +142,9 @@ namespace Mengine
 
         bool m_dirty;
         String m_status;
+
+        typedef Deque<String> DequeReadout;
+        DequeReadout m_readout;
         String m_glyphTime;
 
         bool m_mcpHandlerRegistered;

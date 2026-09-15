@@ -24,7 +24,7 @@
 
 #include "figma/figma.hpp"
 
-#include "imgui.h"
+#include "Mosaic/Mosaic.hpp"
 
 #include <algorithm>
 
@@ -192,26 +192,22 @@ namespace Mengine
             MENGINE_SNPRINTF( _buffer, _capacity, "%s", _path == nullptr ? "" : _path );
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_renderPathInput( const Char * _label, Char * const _buffer, size_t _capacity, bool _folder, const Char * _dialogTitle, const Char * _dialogStartPath )
+        static bool s_renderPathInput( Mosaic::Context * _ui, const Char * _label, Char * const _buffer, size_t _capacity, bool _folder, const Char * _dialogTitle, const Char * _dialogStartPath )
         {
-            ImGui::PushID( _label );
+            Mosaic::Scope pathScope = Mosaic::scope( _ui, Mosaic::Key( Mosaic::StringView( _label ) ) );
 
-            const ImGuiStyle & style = ImGui::GetStyle();
-            const float buttonWidth = 32.f;
-            const float labelWidth = 112.f;
-            float inputWidth = ImGui::GetContentRegionAvail().x - buttonWidth - labelWidth - style.ItemSpacing.x * 2.f;
+            Mosaic::Scope pathRow = Mosaic::row( _ui );
 
-            if( inputWidth < 160.f )
+            Mosaic::String path( _buffer );
+
+            bool changed = Mosaic::inputText( _ui, "Path", &path ).changed();
+
+            if( changed == true )
             {
-                inputWidth = 160.f;
+                s_copyPathInput( _buffer, _capacity, path.c_str() );
             }
 
-            ImGui::SetNextItemWidth( inputWidth );
-            bool changed = ImGui::InputText( "##path", _buffer, _capacity );
-
-            ImGui::SameLine();
-
-            if( ImGui::Button( "..." ) == true )
+            if( Mosaic::button( _ui, "..." ).clicked() == true )
             {
                 if( _folder == true )
                 {
@@ -223,10 +219,7 @@ namespace Mengine
                 }
             }
 
-            ImGui::SameLine();
-            ImGui::TextUnformatted( _label );
-
-            ImGui::PopID();
+            Mosaic::text( _ui, _label );
 
             return changed;
         }
@@ -301,19 +294,19 @@ namespace Mengine
         APPLICATION_SERVICE()->setFixedDisplayResolution( false );
         APPLICATION_SERVICE()->setFixedViewportResolution( false );
 
-        ImGUIRenderPtr imguiRender = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ImGUIRender" ), MENGINE_DOCUMENT_FACTORABLE );
+        MosaicRenderPtr mosaicRender = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MosaicRender" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( imguiRender, "invalid create ImGUIRender" );
+        MENGINE_ASSERTION_MEMORY_PANIC( mosaicRender, "invalid create MosaicRender" );
 
-        imguiRender->setName( STRINGIZE_STRING_LOCAL( "FigmaViewerExampleImGUI" ) );
-        imguiRender->setProvider( [this]( const ImGUIRenderProviderInterfacePtr & _provider )
+        mosaicRender->setName( STRINGIZE_STRING_LOCAL( "FigmaViewerExampleMosaic" ) );
+        mosaicRender->setProvider( [this]( Mosaic::Context * _ui )
         {
-            this->renderControls_( _provider );
+            this->renderControls_( _ui );
         } );
 
-        m_scene->addChild( imguiRender );
-        m_imguiRender = imguiRender;
+        m_scene->addChild( mosaicRender );
+        m_mosaicRender = mosaicRender;
 
         return true;
     }
@@ -324,24 +317,25 @@ namespace Mengine
 
         this->clearFigma_();
 
-        if( m_imguiRender != nullptr )
+        if( m_mosaicRender != nullptr )
         {
-            m_imguiRender->dispose();
-            m_imguiRender = nullptr;
+            m_mosaicRender->dispose();
+            m_mosaicRender = nullptr;
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void FigmaViewerExampleSceneEventReceiver::renderControls_( const ImGUIRenderProviderInterfacePtr & _provider )
+    void FigmaViewerExampleSceneEventReceiver::renderControls_( Mosaic::Context * _ui )
     {
-        MENGINE_UNUSED( _provider );
-
         this->updateFigmaViewport_();
 
-        ImGui::SetNextWindowSize( ImVec2( 620.f, 440.f ), ImGuiCond_FirstUseEver );
+        Mosaic::WindowOptions windowOptions;
+        windowOptions.initialBounds = {40.f, 40.f, 620.f, 440.f};
+        windowOptions.scrollable = true;
 
-        if( ImGui::Begin( "Figma Viewer" ) == false )
+        Mosaic::WindowScope window = Mosaic::window( _ui, "Figma Viewer", windowOptions );
+
+        if( window.visible() == false )
         {
-            ImGui::End();
             return;
         }
 
@@ -362,70 +356,112 @@ namespace Mengine
             settingsChanged = true;
         }
 
-        if( ImGui::BeginCombo( "Preset", file.label ) == true )
         {
-            for( uint32_t index = 0; index != fileCount; ++index )
+            Mosaic::TreeScope presetCombo = Mosaic::beginCombo( _ui, "Preset", file.label );
+
+            if( presetCombo.visible() == true )
             {
-                const bool selected = m_fileIndex == (int32_t)index;
-
-                if( ImGui::Selectable( s_figmaViewerFiles[index].label, selected ) == true )
+                for( uint32_t index = 0; index != fileCount; ++index )
                 {
-                    m_fileIndex = (int32_t)index;
-                    m_entryIndex = 0;
-                    this->resetEntryParams_();
-                    settingsChanged = true;
-                }
+                    bool selected = m_fileIndex == (int32_t)index;
 
-                if( selected == true )
-                {
-                    ImGui::SetItemDefaultFocus();
+                    Mosaic::Response selectableResponse = Mosaic::selectable( _ui, Mosaic::Key( index ), s_figmaViewerFiles[index].label, selected );
+
+                    if( selectableResponse.clicked() == true )
+                    {
+                        m_fileIndex = (int32_t)index;
+                        m_entryIndex = 0;
+                        this->resetEntryParams_();
+                        settingsChanged = true;
+                    }
+
+                    if( selected == true )
+                    {
+                        Mosaic::setItemDefaultFocus( _ui, selectableResponse.id );
+                    }
                 }
             }
-
-            ImGui::EndCombo();
         }
 
         const FigmaViewerFileDesc & selectedFile = s_figmaViewerFile( m_fileIndex );
         const FigmaViewerEntryDesc & selectedEntry = s_figmaViewerEntry( selectedFile, m_entryIndex );
 
-        settingsChanged |= s_renderPathInput( "Figma file", m_figPathInput, sizeof( m_figPathInput ), false, "Open Figma File", m_figPathInput );
-        settingsChanged |= s_renderPathInput( "Fonts folder", m_fontsPathInput, sizeof( m_fontsPathInput ), true, "Choose Fonts Folder", m_fontsPathInput );
+        settingsChanged |= s_renderPathInput( _ui, "Figma file", m_figPathInput, sizeof( m_figPathInput ), false, "Open Figma File", m_figPathInput );
+        settingsChanged |= s_renderPathInput( _ui, "Fonts folder", m_fontsPathInput, sizeof( m_fontsPathInput ), true, "Choose Fonts Folder", m_fontsPathInput );
 
-        if( ImGui::BeginCombo( "Start point", selectedEntry.label ) == true )
         {
-            for( uint32_t index = 0; index != selectedFile.entryCount; ++index )
+            Mosaic::TreeScope entryCombo = Mosaic::beginCombo( _ui, "Start point", selectedEntry.label );
+
+            if( entryCombo.visible() == true )
             {
-                const FigmaViewerEntryDesc & entry = s_figmaViewerEntry( selectedFile, (int32_t)index );
-                const bool selected = m_entryIndex == (int32_t)index;
-
-                Char label[256] = {'\0'};
-                MENGINE_SNPRINTF( label, 256, "%s [%s]", entry.label, entry.kind );
-
-                if( ImGui::Selectable( label, selected ) == true )
+                for( uint32_t index = 0; index != selectedFile.entryCount; ++index )
                 {
-                    m_entryIndex = (int32_t)index;
-                    this->resetEntryParams_();
-                    settingsChanged = true;
-                }
+                    const FigmaViewerEntryDesc & entry = s_figmaViewerEntry( selectedFile, (int32_t)index );
+                    bool selected = m_entryIndex == (int32_t)index;
 
-                if( selected == true )
-                {
-                    ImGui::SetItemDefaultFocus();
+                    Char label[256] = {'\0'};
+                    MENGINE_SNPRINTF( label, 256, "%s [%s]", entry.label, entry.kind );
+
+                    Mosaic::Response selectableResponse = Mosaic::selectable( _ui, Mosaic::Key( index ), label, selected );
+
+                    if( selectableResponse.clicked() == true )
+                    {
+                        m_entryIndex = (int32_t)index;
+                        this->resetEntryParams_();
+                        settingsChanged = true;
+                    }
+
+                    if( selected == true )
+                    {
+                        Mosaic::setItemDefaultFocus( _ui, selectableResponse.id );
+                    }
                 }
             }
-
-            ImGui::EndCombo();
         }
 
-        settingsChanged |= ImGui::InputText( "Start frame id", m_startFrameIdInput, sizeof( m_startFrameIdInput ) );
-        settingsChanged |= ImGui::Checkbox( "Auto viewport", &m_autoViewportInput );
-        settingsChanged |= ImGui::DragFloat2( "Viewport", m_viewportInput, 1.f, 1.f, 4096.f, "%.0f" );
-        settingsChanged |= ImGui::DragFloat2( "Offset", m_positionInput, 1.f, -4096.f, 4096.f, "%.0f" );
-        ImGui::BeginDisabled( m_autoViewportInput );
-        settingsChanged |= ImGui::SliderFloat( "Scale", &m_scaleInput, 0.1f, 4.f, "%.2f", ImGuiSliderFlags_Logarithmic | ImGuiSliderFlags_NoRoundToFormat );
-        ImGui::EndDisabled();
+        {
+            Mosaic::String startFrameId( m_startFrameIdInput );
+
+            if( Mosaic::property( _ui, "Start frame id", &startFrameId ).changed() == true )
+            {
+                s_copyPathInput( m_startFrameIdInput, sizeof( m_startFrameIdInput ), startFrameId.c_str() );
+                settingsChanged = true;
+            }
+        }
+
+        settingsChanged |= Mosaic::checkbox( _ui, "Auto viewport", &m_autoViewportInput ).changed();
+
+        Mosaic::SliderOptions viewportOptions;
+        viewportOptions.minimum = 1.0;
+        viewportOptions.maximum = 4096.0;
+        viewportOptions.dragSpeed = 1.0;
+        viewportOptions.precision = 0;
+
+        settingsChanged |= Mosaic::dragFloatVector( _ui, "Viewport", Mosaic::FloatSpan( m_viewportInput, 2 ), viewportOptions ).changed();
+
+        Mosaic::SliderOptions offsetOptions;
+        offsetOptions.minimum = -4096.0;
+        offsetOptions.maximum = 4096.0;
+        offsetOptions.dragSpeed = 1.0;
+        offsetOptions.precision = 0;
+
+        settingsChanged |= Mosaic::dragFloatVector( _ui, "Offset", Mosaic::FloatSpan( m_positionInput, 2 ), offsetOptions ).changed();
+
+        {
+            Mosaic::Scope scaleDisabled = Mosaic::disabledScope( _ui, m_autoViewportInput );
+
+            Mosaic::SliderOptions scaleOptions;
+            scaleOptions.minimum = 0.1;
+            scaleOptions.maximum = 4.0;
+            scaleOptions.precision = 2;
+            scaleOptions.logarithmic = true;
+            scaleOptions.roundToFormat = false;
+
+            settingsChanged |= Mosaic::slider( _ui, "Scale", &m_scaleInput, scaleOptions ).changed();
+        }
 
         const uint32_t playbackRateCount = s_figmaViewerPlaybackRateCount();
+
         if( m_playbackRateIndex < 0 || (uint32_t)m_playbackRateIndex >= playbackRateCount )
         {
             m_playbackRateIndex = 0;
@@ -433,33 +469,38 @@ namespace Mengine
         }
 
         const FigmaViewerPlaybackRateDesc & playbackRate = s_figmaViewerPlaybackRate( m_playbackRateIndex );
-        if( ImGui::BeginCombo( "Slowdown", playbackRate.label ) == true )
+
         {
-            for( uint32_t index = 0; index != playbackRateCount; ++index )
+            Mosaic::TreeScope rateCombo = Mosaic::beginCombo( _ui, "Slowdown", playbackRate.label );
+
+            if( rateCombo.visible() == true )
             {
-                const bool selected = m_playbackRateIndex == (int32_t)index;
-
-                if( ImGui::Selectable( s_figmaViewerPlaybackRates[index].label, selected ) == true )
+                for( uint32_t index = 0; index != playbackRateCount; ++index )
                 {
-                    m_playbackRateIndex = (int32_t)index;
-                    settingsChanged = true;
+                    bool selected = m_playbackRateIndex == (int32_t)index;
 
-                    if( m_figmaUnknown != nullptr )
+                    Mosaic::Response selectableResponse = Mosaic::selectable( _ui, Mosaic::Key( index ), s_figmaViewerPlaybackRates[index].label, selected );
+
+                    if( selectableResponse.clicked() == true )
                     {
-                        m_figmaUnknown->setPlaybackRate( s_figmaViewerPlaybackRates[index].rate );
+                        m_playbackRateIndex = (int32_t)index;
+                        settingsChanged = true;
+
+                        if( m_figmaUnknown != nullptr )
+                        {
+                            m_figmaUnknown->setPlaybackRate( s_figmaViewerPlaybackRates[index].rate );
+                        }
+                    }
+
+                    if( selected == true )
+                    {
+                        Mosaic::setItemDefaultFocus( _ui, selectableResponse.id );
                     }
                 }
-
-                if( selected == true )
-                {
-                    ImGui::SetItemDefaultFocus();
-                }
             }
-
-            ImGui::EndCombo();
         }
 
-        const bool openSelection = ImGui::Button( "Open" );
+        bool openSelection = Mosaic::button( _ui, "Open" ).clicked();
 
         if( settingsChanged == true || openSelection == true )
         {
@@ -471,17 +512,17 @@ namespace Mengine
             this->applySelection_();
         }
 
-        ImGui::SameLine();
+        Mosaic::sameLine( _ui );
 
-        if( ImGui::Button( "Close" ) == true )
+        if( Mosaic::button( _ui, "Close" ).clicked() == true )
         {
             this->clearFigma_();
             m_status = "Closed";
         }
 
-        ImGui::SameLine();
+        Mosaic::sameLine( _ui );
 
-        if( ImGui::Button( "Replay" ) == true )
+        if( Mosaic::button( _ui, "Replay" ).clicked() == true )
         {
             if( m_figmaUnknown == nullptr )
             {
@@ -497,18 +538,43 @@ namespace Mengine
             }
         }
 
-        ImGui::Separator();
+        Mosaic::separator( _ui );
 
-        ImGui::Text( "Figma SDK version: %u", FIGMA_SDK_VERSION );
-        ImGui::Text( "Status: %s", m_status.c_str() );
-        ImGui::Text( "File: %s", m_figPathInput );
-        ImGui::Text( "Fonts: %s", m_fontsPathInput[0] != '\0' ? m_fontsPathInput : "default" );
-        ImGui::Text( "Frame id: %s", m_startFrameIdInput[0] != '\0' ? m_startFrameIdInput : "prototype start" );
-        ImGui::Text( "Kind: %s", selectedEntry.kind );
-        ImGui::Text( "Node: %s", m_figmaNode != nullptr ? "active" : "none" );
+        m_readout.clear();
 
-        ImGui::End();
+        Char readout[MENGINE_MAX_PATH + 64] = {'\0'};
+
+        MENGINE_SNPRINTF( readout, sizeof( readout ) - 1, "Figma SDK version: %u", FIGMA_SDK_VERSION );
+        m_readout.emplace_back( readout );
+
+        MENGINE_SNPRINTF( readout, sizeof( readout ) - 1, "Status: %s", m_status.c_str() );
+        m_readout.emplace_back( readout );
+
+        MENGINE_SNPRINTF( readout, sizeof( readout ) - 1, "File: %s", m_figPathInput );
+        m_readout.emplace_back( readout );
+
+        MENGINE_SNPRINTF( readout, sizeof( readout ) - 1, "Fonts: %s", m_fontsPathInput[0] != '\0' ? m_fontsPathInput : "default" );
+        m_readout.emplace_back( readout );
+
+        MENGINE_SNPRINTF( readout, sizeof( readout ) - 1, "Frame id: %s", m_startFrameIdInput[0] != '\0' ? m_startFrameIdInput : "prototype start" );
+        m_readout.emplace_back( readout );
+
+        MENGINE_SNPRINTF( readout, sizeof( readout ) - 1, "Kind: %s", selectedEntry.kind );
+        m_readout.emplace_back( readout );
+
+        MENGINE_SNPRINTF( readout, sizeof( readout ) - 1, "Node: %s", m_figmaNode != nullptr ? "active" : "none" );
+        m_readout.emplace_back( readout );
+
+        uint32_t readoutIndex = 0;
+
+        for( const String & line : m_readout )
+        {
+            Mosaic::Scope lineScope = Mosaic::scope( _ui, Mosaic::Key( readoutIndex++ ) );
+
+            Mosaic::text( _ui, Mosaic::StringView( line.c_str(), line.size() ) );
+        }
     }
+
     //////////////////////////////////////////////////////////////////////////
     void FigmaViewerExampleSceneEventReceiver::syncPathInputs_()
     {

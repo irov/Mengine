@@ -1,5 +1,13 @@
 #pragma once
 
+#include "ToolMosaic/ToolMosaicAllocator.h"
+#include "ToolMosaic/ToolMosaicRenderer.h"
+#include "ToolMosaic/ToolMosaicPlatform.h"
+#include "ToolMosaic/ToolMosaicFont.h"
+
+#include "Mosaic/Mosaic.hpp"
+#include "Mosaic/GraphicsBridge.hpp"
+
 #include "Interface/SettingInterface.h"
 #include "Interface/SoundIdentityInterface.h"
 
@@ -596,20 +604,20 @@ namespace Mengine
 
     struct CachedImage
     {
-        String      name;
-        uintptr_t   image;
-        size_t      width;
-        size_t      height;
+        String                  name;
+        Mosaic::TextureHandle   image;
+        size_t                  width;
+        size_t                  height;
     };
 
     struct NodeIcon
     {
-        String      name;
-        uintptr_t   image;
-        float       uv0_X;
-        float       uv0_Y;
-        float       uv1_X;
-        float       uv1_Y;
+        String                  name;
+        Mosaic::TextureHandle   image;
+        float                   uv0_X;
+        float                   uv0_Y;
+        float                   uv1_X;
+        float                   uv1_Y;
     };
 
     struct DebuggerNode
@@ -720,6 +728,20 @@ namespace Mengine
 
         bool Initialize( const String & _address, const uint16_t _port );
         void Loop();
+
+    protected:
+        bool InitializeMosaic();
+        void FinalizeMosaic();
+        void UpdateMosaicInput( double _dt );
+        void RenderMosaic();
+
+    public:
+        void PushMosaicMouseButton( int _button, int _action, int _mods );
+        void PushMosaicKey( int _key, int _action, int _mods );
+        void PushMosaicChar( unsigned int _codepoint );
+        void PushMosaicScroll( double _offsetX, double _offsetY );
+
+    public:
         void Shutdown();
 
     protected:
@@ -759,9 +781,16 @@ namespace Mengine
         void DoUISoundsTab();
         void DoUISettingsTab();
         void DoUIResolutionsTab();
-        String DoIPInput( const String & _title, const String & _inIP );
-        void DoNodeElement( DebuggerNode * _node, const Char * _filter, DebuggerNode ** _selectedNode, const String & _tag );
+        String DoIPInput( const Char * _title, const String & _inIP );
+        void DoNodeElement( DebuggerNode * _node, const Char * _filter, DebuggerNode ** _selectedNode );
         void DoNodeProperties( DebuggerNode * _node );
+        Mosaic::LayoutOptions FillLayout() const;
+        Mosaic::Scope PropertyRow( const Char * _label );
+        Mosaic::Theme ReadOnlyTheme() const;
+        void DisabledCheckbox( const Char * _label, bool _value );
+        void BulletLine( const Char * _format, ... );
+        void ReadOnlyText( uint32_t _index, const String & _message );
+        void TextLine( const Mosaic::Color & _color, const Char * _format, ... );
         void OnConnectButton();
         void OnDisconnectButton();
         void OnSelectNode( DebuggerNode * _node, DebuggerNode ** _selectedNode );
@@ -793,6 +822,24 @@ namespace Mengine
     private:
         GLFWwindow * m_window;
         bool m_shutdown;
+
+        ToolMosaicAllocator m_mosaicAllocator;
+        ToolMosaicRenderer m_mosaicRenderer;
+        ToolMosaicFont m_mosaicFont;
+        ToolMosaicPlatform m_mosaicPlatform;
+        Mosaic::GraphicsBridge m_mosaicBridge;
+        Mosaic::Context * m_mosaicContext;
+        Mosaic::Input m_mosaicInput;
+        uint8_t m_mosaicPointerDown;
+        uint8_t m_mosaicPointerPressed;
+        uint8_t m_mosaicPointerReleased;
+        uint8_t m_mosaicPointerClicks;
+
+        typedef Deque<Mosaic::String> DequeMosaicReadout;
+        DequeMosaicReadout m_mosaicReadout;
+
+        typedef Vector<Mosaic::StringView> VectorMosaicTabTitles;
+        VectorMosaicTabTitles m_tabTitles;
         int m_width;
         int m_height;
 
@@ -800,6 +847,8 @@ namespace Mengine
         DebuggerNode * m_selectedNode;
         DebuggerNode * m_selectedNodeInCollapseHeader;
         Vector<uint32_t> m_pathToSelectedNode;
+        bool m_mosaicNodePathApplied;
+        int m_selectedTabIndex;
 
         DebuggerNode * m_selectedArrowNode;
         DebuggerNode * m_selectedSceneNode;

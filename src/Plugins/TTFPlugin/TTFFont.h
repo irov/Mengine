@@ -28,10 +28,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class TTFFont
         : public FontBase
-        , public UnknownTTFFontInterface        
     {
         DECLARE_FACTORABLE( TTFFont );
-        DECLARE_UNKNOWABLE();
 
     public:
         TTFFont();
@@ -40,10 +38,6 @@ namespace Mengine
     public:
         void setFTLibrary( FT_Library _library );
         FT_Library getFTLibrary() const;
-
-    public:
-        void setTTFFontGlyph( const TTFFontGlyphPtr & _glyph );
-        const TTFFontGlyphPtr & getTTFFontGlyph() const;
 
     public:
         void setEffect( const FontEffectInterfacePtr & _effect ) override;
@@ -102,7 +96,6 @@ namespace Mengine
     protected:
         FT_Library m_ftlibrary;
 
-        TTFFontGlyphPtr m_glyph;
         FontEffectInterfacePtr m_effect;
 
         float m_ttfAscender;

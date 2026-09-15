@@ -56,12 +56,14 @@ static int runNodeDebugger()
         }
     }
 
-    Mengine::NodeDebuggerApp app;
-
-    if( app.Initialize( address, port ) == true )
     {
-        app.Loop();
-        app.Shutdown();
+        Mengine::NodeDebuggerApp app;
+
+        if( app.Initialize( address, port ) == true )
+        {
+            app.Loop();
+            app.Shutdown();
+        }
     }
 
     SERVICE_FINALIZE( DocumentService );

@@ -1,7 +1,6 @@
 ﻿#include "NodeDebuggerApp.h"
 
-#include "imgui_impl_opengl3.h"
-#include "imgui_impl_glfw.h"
+#include <cstdarg>
 
 #define STBI_ONLY_PNG
 #define STB_IMAGE_IMPLEMENTATION
@@ -29,8 +28,6 @@
 #include <cassert>
 
 #define MutexLocker std::lock_guard<std::mutex>
-
-#include "ImGui_Ext.h"
 
 //////////////////////////////////////////////////////////////////////////
 extern "C"
@@ -82,7 +79,12 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     NodeDebuggerApp::NodeDebuggerApp()
-        : m_window( nullptr )
+        : m_mosaicContext( nullptr )
+        , m_mosaicPointerDown( 0 )
+        , m_mosaicPointerPressed( 0 )
+        , m_mosaicPointerReleased( 0 )
+        , m_mosaicPointerClicks( 0 )
+        , m_window( nullptr )
         , m_shutdown( false )
         , m_width( 1280 )
         , m_height( 720 )
@@ -103,6 +105,8 @@ namespace Mengine
         , m_scene( nullptr )
         , m_scenePickerable( nullptr )
         , m_sceneRenderable( nullptr )
+        , m_mosaicNodePathApplied( true )
+        , m_selectedTabIndex( 0 )
         , m_sceneUpdateFreq( 0 )
         , m_sceneUpdateTimer( 0.0 )
         , m_updateSceneOnChange( false )
@@ -155,27 +159,50 @@ namespace Mengine
         gladLoadGL( reinterpret_cast<GLADloadfunc>(&glfwGetProcAddress) );
         glfwSwapInterval( 1 ); // enable v-sync
 
-        this->LoadIconsAtlas();
-
         glViewport( 0, 0, m_width, m_height );
 
         glEnable( GL_BLEND );
         glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
-        // Setup Dear ImGui binding
-        IMGUI_CHECKVERSION();
-        ImGui::CreateContext();
-        ImGui::GetIO().IniFilename = nullptr; // disable "imgui.ini"
-        //ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange; // tell ImGui to not interfere with our cursors
+        glfwSetMouseButtonCallback( m_window, []( GLFWwindow * _wnd, int _button, int _action, int _mods )
+        {
+            NodeDebuggerApp * _this = reinterpret_cast<NodeDebuggerApp *>(glfwGetWindowUserPointer( _wnd ));
 
-        ImGui_ImplOpenGL3_Init();
+            if( _this != nullptr )
+            {
+                _this->PushMosaicMouseButton( _button, _action, _mods );
+            }
+        } );
 
-        ImGui_ImplGlfw_InitForOpenGL( m_window, true );
+        glfwSetScrollCallback( m_window, []( GLFWwindow * _wnd, double _offsetX, double _offsetY )
+        {
+            NodeDebuggerApp * _this = reinterpret_cast<NodeDebuggerApp *>(glfwGetWindowUserPointer( _wnd ));
 
-        glfwSetMouseButtonCallback( m_window, ImGui_ImplGlfw_MouseButtonCallback );
-        glfwSetScrollCallback( m_window, ImGui_ImplGlfw_ScrollCallback );
-        glfwSetKeyCallback( m_window, ImGui_ImplGlfw_KeyCallback );
-        glfwSetCharCallback( m_window, ImGui_ImplGlfw_CharCallback );
+            if( _this != nullptr )
+            {
+                _this->PushMosaicScroll( _offsetX, _offsetY );
+            }
+        } );
+
+        glfwSetKeyCallback( m_window, []( GLFWwindow * _wnd, int _key, int _scancode, int _action, int _mods )
+        {
+            NodeDebuggerApp * _this = reinterpret_cast<NodeDebuggerApp *>(glfwGetWindowUserPointer( _wnd ));
+
+            if( _this != nullptr )
+            {
+                _this->PushMosaicKey( _key, _action, _mods );
+            }
+        } );
+
+        glfwSetCharCallback( m_window, []( GLFWwindow * _wnd, unsigned int _codepoint )
+        {
+            NodeDebuggerApp * _this = reinterpret_cast<NodeDebuggerApp *>(glfwGetWindowUserPointer( _wnd ));
+
+            if( _this != nullptr )
+            {
+                _this->PushMosaicChar( _codepoint );
+            }
+        } );
 
         glfwSetWindowSizeCallback( m_window, []( GLFWwindow * _wnd, int _width, int _height )
         {
@@ -186,8 +213,12 @@ namespace Mengine
             }
         } );
 
-        ImGui::StyleColorsClassic();
-        //ImGuiExt::SetBrightStyle();
+        if( this->InitializeMosaic() == false )
+        {
+            return false;
+        }
+
+        this->LoadIconsAtlas();
 
         m_shutdown = false;
         m_networkThread = std::thread( &NodeDebuggerApp::NetworkLoop, this );
@@ -259,9 +290,1107 @@ namespace Mengine
             this->OnConnectButton();
         }
 
-        ImGui_ImplOpenGL3_CreateDeviceObjects();
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+        static Mosaic::Key makeKey_( const Char * _value )
+        {
+            Mosaic::StringView value( _value );
+
+            Mosaic::Key key( value );
+
+            return key;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static Mosaic::Key makeKey_( const String & _value )
+        {
+            Mosaic::StringView value( _value.c_str(), _value.size() );
+
+            Mosaic::Key key( value );
+
+            return key;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static Mosaic::KeyCode getMosaicKeyCode_( int _key )
+        {
+            if( _key >= GLFW_KEY_A && _key <= GLFW_KEY_Z )
+            {
+                return (Mosaic::KeyCode)((int)Mosaic::KeyCode::A + (_key - GLFW_KEY_A));
+            }
+
+            if( _key >= GLFW_KEY_0 && _key <= GLFW_KEY_9 )
+            {
+                return (Mosaic::KeyCode)((int)Mosaic::KeyCode::D0 + (_key - GLFW_KEY_0));
+            }
+
+            if( _key >= GLFW_KEY_F1 && _key <= GLFW_KEY_F12 )
+            {
+                return (Mosaic::KeyCode)((int)Mosaic::KeyCode::F1 + (_key - GLFW_KEY_F1));
+            }
+
+            switch( _key )
+            {
+            case GLFW_KEY_TAB: return Mosaic::KeyCode::Tab;
+            case GLFW_KEY_ENTER: return Mosaic::KeyCode::Enter;
+            case GLFW_KEY_KP_ENTER: return Mosaic::KeyCode::Enter;
+            case GLFW_KEY_ESCAPE: return Mosaic::KeyCode::Escape;
+            case GLFW_KEY_SPACE: return Mosaic::KeyCode::Space;
+            case GLFW_KEY_BACKSPACE: return Mosaic::KeyCode::Backspace;
+            case GLFW_KEY_DELETE: return Mosaic::KeyCode::Delete;
+            case GLFW_KEY_LEFT: return Mosaic::KeyCode::Left;
+            case GLFW_KEY_RIGHT: return Mosaic::KeyCode::Right;
+            case GLFW_KEY_UP: return Mosaic::KeyCode::Up;
+            case GLFW_KEY_DOWN: return Mosaic::KeyCode::Down;
+            case GLFW_KEY_HOME: return Mosaic::KeyCode::Home;
+            case GLFW_KEY_END: return Mosaic::KeyCode::End;
+            case GLFW_KEY_PAGE_UP: return Mosaic::KeyCode::PageUp;
+            case GLFW_KEY_PAGE_DOWN: return Mosaic::KeyCode::PageDown;
+            default: break;
+            }
+
+            return Mosaic::KeyCode::Unknown;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static Mosaic::Modifiers getMosaicModifiers_( int _mods )
+        {
+            Mosaic::Modifiers modifiers;
+            modifiers.shift = (_mods & GLFW_MOD_SHIFT) != 0;
+            modifiers.control = (_mods & GLFW_MOD_CONTROL) != 0;
+            modifiers.alt = (_mods & GLFW_MOD_ALT) != 0;
+            modifiers.super = (_mods & GLFW_MOD_SUPER) != 0;
+
+#if defined(__APPLE__)
+            modifiers.primary = modifiers.super;
+#else
+            modifiers.primary = modifiers.control;
+#endif
+
+            return modifiers;
+        }
+        //////////////////////////////////////////////////////////////////////////
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::PushMosaicMouseButton( int _button, int _action, int _mods )
+    {
+        unsigned bit = 0;
+
+        switch( _button )
+        {
+        case GLFW_MOUSE_BUTTON_LEFT: bit = 1U << (unsigned)Mosaic::PointerButton::Primary; break;
+        case GLFW_MOUSE_BUTTON_RIGHT: bit = 1U << (unsigned)Mosaic::PointerButton::Secondary; break;
+        case GLFW_MOUSE_BUTTON_MIDDLE: bit = 1U << (unsigned)Mosaic::PointerButton::Middle; break;
+        default: return;
+        }
+
+        if( _action == GLFW_PRESS )
+        {
+            m_mosaicPointerDown = (uint8_t)(m_mosaicPointerDown | bit);
+            m_mosaicPointerPressed = (uint8_t)(m_mosaicPointerPressed | bit);
+            m_mosaicPointerClicks = 1;
+        }
+        else if( _action == GLFW_RELEASE )
+        {
+            m_mosaicPointerDown = (uint8_t)(m_mosaicPointerDown & ~bit);
+            m_mosaicPointerReleased = (uint8_t)(m_mosaicPointerReleased | bit);
+        }
+
+        m_mosaicInput.modifiers = Detail::getMosaicModifiers_( _mods );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::PushMosaicKey( int _key, int _action, int _mods )
+    {
+        Mosaic::KeyCode code = Detail::getMosaicKeyCode_( _key );
+
+        if( code == Mosaic::KeyCode::Unknown )
+        {
+            return;
+        }
+
+        Mosaic::KeyEvent event;
+        event.key = code;
+        event.pressed = _action == GLFW_PRESS || _action == GLFW_REPEAT;
+        event.released = _action == GLFW_RELEASE;
+        event.repeat = _action == GLFW_REPEAT;
+        event.modifiers = Detail::getMosaicModifiers_( _mods );
+
+        m_mosaicInput.keyboard.push_back( event );
+        m_mosaicInput.modifiers = event.modifiers;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::PushMosaicChar( unsigned int _codepoint )
+    {
+        if( _codepoint < 0x20 || _codepoint == 0x7f )
+        {
+            return;
+        }
+
+        Mosaic::String text;
+
+        if( _codepoint < 0x80 )
+        {
+            text += (char)_codepoint;
+        }
+        else if( _codepoint < 0x800 )
+        {
+            text += (char)(0xc0 | (_codepoint >> 6));
+            text += (char)(0x80 | (_codepoint & 0x3f));
+        }
+        else if( _codepoint < 0x10000 )
+        {
+            text += (char)(0xe0 | (_codepoint >> 12));
+            text += (char)(0x80 | ((_codepoint >> 6) & 0x3f));
+            text += (char)(0x80 | (_codepoint & 0x3f));
+        }
+        else
+        {
+            text += (char)(0xf0 | (_codepoint >> 18));
+            text += (char)(0x80 | ((_codepoint >> 12) & 0x3f));
+            text += (char)(0x80 | ((_codepoint >> 6) & 0x3f));
+            text += (char)(0x80 | (_codepoint & 0x3f));
+        }
+
+        m_mosaicInput.text.push_back( text );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::PushMosaicScroll( double _offsetX, double _offsetY )
+    {
+        m_mosaicInput.wheel.x += (float)_offsetX * 24.f;
+        m_mosaicInput.wheel.y += (float)_offsetY * 24.f;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool NodeDebuggerApp::InitializeMosaic()
+    {
+        Mosaic::setDefaultAllocator( &m_mosaicAllocator );
+
+        if( m_mosaicRenderer.initialize() == false )
+        {
+            return false;
+        }
+
+        if( m_mosaicFont.initialize( &m_mosaicRenderer ) == false )
+        {
+            return false;
+        }
+
+        if( m_mosaicPlatform.initialize( m_window ) == false )
+        {
+            return false;
+        }
+
+        Mosaic::ContextOptions options;
+        options.allocator = &m_mosaicAllocator;
+        options.platform = &m_mosaicPlatform;
+        options.fontProvider = &m_mosaicFont;
+
+        m_mosaicContext = Mosaic::newContext( options );
+
+        if( m_mosaicContext == nullptr )
+        {
+            return false;
+        }
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::FinalizeMosaic()
+    {
+        if( m_mosaicContext != nullptr )
+        {
+            Mosaic::deleteContext( m_mosaicContext );
+            m_mosaicContext = nullptr;
+        }
+
+        m_mosaicPlatform.finalize();
+        m_mosaicFont.finalize();
+        m_mosaicRenderer.finalize();
+
+        Mosaic::setDefaultAllocator( nullptr );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::UpdateMosaicInput( double _dt )
+    {
+        double cursorX = 0.0;
+        double cursorY = 0.0;
+        glfwGetCursorPos( m_window, &cursorX, &cursorY );
+
+        m_mosaicInput.pointers.resize( 1 );
+
+        Mosaic::PointerState & pointer = m_mosaicInput.pointers.front();
+
+        Mosaic::Vec2 position = {(float)cursorX, (float)cursorY};
+
+        pointer.id = 1;
+        pointer.type = Mosaic::PointerType::Mouse;
+        pointer.delta = {position.x - pointer.position.x, position.y - pointer.position.y};
+        pointer.position = position;
+
+        pointer.down = (uint8_t)(m_mosaicPointerDown | m_mosaicPointerPressed);
+        pointer.pressed = m_mosaicPointerPressed;
+        pointer.released = m_mosaicPointerReleased;
+
+        if( pointer.pressed != 0 )
+        {
+            pointer.pressPositions[0] = position;
+            pointer.pressPositionValid = 1;
+            pointer.clickCounts[0] = m_mosaicPointerClicks;
+            pointer.clickCount = m_mosaicPointerClicks;
+        }
+        else
+        {
+            pointer.clickCounts[0] = 0;
+            pointer.clickCount = 0;
+        }
+
+        m_mosaicInput.windowFocused = glfwGetWindowAttrib( m_window, GLFW_FOCUSED ) == GLFW_TRUE;
+        m_mosaicInput.deltaTime = (float)_dt;
+        m_mosaicInput.timestamp = glfwGetTime();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::TextLine( const Mosaic::Color & _color, const Char * _format, ... )
+    {
+        Char buffer[1024] = {'\0'};
+
+        va_list args;
+        va_start( args, _format );
+        vsnprintf( buffer, sizeof( buffer ) - 1, _format, args );
+        va_end( args );
+
+        m_mosaicReadout.emplace_back( buffer );
+
+        const Mosaic::String & line = m_mosaicReadout.back();
+
+        size_t lineIndex = m_mosaicReadout.size();
+
+        Mosaic::Key key( lineIndex );
+
+        Mosaic::Scope lineScope = Mosaic::scope( m_mosaicContext, key );
+
+        Mosaic::Theme theme = Mosaic::getTheme( m_mosaicContext );
+        theme.colors.text = _color;
+
+        Mosaic::Scope colorScope = Mosaic::styleScope( m_mosaicContext, theme );
+
+        Mosaic::text( m_mosaicContext, Mosaic::StringView( line.c_str(), line.size() ) );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Mosaic::LayoutOptions NodeDebuggerApp::FillLayout() const
+    {
+        Mosaic::LayoutOptions layout;
+        layout.width = Mosaic::SizeRule::Fill;
+        layout.height = Mosaic::SizeRule::Fill;
+
+        return layout;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Mosaic::Scope NodeDebuggerApp::PropertyRow( const Char * _label )
+    {
+        Mosaic::LayoutOptions rowLayout;
+        rowLayout.width = Mosaic::SizeRule::Fill;
+
+        Mosaic::Key key = Detail::makeKey_( _label );
+
+        Mosaic::Scope row = Mosaic::row( m_mosaicContext, key, rowLayout );
+
+        Mosaic::TextOptions labelOptions;
+        labelOptions.layout.width = Mosaic::Dimension::fixed( Mosaic::getTheme( m_mosaicContext ).metrics.propertyLabelWidth );
+
+        Mosaic::text( m_mosaicContext, _label, labelOptions );
+
+        return row;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::DoUI()
+    {
+        m_mosaicReadout.clear();
+
+        Mosaic::WindowOptions windowOptions;
+        windowOptions.titleBar = false;
+        windowOptions.movable = false;
+        windowOptions.resizable = false;
+
+        Mosaic::setNextWindowPosition( m_mosaicContext, {0.f, 0.f}, Mosaic::Condition::Always );
+        Mosaic::setNextWindowSize( m_mosaicContext, {(float)m_width, (float)m_height}, Mosaic::Condition::Always );
+
+        Mosaic::WindowScope window = Mosaic::window( m_mosaicContext, "Node Debugger", windowOptions );
+
+        if( window.visible() == false )
+        {
+            return;
+        }
+
+        m_tabTitles.clear();
+
+        for( const TabDescriptor & tab : m_tabs )
+        {
+            m_tabTitles.emplace_back( tab.title.c_str(), tab.title.size() );
+        }
+
+        const Mosaic::StringView * titleData = m_tabTitles.data();
+        size_t titleCount = m_tabTitles.size();
+
+        Mosaic::StringViewSpan titles( titleData, titleCount );
+
+        Mosaic::tabs( m_mosaicContext, "Tabs", &m_selectedTabIndex, titles );
+
+        TabDescriptor & tab = m_tabs[m_selectedTabIndex];
+
+        m_selectedTab = tab.name;
+
+        if( m_cacheSelectedTab != m_selectedTab )
+        {
+            m_cacheSelectedTab = m_selectedTab;
+            m_invalidateSelectedTab = true;
+        }
+
+        Mosaic::Key key = Detail::makeKey_( tab.name );
+
+        Mosaic::Scope body = Mosaic::column( m_mosaicContext, key, this->FillLayout() );
+
+        tab.functor();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::DoUIMemoryTab()
+    {
+        const Mosaic::Color green = {0.f, 1.f, 0.f, 1.f};
+
+        Mosaic::separator( m_mosaicContext );
+
+        this->TextLine( green, "Total: %ug %um %ukb %ub"
+            , m_memoryTotal / 1000000000
+            , (m_memoryTotal % 1000000000) / 1000000
+            , (m_memoryTotal % 1000000) / 1000
+            , m_memoryTotal % 1000
+        );
+
+        this->TextLine( green, "Texture Available: %ug %um %ukb %ub"
+            , m_AvailableTextureMemory / 1000000000
+            , (m_AvailableTextureMemory % 1000000000) / 1000000
+            , (m_AvailableTextureMemory % 1000000) / 1000
+            , m_AvailableTextureMemory % 1000
+        );
+
+        this->TextLine( green, "Texture Use: %ug %um %ukb %ub"
+            , m_TextureMemoryUse / 1000000000
+            , (m_TextureMemoryUse % 1000000000) / 1000000
+            , (m_TextureMemoryUse % 1000000) / 1000
+            , m_TextureMemoryUse % 1000
+        );
+
+        this->TextLine( green, "Texture Count: %u", m_TextureCount );
+        this->TextLine( green, "Sound Sources Count: %u", m_SoundSourcesCount );
+        this->TextLine( green, "Sound Buffers Count: %u", m_SoundBuffersCount );
+
+        Mosaic::separator( m_mosaicContext );
+
+        struct MemoryDesc
+        {
+            String name;
+            uint32_t size;
+        };
+
+        typedef Vector<MemoryDesc> VectorMemoryDesc;
+        VectorMemoryDesc vmemory;
+
+        for( auto && [name, size] : m_memory )
+        {
+            vmemory.emplace_back( MemoryDesc{name, size} );
+        }
+
+        std::stable_sort( vmemory.begin(), vmemory.end(), []( const MemoryDesc & l, const MemoryDesc & r )
+        {
+            return l.size > r.size;
+        } );
+
+        for( const MemoryDesc & desc : vmemory )
+        {
+            if( desc.size > 1024 * 1024 )
+            {
+                this->TextLine( {1.f, 0.25f, 0.5f, 1.f}, "Allocator: %s [total %umb %ukb]"
+                    , desc.name.c_str()
+                    , desc.size / (1024 * 1024)
+                    , desc.size / 1024 % 1024
+                );
+            }
+            else if( desc.size > 1024 )
+            {
+                this->TextLine( {0.5f, 1.f, 0.25f, 1.f}, "Allocator: %s [total %ukb]"
+                    , desc.name.c_str()
+                    , desc.size / 1024
+                );
+            }
+            else
+            {
+                this->TextLine( {0.f, 1.f, 1.f, 1.f}, "Allocator: %s [total %u byte]"
+                    , desc.name.c_str()
+                    , desc.size
+                );
+            }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::BulletLine( const Char * _format, ... )
+    {
+        Char buffer[1024] = {'\0'};
+
+        va_list args;
+        va_start( args, _format );
+        vsnprintf( buffer, sizeof( buffer ) - 1, _format, args );
+        va_end( args );
+
+        m_mosaicReadout.emplace_back( buffer );
+
+        const Mosaic::String & line = m_mosaicReadout.back();
+
+        size_t lineIndex = m_mosaicReadout.size();
+
+        Mosaic::Key key( lineIndex );
+
+        Mosaic::Scope lineScope = Mosaic::scope( m_mosaicContext, key );
+
+        Mosaic::bulletText( m_mosaicContext, Mosaic::StringView( line.c_str(), line.size() ) );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::ReadOnlyText( uint32_t _index, const String & _message )
+    {
+        m_mosaicReadout.emplace_back( _message.c_str(), _message.size() );
+
+        Mosaic::String & text = m_mosaicReadout.back();
+
+        Mosaic::TextInputOptions textOptions;
+        textOptions.readOnly = true;
+
+        Mosaic::LayoutOptions textLayout;
+        textLayout.width = Mosaic::SizeRule::Fill;
+        textLayout.height = Mosaic::Dimension::fixed( Mosaic::getTheme( m_mosaicContext ).metrics.lineHeight * 2.5f );
+
+        Mosaic::Scope textScope = Mosaic::scope( m_mosaicContext, Mosaic::Key( _index ) );
+
+        Mosaic::inputMultiline( m_mosaicContext, "message", &text, textOptions, textLayout );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::DoUIObjectsLeakTab()
+    {
+        uint32_t leaksCount = 0;
+
+        for( auto && [type, objects] : m_objectLeaks )
+        {
+            leaksCount += (uint32_t)objects.size();
+        }
+
+        this->TextLine( {0.f, 1.f, 0.f, 1.f}, "Generator: %s [total %u]"
+            , m_objectLeakGeneration.c_str()
+            , leaksCount
+        );
+
+        Mosaic::separator( m_mosaicContext );
+
+        uint32_t index = 0;
+
+        for( auto && [type, objects] : m_objectLeaks )
+        {
+            Mosaic::Scope typeScope = Mosaic::scope( m_mosaicContext, Mosaic::Key( index ) );
+
+            m_mosaicReadout.emplace_back();
+            Mosaic::String & typeLabel = m_mosaicReadout.back();
+            typeLabel.assign( type.c_str() );
+            typeLabel += " [";
+            typeLabel += std::to_string( objects.size() ).c_str();
+            typeLabel += ']';
+
+            Mosaic::Theme typeTheme = Mosaic::getTheme( m_mosaicContext );
+            typeTheme.colors.text = {0.f, 1.f, 0.f, 1.f};
+
+            bool typeOpened = false;
+
+            {
+                Mosaic::Scope typeColor = Mosaic::styleScope( m_mosaicContext, typeTheme );
+
+                Mosaic::TreeScope typeNode = Mosaic::treeNode( m_mosaicContext, Mosaic::Key( index ), typeLabel, true );
+
+                typeOpened = typeNode.expanded();
+
+                if( typeOpened == true )
+                {
+                    Mosaic::separator( m_mosaicContext );
+
+                    for( const LeakDesc & leak : objects )
+                    {
+                        Mosaic::Scope leakScope = Mosaic::scope( m_mosaicContext, Mosaic::Key( index ) );
+
+                        this->BulletLine( "file: %s", leak.file.c_str() );
+                        this->BulletLine( "line: %s", leak.line.c_str() );
+                        this->BulletLine( "function: %s", leak.function.c_str() );
+
+                        this->ReadOnlyText( index, leak.message );
+
+                        Mosaic::Theme parentTheme = Mosaic::getTheme( m_mosaicContext );
+                        parentTheme.colors.text = {0.f, 0.f, 1.f, 1.f};
+
+                        Mosaic::Scope parentColor = Mosaic::styleScope( m_mosaicContext, parentTheme );
+
+                        Mosaic::TreeScope parentNode = Mosaic::treeNode( m_mosaicContext, Mosaic::Key( index ), "traceback" );
+
+                        if( parentNode.expanded() == true )
+                        {
+                            Mosaic::separator( m_mosaicContext );
+
+                            uint32_t parentIndex = 0;
+
+                            for( const LeakDesc & parent : leak.parents )
+                            {
+                                Mosaic::Scope parentScope = Mosaic::scope( m_mosaicContext, Mosaic::Key( parentIndex ) );
+
+                                this->BulletLine( "file: %s", parent.file.c_str() );
+                                this->BulletLine( "line: %s", parent.line.c_str() );
+                                this->BulletLine( "function: %s", parent.function.c_str() );
+
+                                this->ReadOnlyText( index, parent.message );
+
+                                Mosaic::separator( m_mosaicContext );
+
+                                ++parentIndex;
+                            }
+                        }
+
+                        Mosaic::separator( m_mosaicContext );
+
+                        ++index;
+                    }
+                }
+            }
+
+            ++index;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::DisabledCheckbox( const Char * _label, bool _value )
+    {
+        Mosaic::Scope disabled = Mosaic::disabledScope( m_mosaicContext, true );
+
+        bool value = _value;
+
+        Mosaic::checkbox( m_mosaicContext, _label, &value );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::DoUISoundsTab()
+    {
+        for( const SoundDesc & desc : m_sounds )
+        {
+            Mosaic::Scope soundScope = Mosaic::scope( m_mosaicContext, Mosaic::Key( desc.id ) );
+
+            switch( desc.state )
+            {
+            case ESS_INIT:
+                this->TextLine( {0.5f, 0.5f, 0.5f, 1.f}, "[init]" );
+                break;
+            case ESS_STOP:
+                this->TextLine( {1.f, 0.f, 0.f, 1.f}, "[stop]" );
+                break;
+            case ESS_PLAY:
+                this->TextLine( {0.f, 1.f, 0.f, 1.f}, "[play]" );
+                break;
+            case ESS_PAUSE:
+                this->TextLine( {0.f, 0.5f, 1.f, 1.f}, "[pause]" );
+                break;
+            case ESS_END:
+                this->TextLine( {0.5f, 0.5f, 0.5f, 1.f}, "[end]" );
+                break;
+            }
+
+            Mosaic::sameLine( m_mosaicContext );
+            this->DisabledCheckbox( "streamable", desc.streamable );
+
+            Mosaic::sameLine( m_mosaicContext );
+            this->DisabledCheckbox( "loop", desc.loop );
+
+            Mosaic::sameLine( m_mosaicContext );
+            this->DisabledCheckbox( "turn", desc.turn );
+
+            Mosaic::sameLine( m_mosaicContext );
+
+            const Mosaic::Color white = {1.f, 1.f, 1.f, 1.f};
+
+            switch( desc.category )
+            {
+            case ES_SOURCE_CATEGORY_SOUND:
+                this->TextLine( white, "[sound]" );
+                break;
+            case ES_SOURCE_CATEGORY_MUSIC:
+                this->TextLine( white, "[music]" );
+                break;
+            case ES_SOURCE_CATEGORY_VOICE:
+                this->TextLine( white, "[voice]" );
+                break;
+            }
+
+            Mosaic::sameLine( m_mosaicContext );
+            this->TextLine( white, "[%u]", desc.id );
+
+            Mosaic::sameLine( m_mosaicContext );
+            this->TextLine( white, "time: %f", desc.time_left );
+
+            Mosaic::sameLine( m_mosaicContext );
+            this->TextLine( white, "volume: %f", desc.volume );
+
+            Mosaic::sameLine( m_mosaicContext );
+            this->TextLine( white, "file: %s", desc.file.c_str() );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::DoUINetwork()
+    {
+        Mosaic::separator( m_mosaicContext );
+
+        Mosaic::Scope network = Mosaic::scrollArea( m_mosaicContext, "Network" );
+
+        for( const NetworkDesk & desk : m_network )
+        {
+            if( desk.type != "Request" )
+            {
+                continue;
+            }
+
+            Mosaic::Scope deskScope = Mosaic::scope( m_mosaicContext, Mosaic::Key( desk.id ) );
+
+            Mosaic::TreeScope urlNode = Mosaic::treeNode( m_mosaicContext, Mosaic::Key( desk.id ), "Url:" );
+
+            Mosaic::sameLine( m_mosaicContext );
+
+            m_mosaicReadout.emplace_back( desk.url.c_str(), desk.url.size() );
+
+            Mosaic::String & url = m_mosaicReadout.back();
+
+            Mosaic::TextInputOptions urlOptions;
+            urlOptions.readOnly = true;
+
+            Mosaic::inputText( m_mosaicContext, "url", &url, urlOptions );
+
+            if( urlNode.expanded() == true )
+            {
+                Mosaic::separator( m_mosaicContext );
+
+                this->ShowResponseDataForId( desk.id );
+
+                Mosaic::separator( m_mosaicContext );
+            }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::ShowResponseJpp( const jpp::object & _object, uint32_t _spaceCounter, uint32_t * const _labelCounter )
+    {
+        String spaces;
+        this->addSpacesWithMultiplier( &spaces, 2, _spaceCounter );
+
+        const Mosaic::Color white = {1.f, 1.f, 1.f, 1.f};
+        const Mosaic::Color dim = {1.f, 1.f, 1.f, 0.5f};
+
+        jpp::e_type jppType = _object.type();
+
+        switch( jppType )
+        {
+        case jpp::e_type::JPP_OBJECT:
+            {
+                uint32_t objectElementsEnumerator = 0;
+
+                for( auto && [key, value] : _object )
+                {
+                    Mosaic::Scope elementScope = Mosaic::scope( m_mosaicContext, Mosaic::Key( objectElementsEnumerator ) );
+
+                    jpp::e_type valueType = value.type();
+
+                    if( valueType != jpp::e_type::JPP_OBJECT && valueType != jpp::e_type::JPP_ARRAY )
+                    {
+                        this->TextLine( white, "%s%s:", spaces.c_str(), key );
+
+                        Mosaic::sameLine( m_mosaicContext );
+
+                        this->ShowResponseJpp( value, _spaceCounter, _labelCounter );
+                    }
+                    else
+                    {
+                        m_mosaicReadout.emplace_back();
+                        Mosaic::String & nodeLabel = m_mosaicReadout.back();
+                        nodeLabel.assign( spaces.c_str(), spaces.size() );
+                        nodeLabel.append( key );
+                        nodeLabel += ':';
+
+                        Mosaic::TreeScope valueNode = Mosaic::treeNode( m_mosaicContext, Mosaic::Key( objectElementsEnumerator ), nodeLabel );
+
+                        Mosaic::sameLine( m_mosaicContext );
+
+                        Char buffer_value[256 + 1] = {'\0'};
+
+                        struct buffer_desc
+                        {
+                            Char * buffer;
+                            size_t capacity;
+                            bool end;
+                        };
+
+                        buffer_desc desc;
+                        desc.buffer = buffer_value;
+                        desc.capacity = 128;
+                        desc.end = false;
+
+                        jpp::dump_compact( value, []( const char * _buffer, jpp::jpp_size_t _size, void * _ud )
+                        {
+                            buffer_desc * desc = (buffer_desc *)_ud;
+
+                            if( desc->capacity > _size )
+                            {
+                                desc->capacity -= _size;
+                            }
+                            else
+                            {
+                                _size = desc->capacity;
+                                desc->capacity = 0;
+                                desc->end = true;
+                            }
+
+                            StdString::strzcat_safe( desc->buffer, _buffer, _size, 256 );
+
+                            return 0;
+                        }, &desc );
+
+                        if( desc.end == true )
+                        {
+                            StdString::strcat_safe( desc.buffer, "...", 256 );
+                        }
+
+                        this->TextLine( dim, "%s", buffer_value );
+
+                        if( valueNode.expanded() == true )
+                        {
+                            ++_spaceCounter;
+                            this->ShowResponseJpp( value, _spaceCounter, _labelCounter );
+                            --_spaceCounter;
+                        }
+                    }
+
+                    ++objectElementsEnumerator;
+                }
+            }break;
+        case jpp::e_type::JPP_ARRAY:
+            {
+                uint32_t arrayElementsEnumerator = 0;
+
+                for( const jpp::object & element : jpp::array( _object ) )
+                {
+                    Mosaic::Scope elementScope = Mosaic::scope( m_mosaicContext, Mosaic::Key( arrayElementsEnumerator ) );
+
+                    jpp::e_type elementType = element.type();
+
+                    if( elementType != jpp::e_type::JPP_OBJECT && elementType != jpp::e_type::JPP_ARRAY )
+                    {
+                        this->TextLine( dim, "%s %u", spaces.c_str(), arrayElementsEnumerator );
+
+                        Mosaic::sameLine( m_mosaicContext );
+
+                        this->ShowResponseJpp( element, _spaceCounter, _labelCounter );
+                    }
+                    else
+                    {
+                        m_mosaicReadout.emplace_back();
+                        Mosaic::String & elementLabel = m_mosaicReadout.back();
+                        elementLabel.assign( spaces.c_str(), spaces.size() );
+                        elementLabel += ' ';
+                        elementLabel += std::to_string( arrayElementsEnumerator ).c_str();
+
+                        Mosaic::TreeScope elementNode = Mosaic::treeNode( m_mosaicContext, Mosaic::Key( arrayElementsEnumerator ), elementLabel );
+
+                        if( elementNode.expanded() == true )
+                        {
+                            ++_spaceCounter;
+                            this->ShowResponseJpp( element, _spaceCounter, _labelCounter );
+                            --_spaceCounter;
+                        }
+                    }
+
+                    ++arrayElementsEnumerator;
+                }
+            }break;
+        default:
+            {
+                String valueStr;
+                this->GetValueStringForJppType( _object, jppType, &valueStr, _spaceCounter );
+
+                ++ * _labelCounter;
+
+                m_mosaicReadout.emplace_back( valueStr.c_str(), valueStr.size() );
+
+                Mosaic::String & value = m_mosaicReadout.back();
+
+                Mosaic::TextInputOptions valueOptions;
+                valueOptions.readOnly = true;
+
+                Mosaic::Scope valueScope = Mosaic::scope( m_mosaicContext, Mosaic::Key( *_labelCounter ) );
+
+                Mosaic::setNextItemWidth( m_mosaicContext, 25.f + 8.f * (float)valueStr.size() );
+
+                Mosaic::inputText( m_mosaicContext, "value", &value, valueOptions );
+            }break;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::ShowResponseDataForId( uint32_t _id )
+    {
+        VectorNetwork::const_iterator responseIterator = std::find_if( m_network.cbegin(), m_network.cend(), [_id]( const NetworkDesk & _desk )
+        {
+            return (_id == _desk.id) && (_desk.type == "Response");
+        } );
+
+        bool clicked = Mosaic::button( m_mosaicContext, "copy" ).clicked();
+
+        if( responseIterator == m_network.end() )
+        {
+            this->TextLine( {1.f, 1.f, 1.f, 1.f}, "Not receive response for request ID: %ug", _id );
+
+            if( clicked == true )
+            {
+                m_mosaicPlatform.setClipboardText( "Not receive response for request" );
+            }
+        }
+        else
+        {
+            const Char * responseStr = responseIterator->url.c_str();
+            String::size_type responseStrSize = responseIterator->url.size();
+            jpp::object responseJpp = jpp::load( responseStr, responseStrSize, jpp::JPP_LOAD_MODE_DISABLE_EOF_CHECK, nullptr, nullptr );
+
+            uint32_t labelCounter = 0;
+            this->ShowResponseJpp( responseJpp, 0, &labelCounter );
+
+            if( clicked == true )
+            {
+                String jppstr;
+                jpp::dump( responseJpp, 2, []( const char * _buffer, jpp::jpp_size_t _size, void * _ud )
+                {
+                    String * jppstr = (String *)_ud;
+
+                    jppstr->append( _buffer, _size );
+
+                    return 0;
+                }, &jppstr );
+
+                m_mosaicPlatform.setClipboardText( jppstr.c_str() );
+            }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::DoUISettingsTab()
+    {
+        Mosaic::Scope workspace = Mosaic::split( m_mosaicContext, "Settings workspace", Mosaic::Orientation::Horizontal, 0.4f, this->FillLayout() );
+
+        {
+            Mosaic::Scope list = Mosaic::scrollArea( m_mosaicContext, "Settings list", Mosaic::Orientation::Vertical, this->FillLayout() );
+
+            Mosaic::TreeScope header = Mosaic::collapsingHeader( m_mosaicContext, "Settings:", true );
+
+            if( header.expanded() == true )
+            {
+                uint32_t settingIndex = 0;
+
+                for( const SettingDesc & desc : m_settings )
+                {
+                    bool selected = m_selectedSetting == desc.name;
+
+                    if( Mosaic::selectable( m_mosaicContext, Mosaic::Key( settingIndex ), desc.name.c_str(), selected ).clicked() == true )
+                    {
+                        m_selectedSetting = desc.name;
+                    }
+
+                    ++settingIndex;
+                }
+            }
+        }
+
+        {
+            Mosaic::Scope values = Mosaic::scrollArea( m_mosaicContext, "Settings values", Mosaic::Orientation::Vertical, this->FillLayout() );
+
+            for( SettingDesc & desc : m_settings )
+            {
+                if( m_selectedSetting != desc.name )
+                {
+                    continue;
+                }
+
+                uint32_t keyIndex = 0;
+
+                for( SettingKeyDesc & key : desc.keys )
+                {
+                    Mosaic::Scope keyScope = Mosaic::scope( m_mosaicContext, Mosaic::Key( keyIndex ) );
+
+                    ++keyIndex;
+
+                    switch( key.type )
+                    {
+                    case EST_BOOL:
+                        {
+                            bool v;
+                            Helper::stringalized( key.value, &v );
+
+                            if( Mosaic::checkbox( m_mosaicContext, key.name.c_str(), &v ).changed() == true )
+                            {
+                                Helper::stringalized( v, key.value, 256 );
+
+                                this->SendSetting( desc.name, key.name, key.value );
+                            }
+                        }break;
+                    case EST_INTEGER:
+                        {
+                            int32_t v;
+                            Helper::stringalized( key.value, &v );
+
+                            Mosaic::Scope row = this->PropertyRow( key.name.c_str() );
+
+                            if( Mosaic::inputInt( m_mosaicContext, key.name.c_str(), &v ).committed() == true )
+                            {
+                                Helper::stringalized( v, key.value, 256 );
+
+                                this->SendSetting( desc.name, key.name, key.value );
+                            }
+                        }break;
+                    case EST_REAL:
+                        {
+                            float v;
+                            Helper::stringalized( key.value, &v );
+
+                            Mosaic::Scope row = this->PropertyRow( key.name.c_str() );
+
+                            if( Mosaic::inputFloat( m_mosaicContext, key.name.c_str(), &v ).committed() == true )
+                            {
+                                Helper::stringalized( v, key.value, 256 );
+
+                                this->SendSetting( desc.name, key.name, key.value );
+                            }
+                        }break;
+                    case EST_STRING:
+                        {
+                            m_mosaicReadout.emplace_back( key.value );
+
+                            Mosaic::String & value = m_mosaicReadout.back();
+
+                            Mosaic::Scope row = this->PropertyRow( key.name.c_str() );
+
+                            if( Mosaic::inputText( m_mosaicContext, key.name.c_str(), &value ).committed() == true )
+                            {
+                                StdString::strcpy_safe( key.value, value.c_str(), 256 );
+
+                                this->SendSetting( desc.name, key.name, key.value );
+                            }
+                        }break;
+                    case EST_VEC2F:
+                        {
+                            mt::vec2f v;
+                            Helper::stringalized( key.value, &v );
+
+                            float buff[2] = {v.x, v.y};
+
+                            Mosaic::Scope row = this->PropertyRow( key.name.c_str() );
+
+                            Mosaic::FloatSpan values( buff, 2 );
+
+                            if( Mosaic::inputFloatVector( m_mosaicContext, key.name.c_str(), values ).committed() == true )
+                            {
+                                v.from_f2( buff );
+
+                                Helper::stringalized( v, key.value, 256 );
+
+                                this->SendSetting( desc.name, key.name, key.value );
+                            }
+                        }break;
+                    case EST_VEC3F:
+                        {
+                            mt::vec3f v;
+                            Helper::stringalized( key.value, &v );
+
+                            float buff[3] = {v.x, v.y, v.z};
+
+                            Mosaic::Scope row = this->PropertyRow( key.name.c_str() );
+
+                            Mosaic::FloatSpan values( buff, 3 );
+
+                            if( Mosaic::inputFloatVector( m_mosaicContext, key.name.c_str(), values ).committed() == true )
+                            {
+                                v.from_f3( buff );
+
+                                Helper::stringalized( v, key.value, 256 );
+
+                                this->SendSetting( desc.name, key.name, key.value );
+                            }
+                        }break;
+                    case EST_COLOR:
+                        {
+                            Color v;
+                            Helper::stringalized( key.value, &v );
+
+                            Mosaic::Color color = {v.getR(), v.getG(), v.getB(), v.getA()};
+
+                            if( Mosaic::colorEditorRgba( m_mosaicContext, key.name.c_str(), &color ).changed() == true )
+                            {
+                                float buff[4] = {color.r, color.g, color.b, color.a};
+
+                                v.setRGBA4( buff );
+
+                                Helper::stringalized( v, key.value, 256 );
+
+                                this->SendSetting( desc.name, key.name, key.value );
+                            }
+                        }break;
+                    default:
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::RenderMosaic()
+    {
+        if( m_mosaicContext == nullptr )
+        {
+            return;
+        }
+
+        Mosaic::Viewport viewport;
+        viewport.id = 1;
+        viewport.bounds = {0.f, 0.f, (float)m_width, (float)m_height};
+
+        Mosaic::beginFrame( m_mosaicContext, m_mosaicInput, viewport );
+
+        this->DoUI();
+
+        const Mosaic::Frame & frame = Mosaic::endFrame( m_mosaicContext );
+
+        for( const Mosaic::String & diagnostic : frame.diagnostics )
+        {
+            std::printf( "mosaic diagnostic: %s\n", diagnostic.c_str() );
+        }
+
+        if( m_mosaicBridge.prepare( frame, m_mosaicPlatform ) == false )
+        {
+            return;
+        }
+
+        const Mosaic::RenderMesh * mesh = m_mosaicBridge.renderData();
+
+        if( mesh == nullptr )
+        {
+            return;
+        }
+
+        m_mosaicRenderer.render( frame.viewports.front(), *mesh );
+
+        m_mosaicInput.keyboard.clear();
+        m_mosaicInput.text.clear();
+        m_mosaicInput.ime.clear();
+        m_mosaicInput.wheel = {};
+
+        m_mosaicPointerPressed = 0;
+        m_mosaicPointerReleased = 0;
+        m_mosaicPointerClicks = 0;
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::Loop()
@@ -283,24 +1412,16 @@ namespace Mengine
                 continue;
             }
 
-            this->Update( dt );            
-
-            ImGui_ImplOpenGL3_NewFrame();
-            ImGui_ImplGlfw_NewFrame();
-
-            ImGui::NewFrame();
+            this->Update( dt );
 
             glClearColor( 0.412f, 0.796f, 1.0f, 1.0f );
             glClear( GL_COLOR_BUFFER_BIT );
 
-            this->DoUI();
-
-            ImGui::Render();
-
-            ImGui_ImplOpenGL3_RenderDrawData( ImGui::GetDrawData() );
+            this->UpdateMosaicInput( dt );
+            this->RenderMosaic();
 
             glfwSwapBuffers( m_window );
-            
+
             std::this_thread::sleep_for( std::chrono::microseconds( 1 ) );
         }
     }
@@ -309,10 +1430,7 @@ namespace Mengine
     {
         m_shutdown = true;
 
-        ImGui_ImplOpenGL3_Shutdown();
-        ImGui_ImplGlfw_Shutdown();
-
-        ImGui::DestroyContext();
+        this->FinalizeMosaic();
 
         glfwTerminate();
         zed_net_shutdown();
@@ -829,7 +1947,7 @@ namespace Mengine
             uint32_t state = sound.attribute( "state" ).as_uint();
             float time_left = sound.attribute( "time_left" ).as_float();
             float volume = sound.attribute( "volume" ).as_float();
-            
+
             const pugi::char_t * file = sound.attribute( "file" ).value();
 
             SoundDesc desc;
@@ -854,9 +1972,9 @@ namespace Mengine
             pugi::xml_node node = _xmlContainer.child( "Node" );
 
             uint32_t id = node.attribute( "SelectedNodeId" ).as_uint();
-            
+
             //ToDo
-            
+
             MENGINE_UNUSED( id );
 
             String pathToRoot = node.attribute( "PathToRoot" ).value();
@@ -1163,23 +2281,16 @@ namespace Mengine
         {
             int width, height, bpp;
             stbi_uc * data = stbi_load( _name.c_str(), &width, &height, &bpp, STBI_rgb_alpha );
+
             if( data != nullptr )
             {
-                GLuint texture;
-                glGenTextures( 1, &texture );
-                glBindTexture( GL_TEXTURE_2D, texture );
-                glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data );
+                size_t pixelsSize = static_cast<size_t>(width) * static_cast<size_t>(height) * 4;
 
-                glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-                glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-                glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-                glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
-
-                glBindTexture( GL_TEXTURE_2D, 0 );
+                Mosaic::TextureHandle texture = m_mosaicRenderer.createTexture( static_cast<uint32_t>(width), static_cast<uint32_t>(height), Mosaic::ByteSpan( reinterpret_cast<const std::byte *>(data), pixelsSize ) );
 
                 stbi_image_free( data );
 
-                m_imagesCache.push_back( {_name, static_cast<uintptr_t>(texture), static_cast<size_t>(width), static_cast<size_t>(height)} );
+                m_imagesCache.push_back( {_name, texture, static_cast<size_t>(width), static_cast<size_t>(height)} );
 
                 result = &m_imagesCache.back();
             }
@@ -1265,684 +2376,9 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerApp::DoUI()
-    {
-        const ImGuiWindowFlags kPanelFlags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse;
-
-        ImGui::SetNextWindowPos( ImVec2( 0, 0 ), ImGuiCond_FirstUseEver );
-        ImGui::SetNextWindowSize( ImVec2( static_cast<float>(m_width), static_cast<float>(m_height) ), ImGuiCond_Always );
-        ImGui::GetStyle().WindowRounding = 0.f;
-
-        if( ImGui::Begin( "Node Debugger", nullptr, kPanelFlags ) )
-        {
-            if( ImGui::BeginTabBar( "##Tabs", ImGuiTabBarFlags_NoCloseWithMiddleMouseButton ) )
-            {
-                for( TabDescriptor & tab : m_tabs )
-                {
-                    if( ImGui::BeginTabItem( tab.title.c_str() ) )
-                    {
-                        m_selectedTab = tab.name;
-
-                        if( m_cacheSelectedTab != m_selectedTab )
-                        {
-                            m_cacheSelectedTab = m_selectedTab;
-                            m_invalidateSelectedTab = true;
-                        }
-
-                        tab.functor();
-
-                        ImGui::EndTabItem();
-                    }
-                }
-
-                ImGui::EndTabBar();
-            }
-        }
-        ImGui::End();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerApp::DoUISceneDebuggerTab()
-    {
-        const float leftPanelWidth = 400.0f;
-
-        ImGui::Columns( 2, nullptr, true );
-        ImGui::SetColumnWidth( 0, leftPanelWidth );
-
-        if( ImGui::CollapsingHeader( "Server:", ImGuiTreeNodeFlags_DefaultOpen ) )
-        {
-            char serverAddress[256] = {0};
-
-            if( !m_serverAddress.empty() )
-            {
-                std::copy( m_serverAddress.begin(), m_serverAddress.end(), serverAddress );
-            }
-
-            m_serverAddress = this->DoIPInput( "Address:", m_serverAddress );
-
-            ImGui::BeginGroup();
-            {
-                ImGui::AlignTextToFramePadding();
-                ImGui::TextUnformatted( "IP Port:" );
-                ImGui::SameLine();
-
-                const float width = ImGui::CalcItemWidth();
-                ImGui::PushItemWidth( width * 0.25f );
-                int port = static_cast<int>(m_serverPort);
-                if( ImGui::InputInt( "##Port", &port, 0, 0, ImGuiInputTextFlags_CharsDecimal ) )
-                {
-                    m_serverPort = static_cast<uint16_t>(port & 0xFFFF);
-                }
-                ImGui::PopItemWidth();
-            }
-            ImGui::EndGroup();
-
-            if( m_connectionStatus == ConnectionStatus::Connected )
-            {
-                const ImVec4 redButtonColor( 0.5f, 0.f, 0.f, 1.f );
-                ImGui::PushStyleColor( ImGuiCol_Button, redButtonColor );
-                ImGui::PushStyleColor( ImGuiCol_ButtonHovered, redButtonColor );
-                if( ImGui::Button( "Disconnect" ) )
-                {
-                    this->OnDisconnectButton();
-                }
-                ImGui::PopStyleColor();
-                ImGui::PopStyleColor();
-            }
-            else if( m_connectionStatus == ConnectionStatus::Disconnected || m_connectionStatus == ConnectionStatus::ConnectionFailed )
-            {
-                const ImVec4 greenButtonColor( 0.1686f, 0.5686f, 0.f, 1.f );
-                ImGui::PushStyleColor( ImGuiCol_Button, greenButtonColor );
-                ImGui::PushStyleColor( ImGuiCol_ButtonHovered, greenButtonColor );
-                if( ImGui::Button( "Connect" ) )
-                {
-                    this->OnConnectButton();
-                }
-                ImGui::PopStyleColor();
-                ImGui::PopStyleColor();
-            }
-        }
-
-        if( ImGui::CollapsingHeader( "Game controls:" ) )
-        {
-            ImGui::BeginDisabled( m_updateSceneOnChange );
-            int hz = m_sceneUpdateFreq;
-            if( ImGui::InputInt( "Update freq (hz):", &hz ) )
-            {
-                m_sceneUpdateFreq = std::clamp( hz, 0, 30 );
-                m_sceneUpdateTimer = 0.0;
-            }
-            ImGui::EndDisabled();
-
-            if( ImGui::Checkbox( "Update scene on change", &m_updateSceneOnChange ) )
-            {
-                if( m_updateSceneOnChange )
-                {
-                    m_sceneUpdateFreq = 0;
-                    m_sceneUpdateTimer = 0.0;
-                }
-            }
-
-            if( ImGui::Button( "Pause game" ) )
-            {
-                OnPauseButton();
-            }
-
-            if( ImGui::Button( "Mute sound" ) )
-            {
-                OnMuteButton();
-            }
-        }
-
-        static int SceneTagId = 1;
-
-        if( ImGui::CollapsingHeader( "Type:" ) )
-        {
-            ImGui::RadioButton( "Arrow", &SceneTagId, 0 ); ImGui::SameLine();
-            ImGui::RadioButton( "Full", &SceneTagId, 1 ); ImGui::SameLine();
-            ImGui::RadioButton( "Picker", &SceneTagId, 2 ); ImGui::SameLine();
-            ImGui::RadioButton( "Render", &SceneTagId, 3 );
-        }
-
-        
-        ImGui::InputText( "Filter:", m_selectFilter, 2048 );
-
-        switch( SceneTagId )
-        {
-        case 0:
-            {
-                if( ImGui::CollapsingHeader( "Arrow:", ImGuiTreeNodeFlags_DefaultOpen ) )
-                {
-                    if( m_arrow )
-                    {
-                        if( ImGui::BeginChild( "ArrowTree", ImVec2( 0, 200.f ), false, ImGuiWindowFlags_HorizontalScrollbar ) )
-                        {
-                            this->DoNodeElement( m_arrow, m_selectFilter, &m_selectedArrowNode, "ArrowFull" );
-
-                            m_selectedNode = m_selectedArrowNode;
-                        }
-                        ImGui::EndChild();
-                    }
-                }
-            }break;
-        case 1:
-            {
-                if( ImGui::CollapsingHeader( "Scene:", ImGuiTreeNodeFlags_DefaultOpen ) )
-                {
-                    if( m_scene )
-                    {
-                        if( ImGui::BeginChild( "SceneTree", ImVec2( 0, 0.f ), false, ImGuiWindowFlags_HorizontalScrollbar ) )
-                        {
-                            this->DoNodeElement( m_scene, m_selectFilter, &m_selectedSceneNode, "SceneFull" );
-
-                            m_selectedNode = m_selectedSceneNode;
-
-                            m_pathToSelectedNode.clear();
-                        }
-                        ImGui::EndChild();
-                    }
-                }
-            }break;
-        case 2:
-            {
-                if( ImGui::CollapsingHeader( "Pickerable:", ImGuiTreeNodeFlags_DefaultOpen ) )
-                {
-                    if( m_scenePickerable )
-                    {
-                        if( ImGui::BeginChild( "SceneTree", ImVec2( 0, 0 ), false, ImGuiWindowFlags_HorizontalScrollbar ) )
-                        {
-                            this->DoNodeElement( m_scenePickerable, m_selectFilter, &m_selectedPickerableNode, "ScenePickerable" );
-
-                            m_selectedNode = m_selectedPickerableNode;
-                        }
-                        ImGui::EndChild();
-                    }
-                }
-            }break;
-        case 3:
-            {
-                if( ImGui::CollapsingHeader( "Renderable:", ImGuiTreeNodeFlags_DefaultOpen ) )
-                {
-                    if( m_sceneRenderable )
-                    {
-                        if( ImGui::BeginChild( "SceneTree", ImVec2( 0, 0 ), false, ImGuiWindowFlags_HorizontalScrollbar ) )
-                        {
-                            this->DoNodeElement( m_sceneRenderable, m_selectFilter, &m_selectedRenderableNode, "SceneRenderable" );
-
-                            m_selectedNode = m_selectedRenderableNode;
-                        }
-                        ImGui::EndChild();
-                    }
-                }
-            }break;
-        }
-
-        ImGui::NextColumn();
-
-        if( ImGui::BeginChild( "Panel" ) )
-        {
-            if( m_selectedNode != nullptr )
-            {
-                this->DoNodeProperties( m_selectedNode );
-            }
-        }
-        ImGui::EndChild();
-
-        ImGui::Columns( 1 );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerApp::DoUIMemoryTab()
-    {
-        ImGui::Separator();
-
-        ImGui::TextColored( ImVec4( 0.f, 1.f, 0.f, 1.f ), "Total: %ug %um %ukb %ub"
-            , m_memoryTotal / 1000000000
-            , (m_memoryTotal % 1000000000) / 1000000
-            , (m_memoryTotal % 1000000) / 1000
-            , m_memoryTotal % 1000
-        );
-
-        ImGui::TextColored( ImVec4( 0.f, 1.f, 0.f, 1.f ), "Texture Available: %ug %um %ukb %ub"
-            , m_AvailableTextureMemory / 1000000000
-            , (m_AvailableTextureMemory % 1000000000) / 1000000
-            , (m_AvailableTextureMemory % 1000000) / 1000
-            , m_AvailableTextureMemory % 1000
-        );
-
-        ImGui::TextColored( ImVec4( 0.f, 1.f, 0.f, 1.f ), "Texture Use: %ug %um %ukb %ub"
-            , m_TextureMemoryUse / 1000000000
-            , (m_TextureMemoryUse % 1000000000) / 1000000
-            , (m_TextureMemoryUse % 1000000) / 1000
-            , m_TextureMemoryUse % 1000
-        );
-
-        ImGui::TextColored( ImVec4( 0.f, 1.f, 0.f, 1.f ), "Texture Count: %u"
-            , m_TextureCount
-        );
-
-        ImGui::TextColored( ImVec4( 0.f, 1.f, 0.f, 1.f ), "Sound Sources Count: %u"
-            , m_SoundSourcesCount
-        );
-
-        ImGui::TextColored( ImVec4( 0.f, 1.f, 0.f, 1.f ), "Sound Buffers Count: %u"
-            , m_SoundBuffersCount
-        );
-
-        ImGui::Separator();
-
-        struct MemoryDesc
-        {
-            String name;
-            uint32_t size;
-        };
-
-        Vector<MemoryDesc> vmemory;
-
-        for( auto && [name, size] : m_memory )
-        {
-            vmemory.emplace_back( MemoryDesc{name, size} );
-        }
-
-        std::stable_sort( vmemory.begin(), vmemory.end(), []( const MemoryDesc & l, const MemoryDesc & r )
-        {
-            return l.size > r.size;
-        } );
-
-        for( const MemoryDesc & desc : vmemory )
-        {
-            if( desc.size > 1024 * 1024 )
-            {
-                ImGui::TextColored( ImVec4( 1.f, 0.25f, 0.5f, 1.f ), "Allocator: %s [total %umb %ukb]"
-                    , desc.name.c_str()
-                    , desc.size / (1024 * 1024)
-                    , desc.size / 1024 % 1024
-                );
-            }
-            else if( desc.size > 1024 )
-            {
-                ImGui::TextColored( ImVec4( 0.5f, 1.f, 0.25f, 1.f ), "Allocator: %s [total %ukb]"
-                    , desc.name.c_str()
-                    , desc.size / 1024
-                );
-            }
-            else
-            {
-                ImGui::TextColored( ImVec4( 0.f, 1.f, 1.f, 1.f ), "Allocator: %s [total %u byte]"
-                    , desc.name.c_str()
-                    , desc.size
-                );
-            }
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerApp::DoUIObjectsLeakTab()
-    {
-        uint32_t leaksCount = 0;
-
-        for( auto && [type, objects] : m_objectLeaks )
-        {
-            uint32_t count = (uint32_t)objects.size();
-
-            leaksCount += count;
-        }
-
-        ImGui::TextColored( ImVec4( 0.f, 1.f, 0.f, 1.f ), "Generator: %s [total %u]"
-            , m_objectLeakGeneration.c_str()
-            , leaksCount
-        );
-
-        ImGui::Separator();
-
-        uint32_t index = 0;
-
-        for( auto && [type, objects] : m_objectLeaks )
-        {
-            ImGui::PushStyleColor( ImGuiCol_Text, ImVec4( 0.f, 1.f, 0.f, 1.f ) );
-
-            Char label_node[32 + 1] = {'\0'};
-            MENGINE_SNPRINTF( label_node, 32, "##tree_node_%u"
-                , index
-            );
-
-            bool isOpened = ImGui::TreeNodeEx( label_node, ImGuiTreeNodeFlags_DefaultOpen, "%s [%zu]"
-                , type.c_str()
-                , objects.size()
-            );
-
-            ImGui::PopStyleColor();
-
-            if( isOpened == true )
-            {
-                ImGui::Separator();
-
-                for( const LeakDesc & leak : objects )
-                {
-                    ImGui::BulletText( "file: %s"
-                        , leak.file.c_str()
-                    );
-
-                    ImGui::BulletText( "line: %s"
-                        , leak.line.c_str()
-                    );
-
-                    ImGui::BulletText( "function: %s"
-                        , leak.function.c_str()
-                    );
-
-                    char label_text[32 + 1];
-                    MENGINE_SNPRINTF( label_text, 32, "##text_%u"
-                        , index
-                    );
-
-                    ImGui::InputTextMultiline( label_text
-                        , (Char *)leak.message.data()
-                        , leak.message.size()
-                        , ImVec2( -1.f, ImGui::GetTextLineHeight() * 2.5f )
-                        , ImGuiInputTextFlags_ReadOnly
-                    );
-
-                    ImGui::PushStyleColor( ImGuiCol_Text, ImVec4( 0.f, 0.f, 1.f, 1.f ) );
-
-                    char label_parent_node[32 + 1];
-                    MENGINE_SNPRINTF( label_parent_node, 32, "##tree_parent_node_%u"
-                        , index
-                    );
-
-                    bool isParentOpened = ImGui::TreeNodeEx( label_parent_node, ImGuiTreeNodeFlags_None, "traceback" );
-
-                    ImGui::PopStyleColor();
-
-                    if( isParentOpened == true )
-                    {
-                        ImGui::Separator();
-
-                        for( const LeakDesc & parent : leak.parents )
-                        {
-                            ImGui::BulletText( "file: %s"
-                                , parent.file.c_str()
-                            );
-
-                            ImGui::BulletText( "line: %s"
-                                , parent.line.c_str()
-                            );
-
-                            ImGui::BulletText( "function: %s"
-                                , parent.function.c_str()
-                            );
-
-                            //char label_text[16];
-                            //sprintf( label_text, "##text_%u"
-                            //    , index
-                            //);
-
-                            ImGui::InputTextMultiline( label_text
-                                , (Char *)parent.message.data()
-                                , parent.message.size()
-                                , ImVec2( -1.f, ImGui::GetTextLineHeight() * 2.5f )
-                                , ImGuiInputTextFlags_ReadOnly
-                            );
-
-                            ImGui::Separator();
-                        }
-
-                        ImGui::TreePop();
-                    }
-
-                    ImGui::Separator();
-
-                    ++index;
-                }
-
-                ImGui::TreePop();
-            }
-
-            ++index;
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerApp::DoUINetwork()
-    {
-        ImGui::Separator();
-
-        if( ImGui::BeginChild( "Network", ImVec2( 1200, 1000 ), false, ImGuiWindowFlags_None ) )
-        {
-            for( const NetworkDesk & desk : m_network )
-            {
-                if( desk.type == "Request" )
-                {
-                    Char label_node[32 + 1] = {'\0'};
-                    MENGINE_SNPRINTF( label_node, 32, "Url: ##request%u"
-                        , desk.id
-                    );
-
-                    bool openNode = ImGui::TreeNode( label_node );
-
-                    ImGui::SameLine();
-
-                    Char label[32 + 1] = {'\0'};
-                    MENGINE_SNPRINTF( label, 32, "##url%u", desk.id );
-
-                    ImGui::InputText( label, (Char *)desk.url.data(), desk.url.size(), ImGuiInputTextFlags_ReadOnly );
-
-                    if( openNode == true )
-                    {
-                        ImGui::Separator();
-
-                        this->ShowResponseDataForId( desk.id );
-
-                        ImGui::Separator();
-
-                        ImGui::TreePop();
-                    }
-                }
-            }
-        }
-
-        ImGui::EndChild();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerApp::ShowResponseDataForId( uint32_t _id )
-    {
-        VectorNetwork::const_iterator responseIterator = std::find_if( m_network.cbegin(), m_network.cend(), [_id]( const NetworkDesk & _desk )
-        {
-            return (_id == _desk.id) && (_desk.type == "Response");
-        } );
-
-        Char label[32 + 1] = {'\0'};
-        MENGINE_SNPRINTF( label, 32, "copy##%u"
-            , _id
-        );
-
-        ImGui::Button( label );
-
-        bool clicked = ImGui::IsItemClicked( 0 );
-
-        if( responseIterator == m_network.end() )
-        {
-            ImGui::Text( "Not receive response for request ID: %ug", _id );
-
-            if( clicked == true )
-            {
-                ImGui::SetClipboardText( "Not receive response for request" );
-            }
-        }
-        else
-        {
-            const Char * responseStr = responseIterator->url.c_str();
-            String::size_type responseStrSize = responseIterator->url.size();
-            jpp::object responseJpp = jpp::load( responseStr, responseStrSize, jpp::JPP_LOAD_MODE_DISABLE_EOF_CHECK, nullptr, nullptr );
-
-            uint32_t labelCounter = 0;
-            this->ShowResponseJpp( responseJpp, 0, &labelCounter );
-
-            if( clicked == true )
-            {
-                String jppstr;
-                jpp::dump( responseJpp, 2, []( const char * _buffer, jpp::jpp_size_t _size, void * _ud )
-                {
-                    String * jppstr = (String *)_ud;
-
-                    jppstr->append( _buffer, _size );
-
-                    return 0;
-                }, &jppstr );
-                ImGui::SetClipboardText( jppstr.c_str() );
-            }
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::addSpacesWithMultiplier( String * const _out, uint32_t _spacesCount, uint32_t _multiplier )
     {
         _out->append( _spacesCount * _multiplier, ' ' );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerApp::ShowResponseJpp( const jpp::object & _object, uint32_t _spaceCounter, uint32_t * const _labelCounter )
-    {
-        String spaces;
-        this->addSpacesWithMultiplier( &spaces, 2, _spaceCounter );
-
-        jpp::e_type jppType = _object.type();
-
-        switch( jppType )
-        {
-        case jpp::e_type::JPP_OBJECT:
-            {
-                uint32_t objectElementsEnumerator = 0;
-
-                for( auto && [key, value] : _object )
-                {
-                    jpp::e_type valueType = value.type();
-                    if( valueType != jpp::e_type::JPP_OBJECT && valueType != jpp::e_type::JPP_ARRAY )
-                    {
-                        ImGui::Text( "%s%s:", spaces.c_str(), key );
-
-                        ImGui::SameLine();
-
-                        this->ShowResponseJpp( value, _spaceCounter, _labelCounter );
-                    }
-                    else
-                    {
-                        Char label[32 + 1] = {'\0'};
-                        MENGINE_SNPRINTF( label, 32, "##o%u%u"
-                            , *_labelCounter
-                            , objectElementsEnumerator
-                        );
-
-                        bool openTree = ImGui::TreeNodeEx( label, ImGuiTreeNodeFlags_None );
-
-                        ImGui::SameLine();
-                        ImGui::Text( "%s%s:", spaces.c_str(), key );
-                        ImGui::SameLine();
-
-                        Char buffer_value[256 + 1] = {'\0'};
-
-                        struct buffer_desc
-                        {
-                            Char * buffer;
-                            size_t capacity;
-                            bool end;
-                        };
-
-                        buffer_desc desc;
-                        desc.buffer = buffer_value;
-                        desc.capacity = 128;
-                        desc.end = false;
-
-                        jpp::dump_compact( value, []( const char * _buffer, jpp::jpp_size_t _size, void * _ud )
-                        {
-                            buffer_desc * desc = (buffer_desc *)_ud;
-
-                            if( desc->capacity > _size )
-                            {
-                                desc->capacity -= _size;
-                            }
-                            else
-                            {
-                                _size = desc->capacity;
-                                desc->capacity = 0;
-                                desc->end = true;
-                            }
-
-                            StdString::strzcat_safe( desc->buffer, _buffer, _size, 256 );
-
-                            return 0;
-                        }, &desc );
-
-                        if( desc.end == true )
-                        {
-                            StdString::strcat_safe( desc.buffer, "...", 256 );
-                        }
-
-                        ImGui::TextColored( ImVec4( 1.0f, 1.0f, 1.0f, 0.5f ), "%s", buffer_value );
-
-                        if( openTree == true )
-                        {
-                            ++_spaceCounter;
-                            this->ShowResponseJpp( value, _spaceCounter, _labelCounter );
-                            --_spaceCounter;
-
-                            ImGui::TreePop();
-                        }
-                    }
-
-                    ++objectElementsEnumerator;
-                }
-            }break;
-        case jpp::e_type::JPP_ARRAY:
-            {
-                uint32_t arrayElementsEnumerator = 0;
-
-                for( const jpp::object & element : jpp::array( _object ) )
-                {
-                    jpp::e_type elementType = element.type();
-
-                    if( elementType != jpp::e_type::JPP_OBJECT && elementType != jpp::e_type::JPP_ARRAY )
-                    {
-                        ImGui::TextColored( ImVec4( 1.0f, 1.0f, 1.0f, 0.5f ), "%s %u", spaces.c_str(), arrayElementsEnumerator );
-
-                        ImGui::SameLine();
-
-                        this->ShowResponseJpp( element, _spaceCounter, _labelCounter );
-                    }
-                    else
-                    {
-                        Char label[32 + 1] = {'\0'};
-                        MENGINE_SNPRINTF( label, 32, "##a%u%u"
-                            , *_labelCounter
-                            , arrayElementsEnumerator
-                        );
-
-                        if( ImGui::TreeNodeEx( label, ImGuiTreeNodeFlags_None, "%s %u", spaces.c_str(), arrayElementsEnumerator ) == true )
-                        {
-                            ++_spaceCounter;
-                            this->ShowResponseJpp( element, _spaceCounter, _labelCounter );
-                            --_spaceCounter;
-
-                            ImGui::TreePop();
-                        }
-                    }
-
-                    ++arrayElementsEnumerator;
-                }
-            }break;
-        default:
-            {
-                String valueStr;
-                this->GetValueStringForJppType( _object, jppType, &valueStr, _spaceCounter );
-
-                // TODO need make ability for copy text from ImGui::InputText
-
-                ++ * _labelCounter;
-
-                Char label[32 + 1] = {'\0'};
-                MENGINE_SNPRINTF( label, 32, "##v%u"
-                    , *_labelCounter
-                );
-
-                ImGui::PushItemWidth( 25.f + 8.f * valueStr.size() );
-                ImGui::InputText( label, valueStr.data(), valueStr.size(), ImGuiInputTextFlags_ReadOnly );
-                ImGui::PopItemWidth();
-            }break;
-        }
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::GetValueStringForJppType( const jpp::object & _object, jpp::e_type _jppType, String * _out, uint32_t _spaceCounter )
@@ -1985,229 +2421,9 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerApp::DoUISoundsTab()
+    namespace Detail
     {
-        for( const SoundDesc & desc : m_sounds )
-        {
-            ImGui::PushID( desc.id );
-            switch( desc.state )
-            {
-            case ESS_INIT:
-                ImGui::TextColored( ImVec4( 0.5f, 0.5f, 0.5f, 1.f ), "[init]" );
-                break;
-            case ESS_STOP:
-                ImGui::TextColored( ImVec4( 1.f, 0.f, 0.f, 1.f ), "[stop]" );
-                break;
-            case ESS_PLAY:
-                ImGui::TextColored( ImVec4( 0.f, 1.f, 0.f, 1.f ), "[play]" );
-                break;
-            case ESS_PAUSE:
-                ImGui::TextColored( ImVec4( 0.f, 0.5f, 1.f, 1.f ), "[pause]" );
-                break;
-            case ESS_END:
-                ImGui::TextColored( ImVec4( 0.5f, 0.5f, 0.5f, 1.f ), "[end]" );
-                break;
-            }
-            ImGui::SameLine();
-            ImGui::BeginDisabled();
-            bool streamable = desc.streamable;
-            ImGui::Checkbox( "streamable", &streamable );
-            ImGui::EndDisabled();
-            ImGui::SameLine();
-            ImGui::BeginDisabled();
-            bool loop = desc.loop;
-            ImGui::Checkbox( "loop", &loop );
-            ImGui::EndDisabled();
-            ImGui::SameLine();
-            ImGui::BeginDisabled();
-            bool turn = desc.turn;
-            ImGui::Checkbox( "turn", &turn );
-            ImGui::EndDisabled();
-            ImGui::SameLine();
-            switch( desc.category )
-            {
-            case ES_SOURCE_CATEGORY_SOUND:
-                ImGui::Text( "[sound]" );
-                break;
-            case ES_SOURCE_CATEGORY_MUSIC:
-                ImGui::Text( "[music]" );
-                break;
-            case ES_SOURCE_CATEGORY_VOICE:
-                ImGui::Text( "[voice]" );
-                break;
-            }
-            ImGui::SameLine();
-            ImGui::Text( "[%u]", desc.id );
-            ImGui::SameLine();
-            ImGui::Text( "time: %f", desc.time_left );
-            ImGui::SameLine();
-            ImGui::Text( "volume: %f", desc.volume );
-            ImGui::SameLine();
-            ImGui::Text( "file: %s", desc.file.c_str() );
-            ImGui::PopID();
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerApp::DoUISettingsTab()
-    {
-        //const float leftPanelWidth = 400.0f;
-
-        ImGui::Columns( 2, nullptr, true );
-        //ImGui::SetColumnWidth( 0, leftPanelWidth );
-
-        if( ImGui::CollapsingHeader( "Settings:", ImGuiTreeNodeFlags_DefaultOpen ) )
-        {
-            if( ImGui::BeginChild( "SceneTree", ImVec2( 0, 0 ), false, ImGuiWindowFlags_HorizontalScrollbar ) )
-            {
-                for( const SettingDesc & desc : m_settings )
-                {
-                    ImGuiTreeNodeFlags seletedFlag = ImGuiTreeNodeFlags_Leaf | (m_selectedSetting == desc.name ? ImGuiTreeNodeFlags_Selected : 0);
-
-                    bool isOpened = ImGui::TreeNodeEx( desc.name.c_str(), seletedFlag );
-
-                    bool isClicked = ImGui::IsItemClicked();
-
-                    if( isClicked == true )
-                    {
-                        m_selectedSetting = desc.name;
-                    }
-
-                    if( isOpened == true )
-                    {
-                        ImGui::TreePop();
-                    }
-                }
-            }
-
-            ImGui::EndChild();
-        }
-
-        ImGui::NextColumn();
-
-        for( SettingDesc & desc : m_settings )
-        {
-            if( m_selectedSetting != desc.name )
-            {
-                continue;
-            }
-
-            for( SettingKeyDesc & key : desc.keys )
-            {
-                ESettingType type = key.type;
-
-                ImGui::Text( "%s", key.name.c_str() );
-                ImGui::SameLine( 100.f );
-
-                Char key_lable[256 + 1] = {'\0'};
-                MENGINE_SNPRINTF( key_lable, 256, "##%s", key.name.c_str() );
-
-                switch( type )
-                {
-                case EST_BOOL:
-                    {
-                        bool v;
-                        Helper::stringalized( key.value, &v );
-
-                        if( ImGui::Checkbox( key_lable, &v ) == true )
-                        {
-                            Helper::stringalized( v, key.value, 256 );
-                        
-                            this->SendSetting( desc.name, key.name, key.value );
-                        }
-                    }break;
-                case EST_INTEGER:
-                    {
-                        int v;
-                        Helper::stringalized( key.value, &v );
-
-                        if( ImGui::InputInt( key_lable, &v ) == true && ImGui::IsItemDeactivatedAfterEdit() == true )
-                        {
-                            Helper::stringalized( v, key.value, 256 );
-
-                            this->SendSetting( desc.name, key.name, key.value );
-                        }
-                    }break;
-                case EST_REAL:
-                    {
-                        float v;
-                        Helper::stringalized( key.value, &v );
-
-                        if( ImGui::InputFloat( key_lable, &v ) == true && ImGui::IsItemDeactivatedAfterEdit() == true )
-                        {
-                            Helper::stringalized( v, key.value, 256 );
-
-                            this->SendSetting( desc.name, key.name, key.value );
-                        }
-                    }break;
-                case EST_STRING:
-                    {
-                        if( ImGui::InputText( key_lable, key.value, 256, ImGuiInputTextFlags_EnterReturnsTrue ) == true )
-                        {
-                            this->SendSetting( desc.name, key.name, key.value );
-                        }
-                    }break;
-                case EST_VEC2F:
-                    {
-                        mt::vec2f v;
-                        Helper::stringalized( key.value, &v );
-
-                        float buff[2] = {v.x, v.y};
-
-                        if( ImGui::InputFloat2( key_lable, buff ) == true && ImGui::IsItemDeactivatedAfterEdit() == true )
-                        {
-                            v.from_f2( buff );
-
-                            Helper::stringalized( v, key.value, 256 );
-
-                            this->SendSetting( desc.name, key.name, key.value );
-                        }
-                    }break;
-                case EST_VEC3F:
-                    {
-                        mt::vec3f v;
-                        Helper::stringalized( key.value, &v );
-
-                        float buff[3] = {v.x, v.y, v.z};
-
-                        if( ImGui::InputFloat3( key_lable, buff ) == true && ImGui::IsItemDeactivatedAfterEdit() == true )
-                        {
-                            v.from_f3( buff );
-
-                            Helper::stringalized( v, key.value, 256 );
-
-                            this->SendSetting( desc.name, key.name, key.value );
-                        }
-                    }break;
-                case EST_COLOR:
-                    {
-                        Color v;
-                        Helper::stringalized( key.value, &v );
-
-                        float buff[4] = {v.getR(), v.getG(), v.getB(), v.getA()};
-
-                        if( ImGui::ColorEdit4( key_lable, buff ) == true )
-                        {
-                            v.setRGBA4( buff );
-
-                            Helper::stringalized( v, key.value, 256 );
-
-                            this->SendSetting( desc.name, key.name, key.value );
-                        }
-                    }break;
-                default:
-                    break;
-                }
-            }
-        }
-
-        ImGui::EndColumns();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerApp::DoUIResolutionsTab()
-    {
-        ImGui::Columns( 2, nullptr, true );
-        //ImGui::SetColumnWidth( 0, leftPanelWidth );
-
+        //////////////////////////////////////////////////////////////////////////
         struct ResolutionDesc
         {
             char label[256];
@@ -2216,7 +2432,7 @@ namespace Mengine
             float aspect;
         };
 
-        static const ResolutionDesc resolutions_iPhone[] =
+        static const ResolutionDesc resolutions_iPhone_[] =
         {
             {"iPhone SE (1st Gen) 640x1136 [16:9]", 640, 1136, 640.f / 1136.f},
             {"iPhone 6/7/8 750x1334 [16:9]", 750, 1334, 750.f / 1334.f},
@@ -2242,7 +2458,7 @@ namespace Mengine
             {"iPhone 16 Pro Max 1320x2868 [~19.5:9]", 1320, 2868, 1320.f / 2868.f},
         };
 
-        static const ResolutionDesc resolutions_iPad[] =
+        static const ResolutionDesc resolutions_iPad_[] =
         {
             {"iPad (1st-4th Gen) 1024x768 [4:3]", 1024, 768, 1024.f / 768.f},
             {"iPad Air (1st Gen) 2048x1536 [4:3]", 2048, 1536, 2048.f / 1536.f},
@@ -2261,7 +2477,7 @@ namespace Mengine
             {"iPad Pro 11\" (2022) 2388x1668 [~4:3]", 2388, 1668, 2388.f / 1668.f},
         };
 
-        static const ResolutionDesc resolutions_Android[] =
+        static const ResolutionDesc resolutions_Android_[] =
         {
             {"Android HD 720x1280 [16:9]", 720, 1280, 720.f / 1280.f},
             {"Android HD+ 720x1600 [20:9]", 720, 1600, 720.f / 1600.f},
@@ -2271,93 +2487,89 @@ namespace Mengine
             {"Android FHD+ 1080x2400 [20:9]", 1080, 2400, 1080.f / 2400.f},
             {"Android QHD+ 1440x3200 [20:9]", 1440, 3200, 1440.f / 3200.f},
         };
-
-        static const ResolutionDesc * select_resolution = nullptr;
-        static const ResolutionDesc * apply_resolution = nullptr;
-
-        if( ImGui::CollapsingHeader( "Resolutions:", ImGuiTreeNodeFlags_DefaultOpen ) )
+        //////////////////////////////////////////////////////////////////////////
+        static void mosaicResolutionList_( Mosaic::Context * _ui, const Char * _title, const ResolutionDesc * _resolutions, size_t _count, uint32_t * const _index, const ResolutionDesc ** const _select, const ResolutionDesc * _apply )
         {
-            if( ImGui::BeginChild( "ResoulutionTree", ImVec2( 0, 0 ), false, ImGuiWindowFlags_HorizontalScrollbar ) )
             {
-                ImGui::TextDisabled( "iOS:" );
+                Mosaic::Key titleKey( (*_index)++ );
 
-                for( const ResolutionDesc & res : resolutions_iPhone )
-                {
-                    if( apply_resolution == &res )
-                    {
-                        ImGui::PushStyleColor( ImGuiCol_Header, ImVec4( 1.0f, 0.5f, 0.0f, 1.0f ) );
-                        ImGui::PushStyleColor( ImGuiCol_HeaderHovered, ImVec4( 1.0f, 0.7f, 0.3f, 1.0f ) );
-                        ImGui::PushStyleColor( ImGuiCol_HeaderActive, ImVec4( 1.0f, 0.3f, 0.0f, 1.0f ) );
-                    }
+                Mosaic::Scope titleScope = Mosaic::scope( _ui, titleKey );
 
-                    if( ImGui::Selectable( res.label, select_resolution == &res || apply_resolution == &res ) == true )
-                    {
-                        select_resolution = &res;
-                    }
+                Mosaic::Theme theme = Mosaic::getTheme( _ui );
+                theme.colors.text = theme.colors.textDisabled;
 
-                    if( apply_resolution == &res )
-                    {
-                        ImGui::PopStyleColor( 3 );
-                    }
-                }
+                Mosaic::Scope titleStyle = Mosaic::styleScope( _ui, theme );
 
-                ImGui::Spacing();
-
-                ImGui::TextDisabled( "iPad:" );
-
-                for( const ResolutionDesc & res : resolutions_iPad )
-                {
-                    if( apply_resolution == &res )
-                    {
-                        ImGui::PushStyleColor( ImGuiCol_Header, ImVec4( 1.0f, 0.5f, 0.0f, 1.0f ) );
-                        ImGui::PushStyleColor( ImGuiCol_HeaderHovered, ImVec4( 1.0f, 0.7f, 0.3f, 1.0f ) );
-                        ImGui::PushStyleColor( ImGuiCol_HeaderActive, ImVec4( 1.0f, 0.3f, 0.0f, 1.0f ) );
-                    }
-
-                    if( ImGui::Selectable( res.label, select_resolution == &res || apply_resolution == &res ) == true )
-                    {
-                        select_resolution = &res;
-                    }
-
-                    if( apply_resolution == &res )
-                    {
-                        ImGui::PopStyleColor( 3 );
-                    }
-                }
-
-                ImGui::Spacing();
-
-                ImGui::TextDisabled( "Android:" );
-
-                for( const ResolutionDesc & res : resolutions_Android )
-                {
-                    if( apply_resolution == &res )
-                    {
-                        ImGui::PushStyleColor( ImGuiCol_Header, ImVec4( 1.0f, 0.5f, 0.0f, 1.0f ) );
-                        ImGui::PushStyleColor( ImGuiCol_HeaderHovered, ImVec4( 1.0f, 0.7f, 0.3f, 1.0f ) );
-                        ImGui::PushStyleColor( ImGuiCol_HeaderActive, ImVec4( 1.0f, 0.3f, 0.0f, 1.0f ) );
-                    }
-
-                    if( ImGui::Selectable( res.label, select_resolution == &res || apply_resolution == &res ) == true )
-                    {
-                        select_resolution = &res;
-                    }
-
-                    if( apply_resolution == &res )
-                    {
-                        ImGui::PopStyleColor( 3 );
-                    }
-                }
+                Mosaic::text( _ui, _title );
             }
 
-            ImGui::EndChild();
+            for( size_t resolutionIndex = 0; resolutionIndex != _count; ++resolutionIndex )
+            {
+                const ResolutionDesc & res = _resolutions[resolutionIndex];
+
+                Mosaic::Key rowKey( (*_index)++ );
+
+                Mosaic::Scope rowScope = Mosaic::scope( _ui, rowKey );
+
+                Mosaic::Theme theme = Mosaic::getTheme( _ui );
+
+                if( _apply == &res )
+                {
+                    theme.colors.header = {1.f, 0.5f, 0.f, 1.f};
+                    theme.colors.headerHovered = {1.f, 0.7f, 0.3f, 1.f};
+                    theme.colors.headerActive = {1.f, 0.3f, 0.f, 1.f};
+                }
+
+                Mosaic::Scope rowStyle = Mosaic::styleScope( _ui, theme );
+
+                bool selected = *_select == &res || _apply == &res;
+
+                if( Mosaic::selectable( _ui, res.label, selected ).clicked() == true )
+                {
+                    *_select = &res;
+                }
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::DoUIResolutionsTab()
+    {
+        static const Detail::ResolutionDesc * select_resolution = nullptr;
+        static const Detail::ResolutionDesc * apply_resolution = nullptr;
+
+        Mosaic::Scope workspace = Mosaic::split( m_mosaicContext, "Resolutions workspace", Mosaic::Orientation::Horizontal, 0.6f, this->FillLayout() );
+
+        {
+            Mosaic::Scope tree = Mosaic::scrollArea( m_mosaicContext, "ResoulutionTree", Mosaic::Orientation::Vertical, this->FillLayout() );
+
+            Mosaic::TreeScope header = Mosaic::collapsingHeader( m_mosaicContext, "Resolutions:", true );
+
+            if( header.expanded() == true )
+            {
+                uint32_t index = 0;
+
+                Detail::mosaicResolutionList_( m_mosaicContext, "iOS:", Detail::resolutions_iPhone_, MENGINE_ARRAY_SIZE( Detail::resolutions_iPhone_ ), &index, &select_resolution, apply_resolution );
+
+                Mosaic::spacer( m_mosaicContext, 4.f );
+
+                Detail::mosaicResolutionList_( m_mosaicContext, "iPad:", Detail::resolutions_iPad_, MENGINE_ARRAY_SIZE( Detail::resolutions_iPad_ ), &index, &select_resolution, apply_resolution );
+
+                Mosaic::spacer( m_mosaicContext, 4.f );
+
+                Detail::mosaicResolutionList_( m_mosaicContext, "Android:", Detail::resolutions_Android_, MENGINE_ARRAY_SIZE( Detail::resolutions_Android_ ), &index, &select_resolution, apply_resolution );
+            }
         }
 
-        ImGui::NextColumn();        
-
-        if( select_resolution != nullptr )
         {
-            if( ImGui::Button( "Apply" ) == true )
+            Mosaic::Scope apply = Mosaic::scrollArea( m_mosaicContext, "Resolution apply", Mosaic::Orientation::Vertical, this->FillLayout() );
+
+            if( select_resolution == nullptr )
+            {
+                return;
+            }
+
+            if( Mosaic::button( m_mosaicContext, "Apply" ).clicked() == true )
             {
                 apply_resolution = select_resolution;
 
@@ -2369,76 +2581,77 @@ namespace Mengine
 
             if( apply_resolution != nullptr )
             {
-                ImGui::Text( "Apply resolution: %s", apply_resolution->label );
+                this->TextLine( Mosaic::getTheme( m_mosaicContext ).colors.text, "Apply resolution: %s", apply_resolution->label );
             }
         }
-
-        ImGui::EndColumns();
     }
     //////////////////////////////////////////////////////////////////////////
-    String NodeDebuggerApp::DoIPInput( const String & _title, const String & _inIP )
+    String NodeDebuggerApp::DoIPInput( const Char * _title, const String & _inIP )
     {
-        int octets[4] = {127, 0, 0, 1};
+        int32_t octets[4] = {127, 0, 0, 1};
 
         if( _inIP.empty() == false )
         {
-            int idx = 0;
+            int32_t idx = 0;
             octets[idx] = 0;
 
-            for( const char c : _inIP )
+            for( const Char c : _inIP )
             {
                 if( isdigit( c ) )
                 {
                     octets[idx] *= 10;
-                    octets[idx] += static_cast<int>(c - '0');
+                    octets[idx] += static_cast<int32_t>(c - '0');
                 }
                 else
                 {
                     ++idx;
-                    if( idx > 3 ) // in case of a weird string
+
+                    if( idx > 3 )
                     {
                         break;
                     }
+
                     octets[idx] = 0;
                 }
             }
         }
 
-        const float width = ImGui::CalcItemWidth();
-        ImGui::BeginGroup();
-        ImGui::AlignTextToFramePadding();
-        ImGui::PushID( "IPInputForm" );
-        ImGui::TextUnformatted( _title.c_str() );
-        for( int i = 0; i < 4; ++i )
+        bool invalidAbove = false;
+        bool invalidBelow = false;
+
+        for( int32_t & octet : octets )
         {
-            ImGui::SameLine();
-            ImGui::PushItemWidth( width * 0.25f );
-            ImGui::PushID( i );
-            bool invalidOctet = false;
-            if( octets[i] > 255 )
+            if( octet > 255 )
             {
-                // Make values over 255 red, and when focus is lost reset it to 255.
-                octets[i] = 255;
-                invalidOctet = true;
-                ImGui::PushStyleColor( ImGuiCol_Text, ImVec4( 1.0f, 0.0f, 0.0f, 1.0f ) );
+                octet = 255;
+                invalidAbove = true;
             }
-            if( octets[i] < 0 )
+
+            if( octet < 0 )
             {
-                // Make values below 0 yellow, and when focus is lost reset it to 0.
-                octets[i] = 0;
-                invalidOctet = true;
-                ImGui::PushStyleColor( ImGuiCol_Text, ImVec4( 1.0f, 1.0f, 0.0f, 1.0f ) );
+                octet = 0;
+                invalidBelow = true;
             }
-            ImGui::InputInt( "##v", &octets[i], 0, 0, ImGuiInputTextFlags_CharsDecimal );
-            if( invalidOctet )
-            {
-                ImGui::PopStyleColor();
-            }
-            ImGui::PopID();
-            ImGui::PopItemWidth();
         }
-        ImGui::PopID();
-        ImGui::EndGroup();
+
+        Mosaic::Theme theme = Mosaic::getTheme( m_mosaicContext );
+
+        if( invalidAbove == true )
+        {
+            theme.colors.text = {1.f, 0.f, 0.f, 1.f};
+        }
+        else if( invalidBelow == true )
+        {
+            theme.colors.text = {1.f, 1.f, 0.f, 1.f};
+        }
+
+        Mosaic::Scope style = Mosaic::styleScope( m_mosaicContext, theme );
+
+        Mosaic::Scope row = this->PropertyRow( _title );
+
+        Mosaic::Int32Span values( octets, 4 );
+
+        Mosaic::inputIntVector( m_mosaicContext, _title, values, 0, 0 );
 
         Stringstream ss;
         ss << octets[0] << '.' << octets[1] << '.' << octets[2] << '.' << octets[3];
@@ -2446,603 +2659,1059 @@ namespace Mengine
         return ss.str();
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerApp::DoNodeElement( DebuggerNode * _node, const Char * _filter, DebuggerNode ** _selectedNode, const String & _tag )
+    void NodeDebuggerApp::DoUISceneDebuggerTab()
     {
-        const ImGuiTreeNodeFlags seletedFlag = (*_selectedNode == _node) ? ImGuiTreeNodeFlags_Selected : 0;
-        const ImGuiTreeNodeFlags flagsNormal = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | seletedFlag;
-        const ImGuiTreeNodeFlags flagsNoChildren = ImGuiTreeNodeFlags_Leaf | seletedFlag;
+        Mosaic::Scope workspace = Mosaic::split( m_mosaicContext, "Scene workspace", Mosaic::Orientation::Horizontal, 0.4f, this->FillLayout() );
 
-        if( strlen( _filter ) == 0 || _node->name.find( _filter ) != String::npos )
         {
-            String treeNodeName = _node->name.empty() == false ? _node->name : "***unnamed***";
-            String treeNodeId = _tag + "_" + (Stringstream() << _node->uid).str();
-            String fullLabel = treeNodeName + " [" + _node->type + "]" + "##" + treeNodeId;
+            Mosaic::Scope tree = Mosaic::scrollArea( m_mosaicContext, "Scene tree", Mosaic::Orientation::Vertical, this->FillLayout() );
 
-            ImGuiExt::ImIcon icon;
-            ImGuiExt::ImIcon * iconPtr = nullptr;
-            if( _node->icon )
+            m_mosaicNodePathApplied = true;
+
             {
-                icon.image = static_cast<ImTextureID>(_node->icon->image);
-                icon.uv0 = ImVec2( _node->icon->uv0_X, _node->icon->uv0_Y );
-                icon.uv1 = ImVec2( _node->icon->uv1_X, _node->icon->uv1_Y );
+                Mosaic::TreeScope header = Mosaic::collapsingHeader( m_mosaicContext, "Server:", true );
 
-                iconPtr = &icon;
-            }
-
-            ImGuiTreeNodeFlags flag = _node->children.empty() ? flagsNoChildren : flagsNormal;
-
-            if( std::find( m_pathToSelectedNode.begin(), m_pathToSelectedNode.end(), _node->uid ) != m_pathToSelectedNode.end() )
-            {
-                ImGui::SetNextItemOpen( true );
-
-                if( _node->uid == m_pathToSelectedNode[0] )
+                if( header.expanded() == true )
                 {
-                    flag = ImGuiTreeNodeFlags_Selected;
+                    m_serverAddress = this->DoIPInput( "Address:", m_serverAddress );
+
+                    {
+                        int32_t port = static_cast<int32_t>(m_serverPort);
+
+                        Mosaic::Scope portRow = this->PropertyRow( "IP Port:" );
+
+                        if( Mosaic::inputInt( m_mosaicContext, "IP Port:", &port, 0, 0 ).changed() == true )
+                        {
+                            m_serverPort = static_cast<uint16_t>(port & 0xFFFF);
+                        }
+                    }
+
+                    if( m_connectionStatus == ConnectionStatus::Connected )
+                    {
+                        Mosaic::Theme theme = Mosaic::getTheme( m_mosaicContext );
+                        theme.colors.button = {0.5f, 0.f, 0.f, 1.f};
+                        theme.colors.buttonHovered = theme.colors.button;
+
+                        Mosaic::Scope style = Mosaic::styleScope( m_mosaicContext, theme );
+
+                        if( Mosaic::button( m_mosaicContext, "Disconnect" ).clicked() == true )
+                        {
+                            this->OnDisconnectButton();
+                        }
+                    }
+                    else if( m_connectionStatus == ConnectionStatus::Disconnected || m_connectionStatus == ConnectionStatus::ConnectionFailed )
+                    {
+                        Mosaic::Theme theme = Mosaic::getTheme( m_mosaicContext );
+                        theme.colors.button = {0.1686f, 0.5686f, 0.f, 1.f};
+                        theme.colors.buttonHovered = theme.colors.button;
+
+                        Mosaic::Scope style = Mosaic::styleScope( m_mosaicContext, theme );
+
+                        if( Mosaic::button( m_mosaicContext, "Connect" ).clicked() == true )
+                        {
+                            this->OnConnectButton();
+                        }
+                    }
                 }
             }
 
-            std::pair<bool, bool> result = ImGuiExt::TreeNodeWithIcon
-            (
-                iconPtr,
-                fullLabel.c_str(),
-                flag,
-                !_node->enable
-            );
-
-            if( result.second == true )
             {
-                this->OnSelectNode( _node, _selectedNode );
+                Mosaic::TreeScope header = Mosaic::collapsingHeader( m_mosaicContext, "Game controls:" );
+
+                if( header.expanded() == true )
+                {
+                    {
+                        Mosaic::Scope disabled = Mosaic::disabledScope( m_mosaicContext, m_updateSceneOnChange );
+
+                        int32_t hz = m_sceneUpdateFreq;
+
+                        Mosaic::Scope row = this->PropertyRow( "Update freq (hz):" );
+
+                        if( Mosaic::inputInt( m_mosaicContext, "Update freq (hz):", &hz ).changed() == true )
+                        {
+                            m_sceneUpdateFreq = std::clamp( hz, 0, 30 );
+                            m_sceneUpdateTimer = 0.0;
+                        }
+                    }
+
+                    if( Mosaic::checkbox( m_mosaicContext, "Update scene on change", &m_updateSceneOnChange ).changed() == true )
+                    {
+                        if( m_updateSceneOnChange == true )
+                        {
+                            m_sceneUpdateFreq = 0;
+                            m_sceneUpdateTimer = 0.0;
+                        }
+                    }
+
+                    if( Mosaic::button( m_mosaicContext, "Pause game" ).clicked() == true )
+                    {
+                        this->OnPauseButton();
+                    }
+
+                    if( Mosaic::button( m_mosaicContext, "Mute sound" ).clicked() == true )
+                    {
+                        this->OnMuteButton();
+                    }
+                }
             }
 
-            if( result.first == true )
-            {
-                for( DebuggerNode * child : _node->children )
-                {
-                    this->DoNodeElement( child, _filter, _selectedNode, _tag );
-                }
+            static int32_t SceneTagId = 1;
 
-                ImGui::TreePop();
+            {
+                Mosaic::TreeScope header = Mosaic::collapsingHeader( m_mosaicContext, "Type:" );
+
+                if( header.expanded() == true )
+                {
+                    Mosaic::Scope types = Mosaic::row( m_mosaicContext );
+
+                    if( Mosaic::radioButton( m_mosaicContext, "Arrow", SceneTagId == 0 ).clicked() == true )
+                    {
+                        SceneTagId = 0;
+                    }
+
+                    if( Mosaic::radioButton( m_mosaicContext, "Full", SceneTagId == 1 ).clicked() == true )
+                    {
+                        SceneTagId = 1;
+                    }
+
+                    if( Mosaic::radioButton( m_mosaicContext, "Picker", SceneTagId == 2 ).clicked() == true )
+                    {
+                        SceneTagId = 2;
+                    }
+
+                    if( Mosaic::radioButton( m_mosaicContext, "Render", SceneTagId == 3 ).clicked() == true )
+                    {
+                        SceneTagId = 3;
+                    }
+                }
+            }
+
+            {
+                Mosaic::String filter( m_selectFilter );
+
+                Mosaic::Scope row = this->PropertyRow( "Filter:" );
+
+                if( Mosaic::inputText( m_mosaicContext, "Filter:", &filter ).changed() == true )
+                {
+                    StdString::strcpy_safe( m_selectFilter, filter.c_str(), 2048 );
+                }
+            }
+
+            switch( SceneTagId )
+            {
+            case 0:
+                {
+                    Mosaic::TreeScope header = Mosaic::collapsingHeader( m_mosaicContext, "Arrow:", true );
+
+                    if( header.expanded() == true && m_arrow != nullptr )
+                    {
+                        this->DoNodeElement( m_arrow, m_selectFilter, &m_selectedArrowNode );
+
+                        m_selectedNode = m_selectedArrowNode;
+                    }
+                }break;
+            case 1:
+                {
+                    Mosaic::TreeScope header = Mosaic::collapsingHeader( m_mosaicContext, "Scene:", true );
+
+                    if( header.expanded() == true && m_scene != nullptr )
+                    {
+                        this->DoNodeElement( m_scene, m_selectFilter, &m_selectedSceneNode );
+
+                        m_selectedNode = m_selectedSceneNode;
+
+                        if( m_mosaicNodePathApplied == true )
+                        {
+                            m_pathToSelectedNode.clear();
+                        }
+                    }
+                }break;
+            case 2:
+                {
+                    Mosaic::TreeScope header = Mosaic::collapsingHeader( m_mosaicContext, "Pickerable:", true );
+
+                    if( header.expanded() == true && m_scenePickerable != nullptr )
+                    {
+                        this->DoNodeElement( m_scenePickerable, m_selectFilter, &m_selectedPickerableNode );
+
+                        m_selectedNode = m_selectedPickerableNode;
+                    }
+                }break;
+            case 3:
+                {
+                    Mosaic::TreeScope header = Mosaic::collapsingHeader( m_mosaicContext, "Renderable:", true );
+
+                    if( header.expanded() == true && m_sceneRenderable != nullptr )
+                    {
+                        this->DoNodeElement( m_sceneRenderable, m_selectFilter, &m_selectedRenderableNode );
+
+                        m_selectedNode = m_selectedRenderableNode;
+                    }
+                }break;
             }
         }
-        else
+
         {
-            for( DebuggerNode * child : _node->children )
+            Mosaic::Scope panel = Mosaic::scrollArea( m_mosaicContext, "Scene panel", Mosaic::Orientation::Vertical, this->FillLayout() );
+
+            if( m_selectedNode != nullptr )
             {
-                this->DoNodeElement( child, _filter, _selectedNode, _tag );
+                this->DoNodeProperties( m_selectedNode );
             }
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::DoNodeElement( DebuggerNode * _node, const Char * _filter, DebuggerNode ** _selectedNode )
+    {
+        if( *_filter != '\0' && _node->name.find( _filter ) == String::npos )
+        {
+            for( DebuggerNode * child : _node->children )
+            {
+                this->DoNodeElement( child, _filter, _selectedNode );
+            }
+
+            return;
+        }
+
+        const String & treeNodeName = _node->name.empty() == false ? _node->name : "***unnamed***";
+
+        Char label[1024] = {'\0'};
+        MENGINE_SNPRINTF( label, 1023, "%s [%s]", treeNodeName.c_str(), _node->type.c_str() );
+
+        Mosaic::TreeNodeOptions options;
+        options.openOnDoubleClick = true;
+        options.openOnArrow = true;
+        options.leaf = _node->children.empty();
+        options.selected = *_selectedNode == _node;
+
+        Mosaic::Key key = Mosaic::Key( _node->uid );
+
+        bool onPath = std::find( m_pathToSelectedNode.begin(), m_pathToSelectedNode.end(), _node->uid ) != m_pathToSelectedNode.end();
+
+        if( onPath == true && _node->uid == m_pathToSelectedNode[0] )
+        {
+            options.selected = true;
+        }
+
+        Mosaic::Scope disabled = Mosaic::disabledScope( m_mosaicContext, _node->enable == false );
+
+        if( _node->icon != nullptr )
+        {
+            {
+                Mosaic::Scope iconScope = Mosaic::scope( m_mosaicContext, key );
+
+                Mosaic::ImageOptions imageOptions;
+                imageOptions.uv = {_node->icon->uv0_X, _node->icon->uv0_Y, _node->icon->uv1_X - _node->icon->uv0_X, _node->icon->uv1_Y - _node->icon->uv0_Y};
+
+                Mosaic::image( m_mosaicContext, _node->icon->image, {16.f, 16.f}, imageOptions );
+            }
+
+            Mosaic::sameLine( m_mosaicContext );
+        }
+
+        Mosaic::TreeScope tree = Mosaic::treeNode( m_mosaicContext, key, label, options );
+
+        if( onPath == true && options.leaf == false && tree.expanded() == false )
+        {
+            Mosaic::setTreeExpanded( m_mosaicContext, tree.id(), true );
+
+            m_mosaicNodePathApplied = false;
+        }
+
+        Mosaic::Response response;
+
+        if( Mosaic::itemResponse( m_mosaicContext, tree.id(), &response ) == true )
+        {
+            if( response.clicked() == true )
+            {
+                this->OnSelectNode( _node, _selectedNode );
+            }
+        }
+
+        if( tree.expanded() == false )
+        {
+            return;
+        }
+
+        for( DebuggerNode * child : _node->children )
+        {
+            this->DoNodeElement( child, _filter, _selectedNode );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Mosaic::Theme NodeDebuggerApp::ReadOnlyTheme() const
+    {
+        Mosaic::Theme theme = Mosaic::getTheme( m_mosaicContext );
+        theme.colors.frame = {0.15f, 0.3f, 0.2f, 1.f};
+        theme.colors.frameHovered = theme.colors.frame;
+        theme.colors.frameActive = theme.colors.frame;
+
+        return theme;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::DoNodeProperties( DebuggerNode * _node )
     {
-        auto uiEditorBool = [_node]( const char * _caption, bool & _prop )
-        {
-            bool testValue = _prop;
-            bool input = ImGui::Checkbox( _caption, &testValue );
+        Mosaic::Context * ui = m_mosaicContext;
 
-            if( input && testValue != _prop )
+        Mosaic::SliderOptions unitOptions;
+        unitOptions.minimum = 0.0;
+        unitOptions.maximum = 0.0;
+        unitOptions.dragSpeed = 1.0;
+
+        Mosaic::SliderOptions fineOptions = unitOptions;
+        fineOptions.dragSpeed = 0.01;
+
+        typedef std::initializer_list<Mosaic::StringView> InitializerListMosaicStringView;
+
+        auto uiEditorBool = [ui, _node]( const Char * _caption, bool & _prop )
+        {
+            Mosaic::Key key = Detail::makeKey_( _caption );
+
+            Mosaic::Scope scope = Mosaic::scope( ui, key );
+
+            bool testValue = _prop;
+
+            if( Mosaic::checkbox( ui, _caption, &testValue ).changed() == false )
             {
-                _prop = testValue;
-                _node->dirty = true;
+                return;
             }
+
+            if( testValue == _prop )
+            {
+                return;
+            }
+
+            _prop = testValue;
+            _node->dirty = true;
         };
 
-        auto uiReadOnlyBool = [_node]( const char * _caption, bool _prop )
+        auto uiEditorBoolHidden = [ui, _node]( const Char * _key, bool & _prop )
         {
+            Mosaic::Key key = Detail::makeKey_( _key );
+
+            Mosaic::Scope scope = Mosaic::scope( ui, key );
+
             bool testValue = _prop;
 
-            ImGui::PushItemFlag( ImGuiItemFlags_ReadOnly, true );
-            ImGui::PushStyleColor( ImGuiCol_FrameBg, ImVec4( 0.15f, 0.3f, 0.2f, 1.f ) );
-            ImGui::Checkbox( _caption, &testValue );
-            ImGui::PopStyleColor();
-            ImGui::PopItemFlag();
+            if( Mosaic::checkbox( ui, "", &testValue ).changed() == false )
+            {
+                return;
+            }
+
+            if( testValue == _prop )
+            {
+                return;
+            }
+
+            _prop = testValue;
+            _node->dirty = true;
         };
 
-        auto uiReadOnlyVec1I8 = [_node]( const char * _caption, int8_t _prop )
+        auto uiReadOnlyBool = [this, ui]( const Char * _caption, bool _prop )
         {
-            int8_t testValue = _prop;
+            Mosaic::Key key = Detail::makeKey_( _caption );
 
-            ImGui::PushItemFlag( ImGuiItemFlags_ReadOnly, true );
-            ImGui::PushStyleColor( ImGuiCol_FrameBg, ImVec4( 0.15f, 0.3f, 0.2f, 1.f ) );
-            ImGui::DragScalarN( _caption, ImGuiDataType_S8, &testValue, 1, 1.f );
-            ImGui::PopStyleColor();
-            ImGui::PopItemFlag();
+            Mosaic::Scope scope = Mosaic::scope( ui, key );
+            Mosaic::Scope style = Mosaic::styleScope( ui, this->ReadOnlyTheme() );
+            Mosaic::Scope disabled = Mosaic::disabledScope( ui, true );
+
+            bool testValue = _prop;
+
+            Mosaic::checkbox( ui, _caption, &testValue );
         };
 
-        auto uiReadOnlyVec1I = [_node]( const char * _caption, int32_t _prop )
+        auto uiReadOnlyVec1I = [this, ui, unitOptions]( const Char * _caption, int32_t _prop )
         {
+            Mosaic::Key key = Detail::makeKey_( _caption );
+
+            Mosaic::Scope scope = Mosaic::scope( ui, key );
+            Mosaic::Scope style = Mosaic::styleScope( ui, this->ReadOnlyTheme() );
+            Mosaic::Scope disabled = Mosaic::disabledScope( ui, true );
+
             int32_t testValue = _prop;
 
-            ImGui::PushItemFlag( ImGuiItemFlags_ReadOnly, true );
-            ImGui::PushStyleColor( ImGuiCol_FrameBg, ImVec4( 0.15f, 0.3f, 0.2f, 1.f ) );
-            ImGui::DragScalarN( _caption, ImGuiDataType_S32, &testValue, 1, 1.f );
-            ImGui::PopStyleColor();
-            ImGui::PopItemFlag();
+            Mosaic::dragValue( ui, _caption, &testValue, unitOptions );
         };
 
-        auto uiEditorVec1I8 = [_node]( const char * _caption, int8_t & _prop )
+        auto uiEditorVec1I = [ui, _node, unitOptions]( const Char * _caption, int32_t & _prop )
         {
-            int8_t testValue = _prop;
-            bool input = ImGui::DragScalarN( _caption, ImGuiDataType_S8, &testValue, 1, 1.f );
+            Mosaic::Key key = Detail::makeKey_( _caption );
 
-            if( input && testValue != _prop )
-            {
-                _prop = testValue;
-                _node->dirty = true;
-            }
-        };
+            Mosaic::Scope scope = Mosaic::scope( ui, key );
 
-        auto uiEditorVec1I = [_node]( const char * _caption, int32_t & _prop )
-        {
             int32_t testValue = _prop;
-            bool input = ImGui::DragScalarN( _caption, ImGuiDataType_S32, &testValue, 1, 1.f );
 
-            if( input && testValue != _prop )
+            if( Mosaic::dragValue( ui, _caption, &testValue, unitOptions ).changed() == false )
             {
-                _prop = testValue;
-                _node->dirty = true;
+                return;
             }
+
+            if( testValue == _prop )
+            {
+                return;
+            }
+
+            _prop = testValue;
+            _node->dirty = true;
         };
 
-        auto uiEditorVec1U = [_node]( const char * _caption, uint32_t & _prop )
+        auto uiEditorVec1U = [ui, _node, unitOptions]( const Char * _caption, uint32_t & _prop )
         {
+            Mosaic::Key key = Detail::makeKey_( _caption );
+
+            Mosaic::Scope scope = Mosaic::scope( ui, key );
+
             uint32_t testValue = _prop;
-            bool input = ImGui::DragScalarN( _caption, ImGuiDataType_U32, &testValue, 1, 1.f );
 
-            if( input && testValue != _prop )
+            if( Mosaic::dragValue( ui, _caption, &testValue, (uint32_t)0, (uint32_t)0, unitOptions ).changed() == false )
             {
-                _prop = testValue;
-                _node->dirty = true;
+                return;
             }
+
+            if( testValue == _prop )
+            {
+                return;
+            }
+
+            _prop = testValue;
+            _node->dirty = true;
         };
 
-        auto uiEditorVec1f = [_node]( const char * _caption, float & _prop, bool _enable = true )
+        auto uiEditorVec1f = [ui, _node, fineOptions]( const Char * _caption, float & _prop, bool _enable = true )
         {
+            Mosaic::Key key = Detail::makeKey_( _caption );
+
+            Mosaic::Scope scope = Mosaic::scope( ui, key );
+            Mosaic::Scope disabled = Mosaic::disabledScope( ui, _enable == false );
+
             float testValue = _prop;
 
-            if( _enable == false )
+            if( Mosaic::dragValue( ui, _caption, &testValue, fineOptions ).changed() == false )
             {
-                ImGui::PushItemFlag( ImGuiItemFlags_Disabled, true );
+                return;
             }
 
-            bool input = ImGui::DragFloat( _caption, &testValue, 0.01f );
-
-            if( _enable == false )
+            if( testValue == _prop )
             {
-                ImGui::PopItemFlag();
+                return;
             }
 
-            if( input && testValue != _prop )
-            {
-                _prop = testValue;
-                _node->dirty = true;
-            }
+            _prop = testValue;
+            _node->dirty = true;
         };
 
-        auto uiReadOnlyVec1f = [_node]( const char * _caption, float _prop )
+        auto uiReadOnlyVec1f = [this, ui, unitOptions]( const Char * _caption, float _prop )
         {
+            Mosaic::Key key = Detail::makeKey_( _caption );
+
+            Mosaic::Scope scope = Mosaic::scope( ui, key );
+            Mosaic::Scope style = Mosaic::styleScope( ui, this->ReadOnlyTheme() );
+            Mosaic::Scope disabled = Mosaic::disabledScope( ui, true );
+
             float testValue = _prop;
 
-            ImGui::PushItemFlag( ImGuiItemFlags_ReadOnly, true );
-            ImGui::PushStyleColor( ImGuiCol_FrameBg, ImVec4( 0.15f, 0.3f, 0.2f, 1.f ) );
-            ImGui::DragFloat( _caption, &testValue );
-            ImGui::PopStyleColor();
-            ImGui::PopItemFlag();
+            Mosaic::dragValue( ui, _caption, &testValue, unitOptions );
         };
 
-        auto uiEditorVec2f = [_node]( const char * _caption, mt::vec2f & _prop )
+        auto uiEditorVec2f = [this, ui, _node, unitOptions]( const Char * _caption, mt::vec2f & _prop )
         {
-            mt::vec2f testValue = _prop;
-            bool input = ImGui::DragFloat2( _caption, testValue.buff() );
+            Mosaic::Key key = Detail::makeKey_( _caption );
 
-            if( input && testValue != _prop )
-            {
-                _prop = testValue;
-                _node->dirty = true;
-            }
-        };
+            Mosaic::Scope scope = Mosaic::scope( ui, key );
+            Mosaic::Scope row = this->PropertyRow( _caption );
 
-        auto uiReadOnlyVec2f = [_node]( const char * _caption, const mt::vec2f & _prop )
-        {
             mt::vec2f testValue = _prop;
 
-            ImGui::PushItemFlag( ImGuiItemFlags_ReadOnly, true );
-            ImGui::PushStyleColor( ImGuiCol_FrameBg, ImVec4( 0.15f, 0.3f, 0.2f, 1.f ) );
-            ImGui::DragFloat2( _caption, testValue.buff() );
-            ImGui::PopStyleColor();
-            ImGui::PopItemFlag();
+            float * valueData = testValue.buff();
+
+            Mosaic::FloatSpan values( valueData, 2 );
+
+            if( Mosaic::dragFloatVector( ui, _caption, values, unitOptions ).changed() == false )
+            {
+                return;
+            }
+
+            if( testValue == _prop )
+            {
+                return;
+            }
+
+            _prop = testValue;
+            _node->dirty = true;
         };
 
-        auto uiEditorVec3f = [_node]( const char * _caption, mt::vec3f & _prop )
+        auto uiReadOnlyVec2f = [this, ui, unitOptions]( const Char * _caption, const mt::vec2f & _prop )
         {
+            Mosaic::Key key = Detail::makeKey_( _caption );
+
+            Mosaic::Scope scope = Mosaic::scope( ui, key );
+            Mosaic::Scope style = Mosaic::styleScope( ui, this->ReadOnlyTheme() );
+            Mosaic::Scope disabled = Mosaic::disabledScope( ui, true );
+            Mosaic::Scope row = this->PropertyRow( _caption );
+
+            mt::vec2f testValue = _prop;
+
+            float * valueData = testValue.buff();
+
+            Mosaic::FloatSpan values( valueData, 2 );
+
+            Mosaic::dragFloatVector( ui, _caption, values, unitOptions );
+        };
+
+        auto uiEditorVec3f = [this, ui, _node, unitOptions]( const Char * _caption, mt::vec3f & _prop )
+        {
+            Mosaic::Key key = Detail::makeKey_( _caption );
+
+            Mosaic::Scope scope = Mosaic::scope( ui, key );
+            Mosaic::Scope row = this->PropertyRow( _caption );
+
             mt::vec3f testValue = _prop;
-            bool input = ImGui::DragFloat3( _caption, testValue.buff() );
 
-            if( input && testValue != _prop )
+            float * valueData = testValue.buff();
+
+            Mosaic::FloatSpan values( valueData, 3 );
+
+            if( Mosaic::dragFloatVector( ui, _caption, values, unitOptions ).changed() == false )
             {
-                _prop = testValue;
-                _node->dirty = true;
+                return;
             }
+
+            if( testValue == _prop )
+            {
+                return;
+            }
+
+            _prop = testValue;
+            _node->dirty = true;
         };
 
-        auto uiReadOnlyVec3f = [_node]( const char * _caption, const mt::vec3f & _prop )
+        auto uiReadOnlyVec3f = [this, ui, unitOptions]( const Char * _caption, const mt::vec3f & _prop )
         {
+            Mosaic::Key key = Detail::makeKey_( _caption );
+
+            Mosaic::Scope scope = Mosaic::scope( ui, key );
+            Mosaic::Scope style = Mosaic::styleScope( ui, this->ReadOnlyTheme() );
+            Mosaic::Scope disabled = Mosaic::disabledScope( ui, true );
+            Mosaic::Scope row = this->PropertyRow( _caption );
+
             mt::vec3f testValue = _prop;
 
-            ImGui::PushItemFlag( ImGuiItemFlags_ReadOnly, true );
-            ImGui::PushStyleColor( ImGuiCol_FrameBg, ImVec4( 0.15f, 0.3f, 0.2f, 1.f ) );
-            ImGui::DragFloat3( _caption, testValue.buff() );
-            ImGui::PopStyleColor();
-            ImGui::PopItemFlag();
+            float * valueData = testValue.buff();
+
+            Mosaic::FloatSpan values( valueData, 3 );
+
+            Mosaic::dragFloatVector( ui, _caption, values, unitOptions );
         };
 
-        auto uiEditorColor = [_node]( const Char * _caption, Color & _prop, bool _enable = true )
+        auto uiEditorColor = [ui, _node]( const Char * _caption, Color & _prop, bool _enable = true )
         {
-            Color testValue = _prop;
+            Mosaic::Key key = Detail::makeKey_( _caption );
 
-            if( _enable == false )
+            Mosaic::Scope scope = Mosaic::scope( ui, key );
+            Mosaic::Scope disabled = Mosaic::disabledScope( ui, _enable == false );
+
+            Mosaic::Color testValue = {_prop.getR(), _prop.getG(), _prop.getB(), _prop.getA()};
+
+            if( Mosaic::colorEditorRgba( ui, _caption, &testValue ).changed() == false )
             {
-                ImGui::PushItemFlag( ImGuiItemFlags_Disabled, true );
+                return;
             }
 
-            bool input = ImGui::ColorEdit4( _caption, testValue.buff() );
+            Color updated( testValue.r, testValue.g, testValue.b, testValue.a );
 
-            if( _enable == false )
+            if( updated == _prop )
             {
-                ImGui::PopItemFlag();
+                return;
             }
 
-            if( input && testValue != _prop )
+            _prop = updated;
+            _node->dirty = true;
+        };
+
+        auto uiReadOnlyColor = [this, ui]( const Char * _caption, const Color & _prop )
+        {
+            Mosaic::Key key = Detail::makeKey_( _caption );
+
+            Mosaic::Scope scope = Mosaic::scope( ui, key );
+            Mosaic::Scope style = Mosaic::styleScope( ui, this->ReadOnlyTheme() );
+            Mosaic::Scope disabled = Mosaic::disabledScope( ui, true );
+
+            Mosaic::Color testValue = {_prop.getR(), _prop.getG(), _prop.getB(), _prop.getA()};
+
+            Mosaic::colorEditorRgba( ui, _caption, &testValue );
+        };
+
+        auto uiEditorString = [this, ui, _node]( const Char * _caption, String & _prop )
+        {
+            Mosaic::Key key = Detail::makeKey_( _caption );
+
+            Mosaic::Scope scope = Mosaic::scope( ui, key );
+
+            Mosaic::Scope row = this->PropertyRow( _caption );
+
+            Mosaic::String testValue( _prop.c_str(), _prop.size() );
+
+            if( Mosaic::inputText( ui, _caption, &testValue ).changed() == false )
             {
-                _prop = testValue;
-                _node->dirty = true;
+                return;
+            }
+
+            if( testValue.c_str() == _prop )
+            {
+            _prop.assign( testValue.c_str(), testValue.size() );
+            _node->dirty = true;
             }
         };
 
-        auto uiReadOnlyColor = [_node]( const Char * _caption, const Color & _prop )
+        auto uiReadOnlyString = [this, ui]( const Char * _caption, const String & _prop )
         {
-            Color testValue = _prop;
+            Mosaic::Key key = Detail::makeKey_( _caption );
 
-            ImGui::PushItemFlag( ImGuiItemFlags_ReadOnly, true );
-            ImGui::PushStyleColor( ImGuiCol_FrameBg, ImVec4( 0.15f, 0.3f, 0.2f, 1.f ) );
-            ImGui::ColorEdit4( _caption, testValue.buff() );
-            ImGui::PopStyleColor();
-            ImGui::PopItemFlag();
+            Mosaic::Scope scope = Mosaic::scope( ui, key );
+            Mosaic::Scope style = Mosaic::styleScope( ui, this->ReadOnlyTheme() );
+
+            Mosaic::Scope row = this->PropertyRow( _caption );
+
+            Mosaic::String testValue( _prop.c_str(), _prop.size() );
+
+            Mosaic::TextInputOptions options;
+            options.readOnly = true;
+
+            Mosaic::inputText( ui, _caption, &testValue, options );
         };
 
-        auto uiEditorString = [_node]( const char * _caption, String & _prop )
+        auto uiReadOnlyUV4 = [this, ui, unitOptions]( const Char * _caption, const mt::uv4f & _prop )
         {
-            Char testValue[2048 + 1] = {'\0'};
-            StdString::strcpy_safe( testValue, _prop.c_str(), 2048 );
+            Mosaic::Key key = Detail::makeKey_( _caption );
 
-            bool input = ImGui::InputText( _caption, testValue, 2048 );
+            Mosaic::Scope scope = Mosaic::scope( ui, key );
+            Mosaic::Scope style = Mosaic::styleScope( ui, this->ReadOnlyTheme() );
+            Mosaic::Scope disabled = Mosaic::disabledScope( ui, true );
 
-            if( input && _prop != testValue )
-            {
-                _prop = testValue;
-                _node->dirty = true;
-            }
-        };
-
-        auto uiReadOnlyString = [_node]( const char * _caption, const String & _prop )
-        {
-            Char testValue[2048 + 1] = {'\0'};
-            StdString::strcpy_safe( testValue, _prop.c_str(), 2048 );
-
-            ImGui::PushStyleColor( ImGuiCol_FrameBg, ImVec4( 0.15f, 0.3f, 0.2f, 1.f ) );
-            ImGui::InputText( _caption, testValue, 2048, ImGuiInputTextFlags_ReadOnly );
-            ImGui::PopStyleColor();
-        };
-
-        auto uiReadOnlyUV4 = [_node]( const char * _caption, const mt::uv4f & _prop )
-        {
             mt::uv4f testValue = _prop;
-            ImGui::PushItemFlag( ImGuiItemFlags_ReadOnly, true );
-            ImGui::PushStyleColor( ImGuiCol_FrameBg, ImVec4( 0.15f, 0.3f, 0.2f, 1.f ) );
-            ImGui::DragFloat2( _caption, testValue.p0.buff() );
-            ImGui::DragFloat2( _caption, testValue.p1.buff() );
-            ImGui::DragFloat2( _caption, testValue.p2.buff() );
-            ImGui::DragFloat2( _caption, testValue.p3.buff() );
-            ImGui::PopStyleColor();
-            ImGui::PopItemFlag();
-        };
 
-        auto uiEditorListBox = [_node]( const char * _caption, uint32_t & _prop, const std::initializer_list<String> & _items, uint32_t _count )
-        {
-            int32_t testValue = _prop;
-            bool input = ImGui::ListBox( _caption, &testValue, []( void * data, int idx ) -> const char *
-            {
-                return ((String *)data + idx)->c_str();
-            }, (void *)_items.begin(), _count );
+            mt::vec2f * points[] = {&testValue.p0, &testValue.p1, &testValue.p2, &testValue.p3};
 
-            if( input && _prop != static_cast<uint32_t>(testValue) )
+            for( uint32_t pointIndex = 0; pointIndex != 4; ++pointIndex )
             {
-                _prop = testValue;
-                _node->dirty = true;
+                Mosaic::Scope pointScope = Mosaic::scope( ui, Mosaic::Key( pointIndex ) );
+                Mosaic::Scope row = this->PropertyRow( _caption );
+
+                float * valueData = points[pointIndex]->buff();
+
+                Mosaic::FloatSpan values( valueData, 2 );
+
+                Mosaic::dragFloatVector( ui, _caption, values, unitOptions );
             }
         };
 
-        auto uiReadOnlyListBox = [_node]( const char * _caption, uint32_t _prop, const std::initializer_list<String> & _items, uint32_t _count )
+        auto uiEditorListBox = [this, ui, _node]( const Char * _caption, uint32_t & _prop, const InitializerListMosaicStringView & _items )
         {
-            int32_t testValue = _prop;
-            ImGui::PushItemFlag( ImGuiItemFlags_ReadOnly, true );
-            ImGui::PushStyleColor( ImGuiCol_FrameBg, ImVec4( 0.15f, 0.3f, 0.2f, 1.f ) );
-            ImGui::ListBox( _caption, &testValue, []( void * data, int idx ) -> const char *
+            Mosaic::Key key = Detail::makeKey_( _caption );
+
+            Mosaic::Scope scope = Mosaic::scope( ui, key );
+
+            Mosaic::Scope row = this->PropertyRow( _caption );
+
+            int32_t testValue = (int32_t)_prop;
+
+            Mosaic::StringViewSpan items( _items.begin(), _items.size() );
+
+            if( Mosaic::listBox( ui, _caption, &testValue, items ).changed() == false )
             {
-                return ((String *)data + idx)->c_str();
-            }, (void *)_items.begin(), _count );
-            ImGui::PopStyleColor();
-            ImGui::PopItemFlag();
+                return;
+            }
+
+            uint32_t updated = static_cast<uint32_t>(testValue);
+
+            if( updated == _prop )
+            {
+                return;
+            }
+
+            _prop = updated;
+            _node->dirty = true;
         };
 
-        if( ImGui::CollapsingHeader( "Node:", ImGuiTreeNodeFlags_DefaultOpen ) )
+        auto uiReadOnlyListBox = [this, ui]( const Char * _caption, uint32_t _prop, const InitializerListMosaicStringView & _items )
         {
-            ImGui::Text( "Name:" );
-            ImGui::SameLine();
-            ImGui::PushItemWidth( 25.f + 8.f * _node->name.size() );
-            ImGui::InputText( "##node_name", _node->name.data(), _node->name.size(), ImGuiInputTextFlags_ReadOnly );
-            ImGui::PopItemWidth();
-            ImGui::SameLine();
-            ImGui::Dummy( ImVec2( 20.0f, 5.0f ) );
+            Mosaic::Key key = Detail::makeKey_( _caption );
 
-            ImGui::SameLine();
-            ImGui::Text( "Type:" );
-            ImGui::SameLine();
-            ImGui::PushItemWidth( 25.f + 8.f * _node->type.size() );
-            ImGui::InputText( "##node_type", _node->type.data(), _node->type.size(), ImGuiInputTextFlags_ReadOnly );
-            ImGui::PopItemWidth();
-            ImGui::SameLine();
-            ImGui::Dummy( ImVec2( 20.0f, 5.0f ) );
+            Mosaic::Scope scope = Mosaic::scope( ui, key );
+            Mosaic::Scope style = Mosaic::styleScope( ui, this->ReadOnlyTheme() );
+            Mosaic::Scope disabled = Mosaic::disabledScope( ui, true );
 
-            Char uid_text[64 + 1];
-            MENGINE_SNPRINTF( uid_text, 64, "%u", _node->uid );
+            Mosaic::Scope row = this->PropertyRow( _caption );
 
-            ImGui::SameLine();
-            ImGui::Text( "UID:" );
-            ImGui::SameLine();
-            ImGui::PushItemWidth( 25.f + 8.f * StdString::strlen( uid_text ) );
-            ImGui::InputText( "##node_uid", uid_text, StdString::strlen( uid_text ), ImGuiInputTextFlags_ReadOnly );
-            ImGui::PopItemWidth();
-            ImGui::Spacing();
+            int32_t testValue = (int32_t)_prop;
 
-            Char hhash_text[64 + 1];
-            MENGINE_SNPRINTF( hhash_text, 64, "%" MENGINE_PRIu64, _node->hhash );
+            Mosaic::StringViewSpan items( _items.begin(), _items.size() );
 
-            ImGui::SameLine();
-            ImGui::Text( "HHASH:" );
-            ImGui::SameLine();
-            ImGui::PushItemWidth( 25.f + 8.f * StdString::strlen( hhash_text ) );
-            ImGui::InputText( "##node_hhash", hhash_text, StdString::strlen( hhash_text ), ImGuiInputTextFlags_ReadOnly );
-            ImGui::PopItemWidth();
-            ImGui::Spacing();
+            Mosaic::listBox( ui, _caption, &testValue, items );
+        };
 
-            uiEditorBool( "Enable##node_enable", _node->enable );
-            ImGui::Spacing();
-        }
-
-        if( ImGui::CollapsingHeader( "Transformation:", ImGuiTreeNodeFlags_DefaultOpen ) )
         {
-            NodeTransformation & transformation = _node->transformation;
+            Mosaic::TreeScope header = Mosaic::collapsingHeader( ui, "Node:", true );
 
-            if( _node->transformationProxy == false )
+            if( header.expanded() == true )
             {
-                uiEditorVec3f( "Position", transformation.position );
-                uiEditorVec3f( "Origin", transformation.origin );
-                uiEditorVec2f( "Skew", transformation.skew );
-                uiEditorVec3f( "Scale", transformation.scale );
-                uiEditorVec3f( "Orientation", transformation.orientation );
-
-                ImGui::Spacing();
-            }
-
-            uiReadOnlyVec3f( "World Position", transformation.worldPosition );
-            uiReadOnlyVec3f( "World Scale", transformation.worldScale );
-            uiReadOnlyVec3f( "World Orientation", transformation.worldOrientation );
-
-            ImGui::Spacing();
-        }
-
-        if( _node->hasRender == true && ImGui::CollapsingHeader( "Render:", ImGuiTreeNodeFlags_DefaultOpen ) )
-        {
-            uiReadOnlyBool( "Enable", _node->render.enable );
-            uiEditorBool( "Hide", _node->render.hide );
-            ImGui::Spacing();
-
-            if( ImGui::Button( "Z Group Reset" ) == true )
-            {
-                _node->render.z_group = MENGINE_RENDER_ZGROUP_DEFAULT;
-                _node->dirty = true;
-            }
-
-            uiEditorVec1I( "Z Order", _node->render.z_group );
-
-            if( ImGui::Button( "Z Index Reset" ) == true )
-            {
-                _node->render.z_index = MENGINE_RENDER_ZINDEX_DEFAULT;
-                _node->dirty = true;
-            }
-
-            uiEditorVec1I( "Z Index", _node->render.z_index );
-            uiReadOnlyVec1I( "Total Z Group", _node->render.total_z_group == MENGINE_RENDER_ZGROUP_DEFAULT ? 0 : _node->render.total_z_group );
-            uiReadOnlyVec1I( "Total Z Index", _node->render.total_z_index == MENGINE_RENDER_ZINDEX_DEFAULT ? 0 : _node->render.total_z_index );
-            ImGui::Spacing();
-            uiEditorColor( "Local Color", _node->render.local_color );
-            uiEditorColor( "Personal Color", _node->render.personal_color );
-
-            if( _node->render.HasExtraRelationRender == true && ImGui::CollapsingHeader( "Extra Relation Render:", ImGuiTreeNodeFlags_DefaultOpen ) )
-            {
-                ImGui::Spacing();
-                ImGui::InputText( "Base Node Name:", _node->name.data(), _node->name.size(), ImGuiInputTextFlags_ReadOnly );
-                ImGui::InputText( "Base Node Type:", _node->type.data(), _node->type.size(), ImGuiInputTextFlags_ReadOnly );
+                uiReadOnlyString( "Name:", _node->name );
+                uiReadOnlyString( "Type:", _node->type );
 
                 Char uid_text[64 + 1] = {'\0'};
                 MENGINE_SNPRINTF( uid_text, 64, "%u", _node->uid );
 
-                ImGui::InputText( "Base Node UID:", uid_text, StdString::strlen( uid_text ), ImGuiInputTextFlags_ReadOnly );
-            }
+                uiReadOnlyString( "UID:", String( uid_text ) );
 
-            if( _node->render.camera.exist == true && ImGui::CollapsingHeader( "Render Camera:", ImGuiTreeNodeFlags_DefaultOpen ) )
-            {
-                uiReadOnlyString( "Camera Name", _node->render.camera.Name );
-                uiReadOnlyString( "Camera Type", _node->render.camera.Type );
+                Char hhash_text[64 + 1] = {'\0'};
+                MENGINE_SNPRINTF( hhash_text, 64, "%" MENGINE_PRIu64, _node->hhash );
 
-                uiReadOnlyString( "Relelation Camera Name", _node->render.camera.RelationName );
-                uiReadOnlyString( "Relelation Camera Type", _node->render.camera.RelationType );
-            }
+                uiReadOnlyString( "HHASH:", String( hhash_text ) );
 
-            if( _node->render.viewport.exist == true && ImGui::CollapsingHeader( "Render Viewport:", ImGuiTreeNodeFlags_DefaultOpen ) )
-            {
-                uiReadOnlyVec2f( "begin", _node->render.viewport.begin );
-                uiReadOnlyVec2f( "end", _node->render.viewport.end );
-            }
-
-            if( _node->render.transformation.exist == true && ImGui::CollapsingHeader( "Render Transformation:", ImGuiTreeNodeFlags_DefaultOpen ) )
-            {
-            }
-
-            if( _node->render.scissor.exist == true && ImGui::CollapsingHeader( "Render Scissor:", ImGuiTreeNodeFlags_DefaultOpen ) )
-            {
-                uiReadOnlyVec2f( "begin", _node->render.scissor.begin );
-                uiReadOnlyVec2f( "end", _node->render.scissor.end );
-            }
-
-            if( _node->render.target.exist == true && ImGui::CollapsingHeader( "Render Target:", ImGuiTreeNodeFlags_DefaultOpen ) )
-            {
+                uiEditorBool( "Enable", _node->enable );
             }
         }
 
-        if( _node->hasAnimation == true && ImGui::CollapsingHeader( "Animation:", ImGuiTreeNodeFlags_DefaultOpen ) )
         {
-            uiEditorBool( "loop", _node->animation.loop );
-            uiReadOnlyBool( "play", _node->animation.play );
-            uiReadOnlyBool( "pause", _node->animation.pause );
-            uiEditorVec1f( "time", _node->animation.time );
-            uiReadOnlyVec1f( "duration", _node->animation.duration );
-        }
+            Mosaic::TreeScope header = Mosaic::collapsingHeader( ui, "Transformation:", true );
 
-        if( _node->hasComponentSurface == true && ImGui::CollapsingHeader( "Component Surface:", ImGuiTreeNodeFlags_DefaultOpen ) )
-        {
-            uiReadOnlyString( "name", _node->componentSurface.Name );
-            uiReadOnlyString( "type", _node->componentSurface.Type );
-
-            if( _node->componentSurface.Compile == true )
+            if( header.expanded() == true )
             {
-                uiReadOnlyVec2f( "max size", _node->componentSurface.MaxSize );
-                uiReadOnlyVec2f( "size", _node->componentSurface.Size );
-                uiReadOnlyVec2f( "offset", _node->componentSurface.Offset );
-            }
+                NodeTransformation & transformation = _node->transformation;
 
-            if( _node->componentSurface.hasAnimation == true && ImGui::CollapsingHeader( "Surface Animation:", ImGuiTreeNodeFlags_DefaultOpen ) )
-            {
-                uiEditorBool( "loop", _node->componentSurface.animation.loop );
-                uiReadOnlyBool( "play", _node->componentSurface.animation.play );
-                uiReadOnlyBool( "pause", _node->componentSurface.animation.pause );
-                uiEditorVec1f( "time", _node->componentSurface.animation.time );
-                uiReadOnlyVec1f( "duration", _node->componentSurface.animation.duration );
-            }
-
-            if( _node->componentSurface.isTypeSurfaceImage == true && ImGui::CollapsingHeader( "Surface Image:", ImGuiTreeNodeFlags_DefaultOpen ) )
-            {
-                uiReadOnlyString( "resource name", _node->componentSurface.surfaceImage.ResourceName );
-                uiReadOnlyString( "resource type", _node->componentSurface.surfaceImage.ResourceType );
-                uiReadOnlyUV4( "UV image", _node->componentSurface.surfaceImage.UVImage );
-
-                if( _node->componentSurface.surfaceImage.isContent == true && ImGui::CollapsingHeader( "Surface Image Content:", ImGuiTreeNodeFlags_DefaultOpen ) )
+                if( _node->transformationProxy == false )
                 {
-                    uiReadOnlyString( "file group", _node->componentSurface.surfaceImage.content.FileGroup );
-                    uiReadOnlyString( "file path", _node->componentSurface.surfaceImage.content.FilePath );
-                    uiReadOnlyString( "codec", _node->componentSurface.surfaceImage.content.CodecType );
-                    uiReadOnlyString( "converter", _node->componentSurface.surfaceImage.content.ConverterType );
+                    uiEditorVec3f( "Position", transformation.position );
+                    uiEditorVec3f( "Origin", transformation.origin );
+                    uiEditorVec2f( "Skew", transformation.skew );
+                    uiEditorVec3f( "Scale", transformation.scale );
+                    uiEditorVec3f( "Orientation", transformation.orientation );
+                }
+
+                uiReadOnlyVec3f( "World Position", transformation.worldPosition );
+                uiReadOnlyVec3f( "World Scale", transformation.worldScale );
+                uiReadOnlyVec3f( "World Orientation", transformation.worldOrientation );
+            }
+        }
+
+        if( _node->hasRender == true )
+        {
+            Mosaic::TreeScope header = Mosaic::collapsingHeader( ui, "Render:", true );
+
+            if( header.expanded() == true )
+            {
+                uiReadOnlyBool( "Enable", _node->render.enable );
+                uiEditorBool( "Hide", _node->render.hide );
+
+                if( Mosaic::button( ui, "Z Group Reset" ).clicked() == true )
+                {
+                    _node->render.z_group = MENGINE_RENDER_ZGROUP_DEFAULT;
+                    _node->dirty = true;
+                }
+
+                uiEditorVec1I( "Z Order", _node->render.z_group );
+
+                if( Mosaic::button( ui, "Z Index Reset" ).clicked() == true )
+                {
+                    _node->render.z_index = MENGINE_RENDER_ZINDEX_DEFAULT;
+                    _node->dirty = true;
+                }
+
+                uiEditorVec1I( "Z Index", _node->render.z_index );
+                uiReadOnlyVec1I( "Total Z Group", _node->render.total_z_group == MENGINE_RENDER_ZGROUP_DEFAULT ? 0 : _node->render.total_z_group );
+                uiReadOnlyVec1I( "Total Z Index", _node->render.total_z_index == MENGINE_RENDER_ZINDEX_DEFAULT ? 0 : _node->render.total_z_index );
+                uiEditorColor( "Local Color", _node->render.local_color );
+                uiEditorColor( "Personal Color", _node->render.personal_color );
+
+                if( _node->render.HasExtraRelationRender == true )
+                {
+                    Mosaic::TreeScope extra = Mosaic::collapsingHeader( ui, "Extra Relation Render:", true );
+
+                    if( extra.expanded() == true )
+                    {
+                        uiReadOnlyString( "Base Node Name:", _node->name );
+                        uiReadOnlyString( "Base Node Type:", _node->type );
+
+                        Char uid_text[64 + 1] = {'\0'};
+                        MENGINE_SNPRINTF( uid_text, 64, "%u", _node->uid );
+
+                        uiReadOnlyString( "Base Node UID:", String( uid_text ) );
+                    }
+                }
+
+                if( _node->render.camera.exist == true )
+                {
+                    Mosaic::TreeScope camera = Mosaic::collapsingHeader( ui, "Render Camera:", true );
+
+                    if( camera.expanded() == true )
+                    {
+                        uiReadOnlyString( "Camera Name", _node->render.camera.Name );
+                        uiReadOnlyString( "Camera Type", _node->render.camera.Type );
+
+                        uiReadOnlyString( "Relelation Camera Name", _node->render.camera.RelationName );
+                        uiReadOnlyString( "Relelation Camera Type", _node->render.camera.RelationType );
+                    }
+                }
+
+                if( _node->render.viewport.exist == true )
+                {
+                    Mosaic::TreeScope viewport = Mosaic::collapsingHeader( ui, "Render Viewport:", true );
+
+                    if( viewport.expanded() == true )
+                    {
+                        uiReadOnlyVec2f( "begin", _node->render.viewport.begin );
+                        uiReadOnlyVec2f( "end", _node->render.viewport.end );
+                    }
+                }
+
+                if( _node->render.scissor.exist == true )
+                {
+                    Mosaic::TreeScope scissor = Mosaic::collapsingHeader( ui, "Render Scissor:", true );
+
+                    if( scissor.expanded() == true )
+                    {
+                        uiReadOnlyVec2f( "begin", _node->render.scissor.begin );
+                        uiReadOnlyVec2f( "end", _node->render.scissor.end );
+                    }
                 }
             }
+        }
 
-            if( _node->componentSurface.hasAtlas == true && ImGui::CollapsingHeader( "Atlas:", ImGuiTreeNodeFlags_DefaultOpen ) )
+        if( _node->hasAnimation == true )
+        {
+            Mosaic::TreeScope header = Mosaic::collapsingHeader( ui, "Animation:", true );
+
+            if( header.expanded() == true )
             {
-                uiReadOnlyString( "resource name", _node->componentSurface.atlas.ResourceName );
-                uiReadOnlyString( "resource type", _node->componentSurface.atlas.ResourceType );
+                uiEditorBool( "loop", _node->animation.loop );
+                uiReadOnlyBool( "play", _node->animation.play );
+                uiReadOnlyBool( "pause", _node->animation.pause );
+                uiEditorVec1f( "time", _node->animation.time );
+                uiReadOnlyVec1f( "duration", _node->animation.duration );
+            }
+        }
 
-                if( _node->componentSurface.atlas.isContent == true && ImGui::CollapsingHeader( "Atlas Content:", ImGuiTreeNodeFlags_DefaultOpen ) )
+        if( _node->hasComponentSurface == true )
+        {
+            Mosaic::TreeScope header = Mosaic::collapsingHeader( ui, "Component Surface:", true );
+
+            if( header.expanded() == true )
+            {
+                uiReadOnlyString( "name", _node->componentSurface.Name );
+                uiReadOnlyString( "type", _node->componentSurface.Type );
+
+                if( _node->componentSurface.Compile == true )
                 {
-                    uiReadOnlyString( "file group", _node->componentSurface.atlas.content.FileGroup );
-                    uiReadOnlyString( "file path", _node->componentSurface.atlas.content.FilePath );
-                    uiReadOnlyString( "codec", _node->componentSurface.atlas.content.CodecType );
-                    uiReadOnlyString( "converter", _node->componentSurface.atlas.content.ConverterType );
+                    uiReadOnlyVec2f( "max size", _node->componentSurface.MaxSize );
+                    uiReadOnlyVec2f( "size", _node->componentSurface.Size );
+                    uiReadOnlyVec2f( "offset", _node->componentSurface.Offset );
+                }
+
+                if( _node->componentSurface.hasAnimation == true )
+                {
+                    Mosaic::TreeScope animation = Mosaic::collapsingHeader( ui, "Surface Animation:", true );
+
+                    if( animation.expanded() == true )
+                    {
+                        uiEditorBool( "loop", _node->componentSurface.animation.loop );
+                        uiReadOnlyBool( "play", _node->componentSurface.animation.play );
+                        uiReadOnlyBool( "pause", _node->componentSurface.animation.pause );
+                        uiEditorVec1f( "time", _node->componentSurface.animation.time );
+                        uiReadOnlyVec1f( "duration", _node->componentSurface.animation.duration );
+                    }
+                }
+
+                if( _node->componentSurface.isTypeSurfaceImage == true )
+                {
+                    Mosaic::TreeScope image = Mosaic::collapsingHeader( ui, "Surface Image:", true );
+
+                    if( image.expanded() == true )
+                    {
+                        uiReadOnlyString( "resource name", _node->componentSurface.surfaceImage.ResourceName );
+                        uiReadOnlyString( "resource type", _node->componentSurface.surfaceImage.ResourceType );
+                        uiReadOnlyUV4( "UV image", _node->componentSurface.surfaceImage.UVImage );
+
+                        if( _node->componentSurface.surfaceImage.isContent == true )
+                        {
+                            Mosaic::TreeScope content = Mosaic::collapsingHeader( ui, "Surface Image Content:", true );
+
+                            if( content.expanded() == true )
+                            {
+                                uiReadOnlyString( "file group", _node->componentSurface.surfaceImage.content.FileGroup );
+                                uiReadOnlyString( "file path", _node->componentSurface.surfaceImage.content.FilePath );
+                                uiReadOnlyString( "codec", _node->componentSurface.surfaceImage.content.CodecType );
+                                uiReadOnlyString( "converter", _node->componentSurface.surfaceImage.content.ConverterType );
+                            }
+                        }
+                    }
+                }
+
+                if( _node->componentSurface.hasAtlas == true )
+                {
+                    Mosaic::TreeScope atlas = Mosaic::collapsingHeader( ui, "Atlas:", true );
+
+                    if( atlas.expanded() == true )
+                    {
+                        uiReadOnlyString( "resource name", _node->componentSurface.atlas.ResourceName );
+                        uiReadOnlyString( "resource type", _node->componentSurface.atlas.ResourceType );
+
+                        if( _node->componentSurface.atlas.isContent == true )
+                        {
+                            Mosaic::TreeScope content = Mosaic::collapsingHeader( ui, "Atlas Content:", true );
+
+                            if( content.expanded() == true )
+                            {
+                                uiReadOnlyString( "file group", _node->componentSurface.atlas.content.FileGroup );
+                                uiReadOnlyString( "file path", _node->componentSurface.atlas.content.FilePath );
+                                uiReadOnlyString( "codec", _node->componentSurface.atlas.content.CodecType );
+                                uiReadOnlyString( "converter", _node->componentSurface.atlas.content.ConverterType );
+                            }
+                        }
+                    }
                 }
             }
         }
 
-        if( _node->isTypeTextField == true && ImGui::CollapsingHeader( "TextField:", ImGuiTreeNodeFlags_DefaultOpen ) )
+        if( _node->isTypeTextField == true )
         {
-            uiEditorBool( "Wrap", _node->textField.Wrap );
+            Mosaic::TreeScope header = Mosaic::collapsingHeader( ui, "TextField:", true );
 
-            uiEditorVec2f( "AnchorPercent", _node->textField.AnchorPercent );
-            uiEditorBool( "AnchorVerticalAlign", _node->textField.AnchorVerticalAlign );
-            uiEditorBool( "AnchorHorizontalAlign", _node->textField.AnchorHorizontalAlign );
-
-            uiEditorString( "TextId", _node->textField.TextId );
-            uiReadOnlyString( "AliasTextId", _node->textField.TextAliasId );
-            uiEditorString( "AliasEnvironment", _node->textField.TextAliasEnvironment );
-
-            uiReadOnlyBool( "HasText", _node->textField.HasText );
-
-            if( _node->textField.HasText == true )
+            if( header.expanded() == true )
             {
-                uiReadOnlyString( "Format", _node->textField.Format );
-                uiReadOnlyString( "Text", _node->textField.Text );
+                uiEditorBool( "Wrap", _node->textField.Wrap );
+
+                uiEditorVec2f( "AnchorPercent", _node->textField.AnchorPercent );
+                uiEditorBool( "AnchorVerticalAlign", _node->textField.AnchorVerticalAlign );
+                uiEditorBool( "AnchorHorizontalAlign", _node->textField.AnchorHorizontalAlign );
+
+                uiEditorString( "TextId", _node->textField.TextId );
+                uiReadOnlyString( "AliasTextId", _node->textField.TextAliasId );
+                uiEditorString( "AliasEnvironment", _node->textField.TextAliasEnvironment );
+
+                uiReadOnlyBool( "HasText", _node->textField.HasText );
+
+                if( _node->textField.HasText == true )
+                {
+                    uiReadOnlyString( "Format", _node->textField.Format );
+                    uiReadOnlyString( "Text", _node->textField.Text );
+                }
+
+                uiEditorString( "FontName", _node->textField.FontName );
+                uiReadOnlyString( "TotalFontName", _node->textField.TotalFontName );
+
+                {
+                    Mosaic::Scope row = Mosaic::row( ui, Mosaic::Key( "MaxLength" ) );
+
+                    uiEditorBoolHidden( "HasMaxLength", _node->textField.HasMaxLength );
+                    uiEditorVec1f( "MaxLength", _node->textField.MaxLength );
+                }
+
+                uiEditorVec1f( "TotalMaxLength", _node->textField.TotalMaxLength );
+
+                {
+                    Mosaic::Scope row = Mosaic::row( ui, Mosaic::Key( "MaxHeight" ) );
+
+                    uiEditorBoolHidden( "HasMaxHeight", _node->textField.HasMaxHeight );
+                    uiEditorVec1f( "MaxHeight", _node->textField.MaxHeight );
+                }
+
+                uiEditorVec1f( "TotalMaxHeight", _node->textField.TotalMaxHeight );
+
+                {
+                    Mosaic::Scope row = Mosaic::row( ui, Mosaic::Key( "AutoScale" ) );
+
+                    uiEditorBoolHidden( "HasAutoScale", _node->textField.HasAutoScale );
+                    uiEditorBool( "AutoScale", _node->textField.AutoScale );
+                }
+
+                uiEditorBool( "TotalAutoScale", _node->textField.TotalAutoScale );
+
+                {
+                    Mosaic::Scope row = Mosaic::row( ui, Mosaic::Key( "Justify" ) );
+
+                    uiEditorBoolHidden( "HasJustify", _node->textField.HasJustify );
+                    uiEditorBool( "Justify", _node->textField.Justify );
+                }
+
+                uiEditorBool( "TotalJustify", _node->textField.TotalJustify );
+
+                {
+                    Mosaic::Scope row = Mosaic::row( ui, Mosaic::Key( "FontColor" ) );
+
+                    uiEditorBoolHidden( "HasFontColor", _node->textField.HasFontColor );
+                    uiEditorColor( "FontColor", _node->textField.FontColor, _node->textField.HasFontColor );
+                }
+
+                uiReadOnlyColor( "TotalFontColor", _node->textField.TotalFontColor );
+
+                {
+                    Mosaic::Scope row = Mosaic::row( ui, Mosaic::Key( "LineOffset" ) );
+
+                    uiEditorBoolHidden( "HasLineOffset", _node->textField.HasLineOffset );
+                    uiEditorVec1f( "LineOffset", _node->textField.LineOffset, _node->textField.HasLineOffset );
+                }
+
+                uiReadOnlyVec1f( "TotalLineOffset", _node->textField.TotalLineOffset );
+
+                {
+                    Mosaic::Scope row = Mosaic::row( ui, Mosaic::Key( "CharOffset" ) );
+
+                    uiEditorBoolHidden( "HasCharOffset", _node->textField.HasCharOffset );
+                    uiEditorVec1f( "CharOffset", _node->textField.CharOffset, _node->textField.HasCharOffset );
+                }
+
+                uiReadOnlyVec1f( "TotalCharOffset", _node->textField.TotalCharOffset );
+
+                {
+                    Mosaic::Scope row = Mosaic::row( ui, Mosaic::Key( "CharScale" ) );
+
+                    uiEditorBoolHidden( "HasCharScale", _node->textField.HasCharScale );
+                    uiEditorVec1f( "CharScale", _node->textField.CharScale, _node->textField.HasCharScale );
+                }
+
+                uiReadOnlyVec1f( "TotalCharScale", _node->textField.TotalCharScale );
+
+                uiEditorListBox( "HorizontAlign", _node->textField.HorizontAlign, {"Left", "Center", "Right", "None"} );
+                uiReadOnlyListBox( "TotalHorizontAlign", _node->textField.TotalHorizontAlign, {"Left", "Center", "Right", "None"} );
+                uiEditorListBox( "VerticalAlign", _node->textField.VerticalAlign, {"Bottom", "Center", "Top", "None"} );
+                uiReadOnlyListBox( "TotalVerticalAlign", _node->textField.TotalVerticalAlign, {"Bottom", "Center", "Top", "None"} );
+                uiEditorVec1U( "MaxCharCount", _node->textField.MaxCharCount );
+                uiEditorBool( "Pixelsnap", _node->textField.Pixelsnap );
             }
-
-            uiEditorString( "FontName", _node->textField.FontName );
-            uiReadOnlyString( "TotalFontName", _node->textField.TotalFontName );
-
-            uiEditorBool( "##HasMaxLength", _node->textField.HasMaxLength ); ImGui::SameLine(); uiEditorVec1f( "MaxLength", _node->textField.MaxLength );
-            uiEditorVec1f( "TotalMaxLength", _node->textField.TotalMaxLength );
-            
-            uiEditorBool( "##HasMaxHeight", _node->textField.HasMaxHeight ); ImGui::SameLine(); uiEditorVec1f( "MaxHeight", _node->textField.MaxHeight );
-            uiEditorVec1f( "TotalMaxHeight", _node->textField.TotalMaxHeight );
-            
-            uiEditorBool( "##HasAutoScale", _node->textField.HasAutoScale ); ImGui::SameLine(); uiEditorBool( "AutoScale", _node->textField.AutoScale );
-            uiEditorBool( "TotalAutoScale", _node->textField.TotalAutoScale );
-            
-            uiEditorBool( "##HasJustify", _node->textField.HasJustify ); ImGui::SameLine(); uiEditorBool( "Justify", _node->textField.Justify );
-            uiEditorBool( "TotalJustify", _node->textField.TotalJustify );
-
-            uiEditorBool( "##HasFontColor", _node->textField.HasFontColor ); ImGui::SameLine(); uiEditorColor( "FontColor", _node->textField.FontColor, _node->textField.HasFontColor );
-            uiReadOnlyColor( "TotalFontColor", _node->textField.TotalFontColor );
-
-            uiEditorBool( "##HasLineOffset", _node->textField.HasLineOffset ); ImGui::SameLine(); uiEditorVec1f( "LineOffset", _node->textField.LineOffset, _node->textField.HasLineOffset );
-            uiReadOnlyVec1f( "TotalLineOffset", _node->textField.TotalLineOffset );
-
-            uiEditorBool( "##CharOffset", _node->textField.HasCharOffset ); ImGui::SameLine(); uiEditorVec1f( "CharOffset", _node->textField.CharOffset, _node->textField.HasCharOffset );
-            uiReadOnlyVec1f( "TotalCharOffset", _node->textField.TotalCharOffset );
-
-            uiEditorBool( "##HasCharScale", _node->textField.HasCharScale ); ImGui::SameLine(); uiEditorVec1f( "CharScale", _node->textField.CharScale, _node->textField.HasCharScale );
-            uiReadOnlyVec1f( "TotalCharScale", _node->textField.TotalCharScale );
-
-            uiEditorListBox( "HorizontAlign", _node->textField.HorizontAlign, {"Left", "Center", "Right", "None"}, 4 );
-            uiReadOnlyListBox( "TotalHorizontAlign", _node->textField.TotalHorizontAlign, {"Left", "Center", "Right", "None"}, 4 );
-            uiEditorListBox( "VerticalAlign", _node->textField.VerticalAlign, {"Bottom", "Center", "Top", "None"}, 4 );
-            uiReadOnlyListBox( "TotalVerticalAlign", _node->textField.TotalVerticalAlign, {"Bottom", "Center", "Top", "None"}, 4 );
-            uiEditorVec1U( "MaxCharCount", _node->textField.MaxCharCount );
-            uiEditorBool( "Pixelsnap", _node->textField.Pixelsnap );
         }
 
-        if( _node->isTypeMovie2 && ImGui::CollapsingHeader( "Movie2:", ImGuiTreeNodeFlags_DefaultOpen ) )
+        if( _node->isTypeMovie2 == true )
         {
-            uiReadOnlyString( "Composition Name", _node->movie2.CompositionName );
-            uiEditorString( "AliasEnvironment", _node->movie2.TextAliasEnvironment );
-        }
+            Mosaic::TreeScope header = Mosaic::collapsingHeader( ui, "Movie2:", true );
 
-        if( _node->isTypeSpine && ImGui::CollapsingHeader( "Spine:", ImGuiTreeNodeFlags_DefaultOpen ) )
-        {
-            uiReadOnlyString( "Resource Name", _node->spine.ResourceName );
-            uiReadOnlyString( "Resource Type", _node->spine.ResourceType );
-
-            if( _node->spine.isContent && ImGui::CollapsingHeader( "Spine Resource Content:", ImGuiTreeNodeFlags_DefaultOpen ) )
+            if( header.expanded() == true )
             {
-                uiReadOnlyString( "file group", _node->spine.content.FileGroup );
-                uiReadOnlyString( "file path", _node->spine.content.FilePath );
-                uiReadOnlyString( "codec", _node->spine.content.CodecType );
-                uiReadOnlyString( "converter", _node->spine.content.ConverterType );
+                uiReadOnlyString( "Composition Name", _node->movie2.CompositionName );
+                uiEditorString( "AliasEnvironment", _node->movie2.TextAliasEnvironment );
+            }
+        }
+
+        if( _node->isTypeSpine == true )
+        {
+            Mosaic::TreeScope header = Mosaic::collapsingHeader( ui, "Spine:", true );
+
+            if( header.expanded() == true )
+            {
+                uiReadOnlyString( "Resource Name", _node->spine.ResourceName );
+                uiReadOnlyString( "Resource Type", _node->spine.ResourceType );
+
+                if( _node->spine.isContent == true )
+                {
+                    Mosaic::TreeScope content = Mosaic::collapsingHeader( ui, "Spine Resource Content:", true );
+
+                    if( content.expanded() == true )
+                    {
+                        uiReadOnlyString( "file group", _node->spine.content.FileGroup );
+                        uiReadOnlyString( "file path", _node->spine.content.FilePath );
+                        uiReadOnlyString( "codec", _node->spine.content.CodecType );
+                        uiReadOnlyString( "converter", _node->spine.content.ConverterType );
+                    }
+                }
             }
         }
     }

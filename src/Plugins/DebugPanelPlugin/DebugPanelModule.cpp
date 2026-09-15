@@ -17,9 +17,11 @@
 #include "Kernel/UnorderedConstStringMap.h"
 #include "Kernel/Vector.h"
 
+#include "Config/Limits.h"
 #include "Config/StdIntTypes.h"
 #include "Config/StdIO.h"
 #include "Config/StdAlgorithm.h"
+#include "Config/StdArg.h"
 #include "Config/StdString.h"
 #include "Config/Timestamp.h"
 
@@ -27,9 +29,11 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     DebugPanelModule::DebugPanelModule()
-        : m_warning( 0 )
+        : m_providerId( MOSAIC_INVALID_PROVIDER_ID )
+        , m_warning( 0 )
         , m_critical( 0 )
         , m_selectedTextureId( INVALID_UNIQUE_ID )
+        , m_filterResourceCompileRef( 0 )
         , m_show( false )
         , m_selectedTab( 0 )
     {
@@ -55,17 +59,23 @@ namespace Mengine
         m_warning = TextureMonitor_WarningSeconds * TIMESTAMP_MILLISECONDS_SECOND64;
         m_critical = TextureMonitor_CriticalSeconds * TIMESTAMP_MILLISECONDS_SECOND64;
 
-        const ImGUIRenderProviderInterfacePtr & imguiRenderProvider = IMGUI_SERVICE()
-            ->getRenderProvider();
-
-        m_imguiRenderProvider = imguiRenderProvider;
+        m_providerId = MOSAIC_SERVICE()
+            ->addProvider( [this]( Mosaic::Context * _ui )
+        {
+            this->renderPanel_( _ui );
+        } );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DebugPanelModule::_finalizeModule()
     {
-        m_imguiRenderProvider = nullptr;
+        MOSAIC_SERVICE()
+            ->removeProvider( m_providerId );
+
+        m_providerId = MOSAIC_INVALID_PROVIDER_ID;
+
+        m_readout.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     bool DebugPanelModule::_handleKeyEvent( const InputKeyEvent & _event )
@@ -76,6 +86,40 @@ namespace Mengine
         }
 
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Mosaic::StringView DebugPanelModule::keepLine_( const Char * _format, ... )
+    {
+        Char buffer[1024] = {'\0'};
+
+        MENGINE_VA_LIST_TYPE args;
+        MENGINE_VA_LIST_START( args, _format );
+        MENGINE_VSNPRINTF( buffer, sizeof( buffer ) - 1, _format, args );
+        MENGINE_VA_LIST_END( args );
+
+        m_readout.emplace_back( buffer );
+
+        const String & line = m_readout.back();
+
+        return Mosaic::StringView( line.c_str(), line.size() );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DebugPanelModule::textLine_( Mosaic::Context * _ui, const Char * _format, ... )
+    {
+        Char buffer[1024] = {'\0'};
+
+        MENGINE_VA_LIST_TYPE args;
+        MENGINE_VA_LIST_START( args, _format );
+        MENGINE_VSNPRINTF( buffer, sizeof( buffer ) - 1, _format, args );
+        MENGINE_VA_LIST_END( args );
+
+        m_readout.emplace_back( buffer );
+
+        const String & line = m_readout.back();
+
+        Mosaic::Scope lineScope = Mosaic::scope( _ui, Mosaic::Key( m_readout.size() ) );
+
+        Mosaic::text( _ui, Mosaic::StringView( line.c_str(), line.size() ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void DebugPanelModule::updateHistogramUpdate( HistogramUpdate * const _histogram, uint32_t _statisticId, float _coeffTime, float _multiplier )
@@ -92,32 +136,36 @@ namespace Mengine
         _histogram->add( value );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DebugPanelModule::drawHistogramUpdate( const HistogramUpdate & _histogram, const Char * _label, const Char * _overlayFormat, float _maxValue, float _height ) const
+    void DebugPanelModule::drawHistogramUpdate( Mosaic::Context * _ui, const HistogramUpdate & _histogram, const Char * _label, const Char * _overlayFormat, float _maxValue, float _height )
     {
         float currentValue = _histogram.getLastValue();
         const float * values = _histogram.getValues();
 
-        Char overlayText[32 + 1] = {'\0'};
-        MENGINE_SNPRINTF( overlayText, 32, _overlayFormat, currentValue );
+        Mosaic::PlotOptions options;
+        options.height = _height;
+        options.minimum = 0.f;
+        options.maximum = _maxValue == MENGINE_FLT_MAX ? _histogram.getMaxValue() : _maxValue;
+        options.overlay = this->keepLine_( _overlayFormat, currentValue );
 
-        Char imGuiLabel[32 + 1] = {'\0'};
-        MENGINE_SNPRINTF( imGuiLabel, 32, "##Update%s", _label );
+        Mosaic::Scope histogramScope = Mosaic::scope( _ui, Mosaic::Key( Mosaic::StringView( _label ) ) );
 
-        ImGui::PlotHistogram( imGuiLabel, values, MENGINE_DEBUG_PANEL_HISTOGRAM_UPDATE_COUNT, 0, overlayText, 0.f, _maxValue, ImVec2( 0, _height ) );
+        Mosaic::plotHistogram( _ui, _label, Mosaic::ConstFloatSpan( values, MENGINE_DEBUG_PANEL_HISTOGRAM_UPDATE_COUNT ), options );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DebugPanelModule::drawHistogramPerFrame( const HistogramPerframe & _histogram, const Char * _label, const Char * _overlayFormat, float _maxValue, float _height ) const
+    void DebugPanelModule::drawHistogramPerFrame( Mosaic::Context * _ui, const HistogramPerframe & _histogram, const Char * _label, const Char * _overlayFormat, float _maxValue, float _height )
     {
         float currentValue = _histogram.getLastValue();
         const float * values = _histogram.getValues();
 
-        Char overlayText[32 + 1] = {'\0'};
-        MENGINE_SNPRINTF( overlayText, 32, _overlayFormat, currentValue );
+        Mosaic::PlotOptions options;
+        options.height = _height;
+        options.minimum = 0.f;
+        options.maximum = _maxValue == MENGINE_FLT_MAX ? _histogram.getMaxValue() : _maxValue;
+        options.overlay = this->keepLine_( _overlayFormat, currentValue );
 
-        Char imGuiLabel[32 + 1] = {'\0'};
-        MENGINE_SNPRINTF( imGuiLabel, 32, "##PerFrame%s", _label );
+        Mosaic::Scope histogramScope = Mosaic::scope( _ui, Mosaic::Key( Mosaic::StringView( _label ) ) );
 
-        ImGui::PlotHistogram( imGuiLabel, values, MENGINE_DEBUG_PANEL_HISTOGRAM_PERFRAME_COUNT, 0, overlayText, 0.f, _maxValue, ImVec2( 0, _height ) );
+        Mosaic::plotHistogram( _ui, _label, Mosaic::ConstFloatSpan( values, MENGINE_DEBUG_PANEL_HISTOGRAM_PERFRAME_COUNT ), options );
     }
     //////////////////////////////////////////////////////////////////////////
     void DebugPanelModule::_preUpdate()
@@ -144,6 +192,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DebugPanelModule::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context )
     {
+        MENGINE_UNUSED( _renderPipeline );
+
         if( m_show == false )
         {
             return;
@@ -172,68 +222,59 @@ namespace Mengine
         Statistic_PerFrame_Fillrate /= viewportHeight;
 
         m_histogramPerFrameFillrate.add( (float)Statistic_PerFrame_Fillrate );
-
-        const RenderMaterialInterfacePtr & renderMaterial = RENDERMATERIAL_SERVICE()
-            ->getDebugTriangleMaterial();
-
-        _renderPipeline->addRenderExternal( _context, renderMaterial, nullptr, RenderDrawPrimitiveInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DebugPanelModule::onRenderDrawPrimitives( const RenderPrimitive * _primitives, uint32_t _count ) const
+    void DebugPanelModule::renderPanel_( Mosaic::Context * _ui )
     {
-        MENGINE_UNUSED( _primitives );
-        MENGINE_UNUSED( _count );
-
-        if( m_imguiRenderProvider == nullptr )
+        if( m_show == false )
         {
             return;
         }
 
-        if( SERVICE_IS_INITIALIZE( ImGUIServiceInterface ) == false )
+        m_readout.clear();
+
+        Mosaic::setNextWindowSize( _ui, {720.f, 520.f}, Mosaic::Condition::FirstUseEver );
+        Mosaic::setNextWindowPosition( _ui, {100.f, 100.f}, Mosaic::Condition::FirstUseEver );
+
+        Mosaic::WindowScope window = Mosaic::window( _ui, "Debug Panel" );
+
+        if( window.visible() == false )
         {
             return;
         }
 
-        m_imguiRenderProvider->newFrame();
+        Mosaic::TabBarScope tabBar = Mosaic::beginTabBar( _ui, "DebugTabs" );
 
-        ImGui::SetNextWindowSize( ImVec2( 720.f, 520.f ), ImGuiCond_FirstUseEver );
-        ImGui::SetNextWindowPos( ImVec2( 100.f, 100.f ), ImGuiCond_FirstUseEver );
-        if( ImGui::Begin( "Debug Panel", nullptr, ImGuiWindowFlags_None ) )
+        if( tabBar.visible() == false )
         {
-            if( ImGui::BeginTabBar( "DebugTabs" ) )
-            {
-                if( ImGui::BeginTabItem( "Statistics" ) )
-                {
-                    m_selectedTab = 0;
-                    this->renderDebugPanel();
-                    ImGui::EndTabItem();
-                }
-
-                if( ImGui::BeginTabItem( "Textures" ) )
-                {
-                    m_selectedTab = 1;
-                    this->renderTextureMonitor();
-                    ImGui::EndTabItem();
-                }
-
-                if( ImGui::BeginTabItem( "Resources" ) )
-                {
-                    m_selectedTab = 2;
-                    this->renderResourceMonitor();
-                    ImGui::EndTabItem();
-                }
-
-                ImGui::EndTabBar();
-            }
+            return;
         }
-        ImGui::End();
 
-        m_imguiRenderProvider->endFrame();
+        if( Mosaic::TreeScope tab = Mosaic::beginTabItem( _ui, "Statistics" ); tab.expanded() == true )
+        {
+            m_selectedTab = 0;
+
+            this->renderDebugPanel_( _ui );
+        }
+
+        if( Mosaic::TreeScope tab = Mosaic::beginTabItem( _ui, "Textures" ); tab.expanded() == true )
+        {
+            m_selectedTab = 1;
+
+            this->renderTextureMonitor_( _ui );
+        }
+
+        if( Mosaic::TreeScope tab = Mosaic::beginTabItem( _ui, "Resources" ); tab.expanded() == true )
+        {
+            m_selectedTab = 2;
+
+            this->renderResourceMonitor_( _ui );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
-    void DebugPanelModule::renderDebugPanel() const
+    void DebugPanelModule::renderDebugPanel_( Mosaic::Context * _ui )
     {
-        if( ImGui::Button( "Print to logs" ) )
+        if( Mosaic::button( _ui, "Print to logs" ).clicked() == true )
         {
             LOGGER_SCOPE_MESSAGES();
 
@@ -257,36 +298,37 @@ namespace Mengine
         float maxFPS = m_histogramFPS.getMaxValue();
         float histogramFPSHeight = maxFPS > 80.f ? maxFPS : 80.f;
 
-        this->drawHistogramUpdate( m_histogramFPS, "fps", "FPS: %.2f", histogramFPSHeight, 80.f );
+        this->drawHistogramUpdate( _ui, m_histogramFPS, "fps", "FPS: %.2f", histogramFPSHeight, 80.f );
 
         int64_t Statistic_AllocatorSize = STATISTIC_GET_INTEGER( STATISTIC_ALLOCATOR_SIZE );
-        ImGui::Text( "Allocator size: %" MENGINE_PRId64 "mb %" MENGINE_PRId64 "kb", Statistic_AllocatorSize / (1024 * 1024), (Statistic_AllocatorSize % (1024 * 1024)) / 1024 );
+        this->textLine_( _ui, "Allocator size: %" MENGINE_PRId64 "mb %" MENGINE_PRId64 "kb", Statistic_AllocatorSize / (1024 * 1024), (Statistic_AllocatorSize % (1024 * 1024)) / 1024 );
 
-        this->drawHistogramUpdate( m_histogramAllocatorNew, "memalloc", "Memory new: %.2fkb", FLT_MAX, 60.f );
-        this->drawHistogramUpdate( m_histogramAllocatorFree, "memfree", "Memory free: %.2fkb", FLT_MAX, 60.f );
+        this->drawHistogramUpdate( _ui, m_histogramAllocatorNew, "memalloc", "Memory new: %.2fkb", MENGINE_FLT_MAX, 60.f );
+        this->drawHistogramUpdate( _ui, m_histogramAllocatorFree, "memfree", "Memory free: %.2fkb", MENGINE_FLT_MAX, 60.f );
 
         int64_t Statistic_Render_ImageSize = STATISTIC_GET_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_SIZE );
-        ImGui::Text( "Image size: %" MENGINE_PRId64 "mb %" MENGINE_PRId64 "kb", Statistic_Render_ImageSize / (1024 * 1024), (Statistic_Render_ImageSize % (1024 * 1024)) / 1024 );
+        this->textLine_( _ui, "Image size: %" MENGINE_PRId64 "mb %" MENGINE_PRId64 "kb", Statistic_Render_ImageSize / (1024 * 1024), (Statistic_Render_ImageSize % (1024 * 1024)) / 1024 );
 
-        this->drawHistogramUpdate( m_histogramImageNew, "imagenew", "Image new: %.2fkb", FLT_MAX, 60.f );
-        this->drawHistogramUpdate( m_histogramImageFree, "imagefree", "Image free: %.2fkb", FLT_MAX, 60.f );
+        this->drawHistogramUpdate( _ui, m_histogramImageNew, "imagenew", "Image new: %.2fkb", MENGINE_FLT_MAX, 60.f );
+        this->drawHistogramUpdate( _ui, m_histogramImageFree, "imagefree", "Image free: %.2fkb", MENGINE_FLT_MAX, 60.f );
 
-        this->drawHistogramPerFrame( m_histogramPerFrameDrawIndexPrimitives, "dip", "DIP: %.0f", FLT_MAX, 50.f );
+        this->drawHistogramPerFrame( _ui, m_histogramPerFrameDrawIndexPrimitives, "dip", "DIP: %.0f", MENGINE_FLT_MAX, 50.f );
 
         float maxFillrate = m_histogramPerFrameFillrate.getMaxValue();
         float histogramFillrateHeight = maxFillrate > 10.f ? maxFillrate : 13.f;
 
-        this->drawHistogramPerFrame( m_histogramPerFrameFillrate, "fillrate", "Fillrate: %.2f", histogramFillrateHeight, 50.f );
-        this->drawHistogramPerFrame( m_histogramPerFrameObjects, "objects", "Objects: %.0f", FLT_MAX, 50.f );
-        this->drawHistogramPerFrame( m_histogramPerFrameTriangles, "triangles", "Triangles: %.0f", FLT_MAX, 50.f );
-        this->drawHistogramPerFrame( m_histogramPerFrameBatches, "batches", "Batches: %.0f", FLT_MAX, 50.f );
+        this->drawHistogramPerFrame( _ui, m_histogramPerFrameFillrate, "fillrate", "Fillrate: %.2f", histogramFillrateHeight, 50.f );
+        this->drawHistogramPerFrame( _ui, m_histogramPerFrameObjects, "objects", "Objects: %.0f", MENGINE_FLT_MAX, 50.f );
+        this->drawHistogramPerFrame( _ui, m_histogramPerFrameTriangles, "triangles", "Triangles: %.0f", MENGINE_FLT_MAX, 50.f );
+        this->drawHistogramPerFrame( _ui, m_histogramPerFrameBatches, "batches", "Batches: %.0f", MENGINE_FLT_MAX, 50.f );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DebugPanelModule::renderTextureMonitor() const
+    void DebugPanelModule::renderTextureMonitor_( Mosaic::Context * _ui )
     {
         if( SERVICE_IS_INITIALIZE( RenderTextureServiceInterface ) == false )
         {
-            ImGui::Text( "RenderTextureService is not initialized" );
+            this->textLine_( _ui, "RenderTextureService is not initialized" );
+
             return;
         }
 
@@ -385,9 +427,11 @@ namespace Mengine
             totalTextures += (uint32_t)group.textures.size();
         }
 
-        ImGui::Text( "Total textures: %u", totalTextures );
-        ImGui::SameLine();
-        if( ImGui::Button( "Print to logs" ) )
+        this->textLine_( _ui, "Total textures: %u", totalTextures );
+
+        Mosaic::sameLine( _ui );
+
+        if( Mosaic::button( _ui, "Print to logs" ).clicked() == true )
         {
             LOGGER_SCOPE_MESSAGES();
 
@@ -416,108 +460,143 @@ namespace Mengine
             }
         }
 
+        Mosaic::TableOptions tableOptions;
+        tableOptions.rowBackground = true;
+        tableOptions.bordersInnerHorizontal = true;
+        tableOptions.bordersInnerVertical = true;
+        tableOptions.bordersOuterHorizontal = true;
+        tableOptions.bordersOuterVertical = true;
+
         for( const GroupDesc & group : groups )
         {
-            Char groupLabel[256 + 1] = {'\0'};
-            MENGINE_SNPRINTF( groupLabel, 256, "%s (%u)", group.name.c_str(), (uint32_t)group.textures.size() );
+            Mosaic::StringView groupLabel = this->keepLine_( "%s (%u)", group.name.c_str(), (uint32_t)group.textures.size() );
 
-            if( ImGui::CollapsingHeader( groupLabel, ImGuiTreeNodeFlags_DefaultOpen ) == false )
+            Mosaic::Scope groupScope = Mosaic::scope( _ui, Mosaic::Key( Mosaic::StringView( group.name.c_str(), group.name.size() ) ) );
+
+            Mosaic::TreeScope groupHeader = Mosaic::collapsingHeader( _ui, groupLabel, true );
+
+            if( groupHeader.expanded() == false )
             {
                 continue;
             }
 
-            ImGui::PushID( group.name.c_str() );
+            Mosaic::Scope table = Mosaic::table( _ui, "textures", 4, tableOptions );
 
-            if( ImGui::BeginTable( "textures", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_Resizable ) )
+            if( table.visible() == false )
             {
-                ImGui::TableSetupColumn( "Texture", ImGuiTableColumnFlags_WidthStretch );
-                ImGui::TableSetupColumn( "Size", ImGuiTableColumnFlags_WidthFixed, 90.f );
-                ImGui::TableSetupColumn( "Memory", ImGuiTableColumnFlags_WidthFixed, 110.f );
-                ImGui::TableSetupColumn( "Life", ImGuiTableColumnFlags_WidthFixed, 90.f );
-                ImGui::TableHeadersRow();
+                continue;
+            }
 
-                for( const TextureDesc & desc : group.textures )
+            Mosaic::TableColumnOptions textureColumn;
+            textureColumn.sizing = Mosaic::TableSizing::Stretch;
+
+            Mosaic::TableColumnOptions sizeColumn;
+            sizeColumn.sizing = Mosaic::TableSizing::Fixed;
+            sizeColumn.widthOrWeight = 90.f;
+
+            Mosaic::TableColumnOptions memoryColumn;
+            memoryColumn.sizing = Mosaic::TableSizing::Fixed;
+            memoryColumn.widthOrWeight = 110.f;
+
+            Mosaic::TableColumnOptions lifeColumn;
+            lifeColumn.sizing = Mosaic::TableSizing::Fixed;
+            lifeColumn.widthOrWeight = 90.f;
+
+            Mosaic::tableSetupColumn( _ui, 0, "Texture", textureColumn );
+            Mosaic::tableSetupColumn( _ui, 1, "Size", sizeColumn );
+            Mosaic::tableSetupColumn( _ui, 2, "Memory", memoryColumn );
+            Mosaic::tableSetupColumn( _ui, 3, "Life", lifeColumn );
+            Mosaic::tableHeadersRow( _ui );
+
+            for( const TextureDesc & desc : group.textures )
+            {
+                const RenderTextureInterfacePtr & texture = desc.texture;
+                const bool selected = (m_selectedTextureId == texture->getTextureId());
+
+                const Timestamp alive = now > desc.createTimestamp ? (now - desc.createTimestamp) : 0;
+                const Timestamp aliveSeconds = alive / TIMESTAMP_MILLISECONDS_SECOND64;
+                const uint32_t aliveMinutes = (uint32_t)(aliveSeconds / 60);
+                const uint32_t aliveSecondsRemainder = (uint32_t)(aliveSeconds % 60);
+
+                Char memoryText[64 + 1] = {'\0'};
+                if( desc.memorySize < 1024 )
                 {
-                    const RenderTextureInterfacePtr & texture = desc.texture;
-                    const bool selected = (m_selectedTextureId == texture->getTextureId());
+                    MENGINE_SNPRINTF( memoryText, 64, "%u b", desc.memorySize );
+                }
+                else
+                {
+                    uint32_t kb = desc.memorySize / 1024;
+                    uint32_t mb = kb / 1024;
+                    uint32_t kbRem = kb % 1024;
 
-                    const Timestamp alive = now > desc.createTimestamp ? (now - desc.createTimestamp) : 0;
-                    const Timestamp aliveSeconds = alive / TIMESTAMP_MILLISECONDS_SECOND64;
-                    const uint32_t aliveMinutes = (uint32_t)(aliveSeconds / 60);
-                    const uint32_t aliveSecondsRemainder = (uint32_t)(aliveSeconds % 60);
-
-                    const ImVec4 borderColor = this->getBorderColor_( alive );
-
-                    Char memoryText[64 + 1] = {'\0'};
-                    if( desc.memorySize < 1024 )
+                    if( mb > 0 )
                     {
-                        MENGINE_SNPRINTF( memoryText, 64, "%u b", desc.memorySize );
+                        MENGINE_SNPRINTF( memoryText, 64, "%u mb %u kb", mb, kbRem );
                     }
                     else
                     {
-                        uint32_t kb = desc.memorySize / 1024;
-                        uint32_t mb = kb / 1024;
-                        uint32_t kbRem = kb % 1024;
-
-                        if( mb > 0 )
-                        {
-                            MENGINE_SNPRINTF( memoryText, 64, "%u mb %u kb", mb, kbRem );
-                        }
-                        else
-                        {
-                            MENGINE_SNPRINTF( memoryText, 64, "%u kb", kb );
-                        }
+                        MENGINE_SNPRINTF( memoryText, 64, "%u kb", kb );
                     }
+                }
 
-                    const Char * displayName = desc.filePath.empty() == false ? desc.filePath.c_str() : "runtime";
+                const Char * displayName = desc.filePath.empty() == false ? desc.filePath.c_str() : "runtime";
 
-                    ImGui::TableNextRow();
-                    ImGui::TableNextColumn();
+                Mosaic::tableNextRow( _ui, Mosaic::Key( (int32_t)texture->getTextureId() ) );
+                if( Mosaic::tableSetColumn( _ui, 0 ) == true )
+                {
+                    Mosaic::Theme rowTheme = Mosaic::getTheme( _ui );
+                    rowTheme.colors.border = this->getBorderColor_( _ui, alive );
+                    rowTheme.metrics.borderWidth = 1.f;
 
-                    ImGui::PushID( (int)texture->getTextureId() );
-                    ImGui::PushStyleVar( ImGuiStyleVar_FrameBorderSize, 1.f );
-                    ImGui::PushStyleColor( ImGuiCol_Border, borderColor );
+                    Mosaic::SelectableOptions selectableOptions;
+                    selectableOptions.spanAllColumns = true;
 
-                    if( ImGui::Selectable( displayName, selected, ImGuiSelectableFlags_SpanAllColumns ) == true )
+                    Mosaic::Scope rowStyle = Mosaic::styleScope( _ui, rowTheme );
+
+                    if( Mosaic::selectable( _ui, Mosaic::Key( (int32_t)texture->getTextureId() ), this->keepLine_( "%s", displayName ), selected, selectableOptions ).clicked() == true )
                     {
                         m_selectedTextureId = texture->getTextureId();
                         m_selectedPath = desc.fullPath;
                     }
-
-                    ImGui::PopStyleColor();
-                    ImGui::PopStyleVar();
-                    ImGui::PopID();
-
-                    ImGui::TableNextColumn();
-                    ImGui::Text( "%ux%u", desc.width, desc.height );
-
-                    ImGui::TableNextColumn();
-                    ImGui::Text( "%s", memoryText );
-
-                    ImGui::TableNextColumn();
-                    ImGui::Text( "%um %us", aliveMinutes, aliveSecondsRemainder );
                 }
 
-                ImGui::EndTable();
-            }
+                if( Mosaic::tableSetColumn( _ui, 1 ) == true )
+                {
+                    Mosaic::text( _ui, this->keepLine_( "%ux%u", desc.width, desc.height ) );
+                }
 
-            ImGui::PopID();
+                if( Mosaic::tableSetColumn( _ui, 2 ) == true )
+                {
+                    Mosaic::text( _ui, this->keepLine_( "%s", memoryText ) );
+                }
+
+                if( Mosaic::tableSetColumn( _ui, 3 ) == true )
+                {
+                    Mosaic::text( _ui, this->keepLine_( "%um %us", aliveMinutes, aliveSecondsRemainder ) );
+                }
+            }
         }
 
-        ImGui::Separator();
+        Mosaic::separator( _ui );
 
-        ImGui::Text( "Selected path:" );
+        this->textLine_( _ui, "Selected path:" );
+
         if( m_selectedTextureId != INVALID_UNIQUE_ID )
         {
-            ImGui::TextWrapped( "%s", m_selectedPath.c_str() );
+            Mosaic::StringView selectedPath = this->keepLine_( "%s", m_selectedPath.c_str() );
+
+            Mosaic::TextOptions pathOptions;
+            pathOptions.wordWrap = true;
+
+            Mosaic::text( _ui, selectedPath, pathOptions );
         }
         else
         {
-            ImGui::Text( "<none>" );
+            this->textLine_( _ui, "<none>" );
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void DebugPanelModule::renderResourceMonitor() const
+    void DebugPanelModule::renderResourceMonitor_( Mosaic::Context * _ui )
     {
         struct ResourceDesc
         {
@@ -615,17 +694,34 @@ namespace Mengine
             totalResources += (uint32_t)group.resources.size();
         }
 
-        ImGui::Text( "Filter:" );
-        ImGui::SameLine();
-        ImGui::RadioButton( "0", &m_filterResourceCompileRef, 0 );
-        ImGui::SameLine();
-        ImGui::RadioButton( "1", &m_filterResourceCompileRef, 1 );
-        ImGui::SameLine();
-        ImGui::RadioButton( ">1", &m_filterResourceCompileRef, 2 );
-        ImGui::SameLine();
-        ImGui::Text( "Total: %u", totalResources );
+        this->textLine_( _ui, "Filter:" );
 
-        if( ImGui::Button( "Print to logs" ) )
+        Mosaic::sameLine( _ui );
+
+        if( Mosaic::radioButton( _ui, "0", m_filterResourceCompileRef == 0 ).clicked() == true )
+        {
+            m_filterResourceCompileRef = 0;
+        }
+
+        Mosaic::sameLine( _ui );
+
+        if( Mosaic::radioButton( _ui, "1", m_filterResourceCompileRef == 1 ).clicked() == true )
+        {
+            m_filterResourceCompileRef = 1;
+        }
+
+        Mosaic::sameLine( _ui );
+
+        if( Mosaic::radioButton( _ui, ">1", m_filterResourceCompileRef == 2 ).clicked() == true )
+        {
+            m_filterResourceCompileRef = 2;
+        }
+
+        Mosaic::sameLine( _ui );
+
+        this->textLine_( _ui, "Total: %u", totalResources );
+
+        if( Mosaic::button( _ui, "Print to logs" ).clicked() == true )
         {
             LOGGER_SCOPE_MESSAGES();
 
@@ -643,94 +739,145 @@ namespace Mengine
             }
         }
 
+        Mosaic::TableOptions tableOptions;
+        tableOptions.rowBackground = true;
+        tableOptions.bordersInnerHorizontal = true;
+        tableOptions.bordersInnerVertical = true;
+        tableOptions.bordersOuterHorizontal = true;
+        tableOptions.bordersOuterVertical = true;
+
         for( const GroupDesc & group : groups )
         {
-            Char groupLabel[256 + 1] = {'\0'};
-            MENGINE_SNPRINTF( groupLabel, 256, "%s (%u)", group.name.c_str(), (uint32_t)group.resources.size() );
+            Mosaic::StringView groupLabel = this->keepLine_( "%s (%u)", group.name.c_str(), (uint32_t)group.resources.size() );
 
-            if( ImGui::CollapsingHeader( groupLabel, ImGuiTreeNodeFlags_DefaultOpen ) == false )
+            Mosaic::Scope groupScope = Mosaic::scope( _ui, Mosaic::Key( Mosaic::StringView( group.name.c_str(), group.name.size() ) ) );
+
+            Mosaic::TreeScope groupHeader = Mosaic::collapsingHeader( _ui, groupLabel, true );
+
+            if( groupHeader.expanded() == false )
             {
                 continue;
             }
 
-            ImGui::PushID( group.name.c_str() );
+            Mosaic::Scope table = Mosaic::table( _ui, "resources", 6, tableOptions );
 
-            if( ImGui::BeginTable( "resources", 7, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_Resizable ) )
+            if( table.visible() == false )
             {
-                ImGui::TableSetupColumn( "Name", ImGuiTableColumnFlags_WidthStretch );
-                ImGui::TableSetupColumn( "Type", ImGuiTableColumnFlags_WidthFixed, 120.f );
-                ImGui::TableSetupColumn( "Compile", ImGuiTableColumnFlags_WidthFixed, 60.f );
-                ImGui::TableSetupColumn( "Prefetch", ImGuiTableColumnFlags_WidthFixed, 65.f );
-                ImGui::TableSetupColumn( "Cache", ImGuiTableColumnFlags_WidthFixed, 55.f );
-                ImGui::TableSetupColumn( "Cached", ImGuiTableColumnFlags_WidthFixed, 55.f );
-                ImGui::TableHeadersRow();
+                continue;
+            }
 
-                for( const ResourceDesc & desc : group.resources )
+            Mosaic::TableColumnOptions nameColumn;
+            nameColumn.sizing = Mosaic::TableSizing::Stretch;
+
+            Mosaic::TableColumnOptions typeColumn;
+            typeColumn.sizing = Mosaic::TableSizing::Fixed;
+            typeColumn.widthOrWeight = 120.f;
+
+            Mosaic::TableColumnOptions compileColumn;
+            compileColumn.sizing = Mosaic::TableSizing::Fixed;
+            compileColumn.widthOrWeight = 60.f;
+
+            Mosaic::TableColumnOptions prefetchColumn;
+            prefetchColumn.sizing = Mosaic::TableSizing::Fixed;
+            prefetchColumn.widthOrWeight = 65.f;
+
+            Mosaic::TableColumnOptions cacheColumn;
+            cacheColumn.sizing = Mosaic::TableSizing::Fixed;
+            cacheColumn.widthOrWeight = 55.f;
+
+            Mosaic::TableColumnOptions cachedColumn;
+            cachedColumn.sizing = Mosaic::TableSizing::Fixed;
+            cachedColumn.widthOrWeight = 55.f;
+
+            Mosaic::tableSetupColumn( _ui, 0, "Name", nameColumn );
+            Mosaic::tableSetupColumn( _ui, 1, "Type", typeColumn );
+            Mosaic::tableSetupColumn( _ui, 2, "Compile", compileColumn );
+            Mosaic::tableSetupColumn( _ui, 3, "Prefetch", prefetchColumn );
+            Mosaic::tableSetupColumn( _ui, 4, "Cache", cacheColumn );
+            Mosaic::tableSetupColumn( _ui, 5, "Cached", cachedColumn );
+            Mosaic::tableHeadersRow( _ui );
+
+            for( const ResourceDesc & desc : group.resources )
+            {
+                const bool selected = (m_selectedResourceGroup == group.name && m_selectedResourceName == desc.name);
+
+                const Char * displayName = desc.name.empty() == false ? desc.name.c_str() : "[unnamed]";
+
+                Mosaic::tableNextRow( _ui, Mosaic::Key( Mosaic::StringView( desc.name.c_str(), desc.name.size() ) ) );
+                if( Mosaic::tableSetColumn( _ui, 0 ) == true )
                 {
-                    const bool selected = (m_selectedResourceGroup == group.name && m_selectedResourceName == desc.name);
+                    Mosaic::SelectableOptions selectableOptions;
+                    selectableOptions.spanAllColumns = true;
 
-                    const Char * displayName = desc.name.empty() == false ? desc.name.c_str() : "[unnamed]";
-
-                    ImGui::TableNextRow();
-                    ImGui::TableNextColumn();
-
-                    ImGui::PushID( (void *)desc.resource.get() );
-                    if( ImGui::Selectable( displayName, selected, ImGuiSelectableFlags_SpanAllColumns ) == true )
+                    if( Mosaic::selectable( _ui, Mosaic::Key( Mosaic::StringView( desc.name.c_str(), desc.name.size() ) ), this->keepLine_( "%s", displayName ), selected, selectableOptions ).clicked() == true )
                     {
                         m_selectedResourceGroup = group.name;
                         m_selectedResourceName = desc.name;
                         m_selectedResourcePath = desc.fullPath;
                     }
-                    ImGui::PopID();
-
-                    ImGui::TableNextColumn();
-                    ImGui::Text( "%s", desc.type.c_str() );
-
-                    ImGui::TableNextColumn();
-                    ImGui::Text( "%u", desc.compileRef );
-
-                    ImGui::TableNextColumn();
-                    ImGui::Text( "%u", desc.prefetchRef );
-
-                    ImGui::TableNextColumn();
-                    ImGui::Text( "%u", desc.cacheRef );
-
-                    ImGui::TableNextColumn();
-                    ImGui::Text( "%s", desc.isCached ? "yes" : "-" );
                 }
 
-                ImGui::EndTable();
-            }
+                if( Mosaic::tableSetColumn( _ui, 1 ) == true )
+                {
+                    Mosaic::text( _ui, this->keepLine_( "%s", desc.type.c_str() ) );
+                }
 
-            ImGui::PopID();
+                if( Mosaic::tableSetColumn( _ui, 2 ) == true )
+                {
+                    Mosaic::text( _ui, this->keepLine_( "%u", desc.compileRef ) );
+                }
+
+                if( Mosaic::tableSetColumn( _ui, 3 ) == true )
+                {
+                    Mosaic::text( _ui, this->keepLine_( "%u", desc.prefetchRef ) );
+                }
+
+                if( Mosaic::tableSetColumn( _ui, 4 ) == true )
+                {
+                    Mosaic::text( _ui, this->keepLine_( "%u", desc.cacheRef ) );
+                }
+
+                if( Mosaic::tableSetColumn( _ui, 5 ) == true )
+                {
+                    Mosaic::text( _ui, this->keepLine_( "%s", desc.isCached ? "yes" : "-" ) );
+                }
+            }
         }
 
-        ImGui::Separator();
+        Mosaic::separator( _ui );
 
-        ImGui::Text( "Selected path:" );
+        this->textLine_( _ui, "Selected path:" );
+
         if( m_selectedResourceGroup.empty() == false )
         {
-            ImGui::TextWrapped( "%s", m_selectedResourcePath.c_str() );
+            Mosaic::StringView selectedPath = this->keepLine_( "%s", m_selectedResourcePath.c_str() );
+
+            Mosaic::TextOptions pathOptions;
+            pathOptions.wordWrap = true;
+
+            Mosaic::text( _ui, selectedPath, pathOptions );
         }
         else
         {
-            ImGui::Text( "<none>" );
+            this->textLine_( _ui, "<none>" );
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    ImVec4 DebugPanelModule::getBorderColor_( Timestamp _alive ) const
+    Mosaic::Color DebugPanelModule::getBorderColor_( Mosaic::Context * _ui, Timestamp _alive ) const
     {
         if( _alive >= m_critical )
         {
-            return ImVec4( 1.f, 0.2f, 0.2f, 1.f );
+            return Mosaic::Color{1.f, 0.2f, 0.2f, 1.f};
         }
 
         if( _alive >= m_warning )
         {
-            return ImVec4( 0.2f, 0.6f, 1.f, 1.f );
+            return Mosaic::Color{0.2f, 0.6f, 1.f, 1.f};
         }
 
-        return ImGui::GetStyleColorVec4( ImGuiCol_Border );
+        const Mosaic::Theme & theme = Mosaic::getTheme( _ui );
+
+        return theme.colors.border;
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -16,7 +16,9 @@
 
 #include "Config/StdMath.h"
 
-#include "imgui.h"
+#include "Mosaic/Mosaic.hpp"
+
+#include "Config/StdIO.h"
 
 namespace Mengine
 {
@@ -100,19 +102,19 @@ namespace Mengine
         this->rebuildContent_();
         this->rebuildFrame_();
 
-        ImGUIRenderPtr imguiRender = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ImGUIRender" ), MENGINE_DOCUMENT_FACTORABLE );
+        MosaicRenderPtr mosaicRender = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MosaicRender" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( imguiRender, "invalid create ImGUIRender" );
+        MENGINE_ASSERTION_MEMORY_PANIC( mosaicRender, "invalid create MosaicRender" );
 
-        imguiRender->setName( STRINGIZE_STRING_LOCAL( "VirtualAreaExampleImGUI" ) );
-        imguiRender->setProvider( [this]( const ImGUIRenderProviderInterfacePtr & _provider )
+        mosaicRender->setName( STRINGIZE_STRING_LOCAL( "VirtualAreaExampleMosaic" ) );
+        mosaicRender->setProvider( [this]( Mosaic::Context * _ui )
         {
-            this->renderControls_( _provider );
+            this->renderControls_( _ui );
         } );
 
-        m_scene->addChild( imguiRender );
-        m_imguiRender = imguiRender;
+        m_scene->addChild( mosaicRender );
+        m_mosaicRender = mosaicRender;
 
         return true;
     }
@@ -124,10 +126,10 @@ namespace Mengine
         this->clearNodes_( &m_frameNodes );
         this->clearNodes_( &m_contentNodes );
 
-        if( m_imguiRender != nullptr )
+        if( m_mosaicRender != nullptr )
         {
-            m_imguiRender->dispose();
-            m_imguiRender = nullptr;
+            m_mosaicRender->dispose();
+            m_mosaicRender = nullptr;
         }
 
         if( m_virtualArea != nullptr )
@@ -396,22 +398,24 @@ namespace Mengine
         _nodes->clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void VirtualAreaExampleSceneEventReceiver::renderControls_( const ImGUIRenderProviderInterfacePtr & _provider )
+    void VirtualAreaExampleSceneEventReceiver::renderControls_( Mosaic::Context * _ui )
     {
-        MENGINE_UNUSED( _provider );
-
         if( m_virtualArea == nullptr )
         {
             return;
         }
 
-        ImGui::SetNextWindowSize( ImVec2( 390.f, 720.f ), ImGuiCond_FirstUseEver );
+        Mosaic::WindowOptions windowOptions;
+        windowOptions.initialBounds = {40.f, 40.f, 390.f, 700.f};
+        windowOptions.scrollable = true;
 
-        if( ImGui::Begin( "VirtualArea" ) == false )
+        Mosaic::WindowScope window = Mosaic::window( _ui, "VirtualArea", windowOptions );
+
+        if( window.visible() == false )
         {
-            ImGui::End();
             return;
         }
+
 
         bool scaleEnable = m_virtualArea->getScaleEnable();
         bool frozen = m_virtualArea->isFrozen();
@@ -420,62 +424,67 @@ namespace Mengine
         bool disableInvalid = m_virtualArea->getDisableDragIfInvalid();
         bool defaultHandle = m_virtualArea->getDefaultHandle();
 
-        if( ImGui::Checkbox( "Scale enable", &scaleEnable ) == true )
+        if( Mosaic::checkbox( _ui, "Scale enable", &scaleEnable ).changed() == true )
         {
             m_virtualArea->setScaleEnable( scaleEnable );
         }
 
-        if( ImGui::Checkbox( "Frozen", &frozen ) == true )
+        if( Mosaic::checkbox( _ui, "Frozen", &frozen ).changed() == true )
         {
             m_virtualArea->freeze( frozen );
         }
 
-        if( ImGui::Checkbox( "Scroll locked", &scrollLocked ) == true )
+        if( Mosaic::checkbox( _ui, "Scroll locked", &scrollLocked ).changed() == true )
         {
             m_virtualArea->setScrollLocked( scrollLocked );
         }
 
-        if( ImGui::Checkbox( "Allow out of bounds", &allowOut ) == true )
+        if( Mosaic::checkbox( _ui, "Allow out of bounds", &allowOut ).changed() == true )
         {
             m_virtualArea->setAllowOutOfBounds( allowOut );
         }
 
-        if( ImGui::Checkbox( "Disable drag if invalid", &disableInvalid ) == true )
+        if( Mosaic::checkbox( _ui, "Disable drag if invalid", &disableInvalid ).changed() == true )
         {
             m_virtualArea->setDisableDragIfInvalid( disableInvalid );
         }
 
-        if( ImGui::Checkbox( "Default handle", &defaultHandle ) == true )
+        if( Mosaic::checkbox( _ui, "Default handle", &defaultHandle ).changed() == true )
         {
             m_virtualArea->setDefaultHandle( defaultHandle );
         }
 
-        const char * modes[] = {"none", "free", "horizontal", "vertical"};
-        int mode = (int)m_virtualArea->getDraggingMode();
+        const Mosaic::StringView modes[] = {"none", "free", "horizontal", "vertical"};
+        int32_t mode = (int32_t)m_virtualArea->getDraggingMode();
 
-        if( ImGui::Combo( "Dragging mode", &mode, modes, 4 ) == true )
+        if( Mosaic::comboBox( _ui, "Dragging mode", &mode, Mosaic::StringViewSpan( modes, 4 ) ).changed() == true )
         {
             m_virtualArea->setDraggingMode( (EVirtualAreaDragMode)mode );
         }
 
-        const char * snappingModes[] = {"none", "horizontal", "vertical"};
-        int snappingMode = (int)m_virtualArea->getSnappingMode();
+        const Mosaic::StringView snappingModes[] = {"none", "horizontal", "vertical"};
+        int32_t snappingMode = (int32_t)m_virtualArea->getSnappingMode();
 
-        if( ImGui::Combo( "Snapping mode", &snappingMode, snappingModes, 3 ) == true )
+        if( Mosaic::comboBox( _ui, "Snapping mode", &snappingMode, Mosaic::StringViewSpan( snappingModes, 3 ) ).changed() == true )
         {
             m_virtualArea->setSnappingMode( (EVirtualAreaSnappingMode)snappingMode );
         }
 
-        ImGui::Separator();
+        Mosaic::separator( _ui );
 
-        ImGui::InputFloat4( "Viewport", m_viewportInput );
-        ImGui::InputFloat4( "Content", m_contentInput );
+        Mosaic::inputFloatVector( _ui, "Viewport", Mosaic::FloatSpan( m_viewportInput, 4 ) );
+        Mosaic::inputFloatVector( _ui, "Content", Mosaic::FloatSpan( m_contentInput, 4 ) );
 
         const mt::vec2f & anchor = m_virtualArea->getAnchor();
         m_anchorInput[0] = anchor.x;
         m_anchorInput[1] = anchor.y;
 
-        if( ImGui::DragFloat2( "Anchor", m_anchorInput, 1.f, -2000.f, 2000.f ) == true )
+        Mosaic::SliderOptions anchorOptions;
+        anchorOptions.minimum = -2000.0;
+        anchorOptions.maximum = 2000.0;
+        anchorOptions.dragSpeed = 1.0;
+
+        if( Mosaic::dragFloatVector( _ui, "Anchor", Mosaic::FloatSpan( m_anchorInput, 2 ), anchorOptions ).changed() == true )
         {
             m_virtualArea->setAnchor( mt::vec2f( m_anchorInput[0], m_anchorInput[1] ) );
         }
@@ -484,7 +493,12 @@ namespace Mengine
         m_positionInput[0] = position.x;
         m_positionInput[1] = position.y;
 
-        if( ImGui::DragFloat2( "Position", m_positionInput, 1.f, -4000.f, 4000.f ) == true )
+        Mosaic::SliderOptions positionOptions;
+        positionOptions.minimum = -4000.0;
+        positionOptions.maximum = 4000.0;
+        positionOptions.dragSpeed = 1.0;
+
+        if( Mosaic::dragFloatVector( _ui, "Position", Mosaic::FloatSpan( m_positionInput, 2 ), positionOptions ).changed() == true )
         {
             m_virtualArea->setPosition( mt::vec2f( m_positionInput[0], m_positionInput[1] ) );
         }
@@ -493,7 +507,11 @@ namespace Mengine
         m_percentageInput[0] = percentage.x;
         m_percentageInput[1] = percentage.y;
 
-        if( ImGui::SliderFloat2( "Percentage", m_percentageInput, -1.f, 1.f ) == true )
+        Mosaic::SliderOptions percentageOptions;
+        percentageOptions.minimum = -1.0;
+        percentageOptions.maximum = 1.0;
+
+        if( Mosaic::sliderFloatVector( _ui, "Percentage", Mosaic::FloatSpan( m_percentageInput, 2 ), percentageOptions ).changed() == true )
         {
             m_virtualArea->setPercentage( mt::vec2f( m_percentageInput[0], m_percentageInput[1] ) );
         }
@@ -501,94 +519,123 @@ namespace Mengine
         float scale = m_virtualArea->getScaleFactor();
         const float minScale = 1.f / m_virtualArea->getMaxScaleFactor();
 
-        if( ImGui::SliderFloat( "Scale", &scale, minScale, 1.f, "%.5f"
-            , ImGuiSliderFlags_Logarithmic | ImGuiSliderFlags_NoRoundToFormat ) == true )
+        Mosaic::SliderOptions scaleOptions;
+        scaleOptions.minimum = (double)minScale;
+        scaleOptions.maximum = 1.0;
+        scaleOptions.precision = 5;
+        scaleOptions.logarithmic = true;
+        scaleOptions.roundToFormat = false;
+
+        if( Mosaic::slider( _ui, "Scale", &scale, scaleOptions ).changed() == true )
         {
             m_virtualArea->setScale( scale );
         }
 
         float maxScale = m_virtualArea->getMaxScaleFactor();
-        if( ImGui::SliderFloat( "Max scale", &maxScale, 1.f, VIRTUAL_AREA_EXAMPLE_MAX_SCALE_FACTOR_LIMIT, "%.1f"
-            , ImGuiSliderFlags_Logarithmic | ImGuiSliderFlags_NoRoundToFormat ) == true )
+
+        Mosaic::SliderOptions maxScaleOptions;
+        maxScaleOptions.minimum = 1.0;
+        maxScaleOptions.maximum = (double)VIRTUAL_AREA_EXAMPLE_MAX_SCALE_FACTOR_LIMIT;
+        maxScaleOptions.precision = 1;
+        maxScaleOptions.logarithmic = true;
+        maxScaleOptions.roundToFormat = false;
+
+        if( Mosaic::slider( _ui, "Max scale", &maxScale, maxScaleOptions ).changed() == true )
         {
             m_virtualArea->setMaxScaleFactor( maxScale );
         }
 
         float wheelFactor = m_virtualArea->getWheelScaleFactor();
-        if( ImGui::SliderFloat( "Wheel factor", &wheelFactor, 0.f, 1.f ) == true )
+
+        if( Mosaic::slider( _ui, "Wheel factor", &wheelFactor, 0.f, 1.f ).changed() == true )
         {
             m_virtualArea->setWheelScaleFactor( wheelFactor );
         }
 
         float friction = m_virtualArea->getFriction();
-        if( ImGui::SliderFloat( "Friction", &friction, 0.f, 1.f ) == true )
+
+        if( Mosaic::slider( _ui, "Friction", &friction, 0.f, 1.f ).changed() == true )
         {
             m_virtualArea->setFriction( friction );
         }
 
+        Mosaic::NumericInputOptions frictionBaseOptions;
+        frictionBaseOptions.step = 0.0001;
+        frictionBaseOptions.fastStep = 0.001;
+        frictionBaseOptions.precision = 6;
+
         float frictionBase = m_virtualArea->getFrictionBase();
-        if( ImGui::InputFloat( "Friction base", &frictionBase, 0.0001f, 0.001f, "%.6f" ) == true )
+
+        if( Mosaic::inputFloat( _ui, "Friction base", &frictionBase, frictionBaseOptions ).changed() == true )
         {
             m_virtualArea->setFrictionBase( frictionBase );
         }
 
+        Mosaic::NumericInputOptions frictionFactorOptions;
+        frictionFactorOptions.step = 0.001;
+        frictionFactorOptions.fastStep = 0.01;
+        frictionFactorOptions.precision = 6;
+
         float frictionFactor = m_virtualArea->getFrictionFactor();
-        if( ImGui::InputFloat( "Friction factor", &frictionFactor, 0.001f, 0.01f, "%.6f" ) == true )
+
+        if( Mosaic::inputFloat( _ui, "Friction factor", &frictionFactor, frictionFactorOptions ).changed() == true )
         {
             m_virtualArea->setFrictionFactor( frictionFactor );
         }
 
         float rigidity = m_virtualArea->getRigidity();
-        if( ImGui::SliderFloat( "Rigidity", &rigidity, 0.f, 1.f ) == true )
+
+        if( Mosaic::slider( _ui, "Rigidity", &rigidity, 0.f, 1.f ).changed() == true )
         {
             m_virtualArea->setRigidity( rigidity );
         }
 
         float threshold = m_virtualArea->getDragStartThreshold();
-        if( ImGui::SliderFloat( "Drag threshold", &threshold, 0.f, 200.f ) == true )
+
+        if( Mosaic::slider( _ui, "Drag threshold", &threshold, 0.f, 200.f ).changed() == true )
         {
             m_virtualArea->setDragStartThreshold( threshold );
         }
 
-        if( ImGui::Button( "Reset position" ) == true )
+        if( Mosaic::button( _ui, "Reset position" ).clicked() == true )
         {
             const Viewport & viewport = m_virtualArea->getViewport();
             m_virtualArea->setPosition( viewport.begin );
         }
 
-        ImGui::SameLine();
+        Mosaic::sameLine( _ui );
 
-        if( ImGui::Button( "Center" ) == true )
+        if( Mosaic::button( _ui, "Center" ).clicked() == true )
         {
             m_virtualArea->setPercentage( mt::vec2f( 0.5f, 0.5f ) );
         }
 
-        if( ImGui::Button( "Reset scale" ) == true )
+        if( Mosaic::button( _ui, "Reset scale" ).clicked() == true )
         {
             m_virtualArea->setScale( 1.f );
         }
 
-        ImGui::SameLine();
+        Mosaic::sameLine( _ui );
 
-        if( ImGui::Button( "Apply viewport" ) == true )
+        if( Mosaic::button( _ui, "Apply viewport" ).clicked() == true )
         {
             m_virtualArea->setViewport( Viewport( m_viewportInput[0], m_viewportInput[1], m_viewportInput[2], m_viewportInput[3] ) );
             this->rebuildFrame_();
         }
 
-        if( ImGui::Button( "Apply content" ) == true )
+        if( Mosaic::button( _ui, "Apply content" ).clicked() == true )
         {
             this->rebuildContent_();
         }
 
-        ImGui::SameLine();
+        Mosaic::sameLine( _ui );
 
-        if( ImGui::Button( "Randomize content" ) == true )
+        if( Mosaic::button( _ui, "Randomize content" ).clicked() == true )
         {
             this->rebuildContent_();
         }
 
-        ImGui::Separator();
+        Mosaic::separator( _ui );
 
         const mt::vec2f & readPosition = m_virtualArea->getPosition();
         const mt::vec2f readPercentage = m_virtualArea->getPercentage();
@@ -596,16 +643,43 @@ namespace Mengine
         const mt::vec2f viewportSize = m_virtualArea->getViewportSize();
         const mt::vec2f contentSize = m_virtualArea->getContentSizeValue();
 
-        ImGui::Text( "Position: %.1f %.1f", readPosition.x, readPosition.y );
-        ImGui::Text( "Percentage: %.3f %.3f", readPercentage.x, readPercentage.y );
-        ImGui::Text( "Scale factor: %.3f", m_virtualArea->getScaleFactor() );
-        ImGui::Text( "Velocity: %.2f %.2f", velocity.x, velocity.y );
-        ImGui::Text( "Dragging: %s", m_virtualArea->isDragging() == true ? "true" : "false" );
-        ImGui::Text( "Touch count: %u", m_virtualArea->getTouchCount() );
-        ImGui::Text( "Viewport size: %.1f %.1f", viewportSize.x, viewportSize.y );
-        ImGui::Text( "Content size: %.1f %.1f", contentSize.x, contentSize.y );
+        m_readout.clear();
 
-        ImGui::End();
+        Char readout[128] = {'\0'};
+
+        MENGINE_SNPRINTF( readout, sizeof( readout ) - 1, "Position: %.1f %.1f", readPosition.x, readPosition.y );
+        m_readout.emplace_back( readout );
+
+        MENGINE_SNPRINTF( readout, sizeof( readout ) - 1, "Percentage: %.3f %.3f", readPercentage.x, readPercentage.y );
+        m_readout.emplace_back( readout );
+
+        MENGINE_SNPRINTF( readout, sizeof( readout ) - 1, "Scale factor: %.3f", m_virtualArea->getScaleFactor() );
+        m_readout.emplace_back( readout );
+
+        MENGINE_SNPRINTF( readout, sizeof( readout ) - 1, "Velocity: %.2f %.2f", velocity.x, velocity.y );
+        m_readout.emplace_back( readout );
+
+        MENGINE_SNPRINTF( readout, sizeof( readout ) - 1, "Dragging: %s", m_virtualArea->isDragging() == true ? "true" : "false" );
+        m_readout.emplace_back( readout );
+
+        MENGINE_SNPRINTF( readout, sizeof( readout ) - 1, "Touch count: %u", m_virtualArea->getTouchCount() );
+        m_readout.emplace_back( readout );
+
+        MENGINE_SNPRINTF( readout, sizeof( readout ) - 1, "Viewport size: %.1f %.1f", viewportSize.x, viewportSize.y );
+        m_readout.emplace_back( readout );
+
+        MENGINE_SNPRINTF( readout, sizeof( readout ) - 1, "Content size: %.1f %.1f", contentSize.x, contentSize.y );
+        m_readout.emplace_back( readout );
+
+        uint32_t readoutIndex = 0;
+
+        for( const String & line : m_readout )
+        {
+            Mosaic::Scope lineScope = Mosaic::scope( _ui, Mosaic::Key( readoutIndex++ ) );
+
+            Mosaic::text( _ui, Mosaic::StringView( line.c_str(), line.size() ) );
+        }
+
     }
     //////////////////////////////////////////////////////////////////////////
 }

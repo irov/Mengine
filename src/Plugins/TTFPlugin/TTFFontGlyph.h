@@ -15,9 +15,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class TTFFontGlyph
         : public FontGlyphInterface
+        , public UnknownTTFFontGlyphInterface
         , public CompilableReference
     {
         DECLARE_FACTORABLE( TTFFontGlyph );
+        DECLARE_UNKNOWABLE();
 
     public:
         TTFFontGlyph();
@@ -31,12 +33,12 @@ namespace Mengine
         void finalize() override;
 
     public:
-        void setGlyphContent( const ContentInterfacePtr & _glyphContent );
-        const ContentInterfacePtr & getGlyphContent() const;
+        void setGlyphContent( const ContentInterfacePtr & _glyphContent ) override;
+        const ContentInterfacePtr & getGlyphContent() const override;
 
     public:
-        void setLicenseContent( const ContentInterfacePtr & _licenseContent );
-        const ContentInterfacePtr & getLicenseContent() const;
+        void setLicenseContent( const ContentInterfacePtr & _licenseContent ) override;
+        const ContentInterfacePtr & getLicenseContent() const override;
 
     protected:
         bool _compile() override;

@@ -71,6 +71,44 @@ SERVICE_FACTORY( PlatformService, Mengine::MacOSPlatformService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+        static NSCursor * getSystemCursor_( const ConstString & _icon )
+        {
+            if( _icon == STRINGIZE_STRING_LOCAL( "Arrow" ) )
+            {
+                return [NSCursor arrowCursor];
+            }
+            else if( _icon == STRINGIZE_STRING_LOCAL( "Hand" ) )
+            {
+                return [NSCursor pointingHandCursor];
+            }
+            else if( _icon == STRINGIZE_STRING_LOCAL( "Text" ) )
+            {
+                return [NSCursor IBeamCursor];
+            }
+            else if( _icon == STRINGIZE_STRING_LOCAL( "ResizeHorizontal" ) )
+            {
+                return [NSCursor resizeLeftRightCursor];
+            }
+            else if( _icon == STRINGIZE_STRING_LOCAL( "ResizeVertical" ) )
+            {
+                return [NSCursor resizeUpDownCursor];
+            }
+            else if( _icon == STRINGIZE_STRING_LOCAL( "Crosshair" ) )
+            {
+                return [NSCursor crosshairCursor];
+            }
+            else if( _icon == STRINGIZE_STRING_LOCAL( "NotAllowed" ) )
+            {
+                return [NSCursor operationNotAllowedCursor];
+            }
+
+            return nil;
+        }
+        //////////////////////////////////////////////////////////////////////////
+    }
     //////////////////////////////////////////////////////////////////////////
     MacOSPlatformService::MacOSPlatformService()
         : m_beginTime( 0 )
@@ -903,14 +941,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MacOSPlatformService::setCursorIcon( const ConstString & _icon )
     {
-        MENGINE_UNUSED( _icon );
+        NSCursor * cursor = Detail::getSystemCursor_( _icon );
+
+        if( cursor == nil )
+        {
+            return;
+        }
+
+        [cursor set];
     }
     //////////////////////////////////////////////////////////////////////////
     bool MacOSPlatformService::hasCursorIcon( const ConstString & _icon ) const
     {
-        MENGINE_UNUSED( _icon );
+        NSCursor * cursor = Detail::getSystemCursor_( _icon );
 
-        return false;
+        return cursor != nil;
     }
     //////////////////////////////////////////////////////////////////////////
     void MacOSPlatformService::showKeyboard()

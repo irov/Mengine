@@ -72,7 +72,7 @@ namespace Mengine
             return false;
         }
 
-        font->setTTFFontGlyph( glyph );
+        font->setGlyph( glyph );
 
         uint32_t height;
         if( _config->hasValueInteger( name.c_str(), "Height", MENGINE_UINT32_C(0), &height ) == false )

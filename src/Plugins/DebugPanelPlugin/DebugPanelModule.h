@@ -1,16 +1,18 @@
 #pragma once
 
-#include "Frameworks/ImGUIFramework/ImGUIInterface.h"
+#include "Frameworks/MosaicFramework/MosaicInterface.h"
 
 #include "Kernel/ModuleBase.h"
 #include "Kernel/Histogram.h"
 #include "Kernel/PathString.h"
 #include "Kernel/ConstString.h"
+#include "Kernel/Deque.h"
+#include "Kernel/String.h"
 
 #include "Config/Timestamp.h"
 #include "Config/UniqueId.h"
 
-#include "imgui.h"
+#include "Mosaic/Mosaic.hpp"
 
 #ifndef MENGINE_DEBUG_PANEL_HISTOGRAM_UPDATE_COUNT
 #define MENGINE_DEBUG_PANEL_HISTOGRAM_UPDATE_COUNT 32
@@ -24,7 +26,6 @@ namespace Mengine
 {
     class DebugPanelModule
         : public ModuleBase
-        , public RenderDrawPrimitiveInterface
     {
         DECLARE_FACTORABLE( DebugPanelModule );
 
@@ -46,9 +47,6 @@ namespace Mengine
         void _render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) override;
 
     protected:
-        void onRenderDrawPrimitives( const RenderPrimitive * _primitives, uint32_t _count ) const override;
-
-    protected:
         typedef Histogram<float, MENGINE_DEBUG_PANEL_HISTOGRAM_UPDATE_COUNT> HistogramUpdate;
         typedef Histogram<float, MENGINE_DEBUG_PANEL_HISTOGRAM_PERFRAME_COUNT> HistogramPerframe;
 
@@ -56,45 +54,53 @@ namespace Mengine
         void updateHistogramUpdate( HistogramUpdate * const _histogram, uint32_t _statisticId, float _coeffTime, float _multiplier );
 
     protected:
-        void drawHistogramUpdate( const HistogramUpdate & _histogram, const Char * _label, const Char * _overlayFormat, float _maxValue, float _height ) const;
-        void drawHistogramPerFrame( const HistogramPerframe & _histogram, const Char * _label, const Char * _overlayFormat, float _maxValue, float _height ) const;
+        void drawHistogramUpdate( Mosaic::Context * _ui, const HistogramUpdate & _histogram, const Char * _label, const Char * _overlayFormat, float _maxValue, float _height );
+        void drawHistogramPerFrame( Mosaic::Context * _ui, const HistogramPerframe & _histogram, const Char * _label, const Char * _overlayFormat, float _maxValue, float _height );
 
     protected:
-        void renderDebugPanel() const;
-        void renderTextureMonitor() const;
-        void renderResourceMonitor() const;
+        void renderPanel_( Mosaic::Context * _ui );
+        void renderDebugPanel_( Mosaic::Context * _ui );
+        void renderTextureMonitor_( Mosaic::Context * _ui );
+        void renderResourceMonitor_( Mosaic::Context * _ui );
 
     protected:
-        ImVec4 getBorderColor_( Timestamp _alive ) const;
+        void textLine_( Mosaic::Context * _ui, const Char * _format, ... );
+        Mosaic::StringView keepLine_( const Char * _format, ... );
 
     protected:
-        ImGUIRenderProviderInterfacePtr m_imguiRenderProvider;
+        Mosaic::Color getBorderColor_( Mosaic::Context * _ui, Timestamp _alive ) const;
 
-        mutable HistogramUpdate m_histogramFPS;
-        mutable HistogramUpdate m_histogramAllocatorNew;
-        mutable HistogramUpdate m_histogramAllocatorFree;
-        mutable HistogramUpdate m_histogramImageNew;
-        mutable HistogramUpdate m_histogramImageFree;
+    protected:
+        MosaicProviderId m_providerId;
 
-        mutable HistogramPerframe m_histogramPerFrameDrawIndexPrimitives;
-        mutable HistogramPerframe m_histogramPerFrameObjects;
-        mutable HistogramPerframe m_histogramPerFrameTriangles;
-        mutable HistogramPerframe m_histogramPerFrameBatches;
+        HistogramUpdate m_histogramFPS;
+        HistogramUpdate m_histogramAllocatorNew;
+        HistogramUpdate m_histogramAllocatorFree;
+        HistogramUpdate m_histogramImageNew;
+        HistogramUpdate m_histogramImageFree;
 
-        mutable HistogramPerframe m_histogramPerFrameFillrate;
+        HistogramPerframe m_histogramPerFrameDrawIndexPrimitives;
+        HistogramPerframe m_histogramPerFrameObjects;
+        HistogramPerframe m_histogramPerFrameTriangles;
+        HistogramPerframe m_histogramPerFrameBatches;
+
+        HistogramPerframe m_histogramPerFrameFillrate;
 
         Timestamp m_warning;
         Timestamp m_critical;
 
-        mutable UniqueId m_selectedTextureId;
-        mutable PathString m_selectedPath;
+        UniqueId m_selectedTextureId;
+        PathString m_selectedPath;
 
-        mutable ConstString m_selectedResourceGroup;
-        mutable ConstString m_selectedResourceName;
-        mutable PathString m_selectedResourcePath;
-        mutable int m_filterResourceCompileRef{ 0 }; // 0: ref==0, 1: ref==1, 2: ref>1
+        ConstString m_selectedResourceGroup;
+        ConstString m_selectedResourceName;
+        PathString m_selectedResourcePath;
+        int32_t m_filterResourceCompileRef;
+
+        typedef Deque<String> DequeReadout;
+        DequeReadout m_readout;
 
         bool m_show;
-        mutable int32_t m_selectedTab;
+        int32_t m_selectedTab;
     };
 }

@@ -39,7 +39,9 @@
 
 #include "math/utils.h"
 
-#include "imgui.h"
+
+
+#include "Mosaic/Mosaic.hpp"
 
 namespace Mengine
 {
@@ -47,8 +49,25 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         constexpr uint32_t SAMPLE_COUNT = 3;
+        constexpr float PREVIEW_ZOOM_WHEEL_SPEED = 0.002f;
         static const uint32_t SAMPLE_VALUES[SAMPLE_COUNT] = {1, 2, 4};
         static const Char * SAMPLE_NAMES[SAMPLE_COUNT] = {"1", "2", "4"};
+        //////////////////////////////////////////////////////////////////////////
+        static Mosaic::Rect makeMosaicUV( const RenderTextureInterfacePtr & _texture, const mt::uv4f & _uv )
+        {
+            const mt::uv4f & textureUV = _texture->getUV();
+
+            float textureWidth = textureUV.p2.x - textureUV.p0.x;
+            float textureHeight = textureUV.p2.y - textureUV.p0.y;
+
+            Mosaic::Rect uv;
+            uv.x = (_uv.p0.x - textureUV.p0.x) / textureWidth;
+            uv.y = (_uv.p0.y - textureUV.p0.y) / textureHeight;
+            uv.width = (_uv.p2.x - _uv.p0.x) / textureWidth;
+            uv.height = (_uv.p2.y - _uv.p0.y) / textureHeight;
+
+            return uv;
+        }
         //////////////////////////////////////////////////////////////////////////
         static bool splitFullPath( const String & _fullPath, String * const _folder, String * const _file )
         {
@@ -131,7 +150,7 @@ namespace Mengine
         , m_previewZoom( 1.f )
         , m_previewPan( 0.f, 0.f )
         , m_previewPanning( false )
-        , m_sidebarWidth( 440.f )
+        , m_sidebarRatio( 0.43f )
         , m_loadedGlyphCounter( 0 )
         , m_presetIndex( -1 )
         , m_glyphIndex( -1 )
@@ -215,22 +234,20 @@ namespace Mengine
             this->loadGlyphFile_( m_glyphPathInput );
         }
 
-        ImGUIRenderPtr imguiRender = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ImGUIRender" ), MENGINE_DOCUMENT_FACTORABLE );
+        MosaicRenderPtr mosaicRender = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MosaicRender" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( imguiRender, "invalid create ImGUIRender" );
+        MENGINE_ASSERTION_MEMORY_PANIC( mosaicRender, "invalid create MosaicRender" );
 
-        imguiRender->setName( STRINGIZE_STRING_LOCAL( "FontEffectViewerExampleImGUI" ) );
-        imguiRender->setProvider( [this]( const ImGUIRenderProviderInterfacePtr & _provider )
+        mosaicRender->setName( STRINGIZE_STRING_LOCAL( "FontEffectViewerExampleMosaic" ) );
+        mosaicRender->setProvider( [this]( Mosaic::Context * _ui )
         {
-            this->renderControls_( _provider );
+            this->renderControls_( _ui );
         } );
 
-        RenderInterface * imguiRenderInterface = imguiRender->getRender();
-        imguiRenderInterface->setZIndex( 1000 );
+                m_scene->addChild( mosaicRender );
+        m_mosaicRender = mosaicRender;
 
-        m_scene->addChild( imguiRender );
-        m_imguiRender = imguiRender;
 
         if( this->createPreviewCanvas_() == false )
         {
@@ -275,10 +292,10 @@ namespace Mengine
             m_loadedGlyphName.clear();
         }
 
-        if( m_imguiRender != nullptr )
+        if( m_mosaicRender != nullptr )
         {
-            m_imguiRender->dispose();
-            m_imguiRender = nullptr;
+            m_mosaicRender->dispose();
+            m_mosaicRender = nullptr;
         }
 
         m_glyphFileGroup = nullptr;
@@ -1146,10 +1163,7 @@ namespace Mengine
             }
         }
 
-        TTFFontPtr ttfFont = TTFFontPtr::from( m_font );
-        TTFFontGlyphPtr ttfGlyph = TTFFontGlyphPtr::from( m_glyph );
-
-        ttfFont->setTTFFontGlyph( ttfGlyph );
+        m_font->setGlyph( m_glyph );
 
         m_font->setHeight( (uint32_t)m_height );
         m_font->setFontColor( Color( m_fontColor[0], m_fontColor[1], m_fontColor[2], m_fontColor[3] ) );
@@ -1234,11 +1248,11 @@ namespace Mengine
         m_glyphTime = buffer;
     }
     //////////////////////////////////////////////////////////////////////////
-    void FontEffectViewerExampleSceneEventReceiver::renderGlyphPreview_( const ImGUIRenderProviderInterfacePtr & _provider )
+    void FontEffectViewerExampleSceneEventReceiver::renderGlyphPreview_( Mosaic::Context * _ui )
     {
         if( m_font == nullptr || m_font->isCompileFont() == false )
         {
-            ImGui::TextDisabled( "font is not compiled" );
+            this->textLine_( _ui, true, "font is not compiled" );
 
             return;
         }
@@ -1248,14 +1262,14 @@ namespace Mengine
 
         if( m_font->prepareText( m_textInput, textLength, &codes ) == false )
         {
-            ImGui::TextDisabled( "no text" );
+            this->textLine_( _ui, true, "no text" );
 
             return;
         }
 
         if( codes.empty() == true )
         {
-            ImGui::TextDisabled( "no text" );
+            this->textLine_( _ui, true, "no text" );
 
             return;
         }
@@ -1276,7 +1290,7 @@ namespace Mengine
 
         if( code == 0 )
         {
-            ImGui::TextDisabled( "no printable glyph" );
+            this->textLine_( _ui, true, "no printable glyph" );
 
             return;
         }
@@ -1291,20 +1305,20 @@ namespace Mengine
                 continue;
             }
 
-            ImGui::Text( "layout %u: offset (%.1f, %.1f) size (%.1f, %.1f)", layout, glyph.offset.x, glyph.offset.y, glyph.size.x, glyph.size.y );
+            this->textLine_( _ui, false, "layout %u: offset (%.1f, %.1f) size (%.1f, %.1f)", layout, glyph.offset.x, glyph.offset.y, glyph.size.x, glyph.size.y );
 
             if( glyph.texture == nullptr )
             {
                 continue;
             }
 
-            ImTextureID textureId = _provider->getImTexture( glyph.texture );
+            MosaicTextureHandle textureId = MOSAIC_SERVICE()
+                ->getTextureHandle( glyph.texture );
 
-            ImVec2 size( glyph.size.x * m_previewScale, glyph.size.y * m_previewScale );
-            ImVec2 uv0( glyph.uv.p0.x, glyph.uv.p0.y );
-            ImVec2 uv1( glyph.uv.p2.x, glyph.uv.p2.y );
+            Mosaic::Vec2 size = {glyph.size.x * m_previewScale, glyph.size.y * m_previewScale};
+            Mosaic::Rect uv = Detail::makeMosaicUV( glyph.texture, glyph.uv );
 
-            ImGui::Image( textureId, size, uv0, uv1 );
+            Mosaic::image( _ui, textureId, size, uv );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1332,7 +1346,7 @@ namespace Mengine
 
         if( m_font->prepareText( m_textInput, textLength, &codes ) == false )
         {
-            ImGui::TextDisabled( "no text" );
+            m_status = "No text";
 
             return;
         }
@@ -1455,109 +1469,114 @@ namespace Mengine
         this->updatePreviewPosition_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void FontEffectViewerExampleSceneEventReceiver::renderPreviewCanvas_( const ImGUIRenderProviderInterfacePtr & _provider )
+    void FontEffectViewerExampleSceneEventReceiver::renderPreviewCanvas_( Mosaic::Context * _ui )
     {
         if( m_previewCanvas == nullptr )
         {
-            ImGui::TextDisabled( "preview canvas is not available" );
+            this->textLine_( _ui, true, "preview canvas is not available" );
 
             return;
         }
 
-        ImVec2 contentAvail = ImGui::GetContentRegionAvail();
+        Mosaic::Rect previewBounds;
+        Mosaic::Vec2 localPointer;
+        Mosaic::Response previewResponse;
 
-        float bottomRowHeight = ImGui::GetFrameHeightWithSpacing();
+        bool hasBounds = false;
+        bool hasLocalPointer = false;
+        bool hasResponse = false;
 
-        ImVec2 avail( contentAvail.x, contentAvail.y - bottomRowHeight );
-
-        if( avail.x >= 16.f && avail.y >= 16.f )
         {
-            uint32_t roundedWidth = ((uint32_t)avail.x / 16u) * 16u;
-            uint32_t roundedHeight = ((uint32_t)avail.y / 16u) * 16u;
+            Mosaic::LayoutOptions previewLayout;
+            previewLayout.width = Mosaic::SizeRule::Fill;
+            previewLayout.height = Mosaic::SizeRule::Fill;
 
-            roundedWidth = roundedWidth < 64u ? 64u : roundedWidth;
-            roundedHeight = roundedHeight < 64u ? 64u : roundedHeight;
+            Mosaic::Canvas previewCanvas = Mosaic::canvas( _ui, "FontEffectViewerPreviewCanvas", previewLayout );
 
-            const mt::vec2f & currentSize = m_previewCanvas->getSize();
+            hasBounds = previewCanvas.contentRect( &previewBounds );
 
-            if( (uint32_t)currentSize.x != roundedWidth || (uint32_t)currentSize.y != roundedHeight )
+            if( hasBounds == true )
             {
-                if( m_previewCanvas->setSize( roundedWidth, roundedHeight ) == true )
+                uint32_t roundedWidth = ((uint32_t)previewBounds.width / 16u) * 16u;
+                uint32_t roundedHeight = ((uint32_t)previewBounds.height / 16u) * 16u;
+
+                roundedWidth = roundedWidth < 64u ? 64u : roundedWidth;
+                roundedHeight = roundedHeight < 64u ? 64u : roundedHeight;
+
+                const mt::vec2f & currentSize = m_previewCanvas->getSize();
+
+                if( (uint32_t)currentSize.x != roundedWidth || (uint32_t)currentSize.y != roundedHeight )
                 {
-                    m_dirty = true;
+                    if( m_previewCanvas->setSize( roundedWidth, roundedHeight ) == true )
+                    {
+                        m_dirty = true;
+                    }
+                }
+
+                const RenderTextureInterfacePtr & texture = m_previewCanvas->getTexture();
+
+                if( texture != nullptr )
+                {
+                    MosaicTextureHandle textureId = MOSAIC_SERVICE()
+                        ->getTextureHandle( texture );
+
+                    previewCanvas.image( textureId, previewBounds );
+                }
+            }
+
+            hasLocalPointer = previewCanvas.localPointerPosition( &localPointer );
+
+            hasResponse = Mosaic::itemResponse( _ui, previewCanvas.id(), &previewResponse );
+        }
+
+        if( hasBounds == true && hasResponse == true && hasLocalPointer == true )
+        {
+            Mosaic::Vec2 wheel;
+
+            if( Mosaic::consumeWheel( _ui, previewResponse.id, &wheel ) == true )
+            {
+                if( wheel.y != 0.f )
+                {
+                    float cursorOffsetX = localPointer.x - previewBounds.width * 0.5f;
+                    float cursorOffsetY = localPointer.y - previewBounds.height * 0.5f;
+
+                    float zoomScale = 1.f + wheel.y * Detail::PREVIEW_ZOOM_WHEEL_SPEED;
+
+                    this->zoomPreviewAt_( m_previewZoom * zoomScale, cursorOffsetX, cursorOffsetY );
                 }
             }
         }
 
-        const RenderTextureInterfacePtr & texture = m_previewCanvas->getTexture();
-        const RenderTargetInterfacePtr & target = m_previewCanvas->getTarget();
-
-        if( texture == nullptr || target == nullptr )
+        if( hasResponse == true && hasLocalPointer == true && previewResponse.active() == true )
         {
-            ImGui::TextDisabled( "preview canvas is not ready" );
-
-            return;
-        }
-
-        ImTextureID textureId = _provider->getImTexture( texture );
-
-        const mt::uv4f & uv = target->getUV();
-
-        ImVec2 uv0( uv.p0.x, uv.p0.y );
-        ImVec2 uv1( uv.p2.x, uv.p2.y );
-
-        ImGui::Image( textureId, avail, uv0, uv1 );
-
-        bool hovered = ImGui::IsItemHovered();
-
-        if( hovered == true )
-        {
-            float wheel = ImGui::GetIO().MouseWheel;
-
-            if( wheel != 0.f )
+            if( m_previewPanning == true )
             {
-                ImVec2 imageMin = ImGui::GetItemRectMin();
-                ImVec2 mousePos = ImGui::GetIO().MousePos;
+                float deltaX = localPointer.x - m_previewPanAnchor.x;
+                float deltaY = localPointer.y - m_previewPanAnchor.y;
 
-                float cursorOffsetX = (mousePos.x - imageMin.x) - avail.x * 0.5f;
-                float cursorOffsetY = (mousePos.y - imageMin.y) - avail.y * 0.5f;
-
-                this->zoomPreviewAt_( m_previewZoom * (1.f + wheel * 0.1f), cursorOffsetX, cursorOffsetY );
-            }
-
-            if( ImGui::IsMouseClicked( ImGuiMouseButton_Left ) == true )
-            {
-                m_previewPanning = true;
-            }
-        }
-
-        if( m_previewPanning == true )
-        {
-            if( ImGui::IsMouseDown( ImGuiMouseButton_Left ) == false )
-            {
-                m_previewPanning = false;
-            }
-            else
-            {
-                ImVec2 delta = ImGui::GetIO().MouseDelta;
-
-                if( delta.x != 0.f || delta.y != 0.f )
+                if( deltaX != 0.f || deltaY != 0.f )
                 {
-                    m_previewPan.x += delta.x / m_previewZoom;
-                    m_previewPan.y += delta.y / m_previewZoom;
+                    m_previewPan.x += deltaX / m_previewZoom;
+                    m_previewPan.y += deltaY / m_previewZoom;
 
                     this->clampPreviewPan_();
-
                     this->updatePreviewPosition_();
                 }
             }
+
+            m_previewPanAnchor = mt::vec2f( localPointer.x, localPointer.y );
+            m_previewPanning = true;
+        }
+        else
+        {
+            m_previewPanning = false;
         }
 
-        ImGui::TextDisabled( "zoom %.0f%% (wheel to zoom, drag with left button to pan)", m_previewZoom * 100.f );
+        Mosaic::Scope footer = Mosaic::row( _ui, Mosaic::Key( "FontEffectViewerPreviewFooter" ) );
 
-        ImGui::SameLine();
+        this->textLine_( _ui, true, "zoom %.0f%% (wheel to zoom, drag with left button to pan)", m_previewZoom * 100.f );
 
-        if( ImGui::SmallButton( "Reset view" ) == true )
+        if( Mosaic::smallButton( _ui, "Reset view" ).clicked() == true )
         {
             m_previewZoom = 1.f;
             m_previewPan = mt::vec2f( 0.f, 0.f );
@@ -1569,238 +1588,272 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void FontEffectViewerExampleSceneEventReceiver::renderControls_( const ImGUIRenderProviderInterfacePtr & _provider )
+    void FontEffectViewerExampleSceneEventReceiver::textLine_( Mosaic::Context * _ui, bool _disabled, const Char * _format, ... )
+    {
+        Char buffer[1024] = {'\0'};
+
+        MENGINE_VA_LIST_TYPE args;
+        MENGINE_VA_LIST_START( args, _format );
+        MENGINE_VSNPRINTF( buffer, sizeof( buffer ) - 1, _format, args );
+        MENGINE_VA_LIST_END( args );
+
+        m_readout.emplace_back( buffer );
+
+        const String & line = m_readout.back();
+
+        Mosaic::Scope lineScope = Mosaic::scope( _ui, Mosaic::Key( m_readout.size() ) );
+
+        Mosaic::Scope disabled = Mosaic::disabledScope( _ui, _disabled );
+
+        Mosaic::text( _ui, Mosaic::StringView( line.c_str(), line.size() ) );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void FontEffectViewerExampleSceneEventReceiver::renderControls_( Mosaic::Context * _ui )
     {
         if( m_dirty == true )
         {
             this->rebuildPreview_();
         }
 
-        const ImGuiIO & io = ImGui::GetIO();
+        const Resolution & contentResolution = APPLICATION_SERVICE()
+            ->getContentResolution();
 
-        ImGui::SetNextWindowPos( ImVec2( 0.f, 0.f ) );
-        ImGui::SetNextWindowSize( io.DisplaySize );
+        Mosaic::WindowOptions windowOptions;
+        windowOptions.initialBounds = {0.f, 0.f, (float)contentResolution.getWidth(), (float)contentResolution.getHeight()};
+        windowOptions.movable = false;
+        windowOptions.resizable = false;
+        windowOptions.saveSettings = false;
+        windowOptions.bringToFront = false;
 
-        ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoSavedSettings;
+        Mosaic::WindowScope window = Mosaic::window( _ui, "Font Effect Viewer", windowOptions );
 
-        if( ImGui::Begin( "Font Effect Viewer", nullptr, windowFlags ) == false )
+        if( window.visible() == false )
         {
-            ImGui::End();
-
             return;
         }
 
-        float minSidebarWidth = 320.f;
-        float maxSidebarWidth = io.DisplaySize.x - 200.f;
+        m_readout.clear();
 
-        if( maxSidebarWidth < minSidebarWidth )
-        {
-            maxSidebarWidth = minSidebarWidth;
-        }
+        Mosaic::SplitOptions splitOptions;
+        splitOptions.minimumFirst = 320.f;
+        splitOptions.minimumSecond = 200.f;
 
-        if( m_sidebarWidth < minSidebarWidth )
-        {
-            m_sidebarWidth = minSidebarWidth;
-        }
-        else if( m_sidebarWidth > maxSidebarWidth )
-        {
-            m_sidebarWidth = maxSidebarWidth;
-        }
-
-        ImGui::BeginChild( "FontEffectViewerSidebar", ImVec2( m_sidebarWidth, 0.f ), false );
+        Mosaic::Scope workspace = Mosaic::split( _ui, "FontEffectViewerWorkspace", Mosaic::Orientation::Horizontal, &m_sidebarRatio, splitOptions );
 
         bool changed = false;
 
-        if( ImGui::CollapsingHeader( "Presets", ImGuiTreeNodeFlags_DefaultOpen ) == true )
         {
-            if( ImGui::Button( "Load JSON..." ) == true )
-            {
-                Char path[MENGINE_MAX_PATH] = {'\0'};
+            Mosaic::Scope sidebar = Mosaic::scrollArea( _ui, "FontEffectViewerSidebar" );
 
-                if( FontEffectViewerExampleSelectFilePath( "Open effects JSON", m_presetsPathInput, path, sizeof( path ) ) == true )
+            if( Mosaic::TreeScope headerScope = Mosaic::collapsingHeader( _ui, "Presets", true ); headerScope.expanded() == true )
+            {
+                if( Mosaic::button( _ui, "Load JSON..." ).clicked() == true )
                 {
-                    this->loadPresetsFile_( path );
-                }
-            }
+                    Char path[MENGINE_MAX_PATH] = {'\0'};
 
-            ImGui::SameLine();
-
-            ImGui::BeginDisabled( m_presetsFileGroup == nullptr );
-
-            if( ImGui::Button( "Save" ) == true )
-            {
-                this->savePresetsFile_( m_presetsPathInput );
-            }
-
-            ImGui::EndDisabled();
-
-            ImGui::SameLine();
-
-            if( ImGui::Button( "Save As..." ) == true )
-            {
-                Char path[MENGINE_MAX_PATH] = {'\0'};
-
-                const Char * defaultName = m_presetsFileName.empty() == true ? "Effects.json" : m_presetsFileName.c_str();
-
-                if( FontEffectViewerExampleSelectSaveFilePath( "Save effects JSON", m_presetsPathInput, defaultName, path, sizeof( path ) ) == true )
-                {
-                    this->savePresetsFile_( path );
-                }
-            }
-
-            ImGui::SameLine();
-
-            if( ImGui::Button( "Reload bundled" ) == true )
-            {
-                this->loadBundledEffects_();
-            }
-
-            ImGui::TextDisabled( "%s", m_presetsFileGroup == nullptr ? "bundled Effects.json (read only)" : m_presetsPathInput );
-
-            if( m_presetNames.empty() == false )
-            {
-                const Char * currentName = m_presetIndex >= 0 ? m_presetNames[m_presetIndex].c_str() : "<none>";
-
-                if( ImGui::BeginCombo( "Preset", currentName ) == true )
-                {
-                    for( VectorString::size_type index = 0; index != m_presetNames.size(); ++index )
+                    if( FontEffectViewerExampleSelectFilePath( "Open effects JSON", m_presetsPathInput, path, sizeof( path ) ) == true )
                     {
-                        bool selected = (m_presetIndex == (int)index);
+                        this->loadPresetsFile_( path );
+                    }
+                }
 
-                        if( ImGui::Selectable( m_presetNames[index].c_str(), selected ) == true )
-                        {
-                            this->selectPreset_( (int)index );
-                        }
+                Mosaic::sameLine( _ui );
+
+                {
+                    Mosaic::Scope disabledScope = Mosaic::disabledScope( _ui, m_presetsFileGroup == nullptr );
+
+                    if( Mosaic::button( _ui, "Save" ).clicked() == true )
+                    {
+                        this->savePresetsFile_( m_presetsPathInput );
                     }
 
-                    ImGui::EndCombo();
+                }
+
+                Mosaic::sameLine( _ui );
+
+                if( Mosaic::button( _ui, "Save As..." ).clicked() == true )
+                {
+                    Char path[MENGINE_MAX_PATH] = {'\0'};
+
+                    const Char * defaultName = m_presetsFileName.empty() == true ? "Effects.json" : m_presetsFileName.c_str();
+
+                    if( FontEffectViewerExampleSelectSaveFilePath( "Save effects JSON", m_presetsPathInput, defaultName, path, sizeof( path ) ) == true )
+                    {
+                        this->savePresetsFile_( path );
+                    }
+                }
+
+                Mosaic::sameLine( _ui );
+
+                if( Mosaic::button( _ui, "Reload bundled" ).clicked() == true )
+                {
+                    this->loadBundledEffects_();
+                }
+
+                this->textLine_( _ui, true, "%s", m_presetsFileGroup == nullptr ? "bundled Effects.json (read only)" : m_presetsPathInput );
+
+                if( m_presetNames.empty() == false )
+                {
+                    const Char * currentName = m_presetIndex >= 0 ? m_presetNames[m_presetIndex].c_str() : "<none>";
+
+                    if( Mosaic::TreeScope comboScope = Mosaic::beginCombo( _ui, "Preset", currentName ); comboScope.visible() == true )
+                    {
+                        for( VectorString::size_type index = 0; index != m_presetNames.size(); ++index )
+                        {
+                            bool selected = (m_presetIndex == (int)index);
+
+                            if( Mosaic::selectable( _ui, Mosaic::Key( (uint32_t)index ), m_presetNames[index].c_str(), selected ).clicked() == true )
+                            {
+                                this->selectPreset_( (int)index );
+                            }
+                        }
+
+                    }
+                }
+
+                {
+                    Mosaic::String presetName( m_presetNameInput );
+
+                    if( Mosaic::property( _ui, "Name", &presetName ).changed() == true )
+                    {
+                        StdString::strcpy_safe( m_presetNameInput, presetName.c_str(), sizeof( m_presetNameInput ) );
+                    }
+                }
+
+                if( Mosaic::button( _ui, "Store as preset" ).clicked() == true )
+                {
+                    this->storeCurrentPreset_();
                 }
             }
 
-            ImGui::InputText( "Name", m_presetNameInput, sizeof( m_presetNameInput ) );
-
-            if( ImGui::Button( "Store as preset" ) == true )
+            if( Mosaic::TreeScope headerScope = Mosaic::collapsingHeader( _ui, "Font", true ); headerScope.expanded() == true )
             {
-                this->storeCurrentPreset_();
-            }
-        }
-
-        if( ImGui::CollapsingHeader( "Font", ImGuiTreeNodeFlags_DefaultOpen ) == true )
-        {
-            if( m_glyphNames.empty() == false )
-            {
-                const Char * currentName = m_glyphIndex >= 0 ? m_glyphNames[m_glyphIndex].c_str() : (m_loadedGlyphName.empty() == false ? m_loadedGlyphName.c_str() : "<none>");
-
-                if( ImGui::BeginCombo( "Glyph", currentName ) == true )
+                if( m_glyphNames.empty() == false )
                 {
-                    for( VectorString::size_type index = 0; index != m_glyphNames.size(); ++index )
+                    const Char * currentName = m_glyphIndex >= 0 ? m_glyphNames[m_glyphIndex].c_str() : (m_loadedGlyphName.empty() == false ? m_loadedGlyphName.c_str() : "<none>");
+
+                    if( Mosaic::TreeScope comboScope = Mosaic::beginCombo( _ui, "Glyph", currentName ); comboScope.visible() == true )
                     {
-                        bool selected = (m_glyphIndex == (int)index);
-
-                        if( ImGui::Selectable( m_glyphNames[index].c_str(), selected ) == true )
+                        for( VectorString::size_type index = 0; index != m_glyphNames.size(); ++index )
                         {
-                            m_glyphIndex = (int)index;
+                            bool selected = (m_glyphIndex == (int)index);
 
-                            this->selectGlyph_( Helper::stringizeString( m_glyphNames[index].c_str() ) );
+                            if( Mosaic::selectable( _ui, Mosaic::Key( (uint32_t)index ), m_glyphNames[index].c_str(), selected ).clicked() == true )
+                            {
+                                m_glyphIndex = (int)index;
+
+                                this->selectGlyph_( Helper::stringizeString( m_glyphNames[index].c_str() ) );
+                            }
                         }
+
+                    }
+                }
+
+                if( Mosaic::button( _ui, "Load TTF..." ).clicked() == true )
+                {
+                    Char path[MENGINE_MAX_PATH] = {'\0'};
+
+                    if( FontEffectViewerExampleSelectFilePath( "Open TTF font", m_glyphPathInput, path, sizeof( path ) ) == true )
+                    {
+                        this->loadGlyphFile_( path );
+                    }
+                }
+
+                if( m_glyphPathInput[0] != '\0' )
+                {
+                    Mosaic::sameLine( _ui );
+                    this->textLine_( _ui, true, "%s", m_glyphPathInput );
+                }
+
+                changed |= [&]() { Mosaic::SliderOptions o; o.precision = 0; int32_t height = (int32_t)m_height; bool c = Mosaic::slider( _ui, "Height", &height, 8, 200, o ).changed(); m_height = (int)height; return c; }();
+                {
+                    Mosaic::StringView sampleItems[3];
+
+                    for( uint32_t sampleIndex = 0; sampleIndex != 3; ++sampleIndex )
+                    {
+                        sampleItems[sampleIndex] = Detail::SAMPLE_NAMES[sampleIndex];
                     }
 
-                    ImGui::EndCombo();
+                    changed |= Mosaic::comboBox( _ui, "Sample", &m_sampleIndex, Mosaic::StringViewSpan( sampleItems, 3 ) ).changed();
                 }
-            }
-
-            if( ImGui::Button( "Load TTF..." ) == true )
-            {
-                Char path[MENGINE_MAX_PATH] = {'\0'};
-
-                if( FontEffectViewerExampleSelectFilePath( "Open TTF font", m_glyphPathInput, path, sizeof( path ) ) == true )
                 {
-                    this->loadGlyphFile_( path );
+                    Mosaic::Color fontColor = {m_fontColor[0], m_fontColor[1], m_fontColor[2], m_fontColor[3]};
+
+                    if( Mosaic::colorEditorRgba( _ui, "Font color", &fontColor ).changed() == true )
+                    {
+                        m_fontColor[0] = fontColor.r;
+                        m_fontColor[1] = fontColor.g;
+                        m_fontColor[2] = fontColor.b;
+                        m_fontColor[3] = fontColor.a;
+
+                        changed = true;
+                    }
+                }
+                changed |= Mosaic::checkbox( _ui, "No effect", &m_noEffect ).changed();
+
+                {
+                    Mosaic::String text( m_textInput );
+
+                    Mosaic::LayoutOptions textLayout;
+                    textLayout.height = Mosaic::Dimension::fixed( 60.f );
+
+                    if( Mosaic::inputMultiline( _ui, "Text", &text, {}, textLayout ).changed() == true )
+                    {
+                        StdString::strcpy_safe( m_textInput, text.c_str(), sizeof( m_textInput ) );
+
+                        changed = true;
+                    }
                 }
             }
 
-            if( m_glyphPathInput[0] != '\0' )
+            if( Mosaic::TreeScope headerScope = Mosaic::collapsingHeader( _ui, "Layers", true ); headerScope.expanded() == true )
             {
-                ImGui::SameLine();
-                ImGui::TextDisabled( "%s", m_glyphPathInput );
+                changed |= FontEffectViewerExampleRenderDescEditor( _ui, &m_desc );
             }
 
-            changed |= ImGui::SliderInt( "Height", &m_height, 8, 200 );
-            changed |= ImGui::Combo( "Sample", &m_sampleIndex, Detail::SAMPLE_NAMES, 3 );
-            changed |= ImGui::ColorEdit4( "Font color", m_fontColor, ImGuiColorEditFlags_AlphaBar );
-            changed |= ImGui::Checkbox( "No effect", &m_noEffect );
-
-            if( ImGui::InputTextMultiline( "Text", m_textInput, sizeof( m_textInput ), ImVec2( -1.f, 60.f ) ) == true )
+            if( Mosaic::TreeScope headerScope = Mosaic::collapsingHeader( _ui, "Glyph preview" ); headerScope.expanded() == true )
             {
-                changed = true;
-            }
-        }
+                Mosaic::checkbox( _ui, "Show", &m_showGlyphPreview );
+                Mosaic::sameLine( _ui );
+                Mosaic::setNextItemWidth( _ui, 100.f );
+                MENGINE_UNUSED( Mosaic::slider( _ui, "Scale", &m_previewScale, [&]() { Mosaic::SliderOptions o; o.minimum = 0.5; o.maximum = 8.0; o.precision = 1; return o; }() ) );
+                Mosaic::sameLine( _ui );
 
-        if( ImGui::CollapsingHeader( "Layers", ImGuiTreeNodeFlags_DefaultOpen ) == true )
-        {
-            changed |= FontEffectViewerExampleRenderDescEditor( &m_desc );
-        }
+                if( Mosaic::button( _ui, "Dump PNG" ).clicked() == true )
+                {
+                    this->dumpGlyphs_();
+                }
 
-        if( ImGui::CollapsingHeader( "Glyph preview" ) == true )
-        {
-            ImGui::Checkbox( "Show", &m_showGlyphPreview );
-            ImGui::SameLine();
-            ImGui::SetNextItemWidth( 100.f );
-            ImGui::SliderFloat( "Scale", &m_previewScale, 0.5f, 8.f, "%.1f" );
-            ImGui::SameLine();
-
-            if( ImGui::Button( "Dump PNG" ) == true )
-            {
-                this->dumpGlyphs_();
+                if( m_showGlyphPreview == true )
+                {
+                    this->renderGlyphPreview_( _ui );
+                }
             }
 
-            if( m_showGlyphPreview == true )
+            Mosaic::separator( _ui );
+            this->textLine_( _ui, false, "%s", m_status.c_str() );
+
+            if( m_glyphTime.empty() == false )
             {
-                this->renderGlyphPreview_( _provider );
+                Mosaic::sameLine( _ui );
+                this->textLine_( _ui, true, "%s", m_glyphTime.c_str() );
             }
+
         }
 
-        ImGui::Separator();
-        ImGui::TextWrapped( "%s", m_status.c_str() );
-
-        if( m_glyphTime.empty() == false )
         {
-            ImGui::SameLine();
-            ImGui::TextDisabled( "%s", m_glyphTime.c_str() );
+            Mosaic::LayoutOptions previewLayout;
+            previewLayout.width = Mosaic::SizeRule::Fill;
+            previewLayout.height = Mosaic::SizeRule::Fill;
+            previewLayout.orientation = Mosaic::Orientation::Vertical;
+
+            Mosaic::Scope preview = Mosaic::column( _ui, Mosaic::Key( "FontEffectViewerPreview" ), previewLayout );
+
+            this->textLine_( _ui, false, "Preview" );
+            Mosaic::separator( _ui );
+
+            this->renderPreviewCanvas_( _ui );
         }
-
-        ImGui::EndChild();
-
-        ImGui::SameLine();
-
-        ImGui::PushStyleVar( ImGuiStyleVar_ItemSpacing, ImVec2( 0.f, 0.f ) );
-
-        ImGui::Button( "##FontEffectViewerSplitter", ImVec2( 6.f, -1.f ) );
-
-        if( ImGui::IsItemHovered() == true || ImGui::IsItemActive() == true )
-        {
-            ImGui::SetMouseCursor( ImGuiMouseCursor_ResizeEW );
-        }
-
-        if( ImGui::IsItemActive() == true )
-        {
-            m_sidebarWidth += io.MouseDelta.x;
-        }
-
-        ImGui::PopStyleVar();
-
-        ImGui::SameLine();
-
-        ImGui::BeginChild( "FontEffectViewerPreview", ImVec2( 0.f, 0.f ), false, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse );
-
-        ImGui::Text( "Preview" );
-        ImGui::Separator();
-
-        this->renderPreviewCanvas_( _provider );
-
-        ImGui::EndChild();
-
-        ImGui::End();
 
         if( changed == true )
         {

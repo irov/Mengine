@@ -25,6 +25,12 @@
         ]
     },
 
+    "Modules": {
+        "Name": [
+            "MosaicModule"
+        ]
+    },
+
     "Frameworks": {
         "Name": [
             "FigmaViewerExampleFramework"

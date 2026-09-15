@@ -10,7 +10,7 @@
 
 #include "Config/StdIO.h"
 
-#include "imgui.h"
+#include "Mosaic/Mosaic.hpp"
 
 namespace Mengine
 {
@@ -26,23 +26,32 @@ namespace Mengine
             EEA_DUPLICATE
         };
         //////////////////////////////////////////////////////////////////////////
-        static bool colorEdit( const Char * _label, Color * const _color )
+        static bool colorEdit( Mosaic::Context * _ui, const Char * _label, Color * const _color, Mosaic::LabelPlacement _labelPlacement = Mosaic::LabelPlacement::Before, const Mosaic::SourceLocation & _location = Mosaic::SourceLocation::current() )
         {
-            float v[4] = {_color->getR(), _color->getG(), _color->getB(), _color->getA()};
+            Mosaic::Color value = {_color->getR(), _color->getG(), _color->getB(), _color->getA()};
 
-            if( ImGui::ColorEdit4( _label, v, ImGuiColorEditFlags_AlphaBar ) == false )
+            Mosaic::ColorEditOptions options;
+            options.labelPlacement = _labelPlacement;
+
+            if( Mosaic::colorEditorRgba( _ui, _label, &value, options, _location ).changed() == false )
             {
                 return false;
             }
 
-            _color->setRGBA( v[0], v[1], v[2], v[3] );
+            _color->setRGBA( value.r, value.g, value.b, value.a );
 
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool dragSize( const Char * _label, float * const _value, float _max )
+        static bool dragSize( Mosaic::Context * _ui, const Char * _label, float * const _value, float _max, const Mosaic::SourceLocation & _location = Mosaic::SourceLocation::current() )
         {
-            bool changed = ImGui::DragFloat( _label, _value, 0.05f, 0.f, _max, "%.2f" );
+            Mosaic::SliderOptions options;
+            options.minimum = 0.0;
+            options.maximum = (double)_max;
+            options.dragSpeed = 0.05;
+            options.precision = 2;
+
+            bool changed = Mosaic::dragValue( _ui, _label, _value, options, _location ).changed();
 
             if( *_value < 0.f )
             {
@@ -54,7 +63,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         constexpr uint32_t ENUM_COMBO_MAX_NAMES = 16;
         //////////////////////////////////////////////////////////////////////////
-        static bool enumCombo( const Char * _label, uint32_t * const _value, uint32_t _count, const Char * ( *_name )( uint32_t ) )
+        static bool enumCombo( Mosaic::Context * _ui, const Char * _label, uint32_t * const _value, uint32_t _count, const Char * ( *_name )( uint32_t ), const Mosaic::SourceLocation & _location = Mosaic::SourceLocation::current() )
         {
             assert( _count <= ENUM_COMBO_MAX_NAMES );
 
@@ -65,9 +74,16 @@ namespace Mengine
                 names[index] = _name( index );
             }
 
-            int value = (int)*_value;
+            Mosaic::StringView items[ENUM_COMBO_MAX_NAMES];
 
-            if( ImGui::Combo( _label, &value, names, (int)_count ) == false )
+            for( uint32_t index = 0; index != _count; ++index )
+            {
+                items[index] = names[index];
+            }
+
+            int32_t value = (int32_t)*_value;
+
+            if( Mosaic::comboBox( _ui, _label, &value, Mosaic::StringViewSpan( items, _count ), _location ).changed() == false )
             {
                 return false;
             }
@@ -112,27 +128,25 @@ namespace Mengine
             return name;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool renderGradient( FontEffectGradientDesc * const _gradient )
+        static bool renderGradient( Mosaic::Context * _ui, FontEffectGradientDesc * const _gradient )
         {
             bool changed = false;
 
-            changed |= ImGui::Checkbox( "Gradient", &_gradient->enabled );
+            changed |= Mosaic::checkbox( _ui, "Gradient", &_gradient->enabled ).changed();
 
             if( _gradient->enabled == false )
             {
                 return changed;
             }
 
-            ImGui::Indent();
-
-            changed |= enumCombo( "Type", (uint32_t *)&_gradient->type, MENGINE_FONTEFFECT_GRADIENT_TYPE_MAX, &gradientTypeName );
-            changed |= ImGui::SliderFloat( "Angle", &_gradient->angle, 0.f, 360.f, "%.0f" );
-            changed |= ImGui::DragFloat2( "Center", &_gradient->center.x, 0.01f, -1.f, 1.f, "%.2f" );
-            changed |= dragSize( "Scale", &_gradient->scale, 8.f );
-            changed |= ImGui::Checkbox( "Reverse", &_gradient->reverse );
-            ImGui::SameLine();
-            changed |= ImGui::Checkbox( "Dither", &_gradient->dither );
-            changed |= enumCombo( "Space", (uint32_t *)&_gradient->space, MENGINE_FONTEFFECT_SPACE_MAX, &spaceName );
+            changed |= enumCombo( _ui, "Type", (uint32_t *)&_gradient->type, MENGINE_FONTEFFECT_GRADIENT_TYPE_MAX, &gradientTypeName );
+            changed |= [&]() { Mosaic::SliderOptions o; o.minimum = 0.f; o.maximum = 360.f; o.precision = 0; return Mosaic::slider( _ui, "Angle", &_gradient->angle, o ).changed(); }();
+            changed |= [&]() { Mosaic::SliderOptions o; o.minimum = -1.f; o.maximum = 1.f; o.dragSpeed = 0.01f; o.precision = 2; return Mosaic::dragFloatVector( _ui, "Center", Mosaic::FloatSpan( &_gradient->center.x, 2 ), o ).changed(); }();
+            changed |= dragSize( _ui, "Scale", &_gradient->scale, 8.f );
+            changed |= Mosaic::checkbox( _ui, "Reverse", &_gradient->reverse ).changed();
+            Mosaic::sameLine( _ui );
+            changed |= Mosaic::checkbox( _ui, "Dither", &_gradient->dither ).changed();
+            changed |= enumCombo( _ui, "Space", (uint32_t *)&_gradient->space, MENGINE_FONTEFFECT_SPACE_MAX, &spaceName );
 
             int removeIndex = -1;
 
@@ -142,21 +156,20 @@ namespace Mengine
             {
                 FontEffectGradientStop & stop = stops[index];
 
-                ImGui::PushID( (int)index );
+                Mosaic::Scope idScope = Mosaic::scope( _ui, Mosaic::Key( (int)index ) );
 
-                ImGui::SetNextItemWidth( 80.f );
-                changed |= ImGui::DragFloat( "T", &stop.t, 0.01f, 0.f, 1.f, "%.2f" );
+                Mosaic::setNextItemWidth( _ui, 80.f );
+                changed |= [&]() { Mosaic::SliderOptions o; o.minimum = 0.f; o.maximum = 1.f; o.dragSpeed = 0.01f; o.precision = 2; return Mosaic::dragValue( _ui, "T", &stop.t, o ).changed(); }();
 
-                ImGui::SameLine();
-                changed |= colorEdit( "##stopcolor", &stop.color );
+                Mosaic::sameLine( _ui );
+                changed |= colorEdit( _ui, "Stop color", &stop.color, Mosaic::LabelPlacement::Hidden );
 
-                ImGui::SameLine();
-                if( ImGui::SmallButton( "X" ) == true )
+                Mosaic::sameLine( _ui );
+                if( Mosaic::smallButton( _ui, "X" ).clicked() == true )
                 {
                     removeIndex = (int)index;
                 }
 
-                ImGui::PopID();
             }
 
             if( removeIndex >= 0 )
@@ -165,7 +178,7 @@ namespace Mengine
                 changed = true;
             }
 
-            if( ImGui::SmallButton( "+ Stop" ) == true )
+            if( Mosaic::smallButton( _ui, "+ Stop" ).clicked() == true )
             {
                 FontEffectGradientStop stop;
                 stop.t = stops.empty() == true ? 0.f : 1.f;
@@ -175,137 +188,138 @@ namespace Mengine
                 changed = true;
             }
 
-            ImGui::Unindent();
-
             return changed;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool renderEffectFields( FontEffectStyleDesc * const _effect )
+        static bool renderEffectFields( Mosaic::Context * _ui, FontEffectStyleDesc * const _effect )
         {
             bool changed = false;
 
-            changed |= ImGui::Checkbox( "Enabled", &_effect->enabled );
-            ImGui::SameLine();
-            ImGui::SetNextItemWidth( 120.f );
-            changed |= ImGui::SliderFloat( "Opacity", &_effect->opacity, 0.f, 1.f, "%.2f" );
-            changed |= enumCombo( "Blend", (uint32_t *)&_effect->blendMode, MENGINE_FONTEFFECT_BLEND_MODE_MAX, &blendModeName );
+            changed |= Mosaic::checkbox( _ui, "Enabled", &_effect->enabled ).changed();
+            Mosaic::sameLine( _ui );
+            Mosaic::setNextItemWidth( _ui, 120.f );
+            changed |= [&]() { Mosaic::SliderOptions o; o.minimum = 0.f; o.maximum = 1.f; o.precision = 2; return Mosaic::slider( _ui, "Opacity", &_effect->opacity, o ).changed(); }();
+            changed |= enumCombo( _ui, "Blend", (uint32_t *)&_effect->blendMode, MENGINE_FONTEFFECT_BLEND_MODE_MAX, &blendModeName );
 
             switch( _effect->type )
             {
             case EFET_FILL:
                 {
-                    changed |= colorEdit( "Color", &_effect->color );
-                    changed |= renderGradient( &_effect->gradient );
+                    changed |= colorEdit( _ui, "Color", &_effect->color );
+                    changed |= renderGradient( _ui, &_effect->gradient );
                 }break;
             case EFET_OUTLINE:
                 {
-                    changed |= colorEdit( "Color", &_effect->color );
-                    changed |= dragSize( "Width", &_effect->width, 64.f );
-                    changed |= dragSize( "Sharpness", &_effect->sharpness, 16.f );
-                    changed |= enumCombo( "Position", (uint32_t *)&_effect->position, MENGINE_FONTEFFECT_OUTLINE_POSITION_MAX, &outlinePositionName );
+                    changed |= colorEdit( _ui, "Color", &_effect->color );
+                    changed |= dragSize( _ui, "Width", &_effect->width, 64.f );
+                    changed |= dragSize( _ui, "Sharpness", &_effect->sharpness, 16.f );
+                    changed |= enumCombo( _ui, "Position", (uint32_t *)&_effect->position, MENGINE_FONTEFFECT_OUTLINE_POSITION_MAX, &outlinePositionName );
                 }break;
             case EFET_SHADOW:
                 {
-                    changed |= colorEdit( "Color", &_effect->color );
-                    changed |= ImGui::DragFloat2( "Offset", &_effect->offset.x, 0.1f, -64.f, 64.f, "%.1f" );
-                    changed |= dragSize( "Blur", &_effect->blur, 32.f );
-                    changed |= dragSize( "Spread", &_effect->spread, 32.f );
+                    changed |= colorEdit( _ui, "Color", &_effect->color );
+                    changed |= [&]() { Mosaic::SliderOptions o; o.minimum = -64.f; o.maximum = 64.f; o.dragSpeed = 0.1f; o.precision = 1; return Mosaic::dragFloatVector( _ui, "Offset", Mosaic::FloatSpan( &_effect->offset.x, 2 ), o ).changed(); }();
+                    changed |= dragSize( _ui, "Blur", &_effect->blur, 32.f );
+                    changed |= dragSize( _ui, "Spread", &_effect->spread, 32.f );
                 }break;
             case EFET_GLOW:
                 {
-                    changed |= colorEdit( "Color", &_effect->color );
-                    changed |= dragSize( "Blur", &_effect->blur, 32.f );
-                    changed |= dragSize( "Spread", &_effect->spread, 32.f );
+                    changed |= colorEdit( _ui, "Color", &_effect->color );
+                    changed |= dragSize( _ui, "Blur", &_effect->blur, 32.f );
+                    changed |= dragSize( _ui, "Spread", &_effect->spread, 32.f );
                 }break;
             case EFET_INNER_SHADOW:
                 {
-                    changed |= colorEdit( "Color", &_effect->color );
-                    changed |= ImGui::DragFloat2( "Offset", &_effect->offset.x, 0.1f, -64.f, 64.f, "%.1f" );
-                    changed |= dragSize( "Blur", &_effect->blur, 32.f );
+                    changed |= colorEdit( _ui, "Color", &_effect->color );
+                    changed |= [&]() { Mosaic::SliderOptions o; o.minimum = -64.f; o.maximum = 64.f; o.dragSpeed = 0.1f; o.precision = 1; return Mosaic::dragFloatVector( _ui, "Offset", Mosaic::FloatSpan( &_effect->offset.x, 2 ), o ).changed(); }();
+                    changed |= dragSize( _ui, "Blur", &_effect->blur, 32.f );
                 }break;
             case EFET_INNER_GLOW:
                 {
-                    changed |= colorEdit( "Color", &_effect->color );
-                    changed |= dragSize( "Blur", &_effect->blur, 32.f );
+                    changed |= colorEdit( _ui, "Color", &_effect->color );
+                    changed |= dragSize( _ui, "Blur", &_effect->blur, 32.f );
                 }break;
             case EFET_BEVEL:
                 {
-                    changed |= dragSize( "Depth", &_effect->depth, 16.f );
-                    changed |= dragSize( "Size", &_effect->size, 32.f );
-                    changed |= dragSize( "Soften", &_effect->soften, 16.f );
-                    changed |= ImGui::SliderFloat( "Angle", &_effect->angle, 0.f, 360.f, "%.0f" );
-                    changed |= ImGui::SliderFloat( "Altitude", &_effect->altitude, 0.f, 90.f, "%.0f" );
-                    changed |= colorEdit( "Highlight", &_effect->highlight );
-                    changed |= colorEdit( "Shadow", &_effect->shadow );
+                    changed |= dragSize( _ui, "Depth", &_effect->depth, 16.f );
+                    changed |= dragSize( _ui, "Size", &_effect->size, 32.f );
+                    changed |= dragSize( _ui, "Soften", &_effect->soften, 16.f );
+                    changed |= [&]() { Mosaic::SliderOptions o; o.minimum = 0.f; o.maximum = 360.f; o.precision = 0; return Mosaic::slider( _ui, "Angle", &_effect->angle, o ).changed(); }();
+                    changed |= [&]() { Mosaic::SliderOptions o; o.minimum = 0.f; o.maximum = 90.f; o.precision = 0; return Mosaic::slider( _ui, "Altitude", &_effect->altitude, o ).changed(); }();
+                    changed |= colorEdit( _ui, "Highlight", &_effect->highlight );
+                    changed |= colorEdit( _ui, "Shadow", &_effect->shadow );
                 }break;
             case EFET_BLUR:
                 {
-                    changed |= dragSize( "Blur", &_effect->blur, 32.f );
+                    changed |= dragSize( _ui, "Blur", &_effect->blur, 32.f );
                 }break;
             case EFET_PATTERN:
                 {
-                    Char pathBuffer[MENGINE_MAX_PATH] = {'\0'};
-                    StdString::strcpy_safe( pathBuffer, _effect->pattern.filePath.c_str(), MENGINE_MAX_PATH );
+                    Mosaic::String path( _effect->pattern.filePath.c_str() );
 
-                    if( ImGui::InputText( "Path", pathBuffer, MENGINE_MAX_PATH ) == true )
+                    if( Mosaic::property( _ui, "Path", &path ).changed() == true )
                     {
-                        _effect->pattern.filePath = Helper::stringizeFilePath( pathBuffer );
+                        _effect->pattern.filePath = Helper::stringizeFilePath( path.c_str() );
                         changed = true;
                     }
 
-                    changed |= colorEdit( "Color", &_effect->color );
-                    changed |= enumCombo( "Tile", (uint32_t *)&_effect->pattern.tile, MENGINE_FONTEFFECT_PATTERN_TILE_MAX, &patternTileName );
-                    changed |= dragSize( "Scale", &_effect->pattern.scale, 8.f );
-                    changed |= ImGui::DragFloat2( "Offset", &_effect->pattern.offset.x, 0.1f, -64.f, 64.f, "%.1f" );
-                    changed |= ImGui::SliderFloat( "Angle", &_effect->pattern.angle, 0.f, 360.f, "%.0f" );
-                    changed |= enumCombo( "Space", (uint32_t *)&_effect->pattern.space, MENGINE_FONTEFFECT_SPACE_MAX, &spaceName );
+                    changed |= colorEdit( _ui, "Color", &_effect->color );
+                    changed |= enumCombo( _ui, "Tile", (uint32_t *)&_effect->pattern.tile, MENGINE_FONTEFFECT_PATTERN_TILE_MAX, &patternTileName );
+                    changed |= dragSize( _ui, "Scale", &_effect->pattern.scale, 8.f );
+                    changed |= [&]() { Mosaic::SliderOptions o; o.minimum = -64.f; o.maximum = 64.f; o.dragSpeed = 0.1f; o.precision = 1; return Mosaic::dragFloatVector( _ui, "Offset", Mosaic::FloatSpan( &_effect->pattern.offset.x, 2 ), o ).changed(); }();
+                    changed |= [&]() { Mosaic::SliderOptions o; o.minimum = 0.f; o.maximum = 360.f; o.precision = 0; return Mosaic::slider( _ui, "Angle", &_effect->pattern.angle, o ).changed(); }();
+                    changed |= enumCombo( _ui, "Space", (uint32_t *)&_effect->pattern.space, MENGINE_FONTEFFECT_SPACE_MAX, &spaceName );
                 }break;
             case EFET_SATIN:
                 {
-                    changed |= colorEdit( "Color", &_effect->color );
-                    changed |= ImGui::DragFloat( "Distance", &_effect->distance, 0.1f, -64.f, 64.f, "%.1f" );
-                    changed |= ImGui::SliderFloat( "Angle", &_effect->angle, 0.f, 360.f, "%.0f" );
-                    changed |= dragSize( "Blur", &_effect->blur, 32.f );
-                    changed |= ImGui::Checkbox( "Invert", &_effect->invert );
+                    changed |= colorEdit( _ui, "Color", &_effect->color );
+                    changed |= [&]() { Mosaic::SliderOptions o; o.minimum = -64.f; o.maximum = 64.f; o.dragSpeed = 0.1f; o.precision = 1; return Mosaic::dragValue( _ui, "Distance", &_effect->distance, o ).changed(); }();
+                    changed |= [&]() { Mosaic::SliderOptions o; o.minimum = 0.f; o.maximum = 360.f; o.precision = 0; return Mosaic::slider( _ui, "Angle", &_effect->angle, o ).changed(); }();
+                    changed |= dragSize( _ui, "Blur", &_effect->blur, 32.f );
+                    changed |= Mosaic::checkbox( _ui, "Invert", &_effect->invert ).changed();
                 }break;
             }
 
             return changed;
         }
         //////////////////////////////////////////////////////////////////////////
-        static EEditorAction renderOrderButtons( bool _canUp, bool _canDown, bool _duplicate )
+        static EEditorAction renderOrderButtons( Mosaic::Context * _ui, bool _canUp, bool _canDown, bool _duplicate )
         {
             EEditorAction action = EEA_NONE;
 
-            ImGui::BeginDisabled( _canUp == false );
-            if( ImGui::SmallButton( "Up" ) == true )
             {
-                action = EEA_UP;
+                Mosaic::Scope disabledScope = Mosaic::disabledScope( _ui, _canUp == false );
+
+                if( Mosaic::smallButton( _ui, "Up" ).clicked() == true )
+                {
+                    action = EEA_UP;
+                }
             }
-            ImGui::EndDisabled();
 
-            ImGui::SameLine();
+            Mosaic::sameLine( _ui );
 
-            ImGui::BeginDisabled( _canDown == false );
-            if( ImGui::SmallButton( "Down" ) == true )
             {
-                action = EEA_DOWN;
+                Mosaic::Scope disabledScope = Mosaic::disabledScope( _ui, _canDown == false );
+
+                if( Mosaic::smallButton( _ui, "Down" ).clicked() == true )
+                {
+                    action = EEA_DOWN;
+                }
             }
-            ImGui::EndDisabled();
 
             if( _duplicate == true )
             {
-                ImGui::SameLine();
+                Mosaic::sameLine( _ui );
 
-                if( ImGui::SmallButton( "Dup" ) == true )
+                if( Mosaic::smallButton( _ui, "Dup" ).clicked() == true )
                 {
                     action = EEA_DUPLICATE;
                 }
             }
 
-            ImGui::SameLine();
+            Mosaic::sameLine( _ui );
 
-            if( ImGui::SmallButton( "Remove" ) == true )
+            if( Mosaic::smallButton( _ui, "Remove" ).clicked() == true )
             {
                 action = EEA_REMOVE;
             }
@@ -313,18 +327,18 @@ namespace Mengine
             return action;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool renderLayer( FontEffectLayerDesc * const _layer )
+        static bool renderLayer( Mosaic::Context * _ui, FontEffectLayerDesc * const _layer )
         {
             bool changed = false;
 
-            changed |= ImGui::Checkbox( "Enabled", &_layer->enabled );
-            ImGui::SameLine();
-            ImGui::SetNextItemWidth( 120.f );
-            changed |= ImGui::SliderFloat( "Opacity", &_layer->opacity, 0.f, 1.f, "%.2f" );
-            changed |= enumCombo( "Blend", (uint32_t *)&_layer->blendMode, MENGINE_FONTEFFECT_BLEND_MODE_MAX, &blendModeName );
-            changed |= ImGui::Checkbox( "Knockout", &_layer->knockout );
-            ImGui::SameLine();
-            changed |= ImGui::Checkbox( "Merge", &_layer->merge );
+            changed |= Mosaic::checkbox( _ui, "Enabled", &_layer->enabled ).changed();
+            Mosaic::sameLine( _ui );
+            Mosaic::setNextItemWidth( _ui, 120.f );
+            changed |= [&]() { Mosaic::SliderOptions o; o.minimum = 0.f; o.maximum = 1.f; o.precision = 2; return Mosaic::slider( _ui, "Opacity", &_layer->opacity, o ).changed(); }();
+            changed |= enumCombo( _ui, "Blend", (uint32_t *)&_layer->blendMode, MENGINE_FONTEFFECT_BLEND_MODE_MAX, &blendModeName );
+            changed |= Mosaic::checkbox( _ui, "Knockout", &_layer->knockout ).changed();
+            Mosaic::sameLine( _ui );
+            changed |= Mosaic::checkbox( _ui, "Merge", &_layer->merge ).changed();
 
             VectorFontEffectStyleDescs & effects = _layer->styles;
 
@@ -335,22 +349,20 @@ namespace Mengine
             {
                 FontEffectStyleDesc & effect = effects[index];
 
-                ImGui::PushID( (int)index );
+                Mosaic::Scope idScope = Mosaic::scope( _ui, Mosaic::Key( (int)index ) );
 
                 Char header[64] = {'\0'};
-                MENGINE_SNPRINTF( header, sizeof( header ), "%u. %s%s###effect"
+                MENGINE_SNPRINTF( header, sizeof( header ), "%u. %s%s"
                     , (uint32_t)index + 1
                     , Helper::getFontEffectTypeName( effect.type )
                     , effect.enabled == true ? "" : " (off)"
                 );
 
-                bool open = ImGui::CollapsingHeader( header, ImGuiTreeNodeFlags_DefaultOpen );
+                Mosaic::TreeScope headerScope = Mosaic::collapsingHeader( _ui, header, true );
 
-                if( open == true )
+                if( headerScope.expanded() == true )
                 {
-                    ImGui::Indent();
-
-                    EEditorAction effectAction = renderOrderButtons( index > 0, index + 1 < effects.size(), true );
+                    EEditorAction effectAction = renderOrderButtons( _ui, index > 0, index + 1 < effects.size(), true );
 
                     if( effectAction != EEA_NONE )
                     {
@@ -358,12 +370,9 @@ namespace Mengine
                         action = effectAction;
                     }
 
-                    changed |= renderEffectFields( &effect );
-
-                    ImGui::Unindent();
+                    changed |= renderEffectFields( _ui, &effect );
                 }
 
-                ImGui::PopID();
             }
 
             if( actionIndex >= 0 )
@@ -409,12 +418,22 @@ namespace Mengine
                 typeNames[typeIndex] = Helper::getFontEffectTypeName( (EFontEffectType)typeIndex );
             }
 
-            ImGui::SetNextItemWidth( 140.f );
-            ImGui::Combo( "##neweffect", &s_newEffectType, typeNames, MENGINE_FONTEFFECT_TYPE_MAX );
+            Mosaic::StringView typeItems[MENGINE_FONTEFFECT_TYPE_MAX];
 
-            ImGui::SameLine();
+            for( uint32_t typeIndex = 0; typeIndex != MENGINE_FONTEFFECT_TYPE_MAX; ++typeIndex )
+            {
+                typeItems[typeIndex] = typeNames[typeIndex];
+            }
 
-            if( ImGui::SmallButton( "+ Effect" ) == true )
+            Mosaic::ComboOptions newEffectOptions;
+            newEffectOptions.labelPlacement = Mosaic::LabelPlacement::Hidden;
+
+            Mosaic::setNextItemWidth( _ui, 140.f );
+            Mosaic::comboBox( _ui, "New effect", &s_newEffectType, Mosaic::StringViewSpan( typeItems, MENGINE_FONTEFFECT_TYPE_MAX ), newEffectOptions );
+
+            Mosaic::sameLine( _ui );
+
+            if( Mosaic::smallButton( _ui, "+ Effect" ).clicked() == true )
             {
                 FontEffectStyleDesc effect;
                 effect.type = (EFontEffectType)s_newEffectType;
@@ -469,7 +488,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FontEffectViewerExampleRenderDescEditor( FontEffectDesc * const _desc )
+    bool FontEffectViewerExampleRenderDescEditor( Mosaic::Context * _ui, FontEffectDesc * const _desc )
     {
         bool changed = false;
 
@@ -482,19 +501,19 @@ namespace Mengine
         {
             FontEffectLayerDesc & layer = layers[index];
 
-            ImGui::PushID( 1000 + (int)index );
+            Mosaic::Scope idScope = Mosaic::scope( _ui, Mosaic::Key( (int)index ) );
 
             Char header[64] = {'\0'};
-            MENGINE_SNPRINTF( header, sizeof( header ), "Layer %u%s###layer"
+            MENGINE_SNPRINTF( header, sizeof( header ), "Layer %u%s"
                 , (uint32_t)index
                 , layer.enabled == true ? "" : " (off)"
             );
 
-            bool open = ImGui::CollapsingHeader( header, ImGuiTreeNodeFlags_DefaultOpen );
+            Mosaic::TreeScope headerScope = Mosaic::collapsingHeader( _ui, header, true );
 
-            if( open == true )
+            if( headerScope.expanded() == true )
             {
-                Detail::EEditorAction layerAction = Detail::renderOrderButtons( index > 0, index + 1 < layers.size(), false );
+                Detail::EEditorAction layerAction = Detail::renderOrderButtons( _ui, index > 0, index + 1 < layers.size(), false );
 
                 if( layerAction != Detail::EEA_NONE )
                 {
@@ -502,12 +521,9 @@ namespace Mengine
                     action = layerAction;
                 }
 
-                ImGui::Indent();
-                changed |= Detail::renderLayer( &layer );
-                ImGui::Unindent();
+                changed |= Detail::renderLayer( _ui, &layer );
             }
 
-            ImGui::PopID();
         }
 
         if( actionIndex >= 0 )
@@ -540,25 +556,31 @@ namespace Mengine
             changed = true;
         }
 
-        ImGui::BeginDisabled( layers.size() >= MENGINE_FONTEFFECT_MAX_LAYERS );
-
-        if( ImGui::Button( "+ Layer" ) == true )
         {
-            FontEffectLayerDesc layer;
+            Mosaic::Scope disabledScope = Mosaic::disabledScope( _ui, layers.size() >= MENGINE_FONTEFFECT_MAX_LAYERS );
 
-            FontEffectStyleDesc fill;
-            fill.type = EFET_FILL;
+            if( Mosaic::button( _ui, "+ Layer" ).clicked() == true )
+            {
+                FontEffectLayerDesc layer;
 
-            layer.styles.emplace_back( fill );
+                FontEffectStyleDesc fill;
+                fill.type = EFET_FILL;
 
-            layers.emplace_back( layer );
-            changed = true;
+                layer.styles.emplace_back( fill );
+
+                layers.emplace_back( layer );
+                changed = true;
+            }
+
         }
 
-        ImGui::EndDisabled();
+        Mosaic::sameLine( _ui );
+        Char hint[96] = {'\0'};
+        MENGINE_SNPRINTF( hint, sizeof( hint ) - 1, "(max %u layers, layer 0 is behind)", (uint32_t)MENGINE_FONTEFFECT_MAX_LAYERS );
 
-        ImGui::SameLine();
-        ImGui::TextDisabled( "(max %u layers, layer 0 is behind)", (uint32_t)MENGINE_FONTEFFECT_MAX_LAYERS );
+        Mosaic::Scope hintScope = Mosaic::disabledScope( _ui, true );
+
+        Mosaic::text( _ui, hint );
 
         return changed;
     }

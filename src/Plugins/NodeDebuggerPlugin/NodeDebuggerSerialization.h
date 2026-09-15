@@ -19,7 +19,6 @@
 #include "math/uv4.h"
 
 #define PUGIXML_NO_STL
-#define PUGIXML_HEADER_ONLY
 #include "pugixml.hpp"
 
 #define PACKET_MAGIC 0xCAFEB00B

@@ -21,42 +21,22 @@ namespace Mengine
         D3D11_DEPTH_STENCIL_DESC depthStencilStateDesc;
         ZeroMemory( &depthStencilStateDesc, sizeof( depthStencilStateDesc ) );
 
-        // Set up the description of the stencil state.
-        if( _stage->depthBufferWriteEnable == true )
-        {
-            depthStencilStateDesc.DepthEnable = TRUE;
-        }
-        else
-        {
-            depthStencilStateDesc.DepthEnable = FALSE;
-        }
+        bool depthEnable = _stage->depthBufferTestEnable == true || _stage->depthBufferWriteEnable == true;
 
-        depthStencilStateDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+        depthStencilStateDesc.DepthEnable = depthEnable == true ? TRUE : FALSE;
+        depthStencilStateDesc.DepthWriteMask = _stage->depthBufferWriteEnable == true ? D3D11_DEPTH_WRITE_MASK_ALL : D3D11_DEPTH_WRITE_MASK_ZERO;
+        depthStencilStateDesc.DepthFunc = _stage->depthBufferTestEnable == true ? D3D11_COMPARISON_LESS_EQUAL : D3D11_COMPARISON_ALWAYS;
 
-        if( _stage->depthBufferTestEnable == true )
-        {
-            depthStencilStateDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
-        }
-        else
-        {
-            depthStencilStateDesc.DepthFunc = D3D11_COMPARISON_ALWAYS;
-        }
+        depthStencilStateDesc.StencilEnable = FALSE;
+        depthStencilStateDesc.StencilReadMask = D3D11_DEFAULT_STENCIL_READ_MASK;
+        depthStencilStateDesc.StencilWriteMask = D3D11_DEFAULT_STENCIL_WRITE_MASK;
 
-        depthStencilStateDesc.StencilEnable = TRUE;
-        depthStencilStateDesc.StencilReadMask = 0xFF;
-        depthStencilStateDesc.StencilWriteMask = 0xFF;
-
-        // Stencil operations if pixel is front-facing.
         depthStencilStateDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-        depthStencilStateDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+        depthStencilStateDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
         depthStencilStateDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
         depthStencilStateDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
-        // Stencil operations if pixel is back-facing.
-        depthStencilStateDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-        depthStencilStateDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
-        depthStencilStateDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-        depthStencilStateDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+        depthStencilStateDesc.BackFace = depthStencilStateDesc.FrontFace;
 
         ID3D11DepthStencilState * depthStencilState;
         MENGINE_IF_DX11_CALL( _pD3DDevice, CreateDepthStencilState, (&depthStencilStateDesc, &depthStencilState) )
@@ -113,10 +93,12 @@ namespace Mengine
 
             const RenderTextureStage * textureStage = _stage->textureStages + index;
 
-            samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+            samplerDesc.Filter = Helper::toD3DTextureFilter( textureStage->minification, textureStage->mipmap, textureStage->magnification );
             samplerDesc.AddressU = Helper::toD3DTextureAddress( textureStage->addressU );
             samplerDesc.AddressV = Helper::toD3DTextureAddress( textureStage->addressV );
             samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+            samplerDesc.MaxAnisotropy = D3D11_REQ_MAXANISOTROPY;
+            samplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
             samplerDesc.MaxLOD = MENGINE_FLT_MAX;
 
             ID3D11SamplerState * samplerState;

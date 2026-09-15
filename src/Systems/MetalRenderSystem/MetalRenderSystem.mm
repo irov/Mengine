@@ -415,13 +415,6 @@ namespace Mengine
         this->updatePMWMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void MetalRenderSystem::setTextureMatrix( uint32_t _stage, const mt::mat4f & _texture )
-    {
-        MENGINE_UNUSED( _stage );
-        MENGINE_UNUSED( _texture );
-        // To Do
-    }
-    //////////////////////////////////////////////////////////////////////////
     void MetalRenderSystem::setWorldMatrix( const mt::mat4f & _worldMatrix )
     {
         m_worldMatrix = _worldMatrix;
@@ -803,13 +796,6 @@ namespace Mengine
         m_textureStage[_stageId].wrapU = _modeU;
         m_textureStage[_stageId].wrapV = _modeV;
         m_textureStage[_stageId].border = _border;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MetalRenderSystem::setTextureFactor( uint32_t _color )
-    {
-        MENGINE_UNUSED( _color );
-
-        //ToDo
     }
     //////////////////////////////////////////////////////////////////////////
     void MetalRenderSystem::setBlendFactor( EBlendFactor _src, EBlendFactor _dst, EBlendOp _op, EBlendFactor _separateSrc, EBlendFactor _separateDst, EBlendOp _separateOp, bool _separate )

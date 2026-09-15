@@ -405,21 +405,6 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void MockupRenderSystem::setTextureMatrix( uint32_t _stage, const mt::mat4f & _matrix )
-    {
-        MENGINE_UNUSED( _matrix );
-
-        if( _stage >= m_dxMaxCombinedTextureImageUnits )
-        {
-            LOGGER_ASSERTION( "no support stage [%u] (max %u)"
-                , _stage
-                , m_dxMaxCombinedTextureImageUnits
-            );
-
-            return;
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool MockupRenderSystem::releaseResources_()
     {
         m_vertexBufferEnable = false;
@@ -590,13 +575,6 @@ namespace Mengine
 
             return;
         }
-
-        //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MockupRenderSystem::setTextureFactor( uint32_t _color )
-    {
-        MENGINE_UNUSED( _color );
 
         //Empty
     }

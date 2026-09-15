@@ -265,27 +265,51 @@ namespace Mengine
             return D3D11_FILL_SOLID;
         }
         //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE D3D11_FILTER toD3DTextureFilter( ETextureFilter _filter )
+        MENGINE_INLINE bool isD3DLinearTextureFilter( ETextureFilter _filter )
         {
             switch( _filter )
             {
-            case TF_NONE:
-                return D3D11_FILTER_MIN_MAG_MIP_POINT;
-            case TF_POINT:
-                return D3D11_FILTER_MIN_MAG_MIP_POINT;
             case TF_LINEAR:
-                return D3D11_FILTER_MIN_MAG_MIP_LINEAR;
             case TF_ANISOTROPIC:
-                return D3D11_FILTER_ANISOTROPIC;
             case TF_FLATCUBIC:
-                return D3D11_FILTER_MIN_MAG_MIP_LINEAR;
             case TF_GAUSSIANCUBIC:
-                return D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+                return true;
+            case TF_NONE:
+            case TF_POINT:
             case __MAX_TEXTURE_FILTER__:
                 break;
             }
 
-            return D3D11_FILTER_MIN_MAG_MIP_POINT;
+            return false;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        MENGINE_INLINE D3D11_FILTER toD3DTextureFilter( ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification )
+        {
+            if( _minification == TF_ANISOTROPIC || _magnification == TF_ANISOTROPIC )
+            {
+                return D3D11_FILTER_ANISOTROPIC;
+            }
+
+            bool linearMinification = Helper::isD3DLinearTextureFilter( _minification );
+            bool linearMagnification = Helper::isD3DLinearTextureFilter( _magnification );
+            bool linearMipmap = Helper::isD3DLinearTextureFilter( _mipmap );
+
+            if( linearMinification == false )
+            {
+                if( linearMagnification == false )
+                {
+                    return linearMipmap == false ? D3D11_FILTER_MIN_MAG_MIP_POINT : D3D11_FILTER_MIN_MAG_POINT_MIP_LINEAR;
+                }
+
+                return linearMipmap == false ? D3D11_FILTER_MIN_POINT_MAG_LINEAR_MIP_POINT : D3D11_FILTER_MIN_POINT_MAG_MIP_LINEAR;
+            }
+
+            if( linearMagnification == false )
+            {
+                return linearMipmap == false ? D3D11_FILTER_MIN_LINEAR_MAG_MIP_POINT : D3D11_FILTER_MIN_LINEAR_MAG_POINT_MIP_LINEAR;
+            }
+
+            return linearMipmap == false ? D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT : D3D11_FILTER_MIN_MAG_MIP_LINEAR;
         }
         //////////////////////////////////////////////////////////////////////////
         MENGINE_INLINE uint32_t getD3DFormatRange( DXGI_FORMAT _format )

@@ -111,6 +111,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderTargetOffscreen::getData( void * const _buffer, size_t _pitch ) const
     {
+        size_t rowBytes = (size_t)m_textureDesc.Width * 4;
+
+        if( _pitch < rowBytes )
+        {
+            return false;
+        }
+
         ID3D11DeviceContextPtr pImmediateContext = this->getDirect3D11ImmediateContext();
 
         ID3D11Texture2DPtr textureSource = m_pD3DTextureSource;
@@ -123,16 +130,15 @@ namespace Mengine
         pImmediateContext->CopyResource( m_pD3DTexture.Get(), textureSource.Get() );
 
         D3D11_MAPPED_SUBRESOURCE mappedResource;
-        pImmediateContext->Map( m_pD3DTexture.Get(), 0, D3D11_MAP_READ, 0, &mappedResource );
-
-        if( mappedResource.RowPitch != _pitch )
+        MENGINE_IF_DX11_CALL( pImmediateContext, Map, (m_pD3DTexture.Get(), 0, D3D11_MAP_READ, 0, &mappedResource) )
         {
-            pImmediateContext->Unmap( m_pD3DTexture.Get(), 0 );
-
             return false;
         }
 
-        Helper::memoryCopy( _buffer, 0, mappedResource.pData, 0, _pitch );
+        for( uint32_t row = 0; row != m_textureDesc.Height; ++row )
+        {
+            Helper::memoryCopy( _buffer, (size_t)row * _pitch, mappedResource.pData, (size_t)row * mappedResource.RowPitch, rowBytes );
+        }
 
         pImmediateContext->Unmap( m_pD3DTexture.Get(), 0 );
 

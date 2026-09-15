@@ -266,8 +266,6 @@ namespace Mengine
             m_pD3DDeviceContext = nullptr;
         }
 
-        m_pD3DDeviceImmediateContext = nullptr;
-
         if( m_pD3DDevice != nullptr )
         {
             ID3D11Debug * D3DDevice;
@@ -575,11 +573,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderSystem::beginScene()
     {
-        ID3D11DeviceContext * pD3DDeviceImmediateContext;
-        m_pD3DDevice->GetImmediateContext( &pD3DDeviceImmediateContext );
-
-        m_pD3DDeviceImmediateContext.Attach( pD3DDeviceImmediateContext );
-
         // Bind the render target view and depth stencil buffer to the output render pipeline.
         ID3D11RenderTargetView * d3dRenderTargetViews[1] = {m_renderTargetView.Get()};
         ID3D11DepthStencilView * depthStencilView = m_depthStencilView.Get();
@@ -592,8 +585,6 @@ namespace Mengine
     {
         ID3D11RenderTargetView * nullViews[1] = {NULL};
         m_pD3DDeviceContext->OMSetRenderTargets( 1, nullViews, NULL );
-
-        m_pD3DDeviceImmediateContext = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::swapBuffers()
@@ -653,23 +644,38 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::clearFrameBuffer( uint32_t _frameBufferTypes, const Color & _color, double _depth, int32_t _stencil )
     {
-        MENGINE_UNUSED( _frameBufferTypes );
-
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDeviceContext, "device context not found" );
 
-        float color[4];
+        if( (_frameBufferTypes & FBT_COLOR) != 0 )
+        {
+            float color[4];
 
-        // Setup the color to clear the buffer to.
-        color[0] = _color.getR();
-        color[1] = _color.getG();
-        color[2] = _color.getB();
-        color[3] = _color.getA();
+            color[0] = _color.getR();
+            color[1] = _color.getG();
+            color[2] = _color.getB();
+            color[3] = _color.getA();
 
-        m_pD3DDeviceContext->ClearRenderTargetView( m_renderTargetView.Get(), color );
+            m_pD3DDeviceContext->ClearRenderTargetView( m_renderTargetView.Get(), color );
+        }
 
-        float d3d_depthf = (float)_depth;
-        
-        m_pD3DDeviceContext->ClearDepthStencilView( m_depthStencilView.Get(), D3D11_CLEAR_DEPTH, d3d_depthf, (UINT8)_stencil );
+        UINT depthStencilFlags = 0;
+
+        if( (_frameBufferTypes & FBT_DEPTH) != 0 )
+        {
+            depthStencilFlags |= D3D11_CLEAR_DEPTH;
+        }
+
+        if( (_frameBufferTypes & FBT_STENCIL) != 0 )
+        {
+            depthStencilFlags |= D3D11_CLEAR_STENCIL;
+        }
+
+        if( depthStencilFlags != 0 )
+        {
+            float d3d_depthf = (float)_depth;
+
+            m_pD3DDeviceContext->ClearDepthStencilView( m_depthStencilView.Get(), depthStencilFlags, d3d_depthf, (UINT8)_stencil );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setScissor( const Viewport & _viewport )
@@ -703,10 +709,10 @@ namespace Mengine
         r.right = (uint32_t)ex;
         r.bottom = (uint32_t)ey;
 
-        //MENGINE_DX11_CALL(m_pD3DDevice, SetRenderState, (D3DRS_SCISSORTESTENABLE, TRUE));
         m_D3DRasterizerStateDesc.ScissorEnable = TRUE;
 
-        // scissors
+        m_invalidateRasterizerState = true;
+
         m_pD3DDeviceContext->RSSetScissorRects( 1, &r );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -945,14 +951,6 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderSystem::setTextureMatrix( uint32_t _stage, const mt::mat4f & _matrix )
-    {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
-
-        MENGINE_UNUSED( _stage );
-        MENGINE_UNUSED( _matrix );
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool DX11RenderSystem::releaseResources_()
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDeviceContext, "device not created" );
@@ -980,16 +978,8 @@ namespace Mengine
 
         for( uint32_t index = 0; index != MENGINE_MAX_TEXTURE_STAGES; ++index )
         {
-            if( m_textureEnable[index] == false )
-            {
-                continue;
-            }
-
             m_textureEnable[index] = false;
-        }
 
-        for( uint32_t index = 0; index != MENGINE_MAX_TEXTURE_STAGES; ++index )
-        {
             ID3D11ShaderResourceView * pShaderResourceViews[1] = {nullptr};
             m_pD3DDeviceContext->PSSetShaderResources( index, 1, pShaderResourceViews );
         }
@@ -1067,7 +1057,7 @@ namespace Mengine
         }
 
         DX11RenderVertexBuffer * dx11VertexBuffer = _vertexBuffer.getT<DX11RenderVertexBuffer *>();
-        dx11VertexBuffer->enable( m_pD3DDeviceImmediateContext );
+        dx11VertexBuffer->enable( m_pD3DDeviceContext );
 
         m_vertexBufferEnable = true;
 
@@ -1108,7 +1098,7 @@ namespace Mengine
         }
 
         DX11RenderIndexBuffer * dx11IndexBuffer = _indexBuffer.getT<DX11RenderIndexBuffer *>();
-        dx11IndexBuffer->enable( m_pD3DDeviceImmediateContext );
+        dx11IndexBuffer->enable( m_pD3DDeviceContext );
 
         m_indexBufferEnable = true;
 
@@ -1179,13 +1169,14 @@ namespace Mengine
         if( _texture != nullptr )
         {
             DX11RenderImageExtensionInterface * extension = _texture->getUnknown();
-            extension->bind( m_pD3DDeviceImmediateContext, _stage );
+            extension->bind( m_pD3DDeviceContext, _stage );
 
             m_textureEnable[_stage] = true;
         }
         else
         {
-            //m_pD3DDeviceContext->PSSetShaderResources( _stage, 1, nullptr );
+            ID3D11ShaderResourceView * pShaderResourceViews[1] = {nullptr};
+            m_pD3DDeviceContext->PSSetShaderResources( _stage, 1, pShaderResourceViews );
 
             m_textureEnable[_stage] = false;
         }
@@ -1212,11 +1203,6 @@ namespace Mengine
         MENGINE_UNUSED( _border );
 
         //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DX11RenderSystem::setTextureFactor( uint32_t _color )
-    {
-        MENGINE_UNUSED( _color );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setCullMode( ECullMode _mode )
@@ -1277,34 +1263,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setTextureStageFilter( uint32_t _stage, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification )
     {
+        MENGINE_UNUSED( _stage );
         MENGINE_UNUSED( _minification );
         MENGINE_UNUSED( _mipmap );
         MENGINE_UNUSED( _magnification );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
-
-        uint32_t MaxCombinedTextureImageUnits = this->getMaxCombinedTextureImageUnits();
-
-        if( _stage >= MaxCombinedTextureImageUnits )
-        {
-            LOGGER_ERROR( "no support stage [%u] (max %u)"
-                , _stage
-                , MaxCombinedTextureImageUnits
-            );
-
-            return;
-        }
-
-        // TODO: somehow needs to find only 1 filter
-
-     /*   D3DTEXTUREFILTERTYPE dx_minification = Helper::toD3DTextureFilter( _minification );
-        D3DTEXTUREFILTERTYPE dx_mipmap = Helper::toD3DTextureFilter( _mipmap );
-        D3DTEXTUREFILTERTYPE dx_magnification = Helper::toD3DTextureFilter( _magnification );
-
-        MENGINE_DX11_CALL( m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_MINFILTER, dx_minification) );
-        MENGINE_DX11_CALL( m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_MIPFILTER, dx_mipmap) );
-        MENGINE_DX11_CALL( m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_MAGFILTER, dx_magnification) );
-        */
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     RenderVertexAttributeInterfacePtr DX11RenderSystem::createVertexAttribute( const ConstString & _name, uint32_t _elementSize, const DocumentInterfacePtr & _doc )
@@ -1413,7 +1377,7 @@ namespace Mengine
         {
             DX11RenderProgram * dx11Program = _program.getT<DX11RenderProgram *>();
 
-            dx11Program->enable( m_pD3DDeviceImmediateContext );
+            dx11Program->enable( m_pD3DDeviceContext );
 
             const RenderVertexAttributeInterfacePtr & vertexAttribute = dx11Program->getVertexAttribute();
             const RenderVertexShaderInterfacePtr & vertexShader = dx11Program->getVertexShader();
@@ -1473,7 +1437,7 @@ namespace Mengine
     {
         DX11RenderProgramPtr dx11Program = stdex::intrusive_static_cast<DX11RenderProgramPtr>(_program);
 
-        dx11Program->bindMatrix( m_pD3DDeviceImmediateContext, m_worldMatrix, m_modelViewMatrix, m_projectionMatrix, m_totalWVPInvMatrix );
+        dx11Program->bindMatrix( m_pD3DDeviceContext, m_worldMatrix, m_modelViewMatrix, m_projectionMatrix, m_totalWVPInvMatrix );
     }
     //////////////////////////////////////////////////////////////////////////
     RenderProgramVariableInterfacePtr DX11RenderSystem::createProgramVariableStatic( uint32_t _vertexCount, uint32_t _pixelCount, const DocumentInterfacePtr & _doc )
@@ -1508,7 +1472,7 @@ namespace Mengine
 
         DX11RenderProgramVariable * dx11Variable = _variable.getT<DX11RenderProgramVariable *>();
 
-        bool successful = dx11Variable->apply( m_pD3DDevice, m_pD3DDeviceImmediateContext );
+        bool successful = dx11Variable->apply( m_pD3DDevice, m_pD3DDeviceContext );
 
         return successful;
     }

@@ -53,7 +53,6 @@ namespace Mengine
     public:
         void setProjectionMatrix( const mt::mat4f & _projection ) override;
         void setViewMatrix( const mt::mat4f & _modelView ) override;
-        void setTextureMatrix( uint32_t _stage, const mt::mat4f & _matrix ) override;
         void setWorldMatrix( const mt::mat4f & _world ) override;
 
     public:
@@ -81,7 +80,6 @@ namespace Mengine
     public:
         void setTexture( const RenderProgramInterfacePtr & _program, uint32_t _stage, const RenderImageInterfacePtr & _texture ) override;
         void setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV, uint32_t _border ) override;
-        void setTextureFactor( uint32_t _color ) override;
 
         void setBlendFactor( EBlendFactor _src, EBlendFactor _dst, EBlendOp _op, EBlendFactor _separateSrc, EBlendFactor _separateDst, EBlendOp _separateOp, bool _separate ) override;
 
@@ -172,7 +170,6 @@ namespace Mengine
 
         ID3D11DevicePtr m_pD3DDevice;
         ID3D11DeviceContextPtr m_pD3DDeviceContext;
-        ID3D11DeviceContextPtr m_pD3DDeviceImmediateContext;
 
         DXGI_MODE_DESC m_dxgiSwapChainBufferDesc;
         IDXGISwapChainPtr m_dxgiSwapChain;        

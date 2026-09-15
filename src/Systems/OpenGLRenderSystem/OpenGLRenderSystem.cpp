@@ -400,13 +400,6 @@ namespace Mengine
         this->updatePMWMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::setTextureMatrix( uint32_t _stage, const mt::mat4f & _texture )
-    {
-        MENGINE_UNUSED( _stage );
-        MENGINE_UNUSED( _texture );
-        // To Do
-    }
-    //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setWorldMatrix( const mt::mat4f & _worldMatrix )
     {
         m_worldMatrix = _worldMatrix;
@@ -779,13 +772,6 @@ namespace Mengine
         m_textureStage[_stageId].border = _border;
     }
     //////////////////////////////////////////L////////////////////////////////
-    void OpenGLRenderSystem::setTextureFactor( uint32_t _color )
-    {
-        MENGINE_UNUSED( _color );
-
-        //ToDo
-    }
-    //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setBlendFactor( EBlendFactor _src, EBlendFactor _dst, EBlendOp _op, EBlendFactor _separateSrc, EBlendFactor _separateDst, EBlendOp _separateOp, bool _separate )
     {
         const GLenum srcBlendFactor = Helper::toGLBlendFactor( _src );

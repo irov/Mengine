@@ -54,9 +54,6 @@ namespace Mengine
         void setProjectionMatrix( const mt::mat4f & _projection ) override;
 
     public:
-        void setTextureMatrix( uint32_t _stage, const mt::mat4f & _texture ) override;
-
-    public:
         RenderVertexBufferInterfacePtr createVertexBuffer( uint32_t _vertexSize, EBufferType _bufferType, const DocumentInterfacePtr & _doc ) override;
         bool setVertexBuffer( const RenderVertexBufferInterfacePtr & _vertexBuffer ) override;
 
@@ -70,7 +67,6 @@ namespace Mengine
     public:
         void setTexture( const RenderProgramInterfacePtr & _program, uint32_t _stageId, const RenderImageInterfacePtr & _texture ) override;
         void setTextureAddressing( uint32_t _stageId, ETextureAddressMode _modeU, ETextureAddressMode _modeV, uint32_t _border ) override;
-        void setTextureFactor( uint32_t _color ) override;
         void setBlendFactor( EBlendFactor _src, EBlendFactor _dst, EBlendOp _op, EBlendFactor _separateSrc, EBlendFactor _separateDst, EBlendOp _separateOp, bool _separate ) override;
         void setCullMode( ECullMode _mode ) override;
         void setDepthBufferTestEnable( bool _depthTest ) override;

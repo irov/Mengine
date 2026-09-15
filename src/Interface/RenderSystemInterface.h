@@ -86,9 +86,6 @@ namespace Mengine
         virtual void setWorldMatrix( const mt::mat4f & _view ) = 0;
 
     public:
-        virtual void setTextureMatrix( uint32_t _stage, const mt::mat4f & _texture ) = 0;
-
-    public:
         virtual RenderVertexBufferInterfacePtr createVertexBuffer( uint32_t _vertexSize, EBufferType _bufferType, const DocumentInterfacePtr & _doc ) = 0;
         virtual bool setVertexBuffer( const RenderVertexBufferInterfacePtr & _vertexBuffer ) = 0;
 
@@ -115,7 +112,6 @@ namespace Mengine
     public:
         virtual void setTexture( const RenderProgramInterfacePtr & _program, uint32_t _stageId, const RenderImageInterfacePtr & _texture ) = 0;
         virtual void setTextureAddressing( uint32_t _stageId, ETextureAddressMode _modeU, ETextureAddressMode _modeV, uint32_t _border ) = 0;
-        virtual void setTextureFactor( uint32_t _color ) = 0;
         virtual void setBlendFactor( EBlendFactor _src, EBlendFactor _dst, EBlendOp _op, EBlendFactor _separateSrc, EBlendFactor _separateDst, EBlendOp _separateOp, bool _separate ) = 0;
         virtual void setCullMode( ECullMode _mode ) = 0;
         virtual void setDepthBufferTestEnable( bool _depthTest ) = 0;

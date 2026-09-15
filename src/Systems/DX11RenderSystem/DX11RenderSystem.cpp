@@ -1130,18 +1130,18 @@ namespace Mengine
             return;
         }
 
-        if( _stageCache != nullptr )
-        {
-            DX11RenderMaterialStageCache * dx11MaterialStageCache = _stageCache.getT<DX11RenderMaterialStageCache *>();
-            dx11MaterialStageCache->begin( m_pD3DDeviceContext );
-        }
-
         if( m_invalidateRasterizerState == true )
         {
             if( this->updateRasterizerState_() == false )
             {
                 return;
             }
+        }
+
+        if( _stageCache != nullptr )
+        {
+            DX11RenderMaterialStageCache * dx11MaterialStageCache = _stageCache.getT<DX11RenderMaterialStageCache *>();
+            dx11MaterialStageCache->begin( m_pD3DDeviceContext );
         }
 
         m_pD3DDeviceContext->RSSetState( m_pD3DRasterizerState.Get() );

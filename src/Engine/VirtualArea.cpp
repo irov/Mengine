@@ -1301,6 +1301,12 @@ namespace Mengine
         m_lastPinchDistance = 0.f;
 
         this->setGlobalHandlerEnable_( m_frozen == false );
+
+        if( m_enableScale == true && this->getTouchCount() == 2 )
+        {
+            this->updatePinch_();
+        }
+
         this->notifyTouch_();
 
         return true;
@@ -1447,6 +1453,11 @@ namespace Mengine
         m_pinchActive = false;
         m_lastPinchDistance = 0.f;
 
+        if( m_enableScale == true && this->getTouchCount() == 2 )
+        {
+            this->updatePinch_();
+        }
+
         if( this->getTouchCount() == 0 && m_allowOutOfBounds == true )
         {
             mt::vec2f offset = this->getBoundsOffset_( m_position );
@@ -1491,10 +1502,18 @@ namespace Mengine
             return false;
         }
 
-        const float currentDistance = mt::length_v2( touch0->world - touch1->world );
+        mt::vec2f screenDelta = touch0->screen - touch1->screen;
+        mt::vec2f adaptScreenDelta;
+        Helper::adaptScreenDelta( screenDelta, &adaptScreenDelta );
+
+        mt::vec2f contentDelta = this->getScreenContentDelta_( adaptScreenDelta, &touch0->context );
+        float currentDistance = mt::length_v2( contentDelta );
 
         if( currentDistance <= 0.0001f )
         {
+            m_pinchActive = false;
+            m_lastPinchDistance = 0.f;
+
             return false;
         }
 
@@ -1502,14 +1521,16 @@ namespace Mengine
         {
             m_pinchActive = true;
             m_lastPinchDistance = currentDistance;
+            m_velocity = mt::vec2f( 0.f, 0.f );
 
             return true;
         }
 
-        const float difference = currentDistance - m_lastPinchDistance;
+        float factor = m_lastPinchDistance / currentDistance;
         m_lastPinchDistance = currentDistance;
 
-        this->scale( 1.f + difference * m_wheelScaleFactor );
+        mt::vec2f screenCenter = (touch0->screen + touch1->screen) * 0.5f;
+        this->scaleToPoint_( factor, screenCenter, &touch0->context );
 
         return true;
     }
@@ -1547,6 +1568,7 @@ namespace Mengine
 
         const mt::vec2f viewportPoint = (contentPoint - viewport.begin) / viewportSize;
         const mt::vec2f boundsPointBefore = m_bounds.begin + viewportPoint * m_bounds.size();
+        mt::vec2f positionBefore = m_position;
 
         this->scale( _factor );
 
@@ -1554,7 +1576,7 @@ namespace Mengine
 
         m_velocity = mt::vec2f( 0.f, 0.f );
 
-        this->setPositionInternal_( m_position + boundsPointAfter - boundsPointBefore, true );
+        this->setPositionInternal_( positionBefore + boundsPointAfter - boundsPointBefore, true );
         this->validatePosition_();
     }
     //////////////////////////////////////////////////////////////////////////

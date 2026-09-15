@@ -8,32 +8,6 @@
 
 @implementation iOSDetail
 
-+ (void)impactFeedback:(NSInteger)style intensity:(CGFloat)intensity {
-    if (style < UIImpactFeedbackStyleLight || style > UIImpactFeedbackStyleHeavy) {
-        return;
-    }
-
-    if ((intensity >= 0.0 && intensity <= 1.0) == false) {
-        return;
-    }
-
-    dispatch_async(dispatch_get_main_queue(), ^{
-        UIApplication * application = [UIApplication sharedApplication];
-        if (application.applicationState != UIApplicationStateActive) {
-            return;
-        }
-
-        UIImpactFeedbackStyle feedbackStyle = (UIImpactFeedbackStyle)style;
-        UIImpactFeedbackGenerator * generator = [[UIImpactFeedbackGenerator alloc] initWithStyle:feedbackStyle];
-        [generator prepare];
-        if (@available(iOS 13.0, *)) {
-            [generator impactOccurredWithIntensity:intensity];
-        } else {
-            [generator impactOccurred];
-        }
-    });
-}
-
 + (NSString * _Nonnull)getBuildNumber {
     NSString * number = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
 

@@ -14,26 +14,6 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE uint32_t getPrimitiveCount( EPrimitiveType _pType, uint32_t _indexCount )
-        {
-            switch( _pType )
-            {
-            case PT_POINTLIST:
-                return _indexCount;
-            case PT_LINELIST:
-                return _indexCount / 2;
-            case PT_LINESTRIP:
-                return _indexCount - 1;
-            case PT_TRIANGLELIST:
-                return _indexCount / 3;
-            case PT_TRIANGLESTRIP:
-            case PT_TRIANGLEFAN:
-                return _indexCount - 2;
-            }
-
-            return 0;
-        }
-        //////////////////////////////////////////////////////////////////////////
         MENGINE_INLINE uint32_t getMultiSampleType( uint32_t _count )
         {
             return _count;

@@ -1121,8 +1121,12 @@ namespace Mengine
 
         D3D11_PRIMITIVE_TOPOLOGY primitiveType = Helper::toD3DPrimitiveType( _desc.primitiveType );
 
-        if( primitiveType != D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST )
+        if( primitiveType == D3D11_PRIMITIVE_TOPOLOGY_UNDEFINED )
         {
+            LOGGER_ERROR( "unsupported primitive type [%u]"
+                , (uint32_t)_desc.primitiveType
+            );
+
             return;
         }
 
@@ -1142,10 +1146,8 @@ namespace Mengine
 
         m_pD3DDeviceContext->RSSetState( m_pD3DRasterizerState.Get() );
 
-        UINT primCount = Helper::getPrimitiveCount( _desc.primitiveType, _desc.indexCount );
-
-        m_pD3DDeviceContext->IASetPrimitiveTopology( D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
-        m_pD3DDeviceContext->DrawIndexed( primCount * 3, _desc.startIndex, _desc.baseVertexIndex );
+        m_pD3DDeviceContext->IASetPrimitiveTopology( primitiveType );
+        m_pD3DDeviceContext->DrawIndexed( _desc.indexCount, _desc.startIndex, _desc.baseVertexIndex );
 
         m_pD3DDeviceContext->RSSetState( nullptr );
 

@@ -3,8 +3,6 @@
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/LoggerInterface.h"
 #include "Interface/ThreadSharedMutexInterface.h"
-#include "Interface/ThreadConditionVariableInterface.h"
-#include "Interface/ThreadIdentityInterface.h"
 #include "Interface/FactoryInterface.h"
 
 #include "Kernel/ServiceBase.h"
@@ -25,7 +23,6 @@ namespace Mengine
     public:
         bool _initializeService() override;
         void _finalizeService() override;
-        bool _runService() override;
         void _stopService() override;
 
     public:
@@ -35,10 +32,6 @@ namespace Mengine
     public:
         void setVerboseFilter( uint32_t _filter ) override;
         uint32_t getVerboseFilter() const override;
-
-    public:
-        void setThreadMode( ELoggerMode _threadMode ) override;
-        ELoggerMode getThreadMode() const override;
 
     public:
         void setSilent( bool _silent ) override;
@@ -98,9 +91,6 @@ namespace Mengine
         void notifyBootstrapperRunCompete_();
 
     protected:
-        bool processMessages_( const ThreadIdentityRunnerInterfacePtr & _runner );
-
-    protected:
         FactoryInterfacePtr m_factoryLoggerRecord;
 
         ELoggerLevel m_verboseLevel;
@@ -114,29 +104,19 @@ namespace Mengine
         typedef Vector<LoggerInterfacePtr> VectorLoggers;
         VectorLoggers m_loggers;
 
-        typedef Vector<LoggerRecordInterfacePtr> VectorLoggerRecords;
-        VectorLoggerRecords m_messages;
-        VectorLoggerRecords m_messagesAux;
-
-        ThreadSharedMutexInterfacePtr m_mutexMessage;
         ThreadSharedMutexInterfacePtr m_mutexLogger;
         ThreadSharedMutexInterfacePtr m_mutexHistory;
-
-        ThreadConditionVariableInterfacePtr m_conditionLogger;
-        ThreadIdentityInterfacePtr m_threadLogger;
-        ThreadIdentityRunnerInterfacePtr m_threadRunner;
 
         ThreadMutexInterfacePtr m_mutexMessageBlock;
 
         uint32_t m_staticsticLevel[LOGGER_LEVEL_COUNT];
 
         bool m_historically;
-        bool m_threadly;
-        ELoggerMode m_threadMode;
 
         MemoryInterfacePtr m_memoryOldLog;
         ContentInterfacePtr m_currentContentLog;
 
+        typedef Vector<LoggerRecordInterfacePtr> VectorLoggerRecords;
         VectorLoggerRecords m_history;
     };
 }

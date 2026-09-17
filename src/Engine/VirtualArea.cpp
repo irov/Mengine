@@ -62,7 +62,8 @@ namespace Mengine
         , m_enableScale( true )
         , m_allowOutOfBounds( true )
         , m_disableDragIfInvalid( true )
-        , m_dragInverted( false )
+        , m_dragInvertedX( false )
+        , m_dragInvertedY( false )
         , m_defaultHandle( true )
         , m_scrollLocked( false )
         , m_frozen( false )
@@ -525,14 +526,24 @@ namespace Mengine
         return m_dragStartThreshold;
     }
     //////////////////////////////////////////////////////////////////////////
-    void VirtualArea::setDragInverted( bool _inverted )
+    void VirtualArea::setDragInvertedX( bool _inverted )
     {
-        m_dragInverted = _inverted;
+        m_dragInvertedX = _inverted;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool VirtualArea::getDragInverted() const
+    bool VirtualArea::getDragInvertedX() const
     {
-        return m_dragInverted;
+        return m_dragInvertedX;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void VirtualArea::setDragInvertedY( bool _inverted )
+    {
+        m_dragInvertedY = _inverted;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool VirtualArea::getDragInvertedY() const
+    {
+        return m_dragInvertedY;
     }
     //////////////////////////////////////////////////////////////////////////
     void VirtualArea::setDefaultHandle( bool _handle )
@@ -1372,7 +1383,8 @@ namespace Mengine
             return false;
         }
 
-        m_velocity = m_dragInverted == true ? delta : -delta;
+        m_velocity.x = m_dragInvertedX == true ? -delta.x : delta.x;
+        m_velocity.y = m_dragInvertedY == true ? -delta.y : delta.y;
 
         if( m_allowOutOfBounds == false )
         {
@@ -1610,7 +1622,7 @@ namespace Mengine
 
         if( mt::abs_f( viewportSize.x ) > 0.0001f )
         {
-            worldDelta.x = -contentDelta.x * boundsSize.x / viewportSize.x;
+            worldDelta.x = contentDelta.x * boundsSize.x / viewportSize.x;
         }
 
         if( mt::abs_f( viewportSize.y ) > 0.0001f )

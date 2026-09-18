@@ -448,7 +448,7 @@ namespace Mengine
         if( PLATFORM_SERVICE()
             ->getSafeAreaViewport( &safeAreaViewport ) == true )
         {
-            this->updateSafeAreaViewport_( safeAreaViewport );
+            m_safeAreaViewport = safeAreaViewport;
         }
 
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ENGINE_PREPARE_FINALIZE, &Application::notifyEnginePrepareFinalize_, MENGINE_DOCUMENT_FACTORABLE );
@@ -2087,18 +2087,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::updateSafeAreaViewport_( const Viewport & _viewport )
     {
-        const float beginX = _viewport.begin.x > 0.f ? _viewport.begin.x : 0.f;
-        const float beginY = _viewport.begin.y > 0.f ? _viewport.begin.y : 0.f;
-        const float endX = _viewport.end.x > beginX ? _viewport.end.x : beginX;
-        const float endY = _viewport.end.y > beginY ? _viewport.end.y : beginY;
-        const Viewport viewport( beginX, beginY, endX, endY );
-
-        if( m_safeAreaViewport == viewport )
+        if( m_safeAreaViewport == _viewport )
         {
             return;
         }
 
-        m_safeAreaViewport = viewport;
+        m_safeAreaViewport = _viewport;
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SAFE_AREA_VIEWPORT, m_safeAreaViewport );
     }

@@ -322,13 +322,13 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32FileGroupDirectory::closeOutputFile( const OutputStreamInterfacePtr & _stream )
+    bool Win32FileGroupDirectory::closeOutputFile( const OutputStreamInterfacePtr & _stream, bool _successful )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, "failed _stream == nullptr" );
 
         FileOutputStreamInterface * file = _stream.getT<FileOutputStreamInterface *>();
 
-        bool result = file->close();
+        bool result = file->close( _successful );
 
         return result;
     }

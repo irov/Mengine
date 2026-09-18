@@ -177,7 +177,7 @@ namespace Mengine
 
         bool successful_write_stream = Helper::writeStreamArchiveMagic( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_USER_DATA ), GET_MAGIC_VERSION( MAGIC_USER_DATA ), true, data_memory, data_size, EAC_NORMAL );
 
-        bool successful_close_stream = content->closeOutputStreamFile( stream );
+        bool successful_close_stream = content->closeOutputStreamFile( stream, successful_write_stream );
 
         if( successful_write_stream == false )
         {

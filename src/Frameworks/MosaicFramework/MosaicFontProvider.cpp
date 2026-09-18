@@ -198,14 +198,12 @@ namespace Mengine
 
         if( stream->write( _buffer, _size ) != _size )
         {
-            Helper::closeOutputStreamFile( _fileGroup, stream );
+            Helper::closeOutputStreamFile( _fileGroup, stream, false );
 
             return false;
         }
 
-        stream->flush();
-
-        Helper::closeOutputStreamFile( _fileGroup, stream );
+        Helper::closeOutputStreamFile( _fileGroup, stream, true );
 
         return true;
     }

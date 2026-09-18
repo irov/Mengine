@@ -262,9 +262,10 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidAssetGroupDirectory::closeOutputFile( const OutputStreamInterfacePtr & _stream )
+    bool AndroidAssetGroupDirectory::closeOutputFile( const OutputStreamInterfacePtr & _stream, bool _successful )
     {
         MENGINE_UNUSED( _stream );
+        MENGINE_UNUSED( _successful );
 
         MENGINE_ASSERTION_NOT_IMPLEMENTED();
 

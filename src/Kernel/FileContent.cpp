@@ -54,9 +54,9 @@ namespace Mengine
         return stream;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FileContent::closeOutputStreamFile( const OutputStreamInterfacePtr & _stream )
+    bool FileContent::closeOutputStreamFile( const OutputStreamInterfacePtr & _stream, bool _successful )
     {
-        bool result = Helper::closeOutputStreamFile( m_fileGroup, _stream );
+        bool result = Helper::closeOutputStreamFile( m_fileGroup, _stream, _successful );
 
         return result;
     }

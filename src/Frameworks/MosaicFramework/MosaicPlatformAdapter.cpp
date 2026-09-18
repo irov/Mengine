@@ -162,16 +162,23 @@ namespace Mengine
             return false;
         }
 
+        bool successful_write = true;
+
         if( _data.empty() == false )
         {
-            stream->write( _data.data(), _data.size() );
+            size_t data_size = _data.size();
+
+            successful_write = stream->write( _data.data(), data_size ) == data_size;
         }
 
-        stream->flush();
+        bool successful_close = Helper::closeOutputStreamFile( fileGroup, stream, successful_write );
 
-        bool successful = Helper::closeOutputStreamFile( fileGroup, stream );
+        if( successful_write == false )
+        {
+            return false;
+        }
 
-        return successful;
+        return successful_close;
     }
     //////////////////////////////////////////////////////////////////////////
     bool MosaicPlatformAdapter::userDataPath( Mosaic::StringView _application, Mosaic::StringView _filename, Mosaic::String * const _out )

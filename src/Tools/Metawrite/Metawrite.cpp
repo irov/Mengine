@@ -158,7 +158,7 @@ static bool writeBin( const std::wstring & _inputFormat, const std::wstring & _o
         outputStream->write( compressed->getBuffer(), compressedSize ) == compressedSize &&
         outputStream->flush();
 
-    successful &= outputContent->closeOutputStreamFile( outputStream );
+    successful &= outputContent->closeOutputStreamFile( outputStream, successful );
 
     Metabuf::destroyMetaconvert( metaconvert );
 

@@ -26,7 +26,7 @@ namespace Mengine
         void closeInputStreamFile( const InputStreamInterfacePtr & _stream ) override;
 
         OutputStreamInterfacePtr openOutputStreamFile( bool _withTemp, const DocumentInterfacePtr & _doc ) override;
-        bool closeOutputStreamFile( const OutputStreamInterfacePtr & _stream ) override;
+        bool closeOutputStreamFile( const OutputStreamInterfacePtr & _stream, bool _successful ) override;
 
     protected:
         bool createDirectory() override;

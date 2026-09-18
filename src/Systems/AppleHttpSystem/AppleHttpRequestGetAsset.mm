@@ -64,9 +64,7 @@ namespace Mengine
             return false;
         }
         
-        FilePath filePathTmp = Helper::stringizeFilePathFormat( "%s.~tmp", filePath.c_str() );
-
-        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( fileGroup, filePathTmp, true, MENGINE_DOCUMENT_FACTORABLE );
+        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( fileGroup, filePath, true, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, "get asset url '%s' invalid open file '%s'"
             , m_url.c_str()
@@ -90,45 +88,43 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AppleHttpRequestGetAsset::_onThreadTaskComplete( bool _successful )
     {
-        bool successful_stream_flush = true;
+        EHttpCode code = m_response->getCode();
+
+        bool successful_asset = _successful;
+
+        if( HTTP_CODE_IS_SUCCESSFUL( code ) == false )
+        {
+            successful_asset = false;
+        }
 
         FileGroupInterfacePtr fileGroup = m_content->getFileGroup();
-        FilePath filePath = m_content->getFilePath();
         m_content = nullptr;
 
         if( m_stream != nullptr )
         {
-            const HttpResponseInterfacePtr & response = this->getReponse();
+            if( successful_asset == true )
+            {
+                const HttpResponseInterfacePtr & response = this->getReponse();
 
-            const Data & data = response->getData();
+                const Data & data = response->getData();
 
-            Helper::writeStreamData( m_stream, data );
-            
-            successful_stream_flush = m_stream->flush();
+                Helper::writeStreamData( m_stream, data );
 
-            Helper::closeOutputStreamFile( fileGroup, m_stream );
+                if( m_stream->flush() == false )
+                {
+                    successful_asset = false;
+                }
+            }
+
+            if( Helper::closeOutputStreamFile( fileGroup, m_stream, successful_asset ) == false )
+            {
+                successful_asset = false;
+            }
+
             m_stream = nullptr;
         }
 
-        EHttpCode code = m_response->getCode();
-
-        if( _successful == false || HTTP_CODE_IS_SUCCESSFUL( code ) == false || successful_stream_flush == false )
-        {
-            AppleHttpRequest::_onThreadTaskComplete( false );
-
-            return;
-        }
-        
-        FilePath filePathTmp = Helper::stringizeFilePathFormat( "%s.~tmp", filePath.c_str() );
-
-        if( fileGroup->moveFile( filePathTmp, filePath ) == false )
-        {
-            AppleHttpRequest::_onThreadTaskComplete( false );
-
-            return;
-        }
-
-        AppleHttpRequest::_onThreadTaskComplete( true );
+        AppleHttpRequest::_onThreadTaskComplete( successful_asset );
     }
     //////////////////////////////////////////////////////////////////////////
 }

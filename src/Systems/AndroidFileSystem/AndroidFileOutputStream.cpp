@@ -14,6 +14,10 @@
 
 #include "Config/Path.h"
 
+#include <cstdio>
+#include <cerrno>
+#include <unistd.h>
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -26,7 +30,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AndroidFileOutputStream::~AndroidFileOutputStream()
     {
-        this->close();
+        this->close( false );
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidFileOutputStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, bool _withTemp )
@@ -94,7 +98,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidFileOutputStream::close()
+    bool AndroidFileOutputStream::close( bool _successful )
     {
         MENGINE_THREAD_GUARD_SCOPE( AndroidFileOutputStream, this );
 
@@ -103,7 +107,7 @@ namespace Mengine
             return false;
         }
 
-        MENGINE_ASSERTION_FATAL( m_size != 0, "file '%s:%s' is empty"
+        MENGINE_ASSERTION_FATAL( _successful == false || m_size != 0, "file '%s:%s' is empty"
             , m_folderPath.c_str()
             , m_filePath.c_str()
         );
@@ -114,6 +118,31 @@ namespace Mengine
             NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_CLOSE_FILE, m_folderPath, m_filePath, false, false );
         }
 #endif
+
+        bool successful = _successful;
+
+        if( successful == true && m_withTemp == true )
+        {
+            if( this->flush() == false )
+            {
+                successful = false;
+            }
+            else
+            {
+                int descriptor = ::fileno( m_file );
+
+                if( ::fsync( descriptor ) != 0 )
+                {
+                    LOGGER_ERROR( "invalid sync file '%s:%s' error: %d"
+                        , m_folderPath.c_str()
+                        , m_filePath.c_str()
+                        , errno
+                    );
+
+                    successful = false;
+                }
+            }
+        }
 
         int error = ::fclose( m_file );
         m_file = nullptr;
@@ -133,14 +162,10 @@ namespace Mengine
         Helper::removeDebugFilePath( this );
 #endif
 
-        if( error != 0 )
-        {
-            return false;
-        }
+        Path fullPathTemp = {'\0'};
 
         if( m_withTemp == true )
         {
-            Path fullPathTemp = {'\0'};
             if( Helper::concatenateFilePath( {m_relationPath, m_folderPath, m_filePath, STRINGIZE_FILEPATH_LOCAL( ".~tmp" )}, fullPathTemp ) == false )
             {
                 LOGGER_ERROR( "invalid concatenate filePath '%s:%s' [temp]"
@@ -150,7 +175,21 @@ namespace Mengine
 
                 return false;
             }
+        }
 
+        if( error != 0 || successful == false )
+        {
+            if( m_withTemp == true )
+            {
+                FILE_SYSTEM()
+                    ->removeFile( fullPathTemp );
+            }
+
+            return false;
+        }
+
+        if( m_withTemp == true )
+        {
             Path fullPath = {'\0'};
             if( Helper::concatenateFilePath( {m_relationPath, m_folderPath, m_filePath}, fullPath ) == false )
             {

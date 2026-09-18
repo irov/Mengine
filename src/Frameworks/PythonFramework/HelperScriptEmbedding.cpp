@@ -3110,14 +3110,23 @@ namespace Mengine
                 ->selectDefaultAccount();
         }
         //////////////////////////////////////////////////////////////////////////
-        static void s_saveAccount()
+        static bool s_saveAccount()
         {
-            //ToDo
+            if( ACCOUNT_SERVICE()
+                ->hasCurrentAccount() == false )
+            {
+                return false;
+            }
+
+            const AccountInterfacePtr & account = ACCOUNT_SERVICE()
+                ->getCurrentAccount();
+
+            return account->save();
         }
         //////////////////////////////////////////////////////////////////////////
-        static void s_saveAccounts()
+        static bool s_saveAccounts()
         {
-            ACCOUNT_SERVICE()
+            return ACCOUNT_SERVICE()
                 ->saveAccounts();
         }
         //////////////////////////////////////////////////////////////////////////
@@ -3218,7 +3227,7 @@ namespace Mengine
             //TODO create global data save
             bool successful = Helper::writeStreamArchiveMagic( stream, archivator, GET_MAGIC_NUMBER( MAGIC_ACCOUNT_DATA ), GET_MAGIC_VERSION( MAGIC_ACCOUNT_DATA ), true, memory_buffer, memory_size, EAC_NORMAL );
 
-            if( Helper::closeOutputStreamFile( fileGroup, stream ) == false )
+            if( Helper::closeOutputStreamFile( fileGroup, stream, successful ) == false )
             {
                 LOGGER_ERROR( "invalid close file '%s'"
                     , filePath.c_str()

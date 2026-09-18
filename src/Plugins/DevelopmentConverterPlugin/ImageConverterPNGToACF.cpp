@@ -146,7 +146,9 @@ namespace Mengine
 
         encoder->finalize();
 
-        bool successful_close_stream = content_output->closeOutputStreamFile( stream_output );
+        bool successful_encode = encode_byte != 0;
+
+        bool successful_close_stream = content_output->closeOutputStreamFile( stream_output, successful_encode );
 
         if( encode_byte == 0 )
         {

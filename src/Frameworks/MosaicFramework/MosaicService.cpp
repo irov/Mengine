@@ -354,10 +354,11 @@ namespace Mengine
             return;
         }
 
-        stream->write( buffer.c_str(), buffer.size() );
-        stream->flush();
+        size_t buffer_size = buffer.size();
 
-        Helper::closeOutputStreamFile( userFileGroup, stream );
+        bool successful = stream->write( buffer.c_str(), buffer_size ) == buffer_size;
+
+        Helper::closeOutputStreamFile( userFileGroup, stream, successful );
     }
     //////////////////////////////////////////////////////////////////////////
 }

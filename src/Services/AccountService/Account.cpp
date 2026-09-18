@@ -397,9 +397,9 @@ namespace Mengine
         return stream;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Account::closeWriteBinaryFile( const OutputStreamInterfacePtr & _stream )
+    bool Account::closeWriteBinaryFile( const OutputStreamInterfacePtr & _stream, bool _successful )
     {
-        bool result = m_fileGroup->closeOutputFile( _stream );
+        bool result = m_fileGroup->closeOutputFile( _stream, _successful );
 
         return result;
     }
@@ -464,7 +464,7 @@ namespace Mengine
 
         bool successful = Helper::writeStreamArchiveMagic( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_ACCOUNT_DATA ), GET_MAGIC_VERSION( MAGIC_ACCOUNT_DATA ), true, data_memory, data_size, EAC_NORMAL );
 
-        this->closeWriteBinaryFile( stream );
+        this->closeWriteBinaryFile( stream, successful );
 
         if( successful == false )
         {

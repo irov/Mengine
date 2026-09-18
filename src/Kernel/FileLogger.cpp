@@ -63,7 +63,7 @@ namespace Mengine
         {
             m_stream->flush();
 
-            m_content->closeOutputStreamFile( m_stream );
+            m_content->closeOutputStreamFile( m_stream, true );
             m_stream = nullptr;
         }
 

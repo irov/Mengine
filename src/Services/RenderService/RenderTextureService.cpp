@@ -187,7 +187,7 @@ namespace Mengine
                 , Helper::getContentFullPath( _content ).c_str()
             );
 
-            _content->closeOutputStreamFile( stream );
+            _content->closeOutputStreamFile( stream, false );
 
             return false;
         }
@@ -232,7 +232,9 @@ namespace Mengine
 
         image->unlock( locked, 0, 0, true );
 
-        bool successful_close_stream = _content->closeOutputStreamFile( stream );
+        bool successful_encode = bytesWritten != 0;
+
+        bool successful_close_stream = _content->closeOutputStreamFile( stream, successful_encode );
 
         if( bytesWritten == 0 )
         {

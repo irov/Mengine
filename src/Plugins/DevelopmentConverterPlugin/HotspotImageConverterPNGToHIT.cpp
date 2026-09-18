@@ -174,7 +174,9 @@ namespace Mengine
 
         encoder->finalize();
 
-        bool successful_close_stream = m_options.outputContent->closeOutputStreamFile( stream_output );
+        bool successful_encode = encodeSize != 0;
+
+        bool successful_close_stream = m_options.outputContent->closeOutputStreamFile( stream_output, successful_encode );
 
         if( encodeSize == 0 )
         {

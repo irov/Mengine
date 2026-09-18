@@ -211,31 +211,7 @@ namespace Mengine
         }
 #endif
 
-        DWORD newFileAttributes = ::GetFileAttributesW( unicode_correctNewFilePath );
-
-        if( newFileAttributes != INVALID_FILE_ATTRIBUTES )
-        {
-#if defined(MENGINE_DEBUG)
-            if( (newFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY )
-            {
-                LOGGER_WARNING( "invalid move file '%ls' it's directory"
-                    , unicode_correctNewFilePath
-                );
-
-                return false;
-            }
-#endif
-
-            if( ::DeleteFileW( unicode_correctNewFilePath ) == FALSE )
-            {
-                LOGGER_ERROR( "invalid move file '%ls' %ls"
-                    , unicode_correctNewFilePath
-                    , Helper::Win32GetLastErrorMessageW()
-                );
-            }
-        }
-
-        if( ::MoveFileW( unicode_correctOldFilePath, unicode_correctNewFilePath ) == FALSE )
+        if( ::MoveFileExW( unicode_correctOldFilePath, unicode_correctNewFilePath, MOVEFILE_REPLACE_EXISTING ) == FALSE )
         {
             LOGGER_ERROR( "file '%ls' move to '%ls' %ls"
                 , unicode_correctOldFilePath

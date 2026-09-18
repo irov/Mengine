@@ -19,6 +19,8 @@
 #include "Config/Path.h"
 
 #include <sys/stat.h>
+#include <stdio.h>
+#include <errno.h>
 #include <fnmatch.h>
 #include <dlfcn.h>
 
@@ -337,34 +339,17 @@ namespace Mengine
         Path newPathCorrect = {'\0'};
         Helper::pathCorrectBackslashToA( newPathCorrect, _newFilePath );
 
-        NSFileManager * fileManager = [NSFileManager defaultManager];
-        
-        if( [fileManager fileExistsAtPath:@(newPathCorrect)] == YES)
+        if( ::rename( oldPathCorrect, newPathCorrect ) != 0 )
         {
-            NSError * remove_error = nil;
-            if( [fileManager removeItemAtPath:@(newPathCorrect) error:&remove_error] == NO )
-            {
-                LOGGER_ERROR("Failed to remove existing file: %s error: %s"
-                    , newPathCorrect
-                    , [[AppleDetail getMessageFromNSError:remove_error] UTF8String]
-                );
-                
-                return false;
-            }
-        }
-        
-        NSError * move_error = nil;
-        if( [fileManager moveItemAtPath:@(oldPathCorrect) toPath:@(newPathCorrect) error:&move_error] == NO )
-        {
-            LOGGER_ERROR("Failed to move file from: %s to: %s error: %s"
+            LOGGER_ERROR( "failed to move file from '%s' to '%s' error: %d"
                 , oldPathCorrect
                 , newPathCorrect
-                , [[AppleDetail getMessageFromNSError:move_error] UTF8String]
+                , errno
             );
-            
+
             return false;
         }
-        
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

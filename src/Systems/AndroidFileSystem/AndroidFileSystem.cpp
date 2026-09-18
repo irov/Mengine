@@ -265,24 +265,6 @@ namespace Mengine
         Path newPathCorrect = {'\0'};
         Helper::pathCorrectBackslashToA( newPathCorrect, _newFilePath );
 
-        struct stat sb;
-        if( ::stat( newPathCorrect, &sb ) == 0 && ((sb.st_mode) & S_IFMT) != S_IFDIR )
-        {
-            int result_remove = ::remove( newPathCorrect );
-
-            if( result_remove != 0 )
-            {
-                const char * msg = ::strerror( errno );
-
-                LOGGER_ASSERTION( "invalid remove new move file from '%s' to '%s' error '%s' [%u]"
-                    , _oldFilePath
-                    , _newFilePath
-                    , msg
-                    , errno
-                );
-            }
-        }
-
         int result_rename = ::rename( oldPathCorrect, newPathCorrect );
 
         if( result_rename != 0 )

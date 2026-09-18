@@ -261,9 +261,9 @@ namespace Mengine
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MCPFileGroup::closeOutputFile( const OutputStreamInterfacePtr & _stream )
+    bool MCPFileGroup::closeOutputFile( const OutputStreamInterfacePtr & _stream, bool _successful )
     {
-        bool successful = m_baseFileGroup->closeOutputFile( _stream );
+        bool successful = m_baseFileGroup->closeOutputFile( _stream, _successful );
 
         return successful;
     }

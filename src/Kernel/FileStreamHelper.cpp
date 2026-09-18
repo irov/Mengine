@@ -77,9 +77,9 @@ namespace Mengine
             _fileGroup->closeInputFile( _stream );
         }
         //////////////////////////////////////////////////////////////////////////
-        bool closeOutputStreamFile( const FileGroupInterfacePtr & _fileGroup, const OutputStreamInterfacePtr & _stream )
+        bool closeOutputStreamFile( const FileGroupInterfacePtr & _fileGroup, const OutputStreamInterfacePtr & _stream, bool _successful )
         {
-            bool result = _fileGroup->closeOutputFile( _stream );
+            bool result = _fileGroup->closeOutputFile( _stream, _successful );
 
             return result;
         }
@@ -95,9 +95,9 @@ namespace Mengine
             const void * memory_buffer = _memory->getBuffer();
             size_t memory_size = _memory->getSize();
 
-            bool successful = stream->write( memory_buffer, memory_size );
+            bool successful = stream->write( memory_buffer, memory_size ) == memory_size;
 
-            if( Helper::closeOutputStreamFile( _fileGroup, stream ) == false )
+            if( Helper::closeOutputStreamFile( _fileGroup, stream, successful ) == false )
             {
                 LOGGER_ERROR( "can't close output file '%s'"
                     , Helper::getFileGroupFullPath( _fileGroup, _filePath ).c_str()

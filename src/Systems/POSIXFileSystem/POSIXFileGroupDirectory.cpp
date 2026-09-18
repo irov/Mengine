@@ -332,13 +332,13 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool POSIXFileGroupDirectory::closeOutputFile( const OutputStreamInterfacePtr & _stream )
+    bool POSIXFileGroupDirectory::closeOutputFile( const OutputStreamInterfacePtr & _stream, bool _successful )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, "failed _stream == nullptr" );
 
         FileOutputStreamInterface * file = stdex::intrusive_get<FileOutputStreamInterface *>( _stream );
 
-        bool result = file->close();
+        bool result = file->close( _successful );
 
         return result;
     }

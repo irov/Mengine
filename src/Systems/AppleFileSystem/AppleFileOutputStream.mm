@@ -24,7 +24,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AppleFileOutputStream::~AppleFileOutputStream()
     {
-        this->close();
+        this->close( false );
     }
     //////////////////////////////////////////////////////////////////////////
     bool AppleFileOutputStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, bool _withTemp )
@@ -80,6 +80,19 @@ namespace Mengine
             return false;
         }
 
+        NSError * error = nil;
+        if( [fileHandle truncateAtOffset:0 error:&error] == NO )
+        {
+            LOGGER_ERROR( "invalid truncate file '%s' get error: %s"
+                , concatenatePath
+                , [[AppleDetail getMessageFromNSError:error] UTF8String]
+            );
+
+            [fileHandle closeAndReturnError:nil];
+
+            return false;
+        }
+
         m_fileHandle = fileHandle;
 
         m_size = 0;
@@ -91,20 +104,46 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleFileOutputStream::close()
+    bool AppleFileOutputStream::close( bool _successful )
     {
         if( m_fileHandle == nullptr )
         {
             return true;
         }
 
-        MENGINE_ASSERTION_FATAL( m_size != 0, "file '%s:%s' is empty"
+        MENGINE_ASSERTION_FATAL( _successful == false || m_size != 0, "file '%s:%s' is empty"
             , m_folderPath.c_str()
             , m_filePath.c_str()
         );
 
+        bool successful = _successful;
+
         NSError * error = nil;
-        if( [m_fileHandle closeAndReturnError:&error] == NO )
+
+        if( successful == true && m_withTemp == true )
+        {
+            if( [m_fileHandle synchronizeAndReturnError:&error] == NO )
+            {
+                LOGGER_ERROR( "invalid sync file '%s:%s' get error: %s"
+                    , m_folderPath.c_str()
+                    , m_filePath.c_str()
+                    , [[AppleDetail getMessageFromNSError:error] UTF8String]
+                );
+
+                successful = false;
+            }
+        }
+
+        BOOL closed = [m_fileHandle closeAndReturnError:&error];
+        m_fileHandle = nil;
+
+        m_size = 0;
+
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+        Helper::removeDebugFilePath( this );
+#endif
+
+        if( closed == NO )
         {
             LOGGER_ERROR( "invalid close file '%s:%s' get error: %s"
                 , m_folderPath.c_str()
@@ -112,16 +151,13 @@ namespace Mengine
                 , [[AppleDetail getMessageFromNSError:error] UTF8String]
             );
 
-            return false;
+            successful = false;
         }
 
-        m_fileHandle = nil;
-
-        m_size = 0;
+        Path fullPathTemp = {'\0'};
 
         if( m_withTemp == true )
         {
-            Path fullPathTemp = {'\0'};
             if( Helper::concatenateFilePath( {m_relationPath, m_folderPath, m_filePath, STRINGIZE_FILEPATH_LOCAL( ".~tmp" )}, fullPathTemp ) == false )
             {
                 LOGGER_ERROR( "invalid concatenate filePath '%s:%s' [temp]"
@@ -131,7 +167,21 @@ namespace Mengine
 
                 return false;
             }
+        }
 
+        if( successful == false )
+        {
+            if( m_withTemp == true )
+            {
+                FILE_SYSTEM()
+                    ->removeFile( fullPathTemp );
+            }
+
+            return false;
+        }
+
+        if( m_withTemp == true )
+        {
             Path fullPath = {'\0'};
             if( Helper::concatenateFilePath( {m_relationPath, m_folderPath, m_filePath}, fullPath ) == false )
             {
@@ -154,10 +204,6 @@ namespace Mengine
                 return false;
             }
         }
-
-#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
-        Helper::removeDebugFilePath( this );
-#endif
 
         return true;
     }

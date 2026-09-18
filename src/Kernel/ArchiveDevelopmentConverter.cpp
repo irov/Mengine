@@ -73,7 +73,7 @@ namespace Mengine
 
         bool successful = Helper::writeStreamArchiveMagic( stream, m_archivator, m_magicNumber, m_magicVersion, m_crc32, data_memory, data_size, m_compress );
 
-        if( Helper::closeOutputStreamFile( m_fileGroupDev, stream ) == false )
+        if( Helper::closeOutputStreamFile( m_fileGroupDev, stream, successful ) == false )
         {
             LOGGER_ERROR( "archive converter invalid close '%s'"
                 , Helper::getContentFullPath( m_options.outputContent ).c_str()

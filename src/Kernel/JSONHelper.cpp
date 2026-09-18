@@ -72,7 +72,10 @@ namespace Mengine
             {
                 OutputStreamInterface * stream = static_cast<OutputStreamInterface *>(_ud);
 
-                stream->write( _buffer, _size );
+                if( stream->write( _buffer, _size ) != _size )
+                {
+                    return -1;
+                }
 
                 return 0;
             }
@@ -192,7 +195,7 @@ namespace Mengine
 
             bool successful = Helper::writeJSONStream( _j, stream );
 
-            if( Helper::closeOutputStreamFile( _fileGroup, stream ) == false )
+            if( Helper::closeOutputStreamFile( _fileGroup, stream, successful ) == false )
             {
                 return false;
             }
@@ -211,7 +214,7 @@ namespace Mengine
 
             bool successful = Helper::writeJSONStreamCompact( _j, stream );
 
-            if( Helper::closeOutputStreamFile( _fileGroup, stream ) == false )
+            if( Helper::closeOutputStreamFile( _fileGroup, stream, successful ) == false )
             {
                 return false;
             }

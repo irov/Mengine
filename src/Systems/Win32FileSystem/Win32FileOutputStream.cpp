@@ -27,7 +27,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Win32FileOutputStream::~Win32FileOutputStream()
     {
-        this->close();
+        this->close( false );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileOutputStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, bool _withTemp )
@@ -102,14 +102,14 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32FileOutputStream::close()
+    bool Win32FileOutputStream::close( bool _successful )
     {
         if( m_hFile == INVALID_HANDLE_VALUE )
         {
             return false;
         }
 
-        MENGINE_ASSERTION_FATAL( m_size != 0, "file '%s:%s' is empty"
+        MENGINE_ASSERTION_FATAL( _successful == false || m_size != 0, "file '%s:%s' is empty"
             , m_folderPath.c_str()
             , m_filePath.c_str()
         );
@@ -125,14 +125,36 @@ namespace Mengine
         Helper::removeDebugFilePath( this );
 #endif
 
-        ::CloseHandle( m_hFile );
+        bool successful = _successful;
+
+        if( successful == true && m_withTemp == true )
+        {
+            if( this->flush() == false )
+            {
+                successful = false;
+            }
+        }
+
+        BOOL closed = ::CloseHandle( m_hFile );
         m_hFile = INVALID_HANDLE_VALUE;
 
         m_size = 0;
 
+        if( closed == FALSE )
+        {
+            LOGGER_ERROR( "invalid close file '%s:%s' get error %ls"
+                , m_folderPath.c_str()
+                , m_filePath.c_str()
+                , Helper::Win32GetLastErrorMessageW()
+            );
+
+            successful = false;
+        }
+
+        Path fullPathTemp = {'\0'};
+
         if( m_withTemp == true )
         {
-            Path fullPathTemp = {'\0'};
             if( Helper::Win32ConcatenateFilePathTempA( m_relationPath, m_folderPath, m_filePath, fullPathTemp ) == MENGINE_PATH_INVALID_LENGTH )
             {
                 LOGGER_ERROR( "invalid concatenate temp file path '%s%s%s'"
@@ -143,7 +165,21 @@ namespace Mengine
 
                 return false;
             }
+        }
 
+        if( successful == false )
+        {
+            if( m_withTemp == true )
+            {
+                FILE_SYSTEM()
+                    ->removeFile( fullPathTemp );
+            }
+
+            return false;
+        }
+
+        if( m_withTemp == true )
+        {
             Path fullPath = {'\0'};
             if( Helper::Win32ConcatenateFilePathA( m_relationPath, m_folderPath, m_filePath, fullPath ) == MENGINE_PATH_INVALID_LENGTH )
             {

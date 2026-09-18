@@ -941,7 +941,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
             this.purchaseInAppProduct(purchase, false);
             this.clearPurchaseDelivered(token);
 
-            this.nativeCall("onGooglePlayBillingPurchaseAcknowledgeSuccess", products);
+            this.nativeCall("onGooglePlayBillingPurchaseAcknowledgeSuccess", products, token);
             completion.accept(true);
         });
     }
@@ -982,7 +982,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
             this.purchaseInAppProduct(purchase, true);
             this.clearPurchaseDelivered(token);
 
-            this.nativeCall("onGooglePlayBillingPurchasesOnConsumeSuccess", products);
+            this.nativeCall("onGooglePlayBillingPurchasesOnConsumeSuccess", products, token);
             completion.accept(true);
         });
     }

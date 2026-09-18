@@ -3,26 +3,7 @@
 #include <cstddef>
 
 #include "Kernel/Assertion.h"
-#include "Kernel/MemoryAllocator.h"
 
-//////////////////////////////////////////////////////////////////////////
-static void * gp_path_malloc( gp_size_t _size, void * _ud )
-{
-    MENGINE_UNUSED( _ud );
-    return Mengine::Helper::allocateMemory( _size, "gp" );
-}
-//////////////////////////////////////////////////////////////////////////
-static void * gp_path_realloc( void * _ptr, gp_size_t _size, void * _ud )
-{
-    MENGINE_UNUSED( _ud );
-    return Mengine::Helper::reallocateMemory( _ptr, _size, "gp" );
-}
-//////////////////////////////////////////////////////////////////////////
-static void gp_path_free( void * _ptr, void * _ud )
-{
-    MENGINE_UNUSED( _ud );
-    Mengine::Helper::deallocateMemory( _ptr, "gp" );
-}
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_DEBUG)
 #   define GP_PATH_CALL(m, args) if( m args == GP_FAILURE ) MENGINE_ASSERTION_FATAL(false, #m #args)
@@ -33,11 +14,10 @@ static void gp_path_free( void * _ptr, void * _ud )
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    GraphicsPath::GraphicsPath( uint8_t _curveQuality, uint8_t _ellipseQuality )
+    GraphicsPath::GraphicsPath( gp_canvas_t * _canvas )
         : m_path( nullptr )
     {
-        GP_PATH_CALL( gp_path_create, (&m_path, &gp_path_malloc, &gp_path_realloc, &gp_path_free, nullptr,
-            _curveQuality, _ellipseQuality) );
+        GP_PATH_CALL( gp_path_create, (_canvas, &m_path) );
     }
     //////////////////////////////////////////////////////////////////////////
     GraphicsPath::~GraphicsPath()

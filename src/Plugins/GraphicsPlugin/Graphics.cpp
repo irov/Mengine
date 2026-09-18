@@ -7,7 +7,6 @@
 #include "Kernel/BezierHelper.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
-#include "Kernel/MemoryAllocator.h"
 #include "Kernel/Materialable.h"
 #include "Kernel/Logger.h"
 #include "Kernel/RenderHelper.h"
@@ -17,31 +16,6 @@
 
 #include "math/line2.h"
 
-//////////////////////////////////////////////////////////////////////////
-static void * gp_malloc( gp_size_t _size, void * _ud )
-{
-    MENGINE_UNUSED( _ud );
-
-    void * p = Mengine::Helper::allocateMemory( _size, "gp" );
-
-    return p;
-}
-//////////////////////////////////////////////////////////////////////////
-static void * gp_realloc( void * _ptr, gp_size_t _size, void * _ud )
-{
-    MENGINE_UNUSED( _ud );
-
-    void * p = Mengine::Helper::reallocateMemory( _ptr, _size, "gp" );
-
-    return p;
-}
-//////////////////////////////////////////////////////////////////////////
-static void gp_free( void * _ptr, void * _ud )
-{
-    MENGINE_UNUSED( _ud );
-
-    Mengine::Helper::deallocateMemory( _ptr, "gp" );
-}
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_DEBUG)
 #   define GP_CALL(m, args) if( m args == GP_FAILURE ) MENGINE_ASSERTION_FATAL(false, #m #args)
@@ -57,8 +31,6 @@ namespace Mengine
         , m_uvRect( 0.f, 0.f, 1.f, 1.f )
         , m_invalidateLocalVertex2D( false )
     {
-        GP_CALL( gp_canvas_create, (&m_canvas, &gp_malloc, &gp_realloc, &gp_free, nullptr) );
-
         mt::box2_reset( &m_renderBoundingBox, 0.f, 0.f );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -66,6 +38,11 @@ namespace Mengine
     {
         GP_CALL( gp_canvas_destroy, (m_canvas) );
         m_canvas = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Graphics::createCanvas( gp_graphics_t * _graphics )
+    {
+        GP_CALL( gp_canvas_create, (_graphics, &m_canvas) );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Graphics::_compile()
@@ -426,8 +403,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     GraphicsPathPtr Graphics::createPath()
     {
-        GraphicsPathPtr path = Helper::makeFactorableUnique<GraphicsPath>( MENGINE_DOCUMENT_FACTORABLE,
-            this->getCurveQuality(), this->getEllipseQuality() );
+        GraphicsPathPtr path = Helper::makeFactorableUnique<GraphicsPath>( MENGINE_DOCUMENT_FACTORABLE, m_canvas );
+
         return path;
     }
     //////////////////////////////////////////////////////////////////////////

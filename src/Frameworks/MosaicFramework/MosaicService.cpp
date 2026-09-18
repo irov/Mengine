@@ -3,6 +3,8 @@
 #include "Interface/FileServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 
+#include "Plugins/GraphicsPlugin/GraphicsInterface.h"
+
 #include "MosaicRender.h"
 #include "MosaicRenderPrototypeGenerator.h"
 #include "MosaicSerializer.h"
@@ -41,6 +43,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     MosaicService::~MosaicService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MosaicService::_dependencyService()
+    {
+        SERVICE_DEPENDENCY( MosaicService, GraphicsServiceInterface );
     }
     //////////////////////////////////////////////////////////////////////////
     bool MosaicService::_initializeService()
@@ -89,6 +96,8 @@ namespace Mengine
             return false;
         }
 
+        SERVICE_WAIT_METHOD( GraphicsServiceInterface, this, initializeGraphicsBridge_ );
+
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RENDER_DEVICE_DESTROY, &MosaicService::notifyRenderDeviceDestroy_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE, &MosaicService::notifyRenderDeviceLostPrepare_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_RESTORE, &MosaicService::notifyRenderDeviceLostRestore_, MENGINE_DOCUMENT_FACTORABLE );
@@ -127,7 +136,51 @@ namespace Mengine
 
         m_renderer.finalize();
 
+        m_bridge.finalize();
+
         Mosaic::setDefaultAllocator( nullptr );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool MosaicService::initializeGraphicsBridge_()
+    {
+        gp_graphics_t * graphics = GRAPHICS_SERVICE()
+            ->getGraphics();
+
+        if( m_bridge.initialize( graphics, &m_allocator ) == false )
+        {
+            Mosaic::StringView error = m_bridge.lastError();
+
+            LOGGER_ERROR( "invalid initialize mosaic graphics bridge: %.*s"
+                , (int32_t)error.size()
+                , error.data()
+            );
+
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const Mosaic::RenderMesh * MosaicService::prepareRenderMesh( const Mosaic::Frame & _frame )
+    {
+        if( m_bridge.prepare( _frame ) == false )
+        {
+            Mosaic::StringView error = m_bridge.lastError();
+
+            if( error.empty() == false )
+            {
+                LOGGER_ERROR( "mosaic graphics bridge: %.*s"
+                    , (int32_t)error.size()
+                    , error.data()
+                );
+            }
+
+            return nullptr;
+        }
+
+        const Mosaic::RenderMesh * mesh = m_bridge.renderData();
+
+        return mesh;
     }
     //////////////////////////////////////////////////////////////////////////
     void MosaicService::_stopService()

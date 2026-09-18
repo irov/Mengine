@@ -333,24 +333,8 @@ namespace Mengine
             );
         }
 
-        m_mesh = nullptr;
-
-        if( m_bridge.prepare( frame ) == true )
-        {
-            m_mesh = m_bridge.renderData();
-        }
-        else
-        {
-            Mosaic::StringView error = m_bridge.lastError();
-
-            if( error.empty() == false )
-            {
-                LOGGER_ERROR( "mosaic graphics bridge: %.*s"
-                    , (int32_t)error.size()
-                    , error.data()
-                );
-            }
-        }
+        m_mesh = MOSAIC_SERVICE()
+            ->prepareRenderMesh( frame );
 
         this->clearInputEdges_();
     }

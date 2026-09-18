@@ -9,6 +9,12 @@ src
 
     GraphicsPath.h
     GraphicsPath.cpp
+
+    GraphicsService.h
+    GraphicsService.cpp
+
+    GraphicsPrototypeGenerator.h
+    GraphicsPrototypeGenerator.cpp
     
     GraphicsPlugin.h
     GraphicsPlugin.cpp

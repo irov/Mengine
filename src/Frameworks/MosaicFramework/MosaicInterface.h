@@ -12,6 +12,8 @@
 namespace Mosaic
 {
     struct Context;
+    struct Frame;
+    struct RenderMesh;
 }
 
 namespace Mengine
@@ -51,6 +53,9 @@ namespace Mengine
     public:
         virtual MosaicTextureHandle getTextureHandle( const RenderTextureInterfacePtr & _texture ) = 0;
         virtual void releaseTextureHandle( MosaicTextureHandle _handle ) = 0;
+
+    public:
+        virtual const Mosaic::RenderMesh * prepareRenderMesh( const Mosaic::Frame & _frame ) = 0;
 
     public:
         virtual MosaicProviderId addProvider( const UnknownMosaicRenderInterface::LambdaMosaicProvider & _provider ) = 0;

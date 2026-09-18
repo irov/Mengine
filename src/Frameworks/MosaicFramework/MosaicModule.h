@@ -50,7 +50,6 @@ namespace Mengine
         Mosaic::Context * m_context;
         Mosaic::Input m_input;
         Mosaic::InputCapture m_inputCapture;
-        Mosaic::GraphicsBridge m_bridge;
 
         VectorMosaicProviders m_frameProviders;
 

@@ -38,7 +38,7 @@ namespace Mengine
         DECLARE_FACTORABLE( GraphicsPath );
 
     public:
-        GraphicsPath( uint8_t _curveQuality, uint8_t _ellipseQuality );
+        GraphicsPath( gp_canvas_t * _canvas );
         ~GraphicsPath() override;
 
     public:

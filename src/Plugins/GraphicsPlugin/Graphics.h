@@ -35,6 +35,9 @@ namespace Mengine
         ~Graphics() override;
 
     public:
+        void createCanvas( gp_graphics_t * _graphics );
+
+    public:
         bool _compile() override;
         void _release() override;
         void _dispose() override;

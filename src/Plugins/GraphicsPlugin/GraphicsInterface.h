@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Interface/ServiceInterface.h"
 #include "Interface/UnknownNodeInterface.h"
 
 #include "Kernel/Color.h"
@@ -11,6 +12,8 @@
 #include "math/box2.h"
 #include "math/vec2.h"
 #include "math/vec4.h"
+
+struct gp_graphics_t;
 
 namespace Mengine
 {
@@ -173,4 +176,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<GraphicsInterface> GraphicsInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
+    class GraphicsServiceInterface
+        : public ServiceInterface
+    {
+        SERVICE_DECLARE( "GraphicsService" )
+
+    public:
+        virtual gp_graphics_t * getGraphics() const = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
 }
+//////////////////////////////////////////////////////////////////////////
+#define GRAPHICS_SERVICE()\
+    ((Mengine::GraphicsServiceInterface *)SERVICE_GET(Mengine::GraphicsServiceInterface))
+//////////////////////////////////////////////////////////////////////////

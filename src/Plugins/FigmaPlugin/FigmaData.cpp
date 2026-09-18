@@ -1,5 +1,7 @@
 #include "FigmaData.h"
 
+#include "Plugins/GraphicsPlugin/GraphicsInterface.h"
+
 #include "Kernel/AllocatorHelper.h"
 #include "Kernel/Logger.h"
 
@@ -78,11 +80,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FigmaData::loadDocument( const MemoryInterfacePtr & _memory, const FilePath & _sourceName )
     {
+        gp_graphics_t * graphics = GRAPHICS_SERVICE()
+            ->getGraphics();
+
         figma_runtime_desc_t runtimeDesc{};
         runtimeDesc.allocator.alloc = &Detail::figmaAlloc;
         runtimeDesc.allocator.realloc = &Detail::figmaRealloc;
         runtimeDesc.allocator.free = &Detail::figmaFree;
         runtimeDesc.allocator.user_data = nullptr;
+        runtimeDesc.graphics = graphics;
 
         figma_runtime_t * runtime = nullptr;
         figma_result_t createRuntimeResult = figma_runtime_create( FIGMA_SDK_VERSION, &runtimeDesc, &runtime );

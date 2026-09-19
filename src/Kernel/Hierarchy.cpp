@@ -92,7 +92,7 @@ namespace Mengine
 
         if( child_parent == self )
         {
-            if( _hint != EHierarchyInsert::EHI_BACK )
+            if( _hint != EHierarchyInsert::EHI_BACK && _insert != m_children.end() )
             {
                 const NodePtr & insert_hierarchy = *_insert;
 

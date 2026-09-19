@@ -361,7 +361,26 @@ namespace Mengine
             Detail::ZipCentralDirectoryFileHeader header;
             stream->read( &header, sizeof( header ) );
 
-            stream->read( &fileNameBuffer, header.fileNameLen );
+            if( header.fileNameLen > ZIP_MAX_FILEPATH )
+            {
+                LOGGER_ERROR( "zip '%s' file invalid name length [%u] max [%u]"
+                    , _folderPath.c_str()
+                    , header.fileNameLen
+                    , (uint32_t)ZIP_MAX_FILEPATH
+                );
+
+                return false;
+            }
+
+            if( stream->read( fileNameBuffer, header.fileNameLen ) != header.fileNameLen )
+            {
+                LOGGER_ERROR( "zip '%s' file invalid read name [%u]"
+                    , _folderPath.c_str()
+                    , header.fileNameLen
+                );
+
+                return false;
+            }
 
             uint64_t uncompressedSize = header.uncompressedSize;
             uint64_t compressedSize = header.compressedSize;

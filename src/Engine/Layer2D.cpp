@@ -186,7 +186,18 @@ namespace Mengine
             return true;
         }
 
+        if( m_hasImageMask == true )
+        {
+            this->removeImageMask();
+        }
+
         m_resourceImageMask = _resourceImageMask;
+        m_hasImageMask = true;
+
+        if( this->isActivate() == false )
+        {
+            return true;
+        }
 
         if( this->createRenderTarget_() == false )
         {
@@ -195,11 +206,10 @@ namespace Mengine
             );
 
             m_resourceImageMask = nullptr;
+            m_hasImageMask = false;
 
             return false;
         }
-
-        m_hasImageMask = true;
 
         return true;
     }
@@ -220,7 +230,10 @@ namespace Mengine
 
         m_hasImageMask = false;
 
-        this->clearRenderTarget_();
+        if( this->isActivate() == true )
+        {
+            this->clearRenderTarget_();
+        }
 
         m_resourceImageMask = nullptr;
     }

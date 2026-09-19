@@ -177,6 +177,7 @@ namespace Mengine
             .def( "getProductCurrencyCode", &iOSStoreInAppPurchaseProductInterface::getProductCurrencyCode )
             .def( "getProductPriceFormatted", &iOSStoreInAppPurchaseProductInterface::getProductPriceFormatted )
             .def( "getProductPrice", &iOSStoreInAppPurchaseProductInterface::getProductPrice )
+            .def( "getProductSubscriptionPeriod", &iOSStoreInAppPurchaseProductInterface::getProductSubscriptionPeriod )
             ;
 
         pybind::interface_<iOSStoreInAppPurchaseProductsRequestInterface, pybind::bases<Factorable>>( _kernel, "iOSStoreInAppPurchaseProductsRequestInterface", true )

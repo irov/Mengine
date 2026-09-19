@@ -21,6 +21,7 @@ namespace Mengine
         virtual NSString * getProductCurrencyCode() const = 0;
         virtual NSString * getProductPriceFormatted() const = 0;
         virtual double getProductPrice() const = 0;
+        virtual NSString * getProductSubscriptionPeriod() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<iOSStoreInAppPurchaseProductInterface> iOSStoreInAppPurchaseProductInterfacePtr;

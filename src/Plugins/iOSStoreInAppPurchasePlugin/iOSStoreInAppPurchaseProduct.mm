@@ -75,4 +75,30 @@ namespace Mengine
         return [price doubleValue];
     }
     /////////////////////////////////////////////////////////////////////////////
+    NSString * iOSStoreInAppPurchaseProduct::getProductSubscriptionPeriod() const
+    {
+        SKProductSubscriptionPeriod * period = m_skProduct.subscriptionPeriod;
+
+        if( period == nil )
+        {
+            return nil;
+        }
+
+        NSString * unit;
+
+        switch( period.unit )
+        {
+        case SKProductPeriodUnitDay: unit = @"D"; break;
+        case SKProductPeriodUnitWeek: unit = @"W"; break;
+        case SKProductPeriodUnitMonth: unit = @"M"; break;
+        case SKProductPeriodUnitYear: unit = @"Y"; break;
+        default: return nil;
+        }
+
+        NSUInteger units = period.numberOfUnits;
+        NSString * value = [NSString stringWithFormat:@"P%lu%@", (unsigned long)units, unit];
+
+        return value;
+    }
+    /////////////////////////////////////////////////////////////////////////////
 }

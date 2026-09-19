@@ -34,6 +34,7 @@ namespace Mengine
         NSString * getProductCurrencyCode() const override;
         NSString * getProductPriceFormatted() const override;
         double getProductPrice() const override;
+        NSString * getProductSubscriptionPeriod() const override;
 
     protected:
         SKProduct * m_skProduct;

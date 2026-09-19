@@ -43,7 +43,7 @@ namespace Mengine
         EVideoDecoderReadState readNextFrame( float _request, float * const _pts ) override;
 
     protected:
-        bool seekToFrame( float _timing );
+        bool seekToFrame( float _time );
 
     protected:
         size_t readBufferData_();
@@ -56,7 +56,5 @@ namespace Mengine
         theora_comment m_theoraComment = {0};
         theora_info m_theoraInfo = {0};
         mutable theora_state m_theoraState = {0};
-
-        float m_time;
     };
 }

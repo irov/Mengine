@@ -88,7 +88,6 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     TheoraVideoDecoder::TheoraVideoDecoder()
-        : m_time( 0.f )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -264,12 +263,10 @@ namespace Mengine
         m_dataInfo.format = PF_R8G8B8;
         m_dataInfo.clamp = true;
 
-        m_time = 0.f;
-        
         float time;
-        if( this->readNextFrame( 0.f, &time ) == VDRS_FAILURE )
+        if( this->readNextFrame( 0.f, &time ) != VDRS_SUCCESS )
         {
-            return 0;
+            return false;
         }
 
         return true;
@@ -326,7 +323,7 @@ namespace Mengine
 
         const VideoDecoderData * decoderData = static_cast<const VideoDecoderData *>(_decoderData);
 
-        yuv_buffer yuvBuffer;
+        yuv_buffer yuvBuffer{};
         int32_t error_code = theora_decode_YUVout( &m_theoraState, &yuvBuffer );
 
         if( error_code < 0 )
@@ -719,139 +716,103 @@ namespace Mengine
     EVideoDecoderReadState TheoraVideoDecoder::readNextFrame( float _request, float * const _pts )
     {
         MENGINE_UNUSED( _request );
-        MENGINE_UNUSED( _pts );
-
-        EVideoDecoderReadState state = VDRS_SUCCESS;
 
         ogg_packet packet;
 
         for( ;; )
         {
-            int32_t error_packetout = ogg_stream_packetout( &m_oggStreamState, &packet );
+            int32_t packetState = ogg_stream_packetout( &m_oggStreamState, &packet );
 
-            if( error_packetout > 0 )
+            if( packetState > 0 )
             {
                 break;
             }
-            else if( error_packetout < 0 )
+
+            if( packetState < 0 )
             {
                 return VDRS_FAILURE;
             }
 
-            size_t bytes = this->readBufferData_();
+            ogg_page page;
+            int32_t pageState = ogg_sync_pageout( &m_oggSyncState, &page );
 
-            if( bytes == 0 )
+            if( pageState > 0 )
+            {
+                if( ogg_stream_pagein( &m_oggStreamState, &page ) < 0 )
+                {
+                    return VDRS_FAILURE;
+                }
+
+                continue;
+            }
+
+            if( pageState < 0 )
+            {
+                return VDRS_FAILURE;
+            }
+
+            if( this->readBufferData_() == 0 )
             {
                 return VDRS_END_STREAM;
             }
-
-            ogg_page page;
-            while( ogg_sync_pageout( &m_oggSyncState, &page ) > 0 )
-            {
-                ogg_stream_pagein( &m_oggStreamState, &page );
-            }
         }
 
-        if( theora_decode_packetin( &m_theoraState, &packet ) == OC_BADPACKET )
+        if( theora_decode_packetin( &m_theoraState, &packet ) < 0 )
         {
             return VDRS_FAILURE;
         }
 
         double time = theora_granule_time( &m_theoraState, m_theoraState.granulepos );
 
-        m_time = (float)(time * 1000.0);
+        *_pts = (float)(time * 1000.0);
 
-        *_pts = m_time;
-
-        return state;
+        return VDRS_SUCCESS;
     }
     //////////////////////////////////////////////////////////////////////////
     bool TheoraVideoDecoder::seekToFrame( float _time )
     {
-        float frameTiming = 1000.f / m_dataInfo.fps;
-
         for( ;; )
         {
-            ogg_packet packet;
+            float time = this->_tell();
 
-            for( ;; )
+            if( time > _time )
             {
-                int32_t error_packetout = ogg_stream_packetout( &m_oggStreamState, &packet );
-
-                if( error_packetout > 0 )
-                {
-                    break;
-                }
-                else if( error_packetout < 0 )
-                {
-                    return false;
-                }
-
-                size_t bytes = this->readBufferData_();
-
-                if( bytes == 0 )
-                {
-                    return false;
-                }
-
-                ogg_page page;
-                while( ogg_sync_pageout( &m_oggSyncState, &page ) > 0 )
-                {
-                    ogg_stream_pagein( &m_oggStreamState, &page );
-                }
+                return true;
             }
 
-            if( theora_decode_packetin( &m_theoraState, &packet ) == OC_BADPACKET )
+            float pts;
+            EVideoDecoderReadState state = this->readNextFrame( _time, &pts );
+
+            if( state == VDRS_END_STREAM )
+            {
+                return true;
+            }
+
+            if( state != VDRS_SUCCESS )
             {
                 return false;
             }
-
-            double time = theora_granule_time( &m_theoraState, m_theoraState.granulepos );
-
-            float pts = (float)(time * 1000.0);
-
-            if( pts + frameTiming < _time )
-            {
-                continue;
-            }
-
-            m_time = pts;
-
-            break;
-        }       
-
-        return true;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool TheoraVideoDecoder::_seek( float _time )
     {
-        float frameTime = 1000.f / m_dataInfo.fps;
+        int64_t frame = theora_granule_frame( &m_theoraState, m_theoraState.granulepos );
+        double frameTime = (double)m_theoraInfo.fps_denominator / (double)m_theoraInfo.fps_numerator;
 
-        uint32_t frame_time = (uint32_t)(m_time / frameTime);
-        uint32_t frame_seek = (uint32_t)(_time / frameTime);
+        float frameBegin = (float)(frame * frameTime * 1000.0);
 
-        if( frame_time == frame_seek || frame_time == frame_seek + 1 )
-        {
-            return true;
-        }
-
-        if( frame_time > frame_seek )
+        if( _time < frameBegin )
         {
             if( this->_rewind() == false )
             {
                 return false;
             }
-
-            if( frame_seek == 0 )
-            {
-                return true;
-            }
         }
 
-        //bool successful = this->seekToFrame( _time );
-        //return successful;
+        bool successful = this->seekToFrame( _time );
 
-        return true;
+        return successful;
     }
     //////////////////////////////////////////////////////////////////////////
     float TheoraVideoDecoder::_tell() const

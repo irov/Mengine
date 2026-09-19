@@ -244,6 +244,13 @@ namespace Mengine
             ->onAnimationEnd( _enumerator );
     }
     //////////////////////////////////////////////////////////////////////////
+    float SurfaceImageSequence::_getDuration() const
+    {
+        float duration = m_resourceImageSequence->getSequenceDuration();
+
+        return duration;
+    }
+    //////////////////////////////////////////////////////////////////////////
     uint32_t SurfaceImageSequence::getFrame_( float _time, float * const _deltaTime ) const
     {
         if( _time <= 0.f )

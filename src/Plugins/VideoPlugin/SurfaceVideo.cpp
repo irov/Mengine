@@ -9,8 +9,6 @@
 #include "Kernel/EventableHelper.h"
 #include "Kernel/ResourceHelper.h"
 
-#include "Config/StdMath.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -432,11 +430,6 @@ namespace Mengine
         float frameRate = m_resourceVideo->getFrameRate();
         float frameTime = 1000.f / frameRate;
 
-        if( StdMath::fabsf( m_time - _time ) < frameTime )
-        {
-            return;
-        }
-
         float seek_time = _time;
 
         float duration = m_resourceVideo->getDuration();
@@ -450,12 +443,7 @@ namespace Mengine
             m_playIterator -= skipIterator;
         }
 
-        m_time = _time;
-
-        while( m_time > duration )
-        {
-            m_time -= duration;
-        }
+        float previousTime = m_decoderVideo->tell();
 
         if( m_decoderVideo->seek( seek_time ) == false )
         {
@@ -468,7 +456,18 @@ namespace Mengine
             return;
         }
 
-        m_needUpdateVideoBuffer = true;
+        float time = m_decoderVideo->tell();
+
+        m_time = MENGINE_CLAMP( 0.f, _time - time + frameTime, frameTime );
+
+        if( m_updateFirstFrame == true || previousTime != time )
+        {
+            m_needUpdateVideoBuffer = true;
+        }
+
+        m_updateFirstFrame = false;
+
+        this->updateVideoBuffer_();
     }
     ////////////////////////////////////////////////////////////////////
     float SurfaceVideo::_getTime() const

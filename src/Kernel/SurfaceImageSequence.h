@@ -76,6 +76,7 @@ namespace Mengine
     protected:
         void _setTime( float _timming ) override;
         float _getTime() const override;
+        float _getDuration() const override;
 
         void _setFirstFrame() override;
         void _setLastFrame() override;

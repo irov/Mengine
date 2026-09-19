@@ -132,14 +132,16 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
         int width = view.getWidth();
         int height = view.getHeight();
 
-        if (width != 0 && height != 0) {
-            MengineNative.AndroidPlatform_safeAreaViewportEvent(
-                (float)left,
-                (float)top,
-                (float)Math.max(left, width - right),
-                (float)Math.max(top, height - bottom)
-            );
+        if (width == 0 || height == 0) {
+            return;
         }
+
+        MenginePlatformEventQueue.pushSafeAreaViewportEvent(
+            (float)left,
+            (float)top,
+            (float)Math.max(left, width - right),
+            (float)Math.max(top, height - bottom)
+        );
     }
 
     public void handleStart() {

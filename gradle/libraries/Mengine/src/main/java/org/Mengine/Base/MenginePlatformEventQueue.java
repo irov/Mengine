@@ -15,7 +15,7 @@ public class MenginePlatformEventQueue {
 
     public sealed interface PlatformEvent permits
         QuitEvent, PauseEvent, ResumeEvent, StopEvent, StartEvent, RestartEvent, DestroyEvent,
-        FreezeEvent, SurfaceCreateEvent, SurfaceDestroyEvent, SurfaceChangedEvent,
+        FreezeEvent, SurfaceCreateEvent, SurfaceDestroyEvent, SurfaceChangedEvent, SafeAreaViewportEvent,
         ClipboardChangedEvent, WindowFocusChangedEvent, LowMemoryEvent, TrimMemoryEvent, ChangeLocaleEvent,
         IntentStartEvent, IntentNewEvent {
     }
@@ -31,6 +31,7 @@ public class MenginePlatformEventQueue {
     record SurfaceCreateEvent(Surface surface) implements PlatformEvent {}
     record SurfaceDestroyEvent() implements PlatformEvent {}
     record SurfaceChangedEvent(Surface surface, int surfaceWidth, int surfaceHeight, int deviceWidth, int deviceHeight, float rate) implements PlatformEvent {}
+    record SafeAreaViewportEvent(float beginX, float beginY, float endX, float endY) implements PlatformEvent {}
     record ClipboardChangedEvent() implements PlatformEvent {}
     record WindowFocusChangedEvent(boolean focus) implements PlatformEvent {}
     record LowMemoryEvent() implements PlatformEvent {}
@@ -254,6 +255,10 @@ public class MenginePlatformEventQueue {
         MengineNative.AndroidPlatform_unlockActivity();
     }
 
+    public static void pushSafeAreaViewportEvent(float beginX, float beginY, float endX, float endY) {
+        MenginePlatformEventQueue.pushEvent(new SafeAreaViewportEvent(beginX, beginY, endX, endY));
+    }
+
     public static boolean processEvents(@NonNull MengineApplication application) {
         synchronized (m_syncEvents) {
             if (m_events.isEmpty() == true) {
@@ -350,6 +355,17 @@ public class MenginePlatformEventQueue {
                     deviceWidth,
                     deviceHeight,
                     rate
+                );
+            } else if (event instanceof SafeAreaViewportEvent safeAreaViewportEvent) {
+                float safeAreaBeginX = safeAreaViewportEvent.beginX();
+                float safeAreaBeginY = safeAreaViewportEvent.beginY();
+                float safeAreaEndX = safeAreaViewportEvent.endX();
+                float safeAreaEndY = safeAreaViewportEvent.endY();
+                MengineNative.AndroidPlatform_safeAreaViewportEvent(
+                    safeAreaBeginX,
+                    safeAreaBeginY,
+                    safeAreaEndX,
+                    safeAreaEndY
                 );
             } else {
                 MengineLog.logError(TAG, "unknown platform event type: %s", event);

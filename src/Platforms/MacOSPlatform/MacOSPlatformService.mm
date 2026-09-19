@@ -136,6 +136,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t MacOSPlatformService::getCurrentPath( Char * const _currentPath ) const
     {
+        const Char * option_workdir;
+        if( HAS_OPTION_VALUE( "workdir", &option_workdir ) == true )
+        {
+            StdString::strcpy_safe( _currentPath, option_workdir, MENGINE_MAX_PATH );
+            Helper::pathCorrectFolderPathA( _currentPath, MENGINE_PATH_FORWARDSLASH );
+            Helper::pathCorrectBackslashA( _currentPath );
+
+            size_t option_workdir_len = StdString::strlen( _currentPath );
+
+            return option_workdir_len;
+        }
+
         NSString * path = [[NSBundle mainBundle] resourcePath];
 
         if( path == nil )

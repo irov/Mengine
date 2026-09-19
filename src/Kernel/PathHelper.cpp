@@ -6,6 +6,7 @@
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/UnicodeHelper.h"
 
+#include "Config/Path.h"
 #include "Config/StdString.h"
 
 namespace Mengine
@@ -44,7 +45,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         FilePath concatenateFilePath( InitializerList<FilePath> && _paths )
         {
-            Char concatenatePath[MENGINE_MAX_PATH] = {'\0'};
+            Path concatenatePath = {'\0'};
             if( Helper::concatenateFilePath( std::forward<InitializerList<FilePath>>( _paths ), concatenatePath ) == false )
             {
                 return FilePath::none();
@@ -88,8 +89,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         FilePath getFolderPath( const FilePath & _fullpath )
         {
-            Char folderPath[MENGINE_MAX_PATH] = {'\0'};
-
+            Path folderPath = {'\0'};
             size_t folderPathSize = Helper::getFolderPath( _fullpath, folderPath );
 
             FilePath c_folder = Helper::stringizeFilePathSize( folderPath, (FilePath::size_type)folderPathSize );

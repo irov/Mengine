@@ -1,5 +1,7 @@
 package org.Mengine.Base;
 
+import java.util.Objects;
+
 public class MengineFragmentEngine extends MengineFragment<MengineListenerEngine> {
     public static MengineFragmentEngine INSTANCE = null;
 
@@ -51,6 +53,9 @@ public class MengineFragmentEngine extends MengineFragment<MengineListenerEngine
 
     public void caughtException(Throwable throwable) {
         String message = throwable.getMessage();
+
+        message = Objects.requireNonNullElse(message, "");
+
         MengineApplication.INSTANCE.setState("exception.message", message);
 
         String stacktrace = MengineUtils.getThrowableStackTrace(throwable);

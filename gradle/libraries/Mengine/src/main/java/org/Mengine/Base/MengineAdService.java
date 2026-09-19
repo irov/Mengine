@@ -1310,6 +1310,7 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
     @Override
     public void onAdUserRewarded(@NonNull MengineAdMediation mediation, @NonNull MengineAdFormat format, @NonNull String placement, String label, int amount) {
         placement = Objects.requireNonNullElse(placement, "");
+        label = Objects.requireNonNullElse(label, "");
 
         Map<String, Object> params = Map.of("placement", placement, "label", label, "amount", amount);
 

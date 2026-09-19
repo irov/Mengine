@@ -994,7 +994,11 @@ public class MengineActivity extends AppCompatActivity {
             return;
         }
 
-        application.setState("activity.intent_action", intent.getAction() );
+        String action = intent.getAction();
+
+        action = Objects.requireNonNullElse(action, "");
+
+        application.setState("activity.intent_action", action);
 
         MenginePlatformEventQueue.pushIntentNewEvent(intent);
 

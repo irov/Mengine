@@ -213,6 +213,8 @@ public class MengineGoogleAdvertisingPlugin extends MengineService implements Me
             } else {
                 String adInfoAdvertisingId = adInfo.getId();
 
+                adInfoAdvertisingId = Objects.requireNonNullElse(adInfoAdvertisingId, MengineFragmentAdvertisingId.LIMIT_ADVERTISING_ID);
+
                 if (Objects.equals(adInfoAdvertisingId, MengineFragmentAdvertisingId.LIMIT_ADVERTISING_ID) == true) {
                     newAdvertisingId = MengineFragmentAdvertisingId.LIMIT_ADVERTISING_ID;
                     newAdvertisingLimitTrackingEnabled = true;

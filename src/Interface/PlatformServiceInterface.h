@@ -186,7 +186,7 @@ namespace Mengine
 
     public:
         virtual bool setClipboardText( const Char * _value ) const = 0;
-        virtual bool getClipboardText( Char * _value, size_t _capacity ) const = 0;
+        virtual bool getClipboardText( Char * const _value, size_t _capacity ) const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

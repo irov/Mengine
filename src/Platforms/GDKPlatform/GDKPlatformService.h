@@ -149,7 +149,7 @@ namespace Mengine
 
     protected:
         bool setClipboardText( const Char * _value ) const override;
-        bool getClipboardText( Char * _value, size_t _capacity ) const override;
+        bool getClipboardText( Char * const _value, size_t _capacity ) const override;
 
     public:
         bool isDebuggerPresent() const override;

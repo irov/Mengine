@@ -105,7 +105,8 @@ namespace Mengine
         bool m_update;
 
     protected:
-        bool removeScheduler_( SchedulerEventDesc * const _event, bool _callStop );
+        void removeScheduler_( SchedulerEventDesc * const _event );
+        void cancelScheduler_( SchedulerEventDesc * const _event );
         bool findSchedulerEvent_( UniqueId _id, const SchedulerEventDesc ** const _desc ) const;
         bool findSchedulerEvent_( UniqueId _id, SchedulerEventDesc ** const _desc );
     };

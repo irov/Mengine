@@ -113,10 +113,13 @@ namespace Mengine
 
         LayoutBoxElement root;
         root.id = MENGINE_UINT32_C(1);
+        root.parentId = INVALID_UNIQUE_ID;
         root.type = ELayoutBoxElementType::LBET_BOX;
         root.direction = _direction;
         root.cacheSize = 0.f;
         root.weight = 0.f;
+        root.offset = mt::vec2f( 0.f, 0.f );
+        root.size = mt::vec2f( 0.f, 0.f );
         root.getter = nullptr;
         root.setter = nullptr;
 
@@ -240,11 +243,30 @@ namespace Mengine
 
         m_invalidateLayout = false;
 
-        const LayoutBoxElement * root = this->findElement_( m_rootId );
+        LayoutBoxElement * root = this->findElement_( m_rootId );
 
         MENGINE_ASSERTION_MEMORY_PANIC( root, "layout box root is not found" );
 
-        this->resolveBox_( *root, mt::vec2f( 0.f, 0.f ), m_cacheSize );
+        root->offset = mt::vec2f( 0.f, 0.f );
+        root->size = m_cacheSize;
+
+        this->resolveBox_( *root, root->offset, root->size );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void LayoutBox::foreachElement( const LambdaLayoutBoxElement & _lambda ) const
+    {
+        for( const LayoutBoxElement & element : m_elements )
+        {
+            LayoutBoxElementDesc desc;
+            desc.id = element.id;
+            desc.parentId = element.parentId;
+            desc.type = element.type;
+            desc.direction = element.direction;
+            desc.offset = element.offset;
+            desc.size = element.size;
+
+            _lambda( desc );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void LayoutBox::update( const UpdateContext * _context )
@@ -312,6 +334,9 @@ namespace Mengine
         UniqueId id = (UniqueId)m_elements.size() + MENGINE_UINT32_C(1);
 
         _element.id = id;
+        _element.parentId = _parentId;
+        _element.offset = mt::vec2f( 0.f, 0.f );
+        _element.size = mt::vec2f( 0.f, 0.f );
 
         m_elements.emplace_back( StdUtility::move( _element ) );
 
@@ -366,7 +391,7 @@ namespace Mengine
 
         for( UniqueId childId : _box.children )
         {
-            const LayoutBoxElement * child = this->findElement_( childId );
+            LayoutBoxElement * child = this->findElement_( childId );
 
             MENGINE_ASSERTION_MEMORY_PANIC( child, "layout box child '%u' is not found", childId );
 
@@ -397,6 +422,9 @@ namespace Mengine
                 elementOffset.set( _offset.x, _offset.y + carriage );
                 elementRectSize.set( _size.x, elementSize );
             }
+
+            child->offset = elementOffset;
+            child->size = elementRectSize;
 
             if( child->type == ELayoutBoxElementType::LBET_BOX )
             {

@@ -64,6 +64,9 @@ namespace Mengine
         void invalidate() override;
         void flush() override;
 
+    public:
+        void foreachElement( const LambdaLayoutBoxElement & _lambda ) const override;
+
     protected:
         void update( const UpdateContext * _context ) override;
 
@@ -74,21 +77,18 @@ namespace Mengine
         void addPadding_( UniqueId _parentId, float _weight, const DocumentInterfacePtr & _doc );
         LayoutBoxContainerInterfacePtr addBox_( UniqueId _parentId, ELayoutBoxDirection _direction, float _size, const DocumentInterfacePtr & _doc );
 
-        enum class ELayoutBoxElementType
-        {
-            LBET_BOX,
-            LBET_FIXED,
-            LBET_PADDING,
-        };
-
         struct LayoutBoxElement
         {
             UniqueId id;
+            UniqueId parentId;
             ELayoutBoxElementType type;
             ELayoutBoxDirection direction;
 
             float cacheSize;
             float weight;
+
+            mt::vec2f offset;
+            mt::vec2f size;
 
             LayoutBoxElementGetterInterfacePtr getter;
             LayoutBoxElementSetterInterfacePtr setter;

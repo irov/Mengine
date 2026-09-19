@@ -5,6 +5,9 @@
 
 #include "Kernel/IntrusivePtr.h"
 
+#include "Config/UniqueId.h"
+#include "Config/Lambda.h"
+
 #include "math/vec2.h"
 
 namespace Mengine
@@ -15,6 +18,25 @@ namespace Mengine
         ELBD_HORIZONTAL,
         ELBD_VERTICAL,
     };
+    //////////////////////////////////////////////////////////////////////////
+    enum class ELayoutBoxElementType
+    {
+        LBET_BOX,
+        LBET_FIXED,
+        LBET_PADDING,
+    };
+    //////////////////////////////////////////////////////////////////////////
+    struct LayoutBoxElementDesc
+    {
+        UniqueId id;
+        UniqueId parentId;
+        ELayoutBoxElementType type;
+        ELayoutBoxDirection direction;
+        mt::vec2f offset;
+        mt::vec2f size;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef Lambda<void( const LayoutBoxElementDesc & )> LambdaLayoutBoxElement;
     //////////////////////////////////////////////////////////////////////////
     class LayoutBoxSizerInterface
         : public Mixin
@@ -72,6 +94,9 @@ namespace Mengine
     public:
         virtual void invalidate() = 0;
         virtual void flush() = 0;
+
+    public:
+        virtual void foreachElement( const LambdaLayoutBoxElement & _lambda ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<LayoutBoxInterface> LayoutBoxInterfacePtr;

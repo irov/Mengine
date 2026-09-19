@@ -100,23 +100,7 @@
 }
 
 - (NSInteger)parseAdPointTimeInterval:(NSDictionary *)json key:(NSString *)key required:(BOOL)required defaultValue:(NSInteger)defaultValue {
-    id value = [json objectForKey:key];
-
-    if (value == nil) {
-        if (required) {
-            IOS_LOGGER_ERROR(@"[iOSAdvertisementBasePoint] required key not found: %@", key);
-        }
-
-        return defaultValue;
-    }
-
-    if ([value isKindOfClass:[NSNumber class]] == NO) {
-        IOS_LOGGER_ERROR(@"[iOSAdvertisementBasePoint] invalid key NSNumber type: %@, %@", key, NSStringFromClass([value class]));
-
-        return defaultValue;
-    }
-
-    NSInteger resultSec = [value integerValue];
+    NSInteger resultSec = [self parseAdPointInteger:json key:key required:required defaultValue:defaultValue];
 
     NSInteger resultMillisec = resultSec * 1000;
 

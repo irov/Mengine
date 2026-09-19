@@ -359,7 +359,7 @@ namespace Mengine
                     Helper::AndroidPutJObjectMap( _jenv, jmap, jkey, jvalue );
                     Mengine_JNI_DeleteLocalRef( _jenv, jvalue );
                 }, [_jenv, jmap, jkey]( const ParamInteger & _element ) {
-                    jobject jvalue = Helper::AndroidMakeJObjectInteger( _jenv, _element );
+                    jobject jvalue = Helper::AndroidMakeJObjectLong( _jenv, _element );
                     Helper::AndroidPutJObjectMap( _jenv, jmap, jkey, jvalue );
                     Mengine_JNI_DeleteLocalRef( _jenv, jvalue );
                 }, [_jenv, jmap, jkey]( const ParamDouble & _element ) {

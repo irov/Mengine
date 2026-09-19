@@ -12,14 +12,11 @@
 
 - (instancetype)initWithFrame:(CGRect)frame device:(id<MTLDevice>)device;
 
-- (BOOL)beginRender;
-- (BOOL)endRender;
 
 - (NSInteger)drawableWidth;
 - (NSInteger)drawableHeight;
 
 - (id<MTLDevice>)metalDevice;
-- (id<CAMetalDrawable>)currentDrawable;
 
 @end
 

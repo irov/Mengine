@@ -19,6 +19,8 @@
 #include "Interface/RenderFragmentShaderInterface.h"
 #include "Interface/RenderVertexAttributeInterface.h"
 #include "Interface/RenderProgramVariableInterface.h"
+#include "Interface/RenderSurfaceInterface.h"
+#include "Interface/RenderDeviceInterface.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/Unknowable.h"
@@ -79,6 +81,13 @@ namespace Mengine
     public:
         virtual bool createRenderWindow( const RenderWindowDesc * _windowDesc ) = 0;
         virtual void destroyRenderWindow() = 0;
+
+        virtual bool setRenderDevice( const RenderDeviceInterfacePtr & _device ) = 0;
+        virtual const RenderDeviceInterfacePtr & getRenderDevice() const = 0;
+
+    public:
+        virtual RenderSurfaceInterfacePtr createRenderSurface( void * _nativeHandle, const Resolution & _resolution, float _dpiScale, const DocumentInterfacePtr & _doc ) = 0;
+        virtual bool setRenderSurface( const RenderSurfaceInterfacePtr & _surface ) = 0;
 
     public:
         virtual void setProjectionMatrix( const mt::mat4f & _projection ) = 0;

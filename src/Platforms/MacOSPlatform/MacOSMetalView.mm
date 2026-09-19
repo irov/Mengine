@@ -12,7 +12,6 @@
 {
     NSTrackingArea * _trackingArea;
     id<MTLDevice> _device;
-    id<CAMetalDrawable> _currentDrawable;
 }
 
 - (instancetype)initWithFrame:(NSRect)frameRect device:(id<MTLDevice>)device
@@ -23,7 +22,6 @@
     {
         _trackingArea = nil;
         _device = device;
-        _currentDrawable = nil;
 
         CAMetalLayer * metalLayer = [CAMetalLayer layer];
         metalLayer.device = _device;
@@ -119,33 +117,6 @@
     metalLayer.contentsScale = [self.window backingScaleFactor] > 0.0 ? [self.window backingScaleFactor] : [NSScreen mainScreen].backingScaleFactor;
 }
 
-- (BOOL)beginRender
-{
-    if( _device == nil || self.window == nil )
-    {
-        return NO;
-    }
-
-    [self updateDrawableSize_];
-
-    CAMetalLayer * metalLayer = (CAMetalLayer *)self.layer;
-    _currentDrawable = [metalLayer nextDrawable];
-
-    if( _currentDrawable == nil )
-    {
-        return NO;
-    }
-
-    return YES;
-}
-
-- (BOOL)endRender
-{
-    _currentDrawable = nil;
-
-    return YES;
-}
-
 - (void)updateVSync:(BOOL)vsync
 {
     CAMetalLayer * metalLayer = (CAMetalLayer *)self.layer;
@@ -169,11 +140,6 @@
 - (id<MTLDevice>)metalDevice
 {
     return _device;
-}
-
-- (id<CAMetalDrawable>)currentDrawable
-{
-    return _currentDrawable;
 }
 
 @end

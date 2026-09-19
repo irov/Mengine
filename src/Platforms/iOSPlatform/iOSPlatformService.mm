@@ -61,7 +61,6 @@
 
 #import <Metal/Metal.h>
 
-#include "Environment/Metal/MetalRenderSystemExtensionInterface.h"
 
 #import <QuartzCore/QuartzCore.h>
 #import <sys/utsname.h>
@@ -613,33 +612,17 @@ namespace Mengine
             return false;
         }
 
-        if( [m_metalView beginRender] == NO )
-        {
-            return false;
-        }
-
-        id<CAMetalDrawable> drawable = [m_metalView currentDrawable];
-
-        MetalRenderSystemExtensionInterface * renderSystemExtension = RENDER_SYSTEM()
-            ->getUnknown();
-
-        renderSystemExtension->setCurrentDrawable( drawable, drawable.texture );
-
-        bool sucessful = APPLICATION_SERVICE()
+        bool successful = APPLICATION_SERVICE()
             ->render();
 
-        if( sucessful == false )
+        if( successful == false )
         {
-            [m_metalView endRender];
-
             return false;
         }
 
         APPLICATION_SERVICE()
             ->flush();
 
-        [m_metalView endRender];
-        
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

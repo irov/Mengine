@@ -6,6 +6,7 @@ src
     
     DX11RenderImageExtensionInterface.h
     DX11RenderSystemExtensionInterface.h
+    DX11RenderDeviceExtensionInterface.h
 )
 
 ADD_MENGINE_INTERFACE(Environment)

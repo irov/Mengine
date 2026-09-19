@@ -25,6 +25,7 @@
 #include "DX11RenderVertexBuffer.h"
 #include "DX11RenderIndexBuffer.h"
 #include "DX11RenderProgramVariable.h"
+#include "DX11RenderSurface.h"
 
 #include "DX11RenderImageLockedFactoryStorage.h"
 
@@ -43,6 +44,7 @@
 #include "Kernel/Error.h"
 #include "Kernel/PixelFormatHelper.h"
 #include "Kernel/TextureHelper.h"
+#include "Kernel/FactorableUnique.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/OptionHelper.h"
 
@@ -60,7 +62,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DX11RenderSystem::DX11RenderSystem()
         : m_windowFullscreen( true )
-        , m_windowDepth( false )
         , m_adapterToUse( 0 )
         , m_multiSampleCount( 0 )
         , m_vertexBufferEnable( false )
@@ -115,45 +116,20 @@ namespace Mengine
             return false;
         }
 
-        UINT creationFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
+        m_factoryRenderDevice = Helper::makeFactoryPoolWithListener<DX11RenderDevice, 2>( this, &DX11RenderSystem::onDestroyRenderDevice_, MENGINE_DOCUMENT_FACTORABLE );
 
-#ifdef MENGINE_DEBUG
-        creationFlags |= D3D11_CREATE_DEVICE_DEBUG;
-#endif
+        DX11RenderDevicePtr renderDevice = m_factoryRenderDevice->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
-        D3D_FEATURE_LEVEL featureLevels[] =
-        {
-            D3D_FEATURE_LEVEL_11_0
-        };
+        MENGINE_ASSERTION_MEMORY_PANIC( renderDevice, "invalid create render device" );
 
-        // Create the Direct3D 11 API device object and a corresponding context.
-        ID3D11Device * d3dDevice;
-        ID3D11DeviceContext * d3dContext;
-        D3D_FEATURE_LEVEL featureLevel;
-        result = D3D11CreateDevice(
-            adapter, // Specify nullptr to use the default adapter.
-            D3D_DRIVER_TYPE_UNKNOWN,
-            nullptr,
-            creationFlags,
-            featureLevels,
-            ARRAYSIZE( featureLevels ),
-            D3D11_SDK_VERSION, // UWP apps must set this to D3D11_SDK_VERSION.
-            &d3dDevice, // Returns the Direct3D device created.
-            &featureLevel,
-            &d3dContext // Returns the device immediate context.
-        );
-
-        if( FAILED( result ) )
+        if( renderDevice->initialize( adapter ) == false )
         {
             return false;
         }
 
-        m_pD3DDevice.Attach( d3dDevice );
-        m_pD3DDeviceContext.Attach( d3dContext );
-
-        LOGGER_INFO( "render", "Direct3D feature level: 0x%X"
-            , (uint32_t)featureLevel
-        );
+        m_renderDevice = renderDevice;
+        m_pD3DDevice = renderDevice->getDirect3D11Device();
+        m_pD3DDeviceContext = renderDevice->getDirect3D11DeviceContext();
 
         IDXGIOutput * adapterOutput;
         // Enumerate the primary adapter output (monitor).
@@ -224,6 +200,7 @@ namespace Mengine
         m_factoryRenderTargetTexture = Helper::makeFactoryPoolWithListener<DX11RenderTargetTexture, 16>( this, &DX11RenderSystem::onDestroyRenderTargetTexture_, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderTargetOffscreen = Helper::makeFactoryPoolWithListener<DX11RenderTargetOffscreen, 16>( this, &DX11RenderSystem::onDestroyRenderTargetOffscreen_, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderMaterialStageCache = Helper::makeFactoryPoolWithListener<DX11RenderMaterialStageCache, 16>( this, &DX11RenderSystem::onDestroyRenderMaterialStageCache_, MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRenderSurface = Helper::makeFactoryPoolWithListener<DX11RenderSurface, 2>( this, &DX11RenderSystem::onDestroyRenderSurface_, MENGINE_DOCUMENT_FACTORABLE );
 
         DX11RenderImageLockedFactoryStorage::initialize( Helper::makeFactoryPool<DX11RenderImageLocked, 64>( MENGINE_DOCUMENT_FACTORABLE ) );
 
@@ -232,13 +209,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::_finalizeService()
     {
-#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
-        if( m_dxgiSwapChain != NULL )
-        {
-            m_dxgiSwapChain->SetFullscreenState( FALSE, nullptr );
-        }
-#endif
-
         m_deferredCompilePrograms.clear();
 
         if( this->releaseResources_() == false )
@@ -252,11 +222,6 @@ namespace Mengine
 
         m_renderResourceHandlers.clear();
 
-        m_dxgiSwapChain = nullptr;
-        m_renderTargetView = nullptr;
-        m_depthStencilBuffer = nullptr;
-        m_depthStencilView = nullptr;
-
         m_pD3DRasterizerState = nullptr;
 
         // Flush the immediate context to force cleanup
@@ -265,6 +230,8 @@ namespace Mengine
             m_pD3DDeviceContext->Flush();
             m_pD3DDeviceContext = nullptr;
         }
+
+        m_renderDevice = nullptr;
 
         if( m_pD3DDevice != nullptr )
         {
@@ -288,6 +255,8 @@ namespace Mengine
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderTargetTexture );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderTargetOffscreen );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderMaterialStageCache );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderSurface );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderDevice );
 
         m_factoryRenderVertexAttribute = nullptr;
         m_factoryRenderVertexShader = nullptr;
@@ -301,8 +270,23 @@ namespace Mengine
         m_factoryRenderTargetTexture = nullptr;
         m_factoryRenderTargetOffscreen = nullptr;
         m_factoryRenderMaterialStageCache = nullptr;
+        m_factoryRenderSurface = nullptr;
+        m_factoryRenderDevice = nullptr;
 
         DX11RenderImageLockedFactoryStorage::finalize();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DX11RenderSystem::setRenderDevice( const RenderDeviceInterfacePtr & _device )
+    {
+        MENGINE_UNUSED( _device );
+
+        //Direct3D device is created together with the service, external device is not supported
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderDeviceInterfacePtr & DX11RenderSystem::getRenderDevice() const
+    {
+        return m_renderDevice;
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderSystem::createRenderWindow( const RenderWindowDesc * _windowDesc )
@@ -314,51 +298,33 @@ namespace Mengine
         m_windowViewport = Viewport( mt::vec2f::identity(), windowSize );
 
         m_windowFullscreen = _windowDesc->fullscreen;
-        m_windowDepth = _windowDesc->depth;
         m_waitForVSync = _windowDesc->waitForVSync;
         m_multiSampleCount = _windowDesc->MultiSampleCount;
 
-        // Create a DirectX graphics interface factory.
-        // DirectX 11 (for 11.1 or 11.2 need to use other factory)
-        IDXGIFactory2 * dxgiFactory;
-        HRESULT result = CreateDXGIFactory1( __uuidof(IDXGIFactory2), (void **)&dxgiFactory );
-
-        if( FAILED( result ) )
+        if( m_renderSurface == nullptr )
         {
-            LOGGER_ERROR( "invalid create DXGI factory: %s [%x]"
-                , Helper::getDX11ErrorMessage( result )
-                , static_cast<uint32_t>(result)
-            );
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
+            Win32PlatformServiceExtensionInterface * win32Extension = PLATFORM_SERVICE()
+                ->getUnknown();
 
-            return false;
-        }
+            HWND hWnd = win32Extension->getWindowHandle();
+#else
+#   error "unsupported platform"
+#endif
 
-        if( this->createSwapChain_( dxgiFactory ) == false )
-        {
-            LOGGER_ERROR( "invalid create swap chain" );
+            DX11RenderSurfacePtr windowRenderSurface = this->createRenderSurface_( hWnd, m_windowResolution, 1.f, MENGINE_DOCUMENT_FACTORABLE );
 
-            return false;
-        }
+            if( windowRenderSurface == nullptr )
+            {
+                LOGGER_ERROR( "invalid create window render surface" );
 
-        if( this->createRenderTargetView_() == false )
-        {
-            LOGGER_ERROR( "invalid create render target view" );
+                return false;
+            }
 
-            return false;
-        }
+            windowRenderSurface->setVSync( m_waitForVSync );
 
-        if( this->createDepthStencilBuffer_() == false )
-        {
-            LOGGER_ERROR( "invalid create depth stencil buffer" );
-
-            return false;
-        }
-
-        if( this->createDepthStencilView_() == false )
-        {
-            LOGGER_ERROR( "invalid create depth stencil view" );
-
-            return false;
+            m_windowRenderSurface = windowRenderSurface;
+            m_renderSurface = windowRenderSurface;
         }
 
         for( const DX11RenderProgramPtr & program : m_deferredCompilePrograms )
@@ -384,7 +350,36 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::destroyRenderWindow()
     {
-        //ToDo
+        m_renderSurface = nullptr;
+        m_windowRenderSurface = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    RenderSurfaceInterfacePtr DX11RenderSystem::createRenderSurface( void * _nativeHandle, const Resolution & _resolution, float _dpiScale, const DocumentInterfacePtr & _doc )
+    {
+        DX11RenderSurfacePtr surface = this->createRenderSurface_( _nativeHandle, _resolution, _dpiScale, _doc );
+
+        return surface;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DX11RenderSystem::setRenderSurface( const RenderSurfaceInterfacePtr & _surface )
+    {
+        if( m_pD3DDeviceContext == nullptr )
+        {
+            return false;
+        }
+
+        DX11RenderSurfacePtr surface = DX11RenderSurfacePtr::dynamic_from( _surface );
+
+        if( surface == nullptr )
+        {
+            return false;
+        }
+
+        m_renderSurface = surface;
+
+        m_viewport = Viewport( 0.f, 0.f, 0.f, 0.f );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setProjectionMatrix( const mt::mat4f & _projectionMatrix )
@@ -509,11 +504,30 @@ namespace Mengine
 
         renderTargetOffscreen->setDirect3D11Device( m_pD3DDevice );
 
-        ID3D11Texture2D * backBufferPtr;
-        MENGINE_IF_DX11_CALL( m_dxgiSwapChain, GetBuffer, (0, __uuidof(ID3D11Texture2D), reinterpret_cast<void **>(&backBufferPtr)) )
+        MENGINE_ASSERTION_MEMORY_PANIC( m_renderSurface, "render surface not created" );
+
+        ID3D11RenderTargetView * colorTarget = m_renderSurface->getColorTarget();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( colorTarget, "render surface color target not found" );
+
+        ID3D11Resource * colorResource = nullptr;
+        colorTarget->GetResource( &colorResource );
+
+        ID3D11Texture2D * backBufferPtr = nullptr;
+        HRESULT backBufferResult = colorResource->QueryInterface( __uuidof(ID3D11Texture2D), reinterpret_cast<void **>(&backBufferPtr) );
+
+        colorResource->Release();
+
+        if( FAILED( backBufferResult ) )
         {
+            LOGGER_ERROR( "invalid query render surface back buffer: %s [%x]"
+                , Helper::getDX11ErrorMessage( backBufferResult )
+                , static_cast<uint32_t>(backBufferResult)
+            );
+
             return nullptr;
         }
+
 
         if( renderTargetOffscreen->initialize( _width, _height, backBufferPtr ) == false )
         {
@@ -573,70 +587,45 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderSystem::beginScene()
     {
-        // Bind the render target view and depth stencil buffer to the output render pipeline.
-        ID3D11RenderTargetView * d3dRenderTargetViews[1] = {m_renderTargetView.Get()};
-        ID3D11DepthStencilView * depthStencilView = m_depthStencilView.Get();
-        m_pD3DDeviceContext->OMSetRenderTargets( 1, d3dRenderTargetViews, depthStencilView );
+        if( m_renderSurface == nullptr )
+        {
+            return false;
+        }
+
+        if( m_renderSurface->acquire() == false )
+        {
+            return false;
+        }
+
+        if( m_renderSurface->bind( m_pD3DDeviceContext.Get() ) == false )
+        {
+            return false;
+        }
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::endScene()
     {
-        ID3D11RenderTargetView * nullViews[1] = {NULL};
-        m_pD3DDeviceContext->OMSetRenderTargets( 1, nullViews, NULL );
+        if( m_renderSurface == nullptr )
+        {
+            return;
+        }
+
+        m_renderSurface->unbind( m_pD3DDeviceContext.Get() );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::swapBuffers()
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDeviceContext, "device context not found" );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_renderSurface, "render surface not created" );
 
-        // Present the back buffer to the screen since rendering is complete.
+        EDX11PresentResult presentResult = m_renderSurface->present();
 
-        UINT SyncInterval = 1;
-        UINT Flags = 0;
-
-        if( m_waitForVSync == false )
+        if( presentResult == EDX11PR_RECOVERABLE && m_renderSurface == m_windowRenderSurface )
         {
-            SyncInterval = 0;
-            Flags = DXGI_PRESENT_DO_NOT_WAIT;
-        }
-
-        HRESULT hr = m_dxgiSwapChain->Present( SyncInterval, Flags );
-
-        switch( hr )
-        {
-        case ERROR_SUCCESS:
-            {
-                //Empty
-            }break;
-        case DXGI_ERROR_WAS_STILL_DRAWING:
-            {
-                //Empty
-            }break;
-        case DXGI_ERROR_DEVICE_REMOVED:
-            {
-                HRESULT hr_reason = m_pD3DDevice->GetDeviceRemovedReason();
-
-                LOGGER_ERROR( "device removed [%x]: %s"
-                    , (uint32_t)hr_reason
-                    , Helper::getDX11ErrorMessage( hr_reason )
-                );
-            }break;
-        case DXGI_ERROR_DEVICE_RESET:
-            {
-                LOGGER_ERROR( "device reset" );
-            }break;
-        default:
-            {
-                LOGGER_ERROR( "invalid swap chain present [%x]: %s"
-                    , (uint32_t)hr
-                    , Helper::getDX11ErrorMessage( hr )
-                );
-
-                //refresh window
-                this->changeWindowMode( m_windowResolution, m_windowFullscreen );
-            }break;
+            //refresh window
+            this->changeWindowMode( m_windowResolution, m_windowFullscreen );
         }
 
         ++m_frames;
@@ -646,7 +635,12 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDeviceContext, "device context not found" );
 
-        if( (_frameBufferTypes & FBT_COLOR) != 0 )
+        MENGINE_ASSERTION_MEMORY_PANIC( m_renderSurface, "render surface not created" );
+
+        ID3D11RenderTargetView * colorTarget = m_renderSurface->getColorTarget();
+        ID3D11DepthStencilView * depthTarget = m_renderSurface->getDepthTarget();
+
+        if( (_frameBufferTypes & FBT_COLOR) != 0 && colorTarget != nullptr )
         {
             float color[4];
 
@@ -655,7 +649,7 @@ namespace Mengine
             color[2] = _color.getB();
             color[3] = _color.getA();
 
-            m_pD3DDeviceContext->ClearRenderTargetView( m_renderTargetView.Get(), color );
+            m_pD3DDeviceContext->ClearRenderTargetView( colorTarget, color );
         }
 
         UINT depthStencilFlags = 0;
@@ -670,11 +664,11 @@ namespace Mengine
             depthStencilFlags |= D3D11_CLEAR_STENCIL;
         }
 
-        if( depthStencilFlags != 0 )
+        if( depthStencilFlags != 0 && depthTarget != nullptr )
         {
             float d3d_depthf = (float)_depth;
 
-            m_pD3DDeviceContext->ClearDepthStencilView( m_depthStencilView.Get(), depthStencilFlags, d3d_depthf, (UINT8)_stencil );
+            m_pD3DDeviceContext->ClearDepthStencilView( depthTarget, depthStencilFlags, d3d_depthf, (UINT8)_stencil );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -754,19 +748,24 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::changeWindowMode( const Resolution & _resolution, bool _fullscreen )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_dxgiSwapChain, "swap chain not created" );
+        if( m_windowRenderSurface == nullptr )
+        {
+            m_windowResolution = _resolution;
 
-        // Release all outstanding references to the swap chain's buffers.
-        m_renderTargetView = nullptr;
-        m_depthStencilBuffer = nullptr;
-        m_depthStencilView = nullptr;
+            mt::vec2f windowSize;
+            m_windowResolution.calcSize( &windowSize );
 
-#if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_PLATFORM_UWP)
-        MENGINE_IF_DX11_CALL( m_dxgiSwapChain, SetFullscreenState, (_fullscreen, nullptr) )
+            m_windowViewport = Viewport( mt::vec2f::identity(), windowSize );
+
+            this->updateViewport_( m_windowViewport );
+
+            return;
+        }
+
+        if( m_windowRenderSurface->setFullscreen( _fullscreen ) == false )
         {
             return;
         }
-#endif
 
         m_windowFullscreen = _fullscreen;
 
@@ -782,103 +781,27 @@ namespace Mengine
         modeDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
         modeDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 
-        MENGINE_IF_DX11_CALL( m_dxgiSwapChain, ResizeTarget, (&modeDesc) )
+        if( m_windowRenderSurface->resizeTarget( modeDesc ) == false )
         {
             return;
         }
 #endif
 
-        MENGINE_IF_DX11_CALL( m_dxgiSwapChain, ResizeBuffers, (2, resolutionWidth, resolutionHeight, DXGI_FORMAT_B8G8R8A8_UNORM, 0) )
+        float dpiScale = m_windowRenderSurface->getDpiScale();
+
+        if( m_windowRenderSurface->resize( _resolution, dpiScale ) == false )
         {
             return;
         }
 
         m_windowResolution = _resolution;
 
-        // create new render targets
-        // Get the pointer to the back buffer.
-        ID3D11Texture2D * backBuffer;
-        MENGINE_IF_DX11_CALL( m_dxgiSwapChain, GetBuffer, (0, __uuidof(ID3D11Texture2D), reinterpret_cast<void **>(&backBuffer)) )
-        {
-            return;
-        }
-
-        // Create the render target view with the back buffer pointer.
-        ID3D11RenderTargetView * renderTargetView;
-        MENGINE_IF_DX11_CALL( m_pD3DDevice, CreateRenderTargetView, (backBuffer, nullptr, &renderTargetView) )
-        {
-            return;
-        }
-
-        m_renderTargetView.Attach( renderTargetView );
-
-        // Release pointer to the back buffer as we no longer need it.
-        backBuffer->Release();
-        backBuffer = 0;
-
-        // Initialize the description of the depth buffer.
-        D3D11_TEXTURE2D_DESC depthBufferDesc;
-        ZeroMemory( &depthBufferDesc, sizeof( depthBufferDesc ) );
-
-        // Set up the description of the depth buffer.
-        depthBufferDesc.Width = m_windowResolution.getWidth();
-        depthBufferDesc.Height = m_windowResolution.getHeight();
-        depthBufferDesc.MipLevels = 1;
-        depthBufferDesc.ArraySize = 1;
-        depthBufferDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-        depthBufferDesc.SampleDesc.Count = 1;
-        depthBufferDesc.SampleDesc.Quality = 0;
-        depthBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-        depthBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-        depthBufferDesc.CPUAccessFlags = 0;
-        depthBufferDesc.MiscFlags = 0;
-
-        // Create the texture for the depth buffer using the filled out description.
-        ID3D11Texture2D * depthStencilBuffer;
-        MENGINE_IF_DX11_CALL( m_pD3DDevice, CreateTexture2D, (&depthBufferDesc, nullptr, &depthStencilBuffer) )
-        {
-            return;
-        }
-
-        m_depthStencilBuffer.Attach( depthStencilBuffer );
-
-        // Initialize the depth stencil view.
-        D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
-        ZeroMemory( &depthStencilViewDesc, sizeof( depthStencilViewDesc ) );
-
-        // Set up the depth stencil view description.
-        depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-
-        if( m_multiSampleCount <= 1 )
-        {
-            depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-        }
-        else
-        {
-            depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
-        }
-
-        depthStencilViewDesc.Texture2D.MipSlice = 0;
-
-        // Create the depth stencil view.
-        ID3D11DepthStencilView * depthStencilView;
-        MENGINE_IF_DX11_CALL( m_pD3DDevice, CreateDepthStencilView, (m_depthStencilBuffer.Get(), &depthStencilViewDesc, &depthStencilView) )
-        {
-            return;
-        }
-
-        m_depthStencilView.Attach( depthStencilView );
-
         mt::vec2f windowSize;
         m_windowResolution.calcSize( &windowSize );
+
         m_windowViewport = Viewport( mt::vec2f::identity(), windowSize );
 
         this->updateViewport_( m_windowViewport );
-
-        if( this->restore_() == false )
-        {
-            LOGGER_ERROR( "Graphics change mode failed" );
-        }
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t DX11RenderSystem::getAvailableTextureMemory() const
@@ -1011,11 +934,6 @@ namespace Mengine
         ID3D11RenderTargetView * nullViews[1] = {nullptr};
         m_pD3DDeviceContext->OMSetRenderTargets( 1, nullViews, nullptr );
 
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool DX11RenderSystem::restore_()
-    {
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1479,8 +1397,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setVSync( bool _vSync )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_dxgiSwapChain, "swap chain not created" );
-
         if( m_waitForVSync == _vSync )
         {
             return;
@@ -1488,159 +1404,10 @@ namespace Mengine
 
         m_waitForVSync = _vSync;
 
-        if( this->restore_() == false )
+        if( m_renderSurface != nullptr )
         {
-            LOGGER_ERROR( "Graphics change mode failed" );
+            m_renderSurface->setVSync( _vSync );
         }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool DX11RenderSystem::createSwapChain_( IDXGIFactory2 * _dxgiFactory )
-    {
-        // Create Swap Chain
-        DXGI_SWAP_CHAIN_DESC1 swapChainDesc;
-
-        // Initialize the swap chain description.
-        ZeroMemory( &swapChainDesc, sizeof( swapChainDesc ) );
-
-        // Set the width and height of the back buffer.
-        swapChainDesc.Width = m_windowResolution.getWidth();
-        swapChainDesc.Height = m_windowResolution.getHeight();
-
-        // Set regular 32-bit surface for the back buffer.
-        swapChainDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
-        swapChainDesc.Stereo = FALSE;
-
-        // Turn multisampling off.
-        swapChainDesc.SampleDesc.Count = 1;
-        swapChainDesc.SampleDesc.Quality = 0;
-
-        // Set the usage of the back buffer.
-        swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-        swapChainDesc.BufferCount = 2;
-
-        // Set the scan line ordering and scaling to unspecified.
-        swapChainDesc.Scaling = DXGI_SCALING_STRETCH;
-
-        // Discard the back buffer contents after presenting.
-        swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
-        swapChainDesc.AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED;
-
-        // Don't set the advanced flags.
-        swapChainDesc.Flags = 0;
-
-        IDXGISwapChain1 * dxgiSwapChain;
-
-        // Set the handle for the window to render to.
-#if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
-        Win32PlatformServiceExtensionInterface * win32Extension = PLATFORM_SERVICE()
-            ->getUnknown();
-
-        HWND hWnd = win32Extension->getWindowHandle();
-
-        MENGINE_IF_DX11_CALL( _dxgiFactory, CreateSwapChainForHwnd, (m_pD3DDevice.Get(), hWnd, &swapChainDesc, NULL, NULL, &dxgiSwapChain) )
-        {
-            return false;
-        }
-
-        MENGINE_IF_DX11_CALL( _dxgiFactory, MakeWindowAssociation, (hWnd, DXGI_MWA_NO_WINDOW_CHANGES | DXGI_MWA_NO_ALT_ENTER) )
-        {
-            return false;
-        }
-#else
-#   error "unsupported platform"
-#endif
-
-        m_dxgiSwapChain.Attach( dxgiSwapChain );
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool DX11RenderSystem::createRenderTargetView_()
-    {
-        // Get the pointer to the back buffer.
-        ID3D11Texture2D * backBuffer;
-        MENGINE_IF_DX11_CALL( m_dxgiSwapChain, GetBuffer, (0, __uuidof(ID3D11Texture2D), reinterpret_cast<void **>(&backBuffer)) )
-        {
-            return false;
-        }
-
-        // Create the render target view with the back buffer pointer.
-        ID3D11RenderTargetView * renderTargetView;
-        MENGINE_IF_DX11_CALL( m_pD3DDevice, CreateRenderTargetView, (backBuffer, nullptr, &renderTargetView) )
-        {
-            return false;
-        }
-
-        m_renderTargetView.Attach( renderTargetView );
-
-        // Release pointer to the back buffer as we no longer need it.
-        backBuffer->Release();
-        backBuffer = nullptr;
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool DX11RenderSystem::createDepthStencilBuffer_()
-    {
-        // Initialize the description of the depth buffer.
-        D3D11_TEXTURE2D_DESC depthBufferDesc;
-        ZeroMemory( &depthBufferDesc, sizeof( depthBufferDesc ) );
-
-        // Set up the description of the depth buffer.
-        depthBufferDesc.Width = m_windowResolution.getWidth();
-        depthBufferDesc.Height = m_windowResolution.getHeight();
-        depthBufferDesc.MipLevels = 1;
-        depthBufferDesc.ArraySize = 1;
-        depthBufferDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-        depthBufferDesc.SampleDesc.Count = 1;
-        depthBufferDesc.SampleDesc.Quality = 0;
-        depthBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-        depthBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-        depthBufferDesc.CPUAccessFlags = 0;
-        depthBufferDesc.MiscFlags = 0;
-
-        // Create the texture for the depth buffer using the filled out description.
-        ID3D11Texture2D * depthStencilBuffer;
-        MENGINE_IF_DX11_CALL( m_pD3DDevice, CreateTexture2D, (&depthBufferDesc, nullptr, &depthStencilBuffer) )
-        {
-            return false;
-        }
-
-        m_depthStencilBuffer.Attach( depthStencilBuffer );
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool DX11RenderSystem::createDepthStencilView_()
-    {
-        // Initialize the depth stencil view.
-        D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
-        ZeroMemory( &depthStencilViewDesc, sizeof( depthStencilViewDesc ) );
-
-        // Set up the depth stencil view description.
-        depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-
-        if( m_multiSampleCount <= 1 )
-        {
-            depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-        }
-        else
-        {
-            depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
-        }
-
-        depthStencilViewDesc.Texture2D.MipSlice = 0;
-
-        // Create the depth stencil view.
-        ID3D11DepthStencilView * depthStencilView;
-        MENGINE_IF_DX11_CALL( m_pD3DDevice, CreateDepthStencilView, (m_depthStencilBuffer.Get(), &depthStencilViewDesc, &depthStencilView) )
-        {
-            return false;
-        }
-
-        m_depthStencilView.Attach( depthStencilView );
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderSystem::updateRasterizerState_() const
@@ -1741,6 +1508,31 @@ namespace Mengine
     {
         _materialStageCache->finalize();
     }
+    //////////////////////////////////////////////////////////////////////////
+    void DX11RenderSystem::onDestroyRenderSurface_( DX11RenderSurface * _surface )
+    {
+        _surface->finalize();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DX11RenderSystem::onDestroyRenderDevice_( DX11RenderDevice * _device )
+    {
+        _device->finalize();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    DX11RenderSurfacePtr DX11RenderSystem::createRenderSurface_( void * _nativeHandle, const Resolution & _resolution, float _dpiScale, const DocumentInterfacePtr & _doc )
+    {
+        DX11RenderSurfacePtr surface = m_factoryRenderSurface->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( surface, "invalid create render surface" );
+
+        if( surface->initialize( m_pD3DDevice.Get(), _nativeHandle, _resolution, _dpiScale ) == false )
+        {
+            return nullptr;
+        }
+
+        return surface;
+    }
+    //////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::updateWVPInvMatrix_()
     {

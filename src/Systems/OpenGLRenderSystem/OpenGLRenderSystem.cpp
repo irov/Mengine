@@ -304,6 +304,35 @@ namespace Mengine
         NOTIFICATION_NOTIFY( NOTIFICATOR_RENDER_DEVICE_DESTROY );
     }
     //////////////////////////////////////////////////////////////////////////
+    bool OpenGLRenderSystem::setRenderDevice( const RenderDeviceInterfacePtr & _device )
+    {
+        MENGINE_UNUSED( _device );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderDeviceInterfacePtr & OpenGLRenderSystem::getRenderDevice() const
+    {
+        return RenderDeviceInterfacePtr::none();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    RenderSurfaceInterfacePtr OpenGLRenderSystem::createRenderSurface( void * _nativeHandle, const Resolution & _resolution, float _dpiScale, const DocumentInterfacePtr & _doc )
+    {
+        MENGINE_UNUSED( _nativeHandle );
+        MENGINE_UNUSED( _resolution );
+        MENGINE_UNUSED( _dpiScale );
+        MENGINE_UNUSED( _doc );
+
+        return nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool OpenGLRenderSystem::setRenderSurface( const RenderSurfaceInterfacePtr & _surface )
+    {
+        MENGINE_UNUSED( _surface );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setScissor( const Viewport & _viewport )
     {
         mt::mat4f pm;

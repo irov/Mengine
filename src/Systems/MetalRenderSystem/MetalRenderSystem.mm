@@ -1,5 +1,7 @@
 #include "MetalRenderSystem.h"
 
+#include "MetalRenderSurface.h"
+
 #include "MetalRenderImageLockedFactoryStorage.h"
 
 #include "MetalRenderEnum.h"
@@ -30,6 +32,7 @@
 #include "Kernel/TextureHelper.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/FactorableUnique.h"
 
 #include "Config/StdAlgorithm.h"
 
@@ -68,9 +71,6 @@ namespace Mengine
         , m_device( nil )
         , m_commandQueue( nil )
         , m_depthStencilState( nil )
-        , m_depthStencilWidth( 0 )
-        , m_depthStencilHeight( 0 )
-        , m_currentDrawable( nil )
     {
         m_frameContext.frameId = 0;
         m_frameContext.commandBuffer = nil;
@@ -107,6 +107,8 @@ namespace Mengine
         m_factoryRenderProgram = Helper::makeFactoryPoolWithListener<MetalRenderProgram, 16>( this, &MetalRenderSystem::onRenderProgramDestroy_, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderProgramVariableStatic = Helper::makeFactoryPool<MetalRenderProgramVariableStatic, 16>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderProgramVariableDynamic = Helper::makeFactoryPool<MetalRenderProgramVariableDynamic, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRenderSurface = Helper::makeFactoryPoolWithListener<MetalRenderSurface, 2>( this, &MetalRenderSystem::onRenderSurfaceDestroy_, MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRenderDevice = Helper::makeFactoryPoolWithListener<MetalRenderDevice, 2>( this, &MetalRenderSystem::onRenderDeviceDestroy_, MENGINE_DOCUMENT_FACTORABLE );
 
         MetalRenderImageLockedFactoryStorage::initialize( Helper::makeFactoryPool<MetalRenderImageLocked, 16>( MENGINE_DOCUMENT_FACTORABLE ) );
 
@@ -166,6 +168,8 @@ namespace Mengine
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderProgram );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderProgramVariableStatic );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderProgramVariableDynamic );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderSurface );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderDevice );
 
         m_factoryRenderVertexBuffer = nullptr;
         m_factoryRenderIndexBuffer = nullptr;
@@ -178,6 +182,8 @@ namespace Mengine
         m_factoryRenderProgram = nullptr;
         m_factoryRenderProgramVariableStatic = nullptr;
         m_factoryRenderProgramVariableDynamic = nullptr;
+        m_factoryRenderSurface = nullptr;
+        m_factoryRenderDevice = nullptr;
 
         m_frameContext.renderEncoder = nil;
         m_frameContext.renderPassDescriptor = nil;
@@ -185,7 +191,6 @@ namespace Mengine
         m_commandQueue = nil;
         m_depthStencilState = nil;
         m_frameContext.depthStencilTexture = nil;
-        m_currentDrawable = nil;
         m_frameContext.drawableTexture = nil;
         m_device = nil;
 
@@ -210,25 +215,42 @@ namespace Mengine
         m_windowResolution.calcSize( &windowSize );
         m_windowViewport = Viewport( mt::vec2f::identity(), windowSize );
 
+        if( m_renderDevice == nullptr )
+        {
+            id<MTLDevice> platformDevice = nil;
+
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_IOS)
-        iOSPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
-            ->getUnknown();
+            iOSPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+                ->getUnknown();
 
-        m_device = platformExtension->getMetalDevice();
+            platformDevice = platformExtension->getMetalDevice();
 #elif defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
-        MacOSPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
-            ->getUnknown();
+            MacOSPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+                ->getUnknown();
 
-        m_device = platformExtension->getMetalDevice();
-#else
-        m_device = nil;
+            platformDevice = platformExtension->getMetalDevice();
 #endif
 
-        if( m_device == nil )
-        {
-            LOGGER_ERROR( "failed to get Metal device from platform" );
+            if( platformDevice == nil )
+            {
+                LOGGER_ERROR( "failed to get Metal device from platform" );
 
-            return false;
+                return false;
+            }
+
+            MetalRenderDevicePtr renderDevice = m_factoryRenderDevice->createObject( MENGINE_DOCUMENT_FACTORABLE );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( renderDevice, "invalid create render device" );
+
+            if( renderDevice->initialize( platformDevice ) == false )
+            {
+                LOGGER_ERROR( "failed to create Metal render device" );
+
+                return false;
+            }
+
+            m_renderDevice = renderDevice;
+            m_device = platformDevice;
         }
 
         LOGGER_INFO( "metal", "Metal device name: %s"
@@ -310,6 +332,51 @@ namespace Mengine
 
         m_deferredCompilePrograms.clear();
 
+        if( m_renderSurface == nullptr )
+        {
+            CAMetalLayer * windowLayer = nil;
+
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_IOS)
+            iOSPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+                ->getUnknown();
+
+            UIView * metalView = platformExtension->getMetalView();
+
+            windowLayer = (CAMetalLayer *)metalView.layer;
+#elif defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
+            MacOSPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+                ->getUnknown();
+
+            NSView * metalView = platformExtension->getNSView();
+
+            windowLayer = (CAMetalLayer *)metalView.layer;
+#endif
+
+            if( windowLayer == nil )
+            {
+                LOGGER_ERROR( "failed to get Metal layer from platform" );
+
+                return false;
+            }
+
+            void * windowLayerHandle = (__bridge void *)windowLayer;
+            float windowDpiScale = (float)windowLayer.contentsScale;
+
+            MetalRenderSurfacePtr windowRenderSurface = this->createRenderSurface_( windowLayerHandle, m_windowResolution, windowDpiScale, MENGINE_DOCUMENT_FACTORABLE );
+
+            if( windowRenderSurface == nullptr )
+            {
+                LOGGER_ERROR( "failed to create Metal window render surface" );
+
+                return false;
+            }
+
+            windowRenderSurface->setVSync( _windowDesc->waitForVSync );
+
+            m_windowRenderSurface = windowRenderSurface;
+            m_renderSurface = windowRenderSurface;
+        }
+
         m_renderWindowCreate = true;
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_RENDER_DEVICE_CREATE );
@@ -319,9 +386,75 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MetalRenderSystem::destroyRenderWindow()
     {
+        m_renderSurface = nullptr;
+        m_windowRenderSurface = nullptr;
+
+        m_renderDevice = nullptr;
+        m_device = nil;
+
         m_renderWindowCreate = false;
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_RENDER_DEVICE_DESTROY );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool MetalRenderSystem::setRenderDevice( const RenderDeviceInterfacePtr & _device )
+    {
+        if( m_renderWindowCreate == true )
+        {
+            return false;
+        }
+
+        if( _device == nullptr )
+        {
+            return false;
+        }
+
+        MetalRenderDeviceExtensionInterface * deviceExtension = _device->getUnknown();
+
+        id<MTLDevice> device = deviceExtension->getMetalDevice();
+
+        if( device == nil )
+        {
+            return false;
+        }
+
+        m_renderDevice = _device;
+        m_device = device;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderDeviceInterfacePtr & MetalRenderSystem::getRenderDevice() const
+    {
+        return m_renderDevice;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    RenderSurfaceInterfacePtr MetalRenderSystem::createRenderSurface( void * _nativeHandle, const Resolution & _resolution, float _dpiScale, const DocumentInterfacePtr & _doc )
+    {
+        MetalRenderSurfacePtr surface = this->createRenderSurface_( _nativeHandle, _resolution, _dpiScale, _doc );
+
+        return surface;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool MetalRenderSystem::setRenderSurface( const RenderSurfaceInterfacePtr & _surface )
+    {
+        if( m_frameContext.commandBuffer != nil )
+        {
+            return false;
+        }
+
+        MetalRenderSurfacePtr surface = MetalRenderSurfacePtr::dynamic_from( _surface );
+
+        if( surface == nullptr )
+        {
+            return false;
+        }
+
+        m_renderSurface = surface;
+
+        m_viewport = Viewport( 0.f, 0.f, 0.f, 0.f );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void MetalRenderSystem::setScissor( const Viewport & _viewport )
@@ -959,8 +1092,23 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MetalRenderSystem::beginScene()
     {
+        if( m_renderSurface == nullptr )
+        {
+            return false;
+        }
+
+        if( m_renderSurface->acquire() == false )
+        {
+            return false;
+        }
+
+        m_frameContext.drawableTexture = m_renderSurface->getColorTexture();
+        m_frameContext.depthStencilTexture = m_renderSurface->getDepthTexture();
+
         if( m_frameContext.drawableTexture == nil )
         {
+            m_renderSurface->release();
+
             return false;
         }
 
@@ -968,18 +1116,12 @@ namespace Mengine
 
         if( m_frameContext.commandBuffer == nil )
         {
+            m_renderSurface->release();
+
             return false;
         }
 
         ++m_frameContext.frameId;
-
-        NSUInteger drawableWidth = [m_frameContext.drawableTexture width];
-        NSUInteger drawableHeight = [m_frameContext.drawableTexture height];
-
-        if( m_frameContext.depthStencilTexture == nil || m_depthStencilWidth != (uint32_t)drawableWidth || m_depthStencilHeight != (uint32_t)drawableHeight )
-        {
-            this->createDepthStencilTexture_( (uint32_t)drawableWidth, (uint32_t)drawableHeight );
-        }
 
         m_frameContext.colorAttachmentPixelFormat = m_frameContext.drawableTexture.pixelFormat;
         m_frameContext.depthAttachmentPixelFormat = m_frameContext.depthStencilTexture != nil
@@ -1001,7 +1143,6 @@ namespace Mengine
             renderPassDescriptor.depthAttachment.loadAction = MTLLoadActionClear;
             renderPassDescriptor.depthAttachment.storeAction = MTLStoreActionStore;
             renderPassDescriptor.depthAttachment.clearDepth = m_clearDepth;
-
             renderPassDescriptor.stencilAttachment.texture = m_frameContext.depthStencilTexture;
             renderPassDescriptor.stencilAttachment.loadAction = MTLLoadActionClear;
             renderPassDescriptor.stencilAttachment.storeAction = MTLStoreActionStore;
@@ -1009,13 +1150,14 @@ namespace Mengine
         }
 
         m_frameContext.renderPassDescriptor = renderPassDescriptor;
-
         m_frameContext.renderEncoder = [m_frameContext.commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
 
         if( m_frameContext.renderEncoder == nil )
         {
             m_frameContext.renderPassDescriptor = nil;
             m_frameContext.commandBuffer = nil;
+
+            m_renderSurface->release();
 
             return false;
         }
@@ -1038,9 +1180,9 @@ namespace Mengine
     {
         if( m_frameContext.commandBuffer != nil )
         {
-            if( m_currentDrawable != nil )
+            if( m_renderSurface->present( m_frameContext.commandBuffer ) == false )
             {
-                [m_frameContext.commandBuffer presentDrawable:m_currentDrawable];
+                LOGGER_ERROR( "invalid Metal render surface present" );
             }
 
             [m_frameContext.commandBuffer commit];
@@ -1049,13 +1191,14 @@ namespace Mengine
             // Wait until Metal has consumed them before the CPU overwrites
             // their shared storage.
             [m_frameContext.commandBuffer waitUntilCompleted];
-
             m_frameContext.commandBuffer = nil;
+
+            m_renderSurface->release();
         }
 
-        m_currentDrawable = nil;
         m_frameContext.renderPassDescriptor = nil;
         m_frameContext.drawableTexture = nil;
+        m_frameContext.depthStencilTexture = nil;
     }
     //////////////////////////////////////////////////////////////////////////
     void MetalRenderSystem::clearFrameBuffer( uint32_t _frameBufferTypes, const Color & _color, double _depth, int32_t _stencil )
@@ -1084,9 +1227,25 @@ namespace Mengine
 
         mt::vec2f windowSize;
         m_windowResolution.calcSize( &windowSize );
+
         m_windowViewport = Viewport( mt::vec2f::identity(), windowSize );
 
         m_viewport = Viewport( 0.f, 0.f, 0.f, 0.f );
+
+        if( m_windowRenderSurface == nullptr )
+        {
+            return;
+        }
+
+        float dpiScale = m_windowRenderSurface->getDpiScale();
+
+        if( m_windowRenderSurface->resize( m_windowResolution, dpiScale ) == false )
+        {
+            LOGGER_ERROR( "invalid resize Metal window render surface %u:%u"
+                , m_windowResolution.getWidth()
+                , m_windowResolution.getHeight()
+            );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t MetalRenderSystem::getMaxCombinedTextureImageUnits() const
@@ -1162,9 +1321,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MetalRenderSystem::setVSync( bool _vSync )
     {
-        MENGINE_UNUSED( _vSync );
+        if( m_renderSurface == nullptr )
+        {
+            return;
+        }
 
-        //Empty
+        m_renderSurface->setVSync( _vSync );
     }
     //////////////////////////////////////////////////////////////////////////
     RenderTargetInterfacePtr MetalRenderSystem::createRenderTargetTexture( uint32_t _width, uint32_t _height, EPixelFormat _format, const DocumentInterfacePtr & _doc )
@@ -1255,12 +1417,6 @@ namespace Mengine
         return m_frameContext.renderPassDescriptor;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MetalRenderSystem::setCurrentDrawable( id<MTLDrawable> _drawable, id<MTLTexture> _drawableTexture )
-    {
-        m_currentDrawable = _drawable;
-        m_frameContext.drawableTexture = _drawableTexture;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void MetalRenderSystem::onRenderVertexBufferDestroy_( MetalRenderVertexBuffer * _vertexBuffer )
     {
         _vertexBuffer->finalize();
@@ -1307,6 +1463,30 @@ namespace Mengine
         }
 
         _program->finalize();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MetalRenderSystem::onRenderSurfaceDestroy_( MetalRenderSurface * _surface )
+    {
+        _surface->finalize();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MetalRenderSystem::onRenderDeviceDestroy_( MetalRenderDevice * _device )
+    {
+        _device->finalize();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MetalRenderSurfacePtr MetalRenderSystem::createRenderSurface_( void * _nativeHandle, const Resolution & _resolution, float _dpiScale, const DocumentInterfacePtr & _doc )
+    {
+        MetalRenderSurfacePtr surface = m_factoryRenderSurface->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( surface, "invalid create render surface" );
+
+        if( surface->initialize( m_device, _nativeHandle, _resolution, _dpiScale ) == false )
+        {
+            return nullptr;
+        }
+
+        return surface;
     }
     //////////////////////////////////////////////////////////////////////////
     void MetalRenderSystem::updatePMWMatrix_()
@@ -1373,38 +1553,6 @@ namespace Mengine
         m_samplerStates[minFilter][magFilter][mipFilter][sAddressMode][tAddressMode] = samplerState;
 
         return samplerState;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MetalRenderSystem::createDepthStencilTexture_( uint32_t _width, uint32_t _height )
-    {
-        if( _width == 0 || _height == 0 )
-        {
-            return;
-        }
-
-        MTLTextureDescriptor * dsDesc = [[MTLTextureDescriptor alloc] init];
-        dsDesc.textureType = MTLTextureType2D;
-        dsDesc.pixelFormat = MTLPixelFormatDepth32Float_Stencil8;
-        dsDesc.width = _width;
-        dsDesc.height = _height;
-        dsDesc.usage = MTLTextureUsageRenderTarget;
-        dsDesc.storageMode = MTLStorageModePrivate;
-
-        id<MTLTexture> dsTexture = [m_device newTextureWithDescriptor:dsDesc];
-
-        if( dsTexture == nil )
-        {
-            LOGGER_ERROR( "failed to create depth/stencil texture %u:%u"
-                , _width
-                , _height
-            );
-
-            return;
-        }
-
-        m_frameContext.depthStencilTexture = dsTexture;
-        m_depthStencilWidth = _width;
-        m_depthStencilHeight = _height;
     }
     //////////////////////////////////////////////////////////////////////////
 }

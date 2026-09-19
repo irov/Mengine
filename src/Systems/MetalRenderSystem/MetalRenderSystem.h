@@ -8,6 +8,8 @@
 #include "MetalRenderImage.h"
 #include "MetalRenderImageTarget.h"
 #include "MetalRenderTargetTexture.h"
+#include "MetalRenderSurface.h"
+#include "MetalRenderDevice.h"
 #include "MetalRenderVertexAttribute.h"
 #include "MetalRenderVertexBuffer.h"
 #include "MetalRenderIndexBuffer.h"
@@ -51,6 +53,12 @@ namespace Mengine
     public:
         bool createRenderWindow( const RenderWindowDesc * _windowDesc ) override;
         void destroyRenderWindow() override;
+        bool setRenderDevice( const RenderDeviceInterfacePtr & _device ) override;
+        const RenderDeviceInterfacePtr & getRenderDevice() const override;
+
+    public:
+        RenderSurfaceInterfacePtr createRenderSurface( void * _nativeHandle, const Resolution & _resolution, float _dpiScale, const DocumentInterfacePtr & _doc ) override;
+        bool setRenderSurface( const RenderSurfaceInterfacePtr & _surface ) override;
 
     public:
         void setViewMatrix( const mt::mat4f & _view ) override;
@@ -143,9 +151,6 @@ namespace Mengine
         id<MTLRenderCommandEncoder> getMetalRenderCommandEncoder() const override;
         MTLRenderPassDescriptor * getMetalRenderPassDescriptor() const override;
 
-    public:
-        void setCurrentDrawable( id<MTLDrawable> _drawable, id<MTLTexture> _drawableTexture ) override;
-
     protected:
         void findFormatFromChannels_( EPixelFormat _format, EPixelFormat * const _hwFormat ) const;
 
@@ -158,11 +163,15 @@ namespace Mengine
         void onRenderVertexShaderDestroy_( MetalRenderVertexShader * _vertexShader );
         void onRenderFragmentShaderDestroy_( MetalRenderFragmentShader * _fragmentShader );
         void onRenderProgramDestroy_( MetalRenderProgram * _program );
+        void onRenderSurfaceDestroy_( MetalRenderSurface * _surface );
+
+    protected:
+        MetalRenderSurfacePtr createRenderSurface_( void * _nativeHandle, const Resolution & _resolution, float _dpiScale, const DocumentInterfacePtr & _doc );
+        void onRenderDeviceDestroy_( MetalRenderDevice * _device );
 
     protected:
         void updatePMWMatrix_();
         void updateDepthStencilState_();
-        void createDepthStencilTexture_( uint32_t _width, uint32_t _height );
 
     protected:
         ConstString m_renderPlatform;
@@ -176,6 +185,8 @@ namespace Mengine
 
         Resolution m_windowResolution;
         Viewport m_windowViewport;
+        MetalRenderSurfacePtr m_windowRenderSurface;
+        MetalRenderSurfacePtr m_renderSurface;
 
         MetalRenderProgramPtr m_currentProgram;
         MetalRenderProgramVariableInterfacePtr m_currentProgramVariable;
@@ -240,16 +251,13 @@ namespace Mengine
         bool m_colorMaskB;
         bool m_colorMaskA;
 
+        RenderDeviceInterfacePtr m_renderDevice;
+
         id<MTLDevice> m_device;
         id<MTLCommandQueue> m_commandQueue;
         id<MTLDepthStencilState> m_depthStencilState;
 
         MetalRenderFrameContext m_frameContext;
-
-        uint32_t m_depthStencilWidth;
-        uint32_t m_depthStencilHeight;
-
-        id<MTLDrawable> m_currentDrawable;
 
         FactoryInterfacePtr m_factoryRenderVertexBuffer;
         FactoryInterfacePtr m_factoryRenderIndexBuffer;
@@ -262,5 +270,7 @@ namespace Mengine
         FactoryInterfacePtr m_factoryRenderProgram;
         FactoryInterfacePtr m_factoryRenderProgramVariableStatic;
         FactoryInterfacePtr m_factoryRenderProgramVariableDynamic;
+        FactoryInterfacePtr m_factoryRenderSurface;
+        FactoryInterfacePtr m_factoryRenderDevice;
     };
 }

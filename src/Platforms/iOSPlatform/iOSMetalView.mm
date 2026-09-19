@@ -5,7 +5,6 @@
 @implementation iOSMetalView
 {
     id<MTLDevice> _device;
-    id<CAMetalDrawable> _currentDrawable;
 }
 
 + (Class)layerClass
@@ -20,7 +19,6 @@
     if( self != nil )
     {
         _device = device;
-        _currentDrawable = nil;
 
         CAMetalLayer * metalLayer = (CAMetalLayer *)self.layer;
         metalLayer.device = _device;
@@ -33,31 +31,6 @@
     }
 
     return self;
-}
-
-- (BOOL)beginRender
-{
-    if( _device == nil )
-    {
-        return NO;
-    }
-
-    CAMetalLayer * metalLayer = (CAMetalLayer *)self.layer;
-    _currentDrawable = [metalLayer nextDrawable];
-
-    if( _currentDrawable == nil )
-    {
-        return NO;
-    }
-
-    return YES;
-}
-
-- (BOOL)endRender
-{
-    _currentDrawable = nil;
-
-    return YES;
 }
 
 - (NSInteger)drawableWidth
@@ -77,11 +50,6 @@
 - (id<MTLDevice>)metalDevice
 {
     return _device;
-}
-
-- (id<CAMetalDrawable>)currentDrawable
-{
-    return _currentDrawable;
 }
 
 - (void)layoutSubviews

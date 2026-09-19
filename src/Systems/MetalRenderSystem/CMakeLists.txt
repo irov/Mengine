@@ -4,6 +4,10 @@ ADD_FILTER(
 src
     MetalRenderSystem.mm
     MetalRenderSystem.h
+    MetalRenderSurface.mm
+    MetalRenderSurface.h
+    MetalRenderDevice.mm
+    MetalRenderDevice.h
     MetalRenderEnum.mm
     MetalRenderEnum.h
     MetalRenderResourceHandler.mm

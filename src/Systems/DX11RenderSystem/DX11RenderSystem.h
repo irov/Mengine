@@ -7,6 +7,8 @@
 #include "Environment/DirectX11/DX11RenderSystemExtensionInterface.h"
 
 #include "DX11RenderResourceHandler.h"
+#include "DX11RenderSurface.h"
+#include "DX11RenderDevice.h"
 
 #include "Kernel/IntrusiveList.h"
 #include "Kernel/ServiceBase.h"
@@ -49,6 +51,12 @@ namespace Mengine
     public:
         bool createRenderWindow( const RenderWindowDesc * _windowDesc ) override;
         void destroyRenderWindow() override;
+        bool setRenderDevice( const RenderDeviceInterfacePtr & _device ) override;
+        const RenderDeviceInterfacePtr & getRenderDevice() const override;
+
+    public:
+        RenderSurfaceInterfacePtr createRenderSurface( void * _nativeHandle, const Resolution & _resolution, float _dpiScale, const DocumentInterfacePtr & _doc ) override;
+        bool setRenderSurface( const RenderSurfaceInterfacePtr & _surface ) override;
 
     public:
         void setProjectionMatrix( const mt::mat4f & _projection ) override;
@@ -142,12 +150,6 @@ namespace Mengine
         const ID3D11DeviceContextPtr & getDirect3D11DeviceContext() const override;
 
     protected:
-        bool createSwapChain_( IDXGIFactory2 * _dxgiFactory );
-        bool createRenderTargetView_();
-        bool createDepthStencilBuffer_();
-        bool createDepthStencilView_();
-
-    protected:
         bool updateRasterizerState_() const;
 
     protected:
@@ -166,21 +168,17 @@ namespace Mengine
         Resolution m_windowResolution;
         Viewport m_windowViewport;
         bool m_windowFullscreen;
-        bool m_windowDepth;
+
+        RenderDeviceInterfacePtr m_renderDevice;
 
         ID3D11DevicePtr m_pD3DDevice;
         ID3D11DeviceContextPtr m_pD3DDeviceContext;
 
-        DXGI_MODE_DESC m_dxgiSwapChainBufferDesc;
-        IDXGISwapChainPtr m_dxgiSwapChain;        
+        DX11RenderSurfacePtr m_windowRenderSurface;
+        DX11RenderSurfacePtr m_renderSurface;
 
         typedef Vector<DXGI_MODE_DESC> VectorModeDescs;
         VectorModeDescs m_DisplayModeList;
-
-        ID3D11RenderTargetViewPtr m_renderTargetView;
-
-        ID3D11Texture2DPtr m_depthStencilBuffer;
-        ID3D11DepthStencilViewPtr m_depthStencilView;
 
         // sync routines
         uint32_t m_frames;
@@ -192,7 +190,6 @@ namespace Mengine
 
     protected:
         bool releaseResources_();
-        bool restore_();
 
     protected:
         void onDestroyVertexAttribute_( DX11RenderVertexAttribute * _attribute );
@@ -206,6 +203,11 @@ namespace Mengine
         void onDestroyRenderTargetTexture_( DX11RenderTargetTexture * _targetTexture );
         void onDestroyRenderTargetOffscreen_( DX11RenderTargetOffscreen * _targetOffscreen );
         void onDestroyRenderMaterialStageCache_( DX11RenderMaterialStageCache * _materialStageCache );
+        void onDestroyRenderSurface_( DX11RenderSurface * _surface );
+        void onDestroyRenderDevice_( DX11RenderDevice * _device );
+
+    protected:
+        DX11RenderSurfacePtr createRenderSurface_( void * _nativeHandle, const Resolution & _resolution, float _dpiScale, const DocumentInterfacePtr & _doc );
 
     protected:
         void updateWVPInvMatrix_();
@@ -228,6 +230,8 @@ namespace Mengine
         FactoryInterfacePtr m_factoryRenderTargetTexture;
         FactoryInterfacePtr m_factoryRenderTargetOffscreen;
         FactoryInterfacePtr m_factoryRenderMaterialStageCache;
+        FactoryInterfacePtr m_factoryRenderSurface;
+        FactoryInterfacePtr m_factoryRenderDevice;
 
         typedef Vector<DX11RenderProgramPtr> VectorRenderPrograms;
         VectorRenderPrograms m_deferredCompilePrograms;

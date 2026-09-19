@@ -39,6 +39,12 @@ namespace Mengine
     public:
         bool createRenderWindow( const RenderWindowDesc * _windowDesc ) override;
         void destroyRenderWindow() override;
+        bool setRenderDevice( const RenderDeviceInterfacePtr & _device ) override;
+        const RenderDeviceInterfacePtr & getRenderDevice() const override;
+
+    public:
+        RenderSurfaceInterfacePtr createRenderSurface( void * _nativeHandle, const Resolution & _resolution, float _dpiScale, const DocumentInterfacePtr & _doc ) override;
+        bool setRenderSurface( const RenderSurfaceInterfacePtr & _surface ) override;
 
     public:
         void setProjectionMatrix( const mt::mat4f & _projection ) override;

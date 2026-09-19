@@ -4,6 +4,10 @@ ADD_FILTER(
 src
     DX11RenderSystem.h
     DX11RenderSystem.cpp
+    DX11RenderSurface.h
+    DX11RenderSurface.cpp
+    DX11RenderDevice.h
+    DX11RenderDevice.cpp
     DX11RenderImage.h
     DX11RenderImage.cpp
     DX11RenderImageTarget.h

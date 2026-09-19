@@ -48,7 +48,6 @@
 #import <CoreGraphics/CoreGraphics.h>
 #import <sys/utsname.h>
 
-#import "Environment/Metal/MetalRenderSystemExtensionInterface.h"
 
 #include <clocale>
 #include <ctime>
@@ -554,39 +553,16 @@ namespace Mengine
             return false;
         }
 
-        if( [m_metalView beginRender] == NO )
-        {
-            return false;
-        }
-
-        id<CAMetalDrawable> drawable = [m_metalView currentDrawable];
-
-        if( drawable == nil )
-        {
-            [m_metalView endRender];
-
-            return false;
-        }
-
-        MetalRenderSystemExtensionInterface * renderSystemExtension = RENDER_SYSTEM()
-            ->getUnknown();
-
-        renderSystemExtension->setCurrentDrawable( drawable, drawable.texture );
-
         bool successful = APPLICATION_SERVICE()
             ->render();
 
         if( successful == false )
         {
-            [m_metalView endRender];
-
             return false;
         }
 
         APPLICATION_SERVICE()
             ->flush();
-
-        [m_metalView endRender];
 
         return true;
     }
@@ -1512,7 +1488,12 @@ namespace Mengine
 
         m_metalView = metalView;
 
-        [m_metalView updateVSync:APPLICATION_SERVICE()->getVSync() == true ? YES : NO];
+        bool vsync = APPLICATION_SERVICE()
+            ->getVSync();
+
+        BOOL updateVSync = vsync == true ? YES : NO;
+
+        [m_metalView updateVSync:updateVSync];
 
         LOGGER_INFO( "platform", "macOS Metal device: %s"
             , [[m_metalDevice name] UTF8String]

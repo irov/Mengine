@@ -167,6 +167,35 @@ namespace Mengine
         NOTIFICATION_NOTIFY( NOTIFICATOR_RENDER_DEVICE_DESTROY );
     }
     //////////////////////////////////////////////////////////////////////////
+    bool MockupRenderSystem::setRenderDevice( const RenderDeviceInterfacePtr & _device )
+    {
+        MENGINE_UNUSED( _device );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderDeviceInterfacePtr & MockupRenderSystem::getRenderDevice() const
+    {
+        return RenderDeviceInterfacePtr::none();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    RenderSurfaceInterfacePtr MockupRenderSystem::createRenderSurface( void * _nativeHandle, const Resolution & _resolution, float _dpiScale, const DocumentInterfacePtr & _doc )
+    {
+        MENGINE_UNUSED( _nativeHandle );
+        MENGINE_UNUSED( _resolution );
+        MENGINE_UNUSED( _dpiScale );
+        MENGINE_UNUSED( _doc );
+
+        return nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool MockupRenderSystem::setRenderSurface( const RenderSurfaceInterfacePtr & _surface )
+    {
+        MENGINE_UNUSED( _surface );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void MockupRenderSystem::setProjectionMatrix( const mt::mat4f & _projectionMatrix )
     {
         m_projectionMatrix = _projectionMatrix;

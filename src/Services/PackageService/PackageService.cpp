@@ -276,6 +276,21 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void PackageService::unloadPackages()
+    {
+        for( const PackageInterfacePtr & package : m_packages )
+        {
+            if( package->isEnable() == true )
+            {
+                package->disable();
+            }
+
+            package->finalize();
+        }
+
+        m_packages.clear();
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool PackageService::hasPackage( const ConstString & _name ) const
     {
         for( const PackageInterfacePtr & package : m_packages )

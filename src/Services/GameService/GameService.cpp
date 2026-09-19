@@ -429,6 +429,9 @@ namespace Mengine
 
         EVENTABLE_METHOD( EVENT_GAME_STOP )
             ->onGameStop();
+
+        m_userEventsAdd.clear();
+        m_userEvents.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     void GameService::initializeRenderResources()

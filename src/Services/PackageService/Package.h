@@ -40,6 +40,9 @@ namespace Mengine
         bool disable() override;
 
     public:
+        const VectorPackageResourceDesc & getResourceDescriptions() const override;
+
+    public:
         bool isLoad() const override;
         bool isEnable() const override;
 
@@ -62,7 +65,6 @@ namespace Mengine
         bool loadPackage_( const DocumentInterfacePtr & _doc );
 
     protected:
-        typedef Vector<PackageResourceDesc> VectorPackageResourceDesc;
         VectorPackageResourceDesc m_resourcesDesc;
 
         PackageInterfacePtr m_parentPackage;

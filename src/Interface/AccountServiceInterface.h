@@ -27,6 +27,7 @@ namespace Mengine
 
     public:
         virtual bool loadAccounts() = 0;
+        virtual void unloadAccounts() = 0;
         virtual bool saveAccounts() = 0;
 
     public:

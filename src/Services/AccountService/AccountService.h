@@ -39,6 +39,7 @@ namespace Mengine
 
     public:
         bool loadAccounts() override;
+        void unloadAccounts() override;
         bool saveAccounts() override;
 
     protected:

@@ -703,6 +703,22 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void AccountService::unloadAccounts()
+    {
+        m_currentAccountId.clear();
+        m_globalAccountId.clear();
+        m_defaultAccountId.clear();
+
+        for( const HashtableAccounts::value_type & value : m_accounts )
+        {
+            value.element->finalize();
+        }
+
+        m_accounts.clear();
+        m_playerEnumerator = 0;
+        m_invalidateAccounts = false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     ConfigInterfacePtr AccountService::getLoadSettingConfig_() const
     {
         FilePath settingsJSONPath = Helper::stringizeFilePath( MENGINE_ACCOUNTS_SETTINGS_JSON_PATH );

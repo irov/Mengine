@@ -15,6 +15,7 @@ namespace Mengine
 
     public:
         virtual bool registerAttribution( const ConstString & _name, EAttributionType _type ) = 0;
+        virtual bool unregisterAttribution( const ConstString & _name ) = 0;
 
     public:
         virtual bool setAttribution( const ConstString & _name, const ParamVariant & _value ) = 0;

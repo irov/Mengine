@@ -24,6 +24,7 @@ namespace Mengine
 
     public:
         bool loadPackages( const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc ) override;
+        void unloadPackages() override;
 
     public:
         bool hasPackage( const ConstString & _name ) const override;

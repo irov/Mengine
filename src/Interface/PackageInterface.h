@@ -8,6 +8,7 @@
 #include "Kernel/Tags.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/VectorConstString.h"
+#include "Kernel/Vector.h"
 
 #include "Kernel/PackageDesc.h"
 
@@ -24,6 +25,8 @@ namespace Mengine
         bool demand;
         bool ignored;
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef Vector<PackageResourceDesc> VectorPackageResourceDesc;
     //////////////////////////////////////////////////////////////////////////
     struct PackageMaterialDesc
     {
@@ -53,6 +56,9 @@ namespace Mengine
         virtual bool load( const DocumentInterfacePtr & _doc ) = 0;
         virtual bool enable() = 0;
         virtual bool disable() = 0;
+
+    public:
+        virtual const VectorPackageResourceDesc & getResourceDescriptions() const = 0;
 
     public:
         virtual bool isLoad() const = 0;

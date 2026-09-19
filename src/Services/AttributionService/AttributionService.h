@@ -21,6 +21,7 @@ namespace Mengine
 
     public:
         bool registerAttribution( const ConstString & _name, EAttributionType _type ) override;
+        bool unregisterAttribution( const ConstString & _name ) override;
 
     public:
         bool setAttribution( const ConstString & _name, const ParamVariant & _value ) override;

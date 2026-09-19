@@ -95,6 +95,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    const VectorPackageResourceDesc & Package::getResourceDescriptions() const
+    {
+        return m_resourcesDesc;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Package::isLoad() const
     {
         return m_load;

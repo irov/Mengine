@@ -37,6 +37,14 @@ namespace Mengine
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
+        static bool unregisterAttribution( const ConstString & _name )
+        {
+            bool successful = ATTRIBUTION_SERVICE()
+                ->unregisterAttribution( _name );
+
+            return successful;
+        }
+        //////////////////////////////////////////////////////////////////////////
         static bool setAttribution( const ConstString & _name, const ParamVariant & _value )
         {
             ParamVariant value = _value;
@@ -102,6 +110,7 @@ namespace Mengine
             ;
 
         pybind::def_function( _kernel, "registerAttribution", &Detail::registerAttribution );
+        pybind::def_function( _kernel, "unregisterAttribution", &Detail::unregisterAttribution );
         pybind::def_function( _kernel, "setAttribution", &Detail::setAttribution );
         pybind::def_function( _kernel, "getAttribution", &Detail::getAttribution );
         pybind::def_function( _kernel, "clearAttribution", &Detail::clearAttribution );
@@ -113,6 +122,7 @@ namespace Mengine
     void AttributionScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
         _kernel->remove_from_module( "registerAttribution", nullptr );
+        _kernel->remove_from_module( "unregisterAttribution", nullptr );
         _kernel->remove_from_module( "setAttribution", nullptr );
         _kernel->remove_from_module( "getAttribution", nullptr );
         _kernel->remove_from_module( "clearAttribution", nullptr );

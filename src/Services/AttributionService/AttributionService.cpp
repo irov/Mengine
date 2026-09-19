@@ -174,6 +174,35 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool AttributionService::unregisterAttribution( const ConstString & _name )
+    {
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
+
+        MapAttributions::iterator it_found = m_values.find( _name );
+
+        if( it_found == m_values.end() )
+        {
+            LOGGER_ERROR( "attribution '%s' not registered"
+                , _name.c_str()
+            );
+
+            return false;
+        }
+
+        const AttributionDesc & attribution = it_found->second;
+
+        if( Helper::is<ParamNull>( attribution.value ) == false )
+        {
+            ParamVariant emptyValue = nullptr;
+
+            this->notifyProviders_( _name, attribution.type, emptyValue );
+        }
+
+        m_values.erase( it_found );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool AttributionService::setAttribution( const ConstString & _name, const ParamVariant & _value )
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );

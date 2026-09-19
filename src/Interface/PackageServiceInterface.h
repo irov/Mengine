@@ -18,6 +18,7 @@ namespace Mengine
 
     public:
         virtual bool loadPackages( const ContentInterfacePtr & _content, const DocumentInterfacePtr & _doc ) = 0;
+        virtual void unloadPackages() = 0;
 
     public:
         virtual bool hasPackage( const ConstString & _name ) const = 0;

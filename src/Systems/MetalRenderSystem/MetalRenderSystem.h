@@ -23,6 +23,10 @@
 #import <Metal/Metal.h>
 #import <QuartzCore/CAMetalLayer.h>
 
+#define MENGINE_METAL_SAMPLER_MINMAG_FILTER_COUNT 2
+#define MENGINE_METAL_SAMPLER_MIP_FILTER_COUNT 3
+#define MENGINE_METAL_SAMPLER_ADDRESS_MODE_COUNT 6
+
 namespace Mengine
 {
     class MetalRenderSystem
@@ -200,6 +204,12 @@ namespace Mengine
 
         TextureStage m_textureStage[MENGINE_MAX_TEXTURE_STAGES];
 
+        id<MTLSamplerState> m_samplerStates[MENGINE_METAL_SAMPLER_MINMAG_FILTER_COUNT][MENGINE_METAL_SAMPLER_MINMAG_FILTER_COUNT][MENGINE_METAL_SAMPLER_MIP_FILTER_COUNT][MENGINE_METAL_SAMPLER_ADDRESS_MODE_COUNT][MENGINE_METAL_SAMPLER_ADDRESS_MODE_COUNT];
+
+    protected:
+        id<MTLSamplerState> getOrCreateSamplerState_( const TextureStage & _textureStage );
+
+    protected:
         typedef IntrusiveList<MetalRenderResourceHandler> IntrusiveListMetalRenderResourceHandler;
         IntrusiveListMetalRenderResourceHandler m_renderResourceHandlers;
 

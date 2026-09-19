@@ -134,6 +134,23 @@ namespace Mengine
 
         m_deferredCompilePrograms.clear();
 
+        for( uint32_t minFilter = 0; minFilter != MENGINE_METAL_SAMPLER_MINMAG_FILTER_COUNT; ++minFilter )
+        {
+            for( uint32_t magFilter = 0; magFilter != MENGINE_METAL_SAMPLER_MINMAG_FILTER_COUNT; ++magFilter )
+            {
+                for( uint32_t mipFilter = 0; mipFilter != MENGINE_METAL_SAMPLER_MIP_FILTER_COUNT; ++mipFilter )
+                {
+                    for( uint32_t sAddressMode = 0; sAddressMode != MENGINE_METAL_SAMPLER_ADDRESS_MODE_COUNT; ++sAddressMode )
+                    {
+                        for( uint32_t tAddressMode = 0; tAddressMode != MENGINE_METAL_SAMPLER_ADDRESS_MODE_COUNT; ++tAddressMode )
+                        {
+                            m_samplerStates[minFilter][magFilter][mipFilter][sAddressMode][tAddressMode] = nil;
+                        }
+                    }
+                }
+            }
+        }
+
         MENGINE_ASSERTION_CONTAINER_EMPTY( m_renderResourceHandlers );
 
         m_renderResourceHandlers.clear();
@@ -714,14 +731,8 @@ namespace Mengine
             {
                 [m_frameContext.renderEncoder setFragmentTexture:mtlTexture atIndex:stageId];
 
-                MTLSamplerDescriptor * samplerDesc = [[MTLSamplerDescriptor alloc] init];
-                samplerDesc.minFilter = Helper::toMTLMinFilter( textureStage.minFilter );
-                samplerDesc.magFilter = Helper::toMTLMagFilter( textureStage.magFilter );
-                samplerDesc.mipFilter = Helper::toMTLMipFilter( textureStage.mipFilter );
-                samplerDesc.sAddressMode = Helper::toMTLAddressMode( textureStage.wrapU );
-                samplerDesc.tAddressMode = Helper::toMTLAddressMode( textureStage.wrapV );
+                id<MTLSamplerState> samplerState = this->getOrCreateSamplerState_( textureStage );
 
-                id<MTLSamplerState> samplerState = [m_device newSamplerStateWithDescriptor:samplerDesc];
                 [m_frameContext.renderEncoder setFragmentSamplerState:samplerState atIndex:stageId];
             }
         }
@@ -1324,6 +1335,44 @@ namespace Mengine
         depthDesc.depthWriteEnabled = m_depthMask ? YES : NO;
 
         m_depthStencilState = [m_device newDepthStencilStateWithDescriptor:depthDesc];
+    }
+    //////////////////////////////////////////////////////////////////////////
+    id<MTLSamplerState> MetalRenderSystem::getOrCreateSamplerState_( const TextureStage & _textureStage )
+    {
+        MTLSamplerMinMagFilter minFilter = Helper::toMTLMinFilter( _textureStage.minFilter );
+        MTLSamplerMinMagFilter magFilter = Helper::toMTLMagFilter( _textureStage.magFilter );
+        MTLSamplerMipFilter mipFilter = Helper::toMTLMipFilter( _textureStage.mipFilter );
+        MTLSamplerAddressMode sAddressMode = Helper::toMTLAddressMode( _textureStage.wrapU );
+        MTLSamplerAddressMode tAddressMode = Helper::toMTLAddressMode( _textureStage.wrapV );
+
+        MENGINE_ASSERTION_FATAL( minFilter < MENGINE_METAL_SAMPLER_MINMAG_FILTER_COUNT && magFilter < MENGINE_METAL_SAMPLER_MINMAG_FILTER_COUNT && mipFilter < MENGINE_METAL_SAMPLER_MIP_FILTER_COUNT && sAddressMode < MENGINE_METAL_SAMPLER_ADDRESS_MODE_COUNT && tAddressMode < MENGINE_METAL_SAMPLER_ADDRESS_MODE_COUNT, "invalid metal sampler state value" );
+
+        id<MTLSamplerState> samplerState = m_samplerStates[minFilter][magFilter][mipFilter][sAddressMode][tAddressMode];
+
+        if( samplerState != nil )
+        {
+            return samplerState;
+        }
+
+        MTLSamplerDescriptor * samplerDesc = [[MTLSamplerDescriptor alloc] init];
+        samplerDesc.minFilter = minFilter;
+        samplerDesc.magFilter = magFilter;
+        samplerDesc.mipFilter = mipFilter;
+        samplerDesc.sAddressMode = sAddressMode;
+        samplerDesc.tAddressMode = tAddressMode;
+
+        samplerState = [m_device newSamplerStateWithDescriptor:samplerDesc];
+
+        if( samplerState == nil )
+        {
+            LOGGER_ERROR( "invalid create sampler state" );
+
+            return nil;
+        }
+
+        m_samplerStates[minFilter][magFilter][mipFilter][sAddressMode][tAddressMode] = samplerState;
+
+        return samplerState;
     }
     //////////////////////////////////////////////////////////////////////////
     void MetalRenderSystem::createDepthStencilTexture_( uint32_t _width, uint32_t _height )

@@ -42,16 +42,14 @@ src
     Win32GameControllerInput.cpp
 )
 
-if(NOT MENGINE_TARGET_UWP)
-    ADD_FILTER(
-    src
-        Win32FileHelper.h
-        Win32FileHelper.cpp
-    
-        Win32MessageBoxLogger.h
-        Win32MessageBoxLogger.cpp
-    )
-endif()
+ADD_FILTER(
+src
+    Win32FileHelper.h
+    Win32FileHelper.cpp
+
+    Win32MessageBoxLogger.h
+    Win32MessageBoxLogger.cpp
+)
 
 ADD_MENGINE_LIBRARY(Environment)
 

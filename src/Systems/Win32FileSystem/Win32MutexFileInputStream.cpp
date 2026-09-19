@@ -185,9 +185,7 @@ namespace Mengine
 
         HANDLE hFile = m_stream->getHandleFile();
 
-        size_t current = m_reading - m_capacity + m_carriage;
-
-        size_t pos = m_offset + current;
+        size_t pos = m_offset + m_reading;
 
         LARGE_INTEGER liDistanceToMove;
         liDistanceToMove.QuadPart = pos;

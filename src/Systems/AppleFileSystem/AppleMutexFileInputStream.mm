@@ -183,9 +183,7 @@ namespace Mengine
 
             NSFileHandle * fileHandle = m_stream->getFileHandle();
 
-            size_t current = m_reading - m_capacity + m_carriage;
-
-            size_t seek_pos = m_offset + current;
+            size_t seek_pos = m_offset + m_reading;
 
             NSError * seekError = nil;
             if( [fileHandle seekToOffset:seek_pos error:&seekError] == NO )

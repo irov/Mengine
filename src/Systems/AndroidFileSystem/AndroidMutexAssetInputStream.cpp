@@ -179,9 +179,7 @@ namespace Mengine
 
         AAsset * asset = m_stream->getAsset();
 
-        size_t current = m_reading - m_capacity + m_carriage;
-
-        size_t pos = m_offset + current;
+        size_t pos = m_offset + m_reading;
 
         int64_t result = ANDROID_ASSET_SERVICE()
             ->seek( asset, pos, SEEK_SET );

@@ -177,9 +177,7 @@ namespace Mengine
 
         FILE * file = m_stream->getFILE();
 
-        size_t current = m_reading - m_capacity + m_carriage;
-
-        size_t pos = m_offset + current;
+        size_t pos = m_offset + m_reading;
 
         int32_t result = ::fseeko( file, pos, SEEK_SET );
 

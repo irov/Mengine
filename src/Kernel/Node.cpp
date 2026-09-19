@@ -784,7 +784,7 @@ namespace Mengine
         this->addRenderRelation_( _newParent, _hint );
         this->addPickerRelation_( _newParent, _hint );
 
-        uint32_t deep = this->getLeafDeep();
+        uint32_t deep = _newParent->getLeafDeep() + 1;
 
         UpdationInterface * updation = this->getUpdation();
 

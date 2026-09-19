@@ -894,29 +894,18 @@ namespace Mengine
             return MENGINE_PATH_INVALID_LENGTH;
         }
 
-        DWORD maxValueNameSize;
-        DWORD maxValueDataSize;
-        result = ::RegQueryInfoKey( hKey, 0, 0, 0, 0, 0, 0, 0, &maxValueNameSize, &maxValueDataSize, 0, 0 );
-
-        if( result != ERROR_SUCCESS )
-        {
-            _fontPath[0] = '\0';
-
-            return MENGINE_PATH_INVALID_LENGTH;
-        }
-
         DWORD valueIndex = 0;
 
         WPath unicode_fontPath = {L'\0'};
 
         do
         {
-            DWORD valueDataSize = maxValueDataSize;
-            DWORD valueNameSize = maxValueNameSize;
-
             DWORD valueType;
             WPath valueName = {L'\0'};
             BYTE valueData[MENGINE_MAX_PATH * 2] = {0};
+
+            DWORD valueNameSize = (DWORD)MENGINE_ARRAY_SIZE( valueName );
+            DWORD valueDataSize = (DWORD)sizeof( valueData );
 
             result = ::RegEnumValue( hKey, valueIndex, valueName, &valueNameSize, 0, &valueType, valueData, &valueDataSize );
 
@@ -4122,12 +4111,14 @@ namespace Mengine
                 , Helper::Win32GetLastErrorMessageW()
             );
 
+            ::GlobalFree( hGlb );
+
             return false;
         }
 
-        StdString::memcpy( memGlb, _value, len );
+        StdString::memcpy( memGlb, _value, len_alloc );
 
-        ::GlobalUnlock( memGlb );
+        ::GlobalUnlock( hGlb );
 
         if( ::OpenClipboard( m_hWnd ) == FALSE )
         {

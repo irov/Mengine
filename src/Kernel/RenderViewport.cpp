@@ -37,7 +37,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderViewport::setFixedViewport( bool _value )
     {
+        if( m_fixedViewport == _value )
+        {
+            return;
+        }
+
         m_fixedViewport = _value;
+
+        this->invalidateViewport_();
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderViewport::getFixedViewport() const
@@ -65,6 +72,14 @@ namespace Mengine
     void RenderViewport::updateViewport_() const
     {
         m_invalidateViewport = false;
+
+        if( m_fixedViewport == true )
+        {
+            const mt::mat4f & wm = this->getWorldMatrix();
+            m_viewport.multiply( &m_viewportWM, wm );
+
+            return;
+        }
 
         float gameViewportAspect;
         Viewport gameViewport;

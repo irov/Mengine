@@ -6,6 +6,7 @@
 #include "Kernel/Resolution.h"
 #include "Kernel/Viewport.h"
 #include "Kernel/AspectRatioViewport.h"
+#include "Kernel/VectorAspectRatioViewports.h"
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/ModuleInterface.h"
@@ -53,7 +54,10 @@ namespace Mengine
         virtual void turnSound( bool _turn ) = 0;
 
     public:
-        virtual bool initializeGame( const FileGroupInterfacePtr & _fileGroup, const VectorFilePath & _resourcePaths ) = 0;
+        virtual bool initializeResources( const FileGroupInterfacePtr & _fileGroup, const VectorFilePath & _resourcePaths ) = 0;
+        virtual void finalizeResources() = 0;
+
+        virtual bool initializeGame() = 0;
         virtual void finalizeGame() = 0;
 
     public:
@@ -96,6 +100,7 @@ namespace Mengine
         virtual const Resolution & getCurrentWindowResolution() const = 0;
         virtual const Viewport & getRenderViewport() const = 0;
 
+        virtual void setSafeAreaViewport( const Viewport & _viewport ) = 0;
         virtual const Viewport & getSafeAreaViewport() const = 0;
         virtual bool getDisplayCutoutViewport( Viewport * const _viewport ) const = 0;
 
@@ -103,6 +108,7 @@ namespace Mengine
         virtual const Resolution & getContentResolution() const = 0;
         virtual void getGameViewport( float * const _aspect, Viewport * const _viewport ) const = 0;
 
+        virtual void setAspectRatioViewports( const VectorAspectRatioViewports & _viewports ) = 0;
         virtual EContentEdgeMode getAspectRatioContentEdgeMode() const = 0;
 
     public:

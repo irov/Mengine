@@ -858,6 +858,27 @@ namespace Mengine
         SERVICE_DESTROY( ThreadSystem );
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Bootstrapper::initializeResources()
+    {
+        FileGroupInterfacePtr fileGroup = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FileGroup" ), ConstString::none() );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( fileGroup, "not found default file group" );
+
+        bool successful = APPLICATION_SERVICE()
+            ->initializeResources( fileGroup, m_packagesPaths );
+
+        return successful;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Bootstrapper::finalizeResources()
+    {
+        if( SERVICE_IS_INITIALIZE( ApplicationInterface ) == true )
+        {
+            APPLICATION_SERVICE()
+                ->finalizeResources();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Bootstrapper::run()
     {
         THREAD_SERVICE()
@@ -867,10 +888,8 @@ namespace Mengine
 
         LOGGER_INFO( "bootstrapper", "bootstrapper initialize game" );
 
-        FileGroupInterfacePtr defaultFileGroup = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FileGroup" ), ConstString::none() );
-
         if( APPLICATION_SERVICE()
-            ->initializeGame( defaultFileGroup, m_packagesPaths ) == false )
+            ->initializeGame() == false )
         {
             LOGGER_FATAL( "application invalid initialize game" );
 

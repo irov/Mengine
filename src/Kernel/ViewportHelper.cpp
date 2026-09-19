@@ -7,7 +7,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        bool findBestAspectViewport( const MapAspectRatioViewports & _aspectRatioViewports, float _aspect, float * const _bestAspect, Viewport * const _viewport )
+        bool findBestAspectViewport( const VectorAspectRatioViewports & _aspectRatioViewports, float _aspect, float * const _bestAspect, Viewport * const _viewport )
         {
             if( _aspectRatioViewports.empty() == true )
             {
@@ -16,8 +16,10 @@ namespace Mengine
 
             float minimal_aspect = 100.f;
 
-            for( auto && [aspect, viewport] : _aspectRatioViewports )
+            for( const AspectRatioViewport & aspectRatioViewport : _aspectRatioViewports )
             {
+                float aspect = aspectRatioViewport.width / aspectRatioViewport.height;
+
                 float delta_aspect = StdMath::fabsf( _aspect - aspect );
 
                 if( delta_aspect >= minimal_aspect )
@@ -34,7 +36,7 @@ namespace Mengine
 
                 if( _viewport != nullptr )
                 {
-                    *_viewport = viewport;
+                    *_viewport = aspectRatioViewport.viewport;
                 }
             }
 

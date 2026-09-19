@@ -177,6 +177,12 @@ namespace Mengine
 #if defined(MENGINE_PLUGIN_MENGINE_SHARED)
 #   error "MENGINE_PLUGIN_MENGINE_SHARED for MacOS not implemented"
 #elif defined(MENGINE_PLUGIN_MENGINE_STATIC)
+        if( BOOTSTRAPPER_SERVICE()
+            ->initializeResources() == false )
+        {
+            return false;
+        }
+
         if( ::API_MengineRun() == false )
         {
             return false;
@@ -296,6 +302,12 @@ namespace Mengine
         {
             BOOTSTRAPPER_SERVICE()
                 ->stop();
+        }
+
+        if( SERVICE_IS_INITIALIZE( Mengine::BootstrapperInterface ) == true )
+        {
+            BOOTSTRAPPER_SERVICE()
+                ->finalizeResources();
         }
 
         if( SERVICE_IS_INITIALIZE( Mengine::BootstrapperInterface ) == true )

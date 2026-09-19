@@ -10,7 +10,7 @@
 #include "Kernel/Resource.h"
 #include "Kernel/ResourceImage.h"
 #include "Kernel/ResourceCursor.h"
-#include "Kernel/MapAspectRatioViewports.h"
+#include "Kernel/VectorAspectRatioViewports.h"
 
 #include "Interface/MixerBooleanInterface.h"
 
@@ -37,7 +37,10 @@ namespace Mengine
         bool getAllowFullscreenSwitchShortcut() const override;
 
     public:
-        bool initializeGame( const FileGroupInterfacePtr & _fileGroup, const VectorFilePath & _packagesPaths ) override;
+        bool initializeResources( const FileGroupInterfacePtr & _fileGroup, const VectorFilePath & _resourcePaths ) override;
+        void finalizeResources() override;
+
+        bool initializeGame() override;
         void finalizeGame() override;
 
     public:
@@ -92,6 +95,7 @@ namespace Mengine
         const Resolution & getCurrentWindowResolution() const override;
 
         const Viewport & getRenderViewport() const override;
+        void setSafeAreaViewport( const Viewport & _viewport ) override;
         const Viewport & getSafeAreaViewport() const override;
         bool getDisplayCutoutViewport( Viewport * const _viewport ) const override;
         void setContentResolution( const Resolution & _resolution ) override;
@@ -99,11 +103,11 @@ namespace Mengine
 
         void getGameViewport( float * const _aspect, Viewport * const _viewport ) const override;
 
+        void setAspectRatioViewports( const VectorAspectRatioViewports & _viewports ) override;
         EContentEdgeMode getAspectRatioContentEdgeMode() const override;
 
     protected:
         void calcRenderViewport_( float * const _aspect, Viewport * const _viewport ) const;
-        void updateSafeAreaViewport_( const Viewport & _viewport );
 
     public:
         bool render() override;
@@ -237,7 +241,7 @@ namespace Mengine
 
         Resolution m_contentResolution;
 
-        MapAspectRatioViewports m_aspectRatioViewports;
+        VectorAspectRatioViewports m_aspectRatioViewports;
 
         uint32_t m_updateRevision;
 

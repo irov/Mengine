@@ -183,6 +183,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidApplication::initialize()
     {
+        if( BOOTSTRAPPER_SERVICE()
+            ->initializeResources() == false )
+        {
+            return false;
+        }
+
         if( API_MengineRun() == false )
         {
             return false;
@@ -269,6 +275,12 @@ namespace Mengine
         {
             BOOTSTRAPPER_SERVICE()
                 ->stop();
+        }
+
+        if( SERVICE_IS_INITIALIZE( Mengine::BootstrapperInterface ) == true )
+        {
+            BOOTSTRAPPER_SERVICE()
+                ->finalizeResources();
         }
         
         if( SERVICE_IS_INITIALIZE( Mengine::BootstrapperInterface ) == true )

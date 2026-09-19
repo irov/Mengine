@@ -257,15 +257,7 @@ namespace Mengine
         m_fixedDisplayResolution = CONFIG_VALUE_BOOLEAN( "Game", "FixedDisplayResolution", true );
         m_fixedViewportResolution = CONFIG_VALUE_BOOLEAN( "Game", "FixedViewportResolution", true );
 
-        VectorAspectRatioViewports aspectRatioViewports;
-        CONFIG_VALUES( "Game", "AspectRatioViewport", &aspectRatioViewports );
-
-        for( const AspectRatioViewport & viewports : aspectRatioViewports )
-        {
-            float aspect = viewports.width / viewports.height;
-
-            m_aspectRatioViewports[aspect] = viewports.viewport;
-        }
+        CONFIG_VALUES( "Game", "AspectRatioViewport", &m_aspectRatioViewports );
 
         if( HAS_OPTION( "locale" ) == true )
         {
@@ -441,7 +433,7 @@ namespace Mengine
         PLATFORM_SERVICE()
             ->setSafeAreaViewportChangedCallback( [this]( const Viewport & _viewport )
             {
-                this->updateSafeAreaViewport_( _viewport );
+                this->setSafeAreaViewport( _viewport );
             } );
 
         Viewport safeAreaViewport;
@@ -907,7 +899,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Application::initializeGame( const FileGroupInterfacePtr & _fileGroup, const VectorFilePath & _packagesPaths )
+    bool Application::initializeResources( const FileGroupInterfacePtr & _fileGroup, const VectorFilePath & _packagesPaths )
     {
         for( const FilePath & packagePath : _packagesPaths )
         {
@@ -942,6 +934,17 @@ namespace Mengine
             return false;
         }
 
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Application::finalizeResources()
+    {
+        PACKAGE_SERVICE()
+            ->unloadPackages();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Application::initializeGame()
+    {
         m_initailizeGame = true;
 
         if( NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_GAME ) == false )
@@ -2085,7 +2088,7 @@ namespace Mengine
         return m_currentWindowResolution;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Application::updateSafeAreaViewport_( const Viewport & _viewport )
+    void Application::setSafeAreaViewport( const Viewport & _viewport )
     {
         if( m_safeAreaViewport == _viewport )
         {
@@ -2581,6 +2584,16 @@ namespace Mengine
         _viewport->begin.y = StdMath::ceilf( (contentHeight - areaHeight) * 0.5f );
         _viewport->end.x = _viewport->begin.x + areaWidth;
         _viewport->end.y = _viewport->begin.y + areaHeight;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Application::setAspectRatioViewports( const VectorAspectRatioViewports & _viewports )
+    {
+        m_aspectRatioViewports = _viewports;
+
+        if( m_createRenderWindow == true )
+        {
+            this->invalidateWindow_();
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     EContentEdgeMode Application::getAspectRatioContentEdgeMode() const

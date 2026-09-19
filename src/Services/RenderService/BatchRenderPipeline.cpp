@@ -10,11 +10,39 @@
 #include "Kernel/MemoryCopy.h"
 #include "Kernel/ContentHelper.h"
 
-#include "Config/StdAlgorithm.h"
 #include "Config/StdLimits.h"
 
 namespace Mengine
 {
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+        static bool lessRenderPass( const RenderPass & _left, uint32_t _leftIndex, const RenderPass & _right, uint32_t _rightIndex )
+        {
+            if( _left.zGroup != _right.zGroup )
+            {
+                return _left.zGroup < _right.zGroup;
+            }
+
+            if( _left.zIndex != _right.zIndex )
+            {
+                return _left.zIndex < _right.zIndex;
+            }
+
+            return _leftIndex < _rightIndex;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool lessDefaultRenderPass( const RenderPass & _renderPass )
+        {
+            if( _renderPass.zGroup != MENGINE_INT32_C(0) )
+            {
+                return _renderPass.zGroup < MENGINE_INT32_C(0);
+            }
+
+            return _renderPass.zIndex < MENGINE_INT32_C(0);
+        }
+        //////////////////////////////////////////////////////////////////////////
+    }
     //////////////////////////////////////////////////////////////////////////
     BatchRenderPipeline::BatchRenderPipeline()
         : m_renderService( nullptr )
@@ -42,6 +70,9 @@ namespace Mengine
         m_renderObjects.reserve( Engine_RenderMaxObject );
         m_renderPrimitives.reserve( Engine_RenderMaxObject );
         m_renderPasses.reserve( Engine_RenderMaxPass );
+        m_renderPassIndicesBefore.reserve( Engine_RenderMaxPass );
+        m_renderPassIndicesDefault.reserve( Engine_RenderMaxPass );
+        m_renderPassIndicesAfter.reserve( Engine_RenderMaxPass );
 
         uint32_t Engine_RenderMaxQuadBatch = CONFIG_VALUE_INTEGER( "Engine", "RenderMaxQuadBatch", MENGINE_UINT32_C(2000) );
         uint32_t Engine_RenderMaxLineBatch = CONFIG_VALUE_INTEGER( "Engine", "RenderMaxLineBatch", MENGINE_UINT32_C(4000) );
@@ -99,15 +130,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BatchRenderPipeline::finalize()
     {
-        for( RenderPrimitive & rp : m_renderPrimitives )
-        {
-            IntrusivePtrBase::intrusive_ptr_release( rp.material );
-        }
+        this->releaseRenderPrimitives_();
 
         m_renderPasses.clear();
+        m_renderPassIndicesBefore.clear();
+        m_renderPassIndicesDefault.clear();
+        m_renderPassIndicesAfter.clear();
 
         m_renderObjects.clear();
-        m_renderPrimitives.clear();
 
 #if defined(MENGINE_MASTER_RELEASE_DISABLE)
         m_debugRenderObjects.clear();
@@ -442,7 +472,7 @@ namespace Mengine
 
         renderPass.flags = RENDER_PASS_FLAG_SINGLE;
 
-        m_renderPasses.emplace_back( renderPass );
+        this->pushRenderPass_( renderPass );
     }
     //////////////////////////////////////////////////////////////////////////
     void BatchRenderPipeline::addDebugRenderObject( const RenderContext * _context
@@ -630,10 +660,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BatchRenderPipeline::prepare()
     {
+        this->releaseRenderPrimitives_();
+
         m_renderPasses.clear();
+        m_renderPassIndicesBefore.clear();
+        m_renderPassIndicesDefault.clear();
+        m_renderPassIndicesAfter.clear();
 
         m_renderObjects.clear();
-        m_renderPrimitives.clear();
 
 #if defined(MENGINE_MASTER_RELEASE_DISABLE)
         m_debugRenderObjects.clear();
@@ -678,47 +712,99 @@ namespace Mengine
     {
         MENGINE_PROFILER_CATEGORY();
 
-        StdAlgorithm::stable_sort( m_renderPasses.begin(), m_renderPasses.end(), []( const RenderPass & _l, const RenderPass & _r )
-        {
-            if( _l.zGroup < _r.zGroup )
-            {
-                return true;
-            }
-            else if( _l.zGroup > _r.zGroup )
-            {
-                return false;
-            }
-
-            return _l.zIndex < _r.zIndex;
-        } );
-
         const RenderPrimitive * renderPrimitives = m_renderPrimitives.buff();
 
-        for( const RenderPass & renderPass : m_renderPasses )
+        this->renderPassIndices_( m_renderPassIndicesBefore, renderPrimitives );
+        this->renderPassIndices_( m_renderPassIndicesDefault, renderPrimitives );
+        this->renderPassIndices_( m_renderPassIndicesAfter, renderPrimitives );
+
+        m_renderPrimitives.clear();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BatchRenderPipeline::renderPassIndices_( const VectorRenderPassIndices & _renderPassIndices, const RenderPrimitive * _renderPrimitives )
+    {
+        for( uint32_t renderPassIndex : _renderPassIndices )
         {
-            const RenderVertexBufferInterfacePtr & vertexBuffer = renderPass.vertexBuffer;
-            const RenderIndexBufferInterfacePtr & indexBuffer = renderPass.indexBuffer;
-            const RenderProgramVariableInterfacePtr & programVariable = renderPass.programVariable;
+            const RenderPass & renderPass = m_renderPasses[renderPassIndex];
 
-            const RenderContext * context = &renderPass.context;
+            this->renderPass_( renderPass, _renderPrimitives );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BatchRenderPipeline::renderPass_( const RenderPass & _renderPass, const RenderPrimitive * _renderPrimitives )
+    {
+        const RenderVertexBufferInterfacePtr & vertexBuffer = _renderPass.vertexBuffer;
+        const RenderIndexBufferInterfacePtr & indexBuffer = _renderPass.indexBuffer;
+        const RenderProgramVariableInterfacePtr & programVariable = _renderPass.programVariable;
 
-            if( m_renderService->beginRenderPass( vertexBuffer, indexBuffer, programVariable, context ) == false )
+        const RenderContext * context = &_renderPass.context;
+
+        if( m_renderService->beginRenderPass( vertexBuffer, indexBuffer, programVariable, context ) == false )
+        {
+            return;
+        }
+
+        const RenderDrawPrimitiveInterfacePtr & drawPrimitive = _renderPass.drawPrimitive;
+
+        if( drawPrimitive == nullptr )
+        {
+            m_renderService->drawPrimitives( _renderPrimitives + _renderPass.beginRenderObject, _renderPass.countRenderObject );
+        }
+        else
+        {
+            drawPrimitive->onRenderDrawPrimitives( _renderPrimitives + _renderPass.beginRenderObject, _renderPass.countRenderObject );
+        }
+
+        m_renderService->endRenderPass( context );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BatchRenderPipeline::pushRenderPass_( const RenderPass & _renderPass )
+    {
+        uint32_t renderPassIndex = (uint32_t)m_renderPasses.size();
+
+        m_renderPasses.emplace_back( _renderPass );
+
+        if( _renderPass.zGroup == MENGINE_INT32_C(0) && _renderPass.zIndex == MENGINE_INT32_C(0) )
+        {
+            m_renderPassIndicesDefault.emplace_back( renderPassIndex );
+
+            return;
+        }
+
+        if( Detail::lessDefaultRenderPass( _renderPass ) == true )
+        {
+            this->insertRenderPassIndex_( &m_renderPassIndicesBefore, _renderPass, renderPassIndex );
+
+            return;
+        }
+
+        this->insertRenderPassIndex_( &m_renderPassIndicesAfter, _renderPass, renderPassIndex );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BatchRenderPipeline::insertRenderPassIndex_( VectorRenderPassIndices * const _renderPassIndices, const RenderPass & _renderPass, uint32_t _renderPassIndex )
+    {
+        uint32_t insert = (uint32_t)_renderPassIndices->size();
+
+        while( insert != 0 )
+        {
+            uint32_t prevRenderPassIndex = (*_renderPassIndices)[insert - 1];
+
+            if( Detail::lessRenderPass( _renderPass, _renderPassIndex, m_renderPasses[prevRenderPassIndex], prevRenderPassIndex ) == false )
             {
-                continue;
+                break;
             }
 
-            const RenderDrawPrimitiveInterfacePtr & drawPrimitive = renderPass.drawPrimitive;
+            --insert;
+        }
 
-            if( drawPrimitive == nullptr )
-            {
-                m_renderService->drawPrimitives( renderPrimitives + renderPass.beginRenderObject, renderPass.countRenderObject );
-            }
-            else
-            {
-                drawPrimitive->onRenderDrawPrimitives( renderPrimitives + renderPass.beginRenderObject, renderPass.countRenderObject );
-            }
-
-            m_renderService->endRenderPass( context );
+        _renderPassIndices->insert( _renderPassIndices->begin() + insert, _renderPassIndex );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BatchRenderPipeline::releaseRenderPrimitives_()
+    {
+        for( RenderPrimitive & rp : m_renderPrimitives )
+        {
+            IntrusivePtrBase::intrusive_ptr_release( rp.material );
         }
 
         m_renderPrimitives.clear();
@@ -726,7 +812,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BatchRenderPipeline::clear()
     {
-        m_renderPrimitives.clear();
+        this->releaseRenderPrimitives_();
 
 #if defined(MENGINE_MASTER_RELEASE_DISABLE)
         m_debugRenderObjects.clear();
@@ -1108,7 +1194,7 @@ namespace Mengine
 
             renderPass.flags = RENDER_PASS_FLAG_NONE;
 
-            m_renderPasses.emplace_back( renderPass );
+            this->pushRenderPass_( renderPass );
         }
 
         RenderPass & rp = m_renderPasses.back();

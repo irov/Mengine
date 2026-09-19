@@ -144,6 +144,11 @@ namespace Mengine
             , const RenderProgramVariableInterfacePtr & _programVariable );
 
     protected:
+        void pushRenderPass_( const RenderPass & _renderPass );
+        void renderPass_( const RenderPass & _renderPass, const RenderPrimitive * _renderPrimitives );
+        void releaseRenderPrimitives_();
+
+    protected:
         void insertRenderObjects_( const RenderPass & _renderPass, const MemoryInterfacePtr & _vertexMemory, uint32_t _vertexSize, const MemoryInterfacePtr & _indexMemory, uint32_t * const _vbPos, uint32_t * const _ibPos );
         bool insertRenderObject_( const RenderObject * _renderObject, const MemoryInterfacePtr & _vertexMemory, uint32_t _vertexSize, const MemoryInterfacePtr & _indexMemory, uint32_t _vbPos, uint32_t _ibPos ) const;
             
@@ -160,6 +165,11 @@ namespace Mengine
 
         typedef Vector<RenderPass> VectorRenderPass;
         VectorRenderPass m_renderPasses;
+
+        typedef Vector<uint32_t> VectorRenderPassIndices;
+        VectorRenderPassIndices m_renderPassIndicesBefore;
+        VectorRenderPassIndices m_renderPassIndicesDefault;
+        VectorRenderPassIndices m_renderPassIndicesAfter;
 
         typedef DynamicArray<RenderIndex> DynamicArrayRenderIndices;
         DynamicArrayRenderIndices m_indicesQuad;
@@ -194,6 +204,10 @@ namespace Mengine
         uint32_t m_iterateRenderObjects;
         uint32_t m_showLogRenderObjects;
 #endif
+
+    protected:
+        void insertRenderPassIndex_( VectorRenderPassIndices * const _renderPassIndices, const RenderPass & _renderPass, uint32_t _renderPassIndex );
+        void renderPassIndices_( const VectorRenderPassIndices & _renderPassIndices, const RenderPrimitive * _renderPrimitives );
 
     protected:
         void batchRenderObjectNormal_( DynamicArrayRenderObjects::iterator _roBegin, DynamicArrayRenderObjects::iterator _roEnd, DynamicArrayRenderPrimitives::iterator _rpBegin, RenderPrimitive * _rp, const MemoryInterfacePtr & _vertexBuffer, uint32_t _vertexSize, const MemoryInterfacePtr & _indexBuffer, uint32_t * _vbPos, uint32_t * _ibPos );

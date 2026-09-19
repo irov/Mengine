@@ -24,6 +24,7 @@
 #include "Kernel/List.h"
 
 #include "NodeDebuggerSerialization.h"
+#include "NodeDebugInspector.h"
 #include "SceneDataProviderInterface.h"
 
 namespace Mengine
@@ -60,6 +61,7 @@ namespace Mengine
     class NodeDebuggerModule
         : public ModuleBase
         , public ThreadWorkerInterface
+        , public NodeDebugInspector
         , public SceneDataProviderInterface
     {
         DECLARE_FACTORABLE( NodeDebuggerModule );
@@ -106,20 +108,6 @@ namespace Mengine
         void sendSelectedNode();
 
     protected:
-        void serializeNode( const NodePtr & _node, pugi::xml_node & _xmlParentNode );
-        void serializeNodeSingle( const NodePtr & _node, pugi::xml_node & _xmlNode );
-        void serializePickerable( PickerInterface * _picker, pugi::xml_node & _xmlParentNode );
-        void serializeRenderable( RenderInterface * _render, pugi::xml_node & _xmlParentNode );
-        void serializeTransformation( const TransformablePtr & _transformable, pugi::xml_node & _xmlParentNode );
-        void serializeRender( const RenderInterface * _render, pugi::xml_node & _xmlParentNode );
-        void serializeAnimation( const Compilable * _compilable, const AnimationInterface * _animation, pugi::xml_node & _xmlParentNode );
-        void serializeTextField( const TextFieldPtr & _textField, pugi::xml_node & _xmlParentNode );
-        void serializeMovie2( const Compilable * _compilable, const UnknownMovie2Interface * _unknownMovie2, pugi::xml_node & _xmlParentNode );
-        void serializeSpine( const UnknownSpineInterface * _unknownSpine, pugi::xml_node & _xmlParentNode );
-        void serializeShape( const ShapePtr & _shape, pugi::xml_node & _xmlParentNode );
-        void serializeSurfaceImage( const SurfaceImagePtr & _surfaceImage, pugi::xml_node & _xmlParentNode );
-        void serializeSurfaceImageSequence( const SurfaceImageSequencePtr & _surfaceImageSequence, pugi::xml_node & _xmlParentNode );
-        void serializeContent( const ContentInterfacePtr & _content, pugi::xml_node & _xmlParentNode );
 
     protected:
         void processPacket( NodeDebuggerPacket & _packet );

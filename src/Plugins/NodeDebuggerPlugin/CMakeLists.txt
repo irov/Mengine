@@ -9,6 +9,8 @@ ADD_FILTER(
     NodeDebuggerModule.h
     NodeDebuggerModule.cpp
 
+    NodeDebugInspector.h
+    NodeDebugInspector.cpp
     NodeDebuggerSerialization.h
 
     SceneDataProviderInterface.h

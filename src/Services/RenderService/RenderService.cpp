@@ -1086,54 +1086,6 @@ namespace Mengine
         scaleViewport.begin += renderViewport->begin;
         scaleViewport.end += renderViewport->begin;
 
-        float vp_x = StdMath::floorf( scaleViewport.begin.x + 0.5f );
-        float vp_y = StdMath::floorf( scaleViewport.begin.y + 0.5f );
-        //float vp_x = renderViewport.begin.x;
-        //float vp_y = renderViewport.begin.y;
-
-        float width = scaleViewport.getWidth();
-        float height = scaleViewport.getHeight();
-
-        float vp_width = StdMath::floorf( width + 0.5f );
-        float vp_height = StdMath::floorf( height + 0.5f );
-        //float vp_width = width;
-        //float vp_height = height;
-
-        mt::vec2f renderSize = renderViewport->end;
-
-        if( vp_x >= renderSize.x ||
-            vp_y >= renderSize.y ||
-            vp_x + vp_width <= 0.f ||
-            vp_y + vp_height <= 0.f )
-        {
-            scaleViewport.begin.x = 0.f;
-            scaleViewport.begin.y = 0.f;
-            scaleViewport.end.x = 0.f;
-            scaleViewport.end.y = 0.f;
-        }
-        else
-        {
-            if( vp_x < 0.f )
-            {
-                scaleViewport.begin.x = 0.f;
-            }
-
-            if( vp_x + vp_width > renderSize.x )
-            {
-                scaleViewport.end.x = renderSize.x;
-            }
-
-            if( vp_y < 0.f )
-            {
-                scaleViewport.begin.y = 0.f;
-            }
-
-            if( vp_y + vp_height > renderSize.y )
-            {
-                scaleViewport.end.y = renderSize.y;
-            }
-        }
-
         *_renderViewport = scaleViewport;
     }
     //////////////////////////////////////////////////////////////////////////

@@ -76,9 +76,14 @@ namespace Mengine
 
         int32_t readBytes = ::LZ4_decompress_safe( src_buffer, dst_buffer, (int32_t)_sourceSize, (int32_t)_bufferCapacity );
 
-        MENGINE_ASSERTION_FATAL( readBytes >= 0, "invalid uncompress code [%d]"
-            , readBytes
-        );
+        if( readBytes < 0 )
+        {
+            LOGGER_ERROR( "invalid uncompress code [%d]"
+                , readBytes
+            );
+
+            return false;
+        }
 
         *_decompressSize = (size_t)readBytes;
 

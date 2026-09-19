@@ -815,12 +815,6 @@ namespace Mengine
             return;
         }
 
-        const RenderMaterialStage * stage = _material->getStage();
-
-        this->updateStage_( stage );
-
-        m_currentMaterialId = materialId;
-
         uint32_t textureCount = _material->getTextureCount();
 
         if( m_currentRenderTextureStage > textureCount )
@@ -832,6 +826,12 @@ namespace Mengine
         }
 
         m_currentRenderTextureStage = textureCount;
+
+        const RenderMaterialStage * stage = _material->getStage();
+
+        this->updateStage_( stage );
+
+        m_currentMaterialId = materialId;
 
         for( uint32_t stageId = 0; stageId != m_currentRenderTextureStage; ++stageId )
         {

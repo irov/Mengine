@@ -178,14 +178,16 @@ namespace Mengine
 
             bool work = true;
 
+            _desc.mutex_progress->lock();
+
             if( _desc.remove == false && _desc.pause == false )
             {
-                _desc.mutex_progress->lock();
                 UniqueId id = _desc.id;
 
                 work = _desc.worker->onThreadWorkerWork( id );
-                _desc.mutex_progress->unlock();
             }
+
+            _desc.mutex_progress->unlock();
 
             _desc.mutex->lock();
 

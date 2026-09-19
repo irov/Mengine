@@ -1,6 +1,7 @@
 package org.Mengine.Base;
 
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.Surface;
 
@@ -15,7 +16,7 @@ public class MenginePlatformEventQueue {
 
     public sealed interface PlatformEvent permits
         QuitEvent, PauseEvent, ResumeEvent, StopEvent, StartEvent, RestartEvent, DestroyEvent,
-        FreezeEvent, SurfaceCreateEvent, SurfaceDestroyEvent, SurfaceChangedEvent, SafeAreaViewportEvent,
+        FreezeEvent, SurfaceCreateEvent, SurfaceDestroyEvent, SurfaceChangedEvent, WindowInsetsEvent,
         ClipboardChangedEvent, WindowFocusChangedEvent, LowMemoryEvent, TrimMemoryEvent, ChangeLocaleEvent,
         IntentStartEvent, IntentNewEvent {
     }
@@ -31,7 +32,7 @@ public class MenginePlatformEventQueue {
     record SurfaceCreateEvent(Surface surface) implements PlatformEvent {}
     record SurfaceDestroyEvent() implements PlatformEvent {}
     record SurfaceChangedEvent(Surface surface, int surfaceWidth, int surfaceHeight, int deviceWidth, int deviceHeight, float rate) implements PlatformEvent {}
-    record SafeAreaViewportEvent(float beginX, float beginY, float endX, float endY) implements PlatformEvent {}
+    record WindowInsetsEvent(Rect safeArea, Rect displayCutout) implements PlatformEvent {}
     record ClipboardChangedEvent() implements PlatformEvent {}
     record WindowFocusChangedEvent(boolean focus) implements PlatformEvent {}
     record LowMemoryEvent() implements PlatformEvent {}
@@ -255,8 +256,8 @@ public class MenginePlatformEventQueue {
         MengineNative.AndroidPlatform_unlockActivity();
     }
 
-    public static void pushSafeAreaViewportEvent(float beginX, float beginY, float endX, float endY) {
-        MenginePlatformEventQueue.pushEvent(new SafeAreaViewportEvent(beginX, beginY, endX, endY));
+    public static void pushWindowInsetsEvent(Rect safeArea, Rect displayCutout) {
+        MenginePlatformEventQueue.pushEvent(new WindowInsetsEvent(safeArea, displayCutout));
     }
 
     public static boolean processEvents(@NonNull MengineApplication application) {
@@ -356,17 +357,10 @@ public class MenginePlatformEventQueue {
                     deviceHeight,
                     rate
                 );
-            } else if (event instanceof SafeAreaViewportEvent safeAreaViewportEvent) {
-                float safeAreaBeginX = safeAreaViewportEvent.beginX();
-                float safeAreaBeginY = safeAreaViewportEvent.beginY();
-                float safeAreaEndX = safeAreaViewportEvent.endX();
-                float safeAreaEndY = safeAreaViewportEvent.endY();
-                MengineNative.AndroidPlatform_safeAreaViewportEvent(
-                    safeAreaBeginX,
-                    safeAreaBeginY,
-                    safeAreaEndX,
-                    safeAreaEndY
-                );
+            } else if (event instanceof WindowInsetsEvent windowInsetsEvent) {
+                Rect safeArea = windowInsetsEvent.safeArea();
+                Rect displayCutout = windowInsetsEvent.displayCutout();
+                MengineNative.AndroidPlatform_windowInsetsEvent(safeArea, displayCutout);
             } else {
                 MengineLog.logError(TAG, "unknown platform event type: %s", event);
             }

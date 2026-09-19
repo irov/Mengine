@@ -68,51 +68,45 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
     }
 
     private WindowInsets onApplyWindowInsets(View view, WindowInsets windowInsets) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            this.dispatchSafeAreaViewportR(view, windowInsets);
-        } else {
-            this.dispatchSafeAreaViewportLegacy(view, windowInsets);
-        }
+        Rect cutout = this.getDisplayCutoutRect(windowInsets);
 
-        this.dispatchDisplayCutoutViewport(windowInsets);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            this.dispatchWindowInsetsR(view, windowInsets, cutout);
+        } else {
+            this.dispatchWindowInsetsLegacy(view, windowInsets, cutout);
+        }
 
         return windowInsets;
     }
 
-    private void dispatchDisplayCutoutViewport(WindowInsets windowInsets) {
-        Rect cutout = null;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            DisplayCutout displayCutout = windowInsets.getDisplayCutout();
-
-            if (displayCutout != null) {
-                cutout = displayCutout.getBoundingRectTop();
-            }
+    private Rect getDisplayCutoutRect(WindowInsets windowInsets) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+            return null;
         }
 
-        if (cutout == null || cutout.isEmpty() == true) {
-            MengineNative.AndroidPlatform_displayCutoutViewportEvent(false, 0.f, 0.f, 0.f, 0.f);
+        DisplayCutout displayCutout = windowInsets.getDisplayCutout();
 
-            return;
+        if (displayCutout == null) {
+            return null;
         }
 
-        MengineNative.AndroidPlatform_displayCutoutViewportEvent(
-            true,
-            (float)cutout.left,
-            (float)cutout.top,
-            (float)cutout.right,
-            (float)cutout.bottom
-        );
+        Rect cutout = displayCutout.getBoundingRectTop();
+
+        if (cutout.isEmpty() == true) {
+            return null;
+        }
+
+        return cutout;
     }
 
     @RequiresApi(Build.VERSION_CODES.R)
-    private void dispatchSafeAreaViewportR(View view, WindowInsets windowInsets) {
+    private void dispatchWindowInsetsR(View view, WindowInsets windowInsets, Rect cutout) {
         Insets insets = windowInsets.getInsets(WindowInsets.Type.systemBars() | WindowInsets.Type.displayCutout());
-        this.dispatchSafeAreaViewport(view, insets.left, insets.top, insets.right, insets.bottom);
+        this.dispatchWindowInsets(view, insets.left, insets.top, insets.right, insets.bottom, cutout);
     }
 
     @SuppressWarnings("deprecation")
-    private void dispatchSafeAreaViewportLegacy(View view, WindowInsets windowInsets) {
+    private void dispatchWindowInsetsLegacy(View view, WindowInsets windowInsets, Rect cutout) {
         int left = windowInsets.getSystemWindowInsetLeft();
         int top = windowInsets.getSystemWindowInsetTop();
         int right = windowInsets.getSystemWindowInsetRight();
@@ -125,10 +119,10 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
             bottom = Math.max(bottom, windowInsets.getDisplayCutout().getSafeInsetBottom());
         }
 
-        this.dispatchSafeAreaViewport(view, left, top, right, bottom);
+        this.dispatchWindowInsets(view, left, top, right, bottom, cutout);
     }
 
-    private void dispatchSafeAreaViewport(View view, int left, int top, int right, int bottom) {
+    private void dispatchWindowInsets(View view, int left, int top, int right, int bottom, Rect cutout) {
         int width = view.getWidth();
         int height = view.getHeight();
 
@@ -136,12 +130,9 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
             return;
         }
 
-        MenginePlatformEventQueue.pushSafeAreaViewportEvent(
-            (float)left,
-            (float)top,
-            (float)Math.max(left, width - right),
-            (float)Math.max(top, height - bottom)
-        );
+        Rect safeArea = new Rect(left, top, Math.max(left, width - right), Math.max(top, height - bottom));
+
+        MenginePlatformEventQueue.pushWindowInsetsEvent(safeArea, cutout);
     }
 
     public void handleStart() {

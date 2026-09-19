@@ -203,8 +203,7 @@ namespace Mengine
         void androidNativeControllerConnectEvent( jlong _eventTime, jint _deviceId, jboolean _connected ) override;
         void androidNativeControllerButtonEvent( jlong _eventTime, jint _deviceId, jint _keyCode, jfloat _value, jboolean _isDown ) override;
         void androidNativeControllerAxisEvent( jlong _eventTime, jint _deviceId, jint _axis, jfloat _value ) override;
-        void androidNativeSafeAreaViewportEvent( jfloat _beginX, jfloat _beginY, jfloat _endX, jfloat _endY ) override;
-        void androidNativeDisplayCutoutViewportEvent( jboolean _valid, jfloat _beginX, jfloat _beginY, jfloat _endX, jfloat _endY ) override;
+        void androidNativeWindowInsetsEvent( const Viewport & _safeAreaViewport, bool _displayCutoutValid, const Viewport & _displayCutoutViewport ) override;
         void androidNativeTextEvent( jlong _eventTime, jint _unicode ) override;
         void androidNativePauseEvent( jfloat _x, jfloat _y ) override;
         void androidNativeResumeEvent( jfloat _x, jfloat _y ) override;

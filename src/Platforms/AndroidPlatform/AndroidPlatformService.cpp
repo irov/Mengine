@@ -363,30 +363,33 @@ extern "C"
         platformExtension->androidNativeControllerAxisEvent( eventTime, deviceId, axis, value );
     }
     ///////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1safeAreaViewportEvent )(JNIEnv * env, jclass cls, jfloat beginX, jfloat beginY, jfloat endX, jfloat endY)
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1windowInsetsEvent )(JNIEnv * env, jclass cls, jobject safeArea, jobject displayCutout)
     {
         if( g_androidPlatformActived == false )
         {
             return;
         }
 
-        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
-            ->getUnknown();
+        jclass jclass_Rect = Mengine::Mengine_JNI_GetClassRect( env );
 
-        platformExtension->androidNativeSafeAreaViewportEvent( beginX, beginY, endX, endY );
-    }
-    ///////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1displayCutoutViewportEvent )(JNIEnv * env, jclass cls, jboolean valid, jfloat beginX, jfloat beginY, jfloat endX, jfloat endY)
-    {
-        if( g_androidPlatformActived == false )
+        Mengine::Viewport safeAreaViewport;
+        Mengine::Helper::AndroidGetJavaRect( env, jclass_Rect, safeArea, &safeAreaViewport );
+
+        bool displayCutoutValid = displayCutout != nullptr;
+
+        Mengine::Viewport displayCutoutViewport;
+
+        if( displayCutoutValid == true )
         {
-            return;
+            Mengine::Helper::AndroidGetJavaRect( env, jclass_Rect, displayCutout, &displayCutoutViewport );
         }
 
+        Mengine::Mengine_JNI_DeleteLocalRef( env, jclass_Rect );
+
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
-        platformExtension->androidNativeDisplayCutoutViewportEvent( valid, beginX, beginY, endX, endY );
+        platformExtension->androidNativeWindowInsetsEvent( safeAreaViewport, displayCutoutValid, displayCutoutViewport );
     }
     ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1textEvent )(JNIEnv * env, jclass cls, jlong eventTime, jint unicode)
@@ -3137,35 +3140,27 @@ namespace Mengine
         Helper::pushControllerAxisEvent( (Timestamp)_eventTime, (ControllerId)_deviceId, axis, _value );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::androidNativeSafeAreaViewportEvent( jfloat _beginX, jfloat _beginY, jfloat _endX, jfloat _endY )
+    void AndroidPlatformService::androidNativeWindowInsetsEvent( const Viewport & _safeAreaViewport, bool _displayCutoutValid, const Viewport & _displayCutoutViewport )
     {
-        Viewport viewport( _beginX, _beginY, _endX, _endY );
+        if( _displayCutoutValid == true )
+        {
+            m_displayCutoutViewport = _displayCutoutViewport;
+        }
 
-        if( m_safeAreaViewportValid == true && m_safeAreaViewport == viewport )
+        m_displayCutoutViewportValid = _displayCutoutValid;
+
+        if( m_safeAreaViewportValid == true && m_safeAreaViewport == _safeAreaViewport )
         {
             return;
         }
 
-        m_safeAreaViewport = viewport;
+        m_safeAreaViewport = _safeAreaViewport;
         m_safeAreaViewportValid = true;
 
         if( m_safeAreaViewportChangedCallback != nullptr )
         {
             m_safeAreaViewportChangedCallback( m_safeAreaViewport );
         }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::androidNativeDisplayCutoutViewportEvent( jboolean _valid, jfloat _beginX, jfloat _beginY, jfloat _endX, jfloat _endY )
-    {
-        if( _valid == JNI_FALSE )
-        {
-            m_displayCutoutViewportValid = false;
-
-            return;
-        }
-
-        m_displayCutoutViewport = Viewport( _beginX, _beginY, _endX, _endY );
-        m_displayCutoutViewportValid = true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeTextEvent( jlong _eventTime, jint _unicode )

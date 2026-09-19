@@ -8,6 +8,8 @@
 #include "Kernel/ResourceImage.h"
 #include "Kernel/Transformable.h"
 #include "Kernel/Vector.h"
+#include "Kernel/VectorRenderIndex.h"
+#include "Kernel/VectorRenderVertex2D.h"
 
 namespace Mengine
 {
@@ -68,6 +70,10 @@ namespace Mengine
         ResourceImagePtr m_resourceImage;
         TransformablePtr m_target;
         VectorTrailPoints m_points;
+
+        mutable VectorRenderVertex2D m_verticesWM;
+        mutable VectorRenderIndex m_indices;
+
         float m_width;
         float m_fadeTime;
         float m_minSegmentLength;

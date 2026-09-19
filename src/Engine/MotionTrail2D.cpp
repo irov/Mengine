@@ -133,6 +133,9 @@ namespace Mengine
             m_resourceImage->release();
         }
 
+        m_verticesWM.clear();
+        m_indices.clear();
+
         this->releaseMaterial();
     }
     //////////////////////////////////////////////////////////////////////////
@@ -179,8 +182,9 @@ namespace Mengine
             return;
         }
 
-        VectorRenderVertex2D vertices( pointCount * 2 );
-        VectorRenderIndex indices( (pointCount - 1) * 6 );
+        m_verticesWM.resize( pointCount * 2 );
+        m_indices.resize( (pointCount - 1) * 6 );
+
         const mt::mat4f & worldMatrix = this->getWorldMatrix();
 
         Color totalColor;
@@ -212,7 +216,7 @@ namespace Mengine
 
             for( uint32_t side = 0; side != 2; ++side )
             {
-                RenderVertex2D & vertex = vertices[index * 2 + side];
+                RenderVertex2D & vertex = m_verticesWM[index * 2 + side];
                 mt::vec3f local( localPositions[side].x, localPositions[side].y, 0.f );
                 mt::mul_v3_v3_m4( &vertex.position, local, worldMatrix );
                 vertex.color = argb;
@@ -228,22 +232,22 @@ namespace Mengine
         {
             uint32_t vo = index * 2;
             uint32_t io = index * 6;
-            indices[io + 0] = (RenderIndex)(vo + 0);
-            indices[io + 1] = (RenderIndex)(vo + 2);
-            indices[io + 2] = (RenderIndex)(vo + 1);
-            indices[io + 3] = (RenderIndex)(vo + 1);
-            indices[io + 4] = (RenderIndex)(vo + 2);
-            indices[io + 5] = (RenderIndex)(vo + 3);
+            m_indices[io + 0] = (RenderIndex)(vo + 0);
+            m_indices[io + 1] = (RenderIndex)(vo + 2);
+            m_indices[io + 2] = (RenderIndex)(vo + 1);
+            m_indices[io + 3] = (RenderIndex)(vo + 1);
+            m_indices[io + 4] = (RenderIndex)(vo + 2);
+            m_indices[io + 5] = (RenderIndex)(vo + 3);
         }
 
         const RenderMaterialInterfacePtr & material = this->getMaterial();
         const RenderProgramVariableInterfacePtr & programVariable = this->getProgramVariable();
 
-        const RenderVertex2D * vertexBuffer = vertices.data();
-        uint32_t vertexCount = (uint32_t)vertices.size();
+        const RenderVertex2D * vertexBuffer = m_verticesWM.data();
+        uint32_t vertexCount = (uint32_t)m_verticesWM.size();
 
-        const RenderIndex * indexBuffer = indices.data();
-        uint32_t indicesCount = (uint32_t)indices.size();
+        const RenderIndex * indexBuffer = m_indices.data();
+        uint32_t indicesCount = (uint32_t)m_indices.size();
 
         const mt::box2f * bb = this->getBoundingBox();
 

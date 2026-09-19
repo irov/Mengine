@@ -1,5 +1,6 @@
 #include "MCPService.h"
 #include "MCPLogger.h"
+#include "Kernel/NotificationHelper.h"
 
 #include "Commands/MCPCommandRegistry.h"
 #include "Commands/Application/MCPAppStopCommand.h"
@@ -84,7 +85,6 @@
 
 #if defined(MENGINE_PLATFORM_ANDROID)
 #   include "Interface/NotificationServiceInterface.h"
-#   include "Kernel/NotificationHelper.h"
 #   include "Kernel/ParamsHelper.h"
 #endif
 
@@ -157,6 +157,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MCPService::_initializeService()
     {
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_FINALIZE_GAME, &MCPService::notifyBootstrapperFinalizeGame_, MENGINE_DOCUMENT_FACTORABLE );
         m_incomingMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
         m_outgoingMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -538,6 +539,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void MCPService::notifyBootstrapperFinalizeGame_()
+    {
+        m_scriptContext.finalize();
+    }
+    //////////////////////////////////////////////////////////////////////////
     void MCPService::stop()
     {
         if( m_running == false )
@@ -581,6 +587,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MCPService::_finalizeService()
     {
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_FINALIZE_GAME );
 #if defined(MENGINE_PLATFORM_ANDROID)
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_INTENT_START );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_INTENT_NEW );

@@ -83,6 +83,8 @@ namespace Mengine
         void _update() override;
         void processRequests_();
 
+        void notifyBootstrapperFinalizeGame_();
+
 #if defined(MENGINE_PLATFORM_ANDROID)
         void notifyApplicationIntent_( const String & _action, const String & _data, const String & _type, uint32_t _flags, const Params & _extras );
 #endif

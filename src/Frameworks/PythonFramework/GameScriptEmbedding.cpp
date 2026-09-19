@@ -132,7 +132,15 @@ namespace Mengine
     {
         MENGINE_UNUSED( _kernel );
 
-        //Empty
+        if( SERVICE_IS_INITIALIZE( GameServiceInterface ) == false )
+        {
+            return;
+        }
+
+        EventationInterface * eventation = GAME_SERVICE()
+            ->getEventation();
+
+        eventation->removeEvents();
     }
     //////////////////////////////////////////////////////////////////////////
 }

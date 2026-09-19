@@ -25,7 +25,6 @@ namespace Mengine
         m_handles.clear();
         m_sources.clear();
         m_globals = nullptr;
-        m_nextHandle = 1;
 #endif
     }
     //////////////////////////////////////////////////////////////////////////

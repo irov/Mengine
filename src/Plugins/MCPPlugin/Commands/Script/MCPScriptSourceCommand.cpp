@@ -5,6 +5,9 @@
 #include "Config/StdString.h"
 
 #include "Interface/ScriptProviderServiceInterface.h"
+#include "Interface/ContentInterface.h"
+
+#include "Kernel/ContentHelper.h"
 
 #include "pybind/kernel_interface.hpp"
 
@@ -47,13 +50,17 @@ namespace Mengine
 
         String logicalFilename = module;
 
-        if( moduleObject.has_attr( "__file__" ) == true )
+        if( moduleObject.has_attr( "__content__" ) == true )
         {
-            pybind::object filename = moduleObject.get_attr( "__file__" );
+            pybind::object contentObject = moduleObject.get_attr( "__content__" );
 
-            if( filename.is_string() == true )
+            ContentInterfacePtr content = contentObject.extract();
+
+            if( content != nullptr )
             {
-                logicalFilename = (const Char *)filename.extract();
+                PathString contentFullPath = Helper::getContentFullPath( content );
+
+                logicalFilename = contentFullPath.c_str();
             }
         }
 

@@ -96,6 +96,10 @@ namespace Mengine
             pybind::dict_setstring_i( m_kernel, dict, "__path__", py_packagePath );
         }
 
+#if defined(MENGINE_DEBUG)
+        pybind::dict_setstring_t( m_kernel, dict, "__content__", m_content );
+#endif
+
         PyObject * py_module_exec = m_kernel->module_execcode( str_moduleName, code.ptr() );
 
         return py_module_exec;

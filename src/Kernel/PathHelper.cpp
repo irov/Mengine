@@ -137,12 +137,12 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool isCorrectFolderPathW( const WChar * _path )
         {
-            size_t path_size = StdString::wcslen( _path );
-
-            if( path_size == 0 )
+            if( MENGINE_WPATH_EMPTY( _path ) == true )
             {
                 return true;
             }
+
+            size_t path_size = StdString::wcslen( _path );
 
             WChar delim = _path[path_size - 1];
 
@@ -157,12 +157,12 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool isCorrectFolderPathA( const Char * _path )
         {
-            size_t path_size = StdString::strlen( _path );
-
-            if( path_size == 0 )
+            if( MENGINE_PATH_EMPTY( _path ) == true )
             {
                 return true;
             }
+
+            size_t path_size = StdString::strlen( _path );
 
             Char delim = _path[path_size - 1];
 
@@ -177,14 +177,14 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void pathCombineW( WChar * const _out, const WChar * _base, const WChar * _path, WChar _slash )
         {
-            size_t base_lenght = StdString::wcslen( _base );
-
-            if( base_lenght == 0 )
+            if( MENGINE_WPATH_EMPTY( _base ) == true )
             {
                 StdString::wcscpy_safe( _out, _path, MENGINE_MAX_PATH );
 
                 return;
             }
+
+            size_t base_lenght = StdString::wcslen( _base );
 
             StdString::wcscpy_safe( _out, _base, MENGINE_MAX_PATH );
 
@@ -198,14 +198,14 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void pathCombineA( Char * const _out, const Char * _base, const Char * _path, Char _slash )
         {
-            size_t base_lenght = StdString::strlen( _base );
-
-            if( base_lenght == 0 )
+            if( MENGINE_PATH_EMPTY( _base ) == true )
             {
                 StdString::strcpy_safe( _out, _path, MENGINE_MAX_PATH );
 
                 return;
             }
+
+            size_t base_lenght = StdString::strlen( _base );
 
             StdString::strcpy_safe( _out, _base, MENGINE_MAX_PATH );
 
@@ -219,14 +219,14 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void pathAppendW( WChar * const _base, const WChar * _path, WChar _slash )
         {
-            size_t base_lenght = StdString::wcslen( _base );
-
-            if( base_lenght == 0 )
+            if( MENGINE_WPATH_EMPTY( _base ) == true )
             {
                 StdString::wcscpy_safe( _base, _path, MENGINE_MAX_PATH );
 
                 return;
             }
+
+            size_t base_lenght = StdString::wcslen( _base );
 
             if( _base[base_lenght - 1] != _slash )
             {
@@ -238,14 +238,14 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void pathAppendA( Char * const _base, const Char * _path, Char _slash )
         {
-            size_t base_lenght = StdString::strlen( _base );
-
-            if( base_lenght == 0 )
+            if( MENGINE_PATH_EMPTY( _base ) == true )
             {
                 StdString::strcpy_safe( _base, _path, MENGINE_MAX_PATH );
 
                 return;
             }
+
+            size_t base_lenght = StdString::strlen( _base );
 
             if( _base[base_lenght - 1] != _slash )
             {
@@ -257,12 +257,12 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void pathCorrectFolderPathW( WChar * const _folderPath, WChar _delim )
         {
-            size_t len = StdString::wcslen( _folderPath );
-
-            if( len == 0 )
+            if( MENGINE_WPATH_EMPTY( _folderPath ) == true )
             {
                 return;
             }
+
+            size_t len = StdString::wcslen( _folderPath );
 
             WChar * pch = _folderPath + len - 1;
 
@@ -276,12 +276,12 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void pathCorrectFolderPathA( Char * const _folderPath, Char _delim )
         {
-            size_t len = StdString::strlen( _folderPath );
-
-            if( len == 0 )
+            if( MENGINE_PATH_EMPTY( _folderPath ) == true )
             {
                 return;
             }
+
+            size_t len = StdString::strlen( _folderPath );
 
             Char * pch = _folderPath + len - 1;
 
@@ -395,12 +395,12 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool pathRemoveFileSpecW( WChar * const _filePath, WChar _delim )
         {
-            size_t len = StdString::wcslen( _filePath );
-
-            if( len == 0 )
+            if( MENGINE_WPATH_EMPTY( _filePath ) == true )
             {
                 return false;
             }
+
+            size_t len = StdString::wcslen( _filePath );
 
             WChar * pch = _filePath + len - 1;
 
@@ -432,12 +432,12 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool pathRemoveFileSpecA( Char * const _filePath, Char _delim )
         {
-            size_t len = StdString::strlen( _filePath );
-
-            if( len == 0 )
+            if( MENGINE_PATH_EMPTY( _filePath ) == true )
             {
                 return false;
             }
+
+            size_t len = StdString::strlen( _filePath );
 
             Char * pch = _filePath + len - 1;
 

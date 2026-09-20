@@ -92,7 +92,7 @@ namespace Mengine
 
             size_t pathLength = StdString::strlen( _path );
 
-            while( pathLength != 0 )
+            while( MENGINE_PATH_EMPTY( _path ) == false )
             {
                 Char tail = _path[pathLength - 1];
 
@@ -104,7 +104,7 @@ namespace Mengine
                 _path[--pathLength] = '\0';
             }
 
-            bool successful = pathLength != 0;
+            bool successful = MENGINE_PATH_EMPTY( _path ) == false;
 
             return successful;
         }

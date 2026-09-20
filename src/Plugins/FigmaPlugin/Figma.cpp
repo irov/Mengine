@@ -24,6 +24,7 @@
 #include "Kernel/StringView.h"
 #include "Kernel/VectorString.h"
 
+#include "Config/Path.h"
 #include "Config/StdAlgorithm.h"
 #include "Config/StdCType.h"
 #include "Config/StdIO.h"
@@ -171,7 +172,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void addUniqueDirectory( VectorString * const _directories, const Char * _directory )
         {
-            if( _directory == nullptr || _directory[0] == '\0' )
+            if( _directory == nullptr || MENGINE_PATH_EMPTY( _directory ) == true )
             {
                 return;
             }

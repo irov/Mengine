@@ -10,6 +10,7 @@
 #include "Win32FileGroupDirectoryFactory.h"
 #include "Win32FileGroupDirectory.h"
 
+#include "Kernel/Configuration.h"
 #include "Kernel/FactoryHelper.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/ConstStringHelper.h"
@@ -43,8 +44,22 @@ namespace Mengine
         VOCABULARY_SET( FactoryInterface, STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "global" ), factoryGlobalFileGroupDirectory, MENGINE_DOCUMENT_FACTORABLE );
 
         Path currentPath = {'\0'};
-        size_t currentPathLen = PLATFORM_SERVICE()
-            ->getCurrentPath( currentPath );
+        const Configuration & configuration = SERVICE_PROVIDER_GET()
+            ->getConfiguration();
+
+        if( MENGINE_PATH_EMPTY( configuration.dataDirectory ) == false )
+        {
+            StdString::strcpy_safe( currentPath, configuration.dataDirectory, MENGINE_MAX_PATH );
+            Helper::pathCorrectBackslashA( currentPath );
+            Helper::pathCorrectFolderPathA( currentPath, MENGINE_PATH_FORWARDSLASH );
+        }
+        else
+        {
+            PLATFORM_SERVICE()
+                ->getCurrentPath( currentPath );
+        }
+
+        size_t currentPathLen = StdString::strlen( currentPath );
 
         FilePath relationPath = Helper::stringizeFilePathSize( currentPath, (FilePath::size_type)currentPathLen );
 
@@ -63,14 +78,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileSystem::existDirectory( const Char * _basePath, const Char * _directory ) const
     {
-        MENGINE_ASSERTION_FATAL( StdString::strlen( _basePath ) == 0
+        MENGINE_ASSERTION_FATAL( MENGINE_PATH_EMPTY( _basePath ) == true
             || (StdString::strrchr( _basePath, '.' ) > StdString::strrchr( _basePath, MENGINE_PATH_FORWARDSLASH )
                 || _basePath[StdString::strlen( _basePath ) - 1] == MENGINE_PATH_FORWARDSLASH
                 || _basePath[StdString::strlen( _basePath ) - 1] == MENGINE_PATH_BACKSLASH)
             , "invalid path '%s'", _basePath
         );
 
-        MENGINE_ASSERTION_FATAL( StdString::strlen( _directory ) == 0
+        MENGINE_ASSERTION_FATAL( MENGINE_PATH_EMPTY( _directory ) == true
             || (StdString::strrchr( _directory, '.' ) > StdString::strrchr( _directory, MENGINE_PATH_FORWARDSLASH )
                 || _directory[StdString::strlen( _directory ) - 1] == MENGINE_PATH_FORWARDSLASH
                 || _directory[StdString::strlen( _directory ) - 1] == MENGINE_PATH_BACKSLASH)
@@ -101,14 +116,14 @@ namespace Mengine
             , _directory
         );
 
-        MENGINE_ASSERTION_FATAL( StdString::strlen( _basePath ) == 0
+        MENGINE_ASSERTION_FATAL( MENGINE_PATH_EMPTY( _basePath ) == true
             || (StdString::strrchr( _basePath, '.' ) > StdString::strrchr( _basePath, MENGINE_PATH_FORWARDSLASH )
                 || _basePath[StdString::strlen( _basePath ) - 1] == MENGINE_PATH_FORWARDSLASH
                 || _basePath[StdString::strlen( _basePath ) - 1] == MENGINE_PATH_BACKSLASH)
             , "invalid path '%s'", _basePath
         );
 
-        MENGINE_ASSERTION_FATAL( StdString::strlen( _directory ) == 0
+        MENGINE_ASSERTION_FATAL( MENGINE_PATH_EMPTY( _directory ) == true
             || (StdString::strrchr( _directory, '.' ) > StdString::strrchr( _directory, MENGINE_PATH_FORWARDSLASH )
                 || _directory[StdString::strlen( _directory ) - 1] == MENGINE_PATH_FORWARDSLASH
                 || _directory[StdString::strlen( _directory ) - 1] == MENGINE_PATH_BACKSLASH)

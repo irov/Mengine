@@ -124,12 +124,12 @@ namespace Mengine
 
         Helper::pathRemoveSlashA( correctDirectory, MENGINE_PATH_FORWARDSLASH );
 
-        size_t correctDirectoryLen = StdString::strlen( correctDirectory );
-
-        if( correctDirectoryLen == 0 )
+        if( MENGINE_PATH_EMPTY( correctDirectory ) == true )
         {
             return true;
         }
+
+        size_t correctDirectoryLen = StdString::strlen( correctDirectory );
 
         if( correctDirectory[correctDirectoryLen - 1] == ':' )
         {
@@ -159,9 +159,7 @@ namespace Mengine
 
         Helper::pathRemoveFileSpecA( correctDirectory, MENGINE_PATH_FORWARDSLASH );
 
-        size_t correctDirectoryLen = StdString::strlen( correctDirectory );
-
-        if( correctDirectoryLen == 0 )
+        if( MENGINE_PATH_EMPTY( correctDirectory ) == true )
         {
             return true;
         }

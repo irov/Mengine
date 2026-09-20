@@ -1,5 +1,6 @@
 #include "FontEffectViewerExampleFileDialog.h"
 
+#include "Config/Path.h"
 #include "Config/StdString.h"
 
 #import <AppKit/AppKit.h>
@@ -28,7 +29,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void s_setupPanelDirectory( NSSavePanel * _panel, const Char * _currentPath )
         {
-            if( _currentPath == nullptr || _currentPath[0] == '\0' )
+            if( _currentPath == nullptr || MENGINE_PATH_EMPTY( _currentPath ) == true )
             {
                 return;
             }

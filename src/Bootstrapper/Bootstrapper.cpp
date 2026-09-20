@@ -943,7 +943,15 @@ namespace Mengine
     {
         FileGroupInterfacePtr defaultFileGroup = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FileGroup" ), ConstString::none() );
 
-        FilePath applicationConfigPath = Helper::stringizeFilePath( MENGINE_BOOTSTRAPPER_CONFIG_PATH );
+        const Configuration & configuration = SERVICE_PROVIDER_GET()
+            ->getConfiguration();
+
+        const Char * applicationPath = MENGINE_PATH_EMPTY( configuration.applicationPath ) == false
+            ? configuration.applicationPath
+            : MENGINE_BOOTSTRAPPER_CONFIG_PATH;
+
+        FilePath applicationConfigPath = Helper::stringizeFilePath( applicationPath );
+        FilePath applicationConfigFolder = Helper::getFolderPath( applicationConfigPath );
 
         ContentInterfacePtr applicationConfigContent = Helper::makeFileContent( defaultFileGroup, applicationConfigPath, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -963,7 +971,8 @@ namespace Mengine
 
         for( const FilePath & filePath : configsPaths )
         {
-            ContentInterfacePtr content = Helper::makeFileContent( defaultFileGroup, filePath, MENGINE_DOCUMENT_FACTORABLE );
+            FilePath configPath = Helper::concatenateFilePath( {applicationConfigFolder, filePath} );
+            ContentInterfacePtr content = Helper::makeFileContent( defaultFileGroup, configPath, MENGINE_DOCUMENT_FACTORABLE );
 
             ConfigInterfacePtr config = Helper::loadConfig( content, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
 
@@ -985,7 +994,8 @@ namespace Mengine
 
         for( const FilePath & filePath : credentialsPaths )
         {
-            ContentInterfacePtr content = Helper::makeFileContent( defaultFileGroup, filePath, MENGINE_DOCUMENT_FACTORABLE );
+            FilePath credentialsPath = Helper::concatenateFilePath( {applicationConfigFolder, filePath} );
+            ContentInterfacePtr content = Helper::makeFileContent( defaultFileGroup, credentialsPath, MENGINE_DOCUMENT_FACTORABLE );
 
             ConfigInterfacePtr config = Helper::loadConfig( content, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
 
@@ -1003,6 +1013,11 @@ namespace Mengine
         }
 
         applicationConfig->getValues( "Packages", "Path", &m_packagesPaths );
+
+        for( FilePath & filePath : m_packagesPaths )
+        {
+            filePath = Helper::concatenateFilePath( {applicationConfigFolder, filePath} );
+        }
 
         const Char * option_config = GET_OPTION_VALUE( "config", nullptr );
 

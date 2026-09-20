@@ -34,6 +34,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/U32String.h"
 
+#include "Config/Path.h"
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
 
@@ -229,7 +230,7 @@ namespace Mengine
             this->selectGlyph_( Helper::stringizeString( m_glyphNames[m_glyphIndex].c_str() ) );
         }
 
-        if( m_glyphPathInput[0] != '\0' )
+        if( MENGINE_PATH_EMPTY( m_glyphPathInput ) == false )
         {
             this->loadGlyphFile_( m_glyphPathInput );
         }
@@ -1759,7 +1760,7 @@ namespace Mengine
                     }
                 }
 
-                if( m_glyphPathInput[0] != '\0' )
+                if( MENGINE_PATH_EMPTY( m_glyphPathInput ) == false )
                 {
                     Mosaic::sameLine( _ui );
                     this->textLine_( _ui, true, "%s", m_glyphPathInput );

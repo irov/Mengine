@@ -5,6 +5,7 @@
 #include "POSIXFileGroupDirectory.h"
 #include "POSIXFileGroupDirectoryFactory.h"
 
+#include "Kernel/Configuration.h"
 #include "Kernel/FactoryHelper.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/VocabularyHelper.h"
@@ -257,14 +258,25 @@ namespace Mengine
         VOCABULARY_SET( FactoryInterface, STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "global" ), factoryGlobalFileGroupDirectory, MENGINE_DOCUMENT_FACTORABLE );
 
         Path currentPath = {'\0'};
-        size_t currentPathSize = PLATFORM_SERVICE()
-            ->getCurrentPath( currentPath );
+        const Configuration & configuration = SERVICE_PROVIDER_GET()
+            ->getConfiguration();
 
-        Helper::pathCorrectFolderPathA( currentPath, MENGINE_PATH_FORWARDSLASH );
+        if( MENGINE_PATH_EMPTY( configuration.dataDirectory ) == false )
+        {
+            StdString::strcpy_safe( currentPath, configuration.dataDirectory, MENGINE_MAX_PATH );
+            Helper::pathCorrectBackslashA( currentPath );
+            Helper::pathCorrectFolderPathA( currentPath, MENGINE_PATH_FORWARDSLASH );
+        }
+        else
+        {
+            PLATFORM_SERVICE()
+                ->getCurrentPath( currentPath );
+            Helper::pathCorrectFolderPathA( currentPath, MENGINE_PATH_FORWARDSLASH );
+        }
 
-        currentPathSize = StdString::strlen( currentPath );
+        size_t currentPathLen = StdString::strlen( currentPath );
 
-        FilePath relationPath = Helper::stringizeFilePathSize( currentPath, (FilePath::size_type)currentPathSize );
+        FilePath relationPath = Helper::stringizeFilePathSize( currentPath, (FilePath::size_type)currentPathLen );
 
         FactoryInterfacePtr factoryDirectoryFileGroupDirectory = Helper::makeFactory<POSIXFileGroupDirectoryFactory, POSIXFileGroupDirectory>( MENGINE_DOCUMENT_FACTORABLE, relationPath );
         VOCABULARY_SET( FactoryInterface, STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "dir" ), factoryDirectoryFileGroupDirectory, MENGINE_DOCUMENT_FACTORABLE );
@@ -286,21 +298,19 @@ namespace Mengine
         Path correctDirectory = {'\0'};
         Helper::pathCorrectBackslashToA( correctDirectory, _directory );
 
-        size_t correctDirectoryLen = StdString::strlen( correctDirectory );
-
-        if( correctDirectoryLen == 0 )
+        if( MENGINE_PATH_EMPTY( correctDirectory ) == true )
         {
             return true;
         }
 
         Helper::pathRemoveSlashA( correctDirectory, MENGINE_PATH_FORWARDSLASH );
 
-        correctDirectoryLen = StdString::strlen( correctDirectory );
-
-        if( correctDirectoryLen == 0 )
+        if( MENGINE_PATH_EMPTY( correctDirectory ) == true )
         {
             return true;
         }
+
+        size_t correctDirectoryLen = StdString::strlen( correctDirectory );
 
         if( correctDirectory[correctDirectoryLen - 1] == ':' )
         {
@@ -330,9 +340,7 @@ namespace Mengine
 
         Helper::pathRemoveFileSpecA( correctDirectory, MENGINE_PATH_FORWARDSLASH );
 
-        size_t correctDirectoryLen = StdString::strlen( correctDirectory );
-
-        if( correctDirectoryLen == 0 )
+        if( MENGINE_PATH_EMPTY( correctDirectory ) == true )
         {
             return true;
         }

@@ -143,7 +143,7 @@ namespace Mengine
             if( ::getpwuid_r( ::getuid(), &pw, pwBuffer, sizeof( pwBuffer ), &pwResult ) != 0
                 || pwResult == nullptr
                 || pw.pw_dir == nullptr
-                || pw.pw_dir[0] == '\0' )
+                || MENGINE_PATH_EMPTY( pw.pw_dir ) == true )
             {
                 return false;
             }
@@ -223,9 +223,7 @@ namespace Mengine
             Path path = {'\0'};
             StdString::strcpy_safe( path, _path, MENGINE_MAX_PATH );
 
-            size_t length = StdString::strlen( path );
-
-            if( length == 0 )
+            if( MENGINE_PATH_EMPTY( path ) == true )
             {
                 return false;
             }
@@ -1043,6 +1041,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t UnixPlatformService::getCurrentPath( Char * const _currentPath ) const
     {
+        const Configuration & configuration = SERVICE_PROVIDER_GET()
+            ->getConfiguration();
+
+        if( MENGINE_PATH_EMPTY( configuration.workingDirectory ) == false )
+        {
+            StdString::strcpy_safe( _currentPath, configuration.workingDirectory, MENGINE_MAX_PATH );
+            Helper::pathCorrectBackslashA( _currentPath );
+            Helper::pathCorrectFolderPathA( _currentPath, MENGINE_PATH_FORWARDSLASH );
+
+            size_t currentPathLen = StdString::strlen( _currentPath );
+
+            return currentPathLen;
+        }
+
         ssize_t length = ::readlink( "/proc/self/exe", _currentPath, MENGINE_MAX_PATH - 2 );
 
         if( length > 0 )
@@ -1125,7 +1137,7 @@ namespace Mengine
     {
         const Char * temporaryPath = StdLib::getenv( "TMPDIR" );
 
-        if( temporaryPath == nullptr || temporaryPath[0] == '\0' )
+        if( temporaryPath == nullptr || MENGINE_PATH_EMPTY( temporaryPath ) == true )
         {
             temporaryPath = "/tmp";
         }

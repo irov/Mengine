@@ -2,6 +2,7 @@
 
 #include "../../Contexts/MCPDebuggerContext.h"
 
+#include "Config/Path.h"
 #include "Config/StdUtility.h"
 
 namespace Mengine
@@ -17,7 +18,7 @@ namespace Mengine
         const Char * filenameValue = _request.params.get( "filename", "" );
         jpp::object values;
 
-        if( filenameValue[0] == '\0' || _request.params.exist( "breakpoints", &values ) == false || values.is_type_array() == false )
+        if( MENGINE_PATH_EMPTY( filenameValue ) == true || _request.params.exist( "breakpoints", &values ) == false || values.is_type_array() == false )
         {
             _response->errorMessage = "filename and breakpoints array are required";
 

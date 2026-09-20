@@ -553,7 +553,7 @@ namespace Mengine
         MENGINE_SNPRINTF( readout, sizeof( readout ) - 1, "File: %s", m_figPathInput );
         m_readout.emplace_back( readout );
 
-        MENGINE_SNPRINTF( readout, sizeof( readout ) - 1, "Fonts: %s", m_fontsPathInput[0] != '\0' ? m_fontsPathInput : "default" );
+        MENGINE_SNPRINTF( readout, sizeof( readout ) - 1, "Fonts: %s", MENGINE_PATH_EMPTY( m_fontsPathInput ) == false ? m_fontsPathInput : "default" );
         m_readout.emplace_back( readout );
 
         MENGINE_SNPRINTF( readout, sizeof( readout ) - 1, "Frame id: %s", m_startFrameIdInput[0] != '\0' ? m_startFrameIdInput : "prototype start" );

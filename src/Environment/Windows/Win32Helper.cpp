@@ -76,7 +76,7 @@ namespace Mengine
         {
             static MENGINE_THREAD_LOCAL Path dllPath = {'\0'};
 
-            if( dllPath[0] == '\0' )
+            if( MENGINE_PATH_EMPTY( dllPath ) == true )
             {
                 if( Detail::__Win32GetCurrentDllPath( dllPath ) == false )
                 {

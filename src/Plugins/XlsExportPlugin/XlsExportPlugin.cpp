@@ -95,7 +95,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool XlsExportPlugin::process_()
     {
-        if( m_python3ExecutablePath[0] == '\0' )
+        if( MENGINE_PATH_EMPTY( m_python3ExecutablePath ) == true )
         {
             LOGGER_ERROR( "xls export python3 executable was not found" );
 

@@ -114,6 +114,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t iOSPlatformService::getCurrentPath( Char * const _currentPath ) const
     {
+        const Configuration & configuration = SERVICE_PROVIDER_GET()
+            ->getConfiguration();
+
+        if( MENGINE_PATH_EMPTY( configuration.workingDirectory ) == false )
+        {
+            StdString::strcpy_safe( _currentPath, configuration.workingDirectory, MENGINE_MAX_PATH );
+            Helper::pathCorrectBackslashA( _currentPath );
+            Helper::pathCorrectFolderPathA( _currentPath, MENGINE_PATH_FORWARDSLASH );
+
+            size_t currentPathLen = StdString::strlen( _currentPath );
+
+            return currentPathLen;
+        }
+
         NSString * path = [[NSBundle mainBundle] resourcePath];
         
         StdString::strcpy_safe( _currentPath, [path UTF8String], MENGINE_MAX_PATH );

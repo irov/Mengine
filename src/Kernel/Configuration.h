@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Config/Config.h"
+#include "Config/Path.h"
 
 namespace Mengine
 {
@@ -50,5 +51,11 @@ namespace Mengine
         // executable enables this for CLI / headless / automated runs while
         // the existing `--mute` option can still request it independently.
         bool muteSound = false;
+
+        // Empty paths keep the platform defaults. Directories are absolute;
+        // applicationPath is relative to dataDirectory.
+        Path workingDirectory = {'\0'};
+        Path dataDirectory = {'\0'};
+        Path applicationPath = {'\0'};
     };
 }

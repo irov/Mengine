@@ -2,6 +2,7 @@
 
 #include "Environment/Windows/DbgHelpIncluder.h"
 
+#include "Config/Path.h"
 #include "Config/StdString.h"
 #include "Config/StdIO.h"
 
@@ -200,7 +201,7 @@ namespace Mengine
                     StdString::strcpy_safe( _entry->name, _entry->undFullName, MENGINE_STACKWALK_MAX_NAMELEN );
                 }
 
-                if( _entry->lineFileName[0] == 0 )
+                if( MENGINE_PATH_EMPTY( _entry->lineFileName ) == true )
                 {
                     StdString::strcpy_safe( _entry->lineFileName, "(filename not available)", MENGINE_STACKWALK_MAX_NAMELEN );
 

@@ -9,6 +9,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Vector.h"
 
+#include "Config/Path.h"
 #include "Config/StdString.h"
 #include "Config/StdUtility.h"
 
@@ -56,7 +57,7 @@ namespace Mengine
             uint32_t size = value.get( "size", invalidRange );
             size_t attachmentSize = _request.attachment.size();
 
-            if( logicalPath[0] == '\0' || offset == invalidRange || size == invalidRange || offset > attachmentSize || size > attachmentSize - offset )
+            if( MENGINE_PATH_EMPTY( logicalPath ) == true || offset == invalidRange || size == invalidRange || offset > attachmentSize || size > attachmentSize - offset )
             {
                 _response->errorMessage = "resource entry has invalid path, offset, or size";
 

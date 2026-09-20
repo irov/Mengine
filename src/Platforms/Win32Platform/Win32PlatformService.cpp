@@ -927,7 +927,7 @@ namespace Mengine
 
         ::RegCloseKey( hKey );
 
-        if( StdString::wcslen( unicode_fontPath ) == 0 )
+        if( MENGINE_WPATH_EMPTY( unicode_fontPath ) == true )
         {
             _fontPath[0] = '\0';
 
@@ -3449,6 +3449,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t Win32PlatformService::getCurrentPath( Char * const _currentPath ) const
     {
+        const Configuration & configuration = SERVICE_PROVIDER_GET()
+            ->getConfiguration();
+
+        if( MENGINE_PATH_EMPTY( configuration.workingDirectory ) == false )
+        {
+            StdString::strcpy_safe( _currentPath, configuration.workingDirectory, MENGINE_MAX_PATH );
+            Helper::pathCorrectBackslashA( _currentPath );
+            Helper::pathCorrectFolderPathA( _currentPath, MENGINE_PATH_FORWARDSLASH );
+
+            size_t currentPathLen = StdString::strlen( _currentPath );
+
+            return currentPathLen;
+        }
+
         const Char * option_workdir;
         if( HAS_OPTION_VALUE( "workdir", &option_workdir ) == true )
         {

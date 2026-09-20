@@ -146,12 +146,12 @@ namespace Mengine
             WPath correctFilePath = {L'\0'};
             Helper::pathCorrectForwardslashToW( correctFilePath, _filePath );
 
-            size_t len = StdString::wcslen( correctFilePath );
-
-            if( len == 0 )
+            if( MENGINE_WPATH_EMPTY( correctFilePath ) == true )
             {
                 return false;
             }
+
+            size_t len = StdString::wcslen( correctFilePath );
 
             if( correctFilePath[len - 1] == L':' )
             {
@@ -181,9 +181,7 @@ namespace Mengine
             WPath correctDirectory = {L'\0'};
             Helper::pathCorrectForwardslashToW( correctDirectory, _directory );
 
-            size_t correctDirectoryLen = StdString::wcslen( correctDirectory );
-
-            if( correctDirectoryLen == 0 )
+            if( MENGINE_WPATH_EMPTY( correctDirectory ) == true )
             {
                 return true;
             }
@@ -221,9 +219,7 @@ namespace Mengine
             WPath correctDirectory = {L'\0'};
             Helper::pathCorrectForwardslashToW( correctDirectory, _directory );
 
-            size_t correctDirectoryLen = StdString::wcslen( correctDirectory );
-
-            if( correctDirectoryLen == 0 )
+            if( MENGINE_WPATH_EMPTY( correctDirectory ) == true )
             {
                 return true;
             }
@@ -343,7 +339,7 @@ namespace Mengine
                         ::PathCombineW( unicode_filepath, sPath2, fdFile.cFileName );
 
                         WPath unicode_out = {L'\0'};
-                        if( StdString::wcslen( _dir ) != 0 )
+                        if( MENGINE_WPATH_EMPTY( _dir ) == false )
                         {
                             ::PathRelativePathToW( unicode_out
                                 , _dir

@@ -8,6 +8,7 @@
 #include "AppleFileGroupDirectory.h"
 #include "AppleFileGroupDirectoryFactory.h"
 
+#include "Kernel/Configuration.h"
 #include "Kernel/FactoryHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
@@ -172,11 +173,23 @@ namespace Mengine
         VOCABULARY_SET( FactoryInterface, STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "global" ), factoryGlobalFileGroupDirectory, MENGINE_DOCUMENT_FACTORABLE );
 
         Path utf8_currentPath = {'\0'};
-        PLATFORM_SERVICE()
-            ->getCurrentPath( utf8_currentPath );
-        
-        StdString::strcat_safe( utf8_currentPath, "Data", MENGINE_MAX_PATH );
-        StdString::strchrcat_safe( utf8_currentPath, MENGINE_PATH_FORWARDSLASH, MENGINE_MAX_PATH );
+        const Configuration & configuration = SERVICE_PROVIDER_GET()
+            ->getConfiguration();
+
+        if( MENGINE_PATH_EMPTY( configuration.dataDirectory ) == false )
+        {
+            StdString::strcpy_safe( utf8_currentPath, configuration.dataDirectory, MENGINE_MAX_PATH );
+            Helper::pathCorrectBackslashA( utf8_currentPath );
+            Helper::pathCorrectFolderPathA( utf8_currentPath, MENGINE_PATH_FORWARDSLASH );
+        }
+        else
+        {
+            PLATFORM_SERVICE()
+                ->getCurrentPath( utf8_currentPath );
+
+            StdString::strcat_safe( utf8_currentPath, "Data", MENGINE_MAX_PATH );
+            StdString::strchrcat_safe( utf8_currentPath, MENGINE_PATH_FORWARDSLASH, MENGINE_MAX_PATH );
+        }
         
         size_t utf8_currentPathLen = StdString::strlen( utf8_currentPath );
 
@@ -203,9 +216,7 @@ namespace Mengine
         Path correctDirectory = {'\0'};
         Helper::pathCorrectBackslashToA( correctDirectory, _directory );
 
-        size_t correctDirectoryLen = StdString::strlen( correctDirectory );
-
-        if( correctDirectoryLen == 0 )
+        if( MENGINE_PATH_EMPTY( correctDirectory ) == true )
         {
             return true;
         }
@@ -235,9 +246,7 @@ namespace Mengine
 
         Helper::pathRemoveFileSpecA( correctDirectory, MENGINE_PATH_FORWARDSLASH );
         
-        size_t correctDirectoryLen = StdString::strlen( correctDirectory );
-
-        if( correctDirectoryLen == 0 )
+        if( MENGINE_PATH_EMPTY( correctDirectory ) == true )
         {
             return true;
         }

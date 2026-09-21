@@ -1,4 +1,5 @@
 #import "iOSDetail.h"
+#import "iOSToastView.h"
 
 #import "Environment/Apple/AppleLog.h"
 #import "Environment/Apple/AppleDetail.h"
@@ -302,6 +303,26 @@
     CFRelease(uuid);
 
     return result;
+}
+
++ (void)showToast:(NSString *)message {
+    if (message.length == 0) {
+        return;
+    }
+
+    [AppleDetail addMainQueueOperation:^{
+        UIApplication * application = [UIApplication sharedApplication];
+        if (application.applicationState != UIApplicationStateActive) {
+            return;
+        }
+
+        UIView * view = [iOSDetail getRootView];
+        if (view.window == nil) {
+            return;
+        }
+
+        [iOSToastView showInView:view message:message];
+    }];
 }
 
 + (void) showOkAlertWithTitle:(NSString *)title message:(NSString *)message ok:(void (^)(void) _Nonnull)ok {

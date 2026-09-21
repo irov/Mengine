@@ -6,6 +6,8 @@ src
     iOSAttribution.mm
     iOSDetail.h
     iOSDetail.mm
+    iOSToastView.h
+    iOSToastView.mm
 	
 	iOSLog.h
 	iOSLog.mm

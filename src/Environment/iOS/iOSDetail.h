@@ -49,6 +49,8 @@
 
 + (NSString * _Nonnull)pathForTemporaryFileWithPrefix:(NSString * _Nonnull)prefix ext:(NSString * _Nonnull)ext;
 
++ (void)showToast:(NSString * _Nonnull)message;
+
 + (void)showOkAlertWithTitle:(NSString * _Nonnull)title
                     message:(NSString * _Nonnull)message
                          ok:(void (^ _Nonnull)(void) _Nonnull)ok;

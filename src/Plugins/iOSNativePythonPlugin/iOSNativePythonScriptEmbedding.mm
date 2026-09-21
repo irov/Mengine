@@ -280,6 +280,11 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         typedef IntrusivePtr<PythonAppleSemaphoreListener, AppleSemaphoreListenerInterface> PythonAppleSemaphoreListenerPtr;
         //////////////////////////////////////////////////////////////////////////
+        static void iOSNativePython_showToast( NSString * _message )
+        {
+            [iOSDetail showToast:_message];
+        }
+        //////////////////////////////////////////////////////////////////////////
         void iOSNativePython_activateSemaphore( NSString * _name )
         {
             [[iOSNativePythonPlugin sharedInstance] activateSemaphore:_name];
@@ -331,6 +336,14 @@ namespace Mengine
             UIApplication.sharedApplication.idleTimerDisabled = _disabled;
         }
         ///////////////////////////////////////////////////////////////////////
+        static NSString * iOSNativePython_getUserId()
+        {
+            iOSApplication * application = [iOSApplication sharedInstance];
+            NSString * userId = [application getUserId];
+
+            return userId;
+        }
+        ///////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     iOSNativePythonScriptEmbedding::iOSNativePythonScriptEmbedding()
@@ -352,12 +365,17 @@ namespace Mengine
         pybind::def_function_args( _kernel, "iOSNativePythonShowAreYouSureAlertDialog", &Detail::iOSNativePython_showAreYouSureAlertDialog );
         pybind::def_function_args( _kernel, "iOSNativePythonShowOkAlert", &Detail::iOSNativePython_showOkAlert );
         pybind::def_function( _kernel, "iOSNativePythonSetIdleTimerDisabled", &Detail::iOSNativePython_setIdleTimerDisabled );
+        pybind::def_function( _kernel, "iOSNativePythonGetUserId", &Detail::iOSNativePython_getUserId );
+        pybind::def_function( _kernel, "iOSNativePythonShowToast", &Detail::iOSNativePython_showToast );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSNativePythonScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
+        _kernel->remove_from_module( "iOSNativePythonGetUserId", nullptr );
+        _kernel->remove_from_module( "iOSNativePythonShowToast", nullptr );
+
         pybind::unregistration_type_cast<NSString *>( _kernel );
         pybind::unregistration_type_cast<NSDictionary *>( _kernel );
         pybind::unregistration_type_cast<NSSet *>( _kernel );

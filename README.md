@@ -4,6 +4,10 @@ Mengine is an multiple platforms engine for creating and running graphical games
 
 [![CircleCI](https://circleci.com/gh/irov/Mengine.svg?style=svg)](https://app.circleci.com/pipelines/github/irov/Mengine)
 
+Support Mengine development:
+
+[![GitHub Sponsors](https://img.shields.io/badge/GitHub_Sponsors-EA4AAA?style=for-the-badge&logo=githubsponsors&logoColor=white)](https://github.com/sponsors/irov)
+
 The project uses [CMake](https://cmake.org/) as its build system.
 
 ## Windows

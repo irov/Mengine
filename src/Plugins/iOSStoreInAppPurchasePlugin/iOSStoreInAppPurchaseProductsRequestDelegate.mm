@@ -39,6 +39,16 @@
 
     NSArray<SKProduct *> * skProducts = response.products;
 
+    if( response.invalidProductIdentifiers.count != 0 ) {
+        IOS_LOGGER_WARNING( @"[SKProductsRequestDelegate] StoreKit rejected Product IDs: %@"
+            , response.invalidProductIdentifiers
+        );
+    }
+
+    if( skProducts.count == 0 ) {
+        IOS_LOGGER_WARNING( @"[SKProductsRequestDelegate] StoreKit returned an empty catalog. Check Product IDs, storefront availability and Paid Apps agreement in App Store Connect." );
+    }
+
     Mengine::VectoriOSStoreInAppPurchaseProducts products;
     for( SKProduct * skProduct in skProducts ) {
         Mengine::iOSStoreInAppPurchaseProductInterfacePtr product = [self.m_inAppPurchase makeProduct:skProduct];

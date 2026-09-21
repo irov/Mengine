@@ -32,6 +32,7 @@ namespace Mengine
     public:
         virtual NSString * getProductIdentifier() const = 0;
         virtual NSString * getTransactionIdentifier() const = 0;
+        virtual bool isCancelled() const = 0;
 
     public:
         virtual void finish() = 0;
@@ -72,6 +73,7 @@ namespace Mengine
         virtual void onPaymentQueueUpdatedTransactionDeferred( const iOSStoreInAppPurchasePaymentTransactionInterfacePtr & _transaction ) = 0;
         virtual void onPaymentQueueRestoreCompletedTransactionsFinished() = 0;
         virtual void onPaymentQueueRestoreCompletedTransactionsFailed() = 0;
+        virtual void onSubscriptionStatus( NSString * _productIdentifier, NSDictionary * _status ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<iOSStoreInAppPurchasePaymentTransactionProviderInterface> iOSStoreInAppPurchasePaymentTransactionProviderInterfacePtr;
@@ -92,6 +94,7 @@ namespace Mengine
 - (BOOL)isOwnedProduct:(NSString *)productIdentifier;
 - (BOOL)purchaseProduct:(const Mengine::iOSStoreInAppPurchaseProductInterfacePtr &)product;
 - (void)restoreCompletedTransactions;
+- (void)querySubscriptionStatus:(NSString *)productIdentifier;
 
 - (Mengine::iOSStoreInAppPurchaseProductInterfacePtr)makeProduct:(SKProduct *)skProduct;
 - (Mengine::iOSStoreInAppPurchasePaymentTransactionInterfacePtr)makePaymentTransaction:(SKPaymentTransaction *)skPaymentTransaction

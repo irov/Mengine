@@ -60,6 +60,21 @@ namespace Mengine
         return m_skPaymentTransaction.transactionIdentifier;
     }
     /////////////////////////////////////////////////////////////////////////////
+    bool iOSStoreInAppPurchasePaymentTransaction::isCancelled() const
+    {
+        NSError * error = m_skPaymentTransaction.error;
+        BOOL storeError = [error.domain isEqualToString:SKErrorDomain];
+
+        if( storeError == NO )
+        {
+            return false;
+        }
+
+        bool cancelled = error.code == SKErrorPaymentCancelled;
+
+        return cancelled;
+    }
+    /////////////////////////////////////////////////////////////////////////////
     void iOSStoreInAppPurchasePaymentTransaction::finish()
     {
         IOS_LOGGER_MESSAGE( @"payment transaction finish product: %@"

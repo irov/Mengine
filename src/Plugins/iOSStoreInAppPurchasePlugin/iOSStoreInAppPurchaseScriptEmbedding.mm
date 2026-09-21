@@ -68,6 +68,11 @@ namespace Mengine
             {
                 this->call_method( "onPaymentQueueRestoreCompletedTransactionsFailed" );
             }
+
+            void onSubscriptionStatus( NSString * _productIdentifier, NSDictionary * _status ) override
+            {
+                this->call_method( "onSubscriptionStatus", _productIdentifier, _status );
+            }
         };
         //////////////////////////////////////////////////////////////////////////
         static void iOSStoreInAppPurchase_setPaymentTransactionProvider(const pybind::dict & _cbs, const pybind::args & _args )
@@ -143,6 +148,11 @@ namespace Mengine
             [[iOSStoreInAppPurchasePlugin sharedInstance] restoreCompletedTransactions];
         }
         //////////////////////////////////////////////////////////////////////////
+        static void iOSStoreInAppPurchase_querySubscriptionStatus( NSString * _productIdentifier )
+        {
+            [[iOSStoreInAppPurchasePlugin sharedInstance] querySubscriptionStatus:_productIdentifier];
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     iOSStoreInAppPurchaseScriptEmbedding::iOSStoreInAppPurchaseScriptEmbedding()
@@ -163,10 +173,12 @@ namespace Mengine
         pybind::def_function( _kernel, "iOSStoreInAppPurchaseIsOwnedProduct", &Detail::iOSStoreInAppPurchase_isOwnedProduct );
         pybind::def_function( _kernel, "iOSStoreInAppPurchasePurchaseProduct", &Detail::iOSStoreInAppPurchase_purchaseProduct );
         pybind::def_function( _kernel, "iOSStoreInAppPurchaseRestoreCompletedTransactions", &Detail::iOSStoreInAppPurchase_restoreCompletedTransactions );
+        pybind::def_function( _kernel, "iOSStoreInAppPurchaseQuerySubscriptionStatus", &Detail::iOSStoreInAppPurchase_querySubscriptionStatus );
 
         pybind::interface_<iOSStoreInAppPurchasePaymentTransactionInterface, pybind::bases<Factorable>>( _kernel, "iOSStoreInAppPurchasePaymentTransactionInterface", true )
             .def( "getProductIdentifier", &iOSStoreInAppPurchasePaymentTransactionInterface::getProductIdentifier )
             .def( "getTransactionIdentifier", &iOSStoreInAppPurchasePaymentTransactionInterface::getTransactionIdentifier )
+            .def( "isCancelled", &iOSStoreInAppPurchasePaymentTransactionInterface::isCancelled )
             .def( "finish", &iOSStoreInAppPurchasePaymentTransactionInterface::finish )
             ;
 
@@ -212,6 +224,7 @@ namespace Mengine
         _kernel->remove_from_module( "iOSStoreInAppPurchaseIsOwnedProduct", nullptr );
         _kernel->remove_from_module( "iOSStoreInAppPurchasePurchaseProduct", nullptr );
         _kernel->remove_from_module( "iOSStoreInAppPurchaseRestoreCompletedTransactions", nullptr );
+        _kernel->remove_from_module( "iOSStoreInAppPurchaseQuerySubscriptionStatus", nullptr );
 
         pybind::unregistration_stl_vector_type_cast<VectoriOSStoreInAppPurchaseProducts>( _kernel );
 

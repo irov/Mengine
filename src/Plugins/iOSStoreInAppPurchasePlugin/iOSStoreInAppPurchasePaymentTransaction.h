@@ -35,6 +35,7 @@ namespace Mengine
     public:
         NSString * getProductIdentifier() const override;
         NSString * getTransactionIdentifier() const override;
+        bool isCancelled() const override;
 
     public:
         void finish() override;

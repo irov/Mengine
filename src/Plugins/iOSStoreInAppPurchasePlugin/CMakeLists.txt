@@ -1,4 +1,4 @@
-MENGINE_PROJECT(iOSStoreInAppPurchasePlugin)
+MENGINE_PROJECT_EXTRA_LANGUAGE(iOSStoreInAppPurchasePlugin Swift)
 
 ADD_FILTER(
 src
@@ -6,6 +6,7 @@ src
 
     iOSStoreInAppPurchasePlugin.h
     iOSStoreInAppPurchasePlugin.mm
+    iOSStoreInAppPurchaseSubscriptions.swift
 
 	iOSStoreInAppPurchaseEntitlements.h
 	iOSStoreInAppPurchaseEntitlements.mm
@@ -35,6 +36,11 @@ if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
 endif()
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_IOS_STOREINAPPPURCHASE)
+
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    XCODE_ATTRIBUTE_SWIFT_VERSION 5.0
+    XCODE_ATTRIBUTE_SWIFT_OBJC_INTERFACE_HEADER_NAME "iOSStoreInAppPurchasePlugin-Swift.h"
+)
 
 ADD_MENGINE_APPLE_APPLICATION_DELEGATE("iOSStoreInAppPurchasePlugin")
 

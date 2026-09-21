@@ -3,6 +3,7 @@
 #import "iOSStoreInAppPurchasePaymentTransactionObserver.h"
 #import "iOSStoreInAppPurchaseProductsRequestDelegate.h"
 #import "iOSStoreInAppPurchaseEntitlements.h"
+#import "iOSStoreInAppPurchasePlugin-Swift.h"
 
 #include "iOSStoreInAppPurchasePaymentTransaction.h"
 #include "iOSStoreInAppPurchaseProduct.h"
@@ -15,6 +16,7 @@
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/Logger.h"
+#include "Kernel/ThreadHelper.h"
 
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
 #   include "iOSStoreInAppPurchaseScriptEmbedding.h"
@@ -28,6 +30,8 @@
     Mengine::FactoryInterfacePtr m_factoryPaymentTransaction;
     Mengine::FactoryInterfacePtr m_factoryProduct;
     Mengine::FactoryInterfacePtr m_factoryProductsRequest;
+    MengineStoreSubscriptions * m_subscriptions;
+    uint32_t m_subscriptionGeneration;
 }
 
 - (instancetype)init {
@@ -36,6 +40,8 @@
     if( self != nil )
     {
         m_paymentTransactionProvider = nullptr;
+        m_subscriptions = [[MengineStoreSubscriptions alloc] init];
+        m_subscriptionGeneration = 0;
     }
 
     return self;
@@ -85,6 +91,7 @@
 }
 
 - (void)onStopEnd {
+    [self setPaymentTransactionProvider:nullptr];
     Mengine::Helper::removeScriptEmbedding<Mengine::iOSStoreInAppPurchaseScriptEmbedding>();
 }
 #endif
@@ -97,7 +104,8 @@
 
     [paymentTransactionObserver deactivate];
 
-    m_paymentTransactionProvider = nullptr;
+    [self setPaymentTransactionProvider:nullptr];
+    m_subscriptions = nil;
 
     MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPaymentTransaction );
     MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryProduct );
@@ -134,6 +142,8 @@
 #pragma mark - iOSStoreInAppPurchaseInterface
 
 - (void)setPaymentTransactionProvider:(const Mengine::iOSStoreInAppPurchasePaymentTransactionProviderInterfacePtr &)paymentTransactionProvider {
+    [m_subscriptions cancel];
+    ++m_subscriptionGeneration;
     m_paymentTransactionProvider = paymentTransactionProvider;
 }
 
@@ -227,6 +237,25 @@
     IOS_LOGGER_MESSAGE( @"restoreCompletedTransactions" );
 
     [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
+}
+
+- (void)querySubscriptionStatus:(NSString *)productIdentifier {
+    uint32_t generation = m_subscriptionGeneration;
+    [m_subscriptions query:productIdentifier completion:^(NSDictionary * status) {
+        Mengine::Helper::dispatchMainThreadEvent([self, productIdentifier, status, generation]() {
+            if( generation != m_subscriptionGeneration )
+            {
+                return;
+            }
+
+            if( m_paymentTransactionProvider == nullptr )
+            {
+                return;
+            }
+
+            m_paymentTransactionProvider->onSubscriptionStatus( productIdentifier, status );
+        });
+    }];
 }
 
 - (Mengine::iOSStoreInAppPurchaseProductInterfacePtr)makeProduct:(SKProduct *)skProduct {

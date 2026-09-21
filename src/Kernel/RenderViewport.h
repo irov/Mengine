@@ -36,6 +36,10 @@ namespace Mengine
         bool getFixedViewport() const;
 
     public:
+        void setClampViewport( bool _value );
+        bool getClampViewport() const;
+
+    public:
         void setViewport( const Viewport & _viewport );
         const Viewport & getViewport() const;
 
@@ -61,6 +65,7 @@ namespace Mengine
         Viewport m_viewport;
 
         bool m_fixedViewport;
+        bool m_clampViewport;
         mutable Viewport m_viewportWM;
         mutable bool m_invalidateViewport;
     };

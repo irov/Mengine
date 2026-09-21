@@ -10,6 +10,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderViewport::RenderViewport()
         : m_fixedViewport( false )
+        , m_clampViewport( true )
         , m_invalidateViewport( true )
     {
     }
@@ -50,6 +51,23 @@ namespace Mengine
     bool RenderViewport::getFixedViewport() const
     {
         return m_fixedViewport;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void RenderViewport::setClampViewport( bool _value )
+    {
+        if( m_clampViewport == _value )
+        {
+            return;
+        }
+
+        m_clampViewport = _value;
+
+        this->invalidateViewport_();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool RenderViewport::getClampViewport() const
+    {
+        return m_clampViewport;
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderViewport::setViewport( const Viewport & _viewport )
@@ -112,7 +130,10 @@ namespace Mengine
         m_viewportWM.begin = (viewportWM.begin - viewportMaskBegin) / viewportMaskSize * contentResolutionSize;
         m_viewportWM.end = (viewportWM.end - viewportMaskBegin) / viewportMaskSize * contentResolutionSize;
 
-        m_viewportWM.clamp( contentResolutionSize );
+        if( m_clampViewport == true )
+        {
+            m_viewportWM.clamp( contentResolutionSize );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderViewport::notifyChangeWindowResolution( bool _fullscreen, const Resolution & _resolution )

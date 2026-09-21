@@ -856,6 +856,8 @@ namespace Mengine
         pybind::interface_<RenderViewport, pybind::bases<Node, RenderViewportInterface>>( _kernel, "RenderViewport", false )
             .def( "setFixedViewport", &RenderViewport::setFixedViewport )
             .def( "getFixedViewport", &RenderViewport::getFixedViewport )
+            .def( "setClampViewport", &RenderViewport::setClampViewport )
+            .def( "getClampViewport", &RenderViewport::getClampViewport )
             .def( "setViewport", &RenderViewport::setViewport )
             .def( "getViewport", &RenderViewport::getViewport )
             ;

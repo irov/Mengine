@@ -260,12 +260,6 @@ namespace Mengine
         if( SERVICE_IS_INITIALIZE( Mengine::BootstrapperInterface ) == true )
         {
             BOOTSTRAPPER_SERVICE()
-                ->finalizeResources();
-        }
-
-        if( SERVICE_IS_INITIALIZE( Mengine::BootstrapperInterface ) == true )
-        {
-            BOOTSTRAPPER_SERVICE()
                 ->finalize();
         }
 

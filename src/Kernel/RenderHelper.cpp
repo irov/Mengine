@@ -1,6 +1,7 @@
 #include "RenderHelper.h"
 
 #include "Kernel/PixelFormatHelper.h"
+#include "Kernel/Assertion.h"
 
 #include "math/convex8.h"
 
@@ -110,12 +111,22 @@ namespace Mengine
             MENGINE_UNUSED( _vertexCount );
 
             double fillrate = 0.0;
+            uint32_t triangleCount = _indicesCount / 3;
 
-            for( uint32_t i = 0; i != (_indicesCount / 3); ++i )
+            for( uint32_t i = 0; i != triangleCount; ++i )
             {
-                RenderIndex i0 = _indices[i + 0];
-                RenderIndex i1 = _indices[i + 1];
-                RenderIndex i2 = _indices[i + 2];
+                uint32_t offset = i * 3;
+
+                RenderIndex i0 = _indices[offset + 0];
+                RenderIndex i1 = _indices[offset + 1];
+                RenderIndex i2 = _indices[offset + 2];
+
+                MENGINE_ASSERTION_FATAL( i0 < _vertexCount && i1 < _vertexCount && i2 < _vertexCount, "invalid index %u %u %u vertex count %u"
+                    , (uint32_t)i0
+                    , (uint32_t)i1
+                    , (uint32_t)i2
+                    , _vertexCount
+                );
 
                 const RenderVertex2D & v0 = _vertex[i0];
                 const RenderVertex2D & v1 = _vertex[i1];

@@ -1,6 +1,7 @@
 #include "ShapeCircle.h"
 
 #include "Kernel/Surface.h"
+#include "Kernel/Assertion.h"
 
 #include "Config/StdMath.h"
 
@@ -18,6 +19,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ShapeCircle::setQuality( uint8_t _quality )
     {
+        MENGINE_ASSERTION_FATAL( _quality >= 3, "invalid quality %u"
+            , (uint32_t)_quality
+        );
+
         m_quality = _quality;
 
         this->invalidateVerticesLocal();

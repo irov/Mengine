@@ -154,7 +154,14 @@ namespace Mengine
             return false;
         }
 
-        return Helper::encodeHexadecimal( randomBytes, randomSize, _hexadecimal, _length, _lowercase, nullptr );
+        size_t hexadecimalCapacity = _length + 1;
+
+        if( Helper::encodeHexadecimal( randomBytes, randomSize, _hexadecimal, hexadecimalCapacity, _lowercase, nullptr ) == false )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -105,7 +105,6 @@ namespace Mengine
         void assign( const StaticString<N2> & _value, size_t _size )
         {
             const Char * value_str = _value.c_str();
-            size_t value_size = _value.size();
 
             this->assign( value_str, _size );
         }

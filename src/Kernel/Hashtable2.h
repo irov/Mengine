@@ -6,6 +6,8 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
+#include "Config/StdBit.h"
+
 #ifndef MENGINE_HASHTABLE_DUMMY_ELEMENT
 #define MENGINE_HASHTABLE_DUMMY_ELEMENT (reinterpret_cast<element_type *>(MENGINE_MAX_ALIGNED_POINTER_VALUE))
 #endif
@@ -163,20 +165,14 @@ namespace Mengine
     public:
         void reserve( size_type _capacity )
         {
-            if( m_capacity > _capacity )
+            if( m_capacity >= _capacity )
             {
                 return;
             }
 
-            --_capacity;
-            _capacity |= _capacity >> 16;
-            _capacity |= _capacity >> 8;
-            _capacity |= _capacity >> 4;
-            _capacity |= _capacity >> 2;
-            _capacity |= _capacity >> 1;
-            ++_capacity;
+            size_type capacity = StdBit::bit_ceil( _capacity );
 
-            this->rebalance_( _capacity );
+            this->rebalance_( capacity );
         }
 
         bool empty() const
@@ -357,10 +353,10 @@ namespace Mengine
                 return *this;
             }
 
-            const_iterator operator ++ ( int )
+            const_reverse_iterator operator ++ ( int )
             {
-                const_iterator tmp = *this;
-                -- * this;
+                const_reverse_iterator tmp = *this;
+                ++ * this;
 
                 return tmp;
             }
@@ -799,20 +795,14 @@ namespace Mengine
     public:
         void reserve( size_type _capacity )
         {
-            if( m_capacity > _capacity )
+            if( m_capacity >= _capacity )
             {
                 return;
             }
 
-            --_capacity;
-            _capacity |= _capacity >> 16;
-            _capacity |= _capacity >> 8;
-            _capacity |= _capacity >> 4;
-            _capacity |= _capacity >> 2;
-            _capacity |= _capacity >> 1;
-            ++_capacity;
+            size_type capacity = StdBit::bit_ceil( _capacity );
 
-            this->rebalance_( _capacity );
+            this->rebalance_( capacity );
         }
 
         bool empty() const
@@ -987,10 +977,10 @@ namespace Mengine
                 return *this;
             }
 
-            const_iterator operator ++ ( int )
+            const_reverse_iterator operator ++ ( int )
             {
-                const_iterator tmp = *this;
-                -- * this;
+                const_reverse_iterator tmp = *this;
+                ++ * this;
 
                 return tmp;
             }

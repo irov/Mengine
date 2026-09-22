@@ -827,15 +827,20 @@ namespace Mengine
                     return true;
                 }
 
-                if( encoded.size() < 4 || encoded.size() % 4 != 0 )
+                if( encoded.empty() == true )
                 {
-                    return this->error_( "has malformed base64 tile data" );
+                    bool successful = this->error_( "has malformed base64 tile data" );
+
+                    return successful;
                 }
 
-                size_t encodedSize = encoded.size();
-                size_t decodedSize = Helper::getBase64DecodeSize( encoded.c_str(), encodedSize );
-                Data decoded( decodedSize );
-                Helper::decodeBase64( encoded.c_str(), encodedSize, decoded.data() );
+                Data decoded;
+                if( Helper::decodeBase64( encoded, &decoded ) == false )
+                {
+                    bool successful = this->error_( "has malformed base64 tile data" );
+
+                    return successful;
+                }
 
                 if( _expectedCount > std::numeric_limits<size_t>::max() / 4 )
                 {

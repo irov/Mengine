@@ -215,9 +215,10 @@ namespace Mengine
         SECURE_SERVICE()
             ->protectData( 1, blob.data(), blob.size(), blob_raving.data() );
 
-        _hexadecimal->resize( blob.size() * 2 );
-
-        Helper::encodeHexadecimal( blob_raving.data(), blob_raving.size(), _hexadecimal->data(), _hexadecimal->size(), true, nullptr );
+        if( Helper::encodeHexadecimal( blob_raving, _hexadecimal, true ) == false )
+        {
+            return;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool SecureUnsignedValue::loadHexadecimal( const String & _hexadecimal )
@@ -242,7 +243,10 @@ namespace Mengine
         Data::size_type blob_raving_capacity = blob_raving.size();
 
         size_t blob_raving_size;
-        Helper::decodeHexadecimal( hexadecimal_str, hexadecimal_size, blob_raving_data, blob_raving_capacity, &blob_raving_size );
+        if( Helper::decodeHexadecimal( hexadecimal_str, hexadecimal_size, blob_raving_data, blob_raving_capacity, &blob_raving_size ) == false )
+        {
+            return false;
+        }
 
         Data blob;
         blob.resize( blob_raving_size );

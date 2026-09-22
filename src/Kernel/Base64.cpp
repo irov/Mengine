@@ -42,17 +42,41 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         size_t getBase64DecodeSize( const Char * _base64, size_t _size )
         {
-            size_t totalsize = _size / 4 * 3;
+            if( _size == 0 )
+            {
+                return 0;
+            }
+
+            if( _size % 4 != 0 )
+            {
+                return 0;
+            }
+
+            size_t padding = 0;
 
             if( _base64[_size - 1] == '=' )
             {
-                --totalsize;
+                ++padding;
+
+                if( _base64[_size - 2] == '=' )
+                {
+                    ++padding;
+                }
             }
 
-            if( _base64[_size - 2] == '=' )
+            size_t symbolCount = _size - padding;
+
+            for( size_t index = 0; index != symbolCount; ++index )
             {
-                --totalsize;
+                uint8_t symbol = static_cast<uint8_t>(_base64[index]);
+
+                if( base64_decode_table[symbol] == 0 && symbol != 'A' )
+                {
+                    return 0;
+                }
             }
+
+            size_t totalsize = _size / 4 * 3 - padding;
 
             return totalsize;
         }
@@ -63,7 +87,7 @@ namespace Mengine
 
             const uint8_t * data_u8 = static_cast<const uint8_t *>(_data);
 
-            for( uint32_t i = 0, j = 0; i != _datasize;)
+            for( size_t i = 0, j = 0; i != _datasize;)
             {
                 uint32_t octet_a = i < _datasize ? data_u8[i++] : 0;
                 uint32_t octet_b = i < _datasize ? data_u8[i++] : 0;
@@ -87,18 +111,41 @@ namespace Mengine
             }
         }
         //////////////////////////////////////////////////////////////////////////
-        void decodeBase64( const Char * _base64, size_t _base64size, void * const _data )
+        void encodeBase64( const Data & _data, String * const _base64 )
         {
+            const void * dataBuffer = _data.data();
+            size_t dataSize = _data.size();
+            size_t base64Size = Helper::getBase64EncodeSize( dataSize );
+
+            _base64->resize( base64Size );
+
+            Char * base64Buffer = _base64->data();
+
+            Helper::encodeBase64( dataBuffer, dataSize, base64Buffer );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool decodeBase64( const Char * _base64, size_t _base64size, void * const _data )
+        {
+            if( _base64size == 0 )
+            {
+                return true;
+            }
+
             size_t totalsize = Helper::getBase64DecodeSize( _base64, _base64size );
+
+            if( totalsize == 0 )
+            {
+                return false;
+            }
 
             uint8_t * const data_u8 = static_cast<uint8_t * const>(_data);
 
-            for( uint32_t i = 0, j = 0; i != _base64size;)
+            for( size_t i = 0, j = 0; i != _base64size; i += 4 )
             {
-                uint32_t sextet_a = _base64[i] == '=' ? 0 & i++ : base64_decode_table[(size_t)_base64[i++]];
-                uint32_t sextet_b = _base64[i] == '=' ? 0 & i++ : base64_decode_table[(size_t)_base64[i++]];
-                uint32_t sextet_c = _base64[i] == '=' ? 0 & i++ : base64_decode_table[(size_t)_base64[i++]];
-                uint32_t sextet_d = _base64[i] == '=' ? 0 & i++ : base64_decode_table[(size_t)_base64[i++]];
+                uint32_t sextet_a = _base64[i + 0] == '=' ? 0 : base64_decode_table[(uint8_t)_base64[i + 0]];
+                uint32_t sextet_b = _base64[i + 1] == '=' ? 0 : base64_decode_table[(uint8_t)_base64[i + 1]];
+                uint32_t sextet_c = _base64[i + 2] == '=' ? 0 : base64_decode_table[(uint8_t)_base64[i + 2]];
+                uint32_t sextet_d = _base64[i + 3] == '=' ? 0 : base64_decode_table[(uint8_t)_base64[i + 3]];
 
                 uint32_t triple = (sextet_a << 3 * 6) + (sextet_b << 2 * 6) + (sextet_c << 1 * 6) + (sextet_d << 0 * 6);
 
@@ -106,6 +153,28 @@ namespace Mengine
                 if( j < totalsize ) data_u8[j++] = (triple >> 1 * 8) & 0xFF;
                 if( j < totalsize ) data_u8[j++] = (triple >> 0 * 8) & 0xFF;
             }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool decodeBase64( const String & _base64, Data * const _data )
+        {
+            const Char * base64Buffer = _base64.c_str();
+            size_t base64Size = _base64.size();
+            size_t dataSize = Helper::getBase64DecodeSize( base64Buffer, base64Size );
+
+            _data->resize( dataSize );
+
+            void * dataBuffer = _data->data();
+
+            if( Helper::decodeBase64( base64Buffer, base64Size, dataBuffer ) == false )
+            {
+                _data->clear();
+
+                return false;
+            }
+
+            return true;
         }
         //////////////////////////////////////////////////////////////////////////
     }

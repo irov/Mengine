@@ -127,7 +127,7 @@ namespace Mengine
             m_indices[4 * 3 + 1] = 6;
             m_indices[4 * 3 + 2] = 1;
 
-            m_indexCount = 16;
+            m_indexCount = 15;
         }
         else if( m_angleTo < mt::constant::fourth_pi * 2.f )
         {

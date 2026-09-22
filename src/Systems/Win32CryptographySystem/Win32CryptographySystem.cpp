@@ -90,7 +90,13 @@ namespace Mengine
             return false;
         }
 
-        Helper::encodeHexadecimal( pbData, _length / 2, _hexadecimal, _length, _lowercase, nullptr );
+        size_t dataSize = _length / 2;
+        size_t hexadecimalCapacity = _length + 1;
+
+        if( Helper::encodeHexadecimal( pbData, dataSize, _hexadecimal, hexadecimalCapacity, _lowercase, nullptr ) == false )
+        {
+            return false;
+        }
 
         return true;
     }

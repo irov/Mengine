@@ -235,7 +235,13 @@ namespace Mengine
 
         m_sessionTimestamp = Helper::getSystemTimestamp();
         
-        Helper::generateRandomHexadecimal( m_sessionId.capacity(), m_sessionId.data(), false );
+        size_t sessionIdLength = m_sessionId.capacity();
+        Char * sessionIdData = m_sessionId.data();
+
+        if( Helper::generateRandomHexadecimal( sessionIdLength, sessionIdData, false ) == false )
+        {
+            return false;
+        }
 
         return true;
     }

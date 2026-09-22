@@ -1,5 +1,7 @@
 #include "Polygon.h"
 
+#include "Kernel/Assertion.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -73,8 +75,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Polygon::mul_wm( Polygon * const _out, const mt::mat4f & _wm ) const
     {
+        MENGINE_ASSERTION_FATAL( _out != this, "invalid transform polygon to itself" );
+
         Polygon::size_type points_size = this->size();
 
+        _out->clear();
         _out->reserve( points_size );
 
         for( const mt::vec2f & v : m_points )
@@ -88,8 +93,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Polygon::mul_wm_and_transpose( Polygon * const _out, const mt::mat4f & _wm, const mt::vec2f & _position ) const
     {
+        MENGINE_ASSERTION_FATAL( _out != this, "invalid transform polygon to itself" );
+
         Polygon::size_type points_size = this->size();
 
+        _out->clear();
         _out->reserve( points_size );
 
         for( const mt::vec2f & v : m_points )
@@ -104,8 +112,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Polygon::transpose( Polygon * const _out, const mt::vec2f & _position ) const
     {
+        MENGINE_ASSERTION_FATAL( _out != this, "invalid transform polygon to itself" );
+
         Polygon::size_type points_size = this->size();
 
+        _out->clear();
         _out->reserve( points_size );
 
         for( const mt::vec2f & v : m_points )
@@ -119,8 +130,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Polygon::transpose_and_scale( Polygon * const _out, const mt::vec2f & _position, const mt::vec2f & _scale ) const
     {
+        MENGINE_ASSERTION_FATAL( _out != this, "invalid transform polygon to itself" );
+
         Polygon::size_type points_size = this->size();
 
+        _out->clear();
         _out->reserve( points_size );
 
         for( const mt::vec2f & v : m_points )

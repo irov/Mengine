@@ -55,7 +55,7 @@ namespace Mengine
         {
             const ConstString & cstr = this->c_cstr();
 
-            return cstr == _cstr;
+            return cstr != _cstr;
         }
 
     protected:

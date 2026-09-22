@@ -1,7 +1,5 @@
 #include "Hexadecimal.h"
 
-#include "Kernel/Assertion.h"
-
 namespace Mengine
 {
     namespace Helper
@@ -65,7 +63,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool encodeHexadecimal( const void * _data, size_t _datasize, Char * const _hexadecimal, size_t _capacity, bool _lowercase, size_t * const _outsize )
         {
-            if( _capacity < _datasize * 2 )
+            if( _capacity <= (_datasize * 2) )
             {
                 return false;
             }
@@ -110,6 +108,29 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        bool encodeHexadecimal( const Data & _data, String * const _hexadecimal, bool _lowercase )
+        {
+            const void * dataBuffer = _data.data();
+            size_t dataSize = _data.size();
+            size_t hexadecimalSize = dataSize * 2;
+
+            _hexadecimal->resize( hexadecimalSize + 1 );
+
+            Char * hexadecimalBuffer = _hexadecimal->data();
+            size_t hexadecimalCapacity = _hexadecimal->size();
+
+            if( Helper::encodeHexadecimal( dataBuffer, dataSize, hexadecimalBuffer, hexadecimalCapacity, _lowercase, nullptr ) == false )
+            {
+                _hexadecimal->clear();
+
+                return false;
+            }
+
+            _hexadecimal->resize( hexadecimalSize );
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
         bool decodeHexadecimal( const Char * _hexadecimal, size_t _size, void * const _data, size_t _capacity, size_t * const _outsize )
         {
             if( _size % 2 != 0 )
@@ -147,6 +168,26 @@ namespace Mengine
             if( _outsize != nullptr )
             {
                 *_outsize = _size / 2;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool decodeHexadecimal( const String & _hexadecimal, Data * const _data )
+        {
+            const Char * hexadecimalBuffer = _hexadecimal.c_str();
+            size_t hexadecimalSize = _hexadecimal.size();
+            size_t dataSize = hexadecimalSize / 2;
+
+            _data->resize( dataSize );
+
+            void * dataBuffer = _data->data();
+
+            if( Helper::decodeHexadecimal( hexadecimalBuffer, hexadecimalSize, dataBuffer, dataSize, nullptr ) == false )
+            {
+                _data->clear();
+
+                return false;
             }
 
             return true;

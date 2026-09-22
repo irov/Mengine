@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Config/Atomic.h"
-
 #include "Interface/ThreadTaskInterface.h"
 
 #include "Kernel/Visitable.h"
+
+#include "Config/Atomic.h"
 
 namespace Mengine
 {
@@ -58,9 +58,13 @@ namespace Mengine
         const ThreadMutexInterfacePtr & getMutex() const;
 
     private:
+        void complete_( bool _successful );
+
+    private:
         ThreadMutexInterfacePtr m_mutex;
 
         AtomicBool m_run;
+        AtomicBool m_pending;
         AtomicBool m_complete;
         AtomicBool m_finish;
         AtomicBool m_successful;

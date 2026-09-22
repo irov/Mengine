@@ -1107,13 +1107,26 @@ namespace Mengine
             size_t base64Size = _base64.size();
 
             size_t size = Helper::getBase64DecodeSize( base64String, base64Size );
+            constexpr size_t headerSize = sizeof( uint32_t ) + sizeof( uint64_t );
+
+            if( size < headerSize )
+            {
+                LOGGER_ERROR( "invalid compressed base64 header" );
+
+                return _kernel->ret_none();
+            }
 
             MemoryInterfacePtr dataMemory = Helper::createMemoryCacheBuffer( size, MENGINE_DOCUMENT_PYTHON );
 
             void * dataMemoryBuffer = dataMemory->getBuffer();
             size_t dataMemorySize = dataMemory->getSize();
 
-            Helper::decodeBase64( base64String, base64Size, dataMemoryBuffer );
+            if( Helper::decodeBase64( base64String, base64Size, dataMemoryBuffer ) == false )
+            {
+                LOGGER_ERROR( "invalid compressed base64 data" );
+
+                return _kernel->ret_none();
+            }
 
             uint32_t magic;
             Helper::readUint32( dataMemoryBuffer, &magic );

@@ -64,7 +64,13 @@ namespace Mengine
             return false;
         }
         
-        Helper::encodeHexadecimal( buffer, _length / 2, _hexadecimal, _length, _lowercase, nullptr );
+        size_t dataSize = _length / 2;
+        size_t hexadecimalCapacity = _length + 1;
+
+        if( Helper::encodeHexadecimal( buffer, dataSize, _hexadecimal, hexadecimalCapacity, _lowercase, nullptr ) == false )
+        {
+            return false;
+        }
 
         return true;
     }

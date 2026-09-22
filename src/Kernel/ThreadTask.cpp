@@ -7,6 +7,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ThreadTask::ThreadTask()
         : m_run( false )
+        , m_pending( true )
         , m_complete( false )
         , m_finish( false )
         , m_successful( false )
@@ -27,7 +28,7 @@ namespace Mengine
     {
         if( m_run == false ||
             m_finish == true ||
-            m_complete == true )
+            m_pending == false )
         {
             return;
         }
@@ -63,17 +64,18 @@ namespace Mengine
         if( m_run == true ||
             m_cancel == true ||
             m_finish == true ||
-            m_complete == true )
+            m_pending == false )
         {
             return false;
         }
 
         m_mutex = _mutex;
 
-        m_run = this->_onThreadTaskRun();
+        m_run = true;
 
-        if( m_run == false )
+        if( this->_onThreadTaskRun() == false )
         {
+            m_run = false;
             m_successful = false;
             m_finish = true;
         }
@@ -118,14 +120,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ThreadTask::cancel()
     {
-        if( m_cancel == true )
+        if( m_cancel.exchange( true ) == true )
         {
             return false;
         }
 
-        m_cancel = true;
-
-        if( m_complete == true )
+        if( m_pending == false )
         {
             return false;
         }
@@ -135,15 +135,12 @@ namespace Mengine
         if( m_run == false ||
             m_finish == true )
         {
-            m_successful = false;
-            m_finish = true;
-
-            if( m_complete == false )
+            if( m_pending.exchange( false ) == false )
             {
-                m_complete = true;
-
-                this->_onThreadTaskComplete( false );
+                return false;
             }
+
+            this->complete_( false );
 
             return false;
         }
@@ -163,14 +160,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ThreadTask::update()
     {
-        if( m_run == false )
+        if( m_pending == false )
         {
-            return false;
+            return m_complete;
         }
 
-        if( m_complete == true || m_cancel == true )
+        if( m_finish == true )
         {
             return true;
+        }
+
+        if( m_run == false ||
+            m_cancel == true )
+        {
+            return false;
         }
 
         this->_onThreadTaskUpdate();
@@ -180,18 +183,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ThreadTask::finish()
     {
-        this->_onThreadTaskFinish();
-
-        m_mutex = nullptr;
-
-        if( m_complete == true )
+        if( m_pending.exchange( false ) == false )
         {
             return;
         }
 
-        m_complete = true;
+        this->_onThreadTaskFinish();
 
-        this->_onThreadTaskComplete( m_successful );
+        bool successful = m_successful;
+
+        this->complete_( successful );
     }
     //////////////////////////////////////////////////////////////////////////
     void ThreadTask::finally()
@@ -201,42 +202,24 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ThreadTask::join()
     {
-        if( m_run == false ||
-            m_complete == true )
+        if( m_pending.exchange( false ) == false )
         {
             return;
         }
-
-        this->_onThreadTaskJoin();
-
-        bool completeProcess = false;
 
         ThreadMutexInterfacePtr mutex = m_mutex;
 
         if( mutex != nullptr )
         {
             mutex->lock();
-        }
-
-        if( m_complete == false )
-        {
-            m_successful = false;
-            m_finish = true;
-            m_complete = true;
-            completeProcess = true;
-        }
-
-        if( mutex != nullptr )
-        {
             mutex->unlock();
         }
 
-        m_mutex = nullptr;
+        this->_onThreadTaskJoin();
 
-        if( completeProcess == true )
-        {
-            this->_onThreadTaskComplete( false );
-        }
+        bool successful = m_successful;
+
+        this->complete_( successful );
     }
     //////////////////////////////////////////////////////////////////////////
     void ThreadTask::_onThreadTaskUpdate()
@@ -259,6 +242,16 @@ namespace Mengine
         MENGINE_UNUSED( _successful );
 
         //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ThreadTask::complete_( bool _successful )
+    {
+        m_mutex = nullptr;
+        m_successful = _successful;
+        m_finish = true;
+        m_complete = true;
+
+        this->_onThreadTaskComplete( _successful );
     }
     //////////////////////////////////////////////////////////////////////////
     const ThreadMutexInterfacePtr & ThreadTask::getMutex() const

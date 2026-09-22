@@ -35,22 +35,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ThreadTaskPrefetch::_onThreadTaskPreparation()
     {
-        m_observer->onPrefetchPreparation();
+        PrefetcherObserverInterfacePtr observer = m_observer;
+        observer->onPrefetchPreparation();
     }
     //////////////////////////////////////////////////////////////////////////
     bool ThreadTaskPrefetch::_onThreadTaskRun()
     {
-        bool successful = m_observer->onPrefetchRun();
+        PrefetcherObserverInterfacePtr observer = m_observer;
+        bool successful = observer->onPrefetchRun();
 
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
     void ThreadTaskPrefetch::_onThreadTaskCancel()
     {
-        if( m_observer != nullptr )
-        {
-            m_observer->onPrefetchCancel();
-        }
+        PrefetcherObserverInterfacePtr observer = m_observer;
+        observer->onPrefetchCancel();
     }
     //////////////////////////////////////////////////////////////////////////
     void ThreadTaskPrefetch::_onThreadTaskComplete( bool _successful )
@@ -58,8 +58,10 @@ namespace Mengine
         m_content = nullptr;
         m_stream = nullptr;
 
-        m_observer->onPrefetchComplete( _successful );
+        PrefetcherObserverInterfacePtr observer = m_observer;
         m_observer = nullptr;
+
+        observer->onPrefetchComplete( _successful );
     }
     //////////////////////////////////////////////////////////////////////////
 }

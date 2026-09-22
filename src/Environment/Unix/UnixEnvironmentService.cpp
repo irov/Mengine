@@ -169,7 +169,13 @@ namespace Mengine
             m_sessionRND = (int64_t)randomSeed;
         }
 
-        Helper::generateRandomHexadecimal( m_sessionId.capacity(), m_sessionId.data(), false );
+        size_t sessionIdLength = m_sessionId.capacity();
+        Char * sessionIdData = m_sessionId.data();
+
+        if( Helper::generateRandomHexadecimal( sessionIdLength, sessionIdData, false ) == false )
+        {
+            return false;
+        }
 
         return true;
     }

@@ -245,6 +245,8 @@ namespace Mengine
                 *cursor = '/';
             }
 
+            size_t length = StdString::strlen( path );
+
             if( path[length - 1] != '/' )
             {
                 if( Detail::ensureDirectory( path ) == false )

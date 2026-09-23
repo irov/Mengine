@@ -6,6 +6,8 @@ src
     AndroidDeclaration.h
     AndroidEnv.h
     AndroidEnv.cpp
+    AndroidGlobalRef.h
+    AndroidGlobalRef.cpp
     AndroidActivityHelper.h
     AndroidActivityHelper.cpp
     AndroidApplicationHelper.h

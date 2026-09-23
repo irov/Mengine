@@ -79,8 +79,8 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         }
     }
 
-    public void readyAdProvider() {
-        this.activateSemaphore("AdServiceReady");
+    public void readyAdProvider(boolean successful) {
+        this.activateSemaphore("AdServiceReady", successful);
     }
 
     private void setupAdBasePointAttemts(MengineAdPointBase adPoint) {

@@ -4,6 +4,7 @@
 
 #include "Kernel/ResourceImage.h"
 #include "Kernel/Logger.h"
+#include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ColorHelper.h"
 
@@ -105,74 +106,45 @@ namespace Mengine
         return m_countY;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Grid2D::setGridColor( uint32_t _i, uint32_t _j, const Color & _value )
+    void Grid2D::setGridColor( uint32_t _i, uint32_t _j, const Color & _value )
     {
-        if( _i >= m_countX || _j >= m_countY )
-        {
-            return false;
-        }
-
-        uint32_t index = _i + _j * m_countX;
+        uint32_t index = this->getGridIndex_( _i, _j, m_vertices );
 
         ColorValue_ARGB argb = _value.getAsARGB();
 
         m_vertices[index].color = argb;
 
         m_invalidateVerticesWM = true;
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Grid2D::getGridColor( uint32_t _i, uint32_t _j, Color * const _value ) const
+    void Grid2D::getGridColor( uint32_t _i, uint32_t _j, Color * const _value ) const
     {
-        if( _i >= m_countX || _j >= m_countY )
-        {
-            return false;
-        }
-
-        uint32_t index = _i + _j * m_countX;
+        uint32_t index = this->getGridIndex_( _i, _j, m_vertices );
 
         *_value = Helper::makeColorARGB( m_vertices[index].color );
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Grid2D::setGridPosition( uint32_t _i, uint32_t _j, const mt::vec3f & _value )
+    void Grid2D::setGridPosition( uint32_t _i, uint32_t _j, const mt::vec3f & _value )
     {
-        if( _i >= m_countX || _j >= m_countY || m_vertices.empty() == true )
-        {
-            return false;
-        }
+        uint32_t index = this->getGridIndex_( _i, _j, m_vertices );
 
-        m_vertices[_i + _j * m_countX].position = _value;
+        m_vertices[index].position = _value;
         m_invalidateVerticesWM = true;
         this->invalidateBoundingBox();
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Grid2D::getGridPosition( uint32_t _i, uint32_t _j, mt::vec3f * const _value ) const
+    void Grid2D::getGridPosition( uint32_t _i, uint32_t _j, mt::vec3f * const _value ) const
     {
-        if( _i >= m_countX || _j >= m_countY || m_vertices.empty() == true )
-        {
-            return false;
-        }
+        uint32_t index = this->getGridIndex_( _i, _j, m_vertices );
 
-        *_value = m_vertices[_i + _j * m_countX].position;
-
-        return true;
+        *_value = m_vertices[index].position;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Grid2D::getOriginalGridPosition( uint32_t _i, uint32_t _j, mt::vec3f * const _value ) const
+    void Grid2D::getOriginalGridPosition( uint32_t _i, uint32_t _j, mt::vec3f * const _value ) const
     {
-        if( _i >= m_countX || _j >= m_countY || m_originalVertices.empty() == true )
-        {
-            return false;
-        }
+        uint32_t index = this->getGridIndex_( _i, _j, m_originalVertices );
 
-        *_value = m_originalVertices[_i + _j * m_countX].position;
-
-        return true;
+        *_value = m_originalVertices[index].position;
     }
     //////////////////////////////////////////////////////////////////////////
     void Grid2D::resetGrid()
@@ -535,6 +507,29 @@ namespace Mengine
         const mt::box2f * bb = this->getBoundingBox();
 
         _renderPipeline->addRenderObject( _context, material, programVariable, vertices, verticesCount, indices, indicesCount, bb, EROF_NONE, MENGINE_DOCUMENT_FORWARD );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t Grid2D::getGridIndex_( uint32_t _i, uint32_t _j, const VectorRenderVertex2D & _vertices ) const
+    {
+        MENGINE_UNUSED( _vertices );
+
+        MENGINE_ASSERTION_FATAL( _i < m_countX, "grid column '%u' out of range '%u'"
+            , _i
+            , m_countX
+        );
+
+        MENGINE_ASSERTION_FATAL( _j < m_countY, "grid row '%u' out of range '%u'"
+            , _j
+            , m_countY
+        );
+
+        uint32_t index = _i + _j * m_countX;
+
+        MENGINE_ASSERTION_FATAL( index < _vertices.size(), "grid vertex index '%u' out of range"
+            , index
+        );
+
+        return index;
     }
     //////////////////////////////////////////////////////////////////////////
     void Grid2D::updateVerticesWM_() const

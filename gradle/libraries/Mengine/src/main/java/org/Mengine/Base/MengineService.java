@@ -344,6 +344,11 @@ public class MengineService implements MengineServiceInterface {
     }
 
     @Override
+    public void activateSemaphore(@NonNull String name, Object value) {
+        m_application.activateSemaphore(name, value);
+    }
+
+    @Override
     public void deactivateSemaphore(@NonNull String name) {
         m_application.deactivateSemaphore(name);
     }

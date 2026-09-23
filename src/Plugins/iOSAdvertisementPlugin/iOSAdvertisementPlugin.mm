@@ -73,8 +73,8 @@
     return self.m_provider;
 }
 
-- (void)readyAdProvider {
-    [AppleSemaphoreService.sharedInstance activateSemaphore:@"AdServiceReady"];
+- (void)readyAdProvider:(BOOL)successful {
+    [AppleSemaphoreService.sharedInstance activateSemaphore:@"AdServiceReady" withValue:@(successful)];
 }
 
 - (void)setBannerCallback:(id<iOSAdvertisementCallbackInterface>)callback {

@@ -61,12 +61,12 @@ extern "C"
         Mengine::Mengine_JNI_DeleteGlobalRef( env, jmodule );
     }
     //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidKernelService_1activateSemaphore )(JNIEnv * env, jclass cls, jstring _name)
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidKernelService_1activateSemaphore )(JNIEnv * env, jclass cls, jstring _name, jobject _value)
     {
         Mengine::ConstString semaphore = Mengine::Helper::AndroidMakeConstStringFromJString( env, _name );
 
         ANDROID_KERNEL_SERVICE()
-            ->activateSemaphore( semaphore );
+            ->activateSemaphore( env, semaphore, _value );
     }
     //////////////////////////////////////////////////////////////////////////
 }
@@ -251,38 +251,31 @@ namespace Mengine
         callbacks.erase( it_callback_found );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidKernelService::activateSemaphore( const ConstString & _semaphore )
+    void AndroidKernelService::activateSemaphore( JNIEnv * _jenv, const ConstString & _semaphore, jobject _value )
     {
         LOGGER_INFO( "android", "activate semaphore '%s'"
             , _semaphore.c_str()
         );
 
-        MENGINE_THREAD_MUTEX_SCOPE( m_semaphoresMutex );
+        VectorAndroidSemaphoreListeners listeners;
 
-        MapAndroidSemaphores::iterator it_found = m_semaphores.find( _semaphore );
-
-        if( it_found == m_semaphores.end() )
         {
-            SemaphoreDesc desc;
-            desc.activated = true;
+            MENGINE_THREAD_MUTEX_SCOPE( m_semaphoresMutex );
 
-            m_semaphores.emplace( _semaphore, desc );
+            MapAndroidSemaphores::iterator it_found = m_semaphores.find( _semaphore );
 
-            return;
+            if( it_found == m_semaphores.end() )
+            {
+                return;
+            }
+
+            listeners.swap( it_found->second );
+            m_semaphores.erase( it_found );
         }
 
-        SemaphoreDesc & semaphore = it_found->second;
-
-        if( semaphore.activated == true )
+        for( const AndroidSemaphoreListenerInterfacePtr & listener : listeners )
         {
-            return;
-        }
-
-        semaphore.activated = true;
-
-        for( const AndroidSemaphoreListenerInterfacePtr & listener : semaphore.listeners )
-        {
-            listener->invoke();
+            listener->invoke( _jenv, _value );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -296,48 +289,36 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
-        const Char * name_str = _semaphore.c_str();
+        jobject semaphore;
 
-        jstring jstring_name = Mengine_JNI_NewStringUTF( jenv, name_str );
-
-        jboolean jresult = Helper::AndroidCallBooleanApplicationMethod( jenv, "waitSemaphore", "(Ljava/lang/String;)Z", jstring_name );
-
-        Mengine_JNI_DeleteLocalRef( jenv, jstring_name );
-
-        if( jresult == true )
         {
-            _listener->invoke();
+            MENGINE_THREAD_MUTEX_SCOPE( m_semaphoresMutex );
 
-            return nullptr;
+            jstring jstring_name = Helper::AndroidMakeJObjectString( jenv, _semaphore );
+
+            semaphore = Helper::AndroidCallObjectApplicationMethod( jenv, "waitSemaphore", "(Ljava/lang/String;)Lorg/Mengine/Base/MengineSemaphore;", jstring_name );
+
+            Mengine_JNI_DeleteLocalRef( jenv, jstring_name );
+
+            if( semaphore == nullptr )
+            {
+                m_semaphores[_semaphore].emplace_back( _listener );
+
+                return _listener;
+            }
         }
 
-        MENGINE_THREAD_MUTEX_SCOPE( m_semaphoresMutex );
+        jclass semaphoreClass = Mengine_JNI_GetObjectClass( jenv, semaphore );
+        jmethodID getValueMethod = Mengine_JNI_GetMethodID( jenv, semaphoreClass, "getValue", "()Ljava/lang/Object;" );
+        jobject value = Mengine_JNI_CallObjectMethod( jenv, semaphore, getValueMethod );
 
-        MapAndroidSemaphores::iterator it_found = m_semaphores.find( _semaphore );
+        Mengine_JNI_DeleteLocalRef( jenv, semaphoreClass );
+        Mengine_JNI_DeleteLocalRef( jenv, semaphore );
 
-        if( it_found == m_semaphores.end() )
-        {
-            SemaphoreDesc desc;
-            desc.activated = false;
-            desc.listeners.emplace_back( _listener );
+        _listener->invoke( jenv, value );
+        Mengine_JNI_DeleteLocalRef( jenv, value );
 
-            m_semaphores.emplace( _semaphore, desc );
-
-            return _listener;
-        }
-
-        SemaphoreDesc & semaphore = it_found->second;
-
-        if( semaphore.activated == true )
-        {
-            _listener->invoke();
-
-            return nullptr;
-        }
-
-        semaphore.listeners.emplace_back( _listener );
-
-        return _listener;
+        return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidKernelService::clearCallbacks()

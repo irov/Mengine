@@ -121,6 +121,12 @@
 
     if (self.m_canRequestAds == NO) {
         IOS_LOGGER_MESSAGE(@"[AdMob] consent does not allow ad requests, skipping initialization");
+
+        self.m_initializationAttempted = YES;
+
+        id<iOSAdvertisementInterface> advertisement = [iOSDetail getPluginDelegateOfProtocol:@protocol(iOSAdvertisementInterface)];
+        [advertisement readyAdProvider:NO];
+
         return;
     }
 
@@ -148,11 +154,15 @@
 
     self.m_initializationAttempted = YES;
 
+    id<iOSAdvertisementInterface> advertisement = [iOSDetail getPluginDelegateOfProtocol:@protocol(iOSAdvertisementInterface)];
+
     id<iOSFirebaseRemoteConfigInterface> remoteConfig = [iOSDetail getPluginDelegateOfProtocol:@protocol(iOSFirebaseRemoteConfigInterface)];
     NSDictionary * adUnitConfig = [remoteConfig getRemoteConfigValue:@"admob_ad_units"];
 
     if (adUnitConfig == nil) {
         IOS_LOGGER_MESSAGE(@"[AdMob] no cached Remote Config admob_ad_units, skipping initialization for this session");
+
+        [advertisement readyAdProvider:NO];
 
         return;
     }
@@ -162,6 +172,8 @@
 
     if (validConfig == NO) {
         IOS_LOGGER_ERROR(@"[AdMob] Remote Config admob_ad_units must be a JSON object");
+
+        [advertisement readyAdProvider:NO];
 
         return;
     }
@@ -182,6 +194,8 @@
 
         if (validId == NO) {
             IOS_LOGGER_ERROR(@"[AdMob] Remote Config admob_ad_units.%@ must be a string", format);
+
+            [advertisement readyAdProvider:NO];
 
             return;
         }
@@ -216,8 +230,6 @@
         }
     }
 #endif
-
-    id<iOSAdvertisementInterface> advertisement = [iOSDetail getPluginDelegateOfProtocol:@protocol(iOSAdvertisementInterface)];
 
     [advertisement setProvider:self];
 
@@ -292,7 +304,7 @@
             }
 #endif
 
-            [advertisement readyAdProvider];
+            [advertisement readyAdProvider:YES];
         }];
     }];
 }

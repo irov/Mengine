@@ -27,11 +27,6 @@ namespace Mengine
 
         if( memory == nullptr )
         {
-            m_data = nullptr;
-            m_size = 0;
-            m_carriage = 0;
-            m_end = 0;
-
             return nullptr;
         }
 

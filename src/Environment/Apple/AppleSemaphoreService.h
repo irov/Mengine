@@ -7,7 +7,7 @@
 
 + (instancetype _Nonnull) sharedInstance;
 
-- (void)activateSemaphore:(NSString* _Nonnull)name;
+- (void)activateSemaphore:(NSString* _Nonnull)name withValue:(id _Nullable)value;
 - (void)deactivateSemaphore:(NSString* _Nonnull)name;
 - (void)waitSemaphore:(NSString* _Nonnull)name withListener:(AppleSemaphoreListenerNSProxy * _Nonnull)listener;
 - (void)clearSemaphores;

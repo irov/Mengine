@@ -37,7 +37,7 @@ namespace Mengine
         void removePluginCallback( const ConstString & _plugin, const ConstString & _method, const AndroidPluginCallbackInterfacePtr & _callback ) override;
 
     public:
-        void activateSemaphore( const ConstString & _semaphore ) override;
+        void activateSemaphore( JNIEnv * _jenv, const ConstString & _semaphore, jobject _value ) override;
         AndroidSemaphoreListenerInterfacePtr waitSemaphore( const ConstString & _semaphore, const AndroidSemaphoreListenerInterfacePtr & _listener ) override;
 
     public:
@@ -58,13 +58,7 @@ namespace Mengine
 
         typedef Vector<AndroidSemaphoreListenerInterfacePtr> VectorAndroidSemaphoreListeners;
 
-        struct SemaphoreDesc
-        {
-            bool activated;
-            VectorAndroidSemaphoreListeners listeners;
-        };
-
-        typedef Map<ConstString, SemaphoreDesc> MapAndroidSemaphores;
+        typedef Map<ConstString, VectorAndroidSemaphoreListeners> MapAndroidSemaphores;
         MapAndroidSemaphores m_semaphores;
 
         typedef Map<ConstString, jobject> MapAndroidPlugins;

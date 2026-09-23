@@ -2,13 +2,17 @@
 
 #import "Environment/Apple/AppleIncluder.h"
 #import "Environment/Apple/AppleSemaphoreListenerInterface.h"
-#import "Environment/Apple/AppleDetail.h"
 #import "Environment/iOS/iOSApplication.h"
 #import "Environment/iOS/iOSDetail.h"
 #import "Environment/Python/PythonScriptWrapper.h"
 #import "Environment/Python/PythonCallbackProvider.h"
 
 #import "iOSNativePythonPlugin.h"
+
+#include "iOSNativePythonTypeCast.h"
+
+#include "Kernel/ThreadHelper.h"
+#include "Kernel/Assertion.h"
 
 namespace Mengine
 {
@@ -32,7 +36,14 @@ namespace Mengine
                         return false;
                     }
 
-                    _value = [NSString stringWithUTF8String:value_char];
+                    NSString * value = [NSString stringWithUTF8String:value_char];
+
+                    if( value == nil )
+                    {
+                        return false;
+                    }
+
+                    _value = value;
                 }
                 else
                 {
@@ -64,101 +75,25 @@ namespace Mengine
             {
                 MENGINE_UNUSED( _nothrow );
 
-                if( _kernel->dict_check( _obj ) == true )
-                {
-                    NSMutableDictionary * dict = [NSMutableDictionary dictionary];
-
-                    size_t pos = 0;
-                    PyObject * key;
-                    PyObject * value;
-
-                    while( _kernel->dict_next( _obj, &pos, &key, &value ) == true )
-                    {
-                        NSString * key_str = pybind::extract_t( _kernel, key );
-
-                        if( _kernel->bool_check( value ) == true )
-                        {
-                            bool value_bool = pybind::extract_t( _kernel, value );
-
-                            [dict setObject:@(value_bool) forKey:key_str];
-                        }
-                        else if ( _kernel->int_check( value ) == true )
-                        {
-                            int32_t value_int = pybind::extract_t( _kernel, value );
-
-                            [dict setObject:@(value_int) forKey:key_str];
-                        }
-                        else if ( _kernel->long_check( value ) == true )
-                        {
-                            int64_t value_long = pybind::extract_t( _kernel, value );
-
-                            [dict setObject:@(value_long) forKey:key_str];
-                        }
-                        else if ( _kernel->float_check( value ) == true )
-                        {
-                            float value_float = pybind::extract_t( _kernel, value );
-
-                            [dict setObject:@(value_float) forKey:key_str];
-                        }
-                        else if ( _kernel->string_check( value ) == true )
-                        {
-                            NSString * value_str = pybind::extract_t( _kernel, value );
-
-                            [dict setObject:value_str forKey:key_str];
-                        }
-                        else
-                        {
-                            return false;
-                        }
-                    }
-
-                    _value = dict;
-                }
-                else
+                if( _kernel->dict_check( _obj ) == false )
                 {
                     return false;
                 }
+
+                id value = pybind::extract<id>( _kernel, _obj );
+
+                _value = value;
 
                 return true;
             }
 
             PyObject * wrap( pybind::kernel_interface * _kernel, pybind::type_cast_result<value_type>::TCastRef _value ) override
             {
-                PyObject * py_dict = _kernel->dict_new();
-                pybind::object dict_owner( _kernel, py_dict, pybind::borrowed );
-                __block bool error = false;
+                id value = _value;
 
-                [AppleDetail visitParameters:_value forBool:^(NSString * key, BOOL value) {
-                    PyObject * py_key = pybind::ptr( _kernel, key );
-                    pybind::object key_owner( _kernel, py_key, pybind::borrowed );
-                    pybind::dict_setobject_t( _kernel, py_dict, py_key, (bool)value );
-                } forInteger:^(NSString * key, int64_t value) {
-                    PyObject * py_key = pybind::ptr( _kernel, key );
-                    pybind::object key_owner( _kernel, py_key, pybind::borrowed );
-                    pybind::dict_setobject_t( _kernel, py_dict, py_key, value );
-                } forDouble:^(NSString * key, double value) {
-                    PyObject * py_key = pybind::ptr( _kernel, key );
-                    pybind::object key_owner( _kernel, py_key, pybind::borrowed );
-                    pybind::dict_setobject_t( _kernel, py_dict, py_key, value );
-                } forString:^(NSString * key, NSString * value) {
-                    PyObject * py_key = pybind::ptr( _kernel, key );
-                    pybind::object key_owner( _kernel, py_key, pybind::borrowed );
-                    pybind::dict_setobject_t( _kernel, py_dict, py_key, value );
-                } forNull:^(NSString * key) {
-                    PyObject * py_key = pybind::ptr( _kernel, key );
-                    pybind::object key_owner( _kernel, py_key, pybind::borrowed );
-                    PyObject * py_none = _kernel->ret_none();
-                    pybind::object none_owner( _kernel, py_none, pybind::borrowed );
-                    pybind::dict_setobject_t( _kernel, py_dict, py_key, py_none );
-                } forUnknown:^(NSString * key, id value) {
-                    error = true;
-                }];
+                PyObject * py_value = pybind::ptr_throw( _kernel, value );
 
-                if (error == true) {
-                    return nullptr;
-                }
-
-                return dict_owner.ret();
+                return py_value;
             }
         };
         //////////////////////////////////////////////////////////////////////////
@@ -184,40 +119,9 @@ namespace Mengine
                 {
                     pybind::object value_owner( _kernel, py_value, pybind::borrowed );
 
-                    if( _kernel->bool_check( py_value ) == true )
-                    {
-                        bool value_bool = pybind::extract_t( _kernel, py_value );
+                    id value = pybind::extract<id>( _kernel, py_value );
 
-                        [set addObject:@(value_bool)];
-                    }
-                    else if ( _kernel->int_check( py_value ) == true )
-                    {
-                        int32_t value_int = pybind::extract_t( _kernel, py_value );
-
-                        [set addObject:@(value_int)];
-                    }
-                    else if ( _kernel->long_check( py_value ) == true )
-                    {
-                        int64_t value_long = pybind::extract_t( _kernel, py_value );
-
-                        [set addObject:@(value_long)];
-                    }
-                    else if ( _kernel->float_check( py_value ) == true )
-                    {
-                        float value_float = pybind::extract_t( _kernel, py_value );
-
-                        [set addObject:@(value_float)];
-                    }
-                    else if ( _kernel->string_check( py_value ) == true )
-                    {
-                        NSString * value_str = pybind::extract_t( _kernel, py_value );
-
-                        [set addObject:value_str];
-                    }
-                    else
-                    {
-                        return false;
-                    }
+                    [set addObject:value];
                 }
 
                 _value = set;
@@ -227,33 +131,15 @@ namespace Mengine
 
             PyObject * wrap( pybind::kernel_interface * _kernel, pybind::type_cast_result<value_type>::TCastRef _value ) override
             {
-                PyObject * py_set = _kernel->set_new();
-                pybind::object set_owner( _kernel, py_set, pybind::borrowed );
-                __block bool error = false;
+                id value = _value;
 
-                [AppleDetail visitValues:_value forBool:^(BOOL value) {
-                    pybind::set_set_t( _kernel, py_set, (bool)value );
-                } forInteger:^(int64_t value) {
-                    pybind::set_set_t( _kernel, py_set, value );
-                } forDouble:^(double value) {
-                    pybind::set_set_t( _kernel, py_set, value );
-                } forString:^(NSString * value) {
-                    pybind::set_set_t( _kernel, py_set, value );
-                } forNull:^(void) {
-                    PyObject * py_none = _kernel->ret_none();
-                    pybind::object none_owner( _kernel, py_none, pybind::borrowed );
-                    pybind::set_set_t( _kernel, py_set, py_none );
-                } forUnknown:^(id value) {
-                    error = true;
-                }];
+                PyObject * py_value = pybind::ptr_throw( _kernel, value );
 
-                if (error == true) {
-                    return nullptr;
-                }
-
-                return set_owner.ret();
+                return py_value;
             }
         };
+        //////////////////////////////////////////////////////////////////////////
+        typedef IntrusivePtr<class PythonAppleSemaphoreListener, AppleSemaphoreListenerInterface> PythonAppleSemaphoreListenerPtr;
         //////////////////////////////////////////////////////////////////////////
         class PythonAppleSemaphoreListener
             : public AppleSemaphoreListenerInterface
@@ -268,41 +154,38 @@ namespace Mengine
             }
 
         protected:
-            void invoke() override
+            void invoke( id _value ) override
             {
-                PythonCallbackProviderPtr keep = PythonCallbackProviderPtr::from(this);
+                PythonAppleSemaphoreListenerPtr keep = PythonAppleSemaphoreListenerPtr::from( this );
 
-                [AppleDetail addMainQueueOperation:^{
-                    keep->call_cb();
-                }];
+                Helper::dispatchMainThreadEvent( [keep, _value]() {
+                    keep->call_cb( _value );
+                } );
             }
         };
-        //////////////////////////////////////////////////////////////////////////
-        typedef IntrusivePtr<PythonAppleSemaphoreListener, AppleSemaphoreListenerInterface> PythonAppleSemaphoreListenerPtr;
         //////////////////////////////////////////////////////////////////////////
         static void iOSNativePython_showToast( NSString * _message )
         {
             [iOSDetail showToast:_message];
         }
         //////////////////////////////////////////////////////////////////////////
-        void iOSNativePython_activateSemaphore( NSString * _name )
+        static void iOSNativePython_activateSemaphore( NSString * _name, id _value )
         {
-            [[iOSNativePythonPlugin sharedInstance] activateSemaphore:_name];
+            MENGINE_ASSERTION_FATAL( [_value isKindOfClass:[NSNull class]] == NO, "activate semaphore '%s' invalid value None"
+                , [_name UTF8String]
+            );
+
+            [[iOSNativePythonPlugin sharedInstance] activateSemaphore:_name withValue:_value];
         }
         //////////////////////////////////////////////////////////////////////////
-        void iOSNativePython_waitSemaphore( NSString * _name, const pybind::object & _cb, const pybind::args & _args )
+        static void iOSNativePython_waitSemaphore( NSString * _name, const pybind::object & _cb, const pybind::args & _args )
         {
-            if( _name == nil )
-            {
-                _name = @"";
-            }
-
             AppleSemaphoreListenerInterfacePtr listener = Helper::makeFactorableUnique<PythonAppleSemaphoreListener>( MENGINE_DOCUMENT_PYTHON, _cb, _args );
 
             [[iOSNativePythonPlugin sharedInstance] waitSemaphore:_name listener:listener];
         }
         ///////////////////////////////////////////////////////////////////////
-        void iOSNativePython_showAreYouSureAlertDialog( NSString * _title, NSString * _message, double _delay, const pybind::object & _yesCb, const pybind::object & _cancelCb, const pybind::args & _args )
+        static void iOSNativePython_showAreYouSureAlertDialog( NSString * _title, NSString * _message, double _delay, const pybind::object & _yesCb, const pybind::object & _cancelCb, const pybind::args & _args )
         {
             pybind::object yesCb = _yesCb;
             pybind::object cancelCb = _cancelCb;
@@ -319,7 +202,7 @@ namespace Mengine
             }];
         }
         ///////////////////////////////////////////////////////////////////////
-        void iOSNativePython_showOkAlert( NSString * _title, NSString * _message, const pybind::object & _okCb, const pybind::args & _args )
+        static void iOSNativePython_showOkAlert( NSString * _title, NSString * _message, const pybind::object & _okCb, const pybind::args & _args )
         {
             pybind::object okCb = _okCb;
             pybind::args args = _args;
@@ -331,7 +214,7 @@ namespace Mengine
             }];
         }
         ///////////////////////////////////////////////////////////////////////
-        void iOSNativePython_setIdleTimerDisabled( bool _disabled )
+        static void iOSNativePython_setIdleTimerDisabled( bool _disabled )
         {
             UIApplication.sharedApplication.idleTimerDisabled = _disabled;
         }
@@ -373,6 +256,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void iOSNativePythonScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
+        _kernel->remove_from_module( "activateSemaphore", nullptr );
+        _kernel->remove_from_module( "waitSemaphore", nullptr );
+
         _kernel->remove_from_module( "iOSNativePythonGetUserId", nullptr );
         _kernel->remove_from_module( "iOSNativePythonShowToast", nullptr );
 

@@ -12,6 +12,9 @@ src
     
     AndroidNativePythonHelper.h
     AndroidNativePythonHelper.cpp
+
+    AndroidNativePythonTypeCast.h
+    AndroidNativePythonTypeCast.cpp
     
     AndroidNativePythonScriptEmbedding.h
     AndroidNativePythonScriptEmbedding.cpp

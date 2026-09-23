@@ -1,5 +1,10 @@
 #include "PythonAndroidSemaphoreListener.h"
 
+#include "AndroidNativePythonTypeCast.h"
+
+#include "Environment/Android/AndroidGlobalRef.h"
+
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/ThreadHelper.h"
 
 namespace Mengine
@@ -14,13 +19,22 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonAndroidSemaphoreListener::invoke()
+    void PythonAndroidSemaphoreListener::invoke( JNIEnv * _jenv, jobject _value )
     {
-        PythonAndroidSemaphoreListenerPtr keep = PythonAndroidSemaphoreListenerPtr::from(this);
+        AndroidGlobalRefPtr value_gref = Helper::makeAndroidGlobalRef( _jenv, _value, MENGINE_DOCUMENT_FACTORABLE );
 
-        Helper::dispatchMainThreadEvent([keep]() {
-            keep->call_cb();
-        });
+        if( value_gref == nullptr )
+        {
+            return;
+        }
+
+        PythonAndroidSemaphoreListenerPtr keep = PythonAndroidSemaphoreListenerPtr::from( this );
+
+        Helper::dispatchMainThreadEvent( [keep, value_gref]() {
+            jobject value = value_gref->getValue();
+
+            keep->call_cb( value );
+        } );
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -18,57 +18,61 @@
     return self;
 }
 
-- (void)activateSemaphore:(NSString *)name {
-    AppleSemaphore *semaphore = self.m_semaphores[name];
-    
-    NSMutableArray<AppleSemaphoreListenerNSProxy *> * listeners = nil;
-    
+- (void)activateSemaphore:(NSString * _Nonnull)name withValue:(id _Nullable)value {
+    NSMutableArray<AppleSemaphoreListenerNSProxy *> * listeners;
     @synchronized(self) {
+        AppleSemaphore * semaphore = self.m_semaphores[name];
+
         if (semaphore == nil) {
-            semaphore = [[AppleSemaphore alloc] initWithActivated:NO];
-            
+            semaphore = [[AppleSemaphore alloc] initWithActivated:YES value:value];
+
             self.m_semaphores[name] = semaphore;
-            
+
             return;
         }
-        
+
         if ([semaphore isActivated] == YES) {
             return;
         }
-        
-        listeners = [semaphore activate];
+
+        listeners = [semaphore activate:value];
     }
-    
+
     for (AppleSemaphoreListenerNSProxy * proxy in listeners) {
-        [proxy invoke];
+        [proxy invoke:value];
     }
 }
 
-- (void)deactivateSemaphore:(NSString *)name {
+- (void)deactivateSemaphore:(NSString * _Nonnull)name {
     @synchronized(self) {
         [self.m_semaphores removeObjectForKey:name];
     }
 }
 
-- (void)waitSemaphore:(NSString *)name withListener:(AppleSemaphoreListenerNSProxy * _Nonnull)listener {
+- (void)waitSemaphore:(NSString * _Nonnull)name withListener:(AppleSemaphoreListenerNSProxy * _Nonnull)listener {
+    id value;
     @synchronized(self) {
         AppleSemaphore * semaphore = self.m_semaphores[name];
-        
+
         if (semaphore == nil) {
-            semaphore = [[AppleSemaphore alloc] initWithActivated:NO];
+            semaphore = [[AppleSemaphore alloc] initWithActivated:NO value:nil];
             [semaphore addListener:listener];
-            
+
             self.m_semaphores[name] = semaphore;
+
             return;
         }
-        
+
         if ([semaphore isActivated] == NO) {
             [semaphore addListener:listener];
+
             return;
         }
+
+        value = [semaphore getValue];
     }
-    
-    [listener invoke];
+
+    [listener invoke:value];
 }
 
 - (void)clearSemaphores {

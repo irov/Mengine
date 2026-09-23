@@ -120,7 +120,7 @@ namespace Mengine
 
         if( it_found != m_lifecycles.end() )
         {
-            m_lifecycles.erase( it_found );
+            it_found->lifecycle = nullptr;
 
             return;
         }
@@ -140,6 +140,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void LifecycleService::preUpdate()
     {
+        StdAlgorithm::erase_if( m_lifecycles, []( const LifecycleDesc & _desc )
+        {
+            return _desc.lifecycle == nullptr;
+        } );
+
         if( m_lifecyclesAdd.empty() == false )
         {
             m_lifecycles.insert( m_lifecycles.end(), m_lifecyclesAdd.begin(), m_lifecyclesAdd.end() );
@@ -148,6 +153,11 @@ namespace Mengine
 
         for( const LifecycleDesc & desc : m_lifecycles )
         {
+            if( desc.lifecycle == nullptr )
+            {
+                continue;
+            }
+
             desc.lifecycle->preUpdate();
         }
     }
@@ -156,6 +166,11 @@ namespace Mengine
     {
         for( const LifecycleDesc & desc : m_lifecycles )
         {
+            if( desc.lifecycle == nullptr )
+            {
+                continue;
+            }
+
             desc.lifecycle->update();
         }
     }
@@ -164,6 +179,11 @@ namespace Mengine
     {
         for( const LifecycleDesc & desc : m_lifecycles )
         {
+            if( desc.lifecycle == nullptr )
+            {
+                continue;
+            }
+
             desc.lifecycle->postUpdate();
         }
     }

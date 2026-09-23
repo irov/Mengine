@@ -1312,6 +1312,10 @@ public abstract class MengineApplication extends Application {
     }
 
     public void activateSemaphore(String name) {
+        this.activateSemaphore(name, null);
+    }
+
+    public void activateSemaphore(String name, Object value) {
         MengineLog.logInfo(TAG, "activateSemaphore semaphore: %s"
             , name
         );
@@ -1322,7 +1326,7 @@ public abstract class MengineApplication extends Application {
             MengineSemaphore semaphore = m_semaphores.get(name);
 
             if (semaphore == null) {
-                semaphore = new MengineSemaphore(true);
+                semaphore = new MengineSemaphore(true, value);
 
                 m_semaphores.put(name, semaphore);
 
@@ -1332,9 +1336,11 @@ public abstract class MengineApplication extends Application {
             if (semaphore.isActivated() == true) {
                 return;
             }
+
+            semaphore.activate(value);
         }
 
-        MengineNative.AndroidKernelService_activateSemaphore(name);
+        MengineNative.AndroidKernelService_activateSemaphore(name, value);
     }
 
     public void deactivateSemaphore(String name) {
@@ -1347,24 +1353,24 @@ public abstract class MengineApplication extends Application {
         }
     }
 
-    public boolean waitSemaphore(String name) {
+    public MengineSemaphore waitSemaphore(String name) {
         synchronized (m_syncronizationSemaphores) {
             MengineSemaphore semaphore = m_semaphores.get(name);
 
             if (semaphore == null) {
-                semaphore = new MengineSemaphore(false);
+                semaphore = new MengineSemaphore(false, null);
 
                 m_semaphores.put(name, semaphore);
 
-                return false;
+                return null;
             }
 
             if (semaphore.isActivated() == false) {
-                return false;
+                return null;
             }
-        }
 
-        return true;
+            return semaphore;
+        }
     }
 
     public void invalidInitialize(@NonNull MengineServiceInvalidInitializeException e, @NonNull Map<String, Object> attributes) {

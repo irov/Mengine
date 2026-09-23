@@ -413,7 +413,7 @@ public class MengineAppLovinPlugin extends MengineService implements MengineAppL
                 this.showMediationDebugger();
             }
 
-            adService.readyAdProvider();
+            adService.readyAdProvider(true);
         });
     }
 

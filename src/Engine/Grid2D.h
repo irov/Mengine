@@ -55,12 +55,12 @@ namespace Mengine
         void setCountY( uint32_t _count );
         uint32_t getCountY() const;
 
-        bool setGridColor( uint32_t _i, uint32_t _j, const Color & _value );
-        bool getGridColor( uint32_t _i, uint32_t _j, Color * const _value ) const;
+        void setGridColor( uint32_t _i, uint32_t _j, const Color & _value );
+        void getGridColor( uint32_t _i, uint32_t _j, Color * const _value ) const;
 
-        bool setGridPosition( uint32_t _i, uint32_t _j, const mt::vec3f & _value );
-        bool getGridPosition( uint32_t _i, uint32_t _j, mt::vec3f * const _value ) const;
-        bool getOriginalGridPosition( uint32_t _i, uint32_t _j, mt::vec3f * const _value ) const;
+        void setGridPosition( uint32_t _i, uint32_t _j, const mt::vec3f & _value );
+        void getGridPosition( uint32_t _i, uint32_t _j, mt::vec3f * const _value ) const;
+        void getOriginalGridPosition( uint32_t _i, uint32_t _j, mt::vec3f * const _value ) const;
         void resetGrid();
 
         void applyWaves( float _phase, float _amplitude, float _waves, bool _horizontal, bool _vertical );
@@ -88,6 +88,7 @@ namespace Mengine
 
     protected:
         void updateVerticesWM_() const;
+        uint32_t getGridIndex_( uint32_t _i, uint32_t _j, const VectorRenderVertex2D & _vertices ) const;
 
     protected:
         RenderMaterialInterfacePtr _updateMaterial() const override;

@@ -12,6 +12,9 @@ src
 
     iOSNativePythonScriptEmbedding.h
     iOSNativePythonScriptEmbedding.mm
+
+    iOSNativePythonTypeCast.h
+    iOSNativePythonTypeCast.mm
 )
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)

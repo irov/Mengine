@@ -10,8 +10,8 @@
     return self;
 }
 
-- (void) invoke {
-    self.m_proxy->invoke();
+- (void)invoke:(id)value {
+    self.m_proxy->invoke( value );
 }
 
 @end

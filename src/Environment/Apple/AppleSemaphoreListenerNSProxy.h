@@ -7,7 +7,7 @@
 
 - (instancetype _Nonnull) initWithListener:(const Mengine::AppleSemaphoreListenerInterfacePtr &)_proxy;
 
-- (void) invoke;
+- (void)invoke:(id _Nullable)value;
 
 @property (nonatomic) Mengine::AppleSemaphoreListenerInterfacePtr m_proxy;
 

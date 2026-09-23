@@ -30,7 +30,7 @@ namespace Mengine
         virtual void removePluginCallback( const ConstString & _plugin, const ConstString & _method, const AndroidPluginCallbackInterfacePtr & _callback ) = 0;
 
     public:
-        virtual void activateSemaphore( const ConstString & _semaphore ) = 0;
+        virtual void activateSemaphore( JNIEnv * _jenv, const ConstString & _semaphore, jobject _value ) = 0;
         virtual AndroidSemaphoreListenerInterfacePtr waitSemaphore( const ConstString & _semaphore, const AndroidSemaphoreListenerInterfacePtr & _listener ) = 0;
 
     public:

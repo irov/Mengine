@@ -270,8 +270,22 @@ namespace Mengine
 
         for( const Landscape2DElement & el : m_elements )
         {
-            mt::mul_v2_v2_m4( &el.bb_wm.minimum, el.bb.minimum, wm );
-            mt::mul_v2_v2_m4( &el.bb_wm.maximum, el.bb.maximum, wm );
+            mt::vec2f corners[4] = {
+                el.bb.minimum,
+                mt::vec2f( el.bb.maximum.x, el.bb.minimum.y ),
+                el.bb.maximum,
+                mt::vec2f( el.bb.minimum.x, el.bb.maximum.y )
+            };
+
+            mt::vec2f point;
+            mt::mul_v2_v2_m4( &point, corners[0], wm );
+            mt::box2_reset( &el.bb_wm, point );
+
+            for( uint32_t index = 1; index != 4; ++index )
+            {
+                mt::mul_v2_v2_m4( &point, corners[index], wm );
+                mt::box2_add_internal_point( &el.bb_wm, point );
+            }
         }
     }
     //////////////////////////////////////////////////////////////////////////

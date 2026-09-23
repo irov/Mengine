@@ -15,7 +15,7 @@ namespace Mengine
         ~PythonAndroidSemaphoreListener() override;
 
     protected:
-        void invoke() override;
+        void invoke( JNIEnv * _jenv, jobject _value ) override;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<PythonAndroidSemaphoreListener, AndroidSemaphoreListenerInterface> PythonAndroidSemaphoreListenerPtr;

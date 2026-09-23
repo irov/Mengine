@@ -100,6 +100,11 @@ namespace Mengine
                 , _doc
             );
 
+            if( mem == nullptr )
+            {
+                return nullptr;
+            }
+
             size_t usage_size = MENGINE_MALLOC_SIZE( mem );
 
             STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_NEW, usage_size );
@@ -110,9 +115,6 @@ namespace Mengine
 
         size_t old_size = MENGINE_MALLOC_SIZE( _mem );
 
-        STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_FREE, old_size );
-        STATISTIC_DEL_INTEGER( STATISTIC_ALLOCATOR_SIZE, old_size );
-
         void * mem = StdLib::realloc( _mem, _size );
 
         MENGINE_ASSERTION_MEMORY_PANIC( mem, "invalid realloc memory '%zu' from [%p] [%s]"
@@ -121,7 +123,15 @@ namespace Mengine
             , _doc
         );
 
+        if( mem == nullptr )
+        {
+            return nullptr;
+        }
+
         size_t usage_size = MENGINE_MALLOC_SIZE( mem );
+
+        STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_FREE, old_size );
+        STATISTIC_DEL_INTEGER( STATISTIC_ALLOCATOR_SIZE, old_size );
 
         STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_NEW, usage_size );
         STATISTIC_ADD_INTEGER( STATISTIC_ALLOCATOR_SIZE, usage_size );

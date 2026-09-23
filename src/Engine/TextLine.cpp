@@ -83,17 +83,20 @@ namespace Mengine
 
             if( m_justifyLength >= 0.f && m_justifyLength > m_length )
             {
-                float advanceSpaceLength = m_justifyLength - m_length;
-                float advanceSpace = advanceSpaceLength / spaceCount;
-
-                for( TextCharData & charData : m_charsData )
+                if( spaceCount > 0.f )
                 {
-                    if( charData.code != ' ' )
-                    {
-                        continue;
-                    }
+                    float advanceSpaceLength = m_justifyLength - m_length;
+                    float advanceSpace = advanceSpaceLength / spaceCount;
 
-                    charData.advance += advanceSpace;
+                    for( TextCharData & charData : m_charsData )
+                    {
+                        if( charData.code != ' ' )
+                        {
+                            continue;
+                        }
+
+                        charData.advance += advanceSpace;
+                    }
                 }
 
                 m_length = m_justifyLength;

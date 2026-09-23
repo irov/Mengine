@@ -1,17 +1,24 @@
 package org.Mengine.Base;
 
 public class MengineSemaphore {
-    private boolean m_activated;
+    private volatile boolean m_activated;
+    private Object m_value;
 
-    MengineSemaphore(boolean _activated) {
-        m_activated = _activated;
+    MengineSemaphore(boolean activated, Object value) {
+        m_value = value;
+        m_activated = activated;
     }
 
     public boolean isActivated() {
         return m_activated;
     }
 
-    public void activate() {
+    public Object getValue() {
+        return m_value;
+    }
+
+    public void activate(Object value) {
+        m_value = value;
         m_activated = true;
     }
 }

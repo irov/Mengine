@@ -605,6 +605,9 @@ namespace Mengine
         {
             THREAD_SERVICE()
                 ->stopTasks();
+
+            THREAD_SERVICE()
+                ->stopDispatching();
         }
 
 #if defined(MENGINE_EXTERNAL_PLUGIN)

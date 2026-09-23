@@ -25,6 +25,20 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void * reallocateMemory( void * _buffer, size_t _size, const Char * _doc )
         {
+            if( _size == 0 )
+            {
+                void * memory_buffer = Helper::allocateMemory( _size, _doc );
+
+                if( memory_buffer == nullptr )
+                {
+                    return nullptr;
+                }
+
+                Helper::deallocateMemory( _buffer, _doc );
+
+                return memory_buffer;
+            }
+
             void * memory_buffer = ALLOCATOR_SYSTEM()
                 ->realloc( _buffer, _size, _doc );
 

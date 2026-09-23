@@ -282,6 +282,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Scheduler::update( const UpdateContext * _context )
     {
+        MENGINE_ASSERTION_FATAL( m_update == false, "scheduler update is reentrant" );
+
         float total_time = _context->time * m_speedFactor;
 
         m_time += total_time;
@@ -354,7 +356,14 @@ namespace Mengine
                     {
                         if( desc.iterate_invalid == true )
                         {
-                            float delay = desc.pipe->onSchedulerPipe( desc.id, desc.iterate );
+                            SchedulerPipeInterfacePtr pipe = desc.pipe;
+
+                            float delay = pipe->onSchedulerPipe( desc.id, desc.iterate );
+
+                            if( desc.dead == true )
+                            {
+                                break;
+                            }
 
                             if( delay < 0.f )
                             {
@@ -393,7 +402,9 @@ namespace Mengine
                         TIMELINE_SERVICE()
                             ->beginOffset( timeOffset, MENGINE_DOCUMENT_VALUE( desc.doc, nullptr ) );
 
-                        desc.timer->onSchedulerTiming( desc.id, iterate, desc.delay );
+                        SchedulerTimingInterfacePtr timer = desc.timer;
+
+                        timer->onSchedulerTiming( desc.id, iterate, desc.delay );
 
                         TIMELINE_SERVICE()
                             ->endOffset();

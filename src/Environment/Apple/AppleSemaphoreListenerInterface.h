@@ -2,6 +2,8 @@
 
 #include "Interface/ServantInterface.h"
 
+#import "Environment/Apple/AppleIncluder.h"
+
 namespace Mengine
 {
     ////////////////////////////////////////////////////////////////////
@@ -9,7 +11,7 @@ namespace Mengine
         : public ServantInterface
     {
     public:
-        virtual void invoke() = 0;
+        virtual void invoke( id _value ) = 0;
     };
     ////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AppleSemaphoreListenerInterface> AppleSemaphoreListenerInterfacePtr;

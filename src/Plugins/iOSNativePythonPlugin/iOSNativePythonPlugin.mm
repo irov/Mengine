@@ -171,26 +171,16 @@ typedef NSMutableDictionary<NSString *, iOSNativePythonMethods *> iOSNativePytho
     }
 }
 
-- (void)activateSemaphore:(NSString *)name {
-    if( name == nil )
-    {
-        name = @"";
-    }
-
+- (void)activateSemaphore:(NSString * _Nonnull)name withValue:(id _Nullable)value {
     LOGGER_INFO( "ios", "activate semaphore '%s'"
         , [name UTF8String]
     );
 
-    [AppleSemaphoreService.sharedInstance activateSemaphore:name];
+    [AppleSemaphoreService.sharedInstance activateSemaphore:name withValue:value];
 }
 
-- (Mengine::AppleSemaphoreListenerInterfacePtr)waitSemaphore:(NSString *)name
+- (Mengine::AppleSemaphoreListenerInterfacePtr)waitSemaphore:(NSString * _Nonnull)name
                                                     listener:(const Mengine::AppleSemaphoreListenerInterfacePtr &)listener {
-    if( name == nil )
-    {
-        name = @"";
-    }
-
     LOGGER_INFO( "ios", "wait semaphore '%s'"
         , [name UTF8String]
     );

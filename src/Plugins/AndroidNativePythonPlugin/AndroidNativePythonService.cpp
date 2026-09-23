@@ -16,6 +16,7 @@
 
 #include "PythonAndroidPluginCallback.h"
 #include "AndroidNativePythonHelper.h"
+#include "AndroidNativePythonTypeCast.h"
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Logger.h"
@@ -340,7 +341,7 @@ namespace Mengine
 
         Helper::AndroidEnvExceptionCheck( jenv );
 
-        PyObject * py_result = Helper::androidNativePythonMakePyObject( m_kernel, jenv, jresult, MENGINE_DOCUMENT_FACTORABLE );
+        PyObject * py_result = pybind::ptr( m_kernel, jresult );
 
         Mengine_JNI_DeleteLocalRef( jenv, jresult );
 
@@ -378,7 +379,7 @@ namespace Mengine
 
         Helper::AndroidEnvExceptionCheck( jenv );
 
-        PyObject * py_result = Helper::androidNativePythonMakePyObject( m_kernel, jenv, jresult, MENGINE_DOCUMENT_FACTORABLE );
+        PyObject * py_result = pybind::ptr( m_kernel, jresult );
 
         Mengine_JNI_DeleteLocalRef( jenv, jresult );
 

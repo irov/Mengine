@@ -23,7 +23,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     ThreadService::ThreadService()
-        : m_mainThreadId( MENGINE_UINT32_C(~0) )
+        : m_dispatchStopped( false )
+        , m_mainThreadId( MENGINE_UINT32_C(~0) )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -86,11 +87,7 @@ namespace Mengine
 
         m_threadProcessors.clear();
 
-        m_mutexDispatchEvents->lock();
-        m_dispatchEvents.clear();
-        m_mutexDispatchEvents->unlock();
-
-        m_dispatchEventsAux.clear();
+        this->stopDispatching();
 
         m_mutexTasks = nullptr;
         m_mutexThreads = nullptr;
@@ -195,18 +192,43 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ThreadService::dispatchMainThreadEvent( const LambdaEvent & _event )
     {
+        m_mutexDispatchEvents->lock();
+
+        if( m_dispatchStopped == true )
+        {
+            m_mutexDispatchEvents->unlock();
+
+            return;
+        }
+
         if( this->isMainThread() == true )
         {
+            m_mutexDispatchEvents->unlock();
+
             _event();
 
             return;
         }
 
-        m_mutexDispatchEvents->lock();
-
         m_dispatchEvents.emplace_back( _event );
 
         m_mutexDispatchEvents->unlock();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ThreadService::stopDispatching()
+    {
+        MENGINE_ASSERTION_FATAL( this->isMainThread() == true, "stop dispatching must run on the main thread" );
+        MENGINE_ASSERTION_FATAL( m_dispatchEventsAux.empty() == true, "cannot stop dispatching while processing events" );
+
+        VectorEvents events;
+
+        m_mutexDispatchEvents->lock();
+        m_dispatchStopped = true;
+        events.swap( m_dispatchEvents );
+        m_mutexDispatchEvents->unlock();
+
+        events.clear();
+        m_dispatchEventsAux.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     bool ThreadService::addTask( const ConstString & _processorName, const ThreadTaskInterfacePtr & _task, const DocumentInterfacePtr & _doc )

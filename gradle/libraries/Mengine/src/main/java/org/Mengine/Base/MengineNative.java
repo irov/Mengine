@@ -30,7 +30,7 @@ public class MengineNative {
     public static native void AndroidKernelService_addPlugin(String plugin, Object module);
     public static native void AndroidKernelService_removePlugin(String plugin);
     public static native void AndroidKernelService_call(String plugin, String method, Object []args);
-    public static native void AndroidKernelService_activateSemaphore(String semaphore);
+    public static native void AndroidKernelService_activateSemaphore(String semaphore, Object value);
 
     public static native void AndroidPlatform_surfaceCreatedEvent(Surface surface);
     public static native void AndroidPlatform_surfaceDestroyedEvent();

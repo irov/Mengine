@@ -29,6 +29,8 @@ namespace Mengine
     public:
         typedef Lambda<void()> LambdaEvent;
         virtual void dispatchMainThreadEvent( const LambdaEvent & _event ) = 0;
+        // Call on the main thread, outside event processing.
+        virtual void stopDispatching() = 0;
 
     public:
         virtual bool addTask( const ConstString & _processorName, const ThreadTaskInterfacePtr & _task, const DocumentInterfacePtr & _doc ) = 0;

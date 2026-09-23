@@ -8,6 +8,7 @@
 #include "Environment/Python/PythonIncluder.h"
 
 #include "AndroidNativePythonCallback.h"
+#include "AndroidNativePythonTypeCast.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/Assertion.h"
@@ -110,12 +111,8 @@ namespace Mengine
 
                 PyObject * py_list = _kernel->list_new( list_size );
 
-                Helper::AndroidForeachJavaList( _jenv, jclass_List, _obj, [_kernel, _jenv, py_list, _doc](jsize _index, jobject _jvalue) {
-                    PyObject * py_obj = Helper::androidNativePythonMakePyObject( _kernel, _jenv, _jvalue, _doc );
-
-                    _kernel->list_setitem( py_list, _index, py_obj );
-
-                    _kernel->decref( py_obj );
+                Helper::AndroidForeachJavaList( _jenv, jclass_List, _obj, [_kernel, py_list](jsize _index, jobject _jvalue) {
+                    pybind::list_setitem_t( _kernel, py_list, _index, _jvalue );
                 });
 
                 py_value = py_list;
@@ -124,14 +121,8 @@ namespace Mengine
             {
                 PyObject * py_dict = _kernel->dict_new();
 
-                Helper::AndroidForeachJavaMap( _jenv, jclass_Map, _obj, [_kernel, _jenv, _doc, py_dict](jobject _jkey, jobject _jvalue) {
-                    PyObject * py_key = Helper::androidNativePythonMakePyObject( _kernel, _jenv, _jkey, _doc );
-                    PyObject * py_value = Helper::androidNativePythonMakePyObject( _kernel, _jenv, _jvalue, _doc );
-
-                    _kernel->dict_set( py_dict, py_key, py_value );
-
-                    _kernel->decref( py_key );
-                    _kernel->decref( py_value );
+                Helper::AndroidForeachJavaMap( _jenv, jclass_Map, _obj, [_kernel, py_dict](jobject _jkey, jobject _jvalue) {
+                    pybind::dict_set_t( _kernel, py_dict, _jkey, _jvalue );
                 });
 
                 py_value = py_dict;
@@ -140,12 +131,8 @@ namespace Mengine
             {
                 PyObject * py_set = _kernel->set_new();
 
-                Helper::AndroidForeachJavaSet( _jenv, jclass_Set, _obj, [_kernel, _jenv, _doc, py_set](jobject _jvalue) {
-                    PyObject * py_value = Helper::androidNativePythonMakePyObject( _kernel, _jenv, _jvalue, _doc );
-
-                    _kernel->set_set( py_set, py_value );
-
-                    _kernel->decref( py_value );
+                Helper::AndroidForeachJavaSet( _jenv, jclass_Set, _obj, [_kernel, py_set](jobject _jvalue) {
+                    pybind::set_set_t( _kernel, py_set, _jvalue );
                 });
 
                 py_value = py_set;
@@ -161,14 +148,8 @@ namespace Mengine
             {
                 PyObject * py_dict = _kernel->dict_new();
 
-                Helper::AndroidForeachJavaJSONObject( _jenv, jclass_JSONObject, _obj, [_kernel, _jenv, _doc, py_dict](jobject _jkey, jobject _jvalue) {
-                    PyObject * py_key = Helper::androidNativePythonMakePyObject( _kernel, _jenv, _jkey, _doc );
-                    PyObject * py_value = Helper::androidNativePythonMakePyObject( _kernel, _jenv, _jvalue, _doc );
-
-                    _kernel->dict_set( py_dict, py_key, py_value );
-
-                    _kernel->decref( py_key );
-                    _kernel->decref( py_value );
+                Helper::AndroidForeachJavaJSONObject( _jenv, jclass_JSONObject, _obj, [_kernel, py_dict](jobject _jkey, jobject _jvalue) {
+                    pybind::dict_set_t( _kernel, py_dict, _jkey, _jvalue );
                 });
 
                 py_value = py_dict;
@@ -177,14 +158,10 @@ namespace Mengine
             {
                 PyObject * py_list = _kernel->list_new( 0 );
 
-                Helper::AndroidForeachJavaJSONArray( _jenv, jclass_JSONArray, _obj, [_kernel, _jenv, _doc, py_list](jint _index, jobject _jvalue) {
+                Helper::AndroidForeachJavaJSONArray( _jenv, jclass_JSONArray, _obj, [_kernel, py_list](jint _index, jobject _jvalue) {
                     MENGINE_UNUSED( _index );
 
-                    PyObject * py_value = Helper::androidNativePythonMakePyObject( _kernel, _jenv, _jvalue, _doc );
-
-                    _kernel->list_appenditem( py_list, py_value );
-
-                    _kernel->decref( py_value );
+                    pybind::list_appenditem_t( _kernel, py_list, _jvalue );
                 });
 
                 py_value = py_list;

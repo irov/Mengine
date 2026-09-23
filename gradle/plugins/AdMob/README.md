@@ -14,9 +14,19 @@ The plugin reads the activated cache and bundled RC defaults once, after
 application services have loaded and transparency consent has resolved. It does
 not wait for a network fetch. Later RC activation does not replace ad units or
 restart the SDK during the session. If the parameter is missing, initialization
-is skipped until the next application launch. `AdServiceReady` is also released
-when initialization is skipped, so game startup can continue without ads.
-`isSdkInitialized` separately reports whether SDK initialization succeeded.
+is skipped until the next application launch. Providers finish through
+`readyAdProvider(successful)`: skipped or invalid configuration reports `false`,
+and SDK initialization reports `true`. The result is stored as the value of the
+`AdServiceReady` semaphore on Android and iOS. Python subscribes through
+`Mengine.waitSemaphore("AdServiceReady", callback)` and receives
+`callback(successful)`, including when initialization finished before subscription.
+Game startup continues for either result; SDK readiness uses `successful`.
+
+Native semaphores retain their first value until deactivation. Python activates a semaphore with
+`Mengine.activateSemaphore(name, value)`. `None` is not a valid value; pass `True` when there is no data.
+Values use the native Python bridge types (booleans, numbers, strings, lists, and dictionaries).
+`waitSemaphore(name, callback, *args)` passes the value before `*args`.
+Callbacks run outside the semaphore lock and release after completion.
 
 Ad objects live for one Activity. Once the SDK is ready, the plugin creates them
 for the current Activity; `onDestroy` releases them and clears the plugin's

@@ -11,10 +11,10 @@ android {
             minifyEnabled ANDROID_APP_DEBUG_MINIFY_ENABLE
 
             if (ANDROID_APP_DEBUG_MINIFY_ENABLE == true) {
+                proguardFiles getDefaultProguardFile('proguard-android-optimize.txt')
+
                 if (proguardUserFile.exists() == true) {
-                    proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), proguardUserFile
-                } else {
-                    proguardFiles getDefaultProguardFile('proguard-android-optimize.txt')
+                    proguardFiles proguardUserFile
                 }
             }
         }
@@ -23,14 +23,14 @@ android {
             minifyEnabled ANDROID_APP_RELEASE_MINIFY_ENABLE
 
             if (isLibrary == false) {
-                shrinkResources ANDROID_APP_RELEASE_MINIFY_ENABLE
+                shrinkResources = ANDROID_APP_RELEASE_MINIFY_ENABLE
             }
 
             if (ANDROID_APP_RELEASE_MINIFY_ENABLE == true) {
+                proguardFiles getDefaultProguardFile('proguard-android-optimize.txt')
+
                 if (proguardUserFile.exists() == true) {
-                    proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), proguardUserFile
-                } else {
-                    proguardFiles getDefaultProguardFile('proguard-android-optimize.txt')
+                    proguardFiles proguardUserFile
                 }
             }
         }

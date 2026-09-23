@@ -3,14 +3,19 @@
 #include "Interface/PrototypeServiceInterface.h"
 
 #include "Environment/Android/AndroidKernelServiceInterface.h"
+#include "Environment/Android/AndroidApplicationHelper.h"
+#include "Environment/Android/AndroidHelper.h"
 #include "Environment/Python/PythonScriptWrapper.h"
 
 #include "PythonAndroidSemaphoreListener.h"
 #include "PythonAndroidPluginCallback.h"
 #include "AndroidNativePythonInterface.h"
 #include "AndroidNativePythonCallback.h"
+#include "AndroidNativePythonHelper.h"
 
 #include "Kernel/ScriptablePrototypeGenerator.h"
+#include "Kernel/Assertion.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -88,7 +93,7 @@ namespace Mengine
                 ->androidJSONObjectMethod( _plugin, _method, _args );
         }
         //////////////////////////////////////////////////////////////////////////
-        AndroidSemaphoreListenerInterfacePtr AndroidNativePythonService_waitSemaphore( const ConstString & _semaphore, const pybind::object & _cb, const pybind::args & _args )
+        static AndroidSemaphoreListenerInterfacePtr AndroidNativePythonService_waitSemaphore( const ConstString & _semaphore, const pybind::object & _cb, const pybind::args & _args )
         {
             AndroidSemaphoreListenerInterfacePtr listener = Helper::makeFactorableUnique<PythonAndroidSemaphoreListener>( MENGINE_DOCUMENT_PYTHON, _cb, _args );
 
@@ -96,6 +101,27 @@ namespace Mengine
                 ->waitSemaphore( _semaphore, listener );
 
             return listener;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void AndroidNativePythonService_activateSemaphore( const ConstString & _semaphore, const pybind::object & _value )
+        {
+            JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+            MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
+
+            jobject value = Helper::androidNativePythonMakeJavaObject( jenv, _value );
+
+            MENGINE_ASSERTION_FATAL( value != nullptr, "activate semaphore '%s' invalid value type '%s'"
+                , _semaphore.c_str()
+                , _value.repr_type().c_str()
+            );
+
+            jstring name = Helper::AndroidMakeJObjectString( jenv, _semaphore );
+
+            Helper::AndroidCallVoidApplicationMethod( jenv, "activateSemaphore", "(Ljava/lang/String;Ljava/lang/Object;)V", name, value );
+
+            Mengine_JNI_DeleteLocalRef( jenv, value );
+            Mengine_JNI_DeleteLocalRef( jenv, name );
         }
         ///////////////////////////////////////////////////////////////////////
     }
@@ -132,6 +158,7 @@ namespace Mengine
             .def_call( &AndroidNativePythonCallback::call )
             ;
 
+        pybind::def_function( _kernel, "activateSemaphore", &Detail::AndroidNativePythonService_activateSemaphore );
         pybind::def_function_args( _kernel, "waitSemaphore", &Detail::AndroidNativePythonService_waitSemaphore );
 
         Helper::registerScriptWrapping<AndroidNativePythonCallback>( _kernel, MENGINE_DOCUMENT_FACTORABLE );
@@ -147,6 +174,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
+        _kernel->remove_from_module( "activateSemaphore", nullptr );
+        _kernel->remove_from_module( "waitSemaphore", nullptr );
+
         _kernel->remove_scope<AndroidNativePythonCallback>();
 
         Helper::unregisterScriptWrapping<AndroidNativePythonCallback>();

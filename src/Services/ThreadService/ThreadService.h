@@ -41,6 +41,7 @@ namespace Mengine
 
     public:
         void dispatchMainThreadEvent( const LambdaEvent & _event ) override;
+        void stopDispatching() override;
 
     public:
         bool addTask( const ConstString & _processorName, const ThreadTaskInterfacePtr & _task, const DocumentInterfacePtr & _doc ) override;
@@ -69,6 +70,8 @@ namespace Mengine
         ThreadMutexInterfacePtr m_mutexTasks;
         ThreadMutexInterfacePtr m_mutexThreads;
         ThreadMutexInterfacePtr m_mutexDispatchEvents;
+
+        bool m_dispatchStopped;
 
         typedef Vector<LambdaEvent> VectorEvents;
         VectorEvents m_dispatchEvents;

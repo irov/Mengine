@@ -1,9 +1,8 @@
 #include "PythonAndroidPluginCallback.h"
 
-#include "AndroidNativePythonHelper.h"
+#include "AndroidNativePythonTypeCast.h"
 
 #include "Kernel/Assertion.h"
-#include "Kernel/DocumentHelper.h"
 
 #include <utility>
 
@@ -33,15 +32,7 @@ namespace Mengine
         {
             jobject jobject_element = Mengine_JNI_GetObjectArrayElement( _jenv, _args, index );
 
-            PyObject * py_arg = Helper::androidNativePythonMakePyObject( m_kernel, _jenv, jobject_element, MENGINE_DOCUMENT_FACTORABLE );
-
-            MENGINE_ASSERTION_FATAL( py_arg != nullptr, "android plugin method '%s' invalid arg"
-                , m_cb.repr().c_str()
-            );
-
-            m_kernel->tuple_setitem( py_args, index, py_arg );
-
-            m_kernel->decref( py_arg );
+            pybind::tuple_setitem_t( m_kernel, py_args, index, jobject_element );
 
             Mengine_JNI_DeleteLocalRef( _jenv, jobject_element );
         }

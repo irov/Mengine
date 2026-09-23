@@ -2,6 +2,8 @@
 
 #include "Interface/ServantInterface.h"
 
+#include "Environment/Android/AndroidEnv.h"
+
 namespace Mengine
 {
     ////////////////////////////////////////////////////////////////////
@@ -9,7 +11,7 @@ namespace Mengine
         : public ServantInterface
     {
     public:
-        virtual void invoke() = 0;
+        virtual void invoke( JNIEnv * _jenv, jobject _value ) = 0;
     };
     ////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AndroidSemaphoreListenerInterface> AndroidSemaphoreListenerInterfacePtr;

@@ -412,7 +412,7 @@
             }
 #endif
 
-            [advertisement readyAdProvider];
+            [advertisement readyAdProvider:YES];
 
             if ([AppleDetail hasOption:@"applovin.show_mediation_debugger"] == YES) {
                 [[ALSdk shared] showMediationDebugger];

@@ -247,6 +247,11 @@ namespace Mengine
                 , _doc
             );
             
+            if( new_mem == nullptr )
+            {
+                return nullptr;
+            }
+
             StdString::memset( new_mem, 0xDB, _size );
             
             size_t usage_size = MENGINE_MALLOC_SIZE( new_mem );
@@ -289,6 +294,11 @@ namespace Mengine
             , _doc
         );
         
+        if( new_mem == nullptr )
+        {
+            return nullptr;
+        }
+
         size_t usage_size = MENGINE_MALLOC_SIZE( new_mem );
 
         MENGINE_ASSERTION_FATAL( usage_size != (size_t)-1, "invalid get memory size" );

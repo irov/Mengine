@@ -85,6 +85,7 @@ public interface MengineServiceInterface {
     void nativeCall(@NonNull String method, Object ... args);
 
     void activateSemaphore(@NonNull String name);
+    void activateSemaphore(@NonNull String name, Object value);
     void deactivateSemaphore(@NonNull String name);
 
     String getResourceName(@AnyRes int id);

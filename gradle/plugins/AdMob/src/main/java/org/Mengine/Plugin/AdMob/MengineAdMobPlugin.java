@@ -787,7 +787,7 @@ public class MengineAdMobPlugin extends MengineService implements MengineAdMobPl
         if (config == null) {
             this.logInfo("[AdMob] no cached Remote Config admob_ad_units, skipping initialization for this session");
 
-            adService.readyAdProvider();
+            adService.readyAdProvider(false);
 
             return;
         }
@@ -805,7 +805,7 @@ public class MengineAdMobPlugin extends MengineService implements MengineAdMobPl
             if ((value instanceof String) == false) {
                 this.logError("[AdMob] Remote Config admob_ad_units.%s must be a string", format);
 
-                adService.readyAdProvider();
+                adService.readyAdProvider(false);
 
                 return;
             }
@@ -841,7 +841,7 @@ public class MengineAdMobPlugin extends MengineService implements MengineAdMobPl
                     this.initializeAds(activity);
                 }
 
-                adService.readyAdProvider();
+                adService.readyAdProvider(true);
             });
         });
     }

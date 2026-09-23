@@ -14,7 +14,6 @@
 
 #include "math/uv4.h"
 
-#include <cstring>
 #include <limits>
 
 namespace Mengine
@@ -94,7 +93,6 @@ namespace Mengine
 
         m_tiles.clear();
         m_tiles.resize( (VectorTileMap2DTiles::size_type)tileCount64 );
-        m_compiledVertices.clear();
 
         return true;
     }
@@ -300,53 +298,6 @@ namespace Mengine
         return bytes;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TileMap2D::validateSeams() const
-    {
-        if( m_columns == 0 || m_rows == 0 || m_tileSize <= 0.f || m_compiledVertices.size() != m_vertexCount )
-        {
-            return false;
-        }
-
-        const auto equalPosition = []( const mt::vec3f & _left, const mt::vec3f & _right )
-        {
-            return std::memcmp( &_left.x, &_right.x, sizeof( float ) ) == 0 &&
-                std::memcmp( &_left.y, &_right.y, sizeof( float ) ) == 0 &&
-                std::memcmp( &_left.z, &_right.z, sizeof( float ) ) == 0;
-        };
-
-        for( uint32_t row = 0; row != m_rows; ++row )
-        {
-            for( uint32_t column = 0; column + 1 < m_columns; ++column )
-            {
-                const uint32_t leftOffset = this->getTileIndex_( column, row ) * Detail::TILEMAP2D_VERTEX_PER_TILE;
-                const uint32_t rightOffset = this->getTileIndex_( column + 1, row ) * Detail::TILEMAP2D_VERTEX_PER_TILE;
-
-                if( equalPosition( m_compiledVertices[leftOffset + 1].position, m_compiledVertices[rightOffset + 0].position ) == false ||
-                    equalPosition( m_compiledVertices[leftOffset + 2].position, m_compiledVertices[rightOffset + 3].position ) == false )
-                {
-                    return false;
-                }
-            }
-        }
-
-        for( uint32_t column = 0; column != m_columns; ++column )
-        {
-            for( uint32_t row = 0; row + 1 < m_rows; ++row )
-            {
-                const uint32_t topOffset = this->getTileIndex_( column, row ) * Detail::TILEMAP2D_VERTEX_PER_TILE;
-                const uint32_t bottomOffset = this->getTileIndex_( column, row + 1 ) * Detail::TILEMAP2D_VERTEX_PER_TILE;
-
-                if( equalPosition( m_compiledVertices[topOffset + 3].position, m_compiledVertices[bottomOffset + 0].position ) == false ||
-                    equalPosition( m_compiledVertices[topOffset + 2].position, m_compiledVertices[bottomOffset + 1].position ) == false )
-                {
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     const mt::mat4f & TileMap2D::getTransformationWorldMatrix() const
     {
         return m_renderWorldMatrix;
@@ -363,8 +314,7 @@ namespace Mengine
             return false;
         }
 
-        m_compiledVertices.clear();
-        m_compiledVertices.resize( m_vertexCount );
+        VectorRenderVertex2D vertices( m_vertexCount );
         VectorRenderIndex indices( m_indexCount );
         Vector<float> gridX( m_columns + 1 );
         Vector<float> gridY( m_rows + 1 );
@@ -399,7 +349,7 @@ namespace Mengine
 
                 for( uint32_t vertexIndex = 0; vertexIndex != Detail::TILEMAP2D_VERTEX_PER_TILE; ++vertexIndex )
                 {
-                    RenderVertex2D & vertex = m_compiledVertices[vertexOffset + vertexIndex];
+                    RenderVertex2D & vertex = vertices[vertexOffset + vertexIndex];
                     vertex.position.x = gridX[column + Detail::TILEMAP2D_COEFF_X[vertexIndex]];
                     vertex.position.y = gridY[row + Detail::TILEMAP2D_COEFF_Y[vertexIndex]];
                     vertex.position.z = 0.f;
@@ -424,8 +374,10 @@ namespace Mengine
             , this->getName().c_str()
         );
 
+        const RenderVertex2D * verticesData = vertices.data();
+
         if( m_vertexBuffer->resize( m_vertexCount ) == false ||
-            m_vertexBuffer->draw( m_compiledVertices.data(), 0, m_vertexCount ) == false )
+            m_vertexBuffer->draw( verticesData, 0, m_vertexCount ) == false )
         {
             LOGGER_ERROR( "tilemap2d '%s' failed to upload %u vertices"
                 , this->getName().c_str()
@@ -487,7 +439,6 @@ namespace Mengine
     void TileMap2D::_dispose()
     {
         m_tiles.clear();
-        m_compiledVertices.clear();
 
         Node::_dispose();
     }

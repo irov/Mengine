@@ -1,10 +1,12 @@
 #pragma once
 
+#include "Kernel/EnumeratorHelper.h"
 #include "Kernel/UniqueHelper.h"
 #include "Kernel/Vector.h"
 
 #include "Config/Lambda.h"
-#include "Config/StdAlgorithm.h"
+#include "Config/StdAssert.h"
+#include "Config/StdUtility.h"
 #include "Config/UniqueId.h"
 
 namespace Mengine
@@ -43,29 +45,11 @@ namespace Mengine
             return id;
         }
 
-        UniqueId remove( const LambdaEvent & _lambda )
-        {
-            typename VectorEvents::iterator it_found = StdAlgorithm::find_if( m_events.begin(), m_events.end(), [&_lambda]( const EventDesc & _desc )
-            {
-                return _desc.lambda == _lambda;
-            } );
-
-            MENGINE_ASSERTION_FATAL( it_found != m_events.end() );
-
-            const EventDesc & desc = *it_found;
-
-            UniqueId id = desc.id;
-
-            m_events.erase( it_found );
-
-            return id;
-        }
-
         LambdaEvent remove( UniqueId _id )
         {
             typename VectorEvents::iterator it_found = Helper::findUnique( m_events, _id );
 
-            MENGINE_ASSERTION_FATAL( it_found != m_events.end() );
+            assert( it_found != m_events.end() );
 
             const EventDesc & desc = *it_found;
 
@@ -87,7 +71,7 @@ namespace Mengine
         {
             for( const EventDesc & desc : m_events )
             {
-                desc.lambda( std::forward<Args>( _args )... );
+                desc.lambda( StdUtility::forward<Args>( _args )... );
             }
         }
 

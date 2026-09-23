@@ -23,7 +23,11 @@ namespace Mengine
         template<class ... Args>
         auto operator () ( Args && ... _args ) const
         {
-            return std::apply( m_method, std::tuple_cat( std::make_tuple( m_ptr ), std::tuple_cat( std::forward_as_tuple( std::forward<Args>( _args ) ... ), m_forwards ) ) );
+            return std::apply( [this, &_args...]( const auto & ... _forwards )
+            {
+                return std::invoke( m_method, m_ptr,
+                    std::forward<Args>( _args ) ..., _forwards ... );
+            }, m_forwards );
         }
 
     protected:
@@ -47,9 +51,11 @@ namespace Mengine
         template<class ... Args>
         auto operator () ( Args && ... _args ) const
         {
-            P * ptr = m_ptr.get();
-
-            return std::apply( m_method, std::tuple_cat( std::make_tuple( ptr ), std::tuple_cat( std::forward_as_tuple( std::forward<Args>( _args ) ... ), m_forwards ) ) );
+            return std::apply( [this, &_args...]( const auto & ... _forwards )
+            {
+                return std::invoke( m_method, m_ptr.get(),
+                    std::forward<Args>( _args ) ..., _forwards ... );
+            }, m_forwards );
         }
 
     protected:

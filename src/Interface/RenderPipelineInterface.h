@@ -17,6 +17,11 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    // addRenderObject/Quad/Line and addDebugRenderObject/Quad borrow CPU geometry.
+    // They neither copy nor own the submitted vertices and indices. The data must
+    // remain alive, at the same address and unchanged until batch() completes for
+    // the submitted frame. Store it in owner members or frame-owned storage, not
+    // in local arrays or containers destroyed before batching.
     class RenderPipelineInterface
         : public ServantInterface
     {
@@ -25,6 +30,7 @@ namespace Mengine
         virtual void finalize() = 0;
 
     public:
+        // Retains references to the GPU buffers for deferred rendering.
         virtual void addRenderMesh( const RenderContext * _context, const RenderMaterialInterfacePtr & _material, const RenderProgramVariableInterfacePtr & _programVariable, const RenderVertexBufferInterfacePtr & _vertexBuffer, const RenderIndexBufferInterfacePtr & _indexBuffer, uint32_t _vertexCount, uint32_t _indexCount, uint32_t _baseVertexIndex, uint32_t _startIndex, uint32_t _flags, const DocumentInterfacePtr & _doc ) = 0;
 
         virtual void addRenderObject( const RenderContext * _context, const RenderMaterialInterfacePtr & _material, const RenderProgramVariableInterfacePtr & _programVariable, const RenderVertex2D * _vertices, uint32_t _vertexCount, const RenderIndex * _indices, uint32_t _indexCount, const mt::box2f * _bb, uint32_t _flags, const DocumentInterfacePtr & _doc ) = 0;

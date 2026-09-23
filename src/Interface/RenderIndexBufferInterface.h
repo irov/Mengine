@@ -27,6 +27,8 @@ namespace Mengine
         virtual bool unlock() = 0;
 
     public:
+        // Copies source data during the call and does not retain _buffer.
+        // The source may be modified or released after this method returns.
         virtual bool draw( const void * _buffer, uint32_t _offset, uint32_t _count ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////

@@ -1,5 +1,7 @@
 #include "Tags.h"
 
+#include "Kernel/Assertion.h"
+
 #include "Config/StdAlgorithm.h"
 
 namespace Mengine
@@ -15,6 +17,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Tags::addTag( const ConstString & _tag )
     {
+        MENGINE_ASSERTION_FATAL( this->hasTag( _tag ) == false, "tag '%s' already exists"
+            , _tag.c_str()
+        );
+
         m_values.emplace_back( _tag );
     }
     //////////////////////////////////////////////////////////////////////////

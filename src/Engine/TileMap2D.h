@@ -10,7 +10,6 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/Node.h"
 #include "Kernel/ResourceImage.h"
-#include "Kernel/RenderVertex2D.h"
 #include "Kernel/Vector.h"
 
 #include "math/mat4.h"
@@ -67,7 +66,6 @@ namespace Mengine
         uint32_t getVertexBufferUploadCount() const;
         uint32_t getIndexBufferUploadCount() const;
         uint64_t getResidentTextureMemoryBytes() const;
-        bool validateSeams() const;
 
     public:
         const mt::mat4f & getTransformationWorldMatrix() const override;
@@ -102,7 +100,6 @@ namespace Mengine
 
         RenderVertexBufferInterfacePtr m_vertexBuffer;
         RenderIndexBufferInterfacePtr m_indexBuffer;
-        Vector<RenderVertex2D> m_compiledVertices;
 
         mutable mt::mat4f m_renderWorldMatrix;
     };

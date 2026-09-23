@@ -1293,7 +1293,6 @@ namespace Mengine
                 .def( "getVertexBufferUploadCount", &TileMap2D::getVertexBufferUploadCount )
                 .def( "getIndexBufferUploadCount", &TileMap2D::getIndexBufferUploadCount )
                 .def( "getResidentTextureMemoryBytes", &TileMap2D::getResidentTextureMemoryBytes )
-                .def( "validateSeams", &TileMap2D::validateSeams )
                 ;
 
             pybind::interface_<Grid2D, pybind::bases<Node, Materialable>>( _kernel, "Grid2D", false )

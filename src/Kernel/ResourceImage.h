@@ -62,6 +62,10 @@ namespace Mengine
         MENGINE_INLINE bool isPow2() const;
 
     public:
+        virtual size_t getTextureContentCount() const;
+        virtual const ContentInterfacePtr & getTextureContent( size_t _index ) const;
+
+    public:
         void setTexture( size_t _index, const RenderTextureInterfacePtr & _texture );
         MENGINE_INLINE const RenderTextureInterfacePtr & getTexture( size_t _index ) const;
 

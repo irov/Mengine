@@ -24,6 +24,10 @@ namespace Mengine
         void setResourceImageAlpha( const ResourceImagePtr & _resourceImageAlphaName );
         const ResourceImagePtr & getResourceAlpha() const;
 
+    public:
+        size_t getTextureContentCount() const override;
+        const ContentInterfacePtr & getTextureContent( size_t _index ) const override;
+
     protected:
         bool _compile() override;
         void _release() override;

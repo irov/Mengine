@@ -1565,6 +1565,24 @@ namespace Mengine
                 return requests;
             }
             //////////////////////////////////////////////////////////////////////////
+            pybind::list s_prefetchImageTextures( pybind::kernel_interface * _kernel, const ResourceImagePtr & _resourceImage )
+            {
+                pybind::list requests( _kernel );
+
+                size_t textureContentCount = _resourceImage->getTextureContentCount();
+
+                for( size_t index = 0; index != textureContentCount; ++index )
+                {
+                    const ContentInterfacePtr & content = _resourceImage->getTextureContent( index );
+
+                    RenderTexturePrefetchInterfacePtr request = RENDERTEXTURE_SERVICE()
+                        ->prefetchTexture( content, DF_IMAGE_NONE, nullptr, MENGINE_DOCUMENT_PYTHON );
+                    requests.append( request );
+                }
+
+                return requests;
+            }
+            //////////////////////////////////////////////////////////////////////////
             ResourceImageDefaultPtr s_createImageResource( const ConstString & _resourceName, const ConstString & _fileGroupName, const FilePath & _filePath, const mt::vec2f & _maxSize )
             {
                 const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
@@ -4653,9 +4671,11 @@ namespace Mengine
 
         pybind::interface_<RenderTexturePrefetchInterface, pybind::bases<Mixin>>( _kernel, "RenderTexturePrefetchInterface" )
             .def( "getState", &RenderTexturePrefetchInterface::getState )
+            .def( "getContent", &RenderTexturePrefetchInterface::getContent )
             .def( "cancel", &RenderTexturePrefetchInterface::cancel )
             ;
         pybind::def_functor_kernel( _kernel, "prefetchTextures", nodeScriptMethod, &EngineScriptMethod::s_prefetchTextures );
+        pybind::def_functor_kernel( _kernel, "prefetchImageTextures", nodeScriptMethod, &EngineScriptMethod::s_prefetchImageTextures );
         pybind::def_functor( _kernel, "createImageResource", nodeScriptMethod, &EngineScriptMethod::s_createImageResource );
         pybind::def_functor( _kernel, "createImageSolidResource", nodeScriptMethod, &EngineScriptMethod::s_createImageSolidResource );
         pybind::def_functor( _kernel, "minimizeWindow", nodeScriptMethod, &EngineScriptMethod::s_minimizeWindow );

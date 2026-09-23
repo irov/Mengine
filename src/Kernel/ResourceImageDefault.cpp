@@ -30,6 +30,24 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( this->getTexture( 1 ) == nullptr, "texture alpha is not nullptr" );
     }
     //////////////////////////////////////////////////////////////////////////
+    size_t ResourceImageDefault::getTextureContentCount() const
+    {
+        return 1;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ContentInterfacePtr & ResourceImageDefault::getTextureContent( size_t _index ) const
+    {
+        MENGINE_UNUSED( _index );
+
+        MENGINE_ASSERTION_FATAL( _index < this->getTextureContentCount(), "texture content index %zu out of range"
+            , _index
+        );
+
+        const ContentInterfacePtr & content = this->getContent();
+
+        return content;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool ResourceImageDefault::_compile()
     {
         if( ResourceImage::_compile() == false )

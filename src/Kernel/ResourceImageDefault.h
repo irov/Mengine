@@ -15,6 +15,10 @@ namespace Mengine
         ResourceImageDefault();
         ~ResourceImageDefault() override;
 
+    public:
+        size_t getTextureContentCount() const override;
+        const ContentInterfacePtr & getTextureContent( size_t _index ) const override;
+
     protected:
         bool _compile() override;
         void _release() override;

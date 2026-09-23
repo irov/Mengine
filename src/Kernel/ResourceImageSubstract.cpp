@@ -28,6 +28,20 @@ namespace Mengine
         return m_resourceImage;
     }
     //////////////////////////////////////////////////////////////////////////
+    size_t ResourceImageSubstract::getTextureContentCount() const
+    {
+        size_t textureContentCount = m_resourceImage->getTextureContentCount();
+
+        return textureContentCount;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ContentInterfacePtr & ResourceImageSubstract::getTextureContent( size_t _index ) const
+    {
+        const ContentInterfacePtr & content = m_resourceImage->getTextureContent( _index );
+
+        return content;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool ResourceImageSubstract::_compile()
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImage, "'%s' group '%s' invalid setup image resource"

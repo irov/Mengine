@@ -38,6 +38,29 @@ namespace Mengine
         return m_resourceImageAlpha;
     }
     //////////////////////////////////////////////////////////////////////////
+    size_t ResourceImageSubstractRGBAndAlpha::getTextureContentCount() const
+    {
+        return 2;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ContentInterfacePtr & ResourceImageSubstractRGBAndAlpha::getTextureContent( size_t _index ) const
+    {
+        MENGINE_ASSERTION_FATAL( _index < this->getTextureContentCount(), "texture content index %zu out of range"
+            , _index
+        );
+
+        if( _index == 0 )
+        {
+            const ContentInterfacePtr & content = m_resourceImageRGB->getTextureContent( 0 );
+
+            return content;
+        }
+
+        const ContentInterfacePtr & content = m_resourceImageAlpha->getTextureContent( 0 );
+
+        return content;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool ResourceImageSubstractRGBAndAlpha::_compile()
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImageRGB, "'%s' group '%s' not setup rgb resource"

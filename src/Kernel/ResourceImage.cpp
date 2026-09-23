@@ -28,6 +28,22 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    size_t ResourceImage::getTextureContentCount() const
+    {
+        return 0;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ContentInterfacePtr & ResourceImage::getTextureContent( size_t _index ) const
+    {
+        MENGINE_UNUSED( _index );
+
+        MENGINE_ASSERTION_FATAL( _index < this->getTextureContentCount(), "texture content index %zu out of range"
+            , _index
+        );
+
+        return ContentInterfacePtr::none();
+    }
+    //////////////////////////////////////////////////////////////////////////
     void ResourceImage::setTexture( size_t _index, const RenderTextureInterfacePtr & _texture )
     {
         MENGINE_ASSERTION_FATAL( _index < MENGINE_RESOURCEIMAGE_MAX_TEXTURE, "resource image '%s' index %zu out of range"

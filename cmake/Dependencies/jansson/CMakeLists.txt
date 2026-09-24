@@ -26,10 +26,10 @@ set(JANSSON_TEMP_DIR ${CMAKE_CURRENT_BINARY_DIR}/tmp)
 # set (JANSSON_VERSION "2.3.1")
 # set (JANSSON_SOVERSION 2)
 
-set(JANSSON_DISPLAY_VERSION "2.15.0")
+set(JANSSON_DISPLAY_VERSION "2.15.1")
 
 # This is what is required to match the same numbers as automake's
-set(JANSSON_VERSION "4.15.0")
+set(JANSSON_VERSION "4.15.1")
 set(JANSSON_SOVERSION 4)
 
 # for CheckFunctionKeywords
@@ -312,6 +312,9 @@ if(JANSSON_BUILD_SHARED_LIBS)
 # some linkers may only support --version-script
       file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/jansson.sym" "JANSSON_${JANSSON_SOVERSION} {
     global:
+          json_*;
+          jansson_*;
+    local:
           *;
 };
 ")
@@ -591,6 +594,9 @@ endif()
 
 set(JANSSON_INSTALL_CMAKE_DIR ${DEF_INSTALL_CMAKE_DIR} CACHE PATH "Installation directory for CMake files")
 
+set(DEF_INSTALL_PKGCONF_DIR lib/pkgconfig)
+set(JANSSON_INSTALL_PKGCONF_DIR ${DEF_INSTALL_PKGCONF_DIR} CACHE PATH "Installation directory for pkg-config files")
+
 # Create pkg-conf file.
 # (We use the same files as ./configure does, so we
 #  have to defined the same variables used there).
@@ -648,7 +654,7 @@ if (JANSSON_INSTALL)
   # Install the pkg-config.
   install(FILES
           ${CMAKE_CURRENT_BINARY_DIR}/jansson.pc
-          DESTINATION lib/pkgconfig)
+          DESTINATION ${JANSSON_INSTALL_PKGCONF_DIR})
 
   # Install the configs.
   install(FILES

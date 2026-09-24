@@ -60,7 +60,7 @@ GIT_CLONE(xmlsax https://github.com/irov/xmlsax.git)
 GIT_CLONE(box2d https://github.com/erincatto/Box2D.git "v3.1.1")
 GIT_CLONE(graphics https://github.com/irov/graphics.git)
 GIT_CLONE(mosaic https://github.com/irov/Mosaic.git)
-GIT_CLONE(cmake-modules https://github.com/rpavlik/cmake-modules.git)
+GIT_CLONE(cmake-modules https://github.com/rpavlik/cmake-modules.git "main")
 GIT_CLONE(emsdk https://github.com/emscripten-core/emsdk.git "5.0.7")
 
 IF(WIN32)

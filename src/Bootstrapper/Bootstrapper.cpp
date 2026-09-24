@@ -2407,12 +2407,6 @@ namespace Mengine
 
         m_packagesPaths.clear();
 
-        if( SERVICE_IS_INITIALIZE( ApplicationInterface ) == true )
-        {
-            APPLICATION_SERVICE()
-                ->finalizeGame();
-        }
-
         if( SERVICE_IS_INITIALIZE( AccountServiceInterface ) == true )
         {
             ACCOUNT_SERVICE()
@@ -2423,6 +2417,12 @@ namespace Mengine
         {
             GAME_SERVICE()
                 ->removePersonality();
+        }
+
+        if( SERVICE_IS_INITIALIZE( ApplicationInterface ) == true )
+        {
+            APPLICATION_SERVICE()
+                ->finalizeGame();
         }
 
         if( SERVICE_IS_INITIALIZE( NotificationServiceInterface ) == true )

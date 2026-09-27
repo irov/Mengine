@@ -1820,7 +1820,19 @@ namespace Mengine
 
         const RenderImageProviderInterfacePtr & renderImageProviderInterface = renderImage->getRenderImageProvider();
 
+        if( renderImageProviderInterface == nullptr )
+        {
+            return false;
+        }
+
         RenderImageLoaderInterfacePtr renderImageLoader = renderImageProviderInterface->getLoader( MENGINE_DOCUMENT_FACTORABLE );
+
+        if( renderImageLoader == nullptr )
+        {
+            LOGGER_ERROR( "invalid create image loader for node hit test" );
+
+            return false;
+        }
 
         RenderImageDesc imageDesc;
         renderImageLoader->getImageDesc( &imageDesc );
@@ -1833,11 +1845,7 @@ namespace Mengine
             return false;
         }
 
-        EPixelFormat hwPixelFormat = renderImage->getHWPixelFormat();
-
-        uint32_t hwPixelChannels = Helper::getPixelFormatChannels( hwPixelFormat );
-
-        if( hwPixelChannels != 4 )
+        if( imageDesc.format != PF_A8R8G8B8 )
         {
             return true;
         }
@@ -1859,8 +1867,6 @@ namespace Mengine
         , const RenderImageDesc & _imageDesc
         , const mt::uv4f & _uv )
     {
-        MENGINE_UNUSED( _renderTexture );
-
         const RenderResolutionInterfacePtr & renderResolution = PLAYER_SERVICE()
             ->getRenderResolution();
 
@@ -1908,7 +1914,15 @@ namespace Mengine
             return true;
         }
 
-        MemoryInterfacePtr memory = _imageLoader->getMemory( 0, MENGINE_DOCUMENT_FACTORABLE );
+        uint32_t codecFlags = _renderTexture->getCodecFlags();
+        MemoryInterfacePtr memory = _imageLoader->getMemory( codecFlags, MENGINE_DOCUMENT_FACTORABLE );
+
+        if( memory == nullptr )
+        {
+            LOGGER_ERROR( "invalid decode image memory for alpha hit test" );
+
+            return true;
+        }
 
         uint8_t * alphaBufferMemory = memory->getBuffer();
 
@@ -1921,13 +1935,20 @@ namespace Mengine
         firstPoint.x = _uv.p0.x * renderImageWidth;
         firstPoint.y = _uv.p0.y * renderImageHeight;
 
-        uint32_t fuulYdistance = static_cast<uint32_t>(firstPoint.y + pointIn2.y);
+        float pixelX = pointIn2.x + firstPoint.x;
+        float pixelY = pointIn2.y + firstPoint.y;
 
-        uint32_t alphaIndex = fuulYdistance * _imageDesc.width + static_cast<uint32_t>(pointIn2.x + firstPoint.x);
+        if( pixelX < 0.f || pixelX >= _imageDesc.width || pixelY < 0.f || pixelY >= _imageDesc.height )
+        {
+            return true;
+        }
 
-        alphaIndex *= 4;
+        uint32_t x = static_cast<uint32_t>(pixelX);
+        uint32_t y = static_cast<uint32_t>(pixelY);
+        size_t pixelIndex = y * _imageDesc.width + x;
 
-        uint8_t alpha = alphaBufferMemory[alphaIndex + 3];
+        size_t alphaIndex = pixelIndex * 4 + 3;
+        uint8_t alpha = alphaBufferMemory[alphaIndex];
 
         uint8_t minAlpha = (uint8_t)(0.f * 255.f);
 

@@ -10,7 +10,7 @@
 #include "OpenGLRenderResourceHandler.h"
 
 #include "Kernel/Factorable.h"
-#include "Kernel/CompilableReference.h"
+#include "Kernel/Compilable.h"
 
 namespace Mengine
 {
@@ -28,6 +28,7 @@ namespace Mengine
     class OpenGLRenderProgram
         : public RenderProgramInterface
         , public OpenGLRenderResourceHandler
+        , public Compilable
         , public Factorable
     {
         DECLARE_FACTORABLE( OpenGLRenderProgram );
@@ -58,10 +59,6 @@ namespace Mengine
         bool getDeferredCompile() const;
 
     public:
-        bool compile();
-        void release();
-
-    public:
         bool enable() const;
         void disable() const;
 
@@ -71,6 +68,10 @@ namespace Mengine
     public:
         void onRenderReset() override;
         bool onRenderRestore() override;
+
+    protected:
+        bool _compile() override;
+        void _release() override;
 
     protected:
         ConstString m_name;

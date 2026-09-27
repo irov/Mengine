@@ -705,7 +705,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool UnixPlatformService::runPlatform()
     {
-        this->setActive_( true, this->getInputTimestamp() );
+        Timestamp timestamp = this->getInputTimestamp();
+
+        this->setActive_( true, timestamp );
 
         if( this->updatePlatform() == false )
         {
@@ -2056,47 +2058,60 @@ namespace Mengine
                     }
                 }break;
             case Expose:
-                m_windowExposed = true;
-                break;
+                {
+                    m_windowExposed = true;
+                }break;
             case FocusIn:
-                if( m_inputContext != nullptr )
                 {
-                    ::XSetICFocus( m_inputContext );
-                }
+                    if( m_inputContext != nullptr )
+                    {
+                        ::XSetICFocus( m_inputContext );
+                    }
 
-                this->setActive_( true, this->getInputTimestamp() );
-                break;
+                    Timestamp timestamp = this->getInputTimestamp();
+
+                    this->setActive_( true, timestamp );
+                }break;
             case FocusOut:
-                if( m_inputContext != nullptr )
                 {
-                    ::XUnsetICFocus( m_inputContext );
-                }
+                    if( m_inputContext != nullptr )
+                    {
+                        ::XUnsetICFocus( m_inputContext );
+                    }
 
-                if( m_input != nullptr )
-                {
-                    m_input->releaseAll();
-                }
+                    if( m_input != nullptr )
+                    {
+                        m_input->releaseAll();
+                    }
 
-                this->setActive_( false, this->getInputTimestamp() );
-                break;
+                    Timestamp timestamp = this->getInputTimestamp();
+
+                    this->setActive_( false, timestamp );
+                }break;
             case MapNotify:
-                m_windowExposed = true;
-                break;
-            case UnmapNotify:
-                m_windowExposed = false;
-
-                if( m_input != nullptr )
                 {
-                    m_input->releaseAll();
-                }
+                    m_windowExposed = true;
+                }break;
+            case UnmapNotify:
+                {
+                    m_windowExposed = false;
 
-                this->setActive_( false, this->getInputTimestamp() );
-                break;
+                    if( m_input != nullptr )
+                    {
+                        m_input->releaseAll();
+                    }
+
+                    Timestamp timestamp = this->getInputTimestamp();
+
+                    this->setActive_( false, timestamp );
+                }break;
             case DestroyNotify:
-                this->pushQuitEvent_();
-                break;
+                {
+                    this->pushQuitEvent_();
+                }break;
             default:
-                break;
+                {
+                }break;
             }
 
             if( ::XFilterEvent( &event, m_window ) != 0 )
@@ -2214,7 +2229,8 @@ namespace Mengine
             return;
         }
 
-        const bool nopause = APPLICATION_SERVICE()->getNopause();
+        bool nopause = APPLICATION_SERVICE()
+            ->getNopause();
 
         mt::vec2f point( 0.f, 0.f );
         if( m_input != nullptr )
@@ -2236,15 +2252,25 @@ namespace Mengine
 
         if( nopause == false )
         {
-            APPLICATION_SERVICE()->setFocus( m_active );
-            INPUT_SERVICE()->onFocus( m_active );
-            APPLICATION_SERVICE()->turnSound( m_active );
+            APPLICATION_SERVICE()
+                ->setFocus( m_active );
+
+            INPUT_SERVICE()
+                ->onFocus( m_active );
+
+            APPLICATION_SERVICE()
+                ->turnSound( m_active );
         }
         else
         {
-            APPLICATION_SERVICE()->setFocus( true );
-            INPUT_SERVICE()->onFocus( true );
-            APPLICATION_SERVICE()->turnSound( true );
+            APPLICATION_SERVICE()
+                ->setFocus( true );
+
+            INPUT_SERVICE()
+                ->onFocus( true );
+
+            APPLICATION_SERVICE()
+                ->turnSound( true );
         }
     }
     //////////////////////////////////////////////////////////////////////////

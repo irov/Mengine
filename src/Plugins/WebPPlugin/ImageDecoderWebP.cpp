@@ -9,6 +9,8 @@
 #include "Kernel/ProfilerHelper.h"
 #include "Kernel/Logger.h"
 
+#include "Config/StdAlgorithm.h"
+
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_RENDER_TEXTURE_RGBA)
 #   define MENGINE_WEBP_DECODE_RGBA WebPDecodeRGBAInto
@@ -42,9 +44,21 @@ namespace Mengine
         size_t streamSize;
         if( stream->memory( &streamMemory, &streamSize ) == false )
         {
+            streamSize = stream->size();
+
+            if( streamSize == 0 )
+            {
+                LOGGER_ERROR( "empty WebP stream" );
+
+                return false;
+            }
+
             do
             {
-                featuresBufferSize += 4096;
+                constexpr size_t featuresBufferStep = 4096;
+                size_t remainingSize = streamSize - featuresBufferSize;
+                size_t readSize = StdAlgorithm::min( remainingSize, featuresBufferStep );
+                featuresBufferSize += readSize;
 
                 MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( featuresBufferSize, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -61,6 +75,21 @@ namespace Mengine
                 status = WebPGetFeatures( featuresMemory, featuresBufferSizeRead, &features );
 
                 stream->rewind();
+
+                if( featuresBufferSizeRead != featuresBufferSize )
+                {
+                    LOGGER_ERROR( "incomplete WebP header read: expected %zu bytes, got %zu"
+                        , featuresBufferSize
+                        , featuresBufferSizeRead
+                    );
+
+                    return false;
+                }
+
+                if( featuresBufferSize == streamSize )
+                {
+                    break;
+                }
             } while( status == VP8_STATUS_NOT_ENOUGH_DATA );
         }
         else

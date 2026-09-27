@@ -71,7 +71,7 @@ namespace Mengine
         return m_deferredCompile;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MetalRenderProgram::compile()
+    bool MetalRenderProgram::_compile()
     {
         MENGINE_ASSERTION_FATAL( m_samplerCount <= MENGINE_MAX_TEXTURE_STAGES, "program '%s' don't support sampler count %d max %d"
             , m_name.c_str()
@@ -105,6 +105,11 @@ namespace Mengine
                     , m_fragmentShader->getName().c_str()
                 );
 
+                if( m_vertexShader != nullptr )
+                {
+                    m_vertexShader->release();
+                }
+
                 return false;
             }
         }
@@ -114,7 +119,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MetalRenderProgram::release()
+    void MetalRenderProgram::_release()
     {
         LOGGER_INFO( "render", "release program '%s'"
             , m_name.c_str()

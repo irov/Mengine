@@ -1,6 +1,7 @@
 #include "MemoryBuffer.h"
 
 #include "Kernel/MemoryAllocator.h"
+#include "Kernel/Logger.h"
 #include "Kernel/Documentable.h"
 #include "Kernel/MemoryCopy.h"
 
@@ -33,8 +34,10 @@ namespace Mengine
 
         if( new_memory == nullptr )
         {
-            m_memory = nullptr;
-            m_size = 0;
+            LOGGER_ERROR( "invalid reallocate memory buffer from %zu to %zu bytes"
+                , m_size
+                , _size
+            );
 
             return nullptr;
         }

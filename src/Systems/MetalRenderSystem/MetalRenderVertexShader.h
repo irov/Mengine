@@ -6,7 +6,7 @@
 #include "MetalRenderResourceHandler.h"
 
 #include "Kernel/Factorable.h"
-#include "Kernel/ReferenceCounter.h"
+#include "Kernel/CompilableReference.h"
 
 #import <Metal/Metal.h>
 
@@ -16,6 +16,7 @@ namespace Mengine
     class MetalRenderVertexShader
         : public RenderVertexShaderInterface
         , public MetalRenderResourceHandler
+        , public CompilableReference
         , public Factorable
     {
         DECLARE_FACTORABLE( MetalRenderVertexShader );
@@ -32,10 +33,6 @@ namespace Mengine
         void finalize();
 
     public:
-        bool compile();
-        void release();
-
-    public:
         id<MTLFunction> getFunction() const;
 
     public:
@@ -43,13 +40,15 @@ namespace Mengine
         bool onRenderRestore() override;
 
     protected:
+        bool _compile() override;
+        void _release() override;
+
+    protected:
         ConstString m_name;
         MemoryInterfacePtr m_memory;
 
         id<MTLFunction> m_function;
         id<MTLLibrary> m_library;
-
-        ReferenceCounter m_compileReferenceCount;
 
         bool m_precompiled;
     };

@@ -55,10 +55,12 @@ namespace Mengine
                 uint8_t * sweezle_buffer_rgba = sweezle_buffer + hp + (w - 1) * 4;
                 uint8_t * sweezle_buffer_rgb = sweezle_buffer + hp + (w - 1) * 3;
 
-                sweezle_buffer_rgba[0] = sweezle_buffer_rgb[0];
-                sweezle_buffer_rgba[1] = sweezle_buffer_rgb[1];
-                sweezle_buffer_rgba[2] = sweezle_buffer_rgb[2];
+                // RGB and RGBA ranges overlap within a pixel, so copy components backwards.
+                // Alpha is past the current RGB source and can be written first.
                 sweezle_buffer_rgba[3] = 255;
+                sweezle_buffer_rgba[2] = sweezle_buffer_rgb[2];
+                sweezle_buffer_rgba[1] = sweezle_buffer_rgb[1];
+                sweezle_buffer_rgba[0] = sweezle_buffer_rgb[0];
             }
         }
     }

@@ -8,6 +8,7 @@
 #include "MetalRenderResourceHandler.h"
 
 #include "Kernel/Factorable.h"
+#include "Kernel/Compilable.h"
 
 #include "Kernel/Vector.h"
 
@@ -56,6 +57,7 @@ namespace Mengine
     class MetalRenderProgram
         : public RenderProgramInterface
         , public MetalRenderResourceHandler
+        , public Compilable
         , public Factorable
     {
         DECLARE_FACTORABLE( MetalRenderProgram );
@@ -83,10 +85,6 @@ namespace Mengine
         bool getDeferredCompile() const;
 
     public:
-        bool compile();
-        void release();
-
-    public:
         uint32_t getSamplerCount() const;
 
     public:
@@ -107,6 +105,10 @@ namespace Mengine
     public:
         void onRenderReset() override;
         bool onRenderRestore() override;
+
+    protected:
+        bool _compile() override;
+        void _release() override;
 
     protected:
         ConstString m_name;

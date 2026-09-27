@@ -15,6 +15,8 @@
 #include "Kernel/PrefetcherHelper.h"
 #include "Kernel/DocumentableHelper.h"
 
+#include "Config/StdString.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -58,7 +60,22 @@ namespace Mengine
 
             return false;
         }
-        
+
+        const ImageCodecDataInfo * dataInfo = decoder->getCodecDataInfo();
+
+        if( dataInfo->width == 0 || dataInfo->height == 0 )
+        {
+            LOGGER_ERROR( "invalid image size %u:%u '%s' codec '%s' (doc: %s)"
+                , dataInfo->width
+                , dataInfo->height
+                , Helper::getContentFullPath( _content ).c_str()
+                , _content->getCodecType().c_str()
+                , MENGINE_DOCUMENTABLE_STR( this, "DecoderRenderImageLoader" )
+            );
+
+            return false;
+        }
+
         m_decoder = decoder;
         m_codecFlags = _codecFlags;
 
@@ -85,6 +102,18 @@ namespace Mengine
         uint32_t image_width = _image->getHWWidth();
         uint32_t image_height = _image->getHWHeight();
 
+        const ImageCodecDataInfo * dataInfo = m_decoder->getCodecDataInfo();
+
+        MENGINE_ASSERTION_FATAL( dataInfo->width <= image_width, "image width %u exceed texture width %u"
+            , dataInfo->width
+            , image_width
+        );
+
+        MENGINE_ASSERTION_FATAL( dataInfo->height <= image_height, "image height %u exceed texture height %u"
+            , dataInfo->height
+            , image_height
+        );
+
         uint32_t mipmap = 0;
 
         Rect rect;
@@ -94,6 +123,11 @@ namespace Mengine
         rect.bottom = image_height;
 
         RenderImageLockedInterfacePtr locked = _image->lock( 0, 0, rect, false );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( locked, "invalid lock texture %u:%u"
+            , image_width
+            , image_height
+        );
 
         size_t pitch = 0;
         void * textureBuffer = locked->getLockedBuffer( &pitch );
@@ -110,6 +144,11 @@ namespace Mengine
 
         EPixelFormat hwPixelFormat = _image->getHWPixelFormat();
 
+        if( _image->getUpscalePow2() == true )
+        {
+            StdString::memset( textureBuffer, 0, mipmap_size );
+        }
+
         ImageDecoderData data;
         data.buffer = textureBuffer;
         data.size = mipmap_size;
@@ -120,6 +159,12 @@ namespace Mengine
 
         if( m_decoder->decode( &data ) == 0 )
         {
+            LOGGER_ERROR( "invalid decode image %u:%u format %u"
+                , dataInfo->width
+                , dataInfo->height
+                , dataInfo->format
+            );
+
             _image->unlock( locked, 0, 0, false );
 
             return false;
@@ -131,8 +176,6 @@ namespace Mengine
             uint32_t mipmap_height = image_height >> mipmap;
 
             uint32_t pixel_size = Helper::getPixelFormatChannels( hwPixelFormat );
-
-            const ImageCodecDataInfo * dataInfo = m_decoder->getCodecDataInfo();
 
             uint32_t width = dataInfo->width;
             uint32_t height = dataInfo->height;
@@ -160,13 +203,27 @@ namespace Mengine
 
                 size_t dst_offset = height * pitch;
                 size_t src_offset = (height - 1) * pitch;
-                size_t copy_size = width * pixel_size;
+                size_t copy_size = size_t( width ) * pixel_size;
+
+                if( width != mipmap_width )
+                {
+                    copy_size += pixel_size;
+                }
 
                 Helper::memoryCopy( image_data, dst_offset, image_data, src_offset, copy_size );
             }
         }
 
-        _image->unlock( locked, 0, 0, true );
+        if( _image->unlock( locked, 0, 0, true ) == false )
+        {
+            LOGGER_ERROR( "invalid upload texture %u:%u format %u"
+                , image_width
+                , image_height
+                , hwPixelFormat
+            );
+
+            return false;
+        }
 
         return true;
     }
@@ -186,10 +243,14 @@ namespace Mengine
 
         uint32_t channels = Helper::getPixelFormatChannels( format );
 
-        size_t pitch = width * channels;
+        size_t pitch = size_t( width ) * channels;
         size_t dataSize = pitch * height;
 
         void * buffer = memory->newBuffer( dataSize );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( buffer, "invalid allocate image buffer %zu"
+            , dataSize
+        );
 
         ImageDecoderData data;
         data.buffer = buffer;
@@ -201,6 +262,12 @@ namespace Mengine
 
         if( m_decoder->decode( &data ) == 0 )
         {
+            LOGGER_ERROR( "invalid decode image %u:%u format %u"
+                , dataInfo->width
+                , dataInfo->height
+                , dataInfo->format
+            );
+
             return nullptr;
         }
 

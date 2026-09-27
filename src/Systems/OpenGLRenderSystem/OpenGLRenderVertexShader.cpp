@@ -77,6 +77,8 @@ namespace Mengine
                 , errorLog
             );
 
+            extension->deleteVertexShader( shaderId );
+
             return false;
         }
 

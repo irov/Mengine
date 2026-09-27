@@ -75,6 +75,8 @@ namespace Mengine
                 , errorLog
             );
 
+            extension->deleteFragmentShader( shaderId );
+
             return false;
         }
 

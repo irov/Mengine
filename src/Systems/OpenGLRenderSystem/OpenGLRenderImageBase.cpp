@@ -371,7 +371,16 @@ namespace Mengine
 
         RenderImageLoaderInterfacePtr loader = m_renderImageProvider->getLoader( MENGINE_DOCUMENT_FACTORABLE );
 
-        if( loader->load( RenderImageInterfacePtr( this ) ) == false )
+        if( loader == nullptr )
+        {
+            LOGGER_ERROR( "invalid create image loader during texture restore" );
+
+            return false;
+        }
+
+        RenderImageInterfacePtr image = RenderImageInterfacePtr::from( this );
+
+        if( loader->load( image ) == false )
         {
             LOGGER_ERROR( "invalid decode image [%u]"
                 , m_uid

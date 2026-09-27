@@ -80,7 +80,7 @@ namespace Mengine
         return m_deferredCompile;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderProgram::compile()
+    bool OpenGLRenderProgram::_compile()
     {
         MENGINE_ASSERTION_FATAL( m_samplerCount <= MENGINE_MAX_TEXTURE_STAGES, "program '%s' don't support sampler count %d max %d"
             , m_name.c_str()
@@ -113,6 +113,8 @@ namespace Mengine
                     , m_vertexShader->getName().c_str()
                 );
 
+                MENGINE_GLCALL( glDeleteProgram, (programId) );
+
                 return false;
             }
 
@@ -127,6 +129,13 @@ namespace Mengine
                     , m_name.c_str()
                     , m_fragmentShader->getName().c_str()
                 );
+
+                if( m_vertexShader != nullptr )
+                {
+                    m_vertexShader->release();
+                }
+
+                MENGINE_GLCALL( glDeleteProgram, (programId) );
 
                 return false;
             }
@@ -149,6 +158,18 @@ namespace Mengine
                 , errorLog
             );
 
+            if( m_vertexShader != nullptr )
+            {
+                m_vertexShader->release();
+            }
+
+            if( m_fragmentShader != nullptr )
+            {
+                m_fragmentShader->release();
+            }
+
+            MENGINE_GLCALL( glDeleteProgram, (programId) );
+
             return false;
         }
 
@@ -157,6 +178,18 @@ namespace Mengine
             LOGGER_ERROR( "invalid compile program '%s' bind vertex attribute"
                 , m_name.c_str()
             );
+
+            if( m_vertexShader != nullptr )
+            {
+                m_vertexShader->release();
+            }
+
+            if( m_fragmentShader != nullptr )
+            {
+                m_fragmentShader->release();
+            }
+
+            MENGINE_GLCALL( glDeleteProgram, (programId) );
 
             return false;
         }
@@ -194,7 +227,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderProgram::release()
+    void OpenGLRenderProgram::_release()
     {
         LOGGER_INFO( "render", "release program '%s'"
             , m_name.c_str()

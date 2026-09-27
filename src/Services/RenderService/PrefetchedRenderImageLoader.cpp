@@ -3,7 +3,8 @@
 #include "Interface/RenderImageInterface.h"
 #include "Kernel/MemoryCopy.h"
 #include "Kernel/PixelFormatHelper.h"
-#include "Config/StdLimits.h"
+#include "Kernel/Assertion.h"
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Config/StdString.h"
 
 namespace Mengine
@@ -53,59 +54,40 @@ namespace Mengine
         uint32_t height = _image->getHWHeight();
         EPixelFormat format = _image->getHWPixelFormat();
 
-        if( m_desc.width == 0 || m_desc.height == 0 )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_pixels, "invalid prefetched pixels" );
 
-        if( m_pixels == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_FATAL( m_desc.width <= width, "image width %u exceed texture width %u"
+            , m_desc.width
+            , width
+        );
 
-        if( m_desc.width > width || m_desc.height > height )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_FATAL( m_desc.height <= height, "image height %u exceed texture height %u"
+            , m_desc.height
+            , height
+        );
 
-        if( m_desc.format != format )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_FATAL( m_desc.format == format, "image format %u not equal texture format %u"
+            , m_desc.format
+            , format
+        );
 
         uint32_t channels = Helper::getPixelFormatChannels( format );
-        size_t maxSize = StdLimits::numeric_limits<size_t>::max();
 
-        if( width > maxSize / channels )
-        {
-            return false;
-        }
-
-        size_t rowBytes = size_t( width ) * channels;
         Rect rect( 0, 0, width, height );
         RenderImageLockedInterfacePtr locked = _image->lock( 0, 0, rect, false );
 
-        if( locked == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( locked, "invalid lock texture %u:%u"
+            , width
+            , height
+        );
 
         size_t pitch = 0;
         uint8_t * destination = static_cast<uint8_t *>(locked->getLockedBuffer( &pitch ));
 
-        if( destination == nullptr )
-        {
-            _image->unlock( locked, 0, 0, false );
-
-            return false;
-        }
-
-        if( pitch < rowBytes || pitch > maxSize / height )
-        {
-            _image->unlock( locked, 0, 0, false );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( destination, "invalid lock buffer %u:%u"
+            , width
+            , height
+        );
 
         size_t bufferSize = pitch * height;
         StdString::memset( destination, 0, bufferSize );

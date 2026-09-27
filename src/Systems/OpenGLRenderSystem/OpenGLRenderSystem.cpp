@@ -19,6 +19,7 @@
 #include "Kernel/StatisticHelper.h"
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/TextureHelper.h"
+#include "Kernel/Error.h"
 
 #include "Kernel/Logger.h"
 
@@ -1186,14 +1187,14 @@ namespace Mengine
             return true;
         }
 
-        m_renderDeviceLost = false;
-
 #if defined(MENGINE_RENDER_OPENGL_NORMAL)
         GLuint vertexArrayId = 0;
         MENGINE_GLCALL( glGenVertexArrays, (1, &vertexArrayId) );
 
         if( vertexArrayId == 0 )
         {
+            MENGINE_ERROR_FATAL( "invalid create vertex array during device restore" );
+
             return false;
         }
 
@@ -1204,9 +1205,13 @@ namespace Mengine
         {
             if( resource->onRenderRestore() == false )
             {
+                MENGINE_ERROR_FATAL( "invalid restore render resource" );
+
                 return false;
             }
         }
+
+        m_renderDeviceLost = false;
 
         return true;
     }

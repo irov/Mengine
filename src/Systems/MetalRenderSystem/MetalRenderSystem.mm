@@ -30,6 +30,7 @@
 #include "Kernel/StatisticHelper.h"
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/TextureHelper.h"
+#include "Kernel/Error.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/FactorableUnique.h"
@@ -1292,15 +1293,17 @@ namespace Mengine
             return true;
         }
 
-        m_renderDeviceLost = false;
-
         for( MetalRenderResourceHandler * resource : m_renderResourceHandlers )
         {
             if( resource->onRenderRestore() == false )
             {
+                MENGINE_ERROR_FATAL( "invalid restore render resource" );
+
                 return false;
             }
         }
+
+        m_renderDeviceLost = false;
 
         return true;
     }
@@ -1444,11 +1447,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MetalRenderSystem::onRenderVertexShaderDestroy_( MetalRenderVertexShader * _vertexShader )
     {
+        MENGINE_ASSERTION_FATAL( _vertexShader->isCompile() == false, "vertex shader '%s' not release"
+            , _vertexShader->getName().c_str()
+        );
+
         _vertexShader->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
     void MetalRenderSystem::onRenderFragmentShaderDestroy_( MetalRenderFragmentShader * _fragmentShader )
     {
+        MENGINE_ASSERTION_FATAL( _fragmentShader->isCompile() == false, "fragment shader '%s' not release"
+            , _fragmentShader->getName().c_str()
+        );
+
         _fragmentShader->finalize();
     }
     //////////////////////////////////////////////////////////////////////////

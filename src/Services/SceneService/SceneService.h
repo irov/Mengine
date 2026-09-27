@@ -68,6 +68,9 @@ namespace Mengine
 
         AtomicUInt32 m_process;
 
+        bool m_background;
+        bool m_renderDeviceLost;
+
     protected:
         void setCurrentScene_( const SceneCommandDesc & _desc );
         void restartCurrentScene_( const SceneCommandDesc & _desc );
@@ -75,5 +78,11 @@ namespace Mengine
 
     protected:
         void destroyCurrentScene_();
+
+    protected:
+        void notifyApplicationDidEnterBackground_();
+        void notifyApplicationDidBecomeActive_();
+        void notifyRenderDeviceLostPrepare_();
+        void notifyRenderDeviceLostRestore_();
     };
 };

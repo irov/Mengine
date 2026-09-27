@@ -23,6 +23,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     SceneService::SceneService()
         : m_process( 0 )
+        , m_background( false )
+        , m_renderDeviceLost( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -32,13 +34,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SceneService::_initializeService()
     {
-        //Empty
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_DID_ENTER_BACKGROUND, &SceneService::notifyApplicationDidEnterBackground_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_DID_BECOME_ACTIVE, &SceneService::notifyApplicationDidBecomeActive_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE, &SceneService::notifyRenderDeviceLostPrepare_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_RESTORE, &SceneService::notifyRenderDeviceLostRestore_, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void SceneService::_finalizeService()
     {
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_DID_ENTER_BACKGROUND );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_DID_BECOME_ACTIVE );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_RESTORE );
+
         for( SceneCommandDesc & desc : m_commands )
         {
             switch( desc.type )
@@ -238,7 +248,7 @@ namespace Mengine
         VectorResources cacheResources;
 
         RESOURCE_SERVICE()
-            ->foreachResources( [this, &cacheResources]( const ResourcePtr & _resource )
+            ->foreachResources( [&cacheResources]( const ResourcePtr & _resource )
         {
             if( _resource->isCompile() == false )
             {
@@ -417,6 +427,16 @@ namespace Mengine
             return;
         }
 
+        if( m_background == true )
+        {
+            return;
+        }
+
+        if( m_renderDeviceLost == true )
+        {
+            return;
+        }
+
         ++m_process;
 
         VectorSceneCommandDesc commands = std::move( m_commands );
@@ -454,6 +474,26 @@ namespace Mengine
     bool SceneService::isProcess() const
     {
         return m_process > 0;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SceneService::notifyApplicationDidEnterBackground_()
+    {
+        m_background = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SceneService::notifyApplicationDidBecomeActive_()
+    {
+        m_background = false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SceneService::notifyRenderDeviceLostPrepare_()
+    {
+        m_renderDeviceLost = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SceneService::notifyRenderDeviceLostRestore_()
+    {
+        m_renderDeviceLost = false;
     }
     //////////////////////////////////////////////////////////////////////////
 }

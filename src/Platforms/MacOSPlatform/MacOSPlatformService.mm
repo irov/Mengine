@@ -1262,14 +1262,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MacOSPlatformService::handleApplicationDidBecomeActive()
     {
-        this->setActive_( true, this->getInputTimestamp() );
+        Timestamp timestamp = this->getInputTimestamp();
+
+        this->setActive_( true, timestamp );
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_BECOME_ACTIVE );
     }
     //////////////////////////////////////////////////////////////////////////
     void MacOSPlatformService::handleApplicationWillResignActive()
     {
-        this->setActive_( false, this->getInputTimestamp() );
+        Timestamp timestamp = this->getInputTimestamp();
+
+        this->setActive_( false, timestamp );
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_WILL_RESIGN_ACTIVE );
     }
@@ -1286,22 +1290,30 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MacOSPlatformService::handleWindowDidBecomeKey()
     {
-        this->setActive_( true, this->getInputTimestamp() );
+        Timestamp timestamp = this->getInputTimestamp();
+
+        this->setActive_( true, timestamp );
     }
     //////////////////////////////////////////////////////////////////////////
     void MacOSPlatformService::handleWindowDidResignKey()
     {
-        this->setActive_( false, this->getInputTimestamp() );
+        Timestamp timestamp = this->getInputTimestamp();
+
+        this->setActive_( false, timestamp );
     }
     //////////////////////////////////////////////////////////////////////////
     void MacOSPlatformService::handleWindowDidMiniaturize()
     {
-        this->setActive_( false, this->getInputTimestamp() );
+        Timestamp timestamp = this->getInputTimestamp();
+
+        this->setActive_( false, timestamp );
     }
     //////////////////////////////////////////////////////////////////////////
     void MacOSPlatformService::handleWindowDidDeminiaturize()
     {
-        this->setActive_( true, this->getInputTimestamp() );
+        Timestamp timestamp = this->getInputTimestamp();
+
+        this->setActive_( true, timestamp );
     }
     //////////////////////////////////////////////////////////////////////////
     void MacOSPlatformService::handleWindowWillClose()
@@ -1647,7 +1659,9 @@ namespace Mengine
         mt::vec2f point;
         if( m_input != nullptr )
         {
-            m_input->getCursorPosition( this->getNSView(), &point );
+            NSView * view = this->getNSView();
+
+            m_input->getCursorPosition( view, &point );
         }
         else
         {

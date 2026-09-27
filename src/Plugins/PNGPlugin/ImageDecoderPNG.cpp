@@ -56,7 +56,12 @@ namespace Mengine
 
             InputStreamInterface * stream = reinterpret_cast<InputStreamInterface *>(io_ptr);
 
-            stream->read( _data, _size );
+            size_t readSize = stream->read( _data, _size );
+
+            if( readSize != _size )
+            {
+                png_error( png_ptr, "incomplete PNG stream" );
+            }
         }
         //////////////////////////////////////////////////////////////////////////
         static png_voidp PNGAPI png_malloc_ptr( png_structp png_ptr, png_size_t _size )
@@ -105,7 +110,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "can't create png info structure" );
 
-            png_destroy_write_struct( &m_png_ptr, nullptr );
+            png_destroy_read_struct( &m_png_ptr, nullptr, nullptr );
 
             return false;
         }
@@ -257,13 +262,6 @@ namespace Mengine
 
         MENGINE_PROFILER_CATEGORY();
 
-#if defined(PNG_SETJMP_SUPPORTED)
-        if( MENGINE_JMP_SET( png_jmpbuf( m_png_ptr ) ) != 0 )
-        {
-            return false;
-        }
-#endif
-
         const ImageDecoderData * decoderData = static_cast<const ImageDecoderData *>(_decoderData);
 
         void * buffer = decoderData->buffer;
@@ -274,40 +272,45 @@ namespace Mengine
         uint32_t dataChannels = Helper::getPixelFormatChannels( m_dataInfo.format );
         uint32_t optionChannels = Helper::getPixelFormatChannels( decoderData->format );
 
-        switch( flags & 0x0000ffff )
+        uint32_t decoderFlags = flags & 0x0000ffff;
+        MemoryInterfacePtr rowBuffer;
+
+        if( decoderFlags == DF_IMAGE_READ_ALPHA_ONLY || decoderFlags == DF_IMAGE_WRITE_ALPHA_ONLY )
+        {
+            if( m_interlace_number_of_passes != 1 )
+            {
+                LOGGER_ERROR( "png file '%s' interlaced image not support alpha only flags %u"
+                    , Helper::getDebugFullPath( this->getStream() ).c_str()
+                    , flags
+                );
+
+                return 0;
+            }
+
+            rowBuffer = Helper::createMemoryCacheBuffer( m_row_bytes, MENGINE_DOCUMENT_FACTORABLE );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( rowBuffer, "invalid create cache buffer" );
+        }
+
+#if defined(PNG_SETJMP_SUPPORTED)
+        if( MENGINE_JMP_SET( png_jmpbuf( m_png_ptr ) ) != 0 )
+        {
+            LOGGER_ERROR( "invalid decode PNG image %u:%u"
+                , m_dataInfo.width
+                , m_dataInfo.height
+            );
+
+            return 0;
+        }
+#endif
+
+        switch( decoderFlags )
         {
         case DF_IMAGE_NONE:
             {
                 if( dataChannels == optionChannels )
                 {
-                    if( m_interlace_number_of_passes == 1 )
-                    {
-                        png_bytep carriage = (png_bytep)buffer;
-
-                        for( uint32_t i = 0; i != m_dataInfo.height; ++i )
-                        {
-                            png_read_row( m_png_ptr, carriage, nullptr );
-
-                            carriage += pitch;
-                        }
-                    }
-                    else
-                    {
-                        png_bytep * image = (png_bytep *)png_malloc( m_png_ptr, m_dataInfo.height * sizeof( png_bytep * ) );
-
-                        png_bytep carriage = (png_bytep)buffer;
-
-                        for( uint32_t i = 0; i != m_dataInfo.height; ++i )
-                        {
-                            image[i] = carriage;
-
-                            carriage += pitch;
-                        }
-
-                        png_read_image( m_png_ptr, image );
-
-                        png_free( m_png_ptr, image );
-                    }
+                    this->readRows_( buffer, pitch );
 
                     if( flags & DF_IMAGE_PREMULTIPLY_ALPHA && dataChannels == 4 )
                     {
@@ -330,27 +333,13 @@ namespace Mengine
                 }
                 else if( dataChannels == 1 && optionChannels == 4 )
                 {
-                    png_bytep carriage = (png_bytep)buffer;
-
-                    for( uint32_t i = 0; i != m_dataInfo.height; ++i )
-                    {
-                        png_read_row( m_png_ptr, carriage, nullptr );
-
-                        carriage += pitch;
-                    }
+                    this->readRows_( buffer, pitch );
 
                     this->sweezleAlpha1( m_dataInfo.width, m_dataInfo.height, buffer, pitch );
                 }
                 else if( dataChannels == 3 && optionChannels == 4 )
                 {
-                    png_bytep carriage = (png_bytep)buffer;
-
-                    for( uint32_t i = 0; i != m_dataInfo.height; ++i )
-                    {
-                        png_read_row( m_png_ptr, carriage, nullptr );
-
-                        carriage += pitch;
-                    }
+                    this->readRows_( buffer, pitch );
 
                     this->sweezleAlpha3( m_dataInfo.width, m_dataInfo.height, buffer, pitch );
                 }
@@ -369,22 +358,11 @@ namespace Mengine
             {
                 if( dataChannels == 1 && optionChannels == 1 )
                 {
-                    png_bytep carriage = (png_bytep)buffer;
-
-                    for( uint32_t i = 0; i != m_dataInfo.height; ++i )
-                    {
-                        png_read_row( m_png_ptr, carriage, nullptr );
-
-                        carriage += pitch;
-                    }
+                    this->readRows_( buffer, pitch );
                 }
                 else if( dataChannels == 4 && optionChannels == 1 )
                 {
-                    MemoryInterfacePtr row_buffer = Helper::createMemoryCacheBuffer( m_row_bytes, MENGINE_DOCUMENT_FACTORABLE );
-
-                    MENGINE_ASSERTION_MEMORY_PANIC( row_buffer, "invalid create cache buffer" );
-
-                    png_byte * row_memory = row_buffer->getBuffer();
+                    png_byte * row_memory = rowBuffer->getBuffer();
 
                     png_bytep carriage = static_cast<png_bytep>(buffer);
 
@@ -416,11 +394,7 @@ namespace Mengine
             {
                 if( dataChannels == 1 && optionChannels == 4 )
                 {
-                    MemoryInterfacePtr row_buffer = Helper::createMemoryCacheBuffer( m_row_bytes, MENGINE_DOCUMENT_FACTORABLE );
-
-                    MENGINE_ASSERTION_MEMORY_PANIC( row_buffer, "invalid create cache buffer" );
-
-                    png_byte * row_memory = row_buffer->getBuffer();
+                    png_byte * row_memory = rowBuffer->getBuffer();
 
                     png_bytep carriage = static_cast<png_bytep>(buffer);
 
@@ -438,11 +412,7 @@ namespace Mengine
                 }
                 else if( dataChannels == 4 && optionChannels == 4 )
                 {
-                    MemoryInterfacePtr row_buffer = Helper::createMemoryCacheBuffer( m_row_bytes, MENGINE_DOCUMENT_FACTORABLE );
-
-                    MENGINE_ASSERTION_MEMORY_PANIC( row_buffer, "invalid create cache buffer" );
-
-                    png_byte * row_memory = row_buffer->getBuffer();
+                    png_byte * row_memory = rowBuffer->getBuffer();
 
                     png_bytep carriage = static_cast<png_bytep>(buffer);
 
@@ -450,7 +420,7 @@ namespace Mengine
                     {
                         png_read_row( m_png_ptr, row_memory, nullptr );
 
-                        for( png_uint_32 j = 0; j != m_row_bytes; ++j )
+                        for( png_uint_32 j = 0; j != m_dataInfo.width; ++j )
                         {
                             carriage[j * 4 + 3] = row_memory[j * 4 + 3];
                         }
@@ -501,7 +471,7 @@ namespace Mengine
 
         if( info_ptr == nullptr )
         {
-            png_destroy_write_struct( &m_png_ptr, nullptr );
+            png_destroy_read_struct( &m_png_ptr, nullptr, nullptr );
 
             return false;
         }
@@ -518,6 +488,21 @@ namespace Mengine
         }
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ImageDecoderPNG::readRows_( void * const _buffer, size_t _pitch )
+    {
+        for( int32_t pass = 0; pass != m_interlace_number_of_passes; ++pass )
+        {
+            png_bytep carriage = static_cast<png_bytep>(_buffer);
+
+            for( uint32_t i = 0; i != m_dataInfo.height; ++i )
+            {
+                png_read_row( m_png_ptr, carriage, nullptr );
+
+                carriage += _pitch;
+            }
+        }
     }
     //////////////////////////////////////////////////////////////////////////
 }

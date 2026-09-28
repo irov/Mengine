@@ -4,6 +4,10 @@
 
 #include "Config/DynamicCast.h"
 
+#if defined(MENGINE_DEBUG)
+#   include "Config/TypeTraits.h"
+#endif
+
 namespace Mengine
 {
     namespace Helper
@@ -12,6 +16,10 @@ namespace Mengine
         template<class T>
         T findParentNodeT( Node * _node )
         {
+#if defined(MENGINE_DEBUG)
+            static_assert(TypeTraits::is_base_of<Node, T>, "find parent node use on non 'Node' type");
+#endif
+
             Node * parent = _node->getParent();
 
             while( parent != nullptr )
@@ -30,6 +38,10 @@ namespace Mengine
         template<class T>
         T findParentNodeT( const Node * _node )
         {
+#if defined(MENGINE_DEBUG)
+            static_assert(TypeTraits::is_base_of<Node, T>, "find parent node use on non 'Node' type");
+#endif
+
             const Node * parent = _node->getParent();
 
             while( parent != nullptr )

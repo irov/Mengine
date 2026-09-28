@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Kernel/Factorable.h"
+#include "Kernel/ApplicationLifecycleable.h"
+#include "Kernel/RenderDeviceLifecycleable.h"
 #include "Kernel/ScriptEmbeddable.h"
 #include "Kernel/ServiceRequiredList.h"
 #include "Kernel/ConstString.h"
@@ -18,6 +20,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class PluginInterface
         : public Factorable
+        , public ApplicationLifecycleable
+        , public RenderDeviceLifecycleable
         , public ScriptEmbeddable
     {
     public:

@@ -1,5 +1,6 @@
 #include "RenderService.h"
 
+#include "Interface/LifecycleServiceInterface.h"
 #include "Interface/RenderTextureServiceInterface.h"
 #include "Interface/ImageCodecInterface.h"
 #include "Interface/WatchdogServiceInterface.h"
@@ -581,7 +582,8 @@ namespace Mengine
             return;
         }
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE );
+        LIFECYCLE_SERVICE()
+            ->onRenderDeviceLostPrepare();
 
         m_renderBatches.clear();
 
@@ -614,7 +616,8 @@ namespace Mengine
 
         this->restoreRenderSystemStates_();
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_RENDER_DEVICE_LOST_RESTORE );
+        LIFECYCLE_SERVICE()
+            ->onRenderDeviceLostRestore();
 
         return true;
     }

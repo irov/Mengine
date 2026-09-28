@@ -3,6 +3,7 @@
 #include "TTFInterface.h"
 
 #include "Kernel/ServiceBase.h"
+#include "Kernel/BaseRenderDeviceLifecycle.h"
 #include "Kernel/Vector.h"
 #include "Kernel/Pair.h"
 #include "Kernel/Map.h"
@@ -11,8 +12,10 @@ namespace Mengine
 {
     class TTFAtlasService
         : public ServiceBase<TTFAtlasServiceInterface>
+        , public BaseRenderDeviceLifecycle
     {
         DECLARE_FACTORABLE( TTFAtlasService );
+        DECLARE_RENDER_DEVICE_LIFECYCLEABLE();
 
     public:
         TTFAtlasService();
@@ -29,7 +32,7 @@ namespace Mengine
         void clearAtlasess_();
 
     protected:
-        void notifyRenderDeviceLostPrepare();
+        void _onRenderDeviceLostPrepare() override;
 
     protected:
         struct TTFAtlas

@@ -52,7 +52,9 @@ namespace Mengine
 
 #if defined(MENGINE_DEBUG)
             static_assert(TypeTraits::is_base_of<EventReceiverInterface, T>, "static event receiver cast use on non 'EventReceiverInterface' type");
+#endif
 
+#if defined(MENGINE_DEBUG) && MENGINE_RTTI == 1
             if( r == nullptr )
             {
                 return nullptr;

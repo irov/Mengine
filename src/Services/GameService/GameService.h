@@ -8,6 +8,7 @@
 #include "Interface/AnalyticsEventProviderInterface.h"
 
 #include "Kernel/ServiceBase.h"
+#include "Kernel/BaseApplicationLifecycle.h"
 #include "Kernel/BaseEventation.h"
 #include "Kernel/Resolution.h"
 
@@ -16,10 +17,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class GameService
         : public ServiceBase<GameServiceInterface>
+        , public BaseApplicationLifecycle
         , public AnalyticsEventProviderInterface
         , protected BaseEventation
     {
         DECLARE_FACTORABLE( GameService );
+        DECLARE_APPLICATION_LIFECYCLEABLE();
         DECLARE_LIFECYCLEABLE();
         DECLARE_EVENTABLE();
 
@@ -94,11 +97,12 @@ namespace Mengine
         void notifySettingChange_( const SettingInterfacePtr & _setting, const Char * _key );
         void notifySafeAreaViewportChange_( const Viewport & _viewport );
 
-        void notifyApplicationDidBecomeActive_();
-        void notifyApplicationWillEnterForeground_();
-        void notifyApplicationDidEnterBackground_();
-        void notifyApplicationWillResignActive_();
-        void notifyApplicationWillTerminate_();
+    protected:
+        void _onApplicationDidBecomeActive() override;
+        void _onApplicationWillEnterForeground() override;
+        void _onApplicationDidEnterBackground() override;
+        void _onApplicationWillResignActive() override;
+        void _onApplicationWillTerminate() override;
 
     protected:
         void onAnalyticsEvent( const AnalyticsEventInterfacePtr & _event ) override;

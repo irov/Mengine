@@ -19,7 +19,11 @@ namespace Mengine
         PluginService();
         ~PluginService() override;
 
+    protected:
+        const ServiceRequiredList & requiredServices() const override;
+
     public:
+        void _dependencyService() override;
         bool _initializeService() override;
         void _finalizeService() override;
 
@@ -44,8 +48,7 @@ namespace Mengine
         bool createPluginDynamic_( const DynamicLibraryInterfacePtr & _dynamicLibrary, TPluginCreateDynamic _create, const DocumentInterfacePtr & _doc );
 
     protected:
-        bool autoPreRegistration_( const PluginInterfacePtr & _plugin ) const;
-        bool autoPostRegistration_( const PluginInterfacePtr & _plugin ) const;
+        bool autoRegisterPlugin_( const PluginInterfacePtr & _plugin ) const;
         void autoUnregisterPlugin_( const PluginInterfacePtr & _plugin ) const;
         void autoUnregisterPlugins_() const;
 

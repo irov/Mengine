@@ -1,6 +1,7 @@
 #include "PluginService.h"
 
 #include "Interface/PlatformServiceInterface.h"
+#include "Interface/LifecycleServiceInterface.h"
 
 #include "Kernel/EnumeratorHelper.h"
 #include "Kernel/ConstStringHelper.h"
@@ -25,6 +26,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     PluginService::~PluginService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & PluginService::requiredServices() const
+    {
+        static ServiceRequiredList required = {
+            SERVICE_ID( LifecycleServiceInterface )
+        };
+
+        return required;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PluginService::_dependencyService()
+    {
+        SERVICE_DEPENDENCY( PluginService, LifecycleServiceInterface );
     }
     //////////////////////////////////////////////////////////////////////////
     bool PluginService::_initializeService()
@@ -171,6 +186,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PluginService::unloadPlugins()
     {
+        for( const PluginDesc & desc : m_plugins )
+        {
+            LIFECYCLE_SERVICE()
+                ->unregisterPlugin( desc.plugin );
+        }
+
         this->autoUnregisterPlugins_();
 
         VectorPlugins reverse_plugins;
@@ -283,15 +304,6 @@ namespace Mengine
             return false;
         }
 
-        if( this->autoPreRegistration_( _plugin ) == false )
-        {
-            LOGGER_ERROR( "invalid auto pre registration plugin '%s'"
-                , _plugin->getPluginName().c_str()
-            );
-
-            return false;
-        }
-
         if( _plugin->initializePlugin() == false )
         {
             LOGGER_ERROR( "invalid initialize plugin '%s'"
@@ -301,14 +313,26 @@ namespace Mengine
             return false;
         }
 
-        if( this->autoPostRegistration_( _plugin ) == false )
+        if( _plugin->isInitializePlugin() == false )
         {
-            LOGGER_ERROR( "invalid auto post registration plugin '%s'"
+            return true;
+        }
+
+        if( this->autoRegisterPlugin_( _plugin ) == false )
+        {
+            LOGGER_ERROR( "invalid auto registration plugin '%s'"
                 , _plugin->getPluginName().c_str()
             );
 
+            this->autoUnregisterPlugin_( _plugin );
+
+            _plugin->finalizePlugin();
+
             return false;
         }
+
+        LIFECYCLE_SERVICE()
+            ->registerPlugin( _plugin );
 
         bool available = _plugin->isAvailablePlugin();
 
@@ -346,6 +370,9 @@ namespace Mengine
             const ConstString & pluginName = _plugin->getPluginName();
 
             this->setAvailablePlugin( pluginName, false );
+
+            LIFECYCLE_SERVICE()
+                ->unregisterPlugin( _plugin );
 
             this->autoUnregisterPlugin_( _plugin );
 
@@ -431,7 +458,7 @@ namespace Mengine
         return available;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PluginService::autoPreRegistration_( const PluginInterfacePtr & _plugin ) const
+    bool PluginService::autoRegisterPlugin_( const PluginInterfacePtr & _plugin ) const
     {
         for( const PluginDesc & desc : m_plugins )
         {
@@ -447,28 +474,6 @@ namespace Mengine
             if( plugin->registerPlugin( _plugin ) == false )
             {
                 return false;
-            }
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool PluginService::autoPostRegistration_( const PluginInterfacePtr & _plugin ) const
-    {
-        for( const PluginDesc & desc : m_plugins )
-        {
-            const PluginInterfacePtr & plugin = desc.plugin;
-
-            if( plugin == _plugin )
-            {
-                continue;
-            }
-
-            bool available = plugin->isAvailablePlugin();
-
-            if( available == false )
-            {
-                continue;
             }
 
             if( _plugin->registerPlugin( plugin ) == false )

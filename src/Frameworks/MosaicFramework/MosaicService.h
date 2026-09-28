@@ -10,6 +10,7 @@
 #include "Mosaic/GraphicsBridge.hpp"
 
 #include "Kernel/ServiceBase.h"
+#include "Kernel/BaseRenderDeviceLifecycle.h"
 #include "Kernel/Vector.h"
 
 #include "Config/UniqueId.h"
@@ -18,8 +19,10 @@ namespace Mengine
 {
     class MosaicService
         : public ServiceBase<MosaicServiceInterface>
+        , public BaseRenderDeviceLifecycle
     {
         DECLARE_FACTORABLE( MosaicService );
+        DECLARE_RENDER_DEVICE_LIFECYCLEABLE();
 
     public:
         MosaicService();
@@ -54,9 +57,9 @@ namespace Mengine
         MosaicFontProvider * getFontProvider();
 
     protected:
-        void notifyRenderDeviceDestroy_();
-        void notifyRenderDeviceLostPrepare_();
-        void notifyRenderDeviceLostRestore_();
+        void _onRenderDeviceDestroy() override;
+        void _onRenderDeviceLostPrepare() override;
+        void _onRenderDeviceLostRestore() override;
 
     protected:
         void loadSettings_();

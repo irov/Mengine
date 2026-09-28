@@ -62,12 +62,6 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_SETTING_CHANGE, &GameService::notifySettingChange_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_SAFE_AREA_VIEWPORT, &GameService::notifySafeAreaViewportChange_, MENGINE_DOCUMENT_FACTORABLE );
 
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_DID_BECOME_ACTIVE, &GameService::notifyApplicationDidBecomeActive_, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_WILL_ENTER_FOREGROUND, &GameService::notifyApplicationWillEnterForeground_, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_DID_ENTER_BACKGROUND, &GameService::notifyApplicationDidEnterBackground_, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_WILL_RESIGN_ACTIVE, &GameService::notifyApplicationWillResignActive_, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_WILL_TERMINATE, &GameService::notifyApplicationWillTerminate_, MENGINE_DOCUMENT_FACTORABLE );
-
         ANALYTICS_SERVICE()
             ->addEventProvider( AnalyticsEventProviderInterfacePtr::from( this ) );
 
@@ -79,12 +73,6 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_TIME_FACTOR_CHANGE );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SETTING_CHANGE );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_SAFE_AREA_VIEWPORT );
-
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_DID_BECOME_ACTIVE );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_WILL_ENTER_FOREGROUND );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_DID_ENTER_BACKGROUND );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_WILL_RESIGN_ACTIVE );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_WILL_TERMINATE );
 
         ANALYTICS_SERVICE()
             ->removeEventProvider( AnalyticsEventProviderInterfacePtr::from( this ) );
@@ -546,30 +534,31 @@ namespace Mengine
             ->onGameSafeAreaViewport( _viewport );
     }
     //////////////////////////////////////////////////////////////////////////
-    void GameService::notifyApplicationDidBecomeActive_()
+    void GameService::_onApplicationDidBecomeActive()
     {
         EVENTABLE_METHOD( EVENT_GAME_APPLICATION_DID_BECOME_ACTIVE )
             ->onGameApplicationDidBecomeActive();
     }
-    void GameService::notifyApplicationWillEnterForeground_()
+    //////////////////////////////////////////////////////////////////////////
+    void GameService::_onApplicationWillEnterForeground()
     {
         EVENTABLE_METHOD( EVENT_GAME_APPLICATION_WILL_ENTER_FOREGROUND )
             ->onGameApplicationWillEnterForeground();
     }
     //////////////////////////////////////////////////////////////////////////
-    void GameService::notifyApplicationDidEnterBackground_()
+    void GameService::_onApplicationDidEnterBackground()
     {
         EVENTABLE_METHOD( EVENT_GAME_APPLICATION_DID_ENTER_BACKGROUD )
             ->onGameApplicationDidEnterBackground();
     }
     //////////////////////////////////////////////////////////////////////////
-    void GameService::notifyApplicationWillResignActive_()
+    void GameService::_onApplicationWillResignActive()
     {
         EVENTABLE_METHOD( EVENT_GAME_APPLICATION_WILL_RESIGN_ACTIVE )
             ->onGameApplicationWillResignActive();
     }
     //////////////////////////////////////////////////////////////////////////
-    void GameService::notifyApplicationWillTerminate_()
+    void GameService::_onApplicationWillTerminate()
     {
         EVENTABLE_METHOD( EVENT_GAME_APPLICATION_WILL_TERMINATE )
             ->onGameApplicationWillTerminate();

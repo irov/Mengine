@@ -1,5 +1,6 @@
 #include "MockupRenderSystem.h"
 
+#include "Interface/LifecycleServiceInterface.h"
 #include "Interface/RenderServiceInterface.h"
 
 #include "MockupRenderImage.h"
@@ -157,14 +158,16 @@ namespace Mengine
         m_depth = _windowDesc->depth;
         m_waitForVSync = _windowDesc->waitForVSync;
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_RENDER_DEVICE_CREATE );
+        LIFECYCLE_SERVICE()
+            ->onRenderDeviceCreate();
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void MockupRenderSystem::destroyRenderWindow()
     {
-        NOTIFICATION_NOTIFY( NOTIFICATOR_RENDER_DEVICE_DESTROY );
+        LIFECYCLE_SERVICE()
+            ->onRenderDeviceDestroy();
     }
     //////////////////////////////////////////////////////////////////////////
     bool MockupRenderSystem::setRenderDevice( const RenderDeviceInterfacePtr & _device )

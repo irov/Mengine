@@ -51,8 +51,8 @@ namespace Mengine
             , m_level( _level )
             , m_test( _test )
             , m_file( _file )
-            , m_function( _function )
             , m_line( _line )
+            , m_function( _function )
         {
         }
         //////////////////////////////////////////////////////////////////////////

@@ -15,7 +15,6 @@
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/MemoryStreamHelper.h"
-#include "Kernel/NotificationHelper.h"
 #include "Kernel/AllocatorHelper.h"
 #include "Kernel/Assertion.h"
 
@@ -98,19 +97,11 @@ namespace Mengine
 
         SERVICE_WAIT_METHOD( GraphicsServiceInterface, this, initializeGraphicsBridge_ );
 
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RENDER_DEVICE_DESTROY, &MosaicService::notifyRenderDeviceDestroy_, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE, &MosaicService::notifyRenderDeviceLostPrepare_, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_RESTORE, &MosaicService::notifyRenderDeviceLostRestore_, MENGINE_DOCUMENT_FACTORABLE );
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void MosaicService::_finalizeService()
     {
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_RENDER_DEVICE_DESTROY );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_RESTORE );
-
         m_providers.clear();
 
         if( m_context != nullptr )
@@ -250,7 +241,7 @@ namespace Mengine
         return m_fontProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MosaicService::notifyRenderDeviceDestroy_()
+    void MosaicService::_onRenderDeviceDestroy()
     {
         m_renderer.finalize();
 
@@ -260,7 +251,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void MosaicService::notifyRenderDeviceLostPrepare_()
+    void MosaicService::_onRenderDeviceLostPrepare()
     {
         m_renderer.finalize();
 
@@ -270,7 +261,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void MosaicService::notifyRenderDeviceLostRestore_()
+    void MosaicService::_onRenderDeviceLostRestore()
     {
         if( m_fontProvider != nullptr )
         {

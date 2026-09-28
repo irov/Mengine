@@ -106,6 +106,8 @@ Common
     UpdateServiceInterface.h
     UpdationInterface.h
     LifecycleServiceInterface.h
+    ApplicationLifecycleInterface.h
+    RenderDeviceLifecycleInterface.h
     LifecycleInterface.h
     ServantInterface.h
     EnumeratorServiceInterface.h

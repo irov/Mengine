@@ -6,7 +6,7 @@ namespace Mengine
 {
     namespace Helper
     {
-#if defined(MENGINE_RTTI)
+#if MENGINE_RTTI == 1
         template<class T, class U>
         T dynamicCast( U _ptr )
         {

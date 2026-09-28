@@ -15,6 +15,7 @@
 #   import "Environment/MacOS/MacOSPlatformServiceExtensionInterface.h"
 #endif
 
+#include "Interface/LifecycleServiceInterface.h"
 #include "Interface/PlatformServiceInterface.h"
 
 #include "Kernel/FactoryDefault.h"
@@ -380,7 +381,8 @@ namespace Mengine
 
         m_renderWindowCreate = true;
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_RENDER_DEVICE_CREATE );
+        LIFECYCLE_SERVICE()
+            ->onRenderDeviceCreate();
 
         return true;
     }
@@ -395,7 +397,8 @@ namespace Mengine
 
         m_renderWindowCreate = false;
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_RENDER_DEVICE_DESTROY );
+        LIFECYCLE_SERVICE()
+            ->onRenderDeviceDestroy();
     }
     //////////////////////////////////////////////////////////////////////////
     bool MetalRenderSystem::setRenderDevice( const RenderDeviceInterfacePtr & _device )

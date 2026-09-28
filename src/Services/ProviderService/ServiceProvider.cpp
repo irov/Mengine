@@ -104,10 +104,13 @@ namespace Mengine
             }
             else
             {
-                if( desc.exist == true )
+                if( desc.exist == true && desc.service != nullptr )
                 {
                     desc.service->replaceService();
                     desc.service->finalizeService();
+
+                    this->autoUnregistration_( &desc );
+
                     desc.service = nullptr;
                 }
             }
@@ -348,6 +351,9 @@ namespace Mengine
             desc.initialize = false;
 
             desc.service->finalizeService();
+
+            this->autoUnregistration_( &desc );
+
             desc.service = nullptr;
 
             return true;
@@ -595,9 +601,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ServiceProvider::autoRegistration_( ServiceDesc * const _desc )
     {
-        for( uint32_t index_service = 0; index_service != m_servicesCount; ++index_service )
+        for( uint32_t index = 0; index != m_servicesCount; ++index )
         {
-            ServiceDesc & desc = m_services[index_service];
+            ServiceDesc & desc = m_services[index];
 
             if( &desc == _desc )
             {
@@ -614,7 +620,7 @@ namespace Mengine
                 continue;
             }
 
-            if( desc.service->registerService( _desc->service.get() ) == false )
+            if( desc.service->registerService( _desc->service ) == false )
             {
                 return false;
             }
@@ -625,9 +631,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ServiceProvider::autoUnregistration_( ServiceDesc * const _desc )
     {
-        for( uint32_t index_service = 0; index_service != m_servicesCount; ++index_service )
+        for( uint32_t index = 0; index != m_servicesCount; ++index )
         {
-            ServiceDesc & desc = m_services[index_service];
+            ServiceDesc & desc = m_services[index];
 
             if( &desc == _desc )
             {
@@ -644,7 +650,7 @@ namespace Mengine
                 continue;
             }
 
-            desc.service->unregisterService( _desc->service.get() );
+            desc.service->unregisterService( _desc->service );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -826,6 +832,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ServiceProvider::destroy()
     {
+        for( uint32_t index = 0; index != m_servicesCount; ++index )
+        {
+            ServiceDesc & desc = m_services[index];
+
+            if( desc.service == nullptr )
+            {
+                continue;
+            }
+
+            this->autoUnregistration_( &desc );
+        }
+
         for( uint32_t index = 0; index != m_servicesCount; ++index )
         {
             ServiceDesc & desc = m_services[index];

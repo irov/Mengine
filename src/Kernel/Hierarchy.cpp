@@ -79,7 +79,7 @@ namespace Mengine
     {
         IntrusivePtrScope ankh( this );
 
-#if defined(MENGINE_DEBUG)
+#if defined(MENGINE_DEBUG) && MENGINE_RTTI == 1
         if( Helper::dynamicCast<const Node *>( this ) == nullptr )
         {
             throw StdException::runtime_error( "hierarchy this not node" );

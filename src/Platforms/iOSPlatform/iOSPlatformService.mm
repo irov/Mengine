@@ -1,5 +1,6 @@
 #include "iOSPlatformService.h"
 
+#include "Interface/LifecycleServiceInterface.h"
 #include "Interface/LoggerInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
@@ -1582,17 +1583,20 @@ namespace Mengine
 
         this->setActive_( true );
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_BECOME_ACTIVE );
+        LIFECYCLE_SERVICE()
+            ->onApplicationDidBecomeActive();
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::handleApplicationWillEnterForeground()
     {
-        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_WILL_ENTER_FOREGROUND );
+        LIFECYCLE_SERVICE()
+            ->onApplicationWillEnterForeground();
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::handleApplicationDidEnterBackground()
     {
-        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_ENTER_BACKGROUND );
+        LIFECYCLE_SERVICE()
+            ->onApplicationDidEnterBackground();
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::handleApplicationWillResignActive()
@@ -1601,12 +1605,14 @@ namespace Mengine
 
         this->setActive_( false );
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_WILL_RESIGN_ACTIVE );
+        LIFECYCLE_SERVICE()
+            ->onApplicationWillResignActive();
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::handleApplicationWillTerminate()
     {
-        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_WILL_TERMINATE );
+        LIFECYCLE_SERVICE()
+            ->onApplicationWillTerminate();
     }
     //////////////////////////////////////////////////////////////////////////
     UIWindow * iOSPlatformService::getUIWindow() const

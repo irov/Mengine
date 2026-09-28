@@ -44,7 +44,7 @@ namespace Mengine
         }
 
     protected:
-        bool registerService( ServiceInterface * _service ) override
+        bool registerService( const ServiceInterfacePtr & _service ) override
         {
             MENGINE_UNUSED( _service );
 
@@ -53,7 +53,7 @@ namespace Mengine
             return true;
         }
 
-        void unregisterService( ServiceInterface * _service ) override
+        void unregisterService( const ServiceInterfacePtr & _service ) override
         {
             MENGINE_UNUSED( _service );
 

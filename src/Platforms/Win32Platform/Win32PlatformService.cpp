@@ -2,6 +2,7 @@
 
 #include "Configuration/Configurations.h"
 
+#include "Interface/LifecycleServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/InputServiceInterface.h"
@@ -1522,7 +1523,8 @@ namespace Mengine
 
                 LOGGER_MESSAGE( "quit application" );
 
-                NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_WILL_TERMINATE );
+                LIFECYCLE_SERVICE()
+                    ->onApplicationWillTerminate();
 
                 m_close = true;
 
@@ -3953,11 +3955,13 @@ namespace Mengine
 
         if( m_active == false )
         {
-            NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_WILL_RESIGN_ACTIVE );
+            LIFECYCLE_SERVICE()
+                ->onApplicationWillResignActive();
         }
         else
         {
-            NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_WILL_ENTER_FOREGROUND );
+            LIFECYCLE_SERVICE()
+                ->onApplicationWillEnterForeground();
         }
 
         bool nopause = APPLICATION_SERVICE()
@@ -4013,11 +4017,13 @@ namespace Mengine
 
         if( m_active == false )
         {
-            NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_ENTER_BACKGROUND );
+            LIFECYCLE_SERVICE()
+                ->onApplicationDidEnterBackground();
         }
         else
         {
-            NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_BECOME_ACTIVE );
+            LIFECYCLE_SERVICE()
+                ->onApplicationDidBecomeActive();
         }
     }
     //////////////////////////////////////////////////////////////////////////

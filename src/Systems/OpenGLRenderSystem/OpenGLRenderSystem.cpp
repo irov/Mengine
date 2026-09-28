@@ -6,6 +6,8 @@
 #include "OpenGLRenderErrorHelper.h"
 #include "OpenGLRenderExtension.h"
 
+#include "Interface/LifecycleServiceInterface.h"
+
 #include "Kernel/FactoryDefault.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryPoolWithListener.h"
@@ -293,7 +295,8 @@ namespace Mengine
 
         m_renderWindowCreate = true;
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_RENDER_DEVICE_CREATE );
+        LIFECYCLE_SERVICE()
+            ->onRenderDeviceCreate();
 
         return true;
     }
@@ -302,7 +305,8 @@ namespace Mengine
     {
         m_renderWindowCreate = false;
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_RENDER_DEVICE_DESTROY );
+        LIFECYCLE_SERVICE()
+            ->onRenderDeviceDestroy();
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderSystem::setRenderDevice( const RenderDeviceInterfacePtr & _device )

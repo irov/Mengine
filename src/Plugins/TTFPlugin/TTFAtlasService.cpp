@@ -6,7 +6,6 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/TextureHelper.h"
 #include "Kernel/PixelFormatHelper.h"
-#include "Kernel/NotificationHelper.h"
 
 #include "Config/StdUtility.h"
 
@@ -33,15 +32,11 @@ namespace Mengine
         m_maxAtlasPow = CONFIG_VALUE_INTEGER( "TTFPlugin", "MaxAtlasPow", 16U );
         m_maxAtlasWidth = CONFIG_VALUE_INTEGER( "TTFPlugin", "MaxAtlasWidth", 2048U );
 
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE, &TTFAtlasService::notifyRenderDeviceLostPrepare, MENGINE_DOCUMENT_FACTORABLE );
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void TTFAtlasService::_finalizeService()
     {
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE );
-
         this->clearAtlasess_();
     }
     //////////////////////////////////////////////////////////////////////////
@@ -184,7 +179,7 @@ namespace Mengine
         return &atlas;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TTFAtlasService::notifyRenderDeviceLostPrepare()
+    void TTFAtlasService::_onRenderDeviceLostPrepare()
     {
         this->clearAtlasess_();
     }

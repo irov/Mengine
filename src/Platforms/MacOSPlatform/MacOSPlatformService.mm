@@ -2,6 +2,7 @@
 
 #import "MacOSWindowDelegate.h"
 
+#import "Interface/LifecycleServiceInterface.h"
 #import "Interface/LoggerInterface.h"
 #import "Interface/FileServiceInterface.h"
 #import "Interface/FileSystemInterface.h"
@@ -1266,7 +1267,8 @@ namespace Mengine
 
         this->setActive_( true, timestamp );
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_BECOME_ACTIVE );
+        LIFECYCLE_SERVICE()
+            ->onApplicationDidBecomeActive();
     }
     //////////////////////////////////////////////////////////////////////////
     void MacOSPlatformService::handleApplicationWillResignActive()
@@ -1275,12 +1277,14 @@ namespace Mengine
 
         this->setActive_( false, timestamp );
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_WILL_RESIGN_ACTIVE );
+        LIFECYCLE_SERVICE()
+            ->onApplicationWillResignActive();
     }
     //////////////////////////////////////////////////////////////////////////
     void MacOSPlatformService::handleApplicationWillTerminate()
     {
-        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_WILL_TERMINATE );
+        LIFECYCLE_SERVICE()
+            ->onApplicationWillTerminate();
     }
     //////////////////////////////////////////////////////////////////////////
     void MacOSPlatformService::handleWindowDidResize()

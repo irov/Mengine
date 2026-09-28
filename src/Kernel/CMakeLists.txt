@@ -297,8 +297,16 @@ BaseAnimation
 ADD_FILTER(
 BaseLifecycle
     Lifecycleable.h
+    ApplicationLifecycleable.h
+    ApplicationLifecycleable.cpp
+    RenderDeviceLifecycleable.h
+    RenderDeviceLifecycleable.cpp
     BaseLifecycle.h
     BaseLifecycle.cpp
+    BaseApplicationLifecycle.h
+    BaseApplicationLifecycle.cpp
+    BaseRenderDeviceLifecycle.h
+    BaseRenderDeviceLifecycle.cpp
 )
 
 ADD_FILTER(

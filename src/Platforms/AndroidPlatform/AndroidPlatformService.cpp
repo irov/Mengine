@@ -1,5 +1,6 @@
 #include "AndroidPlatformService.h"
 
+#include "Interface/LifecycleServiceInterface.h"
 #include "Interface/LoggerInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
@@ -3205,7 +3206,8 @@ namespace Mengine
 
         this->setActive_( _x, _y, false );
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_WILL_RESIGN_ACTIVE );
+        LIFECYCLE_SERVICE()
+            ->onApplicationWillResignActive();
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeResumeEvent( jfloat _x, jfloat _y )
@@ -3219,7 +3221,8 @@ namespace Mengine
 
         this->setActive_( _x, _y, true );
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_BECOME_ACTIVE );
+        LIFECYCLE_SERVICE()
+            ->onApplicationDidBecomeActive();
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeStopEvent()
@@ -3228,7 +3231,8 @@ namespace Mengine
 
         LOGGER_INFO( "platform", "stop event" );
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_ENTER_BACKGROUND );
+        LIFECYCLE_SERVICE()
+            ->onApplicationDidEnterBackground();
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeStartEvent()
@@ -3237,7 +3241,8 @@ namespace Mengine
 
         LOGGER_INFO( "platform", "start event" );
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_WILL_ENTER_FOREGROUND );
+        LIFECYCLE_SERVICE()
+            ->onApplicationWillEnterForeground();
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeRestartEvent()
@@ -3455,14 +3460,16 @@ namespace Mengine
     {
         LOGGER_INFO( "platform", "quit event" );
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_ENTER_BACKGROUND );
+        LIFECYCLE_SERVICE()
+            ->onApplicationDidEnterBackground();
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeLowMemoryEvent()
     {
         LOGGER_INFO( "platform", "low memory event" );
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_RECEIVE_MEMORY_WARNING );
+        LIFECYCLE_SERVICE()
+            ->onApplicationDidReceiveMemoryWarning();
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeTrimMemoryEvent(jint _level)
@@ -3471,7 +3478,8 @@ namespace Mengine
             , _level
         );
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_DID_RECEIVE_TRIM_MEMORY, _level );
+        LIFECYCLE_SERVICE()
+            ->onApplicationDidReceiveTrimMemory( _level );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeChangeLocale( const Mengine::Char * _language )

@@ -3,6 +3,8 @@
 #include "Interface/SceneServiceInterface.h"
 
 #include "Kernel/ServiceBase.h"
+#include "Kernel/BaseApplicationLifecycle.h"
+#include "Kernel/BaseRenderDeviceLifecycle.h"
 
 #include "Config/Atomic.h"
 
@@ -10,8 +12,12 @@ namespace Mengine
 {
     class SceneService
         : public ServiceBase<SceneServiceInterface>
+        , public BaseApplicationLifecycle
+        , public BaseRenderDeviceLifecycle
     {
         DECLARE_FACTORABLE( SceneService );
+        DECLARE_APPLICATION_LIFECYCLEABLE();
+        DECLARE_RENDER_DEVICE_LIFECYCLEABLE();
         DECLARE_LIFECYCLEABLE();
 
     public:
@@ -80,9 +86,9 @@ namespace Mengine
         void destroyCurrentScene_();
 
     protected:
-        void notifyApplicationDidEnterBackground_();
-        void notifyApplicationDidBecomeActive_();
-        void notifyRenderDeviceLostPrepare_();
-        void notifyRenderDeviceLostRestore_();
+        void _onApplicationDidEnterBackground() override;
+        void _onApplicationDidBecomeActive() override;
+        void _onRenderDeviceLostPrepare() override;
+        void _onRenderDeviceLostRestore() override;
     };
 };

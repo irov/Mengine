@@ -34,21 +34,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SceneService::_initializeService()
     {
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_DID_ENTER_BACKGROUND, &SceneService::notifyApplicationDidEnterBackground_, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_DID_BECOME_ACTIVE, &SceneService::notifyApplicationDidBecomeActive_, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE, &SceneService::notifyRenderDeviceLostPrepare_, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_RESTORE, &SceneService::notifyRenderDeviceLostRestore_, MENGINE_DOCUMENT_FACTORABLE );
+        //Empty
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void SceneService::_finalizeService()
     {
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_DID_ENTER_BACKGROUND );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_DID_BECOME_ACTIVE );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_RENDER_DEVICE_LOST_RESTORE );
-
         for( SceneCommandDesc & desc : m_commands )
         {
             switch( desc.type )
@@ -476,22 +468,22 @@ namespace Mengine
         return m_process > 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SceneService::notifyApplicationDidEnterBackground_()
+    void SceneService::_onApplicationDidEnterBackground()
     {
         m_background = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SceneService::notifyApplicationDidBecomeActive_()
+    void SceneService::_onApplicationDidBecomeActive()
     {
         m_background = false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SceneService::notifyRenderDeviceLostPrepare_()
+    void SceneService::_onRenderDeviceLostPrepare()
     {
         m_renderDeviceLost = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SceneService::notifyRenderDeviceLostRestore_()
+    void SceneService::_onRenderDeviceLostRestore()
     {
         m_renderDeviceLost = false;
     }

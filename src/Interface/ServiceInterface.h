@@ -3,6 +3,8 @@
 #include "Interface/ServiceProviderInterface.h"
 
 #include "Kernel/Factorable.h"
+#include "Kernel/ApplicationLifecycleable.h"
+#include "Kernel/RenderDeviceLifecycleable.h"
 #include "Kernel/Lifecycleable.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/ExceptionHelper.h"
@@ -10,6 +12,7 @@
 #include "Kernel/ServiceRequiredList.h"
 
 #if defined(MENGINE_DEBUG)
+#   include "Config/TypeTraits.h"
 #   include "Config/DynamicCast.h"
 #endif
 
@@ -18,6 +21,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class ServiceInterface
         : public Factorable
+        , public ApplicationLifecycleable
+        , public RenderDeviceLifecycleable
         , public Lifecycleable
     {
     public:
@@ -32,8 +37,8 @@ namespace Mengine
         virtual const ServiceRequiredList & requiredServices() const = 0;
 
     public:
-        virtual bool registerService( ServiceInterface * _service ) = 0;
-        virtual void unregisterService( ServiceInterface * _service ) = 0;
+        virtual bool registerService( const ServiceInterfacePtr & _service ) = 0;
+        virtual void unregisterService( const ServiceInterfacePtr & _service ) = 0;
 
     protected:
         virtual bool availableService() = 0;
@@ -57,6 +62,10 @@ namespace Mengine
             template<class T>
             T * getService2( MENGINE_DEBUG_ARGUMENTS( const Char * _file, int32_t _line, const Char * _function ) )
             {
+#if defined(MENGINE_DEBUG)
+                static_assert(TypeTraits::is_base_of<ServiceInterface, T>, "static service cast use on non 'ServiceInterface' type");
+#endif
+
                 const Char * serviceName = T::getStaticServiceId();
 
                 ServiceProviderInterface * serviceProvider = SERVICE_PROVIDER_GET();
@@ -87,7 +96,7 @@ namespace Mengine
                 }
 #endif
 
-#if defined(MENGINE_DEBUG)
+#if defined(MENGINE_DEBUG) && MENGINE_RTTI == 1
                 if( Helper::dynamicCast<T *>( service_ptr ) == nullptr )
                 {
                     const Char * typenameValue = Typename<T>::value;

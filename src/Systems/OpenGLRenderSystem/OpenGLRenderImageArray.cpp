@@ -36,12 +36,12 @@ namespace Mengine
 
         MENGINE_IF_GLCALL( glTexStorage3D, (GL_TEXTURE_2D_ARRAY, m_hwMipmaps, m_internalFormat, m_hwWidth, m_hwHeight, m_hwLayers) )
         {
-            MENGINE_GLCALL( glBindTexture, (GL_TEXTURE_2D_ARRAY, 0) );
+            MENGINE_GLCALL( glBindTexture, (GL_TEXTURE_2D_ARRAY, GL_NONE) );
 
             return false;
         }
 
-        MENGINE_GLCALL( glBindTexture, (GL_TEXTURE_2D_ARRAY, 0) );
+        MENGINE_GLCALL( glBindTexture, (GL_TEXTURE_2D_ARRAY, GL_NONE) );
 
         return true;
     }

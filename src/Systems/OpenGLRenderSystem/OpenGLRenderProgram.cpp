@@ -11,7 +11,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderProgram::OpenGLRenderProgram()
-        : m_programId( 0 )
+        : m_programId( GL_NONE )
         , m_samplerCount( 0 )
         , m_deferredCompile( false )
     {
@@ -19,7 +19,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderProgram::~OpenGLRenderProgram()
     {
-        MENGINE_ASSERTION_FATAL( m_programId == 0, "program '%u' is not released"
+        MENGINE_ASSERTION_FATAL( m_programId == GL_NONE, "program '%u' is not released"
             , m_programId
         );
     }
@@ -95,7 +95,7 @@ namespace Mengine
         GLuint programId;
         MENGINE_GLCALLR( programId, glCreateProgram, () );
 
-        if( programId == 0 )
+        if( programId == GL_NONE )
         {
             LOGGER_ERROR( "invalid compile program '%s'"
                 , m_name.c_str()
@@ -236,10 +236,10 @@ namespace Mengine
         StdAlgorithm::fill_n( m_matrixLocation, EPML_MAX_COUNT, -1 );
         StdAlgorithm::fill_n( m_samplerLocation, MENGINE_MAX_TEXTURE_STAGES, -1 );
 
-        if( m_programId != 0 )
+        if( m_programId != GL_NONE )
         {
             MENGINE_GLCALL( glDeleteProgram, (m_programId) );
-            m_programId = 0;
+            m_programId = GL_NONE;
         }
 
         if( m_vertexShader != nullptr )
@@ -262,7 +262,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderProgram::disable() const
     {
-        MENGINE_GLCALL( glUseProgram, (0) );
+        MENGINE_GLCALL( glUseProgram, (GL_NONE) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderProgram::bindMatrix( const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix, const mt::mat4f & _totalWVPMatrix ) const

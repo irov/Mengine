@@ -801,8 +801,10 @@ namespace Mengine
         , m_activityState( EAS_INITIALIZE )
         , m_nativeWindow( nullptr )
         , m_eglDisplay( EGL_NO_DISPLAY )
-        , m_eglSurface( EGL_NO_SURFACE )
+        , m_eglConfig( nullptr )
         , m_eglContext( EGL_NO_CONTEXT )
+        , m_eglPbufferSurface( EGL_NO_SURFACE )
+        , m_eglSurface( EGL_NO_SURFACE )
         , m_lastFingerX( 0.f )
         , m_lastFingerY( 0.f )
         , m_lastFingerPressure( 0.f )
@@ -1183,7 +1185,7 @@ namespace Mengine
                 continue;
             }
 
-            if( m_nativeWindow == nullptr || m_eglSurface == EGL_NO_SURFACE || m_eglContext == EGL_NO_CONTEXT )
+            if( m_eglSurface == EGL_NO_SURFACE )
             {
                 m_activityMutex->unlock();
 
@@ -1322,7 +1324,7 @@ namespace Mengine
                 continue;
             }
 
-            if( m_nativeWindow == nullptr || m_eglSurface == EGL_NO_SURFACE || m_eglContext == EGL_NO_CONTEXT )
+            if( m_eglSurface == EGL_NO_SURFACE )
             {
                 m_activityMutex->unlock();
 
@@ -1564,6 +1566,46 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::createWindow( const Resolution & _windowResolution, bool _fullscreen )
     {
+        // Bind the context on the render thread before processing Surface events.
+        if( this->createContext_() == false )
+        {
+            return false;
+        }
+
+        for( ;; )
+        {
+            m_activityMutex->lock();
+
+            if( this->updatePlatform() == false )
+            {
+                m_activityMutex->unlock();
+
+                return false;
+            }
+
+            if( m_activityState != EAS_RESUME && m_activityState != EAS_START )
+            {
+                m_activityMutex->unlock();
+
+                usleep( 100000 );
+
+                continue;
+            }
+
+            if( m_eglSurface == EGL_NO_SURFACE )
+            {
+                m_activityMutex->unlock();
+
+                usleep( 100000 );
+
+                continue;
+            }
+
+            m_activityMutex->unlock();
+
+            break;
+        }
+
         LOGGER_INFO( "platform", "create window size %u:%u fullscreen %d"
             , _windowResolution.getWidth()
             , _windowResolution.getHeight()
@@ -2018,6 +2060,8 @@ namespace Mengine
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_DETACH_WINDOW );
 
+        this->detachSurface_();
+
         if( m_swappyInitialized == true )
         {
             SwappyGL_destroy();
@@ -2026,6 +2070,8 @@ namespace Mengine
 
             LOGGER_INFO( "platform", "[swappy] destroyed" );
         }
+
+        this->destroyContext_();
 
         if( ::eglTerminate( m_eglDisplay ) == EGL_FALSE )
         {
@@ -2192,36 +2238,40 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeSurfaceCreatedEvent( ANativeWindow * _nativeWindow )
     {
-        MENGINE_ASSERTION_FATAL( m_nativeWindow == nullptr, "native window already created" );
-
-        m_nativeWindow = _nativeWindow;
-
-        LOGGER_INFO( "platform", "push surface create event" );
-
-        MENGINE_ASSERTION_FATAL( m_eglDisplay != nullptr, "display not created" );
-        MENGINE_ASSERTION_FATAL( m_eglSurface == nullptr, "already created egl surface" );
-        MENGINE_ASSERTION_FATAL( m_eglContext == nullptr, "already created egl context" );
-
         LOGGER_INFO( "platform", "surface create event" );
 
-        if( m_nativeWindow == nullptr )
+        if( this->attachSurface_( _nativeWindow ) == false )
         {
-            LOGGER_ERROR( "[egl] native window is null" );
+            LOGGER_FATAL( "invalid attach native surface" );
 
-            return;
+            this->detachSurface_();
+
+            JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+            MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
+
+            Helper::AndroidCallBooleanApplicationMethod( jenv, "quit", "()Z" );
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::androidNativeSurfaceDestroyedEvent()
+    {
+        LOGGER_INFO( "platform", "surface destroy event" );
 
-        int32_t format_got = ANativeWindow_getFormat( m_nativeWindow );
-
-        LOGGER_INFO( "platform", "native window format: %d"
-            , format_got
-        );
+        this->detachSurface_();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AndroidPlatformService::createContext_()
+    {
+        MENGINE_ASSERTION_FATAL( m_eglContext == EGL_NO_CONTEXT, "egl context already created" );
 
         if( ::eglBindAPI( EGL_OPENGL_ES_API ) == EGL_FALSE )
         {
-            LOGGER_WARNING( "[egl] failed to bind ES api [%d]"
+            LOGGER_ERROR( "[egl] eglBindAPI(OpenGL ES) failed: %d"
                 , ::eglGetError()
             );
+
+            return false;
         }
 
         EGLint base_red_size = 8;
@@ -2232,6 +2282,7 @@ namespace Mengine
 
         const EGLint configAttribs[] = {
             EGL_RENDERABLE_TYPE, EGL_OPENGL_ES3_BIT,
+            EGL_SURFACE_TYPE, EGL_WINDOW_BIT | EGL_PBUFFER_BIT,
             EGL_RED_SIZE, base_red_size,
             EGL_GREEN_SIZE, base_green_size,
             EGL_BLUE_SIZE, base_blue_size,
@@ -2244,18 +2295,18 @@ namespace Mengine
         EGLint numConfigs;
         if( ::eglChooseConfig( m_eglDisplay, configAttribs, configs, MENGINE_ARRAY_SIZE(configs), &numConfigs ) == EGL_FALSE )
         {
-            LOGGER_ERROR( "[egl] failed to choose config [%d]"
+            LOGGER_ERROR( "[egl] eglChooseConfig failed: %d"
                 , ::eglGetError()
             );
 
-            return;
+            return false;
         }
 
         if( numConfigs == 0 )
         {
-            LOGGER_ERROR( "[egl] no configs found" );
+            LOGGER_ERROR( "[egl] eglChooseConfig found no OpenGL ES 3 config with RGBA8 and depth24" );
 
-            return;
+            return false;
         }
 
         EGLint best_config_index = -1;
@@ -2296,23 +2347,23 @@ namespace Mengine
 
         if( best_config_index == -1 )
         {
-            LOGGER_ERROR( "[egl] no suitable config found" );
+            LOGGER_ERROR( "[egl] no suitable OpenGL ES 3 config with RGBA8 and depth24" );
 
-            return;
+            return false;
         }
 
-        EGLConfig best_config = configs[best_config_index];
+        m_eglConfig = configs[best_config_index];
 
         EGLint result_red;
         EGLint result_green;
         EGLint result_blue;
         EGLint result_alpha;
         EGLint result_depth;
-        ::eglGetConfigAttrib( m_eglDisplay, best_config, EGL_RED_SIZE, &result_red );
-        ::eglGetConfigAttrib( m_eglDisplay, best_config, EGL_GREEN_SIZE, &result_green );
-        ::eglGetConfigAttrib( m_eglDisplay, best_config, EGL_BLUE_SIZE, &result_blue );
-        ::eglGetConfigAttrib( m_eglDisplay, best_config, EGL_ALPHA_SIZE, &result_alpha );
-        ::eglGetConfigAttrib( m_eglDisplay, best_config, EGL_DEPTH_SIZE, &result_depth );
+        ::eglGetConfigAttrib( m_eglDisplay, m_eglConfig, EGL_RED_SIZE, &result_red );
+        ::eglGetConfigAttrib( m_eglDisplay, m_eglConfig, EGL_GREEN_SIZE, &result_green );
+        ::eglGetConfigAttrib( m_eglDisplay, m_eglConfig, EGL_BLUE_SIZE, &result_blue );
+        ::eglGetConfigAttrib( m_eglDisplay, m_eglConfig, EGL_ALPHA_SIZE, &result_alpha );
+        ::eglGetConfigAttrib( m_eglDisplay, m_eglConfig, EGL_DEPTH_SIZE, &result_depth );
 
         LOGGER_MESSAGE( "[egl] config red: %d green: %d blue: %d alpha: %d depth: %d"
             , result_red
@@ -2322,75 +2373,197 @@ namespace Mengine
             , result_depth
         );
 
-        EGLint format_wanted = 0;
-        if( ::eglGetConfigAttrib( m_eglDisplay, best_config, EGL_NATIVE_VISUAL_ID, &format_wanted ) == EGL_FALSE )
+        const EGLint contextAttribs[] = {
+            EGL_CONTEXT_CLIENT_VERSION, 3,
+            EGL_NONE
+        };
+
+        EGLContext eglContext = ::eglCreateContext( m_eglDisplay, m_eglConfig, EGL_NO_CONTEXT, contextAttribs );
+
+        if( eglContext == EGL_NO_CONTEXT )
         {
-            LOGGER_ERROR( "[egl] failed to get config attrib [%d]"
+            EGLint error = ::eglGetError();
+            const Char * eglVendor = ::eglQueryString( m_eglDisplay, EGL_VENDOR );
+            const Char * eglVersion = ::eglQueryString( m_eglDisplay, EGL_VERSION );
+
+            LOGGER_ERROR( "[egl] eglCreateContext for OpenGL ES 3 failed: %d, EGL_VENDOR: %s, EGL_VERSION: %s"
+                , error
+                , eglVendor != nullptr ? eglVendor : "unknown"
+                , eglVersion != nullptr ? eglVersion : "unknown"
+            );
+
+            return false;
+        }
+
+        m_eglContext = eglContext;
+
+        const EGLint pbufferAttribs[] = {
+            EGL_WIDTH, 1,
+            EGL_HEIGHT, 1,
+            EGL_NONE
+        };
+
+        EGLSurface eglPbufferSurface = ::eglCreatePbufferSurface( m_eglDisplay, m_eglConfig, pbufferAttribs );
+
+        if( eglPbufferSurface == EGL_NO_SURFACE )
+        {
+            LOGGER_ERROR( "[egl] eglCreatePbufferSurface failed: %d"
                 , ::eglGetError()
             );
 
-            return;
+            this->destroyContext_();
+
+            return false;
+        }
+
+        m_eglPbufferSurface = eglPbufferSurface;
+
+        if( ::eglMakeCurrent( m_eglDisplay, m_eglPbufferSurface, m_eglPbufferSurface, m_eglContext ) == EGL_FALSE )
+        {
+            LOGGER_ERROR( "[egl] eglMakeCurrent failed: %d"
+                , ::eglGetError()
+            );
+
+            this->destroyContext_();
+
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::destroyContext_()
+    {
+        if( ::eglMakeCurrent( m_eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT ) == EGL_FALSE )
+        {
+            LOGGER_WARNING( "[egl] failed to clear currents [%d]"
+                , ::eglGetError()
+            );
+        }
+
+        if( m_eglPbufferSurface != EGL_NO_SURFACE )
+        {
+            if( ::eglDestroySurface( m_eglDisplay, m_eglPbufferSurface ) == EGL_FALSE )
+            {
+                LOGGER_WARNING( "[egl] failed to destroy pbuffer surface [%d]"
+                    , ::eglGetError()
+                );
+            }
+
+            m_eglPbufferSurface = EGL_NO_SURFACE;
+        }
+
+        if( m_eglContext != EGL_NO_CONTEXT )
+        {
+            if( ::eglDestroyContext( m_eglDisplay, m_eglContext ) == EGL_FALSE )
+            {
+                LOGGER_WARNING( "[egl] failed to destroy context [%d]"
+                    , ::eglGetError()
+                );
+            }
+
+            m_eglContext = EGL_NO_CONTEXT;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AndroidPlatformService::restoreContext_()
+    {
+        RENDER_SERVICE()
+            ->onDeviceLostPrepare();
+
+        this->destroyContext_();
+
+        if( this->createContext_() == false )
+        {
+            return false;
+        }
+
+        if( ::eglMakeCurrent( m_eglDisplay, m_eglSurface, m_eglSurface, m_eglContext ) == EGL_FALSE )
+        {
+            LOGGER_ERROR( "[egl] eglMakeCurrent failed: %d"
+                , ::eglGetError()
+            );
+
+            return false;
+        }
+
+        if( RENDER_SERVICE()
+            ->onDeviceLostRestore() == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AndroidPlatformService::attachSurface_( ANativeWindow * _nativeWindow )
+    {
+        MENGINE_ASSERTION_FATAL( m_nativeWindow == nullptr, "native window already attached" );
+        MENGINE_ASSERTION_FATAL( m_eglSurface == EGL_NO_SURFACE, "egl surface already attached" );
+
+        if( _nativeWindow == nullptr )
+        {
+            LOGGER_ERROR( "[egl] native window is null" );
+
+            return false;
+        }
+
+        m_nativeWindow = _nativeWindow;
+
+        int32_t format_got = ANativeWindow_getFormat( m_nativeWindow );
+
+        LOGGER_INFO( "platform", "native window format: %d"
+            , format_got
+        );
+
+        EGLint format_wanted = 0;
+        if( ::eglGetConfigAttrib( m_eglDisplay, m_eglConfig, EGL_NATIVE_VISUAL_ID, &format_wanted ) == EGL_FALSE )
+        {
+            LOGGER_ERROR( "[egl] eglGetConfigAttrib(EGL_NATIVE_VISUAL_ID) failed: %d"
+                , ::eglGetError()
+            );
+
+            return false;
         }
 
         int errSetBuffersGeometry = ANativeWindow_setBuffersGeometry( m_nativeWindow, 0, 0, format_wanted );
 
         if( errSetBuffersGeometry != 0 )
         {
-            LOGGER_ERROR("[egl] failed to set buffers geometry: %d"
+            LOGGER_ERROR( "[egl] ANativeWindow_setBuffersGeometry failed: %d"
                 , errSetBuffersGeometry
             );
 
-            return;
+            return false;
         }
 
-        EGLint attribs[64] = {EGL_NONE};
+        const EGLint surfaceAttribs[] = {
+            EGL_NONE
+        };
 
-        EGLSurface eglSurface = ::eglCreateWindowSurface( m_eglDisplay, best_config, m_nativeWindow, attribs );
+        EGLSurface eglSurface = ::eglCreateWindowSurface( m_eglDisplay, m_eglConfig, m_nativeWindow, surfaceAttribs );
 
         if( eglSurface == EGL_NO_SURFACE )
         {
-            LOGGER_ERROR( "[egl] failed to create window surface [%d]"
+            LOGGER_ERROR( "[egl] eglCreateWindowSurface failed: %d"
                 , ::eglGetError()
             );
 
-            return;
+            return false;
         }
 
         m_eglSurface = eglSurface;
 
-        EGLint width;
-        EGLint height;
-        ::eglQuerySurface( m_eglDisplay, m_eglSurface, EGL_WIDTH, &width );
-        ::eglQuerySurface( m_eglDisplay, m_eglSurface, EGL_HEIGHT, &height );
-
-        const EGLint contextAttribs[] = {
-            EGL_CONTEXT_MAJOR_VERSION, 3,
-            EGL_CONTEXT_MINOR_VERSION, 2,
-            EGL_NONE
-        };
-
-        EGLContext eglShareContext = EGL_NO_CONTEXT;
-
-        EGLContext context = ::eglCreateContext( m_eglDisplay, best_config, eglShareContext, contextAttribs );
-
-        if( context == EGL_NO_CONTEXT )
-        {
-            LOGGER_ERROR( "[egl] failed to create context [%d]"
-                , ::eglGetError()
-            );
-
-            return;
-        }
-
-        m_eglContext = context;
-
         if( ::eglMakeCurrent( m_eglDisplay, m_eglSurface, m_eglSurface, m_eglContext ) == EGL_FALSE )
         {
-            LOGGER_ERROR( "[egl] failed to make current [%d]"
+            LOGGER_ERROR( "[egl] eglMakeCurrent failed: %d, restore context"
                 , ::eglGetError()
             );
 
-            return;
+            if( this->restoreContext_() == false )
+            {
+                return false;
+            }
         }
 
         if( m_swappyInitialized == false )
@@ -2437,69 +2610,25 @@ namespace Mengine
             SwappyGL_setWindow( m_nativeWindow );
         }
 
-        if( RENDER_SERVICE()
-            ->onDeviceLostRestore() == false )
-        {
-            return;
-        }
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::androidNativeSurfaceDestroyedEvent()
+    void AndroidPlatformService::detachSurface_()
     {
-        MENGINE_ASSERTION_FATAL( m_nativeWindow != nullptr, "native window already destroyed" );
-
-        if( m_swappyInitialized == true )
+        if( m_eglSurface != EGL_NO_SURFACE )
         {
-            SwappyGL_setWindow( nullptr );
-        }
-
-        if( m_nativeWindow != nullptr )
-        {
-            ANativeWindow_release( m_nativeWindow );
-        }
-
-        m_nativeWindow = nullptr;
-
-        LOGGER_INFO( "platform", "push surface destroy event" );
-
-        LOGGER_INFO( "platform", "surface destroy event" );
-
-        if( m_eglDisplay == EGL_NO_DISPLAY )
-        {
-            return;
-        }
-
-        RENDER_SERVICE()
-            ->onDeviceLostPrepare();
-
-        if( ::eglBindAPI( EGL_OPENGL_ES_API ) == EGL_FALSE )
-        {
-            LOGGER_WARNING( "[egl] failed to bind ES api [%d]"
-                , ::eglGetError()
-            );
-        }
-
-        if( ::eglMakeCurrent( m_eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT ) == EGL_FALSE )
-        {
-            LOGGER_WARNING( "[egl] failed to clear currents [%d]"
-                , ::eglGetError()
-            );
-        }
-
-        if( m_eglContext != EGL_NO_CONTEXT )
-        {
-            if( ::eglDestroyContext( m_eglDisplay, m_eglContext ) == EGL_FALSE )
+            if( m_swappyInitialized == true )
             {
-                LOGGER_WARNING( "[egl] failed to destroy context [%d]"
+                SwappyGL_setWindow( nullptr );
+            }
+
+            if( ::eglMakeCurrent( m_eglDisplay, m_eglPbufferSurface, m_eglPbufferSurface, m_eglContext ) == EGL_FALSE )
+            {
+                LOGGER_WARNING( "[egl] failed to make current pbuffer surface [%d]"
                     , ::eglGetError()
                 );
             }
 
-            m_eglContext = EGL_NO_CONTEXT;
-        }
-
-        if( m_eglSurface != EGL_NO_SURFACE )
-        {
             if( ::eglDestroySurface( m_eglDisplay, m_eglSurface ) == EGL_FALSE )
             {
                 LOGGER_WARNING( "[egl] failed to destroy surface [%d]"
@@ -2508,6 +2637,13 @@ namespace Mengine
             }
 
             m_eglSurface = EGL_NO_SURFACE;
+        }
+
+        if( m_nativeWindow != nullptr )
+        {
+            ANativeWindow_release( m_nativeWindow );
+
+            m_nativeWindow = nullptr;
         }
     }
     //////////////////////////////////////////////////////////////////////////

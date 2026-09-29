@@ -1,4 +1,4 @@
-#version 320 es
+#version 300 es
 
 uniform highp mat4 wvpMatrix;
 

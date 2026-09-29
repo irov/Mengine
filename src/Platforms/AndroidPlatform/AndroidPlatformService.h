@@ -186,6 +186,14 @@ namespace Mengine
         void androidNativeSurfaceChangedEvent( ANativeWindow * _nativeWindow, jint surfaceWidth, jint surfaceHeight, jint deviceWidth, jint deviceHeight, jfloat rate ) override;
 
     protected:
+        bool createContext_();
+        void destroyContext_();
+        bool restoreContext_();
+
+        bool attachSurface_( ANativeWindow * _nativeWindow );
+        void detachSurface_();
+
+    protected:
         void notifyBootstrapperInitializeBaseServices_();
         void notifyBootstrapperCreateApplication_();
 
@@ -273,8 +281,10 @@ namespace Mengine
         ANativeWindow * m_nativeWindow;
 
         EGLDisplay m_eglDisplay;
-        EGLSurface m_eglSurface;
+        EGLConfig m_eglConfig;
         EGLContext m_eglContext;
+        EGLSurface m_eglPbufferSurface;
+        EGLSurface m_eglSurface;
 
         jint m_fingers[MENGINE_INPUT_MAX_TOUCH];
 

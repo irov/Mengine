@@ -7,13 +7,13 @@
 #include "MosaicPlatformAdapter.h"
 #include "MosaicRendererAdapter.h"
 
-#include "Mosaic/GraphicsBridge.hpp"
-
 #include "Kernel/ServiceBase.h"
 #include "Kernel/BaseRenderDeviceLifecycle.h"
 #include "Kernel/Vector.h"
 
 #include "Config/UniqueId.h"
+
+#include "Mosaic/GraphicsBridge.hpp"
 
 namespace Mengine
 {

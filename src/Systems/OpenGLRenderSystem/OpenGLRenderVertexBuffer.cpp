@@ -19,7 +19,7 @@ namespace Mengine
         , m_vertexCount( 0 )
         , m_vertexSize( 0 )
         , m_usage( GL_STATIC_DRAW )
-        , m_id( 0 )
+        , m_id( GL_NONE )
         , m_lockOffset( 0 )
         , m_lockCount( 0 )
     {
@@ -27,25 +27,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderVertexBuffer::~OpenGLRenderVertexBuffer()
     {
-        MENGINE_ASSERTION_FATAL( m_id == 0, "vertex buffer '%u' is not released"
+        MENGINE_ASSERTION_FATAL( m_id == GL_NONE, "vertex buffer '%u' is not released"
             , m_id
         );
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderVertexBuffer::initialize( uint32_t _elementSize, EBufferType _bufferType )
     {
-        OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
-            ->getUnknown();
-
-        GLuint id = extension->genBuffer();
-
-        if( id == 0 )
-        {
-            return false;
-        }
-
-        m_id = id;
-
         m_vertexSize = _elementSize;
         m_usage = Helper::toGLBufferType( _bufferType );
 
@@ -96,7 +84,7 @@ namespace Mengine
 
         MENGINE_GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, m_id) );
         MENGINE_GLCALL( glBufferData, (GL_ARRAY_BUFFER, bufferSize, nullptr, m_usage) );
-        MENGINE_GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, 0) );
+        MENGINE_GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, GL_NONE) );
 
         return true;
     }
@@ -124,7 +112,7 @@ namespace Mengine
         MENGINE_GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, m_id) );
         void * buffer = nullptr;
         MENGINE_GLCALLR( buffer, glMapBuffer, (GL_ARRAY_BUFFER, GL_WRITE_ONLY) );
-        MENGINE_GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, 0) );
+        MENGINE_GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, GL_NONE) );
 
         MENGINE_ASSERTION_MEMORY_PANIC( buffer, "invalid map buffer" );
 
@@ -144,13 +132,13 @@ namespace Mengine
 
         MENGINE_GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, m_id) );
         MENGINE_GLCALL( glBufferSubData, (GL_ARRAY_BUFFER, m_lockOffset * m_vertexSize, m_lockCount * m_vertexSize, memory_buffer) );
-        MENGINE_GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, 0) );
+        MENGINE_GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, GL_NONE) );
 #else
         m_memory->setBuffer( nullptr, 0 );
 
         MENGINE_GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, m_id) );
         MENGINE_GLCALL( glUnmapBuffer, (GL_ARRAY_BUFFER) );
-        MENGINE_GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, 0) );
+        MENGINE_GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, GL_NONE) );
 #endif
 
         m_lockOffset = 0;
@@ -172,7 +160,7 @@ namespace Mengine
         const uint32_t bufferSize = _count * m_vertexSize;
 
         MENGINE_GLCALL( glBufferSubData, (GL_ARRAY_BUFFER, bufferOffset, bufferSize, _buffer) );
-        MENGINE_GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, 0) );
+        MENGINE_GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, GL_NONE) );
 
         return true;
     }
@@ -184,19 +172,40 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderVertexBuffer::disable()
     {
-        MENGINE_GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, 0) );
+        MENGINE_GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, GL_NONE) );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool OpenGLRenderVertexBuffer::create()
+    {
+        MENGINE_ASSERTION_FATAL( m_id == GL_NONE, "vertex buffer '%u' is not release"
+            , m_id
+        );
+
+        OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
+            ->getUnknown();
+
+        GLuint id = extension->genBuffer();
+
+        if( id == GL_NONE )
+        {
+            return false;
+        }
+
+        m_id = id;
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderVertexBuffer::release()
     {
-        if( m_id != 0 )
+        if( m_id != GL_NONE )
         {
             OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
                 ->getUnknown();
 
             extension->deleteBuffer( m_id );
 
-            m_id = 0;
+            m_id = GL_NONE;
         }
 
         m_vertexCapacity = 0;
@@ -209,27 +218,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderVertexBuffer::onRenderRestore()
     {
-        MENGINE_ASSERTION_FATAL( m_id == 0, "vertex buffer '%u' is not release"
-            , m_id
-        );
-
-        OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
-            ->getUnknown();
-
-        GLuint id = extension->genBuffer();
-
-        if( id == 0 )
+        if( this->create() == false )
         {
             return false;
         }
-
-        m_id = id;
 
         const uint32_t bufferSize = m_vertexCapacity * m_vertexSize;
 
         MENGINE_GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, m_id) );
         MENGINE_GLCALL( glBufferData, (GL_ARRAY_BUFFER, bufferSize, nullptr, m_usage) );
-        MENGINE_GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, 0) );
+        MENGINE_GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, GL_NONE) );
 
         return true;
     }

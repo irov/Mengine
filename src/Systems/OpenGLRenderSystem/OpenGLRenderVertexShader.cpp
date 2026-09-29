@@ -11,13 +11,13 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderVertexShader::OpenGLRenderVertexShader()
-        : m_shaderId( 0 )
+        : m_shaderId( GL_NONE )
     {
     }
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderVertexShader::~OpenGLRenderVertexShader()
     {
-        MENGINE_ASSERTION_FATAL( m_shaderId == 0, "vertex shader is not release" );
+        MENGINE_ASSERTION_FATAL( m_shaderId == GL_NONE, "vertex shader is not release" );
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & OpenGLRenderVertexShader::getName() const
@@ -49,7 +49,7 @@ namespace Mengine
 
         GLuint shaderId = extension->genVertexShader();
 
-        if( shaderId == 0 )
+        if( shaderId == GL_NONE )
         {
             LOGGER_ERROR( "'%s' invalid create vertex shader"
                 , m_name.c_str()
@@ -93,13 +93,13 @@ namespace Mengine
             , m_name.c_str()
         );
 
-        if( m_shaderId != 0 )
+        if( m_shaderId != GL_NONE )
         {
             OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
                 ->getUnknown();
             
             extension->deleteVertexShader( m_shaderId );
-            m_shaderId = 0;
+            m_shaderId = GL_NONE;
         }
     }
     //////////////////////////////////////////////////////////////////////////

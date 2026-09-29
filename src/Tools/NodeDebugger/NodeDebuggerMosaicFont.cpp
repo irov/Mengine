@@ -1,6 +1,6 @@
-#include "ToolMosaicFont.h"
+#include "NodeDebuggerMosaicFont.h"
 
-#include "ToolMosaicRenderer.h"
+#include "NodeDebuggerMosaicRenderer.h"
 
 #include "Config/Config.h"
 
@@ -18,8 +18,8 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static const uint32_t TOOL_MOSAIC_ATLAS_SIZE = 1024;
-        static const uint32_t TOOL_MOSAIC_ATLAS_PADDING = 1;
+        static const uint32_t NODE_DEBUGGER_MOSAIC_ATLAS_SIZE = 1024;
+        static const uint32_t NODE_DEBUGGER_MOSAIC_ATLAS_PADDING = 1;
         //////////////////////////////////////////////////////////////////////////
         static uint64_t makeGlyphKey_( uint32_t _pixelSize, uint32_t _code )
         {
@@ -92,25 +92,25 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
-    ToolMosaicFont::ToolMosaicFont()
+    NodeDebuggerMosaicFont::NodeDebuggerMosaicFont()
         : m_renderer( nullptr )
         , m_library( nullptr )
         , m_face( nullptr )
         , m_atlas( 0 )
-        , m_atlasSize( Detail::TOOL_MOSAIC_ATLAS_SIZE )
-        , m_atlasPenX( Detail::TOOL_MOSAIC_ATLAS_PADDING )
-        , m_atlasPenY( Detail::TOOL_MOSAIC_ATLAS_PADDING )
+        , m_atlasSize( Detail::NODE_DEBUGGER_MOSAIC_ATLAS_SIZE )
+        , m_atlasPenX( Detail::NODE_DEBUGGER_MOSAIC_ATLAS_PADDING )
+        , m_atlasPenY( Detail::NODE_DEBUGGER_MOSAIC_ATLAS_PADDING )
         , m_atlasRowHeight( 0 )
         , m_selectedPixelSize( 0 )
         , m_revision( 1 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    ToolMosaicFont::~ToolMosaicFont()
+    NodeDebuggerMosaicFont::~NodeDebuggerMosaicFont()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ToolMosaicFont::initialize( ToolMosaicRenderer * _renderer )
+    bool NodeDebuggerMosaicFont::initialize( NodeDebuggerMosaicRenderer * _renderer )
     {
         m_renderer = _renderer;
 
@@ -156,7 +156,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ToolMosaicFont::finalize()
+    void NodeDebuggerMosaicFont::finalize()
     {
         m_glyphs.clear();
 
@@ -185,7 +185,7 @@ namespace Mengine
         ++m_revision;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t ToolMosaicFont::resolvePixelSize_( float _size ) const
+    uint32_t NodeDebuggerMosaicFont::resolvePixelSize_( float _size ) const
     {
         float size = _size <= 0.f ? 13.f : _size;
 
@@ -199,7 +199,7 @@ namespace Mengine
         return pixelSize;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ToolMosaicFont::selectSize_( uint32_t _pixelSize ) const
+    bool NodeDebuggerMosaicFont::selectSize_( uint32_t _pixelSize ) const
     {
         if( m_face == nullptr )
         {
@@ -221,7 +221,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    const Mosaic::Glyph * ToolMosaicFont::acquireGlyph_( uint32_t _pixelSize, uint32_t _code ) const
+    const Mosaic::Glyph * NodeDebuggerMosaicFont::acquireGlyph_( uint32_t _pixelSize, uint32_t _code ) const
     {
         uint64_t key = Detail::makeGlyphKey_( _pixelSize, _code );
 
@@ -255,14 +255,14 @@ namespace Mengine
 
         if( width != 0 && height != 0 )
         {
-            if( m_atlasPenX + width + Detail::TOOL_MOSAIC_ATLAS_PADDING > m_atlasSize )
+            if( m_atlasPenX + width + Detail::NODE_DEBUGGER_MOSAIC_ATLAS_PADDING > m_atlasSize )
             {
-                m_atlasPenX = Detail::TOOL_MOSAIC_ATLAS_PADDING;
-                m_atlasPenY += m_atlasRowHeight + Detail::TOOL_MOSAIC_ATLAS_PADDING;
+                m_atlasPenX = Detail::NODE_DEBUGGER_MOSAIC_ATLAS_PADDING;
+                m_atlasPenY += m_atlasRowHeight + Detail::NODE_DEBUGGER_MOSAIC_ATLAS_PADDING;
                 m_atlasRowHeight = 0;
             }
 
-            if( m_atlasPenY + height + Detail::TOOL_MOSAIC_ATLAS_PADDING > m_atlasSize )
+            if( m_atlasPenY + height + Detail::NODE_DEBUGGER_MOSAIC_ATLAS_PADDING > m_atlasSize )
             {
                 return nullptr;
             }
@@ -273,7 +273,7 @@ namespace Mengine
 
             glyph.uv = {(float)m_atlasPenX * inverseSize, (float)m_atlasPenY * inverseSize, (float)width * inverseSize, (float)height * inverseSize};
 
-            m_atlasPenX += width + Detail::TOOL_MOSAIC_ATLAS_PADDING;
+            m_atlasPenX += width + Detail::NODE_DEBUGGER_MOSAIC_ATLAS_PADDING;
             m_atlasRowHeight = std::max( m_atlasRowHeight, height );
         }
 
@@ -282,7 +282,7 @@ namespace Mengine
         return &it_inserted->second;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ToolMosaicFont::metrics( Mosaic::FontHandle _font, float _size, Mosaic::FontMetrics * const _out ) const noexcept
+    bool NodeDebuggerMosaicFont::metrics( Mosaic::FontHandle _font, float _size, Mosaic::FontMetrics * const _out ) const noexcept
     {
         MENGINE_UNUSED( _font );
 
@@ -304,7 +304,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ToolMosaicFont::shape( Mosaic::FontHandle _font, float _size, Mosaic::StringView _text, Mosaic::ShapedGlyphVector * const _out ) const
+    bool NodeDebuggerMosaicFont::shape( Mosaic::FontHandle _font, float _size, Mosaic::StringView _text, Mosaic::ShapedGlyphVector * const _out ) const
     {
         MENGINE_UNUSED( _font );
 
@@ -352,7 +352,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ToolMosaicFont::shapeText( Mosaic::FontHandle _font, float _size, Mosaic::StringView _text, const Mosaic::TextShapeOptions & _options, Mosaic::ShapedText * const _out ) const
+    bool NodeDebuggerMosaicFont::shapeText( Mosaic::FontHandle _font, float _size, Mosaic::StringView _text, const Mosaic::TextShapeOptions & _options, Mosaic::ShapedText * const _out ) const
     {
         Mosaic::FontMetrics fontMetrics;
 
@@ -456,7 +456,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ToolMosaicFont::measure( Mosaic::FontHandle _font, float _size, Mosaic::StringView _text, Mosaic::Vec2 * const _out ) const noexcept
+    bool NodeDebuggerMosaicFont::measure( Mosaic::FontHandle _font, float _size, Mosaic::StringView _text, Mosaic::Vec2 * const _out ) const noexcept
     {
         Mosaic::FontMetrics fontMetrics;
 
@@ -491,7 +491,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ToolMosaicFont::getGlyph( Mosaic::FontHandle _font, float _size, uint32_t _glyph, Mosaic::Glyph * const _out ) const
+    bool NodeDebuggerMosaicFont::getGlyph( Mosaic::FontHandle _font, float _size, uint32_t _glyph, Mosaic::Glyph * const _out ) const
     {
         MENGINE_UNUSED( _font );
 
@@ -509,7 +509,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint64_t ToolMosaicFont::revision() const noexcept
+    uint64_t NodeDebuggerMosaicFont::revision() const noexcept
     {
         return m_revision;
     }

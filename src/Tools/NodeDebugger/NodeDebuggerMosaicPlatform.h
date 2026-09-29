@@ -9,12 +9,12 @@ struct GLFWcursor;
 
 namespace Mengine
 {
-    class ToolMosaicPlatform
+    class NodeDebuggerMosaicPlatform
         : public Mosaic::PlatformAdapter
     {
     public:
-        ToolMosaicPlatform();
-        ~ToolMosaicPlatform() override;
+        NodeDebuggerMosaicPlatform();
+        ~NodeDebuggerMosaicPlatform() override;
 
     public:
         bool initialize( GLFWwindow * _window );

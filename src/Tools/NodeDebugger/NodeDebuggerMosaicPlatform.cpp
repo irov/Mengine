@@ -1,4 +1,4 @@
-#include "ToolMosaicPlatform.h"
+#include "NodeDebuggerMosaicPlatform.h"
 
 #include "Config/Config.h"
 
@@ -54,18 +54,18 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
-    ToolMosaicPlatform::ToolMosaicPlatform()
+    NodeDebuggerMosaicPlatform::NodeDebuggerMosaicPlatform()
         : m_window( nullptr )
         , m_cursors()
         , m_cursor( Mosaic::CursorShape::Arrow )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    ToolMosaicPlatform::~ToolMosaicPlatform()
+    NodeDebuggerMosaicPlatform::~NodeDebuggerMosaicPlatform()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ToolMosaicPlatform::initialize( GLFWwindow * _window )
+    bool NodeDebuggerMosaicPlatform::initialize( GLFWwindow * _window )
     {
         m_window = _window;
 
@@ -81,7 +81,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ToolMosaicPlatform::finalize()
+    void NodeDebuggerMosaicPlatform::finalize()
     {
         for( GLFWcursor * cursor : m_cursors )
         {
@@ -98,7 +98,7 @@ namespace Mengine
         m_window = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ToolMosaicPlatform::getClipboardText( Mosaic::String * const _out )
+    bool NodeDebuggerMosaicPlatform::getClipboardText( Mosaic::String * const _out )
     {
         const char * text = glfwGetClipboardString( m_window );
 
@@ -112,21 +112,21 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ToolMosaicPlatform::setClipboardText( Mosaic::StringView _text )
+    void NodeDebuggerMosaicPlatform::setClipboardText( Mosaic::StringView _text )
     {
         Mosaic::String text = Detail::makePath_( _text );
 
         glfwSetClipboardString( m_window, text.c_str() );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ToolMosaicPlatform::writeConsole( Mosaic::StringView _text )
+    bool NodeDebuggerMosaicPlatform::writeConsole( Mosaic::StringView _text )
     {
         std::fprintf( stdout, "%.*s\n", (int)_text.size(), _text.data() );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ToolMosaicPlatform::readFile( Mosaic::StringView _path, Mosaic::ByteVector * const _out )
+    bool NodeDebuggerMosaicPlatform::readFile( Mosaic::StringView _path, Mosaic::ByteVector * const _out )
     {
         Mosaic::String path = Detail::makePath_( _path );
 
@@ -162,7 +162,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ToolMosaicPlatform::writeFile( Mosaic::StringView _path, Mosaic::ByteSpan _data )
+    bool NodeDebuggerMosaicPlatform::writeFile( Mosaic::StringView _path, Mosaic::ByteSpan _data )
     {
         Mosaic::String path = Detail::makePath_( _path );
 
@@ -185,7 +185,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ToolMosaicPlatform::userDataPath( Mosaic::StringView _application, Mosaic::StringView _filename, Mosaic::String * const _out )
+    bool NodeDebuggerMosaicPlatform::userDataPath( Mosaic::StringView _application, Mosaic::StringView _filename, Mosaic::String * const _out )
     {
         const char * home = std::getenv( "HOME" );
 
@@ -210,14 +210,14 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    double ToolMosaicPlatform::monotonicTime() const noexcept
+    double NodeDebuggerMosaicPlatform::monotonicTime() const noexcept
     {
         double time = glfwGetTime();
 
         return time;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ToolMosaicPlatform::setCursor( Mosaic::CursorShape _cursor )
+    void NodeDebuggerMosaicPlatform::setCursor( Mosaic::CursorShape _cursor )
     {
         if( m_cursor == _cursor )
         {
@@ -243,28 +243,28 @@ namespace Mengine
         glfwSetCursor( m_window, cursor );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ToolMosaicPlatform::setImeCandidateRect( const Mosaic::Rect & _screenRect )
+    void NodeDebuggerMosaicPlatform::setImeCandidateRect( const Mosaic::Rect & _screenRect )
     {
         MENGINE_UNUSED( _screenRect );
 
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void * ToolMosaicPlatform::createWindow( const Mosaic::NativeWindowDescription & _description )
+    void * NodeDebuggerMosaicPlatform::createWindow( const Mosaic::NativeWindowDescription & _description )
     {
         MENGINE_UNUSED( _description );
 
         return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ToolMosaicPlatform::destroyWindow( void * _nativeHandle )
+    void NodeDebuggerMosaicPlatform::destroyWindow( void * _nativeHandle )
     {
         MENGINE_UNUSED( _nativeHandle );
 
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void ToolMosaicPlatform::showWindow( void * _nativeHandle, bool _visible )
+    void NodeDebuggerMosaicPlatform::showWindow( void * _nativeHandle, bool _visible )
     {
         MENGINE_UNUSED( _nativeHandle );
         MENGINE_UNUSED( _visible );
@@ -272,7 +272,7 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void ToolMosaicPlatform::setWindowBounds( void * _nativeHandle, const Mosaic::Rect & _bounds )
+    void NodeDebuggerMosaicPlatform::setWindowBounds( void * _nativeHandle, const Mosaic::Rect & _bounds )
     {
         MENGINE_UNUSED( _nativeHandle );
         MENGINE_UNUSED( _bounds );
@@ -280,7 +280,7 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    Mosaic::MonitorSpan ToolMosaicPlatform::monitors() const noexcept
+    Mosaic::MonitorSpan NodeDebuggerMosaicPlatform::monitors() const noexcept
     {
         GLFWmonitor * monitor = glfwGetPrimaryMonitor();
 
@@ -305,7 +305,7 @@ namespace Mengine
         return monitors;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ToolMosaicPlatform::publishAccessibilityTree( Mosaic::SemanticNodeSpan _semantics )
+    void NodeDebuggerMosaicPlatform::publishAccessibilityTree( Mosaic::SemanticNodeSpan _semantics )
     {
         MENGINE_UNUSED( _semantics );
 

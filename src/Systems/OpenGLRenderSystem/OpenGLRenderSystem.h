@@ -201,10 +201,10 @@ namespace Mengine
         {
             RenderImageInterface * texture = nullptr;
 
-            GLenum minFilter = 0;
-            GLenum magFilter = 0;
-            GLenum wrapS = 0;
-            GLenum wrapT = 0;
+            GLenum minFilter = GL_NONE;
+            GLenum magFilter = GL_NONE;
+            GLenum wrapS = GL_NONE;
+            GLenum wrapT = GL_NONE;
 
             uint32_t border = 0;
         };

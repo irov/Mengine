@@ -217,12 +217,6 @@ namespace Mengine
         }
 
         if( PLATFORM_SERVICE()
-            ->updatePlatform() == false )
-        {
-            return false;
-        }
-
-        if( PLATFORM_SERVICE()
             ->createWindow( Resolution( 0, 0 ), true ) == false )
         {
             LOGGER_FATAL( "invalid create window" );

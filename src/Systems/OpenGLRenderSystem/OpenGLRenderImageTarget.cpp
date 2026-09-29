@@ -52,7 +52,7 @@ namespace Mengine
         MENGINE_GLCALL( glActiveTexture_, (GL_TEXTURE0 + _stage) );
 #endif
 
-        MENGINE_GLCALL( glBindTexture, (GL_TEXTURE_2D, 0) );
+        MENGINE_GLCALL( glBindTexture, (GL_TEXTURE_2D, GL_NONE) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderImageTarget::setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider )

@@ -45,7 +45,7 @@ namespace Mengine
 #endif
         , m_clearStencil( 0 )
 #if defined(MENGINE_RENDER_OPENGL_NORMAL)
-        , m_vertexArrayId( 0 )
+        , m_vertexArrayId( GL_NONE )
 #endif
     {
         mt::ident_m4( &m_worldMatrix );
@@ -57,7 +57,7 @@ namespace Mengine
     OpenGLRenderSystem::~OpenGLRenderSystem()
     {
 #if defined(MENGINE_RENDER_OPENGL_NORMAL)
-        MENGINE_ASSERTION_FATAL( m_vertexArrayId == 0, "vertex array not released" );
+        MENGINE_ASSERTION_FATAL( m_vertexArrayId == GL_NONE, "vertex array not released" );
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
@@ -90,10 +90,10 @@ namespace Mengine
     void OpenGLRenderSystem::_finalizeService()
     {
 #if defined(MENGINE_RENDER_OPENGL_NORMAL)
-        if( m_vertexArrayId != 0 )
+        if( m_vertexArrayId != GL_NONE )
         {
             MENGINE_GLCALL( glDeleteVertexArrays, (1, &m_vertexArrayId) );
-            m_vertexArrayId = 0;
+            m_vertexArrayId = GL_NONE;
         }
 #endif
 
@@ -267,10 +267,10 @@ namespace Mengine
         MENGINE_GLCALL( glClearStencil, (m_clearStencil) );
 
 #if defined(MENGINE_RENDER_OPENGL_NORMAL)
-        GLuint vertexArrayId = 0;
+        GLuint vertexArrayId = GL_NONE;
         MENGINE_GLCALL( glGenVertexArrays, (1, &vertexArrayId) );
 
-        if( vertexArrayId == 0 )
+        if( vertexArrayId == GL_NONE )
         {
             return false;
         }
@@ -459,6 +459,19 @@ namespace Mengine
             return nullptr;
         }
 
+        if( m_renderDeviceLost == false )
+        {
+            if( buffer->create() == false )
+            {
+                LOGGER_ERROR( "invalid create vertex buffer [%u] type [%u]"
+                    , _vertexSize
+                    , _bufferType
+                );
+
+                return nullptr;
+            }
+        }
+
         OpenGLRenderVertexBuffer * buffer_ptr = buffer.get();
         m_renderResourceHandlers.push_back( buffer_ptr );
 
@@ -487,6 +500,18 @@ namespace Mengine
             );
 
             return nullptr;
+        }
+
+        if( m_renderDeviceLost == false )
+        {
+            if( buffer->create() == false )
+            {
+                LOGGER_ERROR( "invalid create index buffer (doc: %s)"
+                    , MENGINE_DOCUMENT_STR( _doc )
+                );
+
+                return nullptr;
+            }
         }
 
         OpenGLRenderIndexBuffer * buffer_ptr = buffer.get();
@@ -703,8 +728,8 @@ namespace Mengine
                 MENGINE_GLCALL( glActiveTexture_, (GL_TEXTURE0 + stageId) );
 #endif
 
-                MENGINE_GLCALL( glBindTexture, (GL_TEXTURE_2D, 0) );
-                MENGINE_GLCALL( glBindTexture, (GL_TEXTURE_2D_ARRAY, 0) );
+                MENGINE_GLCALL( glBindTexture, (GL_TEXTURE_2D, GL_NONE) );
+                MENGINE_GLCALL( glBindTexture, (GL_TEXTURE_2D_ARRAY, GL_NONE) );
 
                 continue;
             }
@@ -766,7 +791,7 @@ namespace Mengine
         m_currentProgram->disable();
 
 #if defined(MENGINE_RENDER_OPENGL_NORMAL)
-        MENGINE_GLCALL( glBindVertexArray, (0) );
+        MENGINE_GLCALL( glBindVertexArray, (GL_NONE) );
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
@@ -980,19 +1005,19 @@ namespace Mengine
 
         GLint textureInternalFormat = Helper::toGLInternalFormat( hwFormat );
 
-        MENGINE_ASSERTION_FATAL( textureInternalFormat != 0, "invalid get GL Texture Internal format for PF %d"
+        MENGINE_ASSERTION_FATAL( textureInternalFormat != GL_NONE, "invalid get GL Texture Internal format for PF %d"
             , hwFormat
         );
 
         GLint textureColorFormat = Helper::toGLColorFormat( hwFormat );
 
-        MENGINE_ASSERTION_FATAL( textureColorFormat != 0, "invalid get GL Texture Color format for PF %d"
+        MENGINE_ASSERTION_FATAL( textureColorFormat != GL_NONE, "invalid get GL Texture Color format for PF %d"
             , hwFormat
         );
 
         GLint textureColorDataType = Helper::toGLColorDataType( hwFormat );
 
-        MENGINE_ASSERTION_FATAL( textureColorDataType != 0, "invalid get GL Color Data Type for PF %d"
+        MENGINE_ASSERTION_FATAL( textureColorDataType != GL_NONE, "invalid get GL Color Data Type for PF %d"
             , hwFormat
         );
 
@@ -1034,6 +1059,20 @@ namespace Mengine
             LOGGER_ERROR( "invalid initialize" );
 
             return nullptr;
+        }
+
+        if( m_renderDeviceLost == false )
+        {
+            if( image->create() == false )
+            {
+                LOGGER_ERROR( "invalid create texture %u:%u PF %u"
+                    , _width
+                    , _height
+                    , hwFormat
+                );
+
+                return nullptr;
+            }
         }
 
         OpenGLRenderImageBase * image_ptr = image.get();
@@ -1171,10 +1210,10 @@ namespace Mengine
         m_renderDeviceLost = true;
 
 #if defined(MENGINE_RENDER_OPENGL_NORMAL)
-        if( m_vertexArrayId != 0 )
+        if( m_vertexArrayId != GL_NONE )
         {
             MENGINE_GLCALL( glDeleteVertexArrays, (1, &m_vertexArrayId) );
-            m_vertexArrayId = 0;
+            m_vertexArrayId = GL_NONE;
         }
 #endif
 
@@ -1192,10 +1231,10 @@ namespace Mengine
         }
 
 #if defined(MENGINE_RENDER_OPENGL_NORMAL)
-        GLuint vertexArrayId = 0;
+        GLuint vertexArrayId = GL_NONE;
         MENGINE_GLCALL( glGenVertexArrays, (1, &vertexArrayId) );
 
-        if( vertexArrayId == 0 )
+        if( vertexArrayId == GL_NONE )
         {
             MENGINE_ERROR_FATAL( "invalid create vertex array during device restore" );
 
@@ -1253,19 +1292,19 @@ namespace Mengine
 
         GLint textureInternalFormat = Helper::toGLInternalFormat( hwFormat );
 
-        MENGINE_ASSERTION_FATAL( textureInternalFormat != 0, "invalid get GL Texture Internal format for PF %d"
+        MENGINE_ASSERTION_FATAL( textureInternalFormat != GL_NONE, "invalid get GL Texture Internal format for PF %d"
             , hwFormat
         );
 
         GLint textureColorFormat = Helper::toGLColorFormat( hwFormat );
 
-        MENGINE_ASSERTION_FATAL( textureColorFormat != 0, "invalid get GL Texture Color format for PF %d"
+        MENGINE_ASSERTION_FATAL( textureColorFormat != GL_NONE, "invalid get GL Texture Color format for PF %d"
             , hwFormat
         );
 
         GLint textureColorDataType = Helper::toGLColorDataType( hwFormat );
 
-        MENGINE_ASSERTION_FATAL( textureColorDataType != 0, "invalid get GL Color Data Type for PF %d"
+        MENGINE_ASSERTION_FATAL( textureColorDataType != GL_NONE, "invalid get GL Color Data Type for PF %d"
             , hwFormat
         );
 
@@ -1276,6 +1315,20 @@ namespace Mengine
             LOGGER_ERROR( "invalid initialize" );
 
             return nullptr;
+        }
+
+        if( m_renderDeviceLost == false )
+        {
+            if( renderTarget->create() == false )
+            {
+                LOGGER_ERROR( "invalid create render target %u:%u PF %u"
+                    , _width
+                    , _height
+                    , hwFormat
+                );
+
+                return nullptr;
+            }
         }
 
         OpenGLRenderTargetTexture * renderTarget_ptr = renderTarget.get();
@@ -1390,7 +1443,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     GLuint OpenGLRenderSystem::genTexture()
     {
-        GLuint id = 0;
+        GLuint id = GL_NONE;
         MENGINE_GLCALL( glGenTextures, (1, &id) );
 
         STATISTIC_INC_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_NEW );
@@ -1409,7 +1462,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     GLuint OpenGLRenderSystem::genFramebuffer()
     {
-        GLuint id = 0;
+        GLuint id = GL_NONE;
         MENGINE_GLCALL( glGenFramebuffers, (1, &id) );
 
         STATISTIC_INC_INTEGER( STATISTIC_RENDER_OPENGL_FRAMEBUFFER_NEW );
@@ -1428,7 +1481,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     GLuint OpenGLRenderSystem::genBuffer()
     {
-        GLuint id = 0;
+        GLuint id = GL_NONE;
         MENGINE_GLCALL( glGenBuffers, (1, &id) );
 
         STATISTIC_INC_INTEGER( STATISTIC_RENDER_OPENGL_BUFFER_NEW );

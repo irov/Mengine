@@ -1,4 +1,4 @@
-#include "ToolMosaicRenderer.h"
+#include "NodeDebuggerMosaicRenderer.h"
 
 #include "glad/gl.h"
 
@@ -54,7 +54,7 @@ void main()
             {
                 glDeleteShader( shader );
 
-                return 0;
+                return GL_NONE;
             }
 
             return shader;
@@ -84,33 +84,33 @@ void main()
         //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
-    ToolMosaicRenderer::ToolMosaicRenderer()
-        : m_program( 0 )
-        , m_vertexArray( 0 )
-        , m_vertexBuffer( 0 )
-        , m_indexBuffer( 0 )
+    NodeDebuggerMosaicRenderer::NodeDebuggerMosaicRenderer()
+        : m_program( GL_NONE )
+        , m_vertexArray( GL_NONE )
+        , m_vertexBuffer( GL_NONE )
+        , m_indexBuffer( GL_NONE )
         , m_projectionLocation( -1 )
         , m_textureLocation( -1 )
         , m_handleEnumerator( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    ToolMosaicRenderer::~ToolMosaicRenderer()
+    NodeDebuggerMosaicRenderer::~NodeDebuggerMosaicRenderer()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ToolMosaicRenderer::initialize()
+    bool NodeDebuggerMosaicRenderer::initialize()
     {
         uint32_t vertexShader = Detail::compileShader_( GL_VERTEX_SHADER, Detail::MOSAIC_VERTEX_SHADER );
 
-        if( vertexShader == 0 )
+        if( vertexShader == GL_NONE )
         {
             return false;
         }
 
         uint32_t fragmentShader = Detail::compileShader_( GL_FRAGMENT_SHADER, Detail::MOSAIC_FRAGMENT_SHADER );
 
-        if( fragmentShader == 0 )
+        if( fragmentShader == GL_NONE )
         {
             glDeleteShader( vertexShader );
 
@@ -131,7 +131,7 @@ void main()
         if( linked == GL_FALSE )
         {
             glDeleteProgram( m_program );
-            m_program = 0;
+            m_program = GL_NONE;
 
             return false;
         }
@@ -158,7 +158,7 @@ void main()
         glEnableVertexAttribArray( 2 );
         glVertexAttribPointer( 2, 4, GL_UNSIGNED_BYTE, GL_TRUE, stride, (const void *)offsetof( Mosaic::RenderVertex, color ) );
 
-        glBindVertexArray( 0 );
+        glBindVertexArray( GL_NONE );
 
         const uint8_t white[4] = {0xffU, 0xffU, 0xffU, 0xffU};
         Mosaic::TextureHandle blank = this->createTexture( 1, 1, Mosaic::ByteSpan( reinterpret_cast<const std::byte *>(white), 4 ) );
@@ -171,7 +171,7 @@ void main()
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ToolMosaicRenderer::finalize()
+    void NodeDebuggerMosaicRenderer::finalize()
     {
         for( const MapTextures::value_type & value : m_textures )
         {
@@ -181,39 +181,39 @@ void main()
 
         m_textures.clear();
 
-        if( m_vertexBuffer != 0 )
+        if( m_vertexBuffer != GL_NONE )
         {
             glDeleteBuffers( 1, &m_vertexBuffer );
-            m_vertexBuffer = 0;
+            m_vertexBuffer = GL_NONE;
         }
 
-        if( m_indexBuffer != 0 )
+        if( m_indexBuffer != GL_NONE )
         {
             glDeleteBuffers( 1, &m_indexBuffer );
-            m_indexBuffer = 0;
+            m_indexBuffer = GL_NONE;
         }
 
-        if( m_vertexArray != 0 )
+        if( m_vertexArray != GL_NONE )
         {
             glDeleteVertexArrays( 1, &m_vertexArray );
-            m_vertexArray = 0;
+            m_vertexArray = GL_NONE;
         }
 
-        if( m_program != 0 )
+        if( m_program != GL_NONE )
         {
             glDeleteProgram( m_program );
-            m_program = 0;
+            m_program = GL_NONE;
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    Mosaic::TextureHandle ToolMosaicRenderer::createTexture_( uint32_t _width, uint32_t _height, Mosaic::ByteSpan _pixels, bool _mask )
+    Mosaic::TextureHandle NodeDebuggerMosaicRenderer::createTexture_( uint32_t _width, uint32_t _height, Mosaic::ByteSpan _pixels, bool _mask )
     {
         if( _width == 0 || _height == 0 )
         {
             return 0;
         }
 
-        GLuint name = 0;
+        GLuint name = GL_NONE;
         glGenTextures( 1, &name );
         glBindTexture( GL_TEXTURE_2D, name );
 
@@ -235,7 +235,7 @@ void main()
             glTexParameteriv( GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzle );
         }
 
-        glBindTexture( GL_TEXTURE_2D, 0 );
+        glBindTexture( GL_TEXTURE_2D, GL_NONE );
 
         Mosaic::TextureHandle handle = ++m_handleEnumerator;
 
@@ -244,42 +244,42 @@ void main()
         return handle;
     }
     //////////////////////////////////////////////////////////////////////////
-    Mosaic::TextureHandle ToolMosaicRenderer::createTexture( uint32_t _width, uint32_t _height, Mosaic::ByteSpan _rgbaPixels )
+    Mosaic::TextureHandle NodeDebuggerMosaicRenderer::createTexture( uint32_t _width, uint32_t _height, Mosaic::ByteSpan _rgbaPixels )
     {
         Mosaic::TextureHandle handle = this->createTexture_( _width, _height, _rgbaPixels, false );
 
         return handle;
     }
     //////////////////////////////////////////////////////////////////////////
-    Mosaic::TextureHandle ToolMosaicRenderer::createMaskTexture( uint32_t _width, uint32_t _height, Mosaic::ByteSpan _maskPixels )
+    Mosaic::TextureHandle NodeDebuggerMosaicRenderer::createMaskTexture( uint32_t _width, uint32_t _height, Mosaic::ByteSpan _maskPixels )
     {
         Mosaic::TextureHandle handle = this->createTexture_( _width, _height, _maskPixels, true );
 
         return handle;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ToolMosaicRenderer::updateTexture( Mosaic::TextureHandle _texture, uint32_t _width, uint32_t _height, Mosaic::ByteSpan _rgbaPixels )
+    bool NodeDebuggerMosaicRenderer::updateTexture( Mosaic::TextureHandle _texture, uint32_t _width, uint32_t _height, Mosaic::ByteSpan _rgbaPixels )
     {
         bool successful = this->updateTextureRegion_( _texture, 0, 0, _width, _height, _width * 4, _rgbaPixels, false );
 
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ToolMosaicRenderer::updateTextureRegion( Mosaic::TextureHandle _texture, uint32_t _x, uint32_t _y, uint32_t _width, uint32_t _height, uint32_t _bytesPerRow, Mosaic::ByteSpan _rgbaPixels )
+    bool NodeDebuggerMosaicRenderer::updateTextureRegion( Mosaic::TextureHandle _texture, uint32_t _x, uint32_t _y, uint32_t _width, uint32_t _height, uint32_t _bytesPerRow, Mosaic::ByteSpan _rgbaPixels )
     {
         bool successful = this->updateTextureRegion_( _texture, _x, _y, _width, _height, _bytesPerRow, _rgbaPixels, false );
 
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ToolMosaicRenderer::updateMaskTextureRegion( Mosaic::TextureHandle _texture, uint32_t _x, uint32_t _y, uint32_t _width, uint32_t _height, uint32_t _bytesPerRow, Mosaic::ByteSpan _maskPixels )
+    bool NodeDebuggerMosaicRenderer::updateMaskTextureRegion( Mosaic::TextureHandle _texture, uint32_t _x, uint32_t _y, uint32_t _width, uint32_t _height, uint32_t _bytesPerRow, Mosaic::ByteSpan _maskPixels )
     {
         bool successful = this->updateTextureRegion_( _texture, _x, _y, _width, _height, _bytesPerRow, _maskPixels, true );
 
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ToolMosaicRenderer::updateTextureRegion_( Mosaic::TextureHandle _texture, uint32_t _x, uint32_t _y, uint32_t _width, uint32_t _height, uint32_t _bytesPerRow, Mosaic::ByteSpan _pixels, bool _mask )
+    bool NodeDebuggerMosaicRenderer::updateTextureRegion_( Mosaic::TextureHandle _texture, uint32_t _x, uint32_t _y, uint32_t _width, uint32_t _height, uint32_t _bytesPerRow, Mosaic::ByteSpan _pixels, bool _mask )
     {
         MapTextures::const_iterator it_found = m_textures.find( _texture );
 
@@ -304,12 +304,12 @@ void main()
         glTexSubImage2D( GL_TEXTURE_2D, 0, (GLint)_x, (GLint)_y, (GLsizei)_width, (GLsizei)_height, format, GL_UNSIGNED_BYTE, _pixels.data() );
 
         glPixelStorei( GL_UNPACK_ROW_LENGTH, 0 );
-        glBindTexture( GL_TEXTURE_2D, 0 );
+        glBindTexture( GL_TEXTURE_2D, GL_NONE );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ToolMosaicRenderer::destroyTexture( Mosaic::TextureHandle _texture )
+    void NodeDebuggerMosaicRenderer::destroyTexture( Mosaic::TextureHandle _texture )
     {
         MapTextures::const_iterator it_found = m_textures.find( _texture );
 
@@ -324,21 +324,21 @@ void main()
         m_textures.erase( it_found );
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t ToolMosaicRenderer::getTextureName( Mosaic::TextureHandle _texture ) const
+    uint32_t NodeDebuggerMosaicRenderer::getTextureName( Mosaic::TextureHandle _texture ) const
     {
         MapTextures::const_iterator it_found = m_textures.find( _texture );
 
         if( it_found == m_textures.end() )
         {
-            return 0;
+            return GL_NONE;
         }
 
         return it_found->second;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ToolMosaicRenderer::render( const Mosaic::FrameViewport & _viewport, const Mosaic::RenderMesh & _mesh )
+    void NodeDebuggerMosaicRenderer::render( const Mosaic::FrameViewport & _viewport, const Mosaic::RenderMesh & _mesh )
     {
-        if( m_program == 0 || _mesh.batches.empty() == true )
+        if( m_program == GL_NONE || _mesh.batches.empty() == true )
         {
             return;
         }
@@ -426,7 +426,7 @@ void main()
 
             uint32_t name = this->getTextureName( texture );
 
-            if( name == 0 )
+            if( name == GL_NONE )
             {
                 name = this->getTextureName( 1 );
             }
@@ -442,8 +442,8 @@ void main()
             glDrawElementsBaseVertex( GL_TRIANGLES, (GLsizei)batch.indexCount, GL_UNSIGNED_INT, indexOffset, (GLint)batch.vertexOffset );
         }
 
-        glBindVertexArray( 0 );
-        glUseProgram( 0 );
+        glBindVertexArray( GL_NONE );
+        glUseProgram( GL_NONE );
         glDisable( GL_SCISSOR_TEST );
     }
     //////////////////////////////////////////////////////////////////////////

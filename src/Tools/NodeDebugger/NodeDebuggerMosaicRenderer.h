@@ -7,12 +7,12 @@
 
 namespace Mengine
 {
-    class ToolMosaicRenderer
+    class NodeDebuggerMosaicRenderer
         : public Mosaic::RendererAdapter
     {
     public:
-        ToolMosaicRenderer();
-        ~ToolMosaicRenderer() override;
+        NodeDebuggerMosaicRenderer();
+        ~NodeDebuggerMosaicRenderer() override;
 
     public:
         bool initialize();

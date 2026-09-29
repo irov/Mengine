@@ -1,17 +1,17 @@
 #pragma once
 
-#include "Mosaic/Allocator.hpp"
+#include "Config/StdDef.h"
 
-#include <cstddef>
+#include "Mosaic/Allocator.hpp"
 
 namespace Mengine
 {
-    class ToolMosaicAllocator
+    class NodeDebuggerMosaicAllocator
         : public Mosaic::Allocator
     {
     public:
-        ToolMosaicAllocator();
-        ~ToolMosaicAllocator() override;
+        NodeDebuggerMosaicAllocator();
+        ~NodeDebuggerMosaicAllocator() override;
 
     public:
         void * allocate( size_t _size, size_t _alignment ) noexcept override;

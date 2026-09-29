@@ -20,8 +20,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderTargetTexture::OpenGLRenderTargetTexture()
-        : m_tuid( 0 )
-        , m_fuid( 0 )
+        : m_tuid( GL_NONE )
+        , m_fuid( GL_NONE )
         , m_oldfuid( 0 )
         , m_width( 0 )
         , m_height( 0 )
@@ -44,8 +44,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderTargetTexture::~OpenGLRenderTargetTexture()
     {
-        MENGINE_ASSERTION_FATAL( m_tuid == 0, "texture is not released" );
-        MENGINE_ASSERTION_FATAL( m_fuid == 0, "framebuffer is not released" );
+        MENGINE_ASSERTION_FATAL( m_tuid == GL_NONE, "texture is not released" );
+        MENGINE_ASSERTION_FATAL( m_fuid == GL_NONE, "framebuffer is not released" );
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderTargetTexture::initialize( uint32_t _width, uint32_t _height, EPixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type )
@@ -86,11 +86,6 @@ namespace Mengine
         m_pow2 = Helper::isTexturePow2( _width ) == true && Helper::isTexturePow2( _height ) == true;
         m_upscalePow2 = _width != m_hwWidth || _height != m_hwHeight;
 
-        if( this->create() == false )
-        {
-            return false;
-        }
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -113,12 +108,12 @@ namespace Mengine
 
         GLuint fuid = extension->genFramebuffer();
 
-        if( fuid == 0 )
+        if( fuid == GL_NONE )
         {
             LOGGER_ERROR( "invalid gen framebuffer" );
 
             extension->deleteTexture( m_tuid );
-            m_tuid = 0;
+            m_tuid = GL_NONE;
 
             return false;
         }
@@ -150,17 +145,17 @@ namespace Mengine
             );
 
             extension->deleteTexture( m_tuid );
-            m_tuid = 0;
+            m_tuid = GL_NONE;
 
             extension->deleteFramebuffer( m_fuid );
-            m_fuid = 0;
+            m_fuid = GL_NONE;
 
             return false;
         }
         
         MENGINE_GLCALL( glBindFramebuffer, (GL_FRAMEBUFFER, oldFBO) );
         
-        MENGINE_GLCALL( glBindTexture, (GL_TEXTURE_2D, 0) );
+        MENGINE_GLCALL( glBindTexture, (GL_TEXTURE_2D, GL_NONE) );
 
         STATISTIC_ADD_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_SIZE, m_hwWidth * m_hwHeight * Helper::getPixelFormatChannels( m_hwPixelFormat ) );
 
@@ -174,20 +169,24 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderTargetTexture::release()
     {
+        if( m_tuid == GL_NONE )
+        {
+            return;
+        }
+
+        if( m_fuid == GL_NONE )
+        {
+            return;
+        }
+
         OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
             ->getUnknown();
 
-        if( m_tuid != 0 )
-        {
-            extension->deleteTexture( m_tuid );
-            m_tuid = 0;
-        }
+        extension->deleteTexture( m_tuid );
+        m_tuid = GL_NONE;
 
-        if( m_fuid != 0 )
-        {
-            extension->deleteFramebuffer( m_fuid );
-            m_fuid = 0;
-        }
+        extension->deleteFramebuffer( m_fuid );
+        m_fuid = GL_NONE;
 
         STATISTIC_DEL_INTEGER( STATISTIC_RENDER_TEXTURE_ALLOC_SIZE, m_hwWidth * m_hwHeight * Helper::getPixelFormatChannels( m_hwPixelFormat ) );
 
@@ -259,7 +258,7 @@ namespace Mengine
     bool OpenGLRenderTargetTexture::getData( void * const _buffer, size_t _pitch ) const
     {
         const size_t rowBytes = (size_t)m_hwWidth * 4;
-        if( m_fuid == 0 || _buffer == nullptr || _pitch < rowBytes )
+        if( m_fuid == GL_NONE || _buffer == nullptr || _pitch < rowBytes )
         {
             return false;
         }

@@ -42,6 +42,7 @@ namespace Mengine
         bool draw( const void * _buffer, uint32_t _offset, uint32_t _count ) override;
 
     public:
+        bool create();
         void release();
 
     public:

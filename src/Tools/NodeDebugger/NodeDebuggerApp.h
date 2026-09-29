@@ -1,15 +1,14 @@
 #pragma once
 
-#include "ToolMosaic/ToolMosaicAllocator.h"
-#include "ToolMosaic/ToolMosaicRenderer.h"
-#include "ToolMosaic/ToolMosaicPlatform.h"
-#include "ToolMosaic/ToolMosaicFont.h"
-
-#include "Mosaic/Mosaic.hpp"
-#include "Mosaic/GraphicsBridge.hpp"
-
 #include "Interface/SettingInterface.h"
 #include "Interface/SoundIdentityInterface.h"
+
+#include "Plugins/NodeDebuggerPlugin/NodeDebuggerSerialization.h"
+
+#include "NodeDebuggerMosaicAllocator.h"
+#include "NodeDebuggerMosaicRenderer.h"
+#include "NodeDebuggerMosaicPlatform.h"
+#include "NodeDebuggerMosaicFont.h"
 
 #include "Kernel/Vector.h"
 #include "Kernel/Map.h"
@@ -20,7 +19,8 @@
 #include "Kernel/StringHelper.h"
 #include "Kernel/RenderContext.h"
 
-#include "Plugins/NodeDebuggerPlugin/NodeDebuggerSerialization.h"
+#include "Mosaic/Mosaic.hpp"
+#include "Mosaic/GraphicsBridge.hpp"
 
 #include "jpp/jpp.hpp"
 #include "glad/gl.h"
@@ -823,10 +823,10 @@ namespace Mengine
         GLFWwindow * m_window;
         bool m_shutdown;
 
-        ToolMosaicAllocator m_mosaicAllocator;
-        ToolMosaicRenderer m_mosaicRenderer;
-        ToolMosaicFont m_mosaicFont;
-        ToolMosaicPlatform m_mosaicPlatform;
+        NodeDebuggerMosaicAllocator m_mosaicAllocator;
+        NodeDebuggerMosaicRenderer m_mosaicRenderer;
+        NodeDebuggerMosaicFont m_mosaicFont;
+        NodeDebuggerMosaicPlatform m_mosaicPlatform;
         Mosaic::GraphicsBridge m_mosaicBridge;
         Mosaic::Context * m_mosaicContext;
         Mosaic::Input m_mosaicInput;

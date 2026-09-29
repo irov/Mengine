@@ -44,6 +44,7 @@ namespace Mengine
         void disable();
 
     public:
+        bool create();
         void release();
         bool reload();
 

@@ -14,7 +14,7 @@
 #elif defined(MENGINE_PLATFORM_ANDROID)
 #   define GL_GLEXT_PROTOTYPES
 
-#   include <GLES3/gl32.h>
+#   include <GLES3/gl3.h>
 #   include <GLES3/gl3ext.h>
 
 #   define MENGINE_RENDER_OPENGL_ES

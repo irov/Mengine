@@ -9,13 +9,13 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderFragmentShader::OpenGLRenderFragmentShader()
-        : m_shaderId( 0 )
+        : m_shaderId( GL_NONE )
     {
     }
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderFragmentShader::~OpenGLRenderFragmentShader()
     {
-        MENGINE_ASSERTION_FATAL( m_shaderId == 0, "fragment shader is not release" );
+        MENGINE_ASSERTION_FATAL( m_shaderId == GL_NONE, "fragment shader is not release" );
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & OpenGLRenderFragmentShader::getName() const
@@ -47,7 +47,7 @@ namespace Mengine
 
         GLuint shaderId = extension->genFragmentShader();
 
-        if( shaderId == 0 )
+        if( shaderId == GL_NONE )
         {
             LOGGER_ERROR( "invalid create fragment shader '%s'"
                 , m_name.c_str()
@@ -91,13 +91,13 @@ namespace Mengine
             , m_name.c_str()
         );
 
-        if( m_shaderId != 0 )
+        if( m_shaderId != GL_NONE )
         {
             OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
                 ->getUnknown();
 
             extension->deleteFragmentShader( m_shaderId );
-            m_shaderId = 0;
+            m_shaderId = GL_NONE;
         }
     }
     //////////////////////////////////////////////////////////////////////////

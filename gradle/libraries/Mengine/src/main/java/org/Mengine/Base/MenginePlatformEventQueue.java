@@ -270,9 +270,12 @@ public class MenginePlatformEventQueue {
             m_events.clear();
         }
 
-        boolean shouldQuit = false;
-
         for (PlatformEvent event : m_eventsAux) {
+            if (application.isQuitRequested() == true
+                && (event instanceof QuitEvent) == false) {
+                continue;
+            }
+
             application.setState("event.call", event.getClass().getSimpleName());
 
             if (event instanceof PauseEvent pauseEvent) {
@@ -302,7 +305,9 @@ public class MenginePlatformEventQueue {
                 MengineNative.AndroidPlatform_windowFocusChangedEvent(focusValue);
             } else if (event instanceof QuitEvent) {
                 MengineNative.AndroidPlatform_quitEvent();
-                shouldQuit = true;
+                m_eventsAux.clear();
+
+                return true;
             } else if (event instanceof LowMemoryEvent) {
                 MengineNative.AndroidPlatform_lowMemory();
             } else if (event instanceof TrimMemoryEvent trimEvent) {
@@ -339,11 +344,21 @@ public class MenginePlatformEventQueue {
                 );
             } else if (event instanceof SurfaceCreateEvent surfaceCreateEvent) {
                 Surface surfaceCreated = surfaceCreateEvent.surface();
+
+                if (surfaceCreated.isValid() == false) {
+                    continue;
+                }
+
                 MengineNative.AndroidPlatform_surfaceCreatedEvent(surfaceCreated);
             } else if (event instanceof SurfaceDestroyEvent) {
                 MengineNative.AndroidPlatform_surfaceDestroyedEvent();
             } else if (event instanceof SurfaceChangedEvent surfaceChangedEvent) {
                 Surface surfaceChanged = surfaceChangedEvent.surface();
+
+                if (surfaceChanged.isValid() == false) {
+                    continue;
+                }
+
                 int surfaceWidth = surfaceChangedEvent.surfaceWidth();
                 int surfaceHeight = surfaceChangedEvent.surfaceHeight();
                 int deviceWidth = surfaceChangedEvent.deviceWidth();
@@ -368,6 +383,6 @@ public class MenginePlatformEventQueue {
 
         m_eventsAux.clear();
 
-        return shouldQuit;
+        return false;
     }
 }

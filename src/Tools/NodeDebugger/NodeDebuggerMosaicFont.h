@@ -12,17 +12,17 @@ typedef unsigned char FT_Byte;
 
 namespace Mengine
 {
-    class ToolMosaicRenderer;
+    class NodeDebuggerMosaicRenderer;
 
-    class ToolMosaicFont
+    class NodeDebuggerMosaicFont
         : public Mosaic::FontProvider
     {
     public:
-        ToolMosaicFont();
-        ~ToolMosaicFont() override;
+        NodeDebuggerMosaicFont();
+        ~NodeDebuggerMosaicFont() override;
 
     public:
-        bool initialize( ToolMosaicRenderer * _renderer );
+        bool initialize( NodeDebuggerMosaicRenderer * _renderer );
         void finalize();
 
     public:
@@ -40,7 +40,7 @@ namespace Mengine
         const Mosaic::Glyph * acquireGlyph_( uint32_t _pixelSize, uint32_t _code ) const;
 
     protected:
-        ToolMosaicRenderer * m_renderer;
+        NodeDebuggerMosaicRenderer * m_renderer;
 
         FT_Library m_library;
         FT_Face m_face;

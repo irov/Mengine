@@ -21,7 +21,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderImageBase::OpenGLRenderImageBase()
         : m_createTimestamp( 0 )
-        , m_uid( 0 )
+        , m_uid( GL_NONE )
         , m_hwPixelFormat( PF_UNKNOWN )
         , m_width( 0 )
         , m_height( 0 )
@@ -45,7 +45,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderImageBase::~OpenGLRenderImageBase()
     {
-        MENGINE_ASSERTION_FATAL( m_uid == 0, "texture is not released" );
+        MENGINE_ASSERTION_FATAL( m_uid == GL_NONE, "texture is not released" );
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderImageBase::initialize( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _layers, EPixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type )
@@ -90,17 +90,6 @@ namespace Mengine
 
         m_pow2 = Helper::isTexturePow2( _width ) == true && Helper::isTexturePow2( _height ) == true;
         m_upscalePow2 = _width != m_hwWidth || _height != m_hwHeight;
-
-        if( this->create() == false )
-        {
-            LOGGER_ERROR( "invalid gen texture for size %u:%u PF %u"
-                , _width
-                , _height
-                , _format
-            );
-
-            return false;
-        }
 
         return true;
     }
@@ -171,7 +160,7 @@ namespace Mengine
         MENGINE_GLCALL( glActiveTexture_, (GL_TEXTURE0 + _stage) );
 #endif
 
-        MENGINE_GLCALL( glBindTexture, (this->getTextureTarget(), 0) );
+        MENGINE_GLCALL( glBindTexture, (this->getTextureTarget(), GL_NONE) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderImageBase::setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider )
@@ -186,14 +175,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderImageBase::create()
     {
-        MENGINE_ASSERTION_FATAL( m_uid == 0, "texture already created" );
+        MENGINE_ASSERTION_FATAL( m_uid == GL_NONE, "texture already created" );
 
         OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
             ->getUnknown();
 
         GLuint tuid = extension->genTexture();
 
-        if( tuid == 0 )
+        if( tuid == GL_NONE )
         {
             return false;
         }
@@ -203,7 +192,7 @@ namespace Mengine
         if( this->_create() == false )
         {
             extension->deleteTexture( m_uid );
-            m_uid = 0;
+            m_uid = GL_NONE;
 
             return false;
         }
@@ -224,7 +213,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderImageBase::release()
     {
-        if( m_uid == 0 )
+        if( m_uid == GL_NONE )
         {
             return;
         }
@@ -234,7 +223,7 @@ namespace Mengine
 
         extension->deleteTexture( m_uid );
 
-        m_uid = 0;
+        m_uid = GL_NONE;
 
         int64_t textureMemorySize = (int64_t)m_hwWidth * (int64_t)m_hwHeight * (int64_t)m_hwLayers * (int64_t)Helper::getPixelFormatChannels( m_hwPixelFormat );
 

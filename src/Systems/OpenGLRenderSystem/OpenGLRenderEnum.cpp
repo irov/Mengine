@@ -16,7 +16,7 @@ namespace Mengine
             default:;
             }
 
-            return 0;
+            return GL_NONE;
         }
         //////////////////////////////////////////////////////////////////////////
         GLenum toGLBlendFactor( EBlendFactor _filter )
@@ -36,7 +36,7 @@ namespace Mengine
             default:;
             }
 
-            return 0;
+            return GL_NONE;
         }
         //////////////////////////////////////////////////////////////////////////
         GLenum toGLBlendOp( EBlendOp _filter )
@@ -52,7 +52,7 @@ namespace Mengine
             default:;
             }
 
-            return 0;
+            return GL_NONE;
         }
         //////////////////////////////////////////////////////////////////////////
         GLenum toGLCmpFunc( ECompareFunction _function )
@@ -70,7 +70,7 @@ namespace Mengine
             default:;
             }
 
-            return 0;
+            return GL_NONE;
         }
         //////////////////////////////////////////////////////////////////////////
         GLenum toGLMagFilter( ETextureFilter _magFilter )
@@ -90,7 +90,7 @@ namespace Mengine
             default:;
             };
 
-            return 0;
+            return GL_NONE;
         }
         //////////////////////////////////////////////////////////////////////////
         GLenum toGLMinFilter( ETextureFilter _minFilter, ETextureFilter _mipFilter )
@@ -134,7 +134,7 @@ namespace Mengine
             default:;
             }
 
-            return 0;
+            return GL_NONE;
         }
         //////////////////////////////////////////////////////////////////////////
         GLenum toGLInternalFormat( EPixelFormat _format )
@@ -172,7 +172,7 @@ namespace Mengine
             case PF_DXT1:
                 if( Mengine::isGLTextureCompressionS3TCSupported() == false )
                 {
-                    return 0;
+                    return GL_NONE;
                 }
 
                 return GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
@@ -180,7 +180,7 @@ namespace Mengine
             default:;
             }
 
-            return 0;
+            return GL_NONE;
         }
         //////////////////////////////////////////////////////////////////////////
         GLenum toGLColorFormat( EPixelFormat _format )
@@ -209,7 +209,7 @@ namespace Mengine
             case PF_DXT1:
                 if( Mengine::isGLTextureCompressionS3TCSupported() == false )
                 {
-                    return 0;
+                    return GL_NONE;
                 }
 
                 return GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
@@ -217,7 +217,7 @@ namespace Mengine
             default:;
             }
 
-            return 0;
+            return GL_NONE;
         }
         //////////////////////////////////////////////////////////////////////////
         GLenum toGLColorDataType( EPixelFormat _format )
@@ -241,7 +241,7 @@ namespace Mengine
             default:;
             }
 
-            return 0;
+            return GL_NONE;
         }
         //////////////////////////////////////////////////////////////////////////
         GLenum toGLPrimitiveMode( EPrimitiveType _mode )
@@ -263,7 +263,7 @@ namespace Mengine
             default:;
             }
 
-            return 0;
+            return GL_NONE;
         }
         //////////////////////////////////////////////////////////////////////////
         GLenum toGLAddressMode( ETextureAddressMode _mode )
@@ -277,7 +277,7 @@ namespace Mengine
             default:;
             }
 
-            return 0;
+            return GL_NONE;
         }
         //////////////////////////////////////////////////////////////////////////
         GLenum toGLFillMode( EFillMode _op )

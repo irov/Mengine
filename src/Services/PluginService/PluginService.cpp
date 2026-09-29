@@ -298,7 +298,16 @@ namespace Mengine
         if( this->hasPlugin( pluginName ) == true )
         {
             LOGGER_ERROR( "already exist plugin '%s'"
-                , _plugin->getPluginName().c_str()
+                , pluginName.c_str()
+            );
+
+            return false;
+        }
+
+        if( this->autoPreRegistration_( _plugin ) == false )
+        {
+            LOGGER_ERROR( "invalid auto pre registration plugin '%s'"
+                , pluginName.c_str()
             );
 
             return false;
@@ -307,21 +316,25 @@ namespace Mengine
         if( _plugin->initializePlugin() == false )
         {
             LOGGER_ERROR( "invalid initialize plugin '%s'"
-                , _plugin->getPluginName().c_str()
+                , pluginName.c_str()
             );
+
+            this->autoUnregisterPlugin_( _plugin );
 
             return false;
         }
 
         if( _plugin->isInitializePlugin() == false )
         {
+            this->autoUnregisterPlugin_( _plugin );
+
             return true;
         }
 
-        if( this->autoRegisterPlugin_( _plugin ) == false )
+        if( this->autoPostRegistration_( _plugin ) == false )
         {
-            LOGGER_ERROR( "invalid auto registration plugin '%s'"
-                , _plugin->getPluginName().c_str()
+            LOGGER_ERROR( "invalid auto post registration plugin '%s'"
+                , pluginName.c_str()
             );
 
             this->autoUnregisterPlugin_( _plugin );
@@ -458,7 +471,7 @@ namespace Mengine
         return available;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PluginService::autoRegisterPlugin_( const PluginInterfacePtr & _plugin ) const
+    bool PluginService::autoPreRegistration_( const PluginInterfacePtr & _plugin ) const
     {
         for( const PluginDesc & desc : m_plugins )
         {
@@ -474,6 +487,23 @@ namespace Mengine
             if( plugin->registerPlugin( _plugin ) == false )
             {
                 return false;
+            }
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PluginService::autoPostRegistration_( const PluginInterfacePtr & _plugin ) const
+    {
+        for( const PluginDesc & desc : m_plugins )
+        {
+            const PluginInterfacePtr & plugin = desc.plugin;
+
+            bool available = plugin->isAvailablePlugin();
+
+            if( available == false )
+            {
+                continue;
             }
 
             if( _plugin->registerPlugin( plugin ) == false )
@@ -497,6 +527,12 @@ namespace Mengine
             }
 
             plugin->unregisterPlugin( _plugin );
+
+            if( _plugin->isInitializePlugin() == false )
+            {
+                continue;
+            }
+
             _plugin->unregisterPlugin( plugin );
         }
     }

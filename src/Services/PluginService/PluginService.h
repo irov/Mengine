@@ -48,7 +48,8 @@ namespace Mengine
         bool createPluginDynamic_( const DynamicLibraryInterfacePtr & _dynamicLibrary, TPluginCreateDynamic _create, const DocumentInterfacePtr & _doc );
 
     protected:
-        bool autoRegisterPlugin_( const PluginInterfacePtr & _plugin ) const;
+        bool autoPreRegistration_( const PluginInterfacePtr & _plugin ) const;
+        bool autoPostRegistration_( const PluginInterfacePtr & _plugin ) const;
         void autoUnregisterPlugin_( const PluginInterfacePtr & _plugin ) const;
         void autoUnregisterPlugins_() const;
 

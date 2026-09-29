@@ -29,7 +29,7 @@ if [ -z "$GRADLE_VERSION" ] || [ -z "$GRADLE_DISTRIBUTION_SHA256" ]; then
 fi
 
 if ! command -v gradle >/dev/null 2>&1; then
-    echo "System Gradle not found. Install Gradle 9.4.1 or newer and add it to PATH."
+    echo "System Gradle not found. Install Gradle 9.6.0 or newer and add it to PATH."
     exit 1
 fi
 
@@ -42,7 +42,7 @@ if ! gradle \
     --gradle-version "$GRADLE_VERSION" \
     --distribution-type bin \
     --gradle-distribution-sha256-sum "$GRADLE_DISTRIBUTION_SHA256"; then
-    echo "Gradle wrapper generation failed. Android Gradle Plugin 9.2.1 requires Gradle 9.4.1 or newer."
+    echo "Gradle wrapper generation failed. Android Gradle Plugin 9.4.1 requires Gradle 9.6.0 or newer."
     exit 1
 fi
 

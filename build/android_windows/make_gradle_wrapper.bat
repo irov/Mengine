@@ -30,7 +30,7 @@ if not defined GRADLE_DISTRIBUTION_SHA256 (
 where gradle >nul 2>nul
 
 if errorlevel 1 (
-    echo System Gradle not found. Install Gradle 9.4.1 or newer and add it to PATH.
+    echo System Gradle not found. Install Gradle 9.6.0 or newer and add it to PATH.
     exit /b 1
 )
 
@@ -49,7 +49,7 @@ call gradle ^
     --gradle-distribution-sha256-sum "%GRADLE_DISTRIBUTION_SHA256%"
 
 if errorlevel 1 (
-    echo Gradle wrapper generation failed. Android Gradle Plugin 9.2.1 requires Gradle 9.4.1 or newer.
+    echo Gradle wrapper generation failed. Android Gradle Plugin 9.4.1 requires Gradle 9.6.0 or newer.
     exit /b 1
 )
 

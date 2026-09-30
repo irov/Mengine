@@ -4,16 +4,15 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ShareCompat;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 
 public class MengineProcedureSendMail implements MengineProcedureInterface {
     private static final MengineTag TAG = MengineTag.of("MNGPSendMail");
@@ -49,9 +48,8 @@ public class MengineProcedureSendMail implements MengineProcedureInterface {
 
         Context context = application.getApplicationContext();
 
-        Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
-
-        intent.setType("application/zip");
+        ShareCompat.IntentBuilder intentBuilder = new ShareCompat.IntentBuilder(activity);
+        intentBuilder.setType("application/zip");
 
         StringBuilder body_builder = new StringBuilder(4096);
 
@@ -79,8 +77,6 @@ public class MengineProcedureSendMail implements MengineProcedureInterface {
         MengineUtils.buildPrintDeviceInfo(body_builder, indent);
 
         try {
-            ArrayList<Parcelable> fileUris = new ArrayList<>();
-
             boolean hasAccount = MengineNative.AndroidEnvironmentService_hasCurrentAccount();
 
             if (hasAccount == true) {
@@ -116,7 +112,7 @@ public class MengineProcedureSendMail implements MengineProcedureInterface {
                         , m_subject
                     );
 
-                    fileUris.add(accountZIPUri);
+                    intentBuilder.addStream(accountZIPUri);
                 } else {
                     body_builder.append("\n\n[ERROR] invalid zip account folder");
 
@@ -176,7 +172,7 @@ public class MengineProcedureSendMail implements MengineProcedureInterface {
                         , m_subject
                     );
 
-                    fileUris.add(logZipFileUri);
+                    intentBuilder.addStream(logZipFileUri);
                 } else {
                     body_builder.append("\n\n[ERROR] invalid zip current log file");
 
@@ -235,7 +231,7 @@ public class MengineProcedureSendMail implements MengineProcedureInterface {
                         , m_subject
                     );
 
-                    fileUris.add(oldLogZipFileUri);
+                    intentBuilder.addStream(oldLogZipFileUri);
                 } else {
                     body_builder.append("\n\n[ERROR] invalid zip old log file");
 
@@ -276,7 +272,7 @@ public class MengineProcedureSendMail implements MengineProcedureInterface {
                             m_subject
                         );
 
-                        fileUris.add(fileLoggerZipFileUri);
+                        intentBuilder.addStream(fileLoggerZipFileUri);
                     } else {
                         body_builder.append("\n\n[ERROR] invalid zip file logger android log file");
 
@@ -312,7 +308,7 @@ public class MengineProcedureSendMail implements MengineProcedureInterface {
                             m_subject
                         );
 
-                        fileUris.add(oldFileLoggerZipFileUri);
+                        intentBuilder.addStream(oldFileLoggerZipFileUri);
                     } else {
                         body_builder.append("\n\n[ERROR] invalid zip file logger android old log file");
 
@@ -337,8 +333,6 @@ public class MengineProcedureSendMail implements MengineProcedureInterface {
                     m_subject
                 );
             }
-
-            intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, fileUris);
         } catch (IOException e) {
             body_builder.append("\n\n[ERROR] invalid attaches file");
 
@@ -351,14 +345,12 @@ public class MengineProcedureSendMail implements MengineProcedureInterface {
 
         String full_body = body_builder.toString();
 
-        intent.putExtra(Intent.EXTRA_EMAIL, new String[] { m_email });
-        intent.putExtra(Intent.EXTRA_SUBJECT, m_subject);
-        intent.putExtra(Intent.EXTRA_TEXT, full_body);
+        intentBuilder.setEmailTo(new String[] { m_email });
+        intentBuilder.setSubject(m_subject);
+        intentBuilder.setText(full_body);
+        intentBuilder.setChooserTitle("Send Email");
 
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-
-        Intent chooser = Intent.createChooser(intent, "Send Email");
+        Intent chooser = intentBuilder.createChooserIntent();
 
         try {
             activity.startActivity(chooser);

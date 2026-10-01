@@ -51,6 +51,7 @@ final String ANDROID_APP_BUILD_TOOLS_VERSION = Utils.getStringProperty("ANDROID_
 final Integer ANDROID_APP_MIN_SDK_VERSION = Utils.getIntegerProperty("ANDROID_APP_MIN_SDK_VERSION", 24)
 final Integer ANDROID_APP_TARGET_SDK_VERSION = Utils.getIntegerProperty("ANDROID_APP_TARGET_SDK_VERSION", 36)
 final Integer ANDROID_APP_COMPILE_SDK_VERSION = Utils.getIntegerProperty("ANDROID_APP_COMPILE_SDK_VERSION", 37)
+final Integer ANDROID_APP_GLES_VERSION = Utils.getIntegerProperty("ANDROID_APP_GLES_VERSION", 2)
 
 allprojects {
     if (project != rootProject) {
@@ -66,6 +67,7 @@ allprojects {
         minSdkVersion = ANDROID_APP_MIN_SDK_VERSION
         targetSdkVersion = ANDROID_APP_TARGET_SDK_VERSION
         compileSdkVersion = ANDROID_APP_COMPILE_SDK_VERSION
+        glesVersion = ANDROID_APP_GLES_VERSION
 
         javaVersion = JavaVersion.VERSION_17
     }

@@ -18,6 +18,19 @@ final Boolean ANDROID_APP_REQUIRED_HARDWARE_SENSOR_ACCELEROMETER = Utils.getBool
 final Boolean ANDROID_APP_REQUIRED_HARDWARE_CAMERA = Utils.getBooleanProperty("ANDROID_APP_REQUIRED_HARDWARE_CAMERA", false)
 final Boolean ANDROID_APP_REQUIRED_HARDWARE_WIFI = Utils.getBooleanProperty("ANDROID_APP_REQUIRED_HARDWARE_WIFI", false)
 
+String glesFeatureVersion
+
+switch (project.glesVersion) {
+    case 2:
+        glesFeatureVersion = "0x00020000"
+        break
+    case 3:
+        glesFeatureVersion = "0x00030000"
+        break
+    default:
+        throw new GradleException("Unsupported Android GLES version: ${project.glesVersion}")
+}
+
 println("MENGINE_APP_DEPLOY_PATH: $MENGINE_APP_DEPLOY_PATH")
 
 println("MENGINE_APP_BUILD_ASSERTION_DEBUG: $MENGINE_APP_BUILD_ASSERTION_DEBUG")
@@ -40,6 +53,7 @@ android {
             ANDROID_APP_BUILD_NUMBER                          : ANDROID_APP_BUILD_NUMBER,
             ANDROID_APP_BUILD_VERSION                         : ANDROID_APP_BUILD_VERSION,
             ANDROID_APP_SCREEN_ORIENTATION                    : ANDROID_APP_SCREEN_ORIENTATION,
+            ANDROID_APP_GLES_FEATURE_VERSION                  : glesFeatureVersion,
             ANDROID_APP_REQUIRED_HARDWARE_TOUCHSCREEN         : ANDROID_APP_REQUIRED_HARDWARE_TOUCHSCREEN,
             ANDROID_APP_REQUIRED_HARDWARE_SENSOR_ACCELEROMETER: ANDROID_APP_REQUIRED_HARDWARE_SENSOR_ACCELEROMETER,
             ANDROID_APP_REQUIRED_HARDWARE_CAMERA              : ANDROID_APP_REQUIRED_HARDWARE_CAMERA,
@@ -60,6 +74,7 @@ android {
                 arguments.add("-DANDROID_TOOLCHAIN=clang")
                 arguments.add("-DCMAKE_SYSTEM_NAME=Android")
                 arguments.add("-DCMAKE_SYSTEM_VERSION=${project.minSdkVersion}")
+                arguments.add("-DMENGINE_RENDER_OPENGL_ES_VERSION:STRING=${project.glesVersion}")
                 arguments.add("-DMENGINE_BUILD_NUMBER:STRING=${ANDROID_APP_BUILD_NUMBER}")
                 arguments.add("-DMENGINE_BUILD_VERSION:STRING=${ANDROID_APP_BUILD_VERSION}")
                 arguments.add("-DMENGINE_DEPENDENCIES_PROJECT:STRING=Depends_Android")

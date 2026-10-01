@@ -2265,6 +2265,20 @@ namespace Mengine
     {
         MENGINE_ASSERTION_FATAL( m_eglContext == EGL_NO_CONTEXT, "egl context already created" );
 
+        constexpr EGLint contextVersion = MENGINE_RENDER_OPENGL_ES_VERSION;
+
+#if MENGINE_RENDER_OPENGL_ES_VERSION == 2
+        constexpr EGLint renderableType = EGL_OPENGL_ES2_BIT;
+#elif MENGINE_RENDER_OPENGL_ES_VERSION == 3
+        constexpr EGLint renderableType = EGL_OPENGL_ES3_BIT;
+#else
+#   error "MENGINE_RENDER_OPENGL_ES_VERSION must be 2 or 3"
+#endif
+
+        LOGGER_MESSAGE( "[egl] requested OpenGL ES version: %d"
+            , contextVersion
+        );
+
         if( ::eglBindAPI( EGL_OPENGL_ES_API ) == EGL_FALSE )
         {
             LOGGER_ERROR( "[egl] eglBindAPI(OpenGL ES) failed: %d"
@@ -2281,7 +2295,7 @@ namespace Mengine
         EGLint base_depth_size = 24;
 
         const EGLint configAttribs[] = {
-            EGL_RENDERABLE_TYPE, EGL_OPENGL_ES3_BIT,
+            EGL_RENDERABLE_TYPE, renderableType,
             EGL_SURFACE_TYPE, EGL_WINDOW_BIT | EGL_PBUFFER_BIT,
             EGL_RED_SIZE, base_red_size,
             EGL_GREEN_SIZE, base_green_size,
@@ -2295,7 +2309,8 @@ namespace Mengine
         EGLint numConfigs;
         if( ::eglChooseConfig( m_eglDisplay, configAttribs, configs, MENGINE_ARRAY_SIZE(configs), &numConfigs ) == EGL_FALSE )
         {
-            LOGGER_ERROR( "[egl] eglChooseConfig failed: %d"
+            LOGGER_ERROR( "[egl] eglChooseConfig for OpenGL ES %d failed: %d"
+                , contextVersion
                 , ::eglGetError()
             );
 
@@ -2304,7 +2319,9 @@ namespace Mengine
 
         if( numConfigs == 0 )
         {
-            LOGGER_ERROR( "[egl] eglChooseConfig found no OpenGL ES 3 config with RGBA8 and depth24" );
+            LOGGER_ERROR( "[egl] eglChooseConfig found no OpenGL ES %d config with RGBA8 and depth24"
+                , contextVersion
+            );
 
             return false;
         }
@@ -2347,7 +2364,9 @@ namespace Mengine
 
         if( best_config_index == -1 )
         {
-            LOGGER_ERROR( "[egl] no suitable OpenGL ES 3 config with RGBA8 and depth24" );
+            LOGGER_ERROR( "[egl] no suitable OpenGL ES %d config with RGBA8 and depth24"
+                , contextVersion
+            );
 
             return false;
         }
@@ -2374,7 +2393,7 @@ namespace Mengine
         );
 
         const EGLint contextAttribs[] = {
-            EGL_CONTEXT_CLIENT_VERSION, 3,
+            EGL_CONTEXT_CLIENT_VERSION, contextVersion,
             EGL_NONE
         };
 
@@ -2386,7 +2405,8 @@ namespace Mengine
             const Char * eglVendor = ::eglQueryString( m_eglDisplay, EGL_VENDOR );
             const Char * eglVersion = ::eglQueryString( m_eglDisplay, EGL_VERSION );
 
-            LOGGER_ERROR( "[egl] eglCreateContext for OpenGL ES 3 failed: %d, EGL_VENDOR: %s, EGL_VERSION: %s"
+            LOGGER_ERROR( "[egl] eglCreateContext for OpenGL ES %d failed: %d, EGL_VENDOR: %s, EGL_VERSION: %s"
+                , contextVersion
                 , error
                 , eglVendor != nullptr ? eglVendor : "unknown"
                 , eglVersion != nullptr ? eglVersion : "unknown"

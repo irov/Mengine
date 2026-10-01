@@ -63,8 +63,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderSystem::_initializeService()
     {
-#if defined(MENGINE_RENDER_OPENGL_ES)
-        m_renderPlatform = STRINGIZE_STRING_LOCAL( "OpenGLES" );
+#if defined(MENGINE_RENDER_OPENGL_ES2)
+        m_renderPlatform = STRINGIZE_STRING_LOCAL( "OpenGLES2" );
+#elif defined(MENGINE_RENDER_OPENGL_ES3)
+        m_renderPlatform = STRINGIZE_STRING_LOCAL( "OpenGLES3" );
 #else
         m_renderPlatform = STRINGIZE_STRING_LOCAL( "OpenGL" );
 #endif
@@ -232,12 +234,16 @@ namespace Mengine
             , m_glMaxTexture2DSize
         );
 
+#if defined(MENGINE_RENDER_OPENGL_ES2)
+        m_glMaxTexture2DArrayLayers = 0;
+#else
         GLint maxTexture2DArrayLayers = 0;
         MENGINE_GLCALL( glGetIntegerv, (GL_MAX_ARRAY_TEXTURE_LAYERS, &maxTexture2DArrayLayers) );
 
         m_glMaxTexture2DArrayLayers = maxTexture2DArrayLayers > 0
             ? (uint32_t)maxTexture2DArrayLayers
             : 0U;
+#endif
 
         LOGGER_INFO( "opengl", "OpenGL max texture 2d array layers: %u"
             , m_glMaxTexture2DArrayLayers
@@ -729,7 +735,9 @@ namespace Mengine
 #endif
 
                 MENGINE_GLCALL( glBindTexture, (GL_TEXTURE_2D, GL_NONE) );
+#if !defined(MENGINE_RENDER_OPENGL_ES2)
                 MENGINE_GLCALL( glBindTexture, (GL_TEXTURE_2D_ARRAY, GL_NONE) );
+#endif
 
                 continue;
             }
@@ -990,7 +998,7 @@ namespace Mengine
     {
         uint32_t maxTexture2DArrayLayers = this->getMaxTexture2DArrayLayers();
 
-        if( _layers == 0 || _layers > maxTexture2DArrayLayers )
+        if( _layers == 0 || (_layers > 1 && _layers > maxTexture2DArrayLayers) )
         {
             LOGGER_ERROR( "invalid texture layer count %u (max %u)"
                 , _layers

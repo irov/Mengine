@@ -1,0 +1,19 @@
+final File proguardUserFile = project.file('proguard-rules.pro')
+
+android {
+    buildTypes {
+        debug {
+            minifyEnabled false
+        }
+
+        release {
+            minifyEnabled false
+        }
+    }
+
+    if (proguardUserFile.exists() == true) {
+        defaultConfig {
+            consumerProguardFiles proguardUserFile
+        }
+    }
+}

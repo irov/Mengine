@@ -18,11 +18,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     GLenum OpenGLRenderImageArray::getTextureTarget() const
     {
+#if defined(MENGINE_RENDER_OPENGL_ES2)
+        return GL_NONE;
+#else
         return GL_TEXTURE_2D_ARRAY;
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderImageArray::_create()
     {
+#if defined(MENGINE_RENDER_OPENGL_ES2)
+        LOGGER_ERROR( "texture arrays require OpenGL ES 3" );
+
+        return false;
+#else
 #if defined(MENGINE_RENDER_OPENGL_NORMAL_LINUX)
         if( GLAD_GL_ARB_texture_storage == 0 )
         {
@@ -44,10 +53,19 @@ namespace Mengine
         MENGINE_GLCALL( glBindTexture, (GL_TEXTURE_2D_ARRAY, GL_NONE) );
 
         return true;
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderImageArray::_unlock( const Rect & _lockedRect, const void * _buffer, uint32_t _layer, uint32_t _level )
     {
+#if defined(MENGINE_RENDER_OPENGL_ES2)
+        MENGINE_UNUSED( _lockedRect );
+        MENGINE_UNUSED( _buffer );
+        MENGINE_UNUSED( _layer );
+        MENGINE_UNUSED( _level );
+
+        return false;
+#else
         bool successful = true;
 
         uint32_t miplevel_hwwidth = m_hwWidth >> _level;
@@ -89,6 +107,7 @@ namespace Mengine
         }
 
         return successful;
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
 }

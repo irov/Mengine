@@ -1,7 +1,5 @@
-final boolean isLibrary = project.plugins.hasPlugin('com.android.library')
-
 final Boolean ANDROID_APP_DEBUG_MINIFY_ENABLE = Utils.getBooleanProperty("ANDROID_APP_DEBUG_MINIFY_ENABLE", false)
-final Boolean ANDROID_APP_RELEASE_MINIFY_ENABLE = Utils.getBooleanProperty("ANDROID_APP_RELEASE_MINIFY_ENABLE", isLibrary == false)
+final Boolean ANDROID_APP_RELEASE_MINIFY_ENABLE = Utils.getBooleanProperty("ANDROID_APP_RELEASE_MINIFY_ENABLE", true)
 
 final File proguardUserFile = project.file('proguard-rules.pro')
 
@@ -22,9 +20,7 @@ android {
         release {
             minifyEnabled ANDROID_APP_RELEASE_MINIFY_ENABLE
 
-            if (isLibrary == false) {
-                shrinkResources = ANDROID_APP_RELEASE_MINIFY_ENABLE
-            }
+            shrinkResources = ANDROID_APP_RELEASE_MINIFY_ENABLE
 
             if (ANDROID_APP_RELEASE_MINIFY_ENABLE == true) {
                 proguardFiles getDefaultProguardFile('proguard-android-optimize.txt')
@@ -33,14 +29,6 @@ android {
                     proguardFiles proguardUserFile
                 }
             }
-        }
-    }
-}
-
-if (isLibrary == true && proguardUserFile.exists() == true) {
-    android {
-        defaultConfig {
-            consumerProguardFiles proguardUserFile
         }
     }
 }

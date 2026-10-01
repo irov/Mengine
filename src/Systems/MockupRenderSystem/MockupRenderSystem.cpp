@@ -67,7 +67,7 @@ namespace Mengine
 #if defined(MENGINE_PLATFORM_WINDOWS)
         return RP_DX11;
 #else
-#   if defined(MENGINE_RENDER_OPENGL_ES)
+#   if defined(MENGINE_PLATFORM_ANDROID)
         return RP_OPENGLES;
 #   else
         return RP_OPENGL;
@@ -89,8 +89,14 @@ namespace Mengine
 #if defined(MENGINE_PLATFORM_WINDOWS)
         m_renderSystemName = CONFIG_VALUE_CONSTSTRING( "Engine", "MockupRenderSystem", STRINGIZE_STRING_LOCAL( "DX11" ) );
 #else
-#   if defined(MENGINE_RENDER_OPENGL_ES)
-        m_renderSystemName = CONFIG_VALUE_CONSTSTRING( "Engine", "MockupRenderSystem", STRINGIZE_STRING_LOCAL( "OpenGLES" ) );
+#   if defined(MENGINE_PLATFORM_ANDROID)
+#       if MENGINE_RENDER_OPENGL_ES_VERSION == 2
+        m_renderSystemName = CONFIG_VALUE_CONSTSTRING( "Engine", "MockupRenderSystem", STRINGIZE_STRING_LOCAL( "OpenGLES2" ) );
+#       elif MENGINE_RENDER_OPENGL_ES_VERSION == 3
+        m_renderSystemName = CONFIG_VALUE_CONSTSTRING( "Engine", "MockupRenderSystem", STRINGIZE_STRING_LOCAL( "OpenGLES3" ) );
+#       else
+#           error "MENGINE_RENDER_OPENGL_ES_VERSION must be 2 or 3"
+#       endif
 #   else
         m_renderSystemName = CONFIG_VALUE_CONSTSTRING( "Engine", "MockupRenderSystem", STRINGIZE_STRING_LOCAL( "OpenGL" ) );
 #   endif

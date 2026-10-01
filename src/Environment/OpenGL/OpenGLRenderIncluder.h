@@ -14,8 +14,17 @@
 #elif defined(MENGINE_PLATFORM_ANDROID)
 #   define GL_GLEXT_PROTOTYPES
 
-#   include <GLES3/gl3.h>
-#   include <GLES3/gl3ext.h>
+#   if MENGINE_RENDER_OPENGL_ES_VERSION == 2
+#       include <GLES2/gl2.h>
+#       include <GLES2/gl2ext.h>
+#       define MENGINE_RENDER_OPENGL_ES2
+#   elif MENGINE_RENDER_OPENGL_ES_VERSION == 3
+#       include <GLES3/gl3.h>
+#       include <GLES3/gl3ext.h>
+#       define MENGINE_RENDER_OPENGL_ES3
+#   else
+#       error "MENGINE_RENDER_OPENGL_ES_VERSION must be 2 or 3"
+#   endif
 
 #   define MENGINE_RENDER_OPENGL_ES
 #   define MENGINE_RENDER_OPENGL_ES_ANDROID

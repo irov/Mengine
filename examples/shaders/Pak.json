@@ -39,15 +39,23 @@
             },
             {
                 "Path": "Materials/Shader_OpenGLES.json",
-                "RenderPlatform": "OpenGLES"
+                "RenderPlatform": "OpenGLES2"
             },
             {
                 "Path": "Materials/Standart_OpenGLES.json",
-                "RenderPlatform": "OpenGLES"
+                "RenderPlatform": "OpenGLES2"
+            },
+            {
+                "Path": "Materials/Shader_OpenGLES.json",
+                "RenderPlatform": "OpenGLES3"
+            },
+            {
+                "Path": "Materials/Standart_OpenGLES.json",
+                "RenderPlatform": "OpenGLES3"
             },
             {
                 "Path": "Materials/TiledMap_OpenGLES.json",
-                "RenderPlatform": "OpenGLES"
+                "RenderPlatform": "OpenGLES3"
             }
         ]
     }

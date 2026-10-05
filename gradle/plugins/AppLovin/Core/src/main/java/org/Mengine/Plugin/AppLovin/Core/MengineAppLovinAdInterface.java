@@ -3,8 +3,9 @@ package org.Mengine.Plugin.AppLovin.Core;
 import androidx.annotation.NonNull;
 
 import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MengineFactorable;
 
-public interface MengineAppLovinAdInterface {
+public interface MengineAppLovinAdInterface extends MengineFactorable {
     String getAdUnitId();
 
     void onActivityCreate(@NonNull MengineActivity activity);

@@ -54,6 +54,8 @@ typedef NS_ENUM( NSInteger, EiOSAdvertisementBannerAnchor )
 - (void)setProvider:(id<iOSAdvertisementProviderInterface> _Nullable)provider;
 - (id<iOSAdvertisementProviderInterface> _Nullable)getProvider;
 
+- (void)onAdUserRewarded:(NSString *)placement;
+
 - (void)readyAdProvider:(BOOL)successful;
 
 - (BOOL)isShowingInterstitial;

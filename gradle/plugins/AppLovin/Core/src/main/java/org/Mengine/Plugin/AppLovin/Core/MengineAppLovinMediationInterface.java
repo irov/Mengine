@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineFactorable;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.json.JSONObject;
 
@@ -15,7 +16,7 @@ import com.applovin.mediation.nativeAds.MaxNativeAdLoader;
 
 import java.util.Map;
 
-public interface MengineAppLovinMediationInterface {
+public interface MengineAppLovinMediationInterface extends MengineFactorable {
     void onAppCreate(@NonNull MengineApplication application, @NonNull MengineAppLovinPluginInterface plugin);
     void onAppTerminate(@NonNull MengineApplication application, @NonNull MengineAppLovinPluginInterface plugin);
 

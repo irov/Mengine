@@ -22,9 +22,10 @@
 - (NSString *)getCooldownGroupName;
 
 - (BOOL)parseAdPointBoolean:(NSDictionary *)json key:(NSString *)key required:(BOOL)required defaultValue:(BOOL)defaultValue;
-- (NSInteger)parseAdPointInteger:(NSDictionary *)json key:(NSString *)key required:(BOOL)required defaultValue:(NSInteger)defaultValue;
-// JSON and default values are seconds; the result is milliseconds.
-- (NSInteger)parseAdPointTimeInterval:(NSDictionary *)json key:(NSString *)key required:(BOOL)required defaultValue:(NSInteger)defaultValue;
+// Bounds are inclusive; nil disables the corresponding bound.
+- (NSInteger)parseAdPointInteger:(NSDictionary *)json key:(NSString *)key required:(BOOL)required defaultValue:(NSInteger)defaultValue minValue:(NSNumber *)minValue maxValue:(NSNumber *)maxValue;
+// JSON, default value and bounds are seconds; the result is milliseconds.
+- (NSInteger)parseAdPointTimeInterval:(NSDictionary *)json key:(NSString *)key required:(BOOL)required defaultValue:(NSInteger)defaultValue minValue:(NSNumber *)minValue maxValue:(NSNumber *)maxValue;
 - (NSString *)parseAdPointString:(NSDictionary *)json key:(NSString *)key required:(BOOL)required defaultValue:(NSString *)defaultValue;
 
 - (void)showAd;

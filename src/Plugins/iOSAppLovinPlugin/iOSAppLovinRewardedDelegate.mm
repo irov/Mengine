@@ -272,6 +272,8 @@
         @"ad": [self getMAAdParams:ad]
     }];
 
+    [self.m_advertisement onAdUserRewarded:ad.placement];
+
     id<iOSAdvertisementCallbackInterface> callback = [[iOSAppLovinPlugin sharedInstance] getAdvertisementRewardedCallback];
 
     if (callback != nil) {

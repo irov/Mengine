@@ -18,13 +18,13 @@ public class MengineAdPointAppOpen extends MengineAdPointBase {
     MengineAdPointAppOpen(@NonNull String name, @NonNull JSONObject values) {
         super(name, values);
 
-        m_timeSleep = this.parseAdPointTime(values, "time_sleep", false, -1);
-        m_actionOffset = this.parseAdPointInteger(values, "trigger_action_offset", false, -1);
-        m_actionCooldown = this.parseAdPointInteger(values, "trigger_action_cooldown", false, -1);
-        m_timeOffset = this.parseAdPointTime(values, "trigger_time_offset", false, -1);
-        m_timeCooldown = this.parseAdPointTime(values, "trigger_time_cooldown", false, -1);
-        m_installTimeOffset = this.parseAdPointTime(values, "trigger_install_time_offset", false, 600);
-        m_sessionOffset = this.parseAdPointLong(values, "trigger_session_offset", false, -1);
+        m_timeSleep = this.parseAdPointTime(values, "time_sleep", false, -1, null, null);
+        m_actionOffset = this.parseAdPointInteger(values, "trigger_action_offset", false, -1, null, null);
+        m_actionCooldown = this.parseAdPointInteger(values, "trigger_action_cooldown", false, -1, null, null);
+        m_timeOffset = this.parseAdPointTime(values, "trigger_time_offset", false, -1, null, null);
+        m_timeCooldown = this.parseAdPointTime(values, "trigger_time_cooldown", false, -1, null, null);
+        m_installTimeOffset = this.parseAdPointTime(values, "trigger_install_time_offset", false, 600, null, null);
+        m_sessionOffset = this.parseAdPointLong(values, "trigger_session_offset", false, -1, null, null);
     }
 
     public long getTimeSleep() {

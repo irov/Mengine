@@ -9,12 +9,12 @@
     self = [super initWithName:name withJson:json];
 
     if (self != nil) {
-        self.m_actionOffset = [self parseAdPointInteger:json key:@"trigger_action_offset" required:NO defaultValue:-1];
-        self.m_actionCooldown = [self parseAdPointInteger:json key:@"trigger_action_cooldown" required:NO defaultValue:-1];
-        self.m_timeOffset = [self parseAdPointTimeInterval:json key:@"trigger_time_offset" required:NO defaultValue:-1];
-        self.m_timeCooldown = [self parseAdPointTimeInterval:json key:@"trigger_time_cooldown" required:NO defaultValue:-1];
-        self.m_installTimeOffset = [self parseAdPointTimeInterval:json key:@"trigger_install_time_offset" required:NO defaultValue:600];
-        self.m_sessionOffset = [self parseAdPointInteger:json key:@"trigger_session_offset" required:NO defaultValue:-1];
+        self.m_actionOffset = [self parseAdPointInteger:json key:@"trigger_action_offset" required:NO defaultValue:-1 minValue:nil maxValue:nil];
+        self.m_actionCooldown = [self parseAdPointInteger:json key:@"trigger_action_cooldown" required:NO defaultValue:-1 minValue:nil maxValue:nil];
+        self.m_timeOffset = [self parseAdPointTimeInterval:json key:@"trigger_time_offset" required:NO defaultValue:-1 minValue:nil maxValue:nil];
+        self.m_timeCooldown = [self parseAdPointTimeInterval:json key:@"trigger_time_cooldown" required:NO defaultValue:-1 minValue:nil maxValue:nil];
+        self.m_installTimeOffset = [self parseAdPointTimeInterval:json key:@"trigger_install_time_offset" required:NO defaultValue:600 minValue:nil maxValue:nil];
+        self.m_sessionOffset = [self parseAdPointInteger:json key:@"trigger_session_offset" required:NO defaultValue:-1 minValue:nil maxValue:nil];
     }
 
     return self;

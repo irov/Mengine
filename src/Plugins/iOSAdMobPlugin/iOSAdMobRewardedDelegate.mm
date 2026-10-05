@@ -128,6 +128,8 @@
             @"amount": @(reward.amount.doubleValue)
         }];
 
+        [strongSelf.m_advertisement onAdUserRewarded:placement];
+
         id<iOSAdvertisementCallbackInterface> callback = [[iOSAdMobPlugin sharedInstance] getAdvertisementRewardedCallback];
 
         if (callback != nil) {

@@ -452,11 +452,11 @@
         return NO;
     }
 
-    if ([adPoint canOfferAd] == NO) {
+    if ([self isShowingFullscreenAd_] == YES) {
         return NO;
     }
 
-    if ([self isShowingFullscreenAd_] == YES) {
+    if ([adPoint canOfferAd] == NO) {
         return NO;
     }
 
@@ -469,6 +469,11 @@
     [adPoint showAd];
 
     return YES;
+}
+
+- (void)onAdUserRewarded:(NSString *)placement {
+    iOSAdvertisementRewardedPoint * adPoint = [self getAdRewardedPoint:placement];
+    [adPoint recordShown];
 }
 
 - (BOOL)isShowingRewarded {
@@ -526,6 +531,10 @@
     }
 
     if (self.m_provider == nil) {
+        return NO;
+    }
+
+    if ([adPoint canOfferAd] == NO) {
         return NO;
     }
 

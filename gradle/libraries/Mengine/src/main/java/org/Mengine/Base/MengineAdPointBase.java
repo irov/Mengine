@@ -1,6 +1,7 @@
 package org.Mengine.Base;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.json.JSONObject;
 
@@ -22,7 +23,7 @@ public class MengineAdPointBase {
     MengineAdPointBase(@NonNull String name, @NonNull JSONObject values) {
         m_name = name;
 
-        m_id = this.parseAdPointInteger(values, "id", false, 1);
+        m_id = this.parseAdPointInteger(values, "id", false, 1, null, null);
         m_enabled = this.parseAdPointBoolean(values, "enable", true, false);
 
         m_cooldownGroupName = this.parseAdPointString(values, "trigger_cooldown_group", false, null);
@@ -81,7 +82,8 @@ public class MengineAdPointBase {
         return (boolean)value;
     }
 
-    protected int parseAdPointInteger(@NonNull JSONObject values, @NonNull String key, boolean required, int defaultValue) {
+    // Bounds are inclusive; null disables the corresponding bound.
+    protected int parseAdPointInteger(@NonNull JSONObject values, @NonNull String key, boolean required, int defaultValue, @Nullable Integer minValue, @Nullable Integer maxValue) {
         if (values.has(key) == false) {
             if (required == true) {
                 MengineLog.logError(TAG, "%s attribute %s is required"
@@ -105,10 +107,36 @@ public class MengineAdPointBase {
             return defaultValue;
         }
 
-        return (int)value;
+        int result = (int)value;
+
+        if (minValue != null && result < minValue) {
+            MengineLog.logError(TAG, "%s attribute %s must be >= %d, but got %d; using default %d"
+                , m_name
+                , key
+                , minValue
+                , result
+                , defaultValue
+            );
+
+            return defaultValue;
+        }
+
+        if (maxValue != null && result > maxValue) {
+            MengineLog.logError(TAG, "%s attribute %s must be <= %d, but got %d; using default %d"
+                , m_name
+                , key
+                , maxValue
+                , result
+                , defaultValue
+            );
+
+            return defaultValue;
+        }
+
+        return result;
     }
 
-    protected long parseAdPointLong(@NonNull JSONObject values, @NonNull String key, boolean required, long defaultValue) {
+    protected long parseAdPointLong(@NonNull JSONObject values, @NonNull String key, boolean required, long defaultValue, @Nullable Long minValue, @Nullable Long maxValue) {
         if (values.has(key) == false) {
             if (required == true) {
                 MengineLog.logError(TAG, "%s attribute %s is required"
@@ -121,28 +149,55 @@ public class MengineAdPointBase {
         }
 
         Object value = values.opt(key);
+        long result;
 
         if (value instanceof Integer == true) {
-            int int_value = (int)value;
-
-            return int_value;
+            result = (int)value;
         } else if (value instanceof Long == true) {
-            long long_value = (long)value;
+            result = (long)value;
+        } else {
+            Class<?> valueClass = value.getClass();
+            String valueClassName = valueClass.getSimpleName();
 
-            return long_value;
+            MengineLog.logError(TAG, "%s attribute %s must be an integer or a long, but not a %s"
+                , m_name
+                , key
+                , valueClassName
+            );
+
+            return defaultValue;
         }
 
-        MengineLog.logError(TAG, "%s attribute %s must be an integer or a long, but not a %s"
-            , m_name
-            , key
-            , value.getClass().getSimpleName()
-        );
+        if (minValue != null && result < minValue) {
+            MengineLog.logError(TAG, "%s attribute %s must be >= %d, but got %d; using default %d"
+                , m_name
+                , key
+                , minValue
+                , result
+                , defaultValue
+            );
 
-        return defaultValue;
+            return defaultValue;
+        }
+
+        if (maxValue != null && result > maxValue) {
+            MengineLog.logError(TAG, "%s attribute %s must be <= %d, but got %d; using default %d"
+                , m_name
+                , key
+                , maxValue
+                , result
+                , defaultValue
+            );
+
+            return defaultValue;
+        }
+
+        return result;
     }
 
-    protected long parseAdPointTime(@NonNull JSONObject values, @NonNull String key, boolean required, long defaultValue) {
-        long value = this.parseAdPointLong(values, key, required, defaultValue);
+    // JSON, default value and bounds are seconds; the result is milliseconds.
+    protected long parseAdPointTime(@NonNull JSONObject values, @NonNull String key, boolean required, long defaultValue, @Nullable Long minValue, @Nullable Long maxValue) {
+        long value = this.parseAdPointLong(values, key, required, defaultValue, minValue, maxValue);
 
         long time = value * 1000;
 

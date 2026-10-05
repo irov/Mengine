@@ -28,6 +28,7 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
 
     private final Map<String, MengineAdCooldown> m_adCooldowns = new HashMap<>();
     private final Map<String, MengineAdAttempts> m_adAttempts = new HashMap<>();
+    private final Map<String, MengineAdFrequency> m_adRewardedFrequencies = new HashMap<>();
 
     private final Object m_syncronizationAdPoints = new Object();
 
@@ -174,6 +175,19 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         m_adInterstitialPoints.put(adPointName, adPoint);
     }
 
+    private void setupAdRewardedPointFrequency_(MengineAdPointRewarded adPoint) {
+        String adPointName = adPoint.getName();
+        MengineAdFrequency frequency = m_adRewardedFrequencies.get(adPointName);
+
+        if (frequency == null) {
+            frequency = new MengineAdFrequency();
+
+            m_adRewardedFrequencies.put(adPointName, frequency);
+        }
+
+        adPoint.setFrequency(frequency);
+    }
+
     private void parseAdRewardedPoint(String adPointName, JSONObject adPointConfig) {
         if (m_adRewardedPoints.containsKey(adPointName) == true) {
             this.logError("ad rewarded point '%s' already exists", adPointName);
@@ -185,6 +199,7 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
 
         this.setupAdBasePointCooldown(adPoint);
         this.setupAdBasePointAttemts(adPoint);
+        this.setupAdRewardedPointFrequency_(adPoint);
 
         m_adRewardedPoints.put(adPointName, adPoint);
     }
@@ -269,6 +284,21 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
 
         bundle.putBundle("cooldowns", cooldownsBundle);
 
+        Bundle rewardedFrequenciesBundle = new Bundle();
+
+        synchronized (m_syncronizationAdPoints) {
+            for (Map.Entry<String, MengineAdFrequency> entry : m_adRewardedFrequencies.entrySet()) {
+                String adPointName = entry.getKey();
+                MengineAdFrequency frequency = entry.getValue();
+
+                Bundle frequencyBundle = frequency.onSave(application);
+
+                rewardedFrequenciesBundle.putBundle(adPointName, frequencyBundle);
+            }
+        }
+
+        bundle.putBundle("rewarded_frequencies", rewardedFrequenciesBundle);
+
         return bundle;
     }
 
@@ -305,6 +335,24 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
                 }
 
                 m_adCooldowns.put(key, cooldown);
+            }
+        }
+
+        Bundle rewardedFrequenciesBundle = bundle.getBundle("rewarded_frequencies");
+
+        if (rewardedFrequenciesBundle != null) {
+            synchronized (m_syncronizationAdPoints) {
+                for (String key : rewardedFrequenciesBundle.keySet()) {
+                    MengineAdFrequency frequency = new MengineAdFrequency();
+
+                    Bundle frequencyBundle = rewardedFrequenciesBundle.getBundle(key);
+
+                    if (frequencyBundle != null) {
+                        frequency.onLoad(application, frequencyBundle);
+                    }
+
+                    m_adRewardedFrequencies.put(key, frequency);
+                }
             }
         }
     }
@@ -761,6 +809,12 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
             return false;
         }
 
+        MengineApplication application = this.getMengineApplication();
+
+        if (adPoint.canOfferAd(application) == false) {
+            return false;
+        }
+
         if (m_adProvider.showRewarded(placement) == false) {
             this.logInfo("ad provider can't show rewarded ad for placement '%s'", placement);
 
@@ -858,6 +912,12 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
         if (adPoint == null) {
             this.logError("ad rewarded point '%s' not found", placement);
 
+            return false;
+        }
+
+        MengineApplication application = this.getMengineApplication();
+
+        if (adPoint.canOfferAd(application) == false) {
             return false;
         }
 
@@ -1314,12 +1374,13 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
 
         Map<String, Object> params = Map.of("placement", placement, "label", label, "amount", amount);
 
-        if (format == MengineAdFormat.ADFORMAT_REWARDED) {
-            this.increaseStatisticInteger("ad.rewarded.user_rewarded", 1);
-            this.increaseStatisticInteger("ad.rewarded.user_rewarded." + placement, 1);
+        if (format == MengineAdFormat.ADFORMAT_REWARDED || format == MengineAdFormat.ADFORMAT_REWARDED_INTERSTITIAL) {
+            MengineAdPointRewarded adPoint = this.getAdRewardedPoint(placement);
 
-            this.nativeCall("onAndroidAdServiceRewardedUserRewarded", params);
-        } else if (format == MengineAdFormat.ADFORMAT_REWARDED_INTERSTITIAL) {
+            if (adPoint != null) {
+                adPoint.recordShown();
+            }
+
             this.increaseStatisticInteger("ad.rewarded.user_rewarded", 1);
             this.increaseStatisticInteger("ad.rewarded.user_rewarded." + placement, 1);
 

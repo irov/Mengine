@@ -103,6 +103,8 @@
         [strongSelf log:@"rewardedInterstitial.userDidEarnReward"];
         [strongSelf eventRewardedInterstitial:@"rewarded" params:@{@"placement":placement}];
 
+        [strongSelf.m_advertisement onAdUserRewarded:placement];
+
         id<iOSAdvertisementCallbackInterface> callback = [strongSelf.m_advertisement getRewardedCallback];
         [callback oniOSAdvertisementUserRewarded:placement withLabel:reward.type != nil ? reward.type : @"" withAmount:reward.amount.integerValue];
     }];

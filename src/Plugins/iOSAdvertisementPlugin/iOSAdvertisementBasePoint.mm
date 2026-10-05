@@ -12,7 +12,7 @@
     if (self != nil) {
         self.m_name = name;
 
-        self.m_id = [self parseAdPointInteger:json key:@"id" required:NO defaultValue:1];
+        self.m_id = [self parseAdPointInteger:json key:@"id" required:NO defaultValue:1 minValue:nil maxValue:nil];
         self.m_enabled = [self parseAdPointBoolean:json key:@"enable" required:YES defaultValue:NO];
 
         self.m_cooldownGroupName = [self parseAdPointString:json key:@"trigger_cooldown_group" required:NO defaultValue:nil];
@@ -77,7 +77,7 @@
     return result;
 }
 
-- (NSInteger)parseAdPointInteger:(NSDictionary *)json key:(NSString *)key required:(BOOL)required defaultValue:(NSInteger)defaultValue {
+- (NSInteger)parseAdPointInteger:(NSDictionary *)json key:(NSString *)key required:(BOOL)required defaultValue:(NSInteger)defaultValue minValue:(NSNumber *)minValue maxValue:(NSNumber *)maxValue {
     id value = [json objectForKey:key];
 
     if (value == nil) {
@@ -89,9 +89,52 @@
     }
 
     if ([value isKindOfClass:[NSNumber class]] == NO) {
-        IOS_LOGGER_ERROR(@"[iOSAdvertisementBasePoint] invalid key NSNumber type: %@, %@", key, NSStringFromClass([value class]));
+        Class valueClass = [value class];
+        NSString * valueClassName = NSStringFromClass(valueClass);
+
+        IOS_LOGGER_ERROR(@"[iOSAdvertisementBasePoint] invalid key NSNumber type: %@, %@", key, valueClassName);
 
         return defaultValue;
+    }
+
+    CFTypeID valueTypeId = CFGetTypeID((__bridge CFTypeRef)value);
+    CFTypeID booleanTypeId = CFBooleanGetTypeID();
+
+    if (valueTypeId == booleanTypeId) {
+        Class valueClass = [value class];
+        NSString * valueClassName = NSStringFromClass(valueClass);
+
+        IOS_LOGGER_ERROR(@"[iOSAdvertisementBasePoint] invalid key integer type: %@, %@", key, valueClassName);
+
+        return defaultValue;
+    }
+
+    if (minValue != nil) {
+        if ([value compare:minValue] == NSOrderedAscending) {
+            IOS_LOGGER_ERROR(@"%@ attribute %@ must be >= %@, but got %@; using default %ld"
+                , self.m_name
+                , key
+                , minValue
+                , value
+                , (long)defaultValue
+            );
+
+            return defaultValue;
+        }
+    }
+
+    if (maxValue != nil) {
+        if ([value compare:maxValue] == NSOrderedDescending) {
+            IOS_LOGGER_ERROR(@"%@ attribute %@ must be <= %@, but got %@; using default %ld"
+                , self.m_name
+                , key
+                , maxValue
+                , value
+                , (long)defaultValue
+            );
+
+            return defaultValue;
+        }
     }
 
     NSInteger result = [value integerValue];
@@ -99,8 +142,8 @@
     return result;
 }
 
-- (NSInteger)parseAdPointTimeInterval:(NSDictionary *)json key:(NSString *)key required:(BOOL)required defaultValue:(NSInteger)defaultValue {
-    NSInteger resultSec = [self parseAdPointInteger:json key:key required:required defaultValue:defaultValue];
+- (NSInteger)parseAdPointTimeInterval:(NSDictionary *)json key:(NSString *)key required:(BOOL)required defaultValue:(NSInteger)defaultValue minValue:(NSNumber *)minValue maxValue:(NSNumber *)maxValue {
+    NSInteger resultSec = [self parseAdPointInteger:json key:key required:required defaultValue:defaultValue minValue:minValue maxValue:maxValue];
 
     NSInteger resultMillisec = resultSec * 1000;
 

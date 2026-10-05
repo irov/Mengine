@@ -1238,7 +1238,7 @@ namespace Mengine
                 ->removeGlobalModule( _name );
         }
         //////////////////////////////////////////////////////////////////////////
-        static void s_log( pybind::kernel_interface * _kernel, const StringView & _message, ELoggerLevel _level, uint32_t _color, uint32_t _flag )
+        static void s_log( pybind::kernel_interface * _kernel, const StringView & _message, ELoggerLevel _level, uint32_t _filter, uint32_t _color, uint32_t _flag )
         {
             ELoggerLevel verboseLevel = LOGGER_SERVICE()
                 ->getVerboseLevel();
@@ -1258,7 +1258,7 @@ namespace Mengine
             msg.category = "python";
             msg.thread = Helper::getCurrentThreadName();
             msg.level = _level;
-            msg.filter = LFILTER_NONE;
+            msg.filter = _filter;
             msg.color = _color;
             msg.flag = _flag;
             msg.file = filename;
@@ -1277,7 +1277,7 @@ namespace Mengine
             MENGINE_UNUSED( _message );
 
 #if defined(MENGINE_LOGGER_INFO_ENABLE)
-            s_log( _kernel, _message, LM_DEBUG, LCOLOR_BLUE, LFLAG_SHORT );
+            s_log( _kernel, _message, LM_DEBUG, LFILTER_NONE, LCOLOR_BLUE, LFLAG_SHORT );
 #endif
         }
         //////////////////////////////////////////////////////////////////////////
@@ -1287,33 +1287,38 @@ namespace Mengine
             MENGINE_UNUSED( _message );
 
 #if defined(MENGINE_LOGGER_INFO_ENABLE)
-            s_log( _kernel, _message, LM_INFO, LCOLOR_GREEN | LCOLOR_BLUE, LFLAG_SHORT );
+            s_log( _kernel, _message, LM_INFO, LFILTER_NONE, LCOLOR_GREEN | LCOLOR_BLUE, LFLAG_SHORT );
 #endif
         }
         //////////////////////////////////////////////////////////////////////////
         static void s_logMessage( pybind::kernel_interface * _kernel, const StringView & _message )
         {
-            s_log( _kernel, _message, LM_MESSAGE, LCOLOR_GREEN, LFLAG_SHORT );
+            s_log( _kernel, _message, LM_MESSAGE, LFILTER_NONE, LCOLOR_GREEN, LFLAG_SHORT );
         }
         //////////////////////////////////////////////////////////////////////////
         static void s_logWarning( pybind::kernel_interface * _kernel, const StringView & _message )
         {
-            s_log( _kernel, _message, LM_WARNING, LCOLOR_RED | LCOLOR_GREEN, LFLAG_SHORT );
+            s_log( _kernel, _message, LM_WARNING, LFILTER_NONE, LCOLOR_RED | LCOLOR_GREEN, LFLAG_SHORT );
         }
         //////////////////////////////////////////////////////////////////////////
         static void s_logError( pybind::kernel_interface * _kernel, const StringView & _message )
         {
-            s_log( _kernel, _message, LM_ERROR, LCOLOR_RED, LFLAG_SHORT );
+            s_log( _kernel, _message, LM_ERROR, LFILTER_NONE, LCOLOR_RED, LFLAG_SHORT );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void s_logException( pybind::kernel_interface * _kernel, const StringView & _message )
+        {
+            s_log( _kernel, _message, LM_ERROR, LFILTER_EXCEPTION, LCOLOR_RED, LFLAG_SHORT );
         }
         //////////////////////////////////////////////////////////////////////////
         static void s_logMessageRelease( pybind::kernel_interface * _kernel, const StringView & _message )
         {
-            s_log( _kernel, _message, LM_MESSAGE_RELEASE, LCOLOR_RED | LCOLOR_BLUE, LFLAG_SHORT );
+            s_log( _kernel, _message, LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_RED | LCOLOR_BLUE, LFLAG_SHORT );
         }
         //////////////////////////////////////////////////////////////////////////
         static void s_logFatal( pybind::kernel_interface * _kernel, const StringView & _message )
         {
-            s_log( _kernel, _message, LM_FATAL, LCOLOR_RED, LFLAG_FULL );
+            s_log( _kernel, _message, LM_FATAL, LFILTER_NONE, LCOLOR_RED, LFLAG_FULL );
         }
         //////////////////////////////////////////////////////////////////////////
         static UniqueId s_enumerator()
@@ -4344,6 +4349,7 @@ namespace Mengine
         pybind::def_function_kernel( _kernel, "logMessage", &Detail::s_logMessage );
         pybind::def_function_kernel( _kernel, "logWarning", &Detail::s_logWarning );
         pybind::def_function_kernel( _kernel, "logError", &Detail::s_logError );
+        pybind::def_function_kernel( _kernel, "logException", &Detail::s_logException );
         pybind::def_function_kernel( _kernel, "logMessageRelease", &Detail::s_logMessageRelease );
         pybind::def_function_kernel( _kernel, "logFatal", &Detail::s_logFatal );
 

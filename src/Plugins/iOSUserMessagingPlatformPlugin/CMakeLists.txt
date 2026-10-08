@@ -22,8 +22,7 @@ ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_IOS_USERMESSAGINGPLATFORM)
 
 ADD_MENGINE_APPLE_APPLICATION_DELEGATE("iOSUserMessagingPlatformPlugin")
 
-ADD_MENGINE_COCOAPOD_GOOGLE_UTILITIES()
-ADD_MENGINE_COCOAPOD("GoogleUserMessagingPlatform" "NO-GIT" "3.1.0")
+ADD_MENGINE_SWIFT_PACKAGE("GoogleUserMessagingPlatform" "https://github.com/googleads/swift-package-manager-google-user-messaging-platform.git" "3.1.0")
 
 if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
     TARGET_LINK_LIBRARIES(${PROJECT_NAME} Python)

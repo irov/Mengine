@@ -24,4 +24,4 @@ fi
 
 SOLUTION_DIR="${SCRIPT_DIR}/../../solutions/solution_xcode_macos/${CONFIGURATION}"
 
-"${CMAKE}" --build "${SOLUTION_DIR}" --config "${CONFIGURATION}"
+"${CMAKE}" --build "${SOLUTION_DIR}" --config "${CONFIGURATION}" -- -clonedSourcePackagesDirPath "${SOLUTION_DIR}/SourcePackages"

@@ -5,8 +5,14 @@
 #import "Environment/iOS/iOSLog.h"
 
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+#   include "Kernel/ScriptEmbeddingHelper.h"
+
 #   include "iOSAdjustScriptEmbedding.h"
 #endif
+
+#import "ADJDeeplink.h"
+#import "ADJEvent.h"
+#import "ADJLogger.h"
 
 #define PLUGIN_BUNDLE_NAME @"MengineiOSAdjustPlugin"
 
@@ -25,7 +31,7 @@
 
 - (void)onRunBegin {
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-    Mengine::Helper::addScriptEmbedding<Mengine::iOSAdjustScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE );
+    Mengine::Helper::addScriptEmbedding<Mengine::iOSAdjustScriptEmbedding>( MENGINE_DOCUMENT_FUNCTION );
 #endif
 }
 
@@ -36,12 +42,12 @@
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    if (Mengine::Helper::AppleHasBundlePluginConfig(PLUGIN_BUNDLE_NAME) == NO) {
+    if ([AppleBundle hasPluginConfig:PLUGIN_BUNDLE_NAME] == NO) {
         return NO;
     }
 
-    NSString * MengineiOSAdjustPlugin_AppToken = Mengine::Helper::AppleGetBundlePluginConfigString(PLUGIN_BUNDLE_NAME, @"AppToken", nil);
-    double MengineiOSAdjustPlugin_DelayStart = Mengine::Helper::AppleGetBundlePluginConfigDouble(PLUGIN_BUNDLE_NAME, @"DelayStart", 0.0);
+    NSString * appToken = [AppleBundle getPluginConfigString:PLUGIN_BUNDLE_NAME withKey:@"AppToken" withDefault:nil];
+    double delayStart = [AppleBundle getPluginConfigDouble:PLUGIN_BUNDLE_NAME withKey:@"DelayStart" withDefault:0.0];
 
 #ifdef MENGINE_DEBUG
     NSString *environment = ADJEnvironmentSandbox;
@@ -49,21 +55,45 @@
     NSString *environment = ADJEnvironmentProduction;
 #endif
 
-    ADJConfig *adjustConfig = [ADJConfig configWithAppToken:MengineiOSAdjustPlugin_AppToken
-                                                environment:environment];
+    ADJConfig * adjustConfig = [[ADJConfig alloc] initWithAppToken:appToken environment:environment];
 
 #ifdef MENGINE_DEBUG
     [adjustConfig setLogLevel:ADJLogLevelVerbose];
 #endif
 
-    [adjustConfig setDelayStart:MengineiOSAdjustPlugin_DelayStart];
+    if( delayStart > 0.0 )
+    {
+        [adjustConfig enableFirstSessionDelay];
+    }
     [adjustConfig setDelegate:self];
 
-    [Adjust appDidLaunch:adjustConfig];
+    [Adjust initSdk:adjustConfig];
 
-    IOS_LOGGER_MESSAGE(@"[Adjust] adid: %s", [[Adjust adid] UTF8String]);
+    if( delayStart > 0.0 )
+    {
+        constexpr double maxDelayStart = 10.0;
 
-    [Adjust requestTrackingAuthorizationWithCompletionHandler:^(NSUInteger status) {
+        if( delayStart > maxDelayStart )
+        {
+            delayStart = maxDelayStart;
+        }
+
+        int64_t delayNanoseconds = static_cast<int64_t>(delayStart * NSEC_PER_SEC);
+        dispatch_time_t delay = dispatch_time( DISPATCH_TIME_NOW, delayNanoseconds );
+        dispatch_queue_t queue = dispatch_get_main_queue();
+
+        dispatch_after( delay, queue, ^{
+            [Adjust endFirstSessionDelay];
+        } );
+    }
+
+    [Adjust adidWithCompletionHandler:^(NSString * adid) {
+        const Mengine::Char * adidString = adid.UTF8String;
+
+        IOS_LOGGER_MESSAGE(@"[Adjust] adid: %s", adidString);
+    }];
+
+    [Adjust requestAppTrackingAuthorizationWithCompletionHandler:^(NSUInteger status) {
         switch (status) {
             case 0:
                 IOS_LOGGER_MESSAGE(@"[Adjust] ATTrackingManagerAuthorizationStatusNotDetermined");
@@ -87,12 +117,14 @@
 }
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
-    [Adjust setDeviceToken:deviceToken];
+    [Adjust setPushToken:deviceToken];
 }
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<NSString *,id> *)options {
 
-    [Adjust appWillOpenUrl:url];
+    ADJDeeplink * deeplink = [[ADJDeeplink alloc] initWithDeeplink:url];
+
+    [Adjust processDeeplink:deeplink];
 
     return YES;
 }
@@ -111,7 +143,9 @@
         return NO;
     }
 
-    [Adjust appWillOpenUrl:incomingUrl];
+    ADJDeeplink * deeplink = [[ADJDeeplink alloc] initWithDeeplink:incomingUrl];
+
+    [Adjust processDeeplink:deeplink];
 
     return YES;
 }
@@ -126,7 +160,7 @@
 
     IOS_LOGGER_MESSAGE(@"[Adjust] eventTraking token: %s", token.UTF8String);
 
-    ADJEvent * event = [ADJEvent eventWithEventToken:token];
+    ADJEvent * event = [[ADJEvent alloc] initWithEventToken:token];
 
     [Adjust trackEvent:event];
 }
@@ -145,7 +179,7 @@
         , adjustCurrency.UTF8String
     );
 
-    ADJEvent * event = [ADJEvent eventWithEventToken:token];
+    ADJEvent * event = [[ADJEvent alloc] initWithEventToken:token];
 
     [event setRevenue:amount currency:adjustCurrency];
 

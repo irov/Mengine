@@ -7,9 +7,9 @@
 
 @interface iOSHelpshiftDelegate : NSObject<HelpshiftDelegate>
 
-@property (nonatomic, weak) id<iOSHelpshiftInterface> m_helpshift;
+@property (nonatomic, weak) id<iOSHelpshiftInterface> _Nullable m_helpshift;
 
-- (instancetype _Nonnull) initWithHelpshift:(id<iOSHelpshiftInterface>)helpshift;
+- (instancetype _Nonnull) initWithHelpshift:(id<iOSHelpshiftInterface> _Nonnull)helpshift;
 
 - (NSString * _Nonnull) convertToString:(NSObject * _Nullable) object;
 

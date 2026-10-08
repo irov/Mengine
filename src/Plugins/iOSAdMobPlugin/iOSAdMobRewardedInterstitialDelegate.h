@@ -4,6 +4,8 @@
 
 @interface iOSAdMobRewardedInterstitialDelegate : iOSAdMobBaseDelegate<GADFullScreenContentDelegate>
 
+- (instancetype _Nullable)initWithAdUnitIdentifier:(NSString * _Nonnull)adUnitId advertisement:(id<iOSAdvertisementInterface> _Nonnull)advertisement;
+
 - (BOOL)canYouShow:(NSString * _Nonnull)placement;
 - (BOOL)show:(NSString * _Nonnull)placement;
 - (BOOL)isShowing;

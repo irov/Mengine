@@ -59,16 +59,8 @@ if [ $? -ne 0 ]; then
 fi
 popd || exit 1
 
-pushd "$SOLUTION_DIR" || exit 1
-if test -f "Podfile"; then
-    pod install --repo-update
-
-    if [ $? -ne 0 ]; then
-        echo "please fix Cocoapods"
-        exit 1
-    fi
+if test -f "$SOLUTION_DIR/mengine_xcode_packages.json"; then
+    "$CMAKE" "-DMENGINE_XCODE_SOLUTION_DIR:PATH=$SOLUTION_DIR" -P "$PROJECT_DIR/../../cmake/xcode_packages_template.cmake" || exit 1
 fi
-popd || exit 1
 
-echo "Arena3D Xcode solution: $SOLUTION_DIR/Arena3D_Xcode_MacOS.xcodeproj"
 exit 0

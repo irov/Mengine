@@ -1,5 +1,7 @@
 #import "iOSHelpshiftPlugin.h"
 
+#import "Environment/Apple/AppleString.h"
+
 #import "Environment/iOS/iOSDetail.h"
 #import "Environment/iOS/iOSLog.h"
 
@@ -48,24 +50,27 @@
         @"enableFullPrivacy": @NO
     };
 
-    const Char * platformId = CONFIG_VALUE( "HelpshiftPlugin", "PlatformId", "" );
-    const Char * domain = CONFIG_VALUE( "HelpshiftPlugin", "Domain", "" );
+    Mengine::String platformId = CONFIG_VALUE_STRING( "HelpshiftPlugin", "PlatformId", "" );
+    Mengine::String domain = CONFIG_VALUE_STRING( "HelpshiftPlugin", "Domain", "" );
 
-    if( platformId[0] == '\0' || domain[0] == '\0' )
+    if( platformId.empty() == true || domain.empty() == true )
     {
         IOS_LOGGER_ERROR( @"don't setup PlatformId or Domain" );
 
         return NO;
     }
 
+    NSString * platformIdString = [AppleString NSStringFromString:platformId];
+    NSString * domainString = [AppleString NSStringFromString:domain];
+
     @try {
-        [Helpshift installWithPlatformId:[NSString stringWithUTF8String:platformId]
-                                  domain:[NSString stringWithUTF8String:domain]
+        [Helpshift installWithPlatformId:platformIdString
+                                  domain:domainString
                                   config:config];
     } @catch (NSException * exception) {
-        IOS_LOGGER_ERROR( @"install with platformId '%s' domain '%s' throw exception: %s"
-            , platformId
-            , domain
+        IOS_LOGGER_ERROR( @"install with platformId '%@' domain '%@' throw exception: %s"
+            , platformIdString
+            , domainString
             , [exception.reason UTF8String]
         );
 
@@ -96,35 +101,27 @@
 }
 
 - (void)showConversation {
-    UIViewController * viewController = [iOSDetail getRootViewController];
-
     NSDictionary * configDictionary = nil;
 
-    [Helpshift showConversationWith:viewController config:configDictionary];
+    [Helpshift showConversationWithConfig:configDictionary];
 }
 
 - (void)showFAQs {
-    UIViewController * viewController = [iOSDetail getRootViewController];
-
     NSDictionary * configDictionary = nil;
 
-    [Helpshift showFAQsWith:viewController config:configDictionary];
+    [Helpshift showFAQsWithConfig:configDictionary];
 }
 
 - (void)showFAQSection:(NSString *)sectionId {
-    UIViewController * viewController = [iOSDetail getRootViewController];
-
     NSDictionary * configDictionary = nil;
 
-    [Helpshift showFAQSection:sectionId with:viewController config:configDictionary];
+    [Helpshift showFAQSection:sectionId withConfig:configDictionary];
 }
 
 - (void)showSingleFAQ:(NSString *)faqId {
-    UIViewController * viewController = [iOSDetail getRootViewController];
-
     NSDictionary * configDictionary = nil;
 
-    [Helpshift showSingleFAQ:faqId with:viewController config:configDictionary];
+    [Helpshift showSingleFAQ:faqId withConfig:configDictionary];
 }
 
 - (void)setLanguage:(NSString *)language {

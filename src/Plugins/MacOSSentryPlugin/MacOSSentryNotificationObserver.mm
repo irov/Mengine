@@ -1,5 +1,6 @@
 #import "MacOSSentryNotificationObserver.h"
 
+#include "Interface/EnvironmentServiceInterface.h"
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/ServiceInterface.h"
@@ -12,7 +13,7 @@
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/TimestampHelper.h"
 
-#import <Sentry/Sentry.h>
+@import Sentry;
 
 namespace Mengine
 {
@@ -56,7 +57,7 @@ namespace Mengine
     void MacOSSentryNotificationObserver::notifyCreateApplication_()
     {
         [SentrySDK configureScope:^(SentryScope * _Nonnull scope) {
-            NSString * bundleIdentifier = Helper::AppleGetBundleIdentifier();
+            NSString * bundleIdentifier = [AppleBundle getIdentifier];
 
             LOGGER_INFO_PROTECTED( "sentry", "sentry set extra [Application: %s]"
                 , [bundleIdentifier UTF8String]
@@ -85,8 +86,8 @@ namespace Mengine
             [scope setExtraValue:@(projectName) forKey:@"Project"];
 
 #ifdef MENGINE_DEBUG
-            Char userName[MENGINE_PLATFORM_USER_MAXNAME + 1] = {'\0'};
-            PLATFORM_SERVICE()
+            Char userName[MENGINE_ENVIRONMENT_USER_MAXNAME + 1] = {'\0'};
+            ENVIRONMENT_SERVICE()
                 ->getUserName( userName );
 
             LOGGER_INFO_PROTECTED( "sentry", "sentry set extra [User: %s]"
@@ -137,7 +138,7 @@ namespace Mengine
 
             [scope setExtraValue:@(publishMode) forKey:@"Publish"];
 
-            const Char * ENGINE_GIT_SHA1 = Helper::getEngineGITSHA1();
+            const Char * ENGINE_GIT_SHA1 = Helper::getEngineGitSHA1();
 
             LOGGER_INFO_PROTECTED( "sentry", "sentry set extra [Engine Commit: %s]"
                 , ENGINE_GIT_SHA1
@@ -160,14 +161,6 @@ namespace Mengine
             );
 
             [scope setExtraValue:@(BUILD_USERNAME) forKey:@"Build Username"];
-
-            const Char * contentCommit = Helper::getContentCommit();
-
-            LOGGER_INFO_PROTECTED( "sentry", "sentry set extra [Content Commit: %s]"
-                , contentCommit
-            );
-
-            [scope setExtraValue:@(contentCommit) forKey:@"Content Commit"];
 
             Timestamp timestamp = Helper::getLocalTimestamp();
 

@@ -130,17 +130,17 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_INMOBI == true) {
-        implementation 'com.applovin.mediation:inmobi-adapter:11.4.1.3'
+        implementation 'com.applovin.mediation:inmobi-adapter:11.5.0.0'
         implementation 'com.squareup.picasso:picasso:2.8'
         implementation 'androidx.recyclerview:recyclerview:1.4.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_IRONSOURCE == true) {
-        implementation 'com.applovin.mediation:ironsource-adapter:9.6.0.0.1'
+        implementation 'com.applovin.mediation:ironsource-adapter:9.6.1.0.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_LIFTOFF == true) {
-        implementation 'com.applovin.mediation:vungle-adapter:7.7.8.1'
+        implementation 'com.applovin.mediation:vungle-adapter:7.7.9.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_LINE == true) {
@@ -152,7 +152,7 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_META == true) {
-        implementation 'com.applovin.mediation:facebook-adapter:6.22.0.0'
+        implementation 'com.applovin.mediation:facebook-adapter:6.22.0.1'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MINTEGRAL == true) {
@@ -164,7 +164,7 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MOLOCO == true) {
-        implementation 'com.applovin.mediation:moloco-adapter:4.12.0.0'
+        implementation 'com.applovin.mediation:moloco-adapter:4.13.0.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_OGURY == true) {
@@ -184,7 +184,7 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_UNITYADS == true) {
-        implementation 'com.applovin.mediation:unityads-adapter:4.20.1.1'
+        implementation 'com.applovin.mediation:unityads-adapter:4.21.0.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_VERVE == true) {
@@ -196,7 +196,7 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_YANDEX == true) {
-        implementation 'com.applovin.mediation:yandex-adapter:8.5.0.0'
+        implementation 'com.applovin.mediation:yandex-adapter:8.6.0.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_YSO == true) {

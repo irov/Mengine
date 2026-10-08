@@ -42,6 +42,21 @@ int main( int argc, char * argv[] )
 
         [MacOSApplication.sharedInstance initialize];
 
+        Mengine::MacOSApplication application;
+
+        if( application.bootstrap( argc, argv, configuration ) == false )
+        {
+            if( configuration.silentDialog == false )
+            {
+                Mengine::Helper::MacOSShowFatalAlert( "Mengine initialize", "Mengine invalid bootstrap" );
+            }
+
+            application.finalize();
+
+            return EXIT_FAILURE;
+        }
+
+        NSMutableArray * proxyDelegates = [NSMutableArray array];
         NSArray * proxysClassed = [MacOSApplicationDelegates getApplicationDelegates];
 
         for( NSString * className in proxysClassed )
@@ -60,12 +75,15 @@ int main( int argc, char * argv[] )
                     Mengine::Helper::MacOSShowFatalAlert( "Mengine initialize", [message UTF8String] );
                 }
 
+                [proxyDelegates removeAllObjects];
+                application.finalize();
+
                 return EXIT_FAILURE;
             }
 
-            id<MacOSProxyApplicationDelegateInterface> delegate = [clazz alloc];
+            id<MacOSProxyApplicationDelegateInterface> delegate = [[clazz alloc] init];
 
-            if( [delegate application] == NO )
+            if( delegate == nil || [delegate application] == NO )
             {
                 NSLog( @"[ERROR] Invalid initialize application delegate: %@"
                     , className
@@ -77,22 +95,14 @@ int main( int argc, char * argv[] )
                     Mengine::Helper::MacOSShowFatalAlert( "Mengine initialize", [message UTF8String] );
                 }
 
+                delegate = nil;
+                [proxyDelegates removeAllObjects];
+                application.finalize();
+
                 return EXIT_FAILURE;
             }
-        }
 
-        Mengine::MacOSApplication application;
-
-        if( application.bootstrap( argc, argv, configuration ) == false )
-        {
-            if( configuration.silentDialog == false )
-            {
-                Mengine::Helper::MacOSShowFatalAlert( "Mengine initialize", "Mengine invalid bootstrap" );
-            }
-
-            application.finalize();
-
-            return EXIT_FAILURE;
+            [proxyDelegates addObject:delegate];
         }
 
         if( application.initialize() == false )
@@ -102,12 +112,14 @@ int main( int argc, char * argv[] )
                 Mengine::Helper::MacOSShowFatalAlert( "Mengine initialize", "Mengine invalid initialize" );
             }
 
+            [proxyDelegates removeAllObjects];
             application.finalize();
 
             return EXIT_FAILURE;
         }
 
         application.loop();
+        [proxyDelegates removeAllObjects];
         application.finalize();
 
         return EXIT_SUCCESS;

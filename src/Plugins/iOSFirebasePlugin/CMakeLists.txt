@@ -8,8 +8,9 @@ src
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_IOS_FIREBASE)
 
-ADD_MENGINE_COCOAPOD_GOOGLE_UTILITIES()
-ADD_MENGINE_COCOAPOD("FirebaseCore" "NO-GIT" "12.19.0")
+ADD_MENGINE_SWIFT_PACKAGE("FirebaseCore" "https://github.com/firebase/firebase-ios-sdk.git" "13.0.0")
+
+TARGET_INCLUDE_DIRECTORIES(${PROJECT_NAME} PUBLIC "${CMAKE_BINARY_DIR}/SourcePackages/checkouts/firebase-ios-sdk/FirebaseCore/Sources/Public")
 
 ADD_MENGINE_APPLE_APPLICATION_DELEGATE("iOSFirebasePlugin")
 

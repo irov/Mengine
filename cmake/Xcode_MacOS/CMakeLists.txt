@@ -14,7 +14,7 @@ INCLUDE(${MENGINE_REPOSITORY}/cmake/build_options_template.cmake)
 INCLUDE(${MENGINE_REPOSITORY}/cmake/master_options_template.cmake)
 INCLUDE(${MENGINE_REPOSITORY}/cmake/base_template.cmake)
 INCLUDE(${MENGINE_REPOSITORY}/cmake/macro_template.cmake)
-INCLUDE(${MENGINE_REPOSITORY}/cmake/cocoapods_template.cmake)
+INCLUDE(${MENGINE_REPOSITORY}/cmake/xcode_packages_template.cmake)
 INCLUDE(${MENGINE_REPOSITORY}/cmake/xcode_macos_template.cmake)
 INCLUDE(${MENGINE_REPOSITORY}/cmake/mengine_template.cmake)
 

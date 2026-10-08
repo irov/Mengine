@@ -9,7 +9,7 @@
 #import "Environment/iOS/iOSUserParam.h"
 #import "Environment/iOS/iOSAnalyticsEventCategory.h"
 
-#import <Amplitude/Amplitude.h>
+#import "Amplitude.h"
 
 #define PLUGIN_BUNDLE_NAME "MengineiOSAmplitudePlugin"
 

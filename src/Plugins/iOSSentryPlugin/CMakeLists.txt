@@ -16,7 +16,9 @@ ADD_MENGINE_APPLE_APPLICATION_DELEGATE("iOSSentryPlugin")
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}math${MENGINE_LIB_SUFFIX})
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)
 
-ADD_MENGINE_COCOAPOD(Sentry "https://github.com/getsentry/sentry-cocoa.git" "9.19.1")
+ADD_MENGINE_SWIFT_PACKAGE("Sentry" "https://github.com/getsentry/sentry-cocoa.git" "9.19.1")
+
+target_compile_options(${PROJECT_NAME} PRIVATE -fcxx-modules)
 
 if(MENGINE_BUILD_TYPE_RELEASE)
     IF(NOT MENGINE_IOS_SENTRY_CLI_PATH)

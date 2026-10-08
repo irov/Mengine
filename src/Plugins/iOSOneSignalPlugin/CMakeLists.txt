@@ -8,7 +8,7 @@ src
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_IOS_ONESIGNAL)
 
-ADD_MENGINE_COCOAPOD("OneSignal/OneSignal" "NO-GIT" "5.6.1")
+ADD_MENGINE_SWIFT_PACKAGE("OneSignalFramework" "https://github.com/OneSignal/OneSignal-XCFramework.git" "5.7.0")
 
 ADD_MENGINE_APPLE_APPLICATION_DELEGATE("iOSOneSignalPlugin")
 
@@ -39,4 +39,4 @@ set_target_properties(iOSOneSignalNotificationServiceExtension PROPERTIES
 ADD_MENGINE_APPLE_APP_EXTENSION(iOSOneSignalNotificationServiceExtension OneSignalNotificationServiceExtension)
 ADD_MENGINE_APPLE_FRAMEWORK(UserNotifications)
 
-ADD_MENGINE_COCOAPOD("OneSignal/OneSignal" "NO-GIT" "5.6.1")
+ADD_MENGINE_SWIFT_PACKAGE("OneSignalExtension" "https://github.com/OneSignal/OneSignal-XCFramework.git" "5.7.0")

@@ -1,15 +1,22 @@
 #pragma once
 
+#include "Kernel/Factorable.h"
+#include "Kernel/Observable.h"
 #include "Kernel/AssertionLevel.h"
 #include "Kernel/ErrorLevel.h"
+
+#include "Config/Char.h"
+#include "Config/StdInt.h"
 
 namespace Mengine
 {
     class iOSSentryNotificationObserver
+        : public Factorable
+        , public Observable
     {
     public:
         iOSSentryNotificationObserver();
-        ~iOSSentryNotificationObserver();
+        ~iOSSentryNotificationObserver() override;
 
     public:
         bool initialize();
@@ -22,4 +29,7 @@ namespace Mengine
         void notifyError_( const Char * _category, EErrorLevel _level, const Char * _file, int32_t _line, const Char * _message );
         void notifyEngineStop_();
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<iOSSentryNotificationObserver> iOSSentryNotificationObserverPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

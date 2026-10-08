@@ -2,7 +2,8 @@
 
 #import "Environment/iOS/iOSPluginInterface.h"
 
-#import <Adjust/Adjust.h>
+#import "Adjust.h"
+#import "ADJConfig.h"
 
 @interface iOSAdjustPlugin : NSObject<iOSPluginInterface, AdjustDelegate>
 

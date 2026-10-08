@@ -10,7 +10,7 @@
 
 @synthesize m_helpshift;
 
-- (instancetype _Nonnull)initWithHelpshift:(id<iOSHelpshiftInterface>)helpshift {
+- (instancetype _Nonnull)initWithHelpshift:(id<iOSHelpshiftInterface> _Nonnull)helpshift {
     self = [super init];
 
     self.m_helpshift = helpshift;

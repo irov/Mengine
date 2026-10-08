@@ -51,15 +51,8 @@ if [ $? -ne 0 ]; then
 fi
 popd
 
-pushd $SOLUTION_DIR
-if test -f "Podfile"; then
-    pod install --repo-update
-    
-    if [ $? -ne 0 ]; then
-        echo "please fix Cocoapods"
-        exit 1
-    fi
+if test -f "$SOLUTION_DIR/mengine_xcode_packages.json"; then
+    "$CMAKE" "-DMENGINE_XCODE_SOLUTION_DIR:PATH=$SOLUTION_DIR" -P "$SOURCE_DIRECTORY/../xcode_packages_template.cmake" || exit 1
 fi
-popd
 
 exit 0

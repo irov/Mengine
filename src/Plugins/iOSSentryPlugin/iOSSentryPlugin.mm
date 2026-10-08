@@ -5,13 +5,14 @@
 #import "Environment/Apple/AppleUserDefaults.h"
 
 #include "Kernel/BuildMode.h"
+#include "Kernel/FactorableUnique.h"
 #include "Kernel/OptionHelper.h"
 
-#import "Sentry/Sentry.h"
+@import Sentry;
 
 @implementation iOSSentryPlugin
 {
-    Mengine::iOSSentryNotificationObserver * m_notificationObserver;
+    Mengine::iOSSentryNotificationObserverPtr m_notificationObserver;
 }
 
 #pragma mark - iOSPluginInterface
@@ -27,7 +28,7 @@ static BOOL iOSSentry_isAvailable() {
         return NO;
     }
 
-    BOOL available = Mengine::Helper::AppleGetBundlePluginConfigBoolean( @("MengineiOSSentryPlugin"), @("Available"), YES );
+    BOOL available = [AppleBundle getPluginConfigBoolean:@("MengineiOSSentryPlugin") withKey:@("Available") withDefault:YES];
 
     return available;
 }
@@ -62,13 +63,13 @@ static BOOL iOSSentry_isAvailable() {
         return YES;
     }
 
-    NSString * iOSSentryPlugin_DSN = Mengine::Helper::AppleGetBundlePluginConfigString( @("MengineiOSSentryPlugin"), @("DSN"), nil );
+    NSString * iOSSentryPlugin_DSN = [AppleBundle getPluginConfigString:@("MengineiOSSentryPlugin") withKey:@("DSN") withDefault:nil];
 
     if( iOSSentryPlugin_DSN == nil ) {
         return YES;
     }
 
-    BOOL passGDPR = Mengine::Helper::AppleGetUserDefaultsBoolean( @("mengine.gdpr.pass"), NO );
+    BOOL passGDPR = [AppleUserDefaults getBooleanForKey:@("mengine.gdpr.pass") defaultValue:NO];
 
     if( passGDPR == YES ) {
         self.m_sendAllow = YES;
@@ -111,7 +112,7 @@ static BOOL iOSSentry_isAvailable() {
 
     if( m_notificationObserver == nullptr )
     {
-        m_notificationObserver = new Mengine::iOSSentryNotificationObserver();
+        m_notificationObserver = Mengine::Helper::makeFactorableUnique<Mengine::iOSSentryNotificationObserver>( MENGINE_DOCUMENT_FUNCTION );
         m_notificationObserver->initialize();
         m_notificationObserver->setupApplicationScope();
     }
@@ -126,7 +127,6 @@ static BOOL iOSSentry_isAvailable() {
     }
 
     m_notificationObserver->finalize();
-    delete m_notificationObserver;
     m_notificationObserver = nullptr;
 }
 

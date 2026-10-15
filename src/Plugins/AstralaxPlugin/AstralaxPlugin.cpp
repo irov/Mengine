@@ -155,7 +155,22 @@ namespace Mengine
             VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), ResourceAstralax::getFactorableType() );
         } );
 
-        VOCABULARY_SET( MetabufLoaderInterface, STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceAstralax::getFactorableType(), Helper::makeFactorableUnique<MetabufLoaderResourceAstralax>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
+        PLUGIN_SERVICE_WAIT( MetabufLoaderServiceInterface, [MENGINE_DOCUMENT_ARGUMENTS( this )]()
+        {
+            const ConstString & resourceType = ResourceAstralax::getFactorableType();
+            MetabufLoaderInterfacePtr loader = Helper::makeFactorableUnique<MetabufLoaderResourceAstralax>( MENGINE_DOCUMENT_FACTORABLE );
+
+            VOCABULARY_SET( MetabufLoaderInterface, STRINGIZE_STRING_LOCAL( "MetabufLoader" ), resourceType, loader, MENGINE_DOCUMENT_FACTORABLE );
+
+            return true;
+        } );
+
+        PLUGIN_SERVICE_LEAVE( MetabufLoaderServiceInterface, []()
+        {
+            const ConstString & resourceType = ResourceAstralax::getFactorableType();
+
+            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "MetabufLoader" ), resourceType );
+        } );
 
         return true;
     }
@@ -165,8 +180,6 @@ namespace Mengine
         Helper::removeNodePrototype<AstralaxEmitter>();
 
         Helper::removeResourcePrototype<ResourceAstralax>();
-
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceAstralax::getFactorableType() );
 
         SERVICE_FINALIZE( AstralaxService );
     }

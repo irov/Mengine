@@ -162,7 +162,7 @@ namespace Mengine
             PyObject * tupleValue = tuple.ptr();
             PyObject * keywordArgumentsValue = keywordArguments.ptr();
             PyObject * valueObject = kernel->ask_native_kw( callableValue, tupleValue, keywordArgumentsValue );
-            pybind::object value( kernel, valueObject );
+            pybind::object value( kernel, valueObject, pybind::borrowed );
             jpp::object serialized;
             bool serializedSuccessful = m_scriptContext->scriptToJSON( value, 2, 100, 0, &serialized, &error );
 

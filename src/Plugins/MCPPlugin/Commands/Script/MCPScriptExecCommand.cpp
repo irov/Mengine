@@ -63,7 +63,7 @@ namespace Mengine
             }
 
             PyObject * executedValue = kernel->exec_source( code, filename, globals, locals );
-            pybind::object value( kernel, executedValue );
+            pybind::object value( kernel, executedValue, pybind::borrowed );
 
             if( value.is_invalid() == true )
             {

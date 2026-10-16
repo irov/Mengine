@@ -57,7 +57,7 @@ namespace Mengine
 
             const Char * sourceString = source.c_str();
             PyObject * compiledObject = kernel->compile_string( sourceString, logicalPath );
-            pybind::object compiled( kernel, compiledObject );
+            pybind::object compiled( kernel, compiledObject, pybind::borrowed );
 
             if( compiled.is_invalid() == true )
             {
@@ -77,7 +77,7 @@ namespace Mengine
 
             PyObject * liveObjectValue = live.ptr();
             PyObject * reloadedObject = kernel->module_reload_source( liveObjectValue, sourceString, logicalPath );
-            pybind::object reloaded( kernel, reloadedObject );
+            pybind::object reloaded( kernel, reloadedObject, pybind::borrowed );
 
             if( reloaded.is_invalid() == true )
             {

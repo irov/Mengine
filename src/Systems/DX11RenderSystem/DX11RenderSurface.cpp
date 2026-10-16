@@ -248,6 +248,7 @@ namespace Mengine
         switch( result )
         {
         case S_OK:
+        case DXGI_STATUS_OCCLUDED:
             {
                 //Empty
             }break;

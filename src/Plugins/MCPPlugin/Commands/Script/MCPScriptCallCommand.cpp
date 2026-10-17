@@ -122,7 +122,7 @@ namespace Mengine
             jpp::array arguments( argumentsObject );
             size_t argumentCount = arguments.size();
             PyObject * tupleObject = kernel->tuple_new( argumentCount );
-            pybind::tuple tuple( kernel, tupleObject );
+            pybind::tuple tuple( kernel, tupleObject, pybind::borrowed );
 
             for( size_t index = 0; index != argumentCount; ++index )
             {

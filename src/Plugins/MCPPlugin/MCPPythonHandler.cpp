@@ -289,6 +289,13 @@ namespace Mengine
         }
 
         pybind::object response = this->call_cb( arguments );
+
+        // A handler that raised reported its error and has no response.
+        if( response.is_invalid() == true )
+        {
+            return false;
+        }
+
         PyObject * responseObject = response.ptr();
         jpp::object result;
         bool serialized = Detail::mcpScriptToJSON( kernel, responseObject, 0, &result );

@@ -88,7 +88,7 @@ namespace Mengine
                 jpp::jpp_size_t size = 0;
                 const Char * stringValue = jpp::get_string_and_size( _value, &size );
                 PyObject * stringObject = kernel->string_from_char_size( stringValue, size );
-                pybind::object value( kernel, stringObject );
+                pybind::object value( kernel, stringObject, pybind::borrowed );
                 *_result = value;
 
                 return true;
@@ -223,7 +223,7 @@ namespace Mengine
         if( _value.is_unicode() == true )
         {
             PyObject * encodedObject = kernel->unicode_encode_utf8( object );
-            pybind::object encoded( kernel, encodedObject );
+            pybind::object encoded( kernel, encodedObject, pybind::borrowed );
             size_t size = 0;
             PyObject * encodedValue = encoded.ptr();
             const Char * stringValue = kernel->string_to_char_and_size( encodedValue, &size );
@@ -383,10 +383,10 @@ namespace Mengine
         if( _depth < _maxDepth )
         {
             PyObject * attributesObject = kernel->object_dir( object );
+            pybind::object attributesOwner( kernel, attributesObject, pybind::borrowed );
 
             if( attributesObject != nullptr && kernel->list_check( attributesObject ) == true )
             {
-                pybind::object attributesOwner( kernel, attributesObject );
                 size_t size = kernel->list_size( attributesObject );
                 size_t begin = _depth == 0 && _start < size ? _start : (_depth == 0 ? size : 0);
                 size_t remaining = size - begin;
@@ -469,7 +469,7 @@ namespace Mengine
         String path = (const Char *)_target;
         bool sysExists = false;
         PyObject * sysObject = kernel->module_import( "sys", sysExists );
-        pybind::object sys( kernel, sysObject );
+        pybind::object sys( kernel, sysObject, pybind::borrowed );
 
         if( sysExists == false || sys.is_invalid() == true )
         {

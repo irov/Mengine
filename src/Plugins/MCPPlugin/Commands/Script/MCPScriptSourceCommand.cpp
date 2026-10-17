@@ -39,7 +39,7 @@ namespace Mengine
         pybind::kernel_interface * kernel = SCRIPTPROVIDER_SERVICE()->getKernel();
         bool exists = false;
         PyObject * moduleObjectValue = kernel->module_import( moduleValue, exists );
-        pybind::object moduleObject( kernel, moduleObjectValue );
+        pybind::object moduleObject( kernel, moduleObjectValue, pybind::borrowed );
 
         if( exists == false || moduleObject.is_invalid() == true )
         {

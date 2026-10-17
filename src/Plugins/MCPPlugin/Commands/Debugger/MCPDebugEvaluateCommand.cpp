@@ -39,7 +39,7 @@ namespace Mengine
             PyObject * locals = kernel->debugger_frame_locals( frameObject );
             const Char * expression = _request.params.get( "expression", "" );
             PyObject * evaluatedValue = kernel->eval_string( expression, globals, locals );
-            pybind::object value( kernel, evaluatedValue );
+            pybind::object value( kernel, evaluatedValue, pybind::borrowed );
             kernel->debugger_frame_sync_locals( frameObject );
 
             jpp::object serialized;

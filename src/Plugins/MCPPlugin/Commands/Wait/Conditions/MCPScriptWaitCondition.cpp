@@ -34,7 +34,7 @@ namespace Mengine
             }
 
             PyObject * valueObject = kernel->eval_string( expression, globals, globals );
-            pybind::object value( kernel, valueObject );
+            pybind::object value( kernel, valueObject, pybind::borrowed );
 
             if( value.is_invalid() == true )
             {

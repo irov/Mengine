@@ -370,7 +370,7 @@ namespace Mengine
                 Viewport viewport;
                 if( _textField->calcTotalTextViewport( &viewport ) == false )
                 {
-                    _kernel->ret_none();
+                    return _kernel->ret_none();
                 }
 
                 return pybind::ptr( _kernel, viewport );

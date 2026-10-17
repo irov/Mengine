@@ -734,7 +734,18 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static PyObject * s_reloadModule( pybind::kernel_interface * _kernel, PyObject * _module )
         {
-            return _kernel->module_reload( _module );
+            PyObject * py_module = _kernel->module_reload( _module );
+
+            // The reload reported its error: Python sees one that names it rather
+            // than a null result without an error.
+            if( py_module == nullptr )
+            {
+                _kernel->error_message( "invalid reload module" );
+
+                return nullptr;
+            }
+
+            return py_module;
         }
         //////////////////////////////////////////////////////////////////////////
         static String s_makeUID( uint32_t _length )
@@ -1885,6 +1896,12 @@ namespace Mengine
             void onChangeSetting( const Char * _value ) override
             {
                 PyObject * pyunicode_value = m_kernel->unicode_from_utf8( _value );
+
+                // A value that does not decode reported its error.
+                if( pyunicode_value == nullptr )
+                {
+                    return;
+                }
 
                 this->call_cb( m_accountId, pyunicode_value );
 

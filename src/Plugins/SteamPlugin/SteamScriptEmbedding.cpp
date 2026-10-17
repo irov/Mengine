@@ -33,11 +33,11 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool steamGetAchievement( pybind::kernel_interface * _kernel, const ConstString & _name )
+        static PyObject * steamGetAchievement( pybind::kernel_interface * _kernel, const ConstString & _name )
         {
             if( SERVICE_IS_INITIALIZE( SteamServiceInterface ) == false )
             {
-                return false;
+                return _kernel->ret_bool( false );
             }
 
             bool achieved;

@@ -130,9 +130,17 @@ namespace Mengine
             return _kernel->is_class( _obj );
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_is_type_class( pybind::kernel_interface * _kernel, PyTypeObject * _type )
+        static bool s_is_type_class( pybind::kernel_interface * _kernel, PyObject * _obj )
         {
-            return _kernel->is_type_class( _type );
+            // An object that is not a type is no type of a class.
+            if( _kernel->type_check( _obj ) == false )
+            {
+                return false;
+            }
+
+            PyTypeObject * type = reinterpret_cast<PyTypeObject *>(_obj);
+
+            return _kernel->is_type_class( type );
         }
         //////////////////////////////////////////////////////////////////////////
         static bool s_is_wrap( pybind::kernel_interface * _kernel, PyObject * _obj )

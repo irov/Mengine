@@ -90,6 +90,7 @@ namespace Mengine
         using std::lround;
         using std::ceil;
         using std::fmod;
+        using std::isfinite;
     }
 }
 

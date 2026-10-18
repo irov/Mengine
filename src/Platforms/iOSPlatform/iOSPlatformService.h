@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/PlatformServiceInterface.h"
+#include "Interface/RenderPlatformInterface.h"
 
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/ThreadSystemInterface.h"
@@ -20,7 +21,7 @@
 #include "Interface/AttributionServiceInterface.h"
 
 #import "Environment/iOS/iOSSafeAreaProviderInterface.h"
-#include "Environment/iOS/iOSPlatformServiceExtensionInterface.h"
+#include "Environment/iOS/iOSRenderPlatformServiceExtensionInterface.h"
 
 #import "iOSMailComposeDelegate.h"
 
@@ -41,7 +42,8 @@ namespace Mengine
 {
     class iOSPlatformService
         : public ServiceBase<PlatformServiceInterface>
-        , public iOSPlatformServiceExtensionInterface
+        , public RenderPlatformInterface
+        , public iOSRenderPlatformServiceExtensionInterface
     {
         DECLARE_UNKNOWABLE();
 
@@ -64,6 +66,7 @@ namespace Mengine
         void loopPlatform() override;
         bool updatePlatform() override;
         void tickPlatform( float _frameTime ) override;
+        RenderPlatformInterface * getRenderPlatform() override;
         bool renderPlatform() override;
         void stopPlatform()override;
 

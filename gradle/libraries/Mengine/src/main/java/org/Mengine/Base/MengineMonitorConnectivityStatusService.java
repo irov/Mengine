@@ -41,10 +41,8 @@ public class MengineMonitorConnectivityStatusService extends MengineService impl
             return MengineNetworkTransport.NETWORKTRANSPORT_VPN;
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI_AWARE) == true) {
-                return MengineNetworkTransport.NETWORKTRANSPORT_WIFI_AWARE;
-            }
+        if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI_AWARE) == true) {
+            return MengineNetworkTransport.NETWORKTRANSPORT_WIFI_AWARE;
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {

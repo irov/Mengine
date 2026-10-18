@@ -1,9 +1,10 @@
 #pragma once
 
 #include "Interface/PlatformServiceInterface.h"
+#include "Interface/RenderPlatformInterface.h"
 #include "Interface/FactoryInterface.h"
 
-#include "Environment/Unix/UnixPlatformServiceExtensionInterface.h"
+#include "Environment/Unix/UnixRenderPlatformServiceExtensionInterface.h"
 
 #include "UnixInput.h"
 
@@ -16,9 +17,11 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class UnixPlatformService
         : public ServiceBase<PlatformServiceInterface>
-        , public UnixPlatformServiceExtensionInterface
+        , public RenderPlatformInterface
+        , public UnixRenderPlatformServiceExtensionInterface
     {
         DECLARE_UNKNOWABLE();
 
@@ -41,6 +44,7 @@ namespace Mengine
         void loopPlatform() override;
         bool updatePlatform() override;
         void tickPlatform( float _frameTime ) override;
+        RenderPlatformInterface * getRenderPlatform() override;
         bool renderPlatform() override;
         void stopPlatform() override;
 
@@ -74,6 +78,7 @@ namespace Mengine
 
     public:
         bool getDesktopResolution( Resolution * const _resolution ) const override;
+        bool getMaxClientResolution( Resolution * const _resolution ) const override;
         bool getNoFullscreen() const override;
         bool getAlwaysFullscreen() const override;
         bool isDebuggerPresent() const override;
@@ -105,7 +110,6 @@ namespace Mengine
     public:
         void onEvent( const ConstString & _event, const Params & _params ) override;
         size_t getSystemFontPath( ConstString * const _groupName, const Char * _fontName, Char * const _fontPath ) const override;
-        bool getMaxClientResolution( Resolution * const _resolution ) const override;
 
         bool getSafeAreaViewport( Viewport * const _viewport ) const override;
         void setSafeAreaViewportChangedCallback( const LambdaSafeAreaViewportChanged & _callback ) override;

@@ -27,6 +27,7 @@
 #include "Interface/FactoryServiceInterface.h"
 #include "Interface/UpdateServiceInterface.h"
 #include "Interface/PlatformServiceInterface.h"
+#include "Interface/RenderPlatformInterface.h"
 #include "Interface/AnalyticsServiceInterface.h"
 #include "Interface/TimerServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
@@ -2665,8 +2666,10 @@ namespace Mengine
                     ->setVSync( vsync );
             }
 
-            PLATFORM_SERVICE()
-                ->notifyVsyncChanged( vsync );
+            RenderPlatformInterface * renderPlatform = PLATFORM_SERVICE()
+                ->getRenderPlatform();
+
+            renderPlatform->notifyVsyncChanged( vsync );
 
             m_invalidateVsync = false;
         }

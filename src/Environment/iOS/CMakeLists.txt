@@ -63,6 +63,8 @@ src
 
     iOSSafeAreaProviderInterface.h
     iOSPlatformServiceExtensionInterface.h
+    iOSRenderPlatformServiceExtensionInterface.h
+    iOSWebViewPlatformServiceExtensionInterface.h
 )
 
 ADD_MENGINE_LIBRARY(Environment)

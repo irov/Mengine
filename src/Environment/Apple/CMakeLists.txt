@@ -10,6 +10,8 @@ src
     AppleLogRecordParam.mm
     AppleDetail.h
     AppleDetail.mm
+    AppleFile.h
+    AppleFile.mm
     AppleBundle.h
     AppleBundle.mm
     AppleString.h

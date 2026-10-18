@@ -7,7 +7,6 @@ import org.Mengine.Base.MengineUtils;
 import org.xmlpull.v1.XmlPullParserException;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
@@ -23,10 +22,10 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.PersistableBundle;
 import android.os.SystemClock;
 import android.os.Bundle;
@@ -198,21 +197,19 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
 
         m_notificationPermissionGranted = true;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationManager notificationManager = activity.getSystemService(NotificationManager.class);
+        NotificationManager notificationManager = activity.getSystemService(NotificationManager.class);
 
-            if (notificationManager == null) {
-                return;
-            }
-
-            int importance = NotificationManager.IMPORTANCE_HIGH;
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, importance);
-            channel.enableLights(true);
-            channel.setLightColor(Color.RED);
-            channel.enableVibration(true);
-            channel.setVibrationPattern(new long[]{1000, 2000});
-            notificationManager.createNotificationChannel(channel);
+        if (notificationManager == null) {
+            return;
         }
+
+        int importance = NotificationManager.IMPORTANCE_HIGH;
+        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, importance);
+        channel.enableLights(true);
+        channel.setLightColor(Color.RED);
+        channel.enableVibration(true);
+        channel.setVibrationPattern(new long[]{1000, 2000});
+        notificationManager.createNotificationChannel(channel);
 
         Intent intent = activity.getIntent();
 
@@ -243,7 +240,8 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
         NotificationManager notificationManager = activity.getSystemService(NotificationManager.class);
 
         if (notificationManager != null) {
-            for (StatusBarNotification notification : notificationManager.getActiveNotifications()) {
+            StatusBarNotification[] notifications = notificationManager.getActiveNotifications();
+            for (StatusBarNotification notification : notifications) {
                 if (Objects.equals(notification.getTag(), NOTIFICATION_TAG) == false) {
                     continue;
                 }
@@ -273,7 +271,8 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
         if (jobScheduler != null) {
             ComponentName localNotificationsJobService = new ComponentName(activity, MengineLocalNotificationsJobService.class);
 
-            for (JobInfo job : jobScheduler.getAllPendingJobs()) {
+            List<JobInfo> jobs = jobScheduler.getAllPendingJobs();
+            for (JobInfo job : jobs) {
                 if (Objects.equals(job.getService(), localNotificationsJobService) == false) {
                     continue;
                 }
@@ -411,7 +410,6 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     public static Notification getNotification(Context context, int id, String title, String content) {
         PendingIntent pendingIntent = MengineLocalNotificationsPlugin.makeContentPendingIntent(context, id, PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -440,23 +438,23 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
             notificationIntent.putExtra(MengineLocalNotificationsPublisher.NOTIFICATION, notification);
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            pendingFlags |= PendingIntent.FLAG_IMMUTABLE;
-        }
+        pendingFlags |= PendingIntent.FLAG_IMMUTABLE;
 
         return PendingIntent.getBroadcast(context, id, notificationIntent, pendingFlags);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     private static PendingIntent makeContentPendingIntent(@NonNull Context context, int id, int pendingFlags) {
-        Intent intent = new Intent(context, MengineActivity.class);
+        PackageManager packageManager = context.getPackageManager();
+        String packageName = context.getPackageName();
+        Intent intent = packageManager.getLaunchIntentForPackage(packageName);
+        if (intent == null) {
+            throw new IllegalStateException("application has no launcher activity");
+        }
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intent.setAction(MengineLocalNotificationsPublisher.NOTIFICATION_ID + ":" + id);
         intent.putExtra(MengineLocalNotificationsPublisher.NOTIFICATION_ID, id);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            pendingFlags |= PendingIntent.FLAG_IMMUTABLE;
-        }
+        pendingFlags |= PendingIntent.FLAG_IMMUTABLE;
 
         return PendingIntent.getActivity(context, id, intent, pendingFlags);
     }

@@ -2,7 +2,7 @@
 
 #include "Interface/PlatformServiceInterface.h"
 
-#include "Environment/iOS/iOSPlatformServiceExtensionInterface.h"
+#include "Environment/iOS/iOSRenderPlatformServiceExtensionInterface.h"
 
 @interface iOSViewController ()
 
@@ -138,52 +138,68 @@
     return YES;
 }
 
-- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    MENGINE_UNUSED( event );
-    
-    Mengine::iOSPlatformServiceExtensionInterface * extension = PLATFORM_SERVICE()
+- (void)touchesBegan:(NSSet<UITouch *> *)_touches withEvent:(UIEvent *)_event
+{
+    MENGINE_UNUSED( _event );
+
+    Mengine::iOSRenderPlatformServiceExtensionInterface * extension = PLATFORM_SERVICE()
         ->getDynamicUnknown();
-    
-    if( extension != nullptr )
+
+    if( extension == nullptr )
     {
-        extension->handleTouchBegan( touches, self.view );
+        return;
     }
+
+    UIView * view = self.view;
+    extension->handleTouchBegan( _touches, view );
 }
 
-- (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    MENGINE_UNUSED( event );
-    
-    Mengine::iOSPlatformServiceExtensionInterface * extension = PLATFORM_SERVICE()
+- (void)touchesMoved:(NSSet<UITouch *> *)_touches withEvent:(UIEvent *)_event
+{
+    MENGINE_UNUSED( _event );
+
+    Mengine::iOSRenderPlatformServiceExtensionInterface * extension = PLATFORM_SERVICE()
         ->getDynamicUnknown();
-    
-    if( extension != nullptr )
+
+    if( extension == nullptr )
     {
-        extension->handleTouchMoved( touches, self.view );
+        return;
     }
+
+    UIView * view = self.view;
+    extension->handleTouchMoved( _touches, view );
 }
 
-- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    MENGINE_UNUSED( event );
-    
-    Mengine::iOSPlatformServiceExtensionInterface * extension = PLATFORM_SERVICE()
+- (void)touchesEnded:(NSSet<UITouch *> *)_touches withEvent:(UIEvent *)_event
+{
+    MENGINE_UNUSED( _event );
+
+    Mengine::iOSRenderPlatformServiceExtensionInterface * extension = PLATFORM_SERVICE()
         ->getDynamicUnknown();
-    
-    if( extension != nullptr )
+
+    if( extension == nullptr )
     {
-        extension->handleTouchEnded( touches, self.view );
+        return;
     }
+
+    UIView * view = self.view;
+    extension->handleTouchEnded( _touches, view );
 }
 
-- (void)touchesCancelled:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    MENGINE_UNUSED( event );
-    
-    Mengine::iOSPlatformServiceExtensionInterface * extension = PLATFORM_SERVICE()
+- (void)touchesCancelled:(NSSet<UITouch *> *)_touches withEvent:(UIEvent *)_event
+{
+    MENGINE_UNUSED( _event );
+
+    Mengine::iOSRenderPlatformServiceExtensionInterface * extension = PLATFORM_SERVICE()
         ->getDynamicUnknown();
-    
-    if( extension != nullptr )
+
+    if( extension == nullptr )
     {
-        extension->handleTouchCancelled( touches, self.view );
+        return;
     }
+
+    UIView * view = self.view;
+    extension->handleTouchCancelled( _touches, view );
 }
 
 @end

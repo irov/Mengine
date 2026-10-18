@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/PlatformServiceInterface.h"
+#include "Interface/RenderPlatformInterface.h"
 
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/ThreadSystemInterface.h"
@@ -16,7 +17,7 @@
 #include "Interface/MemoryInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
 
-#include "Environment/MacOS/MacOSPlatformServiceExtensionInterface.h"
+#include "Environment/MacOS/MacOSRenderPlatformServiceExtensionInterface.h"
 #import "Environment/MacOS/MacOSWorkspace.h"
 
 #include "MacOSInput.h"
@@ -35,7 +36,8 @@ namespace Mengine
 {
     class MacOSPlatformService
         : public ServiceBase<PlatformServiceInterface>
-        , public MacOSPlatformServiceExtensionInterface
+        , public RenderPlatformInterface
+        , public MacOSRenderPlatformServiceExtensionInterface
     {
         DECLARE_UNKNOWABLE();
 
@@ -58,6 +60,7 @@ namespace Mengine
         void loopPlatform() override;
         bool updatePlatform() override;
         void tickPlatform( float _frameTime ) override;
+        RenderPlatformInterface * getRenderPlatform() override;
         bool renderPlatform() override;
         void stopPlatform() override;
 

@@ -5,9 +5,9 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"
 #include "Kernel/SpinLockScope.h"
+#include "Kernel/SpinLockTryScope.h"
 
 #include "Config/StdMath.h"
-#include "Config/StdThread.h"
 
 #include "math/utils.h"
 
@@ -29,8 +29,6 @@ namespace Mengine
         , m_pausing( false )
         , m_loop( false )
         , m_finished( false )
-        , m_renderBarrier( false )
-        , m_activeRenders( 0 )
         , m_busIndex( INVALID_BUS_INDEX )
     {
     }
@@ -245,12 +243,18 @@ namespace Mengine
             busIndex = m_busIndex;
         }
 
-        if( m_playing.load() == false && m_pausing.load() == false && busIndex == INVALID_BUS_INDEX )
+        if( m_playing.load() == false )
         {
-            return;
+            if( m_pausing.load() == false )
+            {
+                if( busIndex == INVALID_BUS_INDEX )
+                {
+                    return;
+                }
+            }
         }
 
-        this->beginMutableState_();
+        MENGINE_SPINLOCK_SCOPE( m_renderLock );
 
         m_playing = false;
         m_pausing = false;
@@ -266,8 +270,6 @@ namespace Mengine
         this->releaseSourceBus_();
 
         m_framePosition = 0;
-
-        this->endMutableState_();
     }
     //////////////////////////////////////////////////////////////////////////
     bool WASAPISoundSource::isPlay() const
@@ -371,14 +373,12 @@ namespace Mengine
             return false;
         }
 
-        this->beginMutableState_();
+        MENGINE_SPINLOCK_SCOPE( m_renderLock );
 
         float currentPosition = this->getPosition();
 
         if( mt::equal_f_f( currentPosition, _position ) == true )
         {
-            this->endMutableState_();
-
             return true;
         }
 
@@ -397,8 +397,6 @@ namespace Mengine
                 , position
                 , total
             );
-
-            this->endMutableState_();
 
             return false;
         }
@@ -427,8 +425,6 @@ namespace Mengine
             m_framePosition = positionFrame;
             m_finished = m_loop.load() == false && total > 0.f && position >= total;
 
-            this->endMutableState_();
-
             return true;
         }
 
@@ -439,14 +435,10 @@ namespace Mengine
                 , m_playing.load()
             );
 
-            this->endMutableState_();
-
             return false;
         }
 
         m_finished = m_loop.load() == false && total > 0.f && position >= total;
-
-        this->endMutableState_();
 
         return true;
     }
@@ -522,47 +514,74 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void WASAPISoundSource::renderMixerFrames( uint32_t _frames, uint32_t _outputChannels, float * _mixBuffer, float _gain )
     {
-        if( _mixBuffer == nullptr || _frames == 0 || _outputChannels == 0 )
+        if( _mixBuffer == nullptr )
         {
             return;
         }
 
-        if( this->tryEnterRender_() == false )
+        if( _frames == 0 )
         {
             return;
         }
 
-        if( m_playing.load() == false || m_pausing.load() == true )
+        if( _outputChannels == 0 )
         {
-            this->leaveRender_();
-
             return;
         }
 
-        WASAPISoundBufferBasePtr soundBuffer = this->getSoundBuffer_();
+        SpinLockTryScope renderScope( m_renderLock );
+
+        if( renderScope.isLocked() == false )
+        {
+            return;
+        }
+
+        if( m_playing.load() == false )
+        {
+            return;
+        }
+
+        if( m_pausing.load() == true )
+        {
+            return;
+        }
+
+        WASAPISoundBufferBase * soundBuffer = m_soundBuffer.get();
 
         if( soundBuffer == nullptr )
         {
-            this->leaveRender_();
-
             return;
         }
 
         uint32_t currentFrame = m_framePosition.load();
         uint32_t newFrame = currentFrame;
 
-        uint32_t renderedFrames = soundBuffer->renderMixerFrames( _mixBuffer, _outputChannels, 0, _frames, _gain, currentFrame, m_loop.load(), &newFrame );
+        bool loop = m_loop.load();
+        uint32_t renderedFrames = soundBuffer->renderMixerFrames( _mixBuffer, _outputChannels, 0, _frames, _gain, currentFrame, loop, &newFrame );
 
         m_framePosition = newFrame;
 
         uint32_t totalFrames = soundBuffer->getFrameCount();
 
-        if( renderedFrames < _frames && m_loop.load() == false && (totalFrames != 0 || soundBuffer->isEndOfStream() == true) )
+        if( renderedFrames >= _frames )
         {
-            m_finished = true;
+            return;
         }
 
-        this->leaveRender_();
+        if( m_loop.load() == true )
+        {
+            return;
+        }
+
+        if( totalFrames == 0 )
+        {
+            if( soundBuffer->isEndOfStream() == false )
+            {
+                return;
+            }
+        }
+
+        m_finished = true;
     }
     //////////////////////////////////////////////////////////////////////////
     void WASAPISoundSource::unloadBuffer_()
@@ -637,46 +656,6 @@ namespace Mengine
         m_busIndex = INVALID_BUS_INDEX;
 
         return busIndex;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void WASAPISoundSource::beginMutableState_()
-    {
-        m_renderBarrier = true;
-
-        while( m_activeRenders.load() != 0 )
-        {
-            StdThread::yield();
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void WASAPISoundSource::endMutableState_()
-    {
-        m_renderBarrier = false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool WASAPISoundSource::tryEnterRender_()
-    {
-        for( ;; )
-        {
-            if( m_renderBarrier.load() == true )
-            {
-                return false;
-            }
-
-            m_activeRenders.fetch_add( 1 );
-
-            if( m_renderBarrier.load() == false )
-            {
-                return true;
-            }
-
-            m_activeRenders.fetch_sub( 1 );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void WASAPISoundSource::leaveRender_()
-    {
-        m_activeRenders.fetch_sub( 1 );
     }
     //////////////////////////////////////////////////////////////////////////
 }

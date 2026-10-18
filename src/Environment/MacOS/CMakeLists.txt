@@ -16,6 +16,8 @@ src
 
     MacOSProxyApplicationDelegateInterface.h
     MacOSPlatformServiceExtensionInterface.h
+    MacOSRenderPlatformServiceExtensionInterface.h
+    MacOSWebViewPlatformServiceExtensionInterface.h
 )
 
 ADD_MENGINE_LIBRARY(Environment)

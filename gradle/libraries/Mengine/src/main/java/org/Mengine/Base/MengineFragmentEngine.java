@@ -58,9 +58,6 @@ public class MengineFragmentEngine extends MengineFragment<MengineListenerEngine
 
         MengineApplication.INSTANCE.setState("exception.message", message);
 
-        String stacktrace = MengineUtils.getThrowableStackTrace(throwable);
-        MengineApplication.INSTANCE.setState("exception.stacktrace", stacktrace);
-
         this.propagate(MengineListenerEngine::onMengineCaughtException, throwable);
     }
 }

@@ -1,5 +1,7 @@
 #include "iOSApplication.h"
 
+#import "Environment/iOS/iOSLog.h"
+
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/BootstrapperInterface.h"
 #include "Interface/TextServiceInterface.h"
@@ -12,7 +14,7 @@
 
 #include "iOSLogger.h"
 
-#include "Mengine/MenginePlugin.h"
+#include "Runtime/MengineRuntime.h"
 
 #include "iOSAlertLogger.h"
 
@@ -220,7 +222,7 @@ namespace Mengine
         if( PLATFORM_SERVICE()
             ->runPlatform() == false )
         {
-            LOGGER_ERROR( "invalid run platform" );
+            IOS_LOGGER_ERROR( @"invalid run platform" );
 
             return false;
         }

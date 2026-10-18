@@ -2,6 +2,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
@@ -12,17 +13,19 @@ namespace Mengine
                 return 0.f;
             }
 
-            if( _destinationChannels == 1 && _sourceChannels > 1 )
+            if( _destinationChannels == 1 )
             {
-                // Downmix in float to avoid integer truncation and DC bias
-                float sum = 0.f;
-
-                for( uint32_t channel = 0; channel != _sourceChannels; ++channel )
+                if( _sourceChannels > 1 )
                 {
-                    sum += (float)_srcFrame[channel];
-                }
+                    float sum = 0.f;
 
-                return (sum / (float)_sourceChannels) * (1.f / 32768.f);
+                    for( uint32_t channel = 0; channel != _sourceChannels; ++channel )
+                    {
+                        sum += (float)_srcFrame[channel];
+                    }
+
+                    return (sum / (float)_sourceChannels) * (1.f / 32768.f);
+                }
             }
 
             UInt32 sourceChannel = _destinationChannel;
@@ -36,4 +39,5 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
     }
+    //////////////////////////////////////////////////////////////////////////
 }

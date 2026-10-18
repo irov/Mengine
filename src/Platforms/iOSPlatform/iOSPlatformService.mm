@@ -17,6 +17,8 @@
 #include "Interface/AnalyticsServiceInterface.h"
 
 #import "Environment/Apple/AppleDetail.h"
+#import "Environment/Apple/AppleFile.h"
+#import "Environment/Apple/AppleString.h"
 #import "Environment/iOS/iOSApplication.h"
 #import "Environment/iOS/iOSDetail.h"
 #import "Environment/iOS/iOSLog.h"
@@ -190,22 +192,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t iOSPlatformService::getTemporaryPath( Char * const _temporaryPath ) const
     {
-        NSString * temporaryPath = NSTemporaryDirectory();
+        size_t temporaryPathLen = [AppleDetail getTemporaryDirectoryPath:_temporaryPath];
 
-        if( temporaryPath == nil )
-        {
-            _temporaryPath[0] = '\0';
-
-            return 0;
-        }
-
-        const Char * temporaryPathRepresentation = [temporaryPath fileSystemRepresentation];
-
-        StdString::strcpy_safe( _temporaryPath, temporaryPathRepresentation, MENGINE_MAX_PATH );
-        Helper::pathCorrectFolderPathA( _temporaryPath, MENGINE_PATH_FORWARDSLASH );
-        Helper::pathCorrectBackslashA( _temporaryPath );
-
-        return StdString::strlen( _temporaryPath );
+        return temporaryPathLen;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t iOSPlatformService::getExtraPreferencesFolderName( Char * const _folderName ) const
@@ -283,7 +272,7 @@ namespace Mengine
 
         if( mainScreen == nil )
         {
-            LOGGER_ERROR( "unable to access main screen" );
+            IOS_LOGGER_ERROR( @"unable to access main screen" );
             
             return false;
         }
@@ -615,6 +604,11 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    RenderPlatformInterface * iOSPlatformService::getRenderPlatform()
+    {
+        return this;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool iOSPlatformService::renderPlatform()
     {
         if( this->isNeedWindowRender() == false )
@@ -793,7 +787,10 @@ namespace Mengine
 
         if( userPathLen != 0 )
         {
-            NSString * userPathString = [NSString stringWithUTF8String:userPath];
+            const FileGroupInterfacePtr & userFileGroup = FILE_SERVICE()
+                ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
+
+            NSString * userPathString = [AppleString NSStringFromString:userPath withSize:userPathLen];
 
             NSDirectoryEnumerator<NSString *> * enumerator = [[NSFileManager defaultManager] enumeratorAtPath:userPathString];
 
@@ -816,7 +813,9 @@ namespace Mengine
                     continue;
                 }
 
-                NSData * fileData = [NSData dataWithContentsOfFile:fullPath];
+                ConstString relativePathString = [AppleString NSStringToConstString:relativePath];
+                FilePath filePath( relativePathString );
+                NSData * fileData = [AppleFile getNSDataFromFileGroup:userFileGroup filePath:filePath error:nil];
 
                 if( fileData == nil )
                 {
@@ -1193,7 +1192,7 @@ namespace Mengine
 
         if( metalDevice == nil )
         {
-            LOGGER_ERROR( "invalid create MTLDevice" );
+            IOS_LOGGER_ERROR( @"invalid create MTLDevice" );
 
             return false;
         }
@@ -1204,7 +1203,7 @@ namespace Mengine
 
         if( metalView == nil )
         {
-            LOGGER_ERROR( "invalid create iOSMetalView" );
+            IOS_LOGGER_ERROR( @"invalid create iOSMetalView" );
 
             return false;
         }
@@ -1500,7 +1499,7 @@ namespace Mengine
 
         if( size_vsnprintf < 0 )
         {
-            LOGGER_ERROR( "invalid message box format message '%s'"
+            IOS_LOGGER_ERROR( @"invalid message box format message '%s'"
                 , _format
             );
 
@@ -1777,7 +1776,7 @@ namespace Mengine
 
         if( m_uiWindow == nil )
         {
-            LOGGER_ERROR( "create UIWindow failed" );
+            IOS_LOGGER_ERROR( @"create UIWindow failed" );
 
             return false;
         }
@@ -1968,7 +1967,7 @@ namespace Mengine
         if( FILE_SERVICE()
             ->mountFileGroup( ConstString::none(), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "dir" ), &defaultFileGroup, false, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
-            LOGGER_ERROR( "failed to mount application directory" );
+            IOS_LOGGER_ERROR( @"failed to mount application directory" );
 
             return false;
         }
@@ -1981,7 +1980,7 @@ namespace Mengine
         if( FILE_SERVICE()
             ->mountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "dir" ), &globalFileGroup, false, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
-            LOGGER_ERROR( "failed to mount dev directory" );
+            IOS_LOGGER_ERROR( @"failed to mount dev directory" );
 
             return false;
         }

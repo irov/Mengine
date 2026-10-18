@@ -6,8 +6,8 @@
 #import "Environment/Apple/AppleString.h"
 #import "Environment/Apple/AppleErrorHelper.h"
 #import "Environment/iOS/iOSDetail.h"
+#import "Environment/iOS/iOSLog.h"
 
-#include "Kernel/Logger.h"
 
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
 #   include "iOSMARSDKScriptEmbedding.h"
@@ -121,7 +121,7 @@
 }
 
 - (BOOL)login {
-    LOGGER_MESSAGE( "login" );
+    IOS_LOGGER_MESSAGE( @"login" );
 
     [[MARSDK sharedInstance] login];
 
@@ -129,7 +129,7 @@
 }
 
 - (BOOL)logout {
-    LOGGER_MESSAGE( "logout" );
+    IOS_LOGGER_MESSAGE( @"logout" );
 
     [[MARSDK sharedInstance] logout];
 
@@ -137,7 +137,7 @@
 }
 
 - (BOOL)switchAccount {
-    LOGGER_MESSAGE( "switchAccount" );
+    IOS_LOGGER_MESSAGE( @"switchAccount" );
 
     [[MARSDK sharedInstance] switchAccount];
 
@@ -145,18 +145,18 @@
 }
 
 - (void)requestNonConsumablePurchased {
-    LOGGER_MESSAGE( "requestNonConsumablePurchased" );
+    IOS_LOGGER_MESSAGE( @"requestNonConsumablePurchased" );
 
     id<iOSMARSDKProviderInterface> provider = self.m_provider;
 
     [[EP_AppStorePay sharedInstance] setPurchasedNonConsumableArray:^(NSArray * _Nonnull purchasedNonConsumableArray) {
-        LOGGER_MESSAGE( "onPurchasedNonConsumable: %s"
-            , [[NSString stringWithFormat:@"%@", purchasedNonConsumableArray] UTF8String]
+        IOS_LOGGER_MESSAGE( @"onPurchasedNonConsumable: %@"
+            , purchasedNonConsumableArray
         );
 
         if( provider == nil )
         {
-            LOGGER_ERROR( "not setup MARSDK provider" );
+            IOS_LOGGER_ERROR( @"not setup MARSDK provider" );
 
             return;
         }
@@ -168,8 +168,8 @@
 }
 
 - (void)submitExtendedData:(NSString *)data {
-    LOGGER_MESSAGE( "submitExtendedData data: %s"
-        , [data UTF8String]
+    IOS_LOGGER_MESSAGE( @"submitExtendedData data: %@"
+        , data
     );
 
     MARUserExtraData * extraData = [MARUserExtraData dataFromJsonString:data];
@@ -178,16 +178,16 @@
 }
 
 - (void)submitPaymentData:(NSString *)data {
-    LOGGER_MESSAGE( "submitPaymentData data: %s"
-        , [data UTF8String]
+    IOS_LOGGER_MESSAGE( @"submitPaymentData data: %@"
+        , data
     );
 
     MARProductInfo * productInfo = [MARProductInfo productFromJsonString:data];
 
     if( productInfo == nil )
     {
-        LOGGER_ERROR( "invalid create product from data: %s"
-            , [data UTF8String]
+        IOS_LOGGER_ERROR( @"invalid create product from data: %@"
+            , data
         );
 
         return;
@@ -197,8 +197,8 @@
 }
 
 - (void)propComplete:(NSString *)productId {
-    LOGGER_MESSAGE( "propComplete orderId: %s"
-        , [productId UTF8String]
+    IOS_LOGGER_MESSAGE( @"propComplete orderId: %@"
+        , productId
     );
 
     id<iOSMARSDKProviderInterface> provider = self.m_provider;
@@ -210,15 +210,15 @@
 
         if( _connectionError != nil )
         {
-            LOGGER_ERROR( "prop complete '%s' response failed data: %s error: %s"
-                , [orderId UTF8String]
-                , Mengine::Helper::NSIdToString( _data ).c_str()
-                , Mengine::Helper::AppleGetMessageFromNSError( _connectionError ).c_str()
+            IOS_LOGGER_ERROR( @"prop complete '%@' response failed data: %@ error: %@"
+                , orderId
+                , [AppleDetail NSIdToString:_data]
+                , [AppleDetail getMessageFromNSError:_connectionError]
             );
 
             if( provider == nil )
             {
-                LOGGER_ERROR( "not setup MARSDK provider" );
+                IOS_LOGGER_ERROR( @"not setup MARSDK provider" );
 
                 return;
             }
@@ -230,14 +230,14 @@
             return;
         }
 
-        LOGGER_MESSAGE( "prop complete '%s' response successful data: %s"
-            , [orderId UTF8String]
-            , Mengine::Helper::NSIdToString( _data ).c_str()
+        IOS_LOGGER_MESSAGE( @"prop complete '%@' response successful data: %@"
+            , orderId
+            , _data
         );
 
         if( provider == nil )
         {
-            LOGGER_ERROR( "not setup MARSDK provider" );
+            IOS_LOGGER_ERROR( @"not setup MARSDK provider" );
 
             return;
         }
@@ -249,8 +249,8 @@
 }
 
 - (void)showRewardVideoAd:(NSString *)itemName itemNum:(NSUInteger)itemNum {
-    LOGGER_MESSAGE( "showRewardVideoAd itemName: %s itemNum: %u"
-        , [itemName UTF8String]
+    IOS_LOGGER_MESSAGE( @"showRewardVideoAd itemName: %@ itemNum: %u"
+        , itemName
         , (uint32_t)itemNum
     );
 

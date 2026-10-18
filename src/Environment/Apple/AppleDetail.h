@@ -2,8 +2,12 @@
 
 #import "Environment/Apple/AppleIncluder.h"
 
+#import <CoreGraphics/CGGeometry.h>
+
 #include "Kernel/Params.h"
 #include "Kernel/Data.h"
+#include "Kernel/FilePath.h"
+#include "Kernel/Resolution.h"
 #include "Kernel/VectorString.h"
 #include "Kernel/VectorConstString.h"
 
@@ -23,6 +27,11 @@
 + (NSInteger)getTimestamp;
 + (NSInteger)getSecureRandomInteger;
 + (NSString * _Nonnull)getRandomHexString:(NSUInteger)length;
+
++ (CGSize)CGSizeFromResolution:(const Mengine::Resolution &)_resolution;
+
++ (size_t)getTemporaryDirectoryPath:(Mengine::Char * const _Nonnull)_temporaryPath;
++ (Mengine::FilePath)getTemporaryDirectoryFilePath;
 
 + (void)addMainQueueOperation:(dispatch_block_t _Nonnull)block;
 + (void)addMainQueueOperation:(dispatch_block_t _Nonnull)block afterSeconds:(NSTimeInterval)seconds;

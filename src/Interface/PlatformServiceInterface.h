@@ -5,6 +5,7 @@
 #include "Interface/DynamicLibraryInterface.h"
 #include "Interface/ContentInterface.h"
 #include "Interface/UnknownInterface.h"
+#include "Interface/RenderPlatformInterface.h"
 
 #include "Kernel/ConstString.h"
 #include "Kernel/Tags.h"
@@ -63,8 +64,10 @@ namespace Mengine
         virtual void loopPlatform() = 0;
         virtual bool updatePlatform() = 0;
         virtual void tickPlatform( float _frameTime ) = 0;
-        virtual bool renderPlatform() = 0;
         virtual void stopPlatform() = 0;
+
+    public:
+        virtual RenderPlatformInterface * getRenderPlatform() = 0;
 
     public:
         virtual Timestamp getPlatfomTime() const = 0;
@@ -130,7 +133,6 @@ namespace Mengine
 
     public:
         virtual bool notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen ) = 0;
-        virtual void notifyVsyncChanged( bool _vsync ) = 0;
         virtual void notifyCursorModeChanged( bool _mode ) = 0;
         virtual bool notifyCursorIconSetup( const ConstString & _name, const ContentInterfacePtr & _content, const MemoryInterfacePtr & _memory ) = 0;
 

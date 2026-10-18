@@ -21,7 +21,7 @@ public class MengineFragmentAttribution extends MengineFragment<MengineListenerA
     private static native void nativeClearProject();
 
     public void clearProject() {
-        nativeClearProject();
+        MengineFragmentAttribution.nativeClearProject();
     }
 
     public void setAttribution(@NonNull String name, @Nullable Object value) {

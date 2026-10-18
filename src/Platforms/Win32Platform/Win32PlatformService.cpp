@@ -18,6 +18,7 @@
 
 #include "Environment/Windows/WindowsIncluder.h"
 #include "Environment/Windows/Win32Helper.h"
+#include "Environment/Windows/Win32ResolutionHelper.h"
 #include "Environment/Windows/Win32FileHelper.h"
 #include "Environment/Windows/Win32CreateProcess.h"
 
@@ -689,6 +690,11 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    RenderPlatformInterface * Win32PlatformService::getRenderPlatform()
+    {
+        return this;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Win32PlatformService::renderPlatform()
     {
         if( this->isNeedWindowRender() == false )
@@ -760,8 +766,10 @@ namespace Mengine
 
             bool OPTION_maxfps = HAS_OPTION( "maxfps" );
 
-            if( APPLICATION_SERVICE()
-                ->getVSync() == false && OPTION_maxfps == false )
+            bool vsync = APPLICATION_SERVICE()
+                ->getVSync();
+
+            if( vsync == false && OPTION_maxfps == false )
             {
                 Helper::Win32Sleep( 1 );
             }
@@ -2970,18 +2978,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32PlatformService::calcWindowsRect_( const Resolution & _resolution, bool _fullsreen, RECT * const _rect ) const
     {
-        uint32_t resolutionWidth = _resolution.getWidth();
-        uint32_t resolutionHeight = _resolution.getHeight();
-
         RECT rc;
-        if( ::SetRect( &rc, 0, 0, (int32_t)resolutionWidth, (int32_t)resolutionHeight ) == FALSE )
-        {
-            LOGGER_ERROR( "invalid set rect %ls"
-                , Helper::Win32GetLastErrorMessageW()
-            );
-
-            return false;
-        }
+        Helper::Win32ResolutionToRect( _resolution, &rc );
 
         if( _fullsreen == false )
         {

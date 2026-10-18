@@ -4,6 +4,7 @@ ADD_FILTER(
 src
     UnixIncluder.h
     UnixPlatformServiceExtensionInterface.h
+    UnixRenderPlatformServiceExtensionInterface.h
 
     UnixEnvironmentService.h
     UnixEnvironmentService.cpp

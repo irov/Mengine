@@ -115,9 +115,16 @@ public class MengineUtils {
         return ob;
     }
 
+    public static Object newInstance(Object arg, @NonNull ClassLoader cl, @NonNull MengineTag TAG, @NonNull String name, boolean required) {
+        Object ob = MengineUtils.newInstance(cl, TAG, name, required, arg);
+
+        return ob;
+    }
+
     public static Object newInstance(@NonNull MengineTag TAG, Class<?> cls, boolean required, Object ... args) {
         try {
-            for (Constructor<?> constructor : cls.getDeclaredConstructors()) {
+            Constructor<?>[] constructors = cls.getDeclaredConstructors();
+            for (Constructor<?> constructor : constructors) {
                 Class<?>[] paramTypes = constructor.getParameterTypes();
 
                 if (paramTypes.length != args.length) {
@@ -447,10 +454,6 @@ public class MengineUtils {
     }
 
     private static int getBatteryStatus(Context context) {
-        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.O) {
-            return BatteryManager.BATTERY_STATUS_UNKNOWN;
-        }
-
         BatteryManager bm = context.getSystemService(BatteryManager.class);
 
         if (bm == null) {

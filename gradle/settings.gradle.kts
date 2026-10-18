@@ -136,7 +136,25 @@ if (extra.has("ANDROID_APP_DELIVERY_PACKAGES") == true) {
     }
 }
 
+val MENGINE_RUNTIME = gradle.startParameter.projectProperties["MENGINE_RUNTIME"] ?: getStringProperty("MENGINE_RUNTIME", "NATIVE")
+
+gradle.beforeProject {
+    extensions.extraProperties["MENGINE_RUNTIME"] = MENGINE_RUNTIME
+}
+
 includeLibrary("MENGINE_APP_LIBRARY_MENGINE", ":libraries:Mengine")
+
+val engineLibrary = findProject(":libraries:Mengine")
+
+if (MENGINE_RUNTIME == "NATIVE") {
+    //Empty
+} else if (MENGINE_RUNTIME == "WEBVIEW") {
+    if (engineLibrary != null) {
+        engineLibrary.projectDir = file("libraries/MengineWebView")
+    }
+} else {
+    throw kotlin.Exception("Unsupported Mengine runtime: $MENGINE_RUNTIME")
+}
 
 /*****************************************************************************
 / * - MENGINE_APP_PLUGIN_FIREBASE [https://firebase.google.com]

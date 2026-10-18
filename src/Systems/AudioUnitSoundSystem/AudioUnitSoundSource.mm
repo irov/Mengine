@@ -5,9 +5,9 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"
 #include "Kernel/SpinLockScope.h"
+#include "Kernel/SpinLockTryScope.h"
 
 #include "Config/StdMath.h"
-#include "Config/StdThread.h"
 
 #include "math/utils.h"
 
@@ -34,8 +34,6 @@ namespace Mengine
         , m_pausing( false )
         , m_loop( false )
         , m_finished( false )
-        , m_renderBarrier( false )
-        , m_activeRenders( 0 )
         , m_busIndex( INVALID_BUS_INDEX )
     {
     }
@@ -75,13 +73,15 @@ namespace Mengine
             return false;
         }
 
-        float initialGain = Detail::calcGain( m_volume.load() );
+        float volume = m_volume.load();
+        float initialGain = Detail::calcGain( volume );
 
         if( m_pausing.load() == false )
         {
             float position = this->getPosition();
 
-            if( soundBuffer->playSource( m_loop.load(), position ) == false )
+            bool loop = m_loop.load();
+            if( soundBuffer->playSource( loop, position ) == false )
             {
                 LOGGER_ASSERTION( "invalid buffer play loop [%u] time [%f]"
                     , m_loop.load()
@@ -95,7 +95,10 @@ namespace Mengine
             m_pausing = false;
             m_finished = false;
 
-            if( this->acquireSourceBus_( soundBuffer->getFrequency(), soundBuffer->getChannels(), initialGain ) == false )
+            uint32_t frequency = soundBuffer->getFrequency();
+            uint32_t channels = soundBuffer->getChannels();
+
+            if( this->acquireSourceBus_( frequency, channels, initialGain ) == false )
             {
                 soundBuffer->stopSource();
                 m_playing = false;
@@ -106,7 +109,6 @@ namespace Mengine
 
                 return false;
             }
-
         }
         else
         {
@@ -119,7 +121,10 @@ namespace Mengine
 
             if( busIndex == INVALID_BUS_INDEX )
             {
-                if( this->acquireSourceBus_( soundBuffer->getFrequency(), soundBuffer->getChannels(), initialGain ) == false )
+                uint32_t frequency = soundBuffer->getFrequency();
+                uint32_t channels = soundBuffer->getChannels();
+
+                if( this->acquireSourceBus_( frequency, channels, initialGain ) == false )
                 {
                     LOGGER_ASSERTION( "invalid reacquire source bus" );
 
@@ -217,7 +222,8 @@ namespace Mengine
             return false;
         }
 
-        float resumeGain = Detail::calcGain( m_volume.load() );
+        float volume = m_volume.load();
+        float resumeGain = Detail::calcGain( volume );
 
         uint32_t busIndex;
 
@@ -228,7 +234,10 @@ namespace Mengine
 
         if( busIndex == INVALID_BUS_INDEX )
         {
-            if( this->acquireSourceBus_( soundBuffer->getFrequency(), soundBuffer->getChannels(), resumeGain ) == false )
+            uint32_t frequency = soundBuffer->getFrequency();
+            uint32_t channels = soundBuffer->getChannels();
+
+            if( this->acquireSourceBus_( frequency, channels, resumeGain ) == false )
             {
                 LOGGER_ASSERTION( "invalid reacquire source bus" );
 
@@ -270,12 +279,18 @@ namespace Mengine
             busIndex = m_busIndex;
         }
 
-        if( m_playing.load() == false && m_pausing.load() == false && busIndex == INVALID_BUS_INDEX )
+        if( m_playing.load() == false )
         {
-            return;
+            if( m_pausing.load() == false )
+            {
+                if( busIndex == INVALID_BUS_INDEX )
+                {
+                    return;
+                }
+            }
         }
 
-        this->beginMutableState_();
+        MENGINE_SPINLOCK_SCOPE( m_renderLock );
 
         m_playing = false;
         m_pausing = false;
@@ -291,23 +306,36 @@ namespace Mengine
         this->releaseSourceBus_();
 
         m_framePosition = 0;
-
-        this->endMutableState_();
     }
     //////////////////////////////////////////////////////////////////////////
     bool AudioUnitSoundSource::isPlay() const
     {
-        return m_playing.load();
+        if( m_playing.load() == false )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AudioUnitSoundSource::isPause() const
     {
-        return m_pausing.load();
+        if( m_pausing.load() == false )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AudioUnitSoundSource::isFinished() const
     {
-        return m_finished.load();
+        if( m_finished.load() == false )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AudioUnitSoundSource::setVolume( float _volume )
@@ -321,20 +349,24 @@ namespace Mengine
             busIndex = m_busIndex;
         }
 
-        if( busIndex != INVALID_BUS_INDEX )
+        if( busIndex == INVALID_BUS_INDEX )
         {
-            float gain = Detail::calcGain( _volume );
-
-            AudioUnitSoundSystemExtensionInterface * soundSystemExtension = SOUND_SYSTEM()
-                ->getUnknown();
-
-            soundSystemExtension->setSourceBusVolume( busIndex, gain );
+            return;
         }
+
+        float gain = Detail::calcGain( _volume );
+
+        AudioUnitSoundSystemExtensionInterface * soundSystemExtension = SOUND_SYSTEM()
+            ->getUnknown();
+
+        soundSystemExtension->setSourceBusVolume( busIndex, gain );
     }
     //////////////////////////////////////////////////////////////////////////
     float AudioUnitSoundSource::getVolume() const
     {
-        return m_volume.load();
+        float volume = m_volume.load();
+
+        return volume;
     }
     //////////////////////////////////////////////////////////////////////////
     void AudioUnitSoundSource::setLoop( bool _loop )
@@ -344,7 +376,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AudioUnitSoundSource::getLoop() const
     {
-        return m_loop.load();
+        if( m_loop.load() == false )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     float AudioUnitSoundSource::getDuration() const
@@ -358,13 +395,19 @@ namespace Mengine
             return 0.f;
         }
 
-        float time_sound = soundBuffer->getTimeDuration();
+        float duration = soundBuffer->getTimeDuration();
 
-        return time_sound;
+        return duration;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AudioUnitSoundSource::setPosition( float _position )
     {
+        MENGINE_ASSERTION( StdMath::isfinite( _position ) == true, "invalid sound position %f"
+            , _position
+        );
+
+        MENGINE_SPINLOCK_SCOPE( m_renderLock );
+
         float currentPosition = this->getPosition();
 
         if( mt::equal_f_f( currentPosition, _position ) == true )
@@ -390,37 +433,14 @@ namespace Mengine
 
         uint32_t totalFrames = soundBuffer->getFrameCount();
 
-        if( totalFrames != 0 )
+        bool active = m_playing.load();
+
+        if( active == false )
         {
-            if( m_playing.load() == true || m_pausing.load() == true )
-            {
-                float total = soundBuffer->getTimeDuration();
-
-                if( position > total )
-                {
-                    LOGGER_ASSERTION( "pos %f total %f"
-                        , position
-                        , total
-                    );
-
-                    return false;
-                }
-            }
-
-            uint32_t frequency = soundBuffer->getFrequency();
-            uint32_t positionFrame = (uint32_t)(position * (float)frequency / 1000.f);
-
-            if( positionFrame > totalFrames )
-            {
-                positionFrame = totalFrames;
-            }
-
-            m_framePosition = positionFrame;
-
-            return true;
+            active = m_pausing.load();
         }
 
-        if( m_playing.load() == true || m_pausing.load() == true )
+        if( active == true )
         {
             float total = soundBuffer->getTimeDuration();
 
@@ -433,6 +453,21 @@ namespace Mengine
 
                 return false;
             }
+        }
+
+        if( totalFrames != 0 )
+        {
+            uint32_t frequency = soundBuffer->getFrequency();
+            uint32_t positionFrame = (uint32_t)(position * (float)frequency / 1000.f);
+
+            if( positionFrame > totalFrames )
+            {
+                positionFrame = totalFrames;
+            }
+
+            m_framePosition = positionFrame;
+
+            return true;
         }
 
         if( soundBuffer->setTimePosition( position ) == false )
@@ -472,16 +507,17 @@ namespace Mengine
 
             float position = (float)m_framePosition.load() * 1000.f / (float)frequency;
 
-            if( position > soundBuffer->getTimeDuration() )
+            float duration = soundBuffer->getTimeDuration();
+
+            if( position > duration )
             {
-                position = soundBuffer->getTimeDuration();
+                position = duration;
             }
 
             return position;
         }
 
         float position = 0.f;
-
         if( soundBuffer->getTimePosition( &position ) == false )
         {
             LOGGER_ASSERTION( "invalid get time position (play %u)"
@@ -510,14 +546,8 @@ namespace Mengine
     void AudioUnitSoundSource::unloadBuffer_()
     {
         AudioUnitSoundBufferBasePtr soundBuffer = this->getSoundBuffer_();
-        uint32_t busIndex;
 
-        {
-            MENGINE_SPINLOCK_SCOPE( m_lock );
-            busIndex = m_busIndex;
-        }
-
-        if( soundBuffer != nullptr && (m_playing.load() == true || m_pausing.load() == true || busIndex != INVALID_BUS_INDEX) )
+        if( soundBuffer != nullptr )
         {
             this->stop();
         }
@@ -543,42 +573,56 @@ namespace Mengine
             return noErr;
         }
 
-        if( this->tryEnterRender_() == false )
+        SpinLockTryScope renderScope( m_renderLock );
+
+        if( renderScope.isLocked() == false )
         {
             return noErr;
         }
 
-        if( m_playing.load() == false || m_pausing.load() == true )
+        if( m_playing.load() == false )
         {
-            this->leaveRender_();
-
             return noErr;
         }
 
-        AudioUnitSoundBufferBasePtr soundBuffer = this->getSoundBuffer_();
+        if( m_pausing.load() == true )
+        {
+            return noErr;
+        }
+
+        AudioUnitSoundBufferBase * soundBuffer = m_soundBuffer.get();
 
         if( soundBuffer == nullptr )
         {
-            this->leaveRender_();
-
             return noErr;
         }
 
         uint32_t currentFrame = m_framePosition.load();
+        uint32_t frames = (uint32_t)_frames;
+        bool loop = m_loop.load();
         uint32_t newFrame = currentFrame;
-
-        uint32_t renderedFrames = soundBuffer->renderMixerFrames( _ioData, 0, (uint32_t)_frames, currentFrame, m_loop.load(), &newFrame );
+        uint32_t renderedFrames = soundBuffer->renderMixerFrames( _ioData, 0, frames, currentFrame, loop, &newFrame );
 
         m_framePosition = newFrame;
 
         uint32_t totalFrames = soundBuffer->getFrameCount();
 
-        if( totalFrames != 0 && renderedFrames < (uint32_t)_frames && m_loop.load() == false )
+        if( totalFrames == 0 )
         {
-            m_finished = true;
+            return noErr;
         }
 
-        this->leaveRender_();
+        if( renderedFrames >= frames )
+        {
+            return noErr;
+        }
+
+        if( m_loop.load() == true )
+        {
+            return noErr;
+        }
+
+        m_finished = true;
 
         return noErr;
     }
@@ -592,7 +636,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AudioUnitSoundSource::acquireSourceBus_( uint32_t _frequency, uint32_t _channels, float _gain )
     {
-        if( _frequency == 0 || _channels == 0 )
+        if( _frequency == 0 )
+        {
+            return false;
+        }
+
+        if( _channels == 0 )
         {
             return false;
         }
@@ -600,9 +649,9 @@ namespace Mengine
         AudioUnitSoundSystemExtensionInterface * soundSystemExtension = SOUND_SYSTEM()
             ->getUnknown();
 
+        AudioUnitSoundSourcePtr source = AudioUnitSoundSourcePtr::from( this );
         uint32_t busIndex = INVALID_BUS_INDEX;
-
-        if( soundSystemExtension->acquireSourceBus( AudioUnitSoundSourcePtr::from( this ), _frequency, _channels, _gain, &busIndex ) == false )
+        if( soundSystemExtension->acquireSourceBus( source, _frequency, _channels, _gain, &busIndex ) == false )
         {
             return false;
         }
@@ -636,46 +685,6 @@ namespace Mengine
         m_busIndex = INVALID_BUS_INDEX;
 
         return busIndex;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AudioUnitSoundSource::beginMutableState_()
-    {
-        m_renderBarrier = true;
-
-        while( m_activeRenders.load() != 0 )
-        {
-            StdThread::yield();
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AudioUnitSoundSource::endMutableState_()
-    {
-        m_renderBarrier = false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool AudioUnitSoundSource::tryEnterRender_()
-    {
-        for( ;; )
-        {
-            if( m_renderBarrier.load() == true )
-            {
-                return false;
-            }
-
-            m_activeRenders.fetch_add( 1 );
-
-            if( m_renderBarrier.load() == false )
-            {
-                return true;
-            }
-
-            m_activeRenders.fetch_sub( 1 );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AudioUnitSoundSource::leaveRender_()
-    {
-        m_activeRenders.fetch_sub( 1 );
     }
     //////////////////////////////////////////////////////////////////////////
 }

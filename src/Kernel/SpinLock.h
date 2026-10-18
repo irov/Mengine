@@ -13,10 +13,11 @@ namespace Mengine
 
     public:
         void lock();
+        bool tryLock();
         void unlock();
 
     protected:
-        AtomicUInt32 m_owner;
-        AtomicInt32 m_lock;
+        Atomic<StdThread::thread::id> m_owner;
+        int32_t m_lock;
     };
 }

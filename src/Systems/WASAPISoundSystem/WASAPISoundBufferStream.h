@@ -5,6 +5,8 @@
 
 #include "WASAPISoundBufferBase.h"
 
+#include "Kernel/SpinLock.h"
+
 #include "Config/Atomic.h"
 
 namespace Mengine
@@ -56,21 +58,16 @@ namespace Mengine
         void resetDecodeBuffer_();
         void writeMixerFrames_( float * _mixBuffer, uint32_t _outputChannels, uint32_t _frameOffset, const int16_t * _src, uint32_t _frames, float _gain ) const;
 
-        void beginMutableState_();
-        void endMutableState_();
-        bool tryEnterRender_();
-        void leaveRender_();
-
     protected:
+        SpinLock m_renderLock;
+
         AtomicBool m_looped;
         AtomicBool m_updating;
         AtomicBool m_finished;
-        AtomicBool m_renderBarrier;
         AtomicUInt32 m_readOffset;
         AtomicUInt32 m_writeOffset;
         AtomicUInt32 m_availableBytes;
         Atomic<uint64_t> m_playPositionBytes;
-        AtomicUInt32 m_activeRenders;
 
         size_t m_ringBufferSize;
 

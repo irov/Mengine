@@ -12,6 +12,7 @@
 #include "Kernel/ThreadMutexHelper.h"
 
 #include "Config/StdAlgorithm.h"
+#include "Config/StdBit.h"
 #include "Config/StdMath.h"
 
 namespace Mengine
@@ -56,12 +57,7 @@ namespace Mengine
 
         size_t requestedSize = MENGINE_APPLE_STREAM_BUFFER_SIZE * MENGINE_APPLE_STREAM_BUFFER_COUNT;
 
-        // Round up to a power of two for efficient ring-buffer masking.
-        size_t powerOfTwo = 1;
-        while( powerOfTwo < requestedSize )
-        {
-            powerOfTwo <<= 1;
-        }
+        size_t powerOfTwo = StdBit::bit_ceil( requestedSize );
 
         memory->newBuffer( powerOfTwo );
 
@@ -176,7 +172,6 @@ namespace Mengine
                 , m_finished.load()
                 , m_looped.load()
             );
-
         }
 
         m_updating = true;
@@ -247,11 +242,17 @@ namespace Mengine
         uint32_t cursorBytes = m_playCursorBytes.load( StdAtomic::memory_order_relaxed );
         float position = m_basePositionMs.load( StdAtomic::memory_order_relaxed ) + (float)cursorBytes * 1000.f / (float)bytesPerSecond;
 
-        if( m_looped.load() == true && m_duration > 0.f )
+        if( m_looped.load() == true )
         {
-            position = StdMath::fmodf( position, m_duration );
+            if( m_duration > 0.f )
+            {
+                *_position = StdMath::fmodf( position, m_duration );
+
+                return true;
+            }
         }
-        else if( position > m_duration )
+
+        if( position > m_duration )
         {
             position = m_duration;
         }
@@ -277,31 +278,48 @@ namespace Mengine
             return false;
         }
 
-        if( m_finished.load() == true && this->getReadableBytes_() == 0 )
+        if( m_finished.load() == false )
         {
-            return false;
+            return true;
         }
 
-        return true;
+        if( this->getReadableBytes_() != 0 )
+        {
+            return true;
+        }
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     void AudioUnitSoundBufferStream::setVolume( float _gain )
     {
         MENGINE_UNUSED( _gain );
+
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     bool AudioUnitSoundBufferStream::renderMixerFrames( AudioBufferList * _ioData, UInt32 _frames, UInt32 * const _renderedFrames )
     {
         *_renderedFrames = 0;
 
-        if( _ioData == nullptr || _frames == 0 )
+        if( _ioData == nullptr )
+        {
+            return true;
+        }
+
+        if( _frames == 0 )
         {
             return true;
         }
 
         uint32_t frameSize = this->getFrameSize();
 
-        if( frameSize == 0 || m_ringBuffer == nullptr )
+        if( frameSize == 0 )
+        {
+            return true;
+        }
+
+        if( m_ringBuffer == nullptr )
         {
             return true;
         }
@@ -309,14 +327,19 @@ namespace Mengine
         UInt32 renderedFrames = 0;
 
         // SPSC: reader loads writeCount with acquire, reads own readCount relaxed
-        uint32_t w = m_writeCount.load( StdAtomic::memory_order_acquire );
-        uint32_t r = m_readCount.load( StdAtomic::memory_order_relaxed );
-        uint32_t readable = w - r;
+        uint32_t writeCount = m_writeCount.load( StdAtomic::memory_order_acquire );
+        uint32_t readCount = m_readCount.load( StdAtomic::memory_order_relaxed );
+        uint32_t readable = writeCount - readCount;
 
-        while( renderedFrames != _frames && readable != 0 )
+        while( renderedFrames != _frames )
         {
-            uint32_t readIdx = r & m_ringBufferSizeMask;
-            uint32_t tailBytes = (uint32_t)(m_ringBufferSize) - readIdx;
+            if( readable == 0 )
+            {
+                break;
+            }
+
+            uint32_t readIndex = readCount & m_ringBufferSizeMask;
+            uint32_t tailBytes = (uint32_t)(m_ringBufferSize) - readIndex;
             uint32_t framesLeft = _frames - renderedFrames;
             uint32_t maxBytes = framesLeft * frameSize;
 
@@ -339,12 +362,12 @@ namespace Mengine
                 break;
             }
 
-            const int16_t * srcSamples = reinterpret_cast<const int16_t *>(m_ringBuffer + readIdx);
+            const int16_t * srcSamples = reinterpret_cast<const int16_t *>(m_ringBuffer + readIndex);
             uint32_t copyFrames = bytesToCopy / frameSize;
 
             this->writeMixerFrames_( _ioData, renderedFrames, srcSamples, copyFrames );
 
-            r += bytesToCopy;
+            readCount += bytesToCopy;
             readable -= bytesToCopy;
             m_playCursorBytes.fetch_add( bytesToCopy, StdAtomic::memory_order_relaxed );
 
@@ -352,7 +375,7 @@ namespace Mengine
         }
 
         // SPSC: reader stores readCount with release
-        m_readCount.store( r, StdAtomic::memory_order_release );
+        m_readCount.store( readCount, StdAtomic::memory_order_release );
 
         *_renderedFrames = renderedFrames;
 
@@ -361,13 +384,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t AudioUnitSoundBufferStream::renderMixerFrames( AudioBufferList * _ioData, uint32_t _frameOffset, uint32_t _frames, uint32_t _framePosition, bool _loop, uint32_t * const _outFramePosition )
     {
-        MENGINE_UNUSED( _framePosition );
+        MENGINE_UNUSED( _frameOffset );
         MENGINE_UNUSED( _loop );
 
         *_outFramePosition = _framePosition;
 
+        UInt32 frames = (UInt32)_frames;
         UInt32 renderedFrames = 0;
-        this->renderMixerFrames( _ioData, (UInt32)_frames, &renderedFrames );
+        this->renderMixerFrames( _ioData, frames, &renderedFrames );
 
         return (uint32_t)renderedFrames;
     }
@@ -384,9 +408,9 @@ namespace Mengine
         for( ;; )
         {
             // SPSC: writer loads readCount with acquire, reads own writeCount relaxed
-            uint32_t r = m_readCount.load( StdAtomic::memory_order_acquire );
-            uint32_t w = m_writeCount.load( StdAtomic::memory_order_relaxed );
-            uint32_t readable = w - r;
+            uint32_t readCount = m_readCount.load( StdAtomic::memory_order_acquire );
+            uint32_t writeCount = m_writeCount.load( StdAtomic::memory_order_relaxed );
+            uint32_t readable = writeCount - readCount;
             size_t freeBytes = m_ringBufferSize - readable;
 
             freeBytes -= freeBytes % frameSize;
@@ -396,8 +420,8 @@ namespace Mengine
                 break;
             }
 
-            uint32_t writeIdx = w & m_ringBufferSizeMask;
-            size_t capacity = m_ringBufferSize - writeIdx;
+            uint32_t writeIndex = writeCount & m_ringBufferSizeMask;
+            size_t capacity = m_ringBufferSize - writeIndex;
 
             if( capacity > freeBytes )
             {
@@ -411,8 +435,9 @@ namespace Mengine
                 break;
             }
 
+            uint8_t * writeBuffer = m_ringBuffer + writeIndex;
             size_t written = 0;
-            if( this->decodeSegment_( m_ringBuffer + writeIdx, capacity, &written ) == false )
+            if( this->decodeSegment_( writeBuffer, capacity, &written ) == false )
             {
                 return false;
             }
@@ -423,7 +448,8 @@ namespace Mengine
             }
 
             // SPSC: writer stores writeCount with release
-            m_writeCount.store( w + (uint32_t)written, StdAtomic::memory_order_release );
+            uint32_t newWriteCount = writeCount + (uint32_t)written;
+            m_writeCount.store( newWriteCount, StdAtomic::memory_order_release );
 
             if( written < capacity )
             {
@@ -496,23 +522,38 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t AudioUnitSoundBufferStream::getReadableBytes_() const
     {
-        uint32_t w = m_writeCount.load( StdAtomic::memory_order_acquire );
-        uint32_t r = m_readCount.load( StdAtomic::memory_order_relaxed );
+        uint32_t writeCount = m_writeCount.load( StdAtomic::memory_order_acquire );
+        uint32_t readCount = m_readCount.load( StdAtomic::memory_order_relaxed );
 
-        return w - r;
+        return writeCount - readCount;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t AudioUnitSoundBufferStream::getWritableBytes_() const
     {
-        uint32_t r = m_readCount.load( StdAtomic::memory_order_acquire );
-        uint32_t w = m_writeCount.load( StdAtomic::memory_order_relaxed );
+        uint32_t readCount = m_readCount.load( StdAtomic::memory_order_acquire );
+        uint32_t writeCount = m_writeCount.load( StdAtomic::memory_order_relaxed );
 
-        return (uint32_t)m_ringBufferSize - (w - r);
+        return (uint32_t)m_ringBufferSize - (writeCount - readCount);
     }
     //////////////////////////////////////////////////////////////////////////
     void AudioUnitSoundBufferStream::writeMixerFrames_( AudioBufferList * _ioData, uint32_t _frameOffset, const int16_t * _src, uint32_t _frames ) const
     {
-        if( _ioData == nullptr || _src == nullptr || m_channels == 0 || _frames == 0 )
+        if( _ioData == nullptr )
+        {
+            return;
+        }
+
+        if( _src == nullptr )
+        {
+            return;
+        }
+
+        if( m_channels == 0 )
+        {
+            return;
+        }
+
+        if( _frames == 0 )
         {
             return;
         }
@@ -528,13 +569,18 @@ namespace Mengine
         {
             AudioBuffer & buffer = _ioData->mBuffers[0];
 
-            if( buffer.mData == nullptr || buffer.mNumberChannels == 0 )
+            if( buffer.mData == nullptr )
+            {
+                return;
+            }
+
+            if( buffer.mNumberChannels == 0 )
             {
                 return;
             }
 
             UInt32 destinationChannels = buffer.mNumberChannels;
-            Float32 * dst = static_cast<Float32 *>( buffer.mData ) + _frameOffset * destinationChannels;
+            Float32 * dst = static_cast<Float32 *>(buffer.mData) + _frameOffset * destinationChannels;
 
             for( uint32_t frame = 0; frame != _frames; ++frame )
             {
@@ -558,7 +604,7 @@ namespace Mengine
                 continue;
             }
 
-            Float32 * dst = static_cast<Float32 *>( buffer.mData ) + _frameOffset;
+            Float32 * dst = static_cast<Float32 *>(buffer.mData) + _frameOffset;
 
             for( uint32_t frame = 0; frame != _frames; ++frame )
             {

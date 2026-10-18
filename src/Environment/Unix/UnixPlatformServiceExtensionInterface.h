@@ -11,7 +11,6 @@
 
 namespace Mengine
 {
-    using UnixOpenGLProc = void (*)();
     using LambdaUnixEventHandler = Lambda<bool( const XEvent &, const Char * )>;
 
     class UnixPlatformServiceExtensionInterface
@@ -20,9 +19,6 @@ namespace Mengine
     public:
         virtual Display * getX11Display() const = 0;
         virtual Window getX11Window() const = 0;
-
-    public:
-        virtual UnixOpenGLProc getOpenGLProcAddress( const Char * _name ) const = 0;
 
     public:
         virtual UniqueId addUnixEventHandler( const LambdaUnixEventHandler & _lambda, const DocumentInterfacePtr & _doc ) = 0;

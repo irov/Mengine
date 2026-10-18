@@ -71,6 +71,7 @@ SERVICE_FACTORY( PlatformService, Mengine::MacOSPlatformService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
@@ -78,31 +79,51 @@ namespace Mengine
         {
             if( _icon == STRINGIZE_STRING_LOCAL( "Arrow" ) )
             {
-                return [NSCursor arrowCursor];
+                NSCursor * cursor = [NSCursor arrowCursor];
+
+                return cursor;
             }
-            else if( _icon == STRINGIZE_STRING_LOCAL( "Hand" ) )
+
+            if( _icon == STRINGIZE_STRING_LOCAL( "Hand" ) )
             {
-                return [NSCursor pointingHandCursor];
+                NSCursor * cursor = [NSCursor pointingHandCursor];
+
+                return cursor;
             }
-            else if( _icon == STRINGIZE_STRING_LOCAL( "Text" ) )
+
+            if( _icon == STRINGIZE_STRING_LOCAL( "Text" ) )
             {
-                return [NSCursor IBeamCursor];
+                NSCursor * cursor = [NSCursor IBeamCursor];
+
+                return cursor;
             }
-            else if( _icon == STRINGIZE_STRING_LOCAL( "ResizeHorizontal" ) )
+
+            if( _icon == STRINGIZE_STRING_LOCAL( "ResizeHorizontal" ) )
             {
-                return [NSCursor resizeLeftRightCursor];
+                NSCursor * cursor = [NSCursor resizeLeftRightCursor];
+
+                return cursor;
             }
-            else if( _icon == STRINGIZE_STRING_LOCAL( "ResizeVertical" ) )
+
+            if( _icon == STRINGIZE_STRING_LOCAL( "ResizeVertical" ) )
             {
-                return [NSCursor resizeUpDownCursor];
+                NSCursor * cursor = [NSCursor resizeUpDownCursor];
+
+                return cursor;
             }
-            else if( _icon == STRINGIZE_STRING_LOCAL( "Crosshair" ) )
+
+            if( _icon == STRINGIZE_STRING_LOCAL( "Crosshair" ) )
             {
-                return [NSCursor crosshairCursor];
+                NSCursor * cursor = [NSCursor crosshairCursor];
+
+                return cursor;
             }
-            else if( _icon == STRINGIZE_STRING_LOCAL( "NotAllowed" ) )
+
+            if( _icon == STRINGIZE_STRING_LOCAL( "NotAllowed" ) )
             {
-                return [NSCursor operationNotAllowedCursor];
+                NSCursor * cursor = [NSCursor operationNotAllowedCursor];
+
+                return cursor;
             }
 
             return nil;
@@ -242,22 +263,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t MacOSPlatformService::getTemporaryPath( Char * const _temporaryPath ) const
     {
-        NSString * temporaryPath = NSTemporaryDirectory();
+        size_t temporaryPathLen = [AppleDetail getTemporaryDirectoryPath:_temporaryPath];
 
-        if( temporaryPath == nil )
-        {
-            _temporaryPath[0] = '\0';
-
-            return 0;
-        }
-
-        const Char * temporaryPathRepresentation = [temporaryPath fileSystemRepresentation];
-
-        StdString::strcpy_safe( _temporaryPath, temporaryPathRepresentation, MENGINE_MAX_PATH );
-        Helper::pathCorrectFolderPathA( _temporaryPath, MENGINE_PATH_FORWARDSLASH );
-        Helper::pathCorrectBackslashA( _temporaryPath );
-
-        return StdString::strlen( _temporaryPath );
+        return temporaryPathLen;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t MacOSPlatformService::getExtraPreferencesFolderName( Char * const _folderName ) const
@@ -547,13 +555,20 @@ namespace Mengine
         {
             bool OPTION_maxfps = HAS_OPTION( "maxfps" );
 
-            if( APPLICATION_SERVICE()
-                ->getVSync() == false && OPTION_maxfps == false )
+            bool vsync = APPLICATION_SERVICE()
+                ->getVSync();
+
+            if( vsync == false && OPTION_maxfps == false )
             {
                 THREAD_SYSTEM()
                     ->sleep( 1 );
             }
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    RenderPlatformInterface * MacOSPlatformService::getRenderPlatform()
+    {
+        return this;
     }
     //////////////////////////////////////////////////////////////////////////
     bool MacOSPlatformService::renderPlatform()
@@ -1004,17 +1019,15 @@ namespace Mengine
                 }
             }
 
-            CGFloat width = _resolution.getWidthF();
-            CGFloat height = _resolution.getHeightF();
+            NSSize contentSize = [AppleDetail CGSizeFromResolution:_resolution];
             CGFloat scale = [m_window backingScaleFactor];
 
             if( scale > 0.0 )
             {
-                width /= scale;
-                height /= scale;
+                contentSize.width /= scale;
+                contentSize.height /= scale;
             }
 
-            NSSize contentSize = NSMakeSize( width, height );
             [m_window setContentSize:contentSize];
             this->updateWindowResolution_();
         }
@@ -1417,21 +1430,16 @@ namespace Mengine
         }
         else
         {
-            CGFloat width = _windowResolution.getWidthF();
-            CGFloat height = _windowResolution.getHeightF();
+            contentRect.size = [AppleDetail CGSizeFromResolution:_windowResolution];
 
             if( scale > 0.f )
             {
-                width /= scale;
-                height /= scale;
+                contentRect.size.width /= scale;
+                contentRect.size.height /= scale;
             }
 
-            contentRect = NSMakeRect(
-                screenFrame.origin.x + (screenFrame.size.width - width) * 0.5,
-                screenFrame.origin.y + (screenFrame.size.height - height) * 0.5,
-                width,
-                height
-            );
+            contentRect.origin.x = screenFrame.origin.x + (screenFrame.size.width - contentRect.size.width) * 0.5;
+            contentRect.origin.y = screenFrame.origin.y + (screenFrame.size.height - contentRect.size.height) * 0.5;
         }
 
         NSWindowStyleMask styleMask = NSWindowStyleMaskTitled |

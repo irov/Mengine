@@ -12,7 +12,7 @@
 #import "MacOSApplicationDelegate.h"
 #import "MacOSMessageBoxLogger.h"
 
-#import "Mengine/MenginePlugin.h"
+#import "Runtime/MengineRuntime.h"
 
 #import "Kernel/ConfigHelper.h"
 #import "Kernel/StringArguments.h"

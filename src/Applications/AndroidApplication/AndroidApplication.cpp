@@ -15,7 +15,7 @@
 #include "Environment/Android/AndroidLogger.h"
 #include "Environment/Android/AndroidRemoteConfig.h"
 
-#include "Mengine/MenginePlugin.h"
+#include "Runtime/MengineRuntime.h"
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/StringArguments.h"

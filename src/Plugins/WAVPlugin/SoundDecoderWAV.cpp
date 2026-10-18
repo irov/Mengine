@@ -8,6 +8,8 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionType.h"
 
+#include "Config/StdMath.h"
+
 #include "math/utils.h"
 
 namespace Mengine
@@ -119,7 +121,18 @@ namespace Mengine
         m_dataInfo.frequency = header.SampleRate;
         m_dataInfo.bits = header.BitsPerSample / 8;
 
-        m_dataInfo.duration = (float)(m_dataInfo.size * 1000 / (m_dataInfo.frequency * m_dataInfo.channels * m_dataInfo.bits));
+        float duration = (float)((double)m_dataInfo.size * 1000.0 / ((double)m_dataInfo.frequency * m_dataInfo.channels * m_dataInfo.bits));
+
+        if( StdMath::isfinite( duration ) == false )
+        {
+            LOGGER_ERROR( "sound decoder WAV invalid duration: %f"
+                , duration
+            );
+
+            return false;
+        }
+
+        m_dataInfo.duration = duration;
 
         return true;
     }

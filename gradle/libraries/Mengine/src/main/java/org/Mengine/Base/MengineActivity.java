@@ -79,10 +79,7 @@ public class MengineActivity extends AppCompatActivity {
     private MengineCommandHandler m_commandHandler;
 
     private RelativeLayout m_contentView;
-
-    private MengineSurfaceView m_surfaceView;
-
-    private MengineSoftInput m_softInput;
+    private final MengineActivityContent m_activityContent;
 
     private MengineClipboard m_clipboard;
 
@@ -93,22 +90,43 @@ public class MengineActivity extends AppCompatActivity {
 
     public MengineActivity() {
         super();
+
+        String contentClass = BuildConfig.MENGINE_ACTIVITY_CONTENT;
+        ClassLoader cl = MengineActivity.class.getClassLoader();
+        Objects.requireNonNull(cl);
+        MengineActivityContent content = (MengineActivityContent)MengineUtils.newInstance(this, cl, TAG, contentClass, true);
+
+        if (content == null) {
+            throw new IllegalStateException("Cannot create Activity content: " + contentClass);
+        }
+
+        m_activityContent = content;
     }
 
     public boolean isDevelopmentMode() {
-        return MengineNative.AndroidEnvironmentService_isDevelopmentMode();
+        if (m_activityContent.isDevelopmentMode() == false) {
+            return false;
+        }
+
+        return true;
     }
 
     public String getCompanyName() {
-       return MengineNative.AndroidEnvironmentService_getCompanyName();
+        String companyName = m_activityContent.getCompanyName();
+
+        return companyName;
     }
 
     public String getProjectName() {
-        return MengineNative.AndroidEnvironmentService_getProjectName();
+        String projectName = m_activityContent.getProjectName();
+
+        return projectName;
     }
 
     public int getProjectVersion() {
-        return MengineNative.AndroidEnvironmentService_getProjectVersion();
+        int projectVersion = m_activityContent.getProjectVersion();
+
+        return projectVersion;
     }
 
     protected List<MengineListenerActivity> getActivityListeners() {
@@ -131,17 +149,20 @@ public class MengineActivity extends AppCompatActivity {
     }
 
     public Surface getSurface() {
-        if (m_surfaceView == null) {
-            return null;
-        }
-
-        Surface surface = m_surfaceView.getSurface();
+        Surface surface = m_activityContent.getSurface();
 
         return surface;
     }
 
-    MengineSurfaceView getSurfaceView() {
-        return m_surfaceView;
+    @Override
+    public void onContentChanged() {
+        super.onContentChanged();
+
+        if (m_activityContent == null) {
+            return;
+        }
+
+        m_activityContent.onContentChanged();
     }
 
     protected void finishWithAlertDialog(String format, Object ... args) {
@@ -397,21 +418,7 @@ public class MengineActivity extends AppCompatActivity {
 
         m_contentView = contentView;
 
-        application.setState("activity.init", "setup_surface");
-
-        MengineSurfaceView surface = new MengineSurfaceView(this);
-
-        m_surfaceView = surface;
-
-        m_contentView.addView(m_surfaceView);
-
-        application.setState("activity.init", "setup_softinput");
-
-        MengineSoftInput softInput = new MengineSoftInput(this, m_surfaceView);
-
-        m_softInput = softInput;
-
-        m_contentView.addView(m_softInput);
+        m_activityContent.onActivityCreate(contentView);
 
         application.setState("activity.init", "setup_contentview");
 
@@ -463,7 +470,7 @@ public class MengineActivity extends AppCompatActivity {
         }
 
         Intent intent = this.getIntent();
-        MenginePlatformEventQueue.pushIntentStartEvent(intent);
+        m_activityContent.onPlatformIntent(intent, true);
 
         application.setState("activity.init", "end");
 
@@ -649,7 +656,7 @@ public class MengineActivity extends AppCompatActivity {
             this.syncFullscreenWindow(window);
         }
 
-        MenginePlatformEventQueue.pushWindowFocusChangedEvent(hasFocus);
+        m_activityContent.onPlatformFocus(hasFocus);
 
         MengineLog.logDebug(TAG, "[END] onWindowFocusChanged focus: %s"
             , hasFocus
@@ -816,9 +823,7 @@ public class MengineActivity extends AppCompatActivity {
 
         application.setState("activity.lifecycle", "start");
 
-        if (m_surfaceView != null) {
-            m_surfaceView.handleStart();
-        }
+        m_activityContent.onContentLifecycle(ELifecycleState.ACTIVITY_START);
 
         List<MengineListenerActivity> listeners = this.getActivityListeners();
 
@@ -836,7 +841,7 @@ public class MengineActivity extends AppCompatActivity {
 
         application.setState("activity.lifecycle", "started");
 
-        MenginePlatformEventQueue.pushStartEvent();
+        m_activityContent.onPlatformLifecycle(ELifecycleState.ACTIVITY_START);
 
         MengineLog.logDebug(TAG, "[END] onStart");
     }
@@ -859,9 +864,7 @@ public class MengineActivity extends AppCompatActivity {
 
         application.setState("activity.lifecycle", "stop");
 
-        if (m_surfaceView != null) {
-            m_surfaceView.handleStop();
-        }
+        m_activityContent.onContentLifecycle(ELifecycleState.ACTIVITY_STOP);
 
         List<MengineListenerActivity> listeners = this.getActivityListeners();
 
@@ -879,7 +882,7 @@ public class MengineActivity extends AppCompatActivity {
 
         application.setState("activity.lifecycle", "stopped");
 
-        MenginePlatformEventQueue.pushStopEvent();
+        m_activityContent.onPlatformLifecycle(ELifecycleState.ACTIVITY_STOP);
 
         MengineLog.logDebug(TAG, "[END] onStop");
     }
@@ -906,9 +909,7 @@ public class MengineActivity extends AppCompatActivity {
 
         MengineStatistic.save(application);
 
-        if (m_surfaceView != null) {
-            m_surfaceView.handlePause();
-        }
+        m_activityContent.onContentLifecycle(ELifecycleState.ACTIVITY_PAUSE);
 
         List<MengineListenerActivity> listeners = this.getActivityListeners();
 
@@ -926,9 +927,7 @@ public class MengineActivity extends AppCompatActivity {
 
         application.setState("activity.lifecycle", "paused");
 
-        float x = MengineNative.AndroidPlatform_getLastFingerX();
-        float y = MengineNative.AndroidPlatform_getLastFingerY();
-        MenginePlatformEventQueue.pushPauseEvent(x, y);
+        m_activityContent.onPlatformLifecycle(ELifecycleState.ACTIVITY_PAUSE);
 
         MengineLog.logDebug(TAG, "[END] onPause");
     }
@@ -951,9 +950,7 @@ public class MengineActivity extends AppCompatActivity {
 
         application.setState("activity.lifecycle", "resume");
 
-        if (m_surfaceView != null) {
-            m_surfaceView.handleResume();
-        }
+        m_activityContent.onContentLifecycle(ELifecycleState.ACTIVITY_RESUME);
 
         List<MengineListenerActivity> listeners = this.getActivityListeners();
 
@@ -971,9 +968,7 @@ public class MengineActivity extends AppCompatActivity {
 
         application.setState("activity.lifecycle", "resumed");
 
-        float x = MengineNative.AndroidPlatform_getLastFingerX();
-        float y = MengineNative.AndroidPlatform_getLastFingerY();
-        MenginePlatformEventQueue.pushResumeEvent(x, y);
+        m_activityContent.onPlatformLifecycle(ELifecycleState.ACTIVITY_RESUME);
 
         MengineLog.logDebug(TAG, "[END] onResume");
     }
@@ -1000,7 +995,7 @@ public class MengineActivity extends AppCompatActivity {
 
         application.setState("activity.intent_action", action);
 
-        MenginePlatformEventQueue.pushIntentNewEvent(intent);
+        m_activityContent.onPlatformIntent(intent, false);
 
         List<MengineListenerActivity> listeners = this.getActivityListeners();
 
@@ -1071,34 +1066,33 @@ public class MengineActivity extends AppCompatActivity {
             m_clipboard = null;
         }
 
-        if (m_surfaceView != null) {
-            m_surfaceView.handleDestroy();
-            m_surfaceView = null;
-        }
-
-        if (m_softInput != null) {
-            m_softInput.handleDestroy();
-            m_softInput = null;
-        }
+        m_activityContent.onActivityDestroy();
 
         if (m_contentView != null) {
             m_contentView.removeAllViews();
             m_contentView = null;
         }
 
-        m_commandHandler = null;
+        if (m_commandHandler != null) {
+            m_commandHandler.removeCallbacksAndMessages(null);
+            m_commandHandler = null;
+        }
 
         MengineNative.AndroidKernelService_removePlugin("Activity");
 
-        MenginePlatformEventQueue.pushDestroyEvent();
+        m_activityContent.onPlatformLifecycle(ELifecycleState.ACTIVITY_DESTROY);
 
         m_activityListeners.clear();
 
         MengineLog.logDebug(TAG, "[END] onDestroy");
 
-        INSTANCE = null;
+        if (INSTANCE == this) {
+            INSTANCE = null;
+        }
 
         super.onDestroy();
+
+        m_activityContent.onActivityPostDestroy();
 
         if (m_quitApplicationAfterDestroy == true) {
             application.quit();
@@ -1139,7 +1133,7 @@ public class MengineActivity extends AppCompatActivity {
 
         application.setState("activity.lifecycle", "restarted");
 
-        MenginePlatformEventQueue.pushRestartEvent();
+        m_activityContent.onPlatformLifecycle(ELifecycleState.ACTIVITY_RESTART);
 
         MengineLog.logDebug(TAG, "[END] onRestart");
     }
@@ -1183,7 +1177,7 @@ public class MengineActivity extends AppCompatActivity {
 
             String language = m_currentLocale.getLanguage();
 
-            MenginePlatformEventQueue.pushChangeLocaleEvent(language);
+            m_activityContent.onPlatformLocale(language);
         }
 
         MengineLog.logDebug(TAG, "[END] onConfigurationChanged");
@@ -1277,23 +1271,19 @@ public class MengineActivity extends AppCompatActivity {
      **********************************************************************************************/
 
     public void showKeyboard() {
-        MengineLog.logInfo(TAG, "showKeyboard");
-
-        this.postCommand(() -> {
-            m_softInput.showKeyboard();
-        });
+        m_activityContent.showKeyboard();
     }
 
     public void hideKeyboard() {
-        MengineLog.logInfo(TAG, "hideKeyboard");
-
-        this.postCommand(() -> {
-            m_softInput.hideKeyboard();
-        });
+        m_activityContent.hideKeyboard();
     }
 
     public boolean isShowKeyboard() {
-        return m_softInput.isShowKeyboard();
+        if (m_activityContent.isShowKeyboard() == false) {
+            return false;
+        }
+
+        return true;
     }
 
     /***********************************************************************************************
@@ -1333,6 +1323,10 @@ public class MengineActivity extends AppCompatActivity {
     }
 
     public boolean linkingOpenDeleteAccount() {
+        if (BuildConfig.MENGINE_RUNTIME_NATIVE == false) {
+            return false;
+        }
+
         if (m_deleteAccountFlowActive == true) {
             return false;
         }
@@ -1354,8 +1348,6 @@ public class MengineActivity extends AppCompatActivity {
 
     private void quitApplication() {
         m_quitApplicationAfterDestroy = true;
-
-        MengineApplication.INSTANCE.quit();
 
         this.finishAndRemoveTask();
     }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/PlatformServiceInterface.h"
+#include "Interface/RenderPlatformInterface.h"
 #include "Interface/LoggerInterface.h"
 #include "Interface/FactoryInterface.h"
 
@@ -20,6 +21,7 @@ namespace Mengine
 {
     class GDKPlatformService
         : public ServiceBase<PlatformServiceInterface>
+        , public RenderPlatformInterface
         , public Win32PlatformServiceExtensionInterface
     {
         DECLARE_UNKNOWABLE();
@@ -47,6 +49,7 @@ namespace Mengine
         void loopPlatform() override;
         bool updatePlatform() override;
         void tickPlatform( float _frameTime ) override;
+        RenderPlatformInterface * getRenderPlatform() override;
         bool renderPlatform() override;
         void stopPlatform() override;
 

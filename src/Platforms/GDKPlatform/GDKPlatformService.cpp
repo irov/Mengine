@@ -15,6 +15,7 @@
 
 #include "Environment/Windows/WindowsIncluder.h"
 #include "Environment/Windows/Win32Helper.h"
+#include "Environment/Windows/Win32ResolutionHelper.h"
 #include "Environment/Windows/Win32FileHelper.h"
 #include "Environment/Windows/Win32CreateProcess.h"
 
@@ -455,8 +456,10 @@ namespace Mengine
                 continue;
             }
 
-            if( APPLICATION_SERVICE()
-                ->getVSync() == false )
+            bool vsync = APPLICATION_SERVICE()
+                ->getVSync();
+
+            if( vsync == false )
             {
                 ::Sleep( 1 );
             }
@@ -488,6 +491,11 @@ namespace Mengine
 
         APPLICATION_SERVICE()
             ->endUpdate();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    RenderPlatformInterface * GDKPlatformService::getRenderPlatform()
+    {
+        return this;
     }
     //////////////////////////////////////////////////////////////////////////
     bool GDKPlatformService::renderPlatform()
@@ -1451,18 +1459,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool GDKPlatformService::calcWindowsRect_( const Resolution & _resolution, bool _fullscreen, RECT * const _rect ) const
     {
-        uint32_t resolutionWidth = _resolution.getWidth();
-        uint32_t resolutionHeight = _resolution.getHeight();
-
         RECT rc;
-        if( ::SetRect( &rc, 0, 0, (int32_t)resolutionWidth, (int32_t)resolutionHeight ) == FALSE )
-        {
-            LOGGER_ERROR( "invalid set rect %ls"
-                , Helper::Win32GetLastErrorMessageW()
-            );
-
-            return false;
-        }
+        Helper::Win32ResolutionToRect( _resolution, &rc );
 
         if( _fullscreen == false )
         {

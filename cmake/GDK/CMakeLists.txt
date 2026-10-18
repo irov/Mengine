@@ -19,7 +19,7 @@ include(${MENGINE_REPOSITORY}/cmake/FindGDK.cmake)
 set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
 
 # GDK supports DirectX 11 (Windows desktop) and DirectX 12 (all platforms including Xbox)
-SET_MENGINE_ENVIRONMENT(WINDOWS DIRECTX11 WIN32 MSVC)
+SET_MENGINE_ENVIRONMENT(NATIVE WINDOWS DIRECTX11 WIN32 MSVC)
 
 # GDK reuses the Win32 environment but also requires the GDK environment
 # target for XGameRuntime headers and linkage.

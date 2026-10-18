@@ -53,6 +53,16 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidKernelService_1removePlugin )(JNIEnv * env, jclass cls, jstring _name)
     {
+        if( SERVICE_PROVIDER_EXIST() == false )
+        {
+            return;
+        }
+
+        if( SERVICE_IS_INITIALIZE( Mengine::AndroidKernelServiceInterface ) == false )
+        {
+            return;
+        }
+
         Mengine::ConstString plugin = Mengine::Helper::AndroidMakeConstStringFromJString( env, _name );
 
         jobject jmodule = ANDROID_KERNEL_SERVICE()

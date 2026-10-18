@@ -1,7 +1,8 @@
 #import "iOSAppLovinAmazonService.h"
 
+#import "Environment/iOS/iOSLog.h"
+
 #include "Kernel/ConfigHelper.h"
-#include "Kernel/Logger.h"
 
 #include "Config/StdString.h"
 
@@ -14,7 +15,7 @@
 
     MENGINE_ASSERTION_FATAL( MENGINE_STRCMP( AppLovinPlugin_AmazoneAppKey, "" ) == 0 );
 
-    LOGGER_MESSAGE( "Amazon AppKey '%s'"
+    IOS_LOGGER_MESSAGE( @"Amazon AppKey '%s'"
         , AppLovinPlugin_AmazoneAppKey
     );
 
@@ -50,7 +51,7 @@
 
     NSString * amazonBannerSlotId = [NSString stringWithUTF8String:AppLovinPlugin_AmazonBannerSlotId];
 
-    LOGGER_MESSAGE( "Interstitial Amazon AdUnit '%s'"
+    IOS_LOGGER_MESSAGE( @"Interstitial Amazon AdUnit '%s'"
         , AppLovinPlugin_AmazonBannerSlotId
     );
 
@@ -66,7 +67,7 @@
 
     NSString * amazonInterstitialSlotId = [NSString stringWithUTF8String:AppLovinPlugin_AmazonInterstitialSlotId];
 
-    LOGGER_MESSAGE( "Interstitial Amazon AdUnit '%s'"
+    IOS_LOGGER_MESSAGE( @"Interstitial Amazon AdUnit '%s'"
         , AppLovinPlugin_AmazonInterstitialSlotId
     );
 
@@ -82,7 +83,7 @@
 
     NSString * amazonRewardedSlotId = [NSString stringWithUTF8String:AppLovinPlugin_AmazonRewardedSlotId];
 
-    LOGGER_MESSAGE( "Rewarded Amazon AdUnit '%s'"
+    IOS_LOGGER_MESSAGE( @"Rewarded Amazon AdUnit '%s'"
         , AppLovinPlugin_AmazonRewardedSlotId
     );
 

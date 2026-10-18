@@ -21,6 +21,7 @@ namespace Mengine
         using std::strtoul;
         using std::strtoull;
         using std::getenv;
+        using std::exit;
     }
 }
 //////////////////////////////////////////////////////////////////////////

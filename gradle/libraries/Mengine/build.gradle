@@ -44,7 +44,6 @@ android {
     externalNativeBuild {
         cmake {
             path "../../../cmake/Android/Mengine/CMakeLists.txt"
-            buildStagingDirectory rootProject.projectDir.getAbsolutePath() + "/../outputs/gradle/.cxx/" + project.getName()
         }
     }
 
@@ -132,11 +131,22 @@ android {
         }
     }
 
+    sourceSets {
+        main {
+            java.srcDir "src/native/java"
+        }
+    }
+
     namespace = "org.Mengine.Base"
 }
 
 android {
     defaultConfig {
+        buildConfigField "String", "MENGINE_NATIVE_APPLICATION", '"AndroidApplication"'
+        buildConfigField "String", "MENGINE_ACTIVITY_CONTENT", '"org.Mengine.Base.MengineNativeActivityContent"'
+        buildConfigField 'boolean', 'MENGINE_RUNTIME_NATIVE', 'true'
+        buildConfigField 'boolean', 'MENGINE_RUNTIME_WEBVIEW', 'false'
+
         buildConfigField "boolean", "MENGINE_APP_ENABLE_STRICT_MODE", "${MENGINE_APP_ENABLE_STRICT_MODE}"
 
         buildConfigField "boolean", "ANDROID_APP_REQUIRED_HARDWARE_TOUCHSCREEN", "${ANDROID_APP_REQUIRED_HARDWARE_TOUCHSCREEN}"
@@ -144,4 +154,9 @@ android {
         buildConfigField "boolean", "ANDROID_APP_REQUIRED_HARDWARE_CAMERA", "${ANDROID_APP_REQUIRED_HARDWARE_CAMERA}"
         buildConfigField "boolean", "ANDROID_APP_REQUIRED_HARDWARE_WIFI", "${ANDROID_APP_REQUIRED_HARDWARE_WIFI}"
     }
+}
+
+final String ANDROID_APP_IMPLEMENTATION_ANDROIDX_GAMES_FRAME_PACING = Utils.getStringProperty("ANDROID_APP_IMPLEMENTATION_ANDROIDX_GAMES_FRAME_PACING", "2.1.3")
+dependencies {
+    implementation "androidx.games:games-frame-pacing:$ANDROID_APP_IMPLEMENTATION_ANDROIDX_GAMES_FRAME_PACING"
 }

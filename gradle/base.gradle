@@ -1,7 +1,16 @@
+final File cmakeBuildDirectory = new File(rootProject.projectDir, "../outputs/gradle/.cxx/${project.name}")
+
 android {
     ndkVersion = project.ndkVersion
     compileSdk = project.compileSdkVersion
     buildToolsVersion = project.buildToolsVersion
+
+    externalNativeBuild {
+        cmake {
+            buildStagingDirectory cmakeBuildDirectory
+            version = project.cmakeVersion
+        }
+    }
 
     compileOptions {
         coreLibraryDesugaringEnabled = true

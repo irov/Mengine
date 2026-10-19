@@ -1,9 +1,12 @@
 #include "AndroidEnv.h"
 
 #include "AndroidDeclaration.h"
+#include "AndroidHelper.h"
 
 #include "Kernel/BuildMode.h"
 #include "Kernel/Assertion.h"
+#include "Kernel/Crash.h"
+#include "Kernel/LoggerMessage.h"
 
 #include "Config/StdString.h"
 #include "Config/StdLib.h"
@@ -18,6 +21,14 @@ static jobject g_jobject_MengineClassLoader = nullptr;
 
 extern "C"
 {
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidMain_1crash )( JNIEnv * _env, jclass, jstring _reason )
+    {
+        Mengine::Char message[MENGINE_LOGGER_MAX_MESSAGE + 1] = {'\0'};
+        Mengine::Helper::AndroidCopyStringFromJString( _env, _reason, message, MENGINE_LOGGER_MAX_MESSAGE );
+
+        Mengine::Helper::crash( message );
+    }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidEnv_1setMengineAndroidClassLoaderJNI )( JNIEnv * env, jclass cls, jobject cl )
     {
@@ -1027,7 +1038,7 @@ namespace Mengine
         return jobject_MengineApplication;
     }
     //////////////////////////////////////////////////////////////////////////
-    jmethodID Mengine_JNI_GetMethodApplication( JNIEnv * _jenv, const char * _methodName, const char * _signature )
+    jmethodID Mengine_JNI_GetMethodApplication( JNIEnv * _jenv, const Char * _methodName, const Char * _signature )
     {
         jclass jclass_MengineApplication = Mengine_JNI_GetClassApplication( _jenv );
 

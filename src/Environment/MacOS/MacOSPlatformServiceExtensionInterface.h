@@ -7,10 +7,6 @@
 #include "Config/Lambda.h"
 #include "Config/UniqueId.h"
 
-#if defined(MENGINE_ENVIRONMENT_RENDER_METAL)
-#   import <Metal/Metal.h>
-#endif
-
 #import <AppKit/AppKit.h>
 
 namespace Mengine
@@ -40,10 +36,5 @@ namespace Mengine
 
         virtual UniqueId addMacOSEventHandler( const LambdaMacOSEventHandler & _lambda, const DocumentInterfacePtr & _doc ) = 0;
         virtual void removeMacOSEventHandler( UniqueId _id ) = 0;
-
-#if defined(MENGINE_ENVIRONMENT_RENDER_METAL)
-    public:
-        virtual id<MTLDevice> getMetalDevice() const = 0;
-#endif
     };
 }

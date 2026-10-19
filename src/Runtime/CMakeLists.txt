@@ -1,0 +1,7 @@
+if(MENGINE_RUNTIME_NATIVE)
+    ADD_SUBDIRECTORY(MengineNativeRuntime)
+elseif(MENGINE_RUNTIME_WEBVIEW)
+    ADD_SUBDIRECTORY(MengineWebViewRuntime)
+endif()
+
+MENGINE_SUBFOLDER()

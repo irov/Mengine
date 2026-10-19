@@ -67,6 +67,11 @@ namespace Mengine
     {
         const FilePath & filePath = m_content->getFilePath();
 
+        // The name is taken first: a load that fails raises in the import that
+        // asked for it, which a null result without an error would turn into a
+        // SystemError.
+        const Char * str_moduleName = _kernel->string_to_char( _moduleName );
+
         DataflowContext context;
         context.filePath = filePath;
 
@@ -74,6 +79,10 @@ namespace Mengine
 
         if( codeData == nullptr )
         {
+            m_kernel->error_message( "invalid load module '%s' (dataflow)"
+                , str_moduleName
+            );
+
             return nullptr;
         }
 
@@ -81,10 +90,12 @@ namespace Mengine
 
         if( code == nullptr )
         {
+            m_kernel->error_message( "invalid load module '%s' (code)"
+                , str_moduleName
+            );
+
             return nullptr;
         }
-
-        const Char * str_moduleName = _kernel->string_to_char( _moduleName );
 
         PyObject * py_module = m_kernel->module_init( str_moduleName );
 
@@ -101,6 +112,16 @@ namespace Mengine
 #endif
 
         PyObject * py_module_exec = m_kernel->module_execcode( str_moduleName, code.ptr() );
+
+        // The code reported its error as it ran.
+        if( py_module_exec == nullptr )
+        {
+            m_kernel->error_message( "invalid load module '%s' (script)"
+                , str_moduleName
+            );
+
+            return nullptr;
+        }
 
         return py_module_exec;
     }

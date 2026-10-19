@@ -30,7 +30,15 @@ namespace Mengine
 
             void onFigmaAction( const FigmaActionEvent & _event, FigmaActionResponse * const _response ) override
             {
-                m_cb.call( _event, _response );
+                pybind::kernel_interface * kernel = m_cb.kernel();
+
+                // FigmaActionResponse binds as a struct, which Python takes by
+                // value: the handler fills a copy, which is the response.
+                pybind::object response = pybind::make_object_t( kernel, *_response );
+
+                m_cb.call( _event, response );
+
+                *_response = pybind::extract<FigmaActionResponse>( kernel, response.ptr() );
             }
 
             void onFigmaFrameChanged( const String & _previousFrameId, const String & _currentFrameId ) override

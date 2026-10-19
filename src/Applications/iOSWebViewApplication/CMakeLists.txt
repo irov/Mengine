@@ -1,0 +1,66 @@
+MENGINE_PROJECT(iOSWebViewApplication)
+
+ADD_FILTER(
+src
+    iOSWebViewApplicationDelegate.h
+    iOSWebViewApplicationDelegate.mm
+    iOSWebViewSceneDelegate.h
+    iOSWebViewSceneDelegate.mm
+    iOSWebViewMain.mm
+)
+
+SET(MENGINE_WEBVIEW_CONTENT_DIRECTORY "" CACHE PATH "Built WebView content")
+SET(MENGINE_WEBVIEW_BUNDLE_IDENTIFIER "org.mengine.webview.ios" CACHE STRING "WebView bundle identifier")
+SET(MENGINE_WEBVIEW_DISPLAY_NAME "Mengine WebView" CACHE STRING "WebView application display name")
+SET(MENGINE_WEBVIEW_API_ORIGIN "" CACHE STRING "Application API origin")
+SET(MENGINE_BUILD_VERSION "1.0" CACHE STRING "Application version")
+SET(MENGINE_BUILD_NUMBER "1" CACHE STRING "Application build number")
+SET(MENGINE_WEBVIEW_APPLICATION_DELEGATE "iOSWebViewApplicationDelegate" CACHE STRING "WebView application delegate class")
+SET(MENGINE_WEBVIEW_APPLICATION_CONFIG "" CACHE FILEPATH "Application-specific native sources and configuration")
+IF(MENGINE_WEBVIEW_APPLICATION_CONFIG)
+    INCLUDE(${MENGINE_WEBVIEW_APPLICATION_CONFIG})
+ENDIF()
+IF(NOT EXISTS "${MENGINE_WEBVIEW_CONTENT_DIRECTORY}/index.html")
+    MESSAGE(FATAL_ERROR "Set MENGINE_WEBVIEW_CONTENT_DIRECTORY to built web content containing index.html")
+ENDIF()
+LIST(APPEND SRC_FILES ${MENGINE_SOURCE_DIR}/WebView/MengineWebViewBridge.js)
+SET_SOURCE_FILES_PROPERTIES(${MENGINE_SOURCE_DIR}/WebView/MengineWebViewBridge.js PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+
+OPTION(MENGINE_WEBVIEW_MCP "Include the native WebView MCP test adapter" OFF)
+
+IF(MENGINE_WEBVIEW_MCP)
+    LIST(APPEND SRC_FILES
+        ${MENGINE_SOURCE_DIR}/Platforms/AppleWebViewPlatform/AppleWebViewMCP.h
+        ${MENGINE_SOURCE_DIR}/Platforms/AppleWebViewPlatform/AppleWebViewMCP.mm
+        ${MENGINE_SOURCE_DIR}/Platforms/AppleWebViewPlatform/AppleWebViewMCPTransport.h
+        ${MENGINE_SOURCE_DIR}/Platforms/AppleWebViewPlatform/AppleWebViewMCPTransport.mm
+        ${MENGINE_SOURCE_DIR}/Plugins/MCPPlugin/MCPProtocol.cpp
+    )
+ENDIF()
+
+ADD_MENGINE_EXECUTABLE_IOS()
+
+ADD_CUSTOM_TARGET(iOSWebViewContent
+    COMMAND ${CMAKE_COMMAND} -E remove_directory "$<TARGET_BUNDLE_DIR:${PROJECT_NAME}>/WebView"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${MENGINE_WEBVIEW_CONTENT_DIRECTORY}" "$<TARGET_BUNDLE_DIR:${PROJECT_NAME}>/WebView"
+    VERBATIM
+)
+ADD_DEPENDENCIES(${PROJECT_NAME} iOSWebViewContent)
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} MengineWebViewRuntime iOSWebViewPlatform iOS Apple
+    "-framework UIKit" "-framework WebKit" "-framework CoreGraphics" "-framework Security" "-framework SystemConfiguration"
+    "-framework AdSupport" "-framework AppTrackingTransparency")
+SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES
+    MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/info.plist"
+    MACOSX_BUNDLE_GUI_IDENTIFIER "${MENGINE_WEBVIEW_BUNDLE_IDENTIFIER}"
+    MACOSX_BUNDLE_BUNDLE_NAME "${MENGINE_WEBVIEW_DISPLAY_NAME}"
+    XCODE_ATTRIBUTE_PRODUCT_BUNDLE_IDENTIFIER "${MENGINE_WEBVIEW_BUNDLE_IDENTIFIER}"
+    XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY "1,2"
+    XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET "${CMAKE_OSX_DEPLOYMENT_TARGET}"
+    XCODE_ATTRIBUTE_MARKETING_VERSION "${MENGINE_BUILD_VERSION}"
+    XCODE_ATTRIBUTE_CURRENT_PROJECT_VERSION "${MENGINE_BUILD_NUMBER}"
+    XCODE_GENERATE_SCHEME YES
+)
+
+IF(MENGINE_WEBVIEW_MCP)
+    TARGET_LINK_LIBRARIES(${PROJECT_NAME} "-framework Network")
+ENDIF()

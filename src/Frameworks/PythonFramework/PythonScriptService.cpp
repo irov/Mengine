@@ -1127,13 +1127,19 @@ namespace Mengine
             return nullptr;
         }
 
-        MENGINE_ASSERTION_MEMORY_PANIC( py_module, "invalid import module '%s' (script)"
-            , _name.c_str()
-        );
+        // A module that exists but fails as it runs reported its error.
+        if( py_module == nullptr )
+        {
+            LOGGER_ERROR( "invalid import module '%s' (script)"
+                , _name.c_str()
+            );
+
+            return nullptr;
+        }
 
         ScriptModulePtr module = m_factoryScriptModule->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
-        if( module->initialize( pybind::module( m_kernel, py_module ) ) == false )
+        if( module->initialize( pybind::module( m_kernel, py_module, pybind::borrowed ) ) == false )
         {
             LOGGER_ERROR( "invalid import initialize '%s' (script)"
                 , _name.c_str()
@@ -1321,6 +1327,12 @@ namespace Mengine
             if( _desc.filter.is_callable() == true )
             {
                 PyObject * ret_filter = m_kernel->ask_native( _desc.filter.ptr(), _args );
+
+                // A filter that raised reported its error and passes nothing.
+                if( ret_filter == nullptr )
+                {
+                    continue;
+                }
 
                 pybind::object scope_ret_filter( m_kernel, ret_filter, pybind::borrowed );
 

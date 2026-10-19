@@ -193,8 +193,8 @@ public class MenginePilotPlugin extends MengineService implements MengineListene
 
     public void sendAnalyticsEvent(@NonNull MengineParamAnalyticsEvent param) {
         Map<String, Object> metadata = new LinkedHashMap<>();
-        putAllIfNotNull(metadata, param.ANALYTICS_BASES);
-        putAllIfNotNull(metadata, param.ANALYTICS_PARAMETERS);
+        MenginePilotPlugin.putAllIfNotNull(metadata, param.ANALYTICS_BASES);
+        MenginePilotPlugin.putAllIfNotNull(metadata, param.ANALYTICS_PARAMETERS);
 
         Pilot.event(
             param.ANALYTICS_NAME,
@@ -204,14 +204,16 @@ public class MenginePilotPlugin extends MengineService implements MengineListene
 
     public void sendAdRevenue(@NonNull MengineParamAdRevenue revenue) {
         Map<String, Object> metadata = new LinkedHashMap<>();
-        putIfNotNull(metadata, "ad_platform", getPilotAdMediation(revenue.ADREVENUE_MEDIATION));
-        putIfNotNull(metadata, "ad_unit_name", revenue.ADREVENUE_ADUNITID);
-        putIfNotNull(metadata, "ad_source", revenue.ADREVENUE_NETWORK);
-        putIfNotNull(metadata, "ad_format", getPilotAdFormat(revenue.ADREVENUE_FORMAT));
-        putIfNotNull(metadata, "placement", revenue.ADREVENUE_PLACEMENT);
-        putIfNotNull(metadata, "precision", revenue.ADREVENUE_REVENUE_PRECISION);
+        String adPlatform = MenginePilotPlugin.getPilotAdMediation(revenue.ADREVENUE_MEDIATION);
+        MenginePilotPlugin.putIfNotNull(metadata, "ad_platform", adPlatform);
+        MenginePilotPlugin.putIfNotNull(metadata, "ad_unit_name", revenue.ADREVENUE_ADUNITID);
+        MenginePilotPlugin.putIfNotNull(metadata, "ad_source", revenue.ADREVENUE_NETWORK);
+        String adFormat = MenginePilotPlugin.getPilotAdFormat(revenue.ADREVENUE_FORMAT);
+        MenginePilotPlugin.putIfNotNull(metadata, "ad_format", adFormat);
+        MenginePilotPlugin.putIfNotNull(metadata, "placement", revenue.ADREVENUE_PLACEMENT);
+        MenginePilotPlugin.putIfNotNull(metadata, "precision", revenue.ADREVENUE_REVENUE_PRECISION);
         metadata.put("value", revenue.ADREVENUE_REVENUE_VALUE);
-        putIfNotNull(metadata, "currency", revenue.ADREVENUE_REVENUE_CURRENCY);
+        MenginePilotPlugin.putIfNotNull(metadata, "currency", revenue.ADREVENUE_REVENUE_CURRENCY);
 
         Pilot.revenue(
             "ad_impression",
@@ -224,14 +226,14 @@ public class MenginePilotPlugin extends MengineService implements MengineListene
 
         for (MengineParamInAppProduct product : products) {
             Map<String, Object> entry = new LinkedHashMap<>();
-            putIfNotNull(entry, "product_id", product.INAPPPRODUCT_ID);
-            putIfNotNull(entry, "product_type", product.INAPPPRODUCT_TYPE);
-            putIfNotNull(entry, "name", product.INAPPPRODUCT_NAME);
-            putIfNotNull(entry, "title", product.INAPPPRODUCT_TITLE);
-            putIfNotNull(entry, "description", product.INAPPPRODUCT_DESCRIPTION);
+            MenginePilotPlugin.putIfNotNull(entry, "product_id", product.INAPPPRODUCT_ID);
+            MenginePilotPlugin.putIfNotNull(entry, "product_type", product.INAPPPRODUCT_TYPE);
+            MenginePilotPlugin.putIfNotNull(entry, "name", product.INAPPPRODUCT_NAME);
+            MenginePilotPlugin.putIfNotNull(entry, "title", product.INAPPPRODUCT_TITLE);
+            MenginePilotPlugin.putIfNotNull(entry, "description", product.INAPPPRODUCT_DESCRIPTION);
             entry.put("price_amount_micros", product.INAPPPRODUCT_PRICE_AMOUNT_MICROS);
-            putIfNotNull(entry, "formatted_price", product.INAPPPRODUCT_PRICE_FORMATTED);
-            putIfNotNull(entry, "price_currency_code", product.INAPPPRODUCT_PRICE_CURRENCY_CODE);
+            MenginePilotPlugin.putIfNotNull(entry, "formatted_price", product.INAPPPRODUCT_PRICE_FORMATTED);
+            MenginePilotPlugin.putIfNotNull(entry, "price_currency_code", product.INAPPPRODUCT_PRICE_CURRENCY_CODE);
             catalog.add(entry);
         }
 

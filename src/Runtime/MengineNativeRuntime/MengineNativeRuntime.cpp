@@ -1,0 +1,122 @@
+#include "Runtime/MengineRuntime.h"
+
+#include "Interface/ServiceInterface.h"
+#include "Interface/BootstrapperInterface.h"
+
+#include "Kernel/DocumentHelper.h"
+
+#include "Config/DynamicCast.h"
+
+//////////////////////////////////////////////////////////////////////////
+SERVICE_PROVIDER_EXTERN( ServiceProvider );
+//////////////////////////////////////////////////////////////////////////
+SERVICE_EXTERN( AllocatorSystem );
+SERVICE_EXTERN( EnumeratorService );
+SERVICE_EXTERN( StringizeService );
+SERVICE_EXTERN( DocumentService );
+SERVICE_EXTERN( NativeBootstrapper );
+//////////////////////////////////////////////////////////////////////////
+extern "C" Mengine::ServiceProviderInterface * API_MengineCreate( const Mengine::Configuration * _configuration )
+{
+    if( SERVICE_PROVIDER_EXIST() == true )
+    {
+        return nullptr;
+    }
+
+    Mengine::ServiceProviderInterface * serviceProvider;
+    if( SERVICE_PROVIDER_CREATE( ServiceProvider, &serviceProvider ) == false )
+    {
+        return nullptr;
+    }
+
+    SERVICE_PROVIDER_SETUP( serviceProvider );
+
+    // Stash engine-wide configuration on the ServiceProvider BEFORE any
+    // service is created. From this point on every code path (including
+    // Kernel-level Helper::abort/Helper::crash) can read it via
+    // SERVICE_PROVIDER_GET()->getConfiguration() without depending on a
+    // particular service.
+    Mengine::Configuration defaultConfiguration;
+    const Mengine::Configuration & configuration = _configuration != nullptr ? *_configuration : defaultConfiguration;
+    serviceProvider->setConfiguration( configuration );
+
+    if( SERVICE_CREATE( AllocatorSystem, nullptr ) == false )
+    {
+        return nullptr;
+    }
+
+    if( SERVICE_CREATE( EnumeratorService, nullptr ) == false )
+    {
+        return nullptr;
+    }
+
+    if( SERVICE_CREATE( StringizeService, nullptr ) == false )
+    {
+        return nullptr;
+    }
+
+    if( SERVICE_CREATE( DocumentService, nullptr ) == false )
+    {
+        return nullptr;
+    }
+
+    return serviceProvider;
+}
+//////////////////////////////////////////////////////////////////////////
+extern "C" Mengine::ServiceProviderInterface * API_MengineGet()
+{
+    Mengine::ServiceProviderInterface * serviceProvider = SERVICE_PROVIDER_GET();
+
+    return serviceProvider;
+}
+//////////////////////////////////////////////////////////////////////////
+extern "C" bool API_MengineBootstrap()
+{
+    if( SERVICE_CREATE( NativeBootstrapper, MENGINE_DOCUMENT_FUNCTION ) == false )
+    {
+        return false;
+    }
+
+    if( BOOTSTRAPPER_SERVICE()
+        ->initialize() == false )
+    {
+        return false;
+    }
+
+    return true;
+}
+//////////////////////////////////////////////////////////////////////////
+extern "C" bool API_MengineRun()
+{
+    if( BOOTSTRAPPER_SERVICE()
+        ->run() == false )
+    {
+        return false;
+    }
+
+    return true;
+}
+//////////////////////////////////////////////////////////////////////////
+extern "C" void API_MengineFinalize()
+{
+    SERVICE_FINALIZE( NativeBootstrapper );
+    SERVICE_DESTROY( NativeBootstrapper );
+
+    SERVICE_FINALIZE( DocumentService );
+    SERVICE_DESTROY( DocumentService );
+
+    SERVICE_FINALIZE( StringizeService );
+    SERVICE_DESTROY( StringizeService );
+
+    SERVICE_FINALIZE( EnumeratorService );
+    SERVICE_DESTROY( EnumeratorService );
+
+    SERVICE_FINALIZE( AllocatorSystem );
+    SERVICE_DESTROY( AllocatorSystem );
+
+    Mengine::ServiceProviderInterface * serviceProvider = SERVICE_PROVIDER_PUT();
+    SERVICE_PROVIDER_FINALIZE( serviceProvider );
+
+    SERVICE_PROVIDER_DESTROY( serviceProvider );
+}
+//////////////////////////////////////////////////////////////////////////

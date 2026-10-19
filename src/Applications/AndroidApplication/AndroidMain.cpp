@@ -4,7 +4,6 @@
 #include "AndroidApplication.h"
 
 #include "Kernel/AllocatorHelper.h"
-#include "Kernel/Crash.h"
 
 #include "Config/StdLib.h"
 #include "Config/New.h"
@@ -98,7 +97,7 @@ extern "C"
 
         __android_log_print( ANDROID_LOG_INFO, "Mengine", "Android bootstrap application initialized succeeded" );
 
-        jobject jobject_application = _env->NewDirectByteBuffer( application, sizeof(Mengine::AndroidApplication) );
+        jobject jobject_application = Mengine::Mengine_JNI_NewDirectByteBuffer( _env, application );
 
         if ( jobject_application == nullptr)
         {
@@ -127,7 +126,7 @@ extern "C"
 
         __android_log_print( ANDROID_LOG_INFO, "Mengine", "Android main initializing application" );
 
-        Mengine::AndroidApplication * application = (Mengine::AndroidApplication *)_env->GetDirectBufferAddress( _application );
+        Mengine::AndroidApplication * application = Mengine::Mengine_JNI_GetDirectBufferAddress<Mengine::AndroidApplication *>( _env, _application );
 
         if( application->initialize() == false )
         {
@@ -155,18 +154,9 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidMain_1destroy )( JNIEnv * _env, jclass _cls, jobject _application)
     {
-        Mengine::AndroidApplication * application = (Mengine::AndroidApplication *)_env->GetDirectBufferAddress( _application );
+        Mengine::AndroidApplication * application = Mengine::Mengine_JNI_GetDirectBufferAddress<Mengine::AndroidApplication *>( _env, _application );
 
         delete application;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidMain_1crash )( JNIEnv * _env, jclass _cls, jstring _reason)
-    {
-        const Mengine::Char * reason_str = _env->GetStringUTFChars( _reason, nullptr );
-
-        Mengine::Helper::crash( reason_str );
-
-        _env->ReleaseStringUTFChars( _reason, reason_str );
     }
     //////////////////////////////////////////////////////////////////////////
 }

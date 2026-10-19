@@ -5,6 +5,11 @@
 #import "Environment/Apple/AppleBundle.h"
 
 #include "Kernel/Assertion.h"
+#include "Kernel/FilePathHelper.h"
+#include "Kernel/PathHelper.h"
+
+#include "Config/Path.h"
+#include "Config/StdString.h"
 
 @implementation AppleDetail
 
@@ -70,6 +75,46 @@
     NSString * randomHexStringTrim = [randomHexString substringToIndex:length];
     
     return randomHexStringTrim;
+}
+
++ (CGSize)CGSizeFromResolution:(const Mengine::Resolution &)_resolution
+{
+    CGFloat width = _resolution.getWidth();
+    CGFloat height = _resolution.getHeight();
+    CGSize size = CGSizeMake( width, height );
+
+    return size;
+}
+
++ (size_t)getTemporaryDirectoryPath:(Mengine::Char * const)_temporaryPath
+{
+    NSString * temporaryPath = NSTemporaryDirectory();
+
+    if( temporaryPath == nil )
+    {
+        _temporaryPath[0] = '\0';
+
+        return 0;
+    }
+
+    const Mengine::Char * temporaryPathRepresentation = temporaryPath.fileSystemRepresentation;
+
+    Mengine::StdString::strcpy_safe( _temporaryPath, temporaryPathRepresentation, MENGINE_MAX_PATH );
+    Mengine::Helper::pathCorrectFolderPathA( _temporaryPath, MENGINE_PATH_FORWARDSLASH );
+    Mengine::Helper::pathCorrectBackslashA( _temporaryPath );
+
+    size_t length = Mengine::StdString::strlen( _temporaryPath );
+
+    return length;
+}
+
++ (Mengine::FilePath)getTemporaryDirectoryFilePath
+{
+    Mengine::Path path = {'\0'};
+    size_t length = [AppleDetail getTemporaryDirectoryPath:path];
+    Mengine::FilePath filePath = Mengine::Helper::stringizeFilePathSize( path, length );
+
+    return filePath;
 }
 
 static volatile BOOL OPERATION_QUEUES_WORKING = YES;

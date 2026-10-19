@@ -21,7 +21,7 @@ INCLUDE(${MENGINE_REPOSITORY}/cmake/mengine_template.cmake)
 # The supplied Astralax runtime is built with macOS 15.0 as its minimum.
 SET(CMAKE_OSX_DEPLOYMENT_TARGET "15.0" CACHE STRING "Tools deployment target" FORCE)
 
-SET_MENGINE_ENVIRONMENT(MACOS METAL MACOS XCODE)
+SET_MENGINE_ENVIRONMENT(NATIVE MACOS METAL MACOS XCODE)
 
 if(NOT CMAKE_OSX_ARCHITECTURES STREQUAL "arm64")
     message(FATAL_ERROR "Mengine tools for macOS support arm64 only")

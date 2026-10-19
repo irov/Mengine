@@ -5,87 +5,85 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    namespace Detail
-    {
-        //////////////////////////////////////////////////////////////////////////
-        static uint32_t get_thread_cookie()
-        {
-            static AtomicUInt32 s_cookie_counter{0};
-            static MENGINE_THREAD_LOCAL uint32_t s_thread_cookie = 0;
-
-            if( s_thread_cookie != 0 )
-            {
-                return s_thread_cookie;
-            }
-
-            uint32_t cookie;
-
-            do
-            {
-                cookie = s_cookie_counter.fetch_add( 1, StdAtomic::memory_order_relaxed ) + 1;
-            } while( cookie == 0 );
-
-            s_thread_cookie = cookie;
-
-            return cookie;
-        }
-        //////////////////////////////////////////////////////////////////////////
-    }
-    //////////////////////////////////////////////////////////////////////////
     SpinLock::SpinLock()
-        : m_owner( 0 )
+        : m_owner( StdThread::thread::id() )
         , m_lock( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
     SpinLock::~SpinLock()
     {
-        MENGINE_ASSERTION( m_owner.load( StdAtomic::memory_order_relaxed ) == 0, "SpinLock not released" );
-        MENGINE_ASSERTION( m_lock.load( StdAtomic::memory_order_relaxed ) == 0, "SpinLock recursion not zero" );
+        MENGINE_ASSERTION( m_owner.load( StdAtomic::memory_order_relaxed ) == StdThread::thread::id(), "SpinLock not released" );
+        MENGINE_ASSERTION( m_lock == 0, "SpinLock recursion not zero" );
     }
     //////////////////////////////////////////////////////////////////////////
     void SpinLock::lock()
     {
-        uint32_t me = Detail::get_thread_cookie();
+        StdThread::thread::id threadId = StdThread::get_id();
 
-        if( m_owner.load( StdAtomic::memory_order_acquire ) == me )
+        if( m_owner.load( StdAtomic::memory_order_acquire ) == threadId )
         {
-            m_lock.fetch_add( 1, StdAtomic::memory_order_acq_rel );
+            ++m_lock;
 
             return;
         }
 
-        uint32_t expected = 0;
+        StdThread::thread::id expected;
 
-        while( m_owner.compare_exchange_weak( expected, me, StdAtomic::memory_order_acquire, StdAtomic::memory_order_relaxed ) == false )
+        while( m_owner.compare_exchange_weak( expected, threadId, StdAtomic::memory_order_acquire, StdAtomic::memory_order_relaxed ) == false )
         {
-            expected = 0;
+            expected = StdThread::thread::id();
 
             StdThread::yield();
         }
 
-        m_lock.store( 1, StdAtomic::memory_order_release );
+        m_lock = 1;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SpinLock::tryLock()
+    {
+        StdThread::thread::id threadId = StdThread::get_id();
+
+        if( m_owner.load( StdAtomic::memory_order_acquire ) == threadId )
+        {
+            ++m_lock;
+
+            return true;
+        }
+
+        StdThread::thread::id expected;
+
+        if( m_owner.compare_exchange_strong( expected, threadId, StdAtomic::memory_order_acquire, StdAtomic::memory_order_relaxed ) == false )
+        {
+            return false;
+        }
+
+        m_lock = 1;
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void SpinLock::unlock()
     {
-        uint32_t me = Detail::get_thread_cookie();
+        StdThread::thread::id threadId = StdThread::get_id();
 
-        if( m_owner.load( StdAtomic::memory_order_acquire ) != me )
+        if( m_owner.load( StdAtomic::memory_order_acquire ) != threadId )
         {
             MENGINE_ASSERTION( false, "SpinLock::unlock invalid owner thread id" );
 
             return;
         }
 
-        int32_t lock_count = m_lock.fetch_sub( 1, StdAtomic::memory_order_acq_rel );
+        MENGINE_ASSERTION( m_lock > 0, "SpinLock::unlock invalid lock count" );
 
-        MENGINE_ASSERTION( lock_count > 0, "SpinLock::unlock invalid lock count" );
+        --m_lock;
 
-        if( lock_count == 1 )
+        if( m_lock != 0 )
         {
-            m_owner.store( 0, StdAtomic::memory_order_release );
+            return;
         }
+
+        m_owner.store( StdThread::thread::id(), StdAtomic::memory_order_release );
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -3,9 +3,8 @@
 #include "Interface/SoundSystemInterface.h"
 #include "Interface/FactoryInterface.h"
 
-#include "ALSASoundSource.h"
-#include "ALSASoundSystemExtensionInterface.h"
-
+#include "Kernel/MixerSoundSource.h"
+#include "Kernel/MixerSoundExtensionInterface.h"
 #include "Kernel/ServiceBase.h"
 #include "Kernel/SpinLock.h"
 #include "Kernel/Unknowable.h"
@@ -23,7 +22,7 @@ namespace Mengine
 {
     class ALSASoundSystem
         : public ServiceBase<SoundSystemInterface>
-        , public ALSASoundSystemExtensionInterface
+        , public MixerSoundExtensionInterface
     {
         DECLARE_FACTORABLE( ALSASoundSystem );
         DECLARE_UNKNOWABLE();
@@ -56,7 +55,7 @@ namespace Mengine
         void renderThread_();
         void mixOutputFrames_( float * _mixBuffer, uint32_t _frames, uint32_t _outputChannels );
 
-        void onDestroyALSASoundSource_( ALSASoundSource * _soundSource );
+        void onDestroyMixerSoundSource_( MixerSoundSource * _soundSource );
 
     protected:
         snd_pcm_t * m_pcm;
@@ -93,8 +92,8 @@ namespace Mengine
 
         ALSASoundMixerBusDesc m_mixerBuses[MENGINE_UNIX_MIXER_INPUT_BUS_COUNT];
 
-        FactoryInterfacePtr m_factoryALSASoundBuffer;
-        FactoryInterfacePtr m_factoryALSASoundBufferStream;
-        FactoryInterfacePtr m_factoryALSASoundSource;
+        FactoryInterfacePtr m_factorySoundBuffer;
+        FactoryInterfacePtr m_factorySoundBufferStream;
+        FactoryInterfacePtr m_factorySoundSource;
     };
 }

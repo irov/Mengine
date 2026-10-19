@@ -19,7 +19,7 @@
 #   include "Environment/Windows/Win32OutputDebugLogger.h"
 #endif
 
-#include "Mengine/MenginePlugin.h"
+#include "Runtime/MengineRuntime.h"
 
 #include "Environment/Windows/Win32ExtraFileLogger.h"
 

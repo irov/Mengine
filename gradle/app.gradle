@@ -20,6 +20,8 @@ if (ANDROID_APP_DELIVERY_PACKAGES != null) {
 }
 
 final Boolean MENGINE_APP_LIBRARY_MENGINE = Utils.existAppLibrary("MENGINE_APP_LIBRARY_MENGINE")
+final String MENGINE_RUNTIME = Utils.getStringProperty("MENGINE_RUNTIME", "NATIVE")
+final Boolean MENGINE_WEBVIEW_MCP = Utils.getBooleanProperty("MENGINE_WEBVIEW_MCP", false)
 
 final Boolean MENGINE_APP_SERVICE_AD = Utils.existAppService("MENGINE_APP_SERVICE_AD")
 final Boolean MENGINE_APP_SERVICE_MONITORCONNECTIVITYSTATUS = Utils.existAppService("MENGINE_APP_SERVICE_MONITORCONNECTIVITYSTATUS")
@@ -368,6 +370,16 @@ Utils.logAvailable("MENGINE_APP_LIBRARY_MENGINE", MENGINE_APP_LIBRARY_MENGINE)
 if (MENGINE_APP_LIBRARY_MENGINE == true) {
     dependencies {
         implementation project(':libraries:Mengine')
+    }
+
+    if (MENGINE_RUNTIME == "NATIVE") {
+        //Empty
+    } else if (MENGINE_RUNTIME == "WEBVIEW") {
+        android.ext.plugins += 'org.Mengine.Base.MengineWebViewService'
+
+        if (MENGINE_WEBVIEW_MCP == true) {
+            android.ext.plugins += 'org.Mengine.Base.MengineWebViewMCP'
+        }
     }
 }
 

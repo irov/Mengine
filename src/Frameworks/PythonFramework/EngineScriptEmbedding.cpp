@@ -1939,7 +1939,7 @@ namespace Mengine
             {
                 _context->addParameterGetterBoolean( _name, [_cb, _args]()
                 {
-                    bool value = _cb.call( _args );
+                    bool value = _cb.call_args( _args );
 
                     return value;
                 }, MENGINE_DOCUMENT_PYTHON );
@@ -1949,7 +1949,7 @@ namespace Mengine
             {
                 _context->addParameterGetterInteger( _name, [_cb, _args]()
                 {
-                    int64_t value = _cb.call( _args );
+                    int64_t value = _cb.call_args( _args );
 
                     return value;
                 }, MENGINE_DOCUMENT_PYTHON );
@@ -1959,7 +1959,7 @@ namespace Mengine
             {
                 _context->addParameterGetterDouble( _name, [_cb, _args]()
                 {
-                    double value = _cb.call( _args );
+                    double value = _cb.call_args( _args );
 
                     return value;
                 }, MENGINE_DOCUMENT_PYTHON );
@@ -1969,7 +1969,7 @@ namespace Mengine
             {
                 _context->addParameterGetterConstString( _name, [_cb, _args]()
                 {
-                    ConstString value = _cb.call( _args );
+                    ConstString value = _cb.call_args( _args );
 
                     return value;
                 }, MENGINE_DOCUMENT_PYTHON );
@@ -3366,7 +3366,8 @@ namespace Mengine
                         {
                         case EST_NONE:
                             {
-                                py_setting[_key] = _kernel->ret_none();
+                                // The item takes its own reference.
+                                py_setting[_key] = _kernel->get_none();
                             }break;
                         case EST_BOOL:
                             {

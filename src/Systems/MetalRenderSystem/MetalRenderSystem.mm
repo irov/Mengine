@@ -10,9 +10,9 @@
 #include "MetalRenderFragmentShader.h"
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_IOS)
-#   import "Environment/iOS/iOSPlatformServiceExtensionInterface.h"
+#   import "Environment/iOS/iOSRenderPlatformServiceExtensionInterface.h"
 #elif defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
-#   import "Environment/MacOS/MacOSPlatformServiceExtensionInterface.h"
+#   import "Environment/MacOS/MacOSRenderPlatformServiceExtensionInterface.h"
 #endif
 
 #include "Interface/LifecycleServiceInterface.h"
@@ -222,12 +222,12 @@ namespace Mengine
             id<MTLDevice> platformDevice = nil;
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_IOS)
-            iOSPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+            iOSRenderPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
                 ->getUnknown();
 
             platformDevice = platformExtension->getMetalDevice();
 #elif defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
-            MacOSPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+            MacOSRenderPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
                 ->getUnknown();
 
             platformDevice = platformExtension->getMetalDevice();
@@ -339,14 +339,14 @@ namespace Mengine
             CAMetalLayer * windowLayer = nil;
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_IOS)
-            iOSPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+            iOSRenderPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
                 ->getUnknown();
 
             UIView * metalView = platformExtension->getMetalView();
 
             windowLayer = (CAMetalLayer *)metalView.layer;
 #elif defined(MENGINE_ENVIRONMENT_PLATFORM_MACOS)
-            MacOSPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+            MacOSRenderPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
                 ->getUnknown();
 
             NSView * metalView = platformExtension->getNSView();

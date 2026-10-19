@@ -381,6 +381,7 @@ namespace Mengine
 
         PyObject * code = kernel->debugger_frame_code( _event.frame );
         PyObject * filenameObject = kernel->get_attrstring( code, "co_filename" );
+        pybind::object filenameOwner( kernel, filenameObject, pybind::borrowed );
 
         if( filenameObject == nullptr || kernel->string_check( filenameObject ) == false )
         {
@@ -418,7 +419,7 @@ namespace Mengine
                 PyObject * locals = kernel->debugger_frame_locals( _event.frame );
                 const Char * conditionExpression = breakpoint.condition.c_str();
                 PyObject * conditionValue = kernel->eval_string( conditionExpression, globals, locals );
-                pybind::object condition( kernel, conditionValue );
+                pybind::object condition( kernel, conditionValue, pybind::borrowed );
                 PyObject * conditionObject = condition.ptr();
 
                 if( condition.is_invalid() == true || kernel->is_true( conditionObject ) == false )

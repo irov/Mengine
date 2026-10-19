@@ -62,7 +62,7 @@ namespace Mengine
             }
 
             PyObject * evaluatedValue = kernel->eval_string( expression, globals, locals );
-            pybind::object value( kernel, evaluatedValue );
+            pybind::object value( kernel, evaluatedValue, pybind::borrowed );
             jpp::object serialized;
             bool successful = m_scriptContext->scriptToJSON( value, 2, 100, 0, &serialized, &error );
 

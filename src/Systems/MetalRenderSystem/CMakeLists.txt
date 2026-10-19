@@ -44,6 +44,7 @@ ADD_MENGINE_LIBRARY(Systems)
 
 IF(MENGINE_TARGET_MACOS OR MENGINE_TARGET_IOS OR MENGINE_TARGET_IOS_SIMULATOR)
     TARGET_LINK_LIBRARIES(${PROJECT_NAME}
+        Apple
         "-framework Metal"
         "-framework MetalKit"
         "-framework QuartzCore"

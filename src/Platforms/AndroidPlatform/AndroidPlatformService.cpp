@@ -278,7 +278,7 @@ extern "C"
 
         ANativeWindow * nativeWindow = ANativeWindow_fromSurface( env, surface );
 
-        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+        Mengine::AndroidRenderPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
         platformExtension->androidNativeSurfaceCreatedEvent( nativeWindow );
@@ -291,7 +291,7 @@ extern "C"
             return;
         }
 
-        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+        Mengine::AndroidRenderPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
         platformExtension->androidNativeSurfaceDestroyedEvent();
@@ -306,7 +306,7 @@ extern "C"
 
         ANativeWindow * nativeWindow = ANativeWindow_fromSurface( env, surface );
 
-        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+        Mengine::AndroidRenderPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
         platformExtension->androidNativeSurfaceChangedEvent( nativeWindow, surfaceWidth, surfaceHeight, deviceWidth, deviceHeight, rate );
@@ -319,7 +319,7 @@ extern "C"
             return;
         }
 
-        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+        Mengine::AndroidRenderPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
         platformExtension->androidNativeKeyEvent( eventTime, isDown, keyCode, repeatCount );
@@ -332,7 +332,7 @@ extern "C"
             return;
         }
 
-        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+        Mengine::AndroidRenderPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
         platformExtension->androidNativeControllerConnectEvent( eventTime, deviceId, connected );
@@ -345,7 +345,7 @@ extern "C"
             return;
         }
 
-        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+        Mengine::AndroidRenderPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
         platformExtension->androidNativeControllerButtonEvent( eventTime, deviceId, keyCode, value, isDown );
@@ -358,7 +358,7 @@ extern "C"
             return;
         }
 
-        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+        Mengine::AndroidRenderPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
         platformExtension->androidNativeControllerAxisEvent( eventTime, deviceId, axis, value );
@@ -400,7 +400,7 @@ extern "C"
             return;
         }
 
-        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+        Mengine::AndroidRenderPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
         platformExtension->androidNativeTextEvent( eventTime, unicode );
@@ -413,7 +413,7 @@ extern "C"
             return;
         }
 
-        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+        Mengine::AndroidRenderPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
         platformExtension->androidNativeTouchEvent( eventTime, action, pointerId, x, y, pressure );
@@ -426,7 +426,7 @@ extern "C"
             return;
         }
 
-        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+        Mengine::AndroidRenderPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
         platformExtension->androidNativeAccelerationEvent( eventTimestamp, x, y, z );
@@ -693,7 +693,7 @@ extern "C"
             return 0.f;
         }
 
-        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+        Mengine::AndroidRenderPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
         return platformExtension->androidNativeGetLastFingerX();
@@ -706,7 +706,7 @@ extern "C"
             return 0.f;
         }
 
-        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+        Mengine::AndroidRenderPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
         return platformExtension->androidNativeGetLastFingerY();
@@ -719,7 +719,7 @@ extern "C"
             return 0.f;
         }
 
-        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+        Mengine::AndroidRenderPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
         return platformExtension->androidNativeGetLastFingerPressure();
@@ -1239,6 +1239,11 @@ namespace Mengine
                 m_pauseUpdatingTime = _frameTime;
             }
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    RenderPlatformInterface * AndroidPlatformService::getRenderPlatform()
+    {
+        return this;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::renderPlatform()
@@ -3497,7 +3502,7 @@ namespace Mengine
 
         AndroidNativeRunnablePtr nativeRunnable = Helper::makeFactorableUnique<AndroidNativeRunnable>( MENGINE_DOCUMENT_FACTORABLE, _callback );
 
-        jobject jobject_buffer = Mengine_JNI_NewDirectByteBuffer( _jenv, nativeRunnable.get(), sizeof( AndroidNativeRunnable ) );
+        jobject jobject_buffer = Mengine_JNI_NewDirectByteBuffer( _jenv, nativeRunnable );
 
         if( jobject_buffer == nullptr )
         {
@@ -3589,18 +3594,7 @@ namespace Mengine
             return nullptr;
         }
 
-        jlong capacity = Mengine_JNI_GetDirectBufferCapacity( _jenv, _buffer );
-
-        if( capacity != sizeof( AndroidNativeRunnable ) )
-        {
-            LOGGER_ERROR( "invalid native runnable buffer capacity [%" MENGINE_PRId64 "]"
-                , capacity
-            );
-
-            return nullptr;
-        }
-
-        AndroidNativeRunnable * nativeRunnable = static_cast<AndroidNativeRunnable *>(Mengine_JNI_GetDirectBufferAddress( _jenv, _buffer ));
+        AndroidNativeRunnable * nativeRunnable = Mengine_JNI_GetDirectBufferAddress<AndroidNativeRunnable *>( _jenv, _buffer );
 
         if( nativeRunnable == nullptr )
         {

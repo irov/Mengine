@@ -1,10 +1,10 @@
 #include "AudioUnitSoundSystem.h"
 
+#include "Interface/ThreadServiceInterface.h"
+
 #include "AudioUnitSoundSource.h"
 #include "AudioUnitSoundBufferMemory.h"
 #include "AudioUnitSoundBufferStream.h"
-
-#include "Interface/ThreadServiceInterface.h"
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryPoolWithListener.h"
@@ -16,9 +16,9 @@
 
 #include "Config/StdAlgorithm.h"
 
-#import <TargetConditionals.h>
+#if defined(MENGINE_PLATFORM_IOS)
+#import "Environment/iOS/iOSLog.h"
 
-#if TARGET_OS_IPHONE
 #import <AVFoundation/AVFoundation.h>
 #endif
 
@@ -28,12 +28,50 @@ SERVICE_FACTORY( SoundSystem, Mengine::AudioUnitSoundSystem );
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+        static void makeFormat( AudioStreamBasicDescription * const _format, Float64 _sampleRate, UInt32 _channels )
+        {
+            uint8_t * formatBuffer = reinterpret_cast<uint8_t *>(_format);
+            StdAlgorithm::fill_n( formatBuffer, sizeof( AudioStreamBasicDescription ), 0 );
+
+            _format->mSampleRate = _sampleRate;
+            _format->mFormatID = kAudioFormatLinearPCM;
+            AudioFormatFlags formatFlags = static_cast<AudioFormatFlags>(kAudioFormatFlagsNativeFloatPacked);
+            formatFlags |= static_cast<AudioFormatFlags>(kAudioFormatFlagIsNonInterleaved);
+
+            _format->mFormatFlags = formatFlags;
+            _format->mBytesPerPacket = sizeof( Float32 );
+            _format->mFramesPerPacket = 1;
+            _format->mBytesPerFrame = sizeof( Float32 );
+            _format->mChannelsPerFrame = _channels;
+            _format->mBitsPerChannel = sizeof( Float32 ) * 8;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void zeroBufferList( AudioBufferList * _ioData )
+        {
+            if( _ioData == nullptr )
+            {
+                return;
+            }
+
+            for( UInt32 index = 0; index != _ioData->mNumberBuffers; ++index )
+            {
+                AudioBuffer & buffer = _ioData->mBuffers[index];
+                uint8_t * bufferData = reinterpret_cast<uint8_t *>(buffer.mData);
+                StdAlgorithm::fill_n( bufferData, buffer.mDataByteSize, 0 );
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
+    }
+    //////////////////////////////////////////////////////////////////////////
     AudioUnitSoundSystem::AudioUnitSoundSystem()
         : m_outputUnit( nullptr )
         , m_mixerUnit( nullptr )
         , m_outputSampleRate( 44100.0 )
         , m_outputChannels( 2 )
-#if TARGET_OS_IPHONE
+#if defined(MENGINE_PLATFORM_IOS)
         , m_interruptionObserver( nil )
 #endif
     {
@@ -49,24 +87,23 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AudioUnitSoundSystem::_initializeService()
     {
-#if TARGET_OS_IPHONE
+#if defined(MENGINE_PLATFORM_IOS)
         @autoreleasepool
         {
             AVAudioSession * session = [AVAudioSession sharedInstance];
 
             NSError * error = nil;
-
             if( [session setCategory:AVAudioSessionCategoryAmbient error:&error] == NO )
             {
-                LOGGER_WARNING( "failed to set AVAudioSession category [%s]"
-                    , error.localizedDescription.UTF8String
+                IOS_LOGGER_WARNING( @"failed to set AVAudioSession category [%@]"
+                    , error.localizedDescription
                 );
             }
 
             if( [session setActive:YES error:&error] == NO )
             {
-                LOGGER_WARNING( "failed to activate AVAudioSession [%s]"
-                    , error.localizedDescription.UTF8String
+                IOS_LOGGER_WARNING( @"failed to activate AVAudioSession [%@]"
+                    , error.localizedDescription
                 );
             }
 
@@ -77,29 +114,28 @@ namespace Mengine
                 m_outputSampleRate = sampleRate;
             }
 
-            AudioUnitSoundSystem * self = this;
+            AudioUnitSoundSystem * soundSystem = this;
 
             m_interruptionObserver = [[NSNotificationCenter defaultCenter]
                 addObserverForName:AVAudioSessionInterruptionNotification
                 object:session
                 queue:nil
-                usingBlock:^( NSNotification * notification )
+                usingBlock:^( NSNotification * _notification )
                 {
-                    NSDictionary * info = notification.userInfo;
-                    AVAudioSessionInterruptionType type = (AVAudioSessionInterruptionType)
-                        [info[AVAudioSessionInterruptionTypeKey] unsignedIntegerValue];
+                    NSDictionary * info = _notification.userInfo;
+                    NSNumber * interruptionType = info[AVAudioSessionInterruptionTypeKey];
+                    AVAudioSessionInterruptionType type = (AVAudioSessionInterruptionType)interruptionType.unsignedIntegerValue;
 
                     if( type == AVAudioSessionInterruptionTypeBegan )
                     {
-                        self->handleAudioInterruption_( true );
+                        soundSystem->handleAudioInterruption_( true );
                     }
                     else if( type == AVAudioSessionInterruptionTypeEnded )
                     {
-                        self->handleAudioInterruption_( false );
+                        soundSystem->handleAudioInterruption_( false );
                     }
                 }
             ];
-
         }
 #endif
 
@@ -125,27 +161,25 @@ namespace Mengine
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryAudioUnitSoundBufferStream );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryAudioUnitSoundSource );
 
-#if TARGET_OS_IPHONE
+#if defined(MENGINE_PLATFORM_IOS)
         if( m_interruptionObserver != nil )
         {
             [[NSNotificationCenter defaultCenter] removeObserver:m_interruptionObserver];
             m_interruptionObserver = nil;
         }
-
 #endif
 
         this->destroyAudioMixer_();
 
-#if TARGET_OS_IPHONE
+#if defined(MENGINE_PLATFORM_IOS)
         @autoreleasepool
         {
             AVAudioSession * session = [AVAudioSession sharedInstance];
             NSError * error = nil;
-
             if( [session setActive:NO withOptions:AVAudioSessionSetActiveOptionNotifyOthersOnDeactivation error:&error] == NO )
             {
-                LOGGER_WARNING( "failed to deactivate AVAudioSession [%s]"
-                    , error.localizedDescription.UTF8String
+                IOS_LOGGER_WARNING( @"failed to deactivate AVAudioSession [%@]"
+                    , error.localizedDescription
                 );
             }
         }
@@ -189,7 +223,14 @@ namespace Mengine
     {
         AudioUnitSoundBufferBasePtr base = nullptr;
 
-        if( _isStream == false || SERVICE_IS_INITIALIZE( ThreadServiceInterface ) == false )
+        bool stream = _isStream;
+
+        if( stream == true )
+        {
+            stream = SERVICE_IS_INITIALIZE( ThreadServiceInterface );
+        }
+
+        if( stream == false )
         {
             AudioUnitSoundBufferMemoryPtr buffer = m_factoryAudioUnitSoundBuffer->createObject( _doc );
 
@@ -244,7 +285,15 @@ namespace Mengine
             return false;
         }
 
-        if( m_mixerBuses[busIndex].frequency != _frequency || m_mixerBuses[busIndex].channels != _channels )
+        AudioUnitSoundMixerBusDesc & busDesc = m_mixerBuses[busIndex];
+        bool configure = busDesc.frequency != _frequency;
+
+        if( configure == false )
+        {
+            configure = busDesc.channels != _channels;
+        }
+
+        if( configure == true )
         {
             if( this->configureSourceBus_( busIndex, _frequency, _channels ) == false )
             {
@@ -256,7 +305,6 @@ namespace Mengine
         }
 
         {
-            AudioUnitSoundMixerBusDesc & busDesc = m_mixerBuses[busIndex];
             MENGINE_SPINLOCK_SCOPE( busDesc.lock );
 
             busDesc.source = _source;
@@ -322,7 +370,7 @@ namespace Mengine
         {
             LOGGER_ASSERTION( "failed to set mixer bus volume [%u] [%d]"
                 , _busIndex
-                , (int)status
+                , status
             );
 
             return false;
@@ -338,13 +386,17 @@ namespace Mengine
             return false;
         }
 
-        return this->enableSourceBus_( _busIndex, _enable );
+        if( this->enableSourceBus_( _busIndex, _enable ) == false )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AudioUnitSoundSystem::createAudioMixer_()
     {
-        AudioComponentDescription mixerDescription;
-        StdAlgorithm::fill_n( reinterpret_cast<uint8_t *>( &mixerDescription ), sizeof( mixerDescription ), 0 );
+        AudioComponentDescription mixerDescription = {};
 
         mixerDescription.componentType = kAudioUnitType_Mixer;
         mixerDescription.componentSubType = kAudioUnitSubType_MultiChannelMixer;
@@ -364,7 +416,7 @@ namespace Mengine
         if( status != noErr )
         {
             LOGGER_ASSERTION( "failed to create mixer unit [%d]"
-                , (int)status
+                , status
             );
 
             m_mixerUnit = nullptr;
@@ -372,13 +424,12 @@ namespace Mengine
             return false;
         }
 
-        AudioComponentDescription outputDescription;
-        StdAlgorithm::fill_n( reinterpret_cast<uint8_t *>( &outputDescription ), sizeof( outputDescription ), 0 );
+        AudioComponentDescription outputDescription = {};
 
         outputDescription.componentType = kAudioUnitType_Output;
         outputDescription.componentManufacturer = kAudioUnitManufacturer_Apple;
 
-#if TARGET_OS_IPHONE
+#if defined(MENGINE_PLATFORM_IOS)
         outputDescription.componentSubType = kAudioUnitSubType_RemoteIO;
 #else
         outputDescription.componentSubType = kAudioUnitSubType_DefaultOutput;
@@ -400,7 +451,7 @@ namespace Mengine
         if( status != noErr )
         {
             LOGGER_ASSERTION( "failed to create output unit [%d]"
-                , (int)status
+                , status
             );
 
             this->destroyAudioMixer_();
@@ -408,7 +459,7 @@ namespace Mengine
             return false;
         }
 
-#if TARGET_OS_IPHONE
+#if defined(MENGINE_PLATFORM_IOS)
         UInt32 enableOutput = 1;
         AudioUnitSetProperty( m_outputUnit, kAudioOutputUnitProperty_EnableIO, kAudioUnitScope_Output, 0, &enableOutput, sizeof( enableOutput ) );
 
@@ -426,7 +477,7 @@ namespace Mengine
         if( status != noErr )
         {
             LOGGER_ASSERTION( "failed to set mixer bus count [%d]"
-                , (int)status
+                , status
             );
 
             this->destroyAudioMixer_();
@@ -435,14 +486,14 @@ namespace Mengine
         }
 
         AudioStreamBasicDescription mixFormat;
-        AudioUnitSoundSystem::makeFormat_( &mixFormat, m_outputSampleRate, m_outputChannels );
+        Detail::makeFormat( &mixFormat, m_outputSampleRate, m_outputChannels );
 
         status = AudioUnitSetProperty( m_mixerUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Output, 0, &mixFormat, sizeof( mixFormat ) );
 
         if( status != noErr )
         {
             LOGGER_ASSERTION( "failed to set mixer output format [%d]"
-                , (int)status
+                , status
             );
 
             this->destroyAudioMixer_();
@@ -455,7 +506,7 @@ namespace Mengine
         if( status != noErr )
         {
             LOGGER_ASSERTION( "failed to set output unit format [%d]"
-                , (int)status
+                , status
             );
 
             this->destroyAudioMixer_();
@@ -473,7 +524,7 @@ namespace Mengine
         if( status != noErr )
         {
             LOGGER_ASSERTION( "failed to connect mixer to output [%d]"
-                , (int)status
+                , status
             );
 
             this->destroyAudioMixer_();
@@ -493,7 +544,7 @@ namespace Mengine
             {
                 LOGGER_ASSERTION( "failed to set mixer input callback [%u] [%d]"
                     , index
-                    , (int)status
+                    , status
                 );
 
                 this->destroyAudioMixer_();
@@ -502,7 +553,7 @@ namespace Mengine
             }
 
             AudioStreamBasicDescription inputFormat;
-            AudioUnitSoundSystem::makeFormat_( &inputFormat, m_outputSampleRate, 1 );
+            Detail::makeFormat( &inputFormat, m_outputSampleRate, 1 );
 
             status = AudioUnitSetProperty( m_mixerUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, index, &inputFormat, sizeof( inputFormat ) );
 
@@ -510,7 +561,7 @@ namespace Mengine
             {
                 LOGGER_ASSERTION( "failed to set initial mixer bus format [%u] [%d]"
                     , index
-                    , (int)status
+                    , status
                 );
 
                 this->destroyAudioMixer_();
@@ -527,7 +578,7 @@ namespace Mengine
         if( status != noErr )
         {
             LOGGER_ASSERTION( "failed to initialize mixer unit [%d]"
-                , (int)status
+                , status
             );
 
             this->destroyAudioMixer_();
@@ -540,7 +591,7 @@ namespace Mengine
         if( status != noErr )
         {
             LOGGER_ASSERTION( "failed to initialize output unit [%d]"
-                , (int)status
+                , status
             );
 
             this->destroyAudioMixer_();
@@ -555,7 +606,7 @@ namespace Mengine
         if( status != noErr )
         {
             LOGGER_ASSERTION( "failed to start output unit [%d]"
-                , (int)status
+                , status
             );
 
             this->destroyAudioMixer_();
@@ -603,8 +654,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AudioUnitSoundSystem::configureSourceBus_( uint32_t _busIndex, uint32_t _frequency, uint32_t _channels )
     {
+        Float64 sampleRate = (Float64)_frequency;
         AudioStreamBasicDescription inputFormat;
-        AudioUnitSoundSystem::makeFormat_( &inputFormat, (Float64)_frequency, _channels );
+        Detail::makeFormat( &inputFormat, sampleRate, _channels );
 
         OSStatus status = AudioUnitSetProperty( m_mixerUnit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, _busIndex, &inputFormat, sizeof( inputFormat ) );
 
@@ -616,7 +668,7 @@ namespace Mengine
                 , _channels
                 , m_outputSampleRate
                 , m_outputChannels
-                , (int)status
+                , status
             );
 
             return false;
@@ -627,14 +679,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AudioUnitSoundSystem::enableSourceBus_( uint32_t _busIndex, bool _enable )
     {
-        OSStatus status = AudioUnitSetParameter( m_mixerUnit, kMultiChannelMixerParam_Enable, kAudioUnitScope_Input, _busIndex, _enable == true ? 1.f : 0.f, 0 );
+        AudioUnitParameterValue enable = _enable == true ? 1.f : 0.f;
+        OSStatus status = AudioUnitSetParameter( m_mixerUnit, kMultiChannelMixerParam_Enable, kAudioUnitScope_Input, _busIndex, enable, 0 );
 
         if( status != noErr )
         {
             LOGGER_ASSERTION( "failed to %s mixer bus [%u] [%d]"
                 , _enable == true ? "enable" : "disable"
                 , _busIndex
-                , (int)status
+                , status
             );
 
             return false;
@@ -643,46 +696,15 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AudioUnitSoundSystem::makeFormat_( AudioStreamBasicDescription * const _format, Float64 _sampleRate, UInt32 _channels )
-    {
-        StdAlgorithm::fill_n( reinterpret_cast<uint8_t *>( _format ), sizeof( AudioStreamBasicDescription ), 0 );
-
-        _format->mSampleRate = _sampleRate;
-        _format->mFormatID = kAudioFormatLinearPCM;
-        AudioFormatFlags formatFlags = static_cast<AudioFormatFlags>(kAudioFormatFlagsNativeFloatPacked);
-        formatFlags |= static_cast<AudioFormatFlags>(kAudioFormatFlagIsNonInterleaved);
-
-        _format->mFormatFlags = formatFlags;
-        _format->mBytesPerPacket = sizeof( Float32 );
-        _format->mFramesPerPacket = 1;
-        _format->mBytesPerFrame = sizeof( Float32 );
-        _format->mChannelsPerFrame = _channels;
-        _format->mBitsPerChannel = sizeof( Float32 ) * 8;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AudioUnitSoundSystem::zeroBufferList_( AudioBufferList * _ioData )
-    {
-        if( _ioData == nullptr )
-        {
-            return;
-        }
-
-        for( UInt32 index = 0; index != _ioData->mNumberBuffers; ++index )
-        {
-            AudioBuffer & buffer = _ioData->mBuffers[index];
-            StdAlgorithm::fill_n( reinterpret_cast<uint8_t *>(buffer.mData), buffer.mDataByteSize, 0 );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
     OSStatus AudioUnitSoundSystem::mixerRenderCallback_( void * _refCon, AudioUnitRenderActionFlags * _flags, const AudioTimeStamp * _timeStamp, UInt32 _busNumber, UInt32 _numberFrames, AudioBufferList * _ioData )
     {
         MENGINE_UNUSED( _flags );
         MENGINE_UNUSED( _timeStamp );
         MENGINE_UNUSED( _busNumber );
 
-        AudioUnitSoundMixerBusDesc * busDesc = static_cast<AudioUnitSoundMixerBusDesc *>( _refCon );
+        AudioUnitSoundMixerBusDesc * busDesc = static_cast<AudioUnitSoundMixerBusDesc *>(_refCon);
 
-        AudioUnitSoundSystem::zeroBufferList_( _ioData );
+        Detail::zeroBufferList( _ioData );
 
         SoundSourceInterfacePtr source;
 
@@ -696,7 +718,7 @@ namespace Mengine
             return noErr;
         }
 
-        AudioUnitSoundSource * appleSource = static_cast<AudioUnitSoundSource *>( source.get() );
+        AudioUnitSoundSource * appleSource = static_cast<AudioUnitSoundSource *>(source.get());
 
         OSStatus result = appleSource->renderMixerFrames( _numberFrames, _ioData );
 
@@ -708,46 +730,49 @@ namespace Mengine
         _soundSource->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
-#if TARGET_OS_IPHONE
+#if defined(MENGINE_PLATFORM_IOS)
     void AudioUnitSoundSystem::handleAudioInterruption_( bool _began )
     {
         if( _began == true )
         {
-            LOGGER_MESSAGE( "audio session interruption began, stopping output" );
+            IOS_LOGGER_MESSAGE( @"audio session interruption began, stopping output" );
 
-            if( m_outputUnit != nullptr )
+            if( m_outputUnit == nullptr )
             {
-                AudioOutputUnitStop( m_outputUnit );
+                return;
+            }
+
+            AudioOutputUnitStop( m_outputUnit );
+
+            return;
+        }
+
+        IOS_LOGGER_MESSAGE( @"audio session interruption ended, restarting output" );
+
+        @autoreleasepool
+        {
+            AVAudioSession * session = [AVAudioSession sharedInstance];
+            NSError * error = nil;
+            if( [session setActive:YES error:&error] == NO )
+            {
+                IOS_LOGGER_WARNING( @"failed to reactivate AVAudioSession [%@]"
+                    , error.localizedDescription
+                );
             }
         }
-        else
+
+        if( m_outputUnit == nullptr )
         {
-            LOGGER_MESSAGE( "audio session interruption ended, restarting output" );
+            return;
+        }
 
-            @autoreleasepool
-            {
-                AVAudioSession * session = [AVAudioSession sharedInstance];
-                NSError * error = nil;
+        OSStatus status = AudioOutputUnitStart( m_outputUnit );
 
-                if( [session setActive:YES error:&error] == NO )
-                {
-                    LOGGER_WARNING( "failed to reactivate AVAudioSession [%s]"
-                        , error.localizedDescription.UTF8String
-                    );
-                }
-            }
-
-            if( m_outputUnit != nullptr )
-            {
-                OSStatus status = AudioOutputUnitStart( m_outputUnit );
-
-                if( status != noErr )
-                {
-                    LOGGER_WARNING( "failed to restart output unit after interruption [%d]"
-                        , (int)status
-                    );
-                }
-            }
+        if( status != noErr )
+        {
+            IOS_LOGGER_WARNING( @"failed to restart output unit after interruption [%d]"
+                , status
+            );
         }
     }
 #endif

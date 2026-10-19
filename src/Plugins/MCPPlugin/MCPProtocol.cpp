@@ -17,7 +17,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MCPFrameDecoder::append( const void * _buffer, size_t _size, Vector<MCPFrame> * const _frames, const Char ** const _error )
+    bool MCPFrameDecoder::append( const void * _buffer, size_t _size, VectorMCPFrames * const _frames, const Char ** const _error )
     {
         const uint8_t * bytes = static_cast<const uint8_t *>(_buffer);
         m_buffer.insert( m_buffer.end(), bytes, bytes + _size );

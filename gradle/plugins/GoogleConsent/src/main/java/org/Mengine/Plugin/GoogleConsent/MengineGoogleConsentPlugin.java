@@ -8,6 +8,7 @@ import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineParamTransparencyConsent;
 import org.Mengine.Base.MengineConsentFlowUserGeography;
 import org.Mengine.Base.MengineTransparencyConsentProviderInterface;
+import org.Mengine.Base.MengineUtils;
 
 import android.os.Bundle;
 
@@ -158,36 +159,42 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
     }
 
     public void showConsentFlow() {
-        MengineActivity activity = this.getMengineActivity();
+        MengineUtils.performOnMainThread(() -> {
+            MengineActivity activity = this.getMengineActivity();
 
-        if (activity == null) {
-            this.logError("[ERROR] showConsentFlow invalid activity");
+            if (activity == null || activity.isFinishing() == true || activity.isDestroyed() == true) {
+                this.logError("[ERROR] showConsentFlow invalid activity");
 
-            this.nativeCall("onAndroidGoogleConsentFlowError", new RuntimeException("invalid activity"));
-
-            return;
-        }
-
-        UserMessagingPlatform.showPrivacyOptionsForm(activity, formError -> {
-            if (formError != null) {
-                this.logError("Failed to show consent dialog error: %s [%d]"
-                    , formError.getMessage()
-                    , formError.getErrorCode()
-                );
-
-                this.nativeCall("onAndroidGoogleConsentFlowError", new RuntimeException(formError.getMessage()));
+                RuntimeException exception = new RuntimeException("invalid activity");
+                this.nativeCall("onAndroidGoogleConsentFlowError", exception);
 
                 return;
             }
 
-            this.logInfo("Consent dialog was shown");
+            UserMessagingPlatform.showPrivacyOptionsForm(activity, formError -> {
+                if (formError != null) {
+                    String message = formError.getMessage();
 
-            MengineApplication application = this.getMengineApplication();
-            ConsentInformation consentInformation = UserMessagingPlatform.getConsentInformation(activity);
+                    this.logError("Failed to show consent dialog error: %s [%d]"
+                        , message
+                        , formError.getErrorCode()
+                    );
 
-            this.m_consentResolved = this.notifyTransparencyConsent(application, consentInformation);
+                    RuntimeException exception = new RuntimeException(message);
+                    this.nativeCall("onAndroidGoogleConsentFlowError", exception);
 
-            this.nativeCall("onAndroidGoogleConsentFlowCompleted");
+                    return;
+                }
+
+                this.logInfo("Consent dialog was shown");
+
+                MengineApplication application = this.getMengineApplication();
+                ConsentInformation consentInformation = UserMessagingPlatform.getConsentInformation(activity);
+
+                this.m_consentResolved = this.notifyTransparencyConsent(application, consentInformation);
+
+                this.nativeCall("onAndroidGoogleConsentFlowCompleted");
+            });
         });
     }
 

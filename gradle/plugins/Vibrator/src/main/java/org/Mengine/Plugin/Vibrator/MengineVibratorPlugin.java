@@ -8,13 +8,10 @@ import org.Mengine.Base.MengineUtils;
 
 import androidx.annotation.NonNull;
 
-import android.Manifest;
-import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.os.VibratorManager;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
 
@@ -76,8 +73,7 @@ public class MengineVibratorPlugin extends MengineService implements MengineList
                 feedback = Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE
                     ? HapticFeedbackConstants.SEGMENT_FREQUENT_TICK : HapticFeedbackConstants.CLOCK_TICK;
             } else if (strength == 1) {
-                feedback = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                    ? HapticFeedbackConstants.CONTEXT_CLICK : HapticFeedbackConstants.KEYBOARD_TAP;
+                feedback = HapticFeedbackConstants.CONTEXT_CLICK;
             } else {
                 feedback = HapticFeedbackConstants.LONG_PRESS;
             }
@@ -100,11 +96,8 @@ public class MengineVibratorPlugin extends MengineService implements MengineList
             return true;
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            m_vibrator.vibrate(VibrationEffect.createOneShot(milliseconds, VibrationEffect.DEFAULT_AMPLITUDE));
-        } else {
-            m_vibrator.vibrate(milliseconds);
-        }
+        VibrationEffect effect = VibrationEffect.createOneShot(milliseconds, VibrationEffect.DEFAULT_AMPLITUDE);
+        m_vibrator.vibrate(effect);
 
         return true;
     }
@@ -123,13 +116,9 @@ public class MengineVibratorPlugin extends MengineService implements MengineList
             return false;
         }
 
-        long[] timmingsArray = MengineUtils.longArrayFromList(timings);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            m_vibrator.vibrate(VibrationEffect.createWaveform(timmingsArray, repeat));
-        } else {
-            m_vibrator.vibrate(timmingsArray, repeat);
-        }
+        long[] timingsArray = MengineUtils.longArrayFromList(timings);
+        VibrationEffect effect = VibrationEffect.createWaveform(timingsArray, repeat);
+        m_vibrator.vibrate(effect);
 
         return true;
     }
@@ -149,14 +138,10 @@ public class MengineVibratorPlugin extends MengineService implements MengineList
             return false;
         }
 
-        long[] timmingsArray = MengineUtils.longArrayFromList(timings);
+        long[] timingsArray = MengineUtils.longArrayFromList(timings);
         int[] amplitudesArray = MengineUtils.intArrayFromList(amplitudes);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            m_vibrator.vibrate(VibrationEffect.createWaveform(timmingsArray, amplitudesArray, repeat));
-        } else {
-            m_vibrator.vibrate(timmingsArray, repeat);
-        }
+        VibrationEffect effect = VibrationEffect.createWaveform(timingsArray, amplitudesArray, repeat);
+        m_vibrator.vibrate(effect);
 
         return true;
     }

@@ -1,10 +1,11 @@
 #import "iOSNativePythonPlugin.h"
+
+#import "Environment/iOS/iOSLog.h"
 #import "iOSNativePythonCallbackDesc.h"
 
 #import "Environment/Apple/AppleSemaphoreListenerNSProxy.h"
 #import "Environment/Apple/AppleSemaphoreService.h"
 
-#include "Kernel/Logger.h"
 #include "Kernel/ScriptEmbeddingHelper.h"
 
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
@@ -116,9 +117,9 @@ typedef NSMutableDictionary<NSString *, iOSNativePythonMethods *> iOSNativePytho
 
     if( pluginMethods == nil )
     {
-        LOGGER_ERROR( "invalid remove iOS callback plugin '%s' method '%s' not found"
-            , [plugin UTF8String]
-            , [method UTF8String]
+        IOS_LOGGER_ERROR( @"invalid remove iOS callback plugin '%@' method '%@' not found"
+            , plugin
+            , method
         );
 
         return;
@@ -128,9 +129,9 @@ typedef NSMutableDictionary<NSString *, iOSNativePythonMethods *> iOSNativePytho
 
     if( callbacks == nil )
     {
-        LOGGER_ERROR( "invalid remove iOS callback plugin '%s' method '%s' not found"
-            , [plugin UTF8String]
-            , [method UTF8String]
+        IOS_LOGGER_ERROR( @"invalid remove iOS callback plugin '%@' method '%@' not found"
+            , plugin
+            , method
         );
 
         return;
@@ -150,9 +151,9 @@ typedef NSMutableDictionary<NSString *, iOSNativePythonMethods *> iOSNativePytho
 
     if( index == NSNotFound )
     {
-        LOGGER_ERROR( "invalid remove iOS callback plugin '%s' method '%s' not found [cb]"
-            , [plugin UTF8String]
-            , [method UTF8String]
+        IOS_LOGGER_ERROR( @"invalid remove iOS callback plugin '%@' method '%@' not found [cb]"
+            , plugin
+            , method
         );
 
         return;
@@ -172,8 +173,8 @@ typedef NSMutableDictionary<NSString *, iOSNativePythonMethods *> iOSNativePytho
 }
 
 - (void)activateSemaphore:(NSString * _Nonnull)name withValue:(id _Nullable)value {
-    LOGGER_INFO( "ios", "activate semaphore '%s'"
-        , [name UTF8String]
+    IOS_LOGGER_INFO( @"ios", @"activate semaphore '%@'"
+        , name
     );
 
     [AppleSemaphoreService.sharedInstance activateSemaphore:name withValue:value];
@@ -181,8 +182,8 @@ typedef NSMutableDictionary<NSString *, iOSNativePythonMethods *> iOSNativePytho
 
 - (Mengine::AppleSemaphoreListenerInterfacePtr)waitSemaphore:(NSString * _Nonnull)name
                                                     listener:(const Mengine::AppleSemaphoreListenerInterfacePtr &)listener {
-    LOGGER_INFO( "ios", "wait semaphore '%s'"
-        , [name UTF8String]
+    IOS_LOGGER_INFO( @"ios", @"wait semaphore '%@'"
+        , name
     );
 
     AppleSemaphoreListenerNSProxy * proxy = [[AppleSemaphoreListenerNSProxy alloc] initWithListener:listener];

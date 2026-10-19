@@ -11,7 +11,6 @@
 #include "Kernel/Unknowable.h"
 
 #include <AudioToolbox/AudioToolbox.h>
-#include <TargetConditionals.h>
 
 #ifndef MENGINE_APPLE_MIXER_INPUT_BUS_COUNT
 #define MENGINE_APPLE_MIXER_INPUT_BUS_COUNT (32)
@@ -42,7 +41,7 @@ namespace Mengine
         bool isSilent() const override;
 
     public:
-        SoundSourceInterfacePtr createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _sample, const DocumentInterfacePtr & _doc ) override;
+        SoundSourceInterfacePtr createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer, const DocumentInterfacePtr & _doc ) override;
         SoundBufferInterfacePtr createSoundBuffer( const SoundDecoderInterfacePtr & _decoder, bool _isStream, const DocumentInterfacePtr & _doc ) override;
 
     public:
@@ -51,6 +50,11 @@ namespace Mengine
         bool setSourceBusVolume( uint32_t _busIndex, float _gain ) override;
         bool enableSourceBus( uint32_t _busIndex, bool _enable ) override;
 
+#if defined(MENGINE_PLATFORM_IOS)
+    public:
+        void handleAudioInterruption_( bool _began );
+#endif
+
     protected:
         bool createAudioMixer_();
         void destroyAudioMixer_();
@@ -58,21 +62,11 @@ namespace Mengine
         bool configureSourceBus_( uint32_t _busIndex, uint32_t _frequency, uint32_t _channels );
         bool enableSourceBus_( uint32_t _busIndex, bool _enable );
 
-        static void makeFormat_( AudioStreamBasicDescription * const _format, Float64 _sampleRate, UInt32 _channels );
-        static void zeroBufferList_( AudioBufferList * _ioData );
-
+    protected:
         static OSStatus mixerRenderCallback_( void * _refCon, AudioUnitRenderActionFlags * _flags, const AudioTimeStamp * _timeStamp, UInt32 _busNumber, UInt32 _numberFrames, AudioBufferList * _ioData );
 
     protected:
         void onDestroyAudioUnitSoundSource_( AudioUnitSoundSource * _soundSource );
-
-#if TARGET_OS_IPHONE
-    public:
-        void handleAudioInterruption_( bool _began );
-
-    protected:
-        id m_interruptionObserver;
-#endif
 
     protected:
         AudioUnit m_outputUnit;
@@ -81,7 +75,7 @@ namespace Mengine
         UInt32 m_outputChannels;
 
         SpinLock m_busLock;
-        
+
         struct AudioUnitSoundMixerBusDesc
         {
             SpinLock lock;
@@ -91,11 +85,15 @@ namespace Mengine
             uint32_t channels = 0;
             bool busy = false;
         };
-        
         AudioUnitSoundMixerBusDesc m_mixerBuses[MENGINE_APPLE_MIXER_INPUT_BUS_COUNT];
 
         FactoryInterfacePtr m_factoryAudioUnitSoundBuffer;
         FactoryInterfacePtr m_factoryAudioUnitSoundBufferStream;
         FactoryInterfacePtr m_factoryAudioUnitSoundSource;
+
+#if defined(MENGINE_PLATFORM_IOS)
+        id m_interruptionObserver;
+#endif
     };
+    //////////////////////////////////////////////////////////////////////////
 }

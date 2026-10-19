@@ -1,5 +1,7 @@
 #include "MetalRenderSurface.h"
 
+#import "Environment/Apple/AppleDetail.h"
+
 #include "Kernel/Assertion.h"
 
 namespace Mengine
@@ -81,10 +83,14 @@ namespace Mengine
             return false;
         }
 
-        uint32_t width = _resolution.getWidth();
-        uint32_t height = _resolution.getHeight();
+        CGSize drawableSize = [AppleDetail CGSizeFromResolution:_resolution];
 
-        if( width == 0 || height == 0 )
+        if( drawableSize.width == 0 )
+        {
+            return false;
+        }
+
+        if( drawableSize.height == 0 )
         {
             return false;
         }
@@ -92,7 +98,7 @@ namespace Mengine
         m_resolution = _resolution;
         m_dpiScale = _dpiScale;
         m_layer.contentsScale = m_dpiScale;
-        m_layer.drawableSize = CGSizeMake( width, height );
+        m_layer.drawableSize = drawableSize;
         m_depthTarget = nil;
 
         if( this->updateDepthTarget_() == false )

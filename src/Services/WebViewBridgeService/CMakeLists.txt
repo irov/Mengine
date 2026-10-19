@@ -1,0 +1,11 @@
+MENGINE_PROJECT(WebViewBridgeService)
+
+ADD_FILTER(
+src
+    WebViewBridgeService.h
+    WebViewBridgeService.cpp
+)
+
+ADD_MENGINE_LIBRARY(Services)
+TARGET_INCLUDE_DIRECTORIES(${PROJECT_NAME} PUBLIC ${THIRDPARTY_DIR}/jpp/include)
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)

@@ -1,5 +1,7 @@
 MENGINE_PROJECT(Android)
 
+INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/jpp/include)
+
 ADD_FILTER(
 src
     AndroidIncluder.h
@@ -12,8 +14,12 @@ src
     AndroidActivityHelper.cpp
     AndroidApplicationHelper.h
     AndroidApplicationHelper.cpp
+    AndroidPluginHelper.h
+    AndroidPluginHelper.cpp
     AndroidHelper.h
     AndroidHelper.cpp
+    AndroidJSONHelper.h
+    AndroidJSONHelper.cpp
     
     AndroidAssetServiceInterface.h
     
@@ -41,6 +47,9 @@ src
     AndroidRemoteConfig.cpp
     
     AndroidPlatformServiceExtensionInterface.h
+    AndroidRenderPlatformServiceExtensionInterface.h
+    AndroidWebViewPlatformServiceExtensionInterface.h
+    AndroidWebViewEvent.h
     
     stack_chk_fail_local.c
 )

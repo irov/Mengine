@@ -3,6 +3,7 @@
 
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/PluginServiceInterface.h"
+#include "Interface/RenderPlatformInterface.h"
 
 #import "iOSApplicationDelegates.h"
 #import "iOSViewController.h"
@@ -737,8 +738,10 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
     PLATFORM_SERVICE()
         ->tickPlatform( frameTimeF );
 
-    bool rendered = PLATFORM_SERVICE()
-        ->renderPlatform();
+    Mengine::RenderPlatformInterface * renderPlatform = PLATFORM_SERVICE()
+        ->getRenderPlatform();
+
+    bool rendered = renderPlatform->renderPlatform();
 
     if (rendered == true && self.m_hasRenderedFirstFrame == NO) {
         self.m_hasRenderedFirstFrame = YES;

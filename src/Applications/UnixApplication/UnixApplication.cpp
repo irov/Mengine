@@ -9,7 +9,7 @@
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 
-#include "Mengine/MenginePlugin.h"
+#include "Runtime/MengineRuntime.h"
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/StringArguments.h"

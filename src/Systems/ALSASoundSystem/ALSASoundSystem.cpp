@@ -1,10 +1,9 @@
 #include "ALSASoundSystem.h"
 
-#include "ALSASoundBufferMemory.h"
-#include "ALSASoundBufferStream.h"
-
 #include "Interface/ThreadServiceInterface.h"
 
+#include "Kernel/MixerSoundBufferMemory.h"
+#include "Kernel/MixerSoundBufferStream.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryPoolWithListener.h"
 #include "Kernel/AssertionFactory.h"
@@ -70,9 +69,9 @@ namespace Mengine
             return false;
         }
 
-        m_factoryALSASoundBuffer = Helper::makeFactoryPoolWithMutex<ALSASoundBufferMemory, 32>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryALSASoundBufferStream = Helper::makeFactoryPoolWithMutex<ALSASoundBufferStream, 32>( MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryALSASoundSource = Helper::makeFactoryPoolWithMutexAndListener<ALSASoundSource, 32>( this, &ALSASoundSystem::onDestroyALSASoundSource_, MENGINE_DOCUMENT_FACTORABLE );
+        m_factorySoundBuffer = Helper::makeFactoryPoolWithMutex<MixerSoundBufferMemory, 32>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factorySoundBufferStream = Helper::makeFactoryPoolWithMutex<MixerSoundBufferStream, 32>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factorySoundSource = Helper::makeFactoryPoolWithMutexAndListener<MixerSoundSource, 32>( this, &ALSASoundSystem::onDestroyMixerSoundSource_, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -81,13 +80,13 @@ namespace Mengine
     {
         this->destroyAudioMixer_();
 
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryALSASoundBuffer );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryALSASoundBufferStream );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryALSASoundSource );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factorySoundBuffer );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factorySoundBufferStream );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factorySoundSource );
 
-        m_factoryALSASoundBuffer = nullptr;
-        m_factoryALSASoundBufferStream = nullptr;
-        m_factoryALSASoundSource = nullptr;
+        m_factorySoundBuffer = nullptr;
+        m_factorySoundBufferStream = nullptr;
+        m_factorySoundSource = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void ALSASoundSystem::update()
@@ -102,12 +101,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ALSASoundSystem::isSilent() const
     {
-        return false;
+        bool silent = m_renderFailed.load();
+
+        return silent;
     }
     //////////////////////////////////////////////////////////////////////////
     SoundSourceInterfacePtr ALSASoundSystem::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer, const DocumentInterfacePtr & _doc )
     {
-        ALSASoundSourcePtr soundSource = m_factoryALSASoundSource->createObject( _doc );
+        MixerSoundSourcePtr soundSource = m_factorySoundSource->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( soundSource, "invalid sound source create" );
 
@@ -126,11 +127,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     SoundBufferInterfacePtr ALSASoundSystem::createSoundBuffer( const SoundDecoderInterfacePtr & _decoder, bool _isStream, const DocumentInterfacePtr & _doc )
     {
-        ALSASoundBufferBasePtr base;
+        MixerSoundBufferBasePtr base;
 
         if( _isStream == false || SERVICE_IS_INITIALIZE( ThreadServiceInterface ) == false )
         {
-            ALSASoundBufferMemoryPtr buffer = m_factoryALSASoundBuffer->createObject( _doc );
+            MixerSoundBufferMemoryPtr buffer = m_factorySoundBuffer->createObject( _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( buffer, "invalid create sound buffer" );
 
@@ -138,7 +139,7 @@ namespace Mengine
         }
         else
         {
-            ALSASoundBufferStreamPtr buffer = m_factoryALSASoundBufferStream->createObject( _doc );
+            MixerSoundBufferStreamPtr buffer = m_factorySoundBufferStream->createObject( _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( buffer, "invalid create sound stream buffer" );
 
@@ -456,12 +457,12 @@ namespace Mengine
                 continue;
             }
 
-            ALSASoundSource * unixSource = static_cast<ALSASoundSource *>(source.get());
-            unixSource->renderMixerFrames( _frames, _outputChannels, _mixBuffer, gain );
+            MixerSoundSource * mixerSource = static_cast<MixerSoundSource *>(source.get());
+            mixerSource->renderMixerFrames( _frames, _outputChannels, _mixBuffer, gain );
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ALSASoundSystem::onDestroyALSASoundSource_( ALSASoundSource * _soundSource )
+    void ALSASoundSystem::onDestroyMixerSoundSource_( MixerSoundSource * _soundSource )
     {
         _soundSource->finalize();
     }

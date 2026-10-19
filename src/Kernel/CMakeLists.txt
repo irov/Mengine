@@ -803,6 +803,9 @@ Core
     SpinLockScope.h
     SpinLockScope.cpp
 
+    SpinLockTryScope.h
+    SpinLockTryScope.cpp
+
     UID.h
     UID.cpp
 
@@ -1117,6 +1120,21 @@ Json
 ADD_FILTER(
 Unknown
     UnknownResourceImageDataInterface.h
+)
+
+ADD_FILTER(
+SoundMixer
+    MixerSoundBufferBase.cpp
+    MixerSoundBufferBase.h
+    MixerSoundBufferMemory.cpp
+    MixerSoundBufferMemory.h
+    MixerSoundBufferStream.cpp
+    MixerSoundBufferStream.h
+    MixerSoundExtensionInterface.h
+    MixerSoundPCMHelper.cpp
+    MixerSoundPCMHelper.h
+    MixerSoundSource.cpp
+    MixerSoundSource.h
 )
 
 ADD_FILTER(

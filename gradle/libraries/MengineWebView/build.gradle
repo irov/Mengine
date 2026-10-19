@@ -1,0 +1,65 @@
+apply from: rootProject.projectDir.getAbsolutePath() + '/libraries/library.gradle'
+
+final File engineGradle = projectDir.parentFile.parentFile
+
+final Boolean MENGINE_WEBVIEW_MCP = Utils.getBooleanProperty("MENGINE_WEBVIEW_MCP", false)
+
+android {
+    namespace = 'org.Mengine.Base'
+
+    defaultConfig {
+        manifestPlaceholders = [ANDROID_APP_SCREEN_ORIENTATION: Utils.getStringProperty("ANDROID_APP_SCREEN_ORIENTATION", "sensorPortrait")]
+        consumerProguardFiles new File(engineGradle, 'libraries/Mengine/proguard-rules.pro'), 'proguard-rules.pro'
+        buildConfigField 'String', 'MENGINE_NATIVE_APPLICATION', '"AndroidWebViewApplication"'
+        buildConfigField 'String', 'MENGINE_ACTIVITY_CONTENT', '"org.Mengine.Base.MengineWebViewActivityContent"'
+        buildConfigField 'boolean', 'MENGINE_RUNTIME_NATIVE', 'false'
+        buildConfigField 'boolean', 'MENGINE_RUNTIME_WEBVIEW', 'true'
+        buildConfigField 'String', 'MENGINE_WEBVIEW_COMPANY', '"Mengine"'
+        buildConfigField 'boolean', 'MENGINE_APP_ENABLE_STRICT_MODE', 'false'
+        externalNativeBuild {
+            cmake {
+                arguments '-DANDROID_STL=c++_static', '-DMENGINE_DEPENDENCIES_PROJECT=Depends_Android',
+                    '-DMENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED=OFF', '-DMENGINE_USE_PRECOMPILED_HEADER=OFF',
+                    "-DMENGINE_WEBVIEW_MCP=${MENGINE_WEBVIEW_MCP ? 'ON' : 'OFF'}"
+                targets 'AndroidWebViewApplication'
+            }
+        }
+        ndk {
+            abiFilters 'arm64-v8a'
+        }
+    }
+
+    buildTypes {
+        debug {
+            externalNativeBuild.cmake.arguments '-DCMAKE_BUILD_TYPE:STRING=Debug'
+        }
+        release {
+            externalNativeBuild.cmake.arguments '-DCMAKE_BUILD_TYPE:STRING=Release'
+        }
+    }
+
+    sourceSets {
+        main {
+            java.srcDir new File(engineGradle, 'libraries/Mengine/src/main/java')
+            assets.srcDir new File(engineGradle, '../src/WebView')
+            if (MENGINE_WEBVIEW_MCP == true) {
+                java.srcDir 'src/mcp/java'
+            }
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path new File(engineGradle, '../cmake/Android_WebView/CMakeLists.txt')
+        }
+    }
+}
+
+dependencies {
+    implementation 'androidx.webkit:webkit:1.12.1'
+    api "androidx.appcompat:appcompat:${Utils.getStringProperty('ANDROID_APP_IMPLEMENTATION_ANDROIDX_APPCOMPAT', '1.8.0')}"
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs.addAll(['-Xlint:deprecation', '-Werror'])
+}

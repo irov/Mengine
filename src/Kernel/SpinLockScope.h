@@ -10,6 +10,10 @@ namespace Mengine
         SpinLockScope( SpinLock & _futex );
         ~SpinLockScope();
 
+    private:
+        SpinLockScope( const SpinLockScope & _scope );
+        SpinLockScope & operator = ( const SpinLockScope & _scope );
+
     protected:
         SpinLock & m_spinlock;
     };

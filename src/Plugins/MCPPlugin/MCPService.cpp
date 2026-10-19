@@ -907,9 +907,8 @@ namespace Mengine
             return false;
         }
 
-        Vector<MCPFrame> frames;
+        VectorMCPFrames frames;
         const Char * error = nullptr;
-
         if( m_decoder.append( buffer, received, &frames, &error ) == false )
         {
             LOGGER_ERROR( "MCP protocol error: %s", error );

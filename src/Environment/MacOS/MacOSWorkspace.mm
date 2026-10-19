@@ -1,6 +1,7 @@
 #import "MacOSWorkspace.h"
 
 #import "Environment/Apple/AppleDetail.h"
+#import "Environment/Apple/AppleLog.h"
 
 #import "Kernel/Logger.h"
 
@@ -63,10 +64,10 @@
                                                       options:screenOptions
                                                         error:&error] == FALSE )
         {
-            LOGGER_ERROR("invalid set desktop image url '%s' error '%s'"
-                , [url.absoluteString UTF8String]
-                , [[AppleDetail getMessageFromNSError:error] UTF8String]
-            );
+            [AppleLog withFormat:@"invalid set desktop image url '%@' error '%@'"
+                , url.absoluteString
+                , [AppleDetail getMessageFromNSError:error]
+            ];
 
             return;
         }

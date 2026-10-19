@@ -1,5 +1,7 @@
-ADD_SUBDIRECTORY(SilentSoundSystem)
-ADD_SUBDIRECTORY(MockupRenderSystem)
+if(MENGINE_RUNTIME_NATIVE)
+    ADD_SUBDIRECTORY(SilentSoundSystem)
+    ADD_SUBDIRECTORY(MockupRenderSystem)
+endif()
 
 MACRO(ADD_SYSTEM_SUBDIRECTORY System)
     if(${System})

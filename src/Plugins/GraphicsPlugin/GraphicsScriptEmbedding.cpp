@@ -53,6 +53,10 @@ namespace Mengine
             .def_member( "width", &GraphicsPathPoint::width )
             .def_member( "color", &GraphicsPathPoint::color )
             .def_member( "outlineColor", &GraphicsPathPoint::outlineColor );
+
+        pybind::registration_stl_vector_type_cast<VectorGraphicsPathPoints>( _kernel );
+        pybind::registration_stl_vector_type_cast<Vector<float>>( _kernel );
+
         pybind::struct_<GraphicsPathStyle>( _kernel, "GraphicsPathStyle" )
             .def_constructor( pybind::init<>() )
             .def_member( "attributes", &GraphicsPathStyle::attributes )
@@ -168,6 +172,10 @@ namespace Mengine
         _kernel->remove_scope<GraphicsPathMarker>();
         _kernel->remove_scope<GraphicsPathSample>();
         _kernel->remove_scope<GraphicsPathStyle>();
+
+        pybind::unregistration_stl_vector_type_cast<Vector<float>>( _kernel );
+        pybind::unregistration_stl_vector_type_cast<VectorGraphicsPathPoints>( _kernel );
+
         _kernel->remove_scope<GraphicsPathPoint>();
         Helper::unregisterScriptWrapping<Graphics>();
     }

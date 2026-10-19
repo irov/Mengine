@@ -130,9 +130,17 @@ namespace Mengine
             return _kernel->is_class( _obj );
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_is_type_class( pybind::kernel_interface * _kernel, PyTypeObject * _type )
+        static bool s_is_type_class( pybind::kernel_interface * _kernel, PyObject * _obj )
         {
-            return _kernel->is_type_class( _type );
+            // An object that is not a type is no type of a class.
+            if( _kernel->type_check( _obj ) == false )
+            {
+                return false;
+            }
+
+            PyTypeObject * type = reinterpret_cast<PyTypeObject *>(_obj);
+
+            return _kernel->is_type_class( type );
         }
         //////////////////////////////////////////////////////////////////////////
         static bool s_is_wrap( pybind::kernel_interface * _kernel, PyObject * _obj )
@@ -726,7 +734,18 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static PyObject * s_reloadModule( pybind::kernel_interface * _kernel, PyObject * _module )
         {
-            return _kernel->module_reload( _module );
+            PyObject * py_module = _kernel->module_reload( _module );
+
+            // The reload reported its error: Python sees one that names it rather
+            // than a null result without an error.
+            if( py_module == nullptr )
+            {
+                _kernel->error_message( "invalid reload module" );
+
+                return nullptr;
+            }
+
+            return py_module;
         }
         //////////////////////////////////////////////////////////////////////////
         static String s_makeUID( uint32_t _length )
@@ -1877,6 +1896,12 @@ namespace Mengine
             void onChangeSetting( const Char * _value ) override
             {
                 PyObject * pyunicode_value = m_kernel->unicode_from_utf8( _value );
+
+                // A value that does not decode reported its error.
+                if( pyunicode_value == nullptr )
+                {
+                    return;
+                }
 
                 this->call_cb( m_accountId, pyunicode_value );
 
@@ -4654,6 +4679,8 @@ namespace Mengine
 
         pybind::unregistration_stl_vector_type_cast<VectorResourceImages>(_kernel);
         pybind::unregistration_stl_vector_type_cast<VectorHotSpotPolygons>(_kernel);
+
+        pybind::unregistration_type_cast<URLString>(_kernel);
 
         pybind::unregistration_type_cast<ParamVariant>(_kernel);
 

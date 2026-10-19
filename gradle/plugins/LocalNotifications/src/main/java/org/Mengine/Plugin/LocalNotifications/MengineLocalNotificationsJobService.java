@@ -26,16 +26,14 @@ public class MengineLocalNotificationsJobService extends JobService {
 
         Context context = this.getApplicationContext();
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            Notification notification = MengineLocalNotificationsPlugin.getNotification(context, id, title, content);
-            NotificationManager notificationManager = this.getSystemService(NotificationManager.class);
+        Notification notification = MengineLocalNotificationsPlugin.getNotification(context, id, title, content);
+        NotificationManager notificationManager = this.getSystemService(NotificationManager.class);
 
-            if (notificationManager == null) {
-                return false;
-            }
-
-            notificationManager.notify(MengineLocalNotificationsPlugin.NOTIFICATION_TAG, id, notification);
+        if (notificationManager == null) {
+            return false;
         }
+
+        notificationManager.notify(MengineLocalNotificationsPlugin.NOTIFICATION_TAG, id, notification);
 
         return false;
     }

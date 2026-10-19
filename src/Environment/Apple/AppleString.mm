@@ -18,7 +18,7 @@
         
 + (Mengine::ConstString) NSStringToConstString:(NSString *)_value {
     const Mengine::Char * value_str = [_value UTF8String];
-    NSUInteger value_size = [_value length];
+    NSUInteger value_size = [_value lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
     
     Mengine::ConstString value_cstr = Mengine::Helper::stringizeStringSize( value_str, (Mengine::ConstString::size_type)value_size );
             
@@ -27,7 +27,7 @@
 
 + (Mengine::String) NSStringToString:(NSString *)_value {
     const Mengine::Char * value_str = [_value UTF8String];
-    NSUInteger value_size = [_value length];
+    NSUInteger value_size = [_value lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
             
     Mengine::String value_string = Mengine::String( value_str, value_size );
             

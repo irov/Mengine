@@ -6,9 +6,18 @@ src
     DbgHelpIncluder.h
     
     Win32PlatformServiceExtensionInterface.h
+    Win32WebViewPlatformServiceExtensionInterface.h
     
     Win32Helper.h
     Win32Helper.cpp
+
+    Win32UnicodeHelper.h
+    Win32UnicodeHelper.cpp
+
+    Win32ResolutionHelper.h
+    Win32ResolutionHelper.cpp
+
+    Win32RuntimeClassWeak.h
     
     Win32GetCallstack.h
     Win32GetCallstack.cpp

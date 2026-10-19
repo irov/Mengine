@@ -106,6 +106,8 @@ namespace Mengine
         MENGINE_UNUSED( _looped );
         MENGINE_UNUSED( _position );
 
+        //Empty
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -128,6 +130,8 @@ namespace Mengine
     {
         MENGINE_UNUSED( _position );
 
+        //Empty
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -141,6 +145,8 @@ namespace Mengine
     void AudioUnitSoundBufferMemory::setVolume( float _gain )
     {
         MENGINE_UNUSED( _gain );
+
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     const MemoryInterfacePtr & AudioUnitSoundBufferMemory::getPCMMemory() const
@@ -155,14 +161,27 @@ namespace Mengine
             return 0;
         }
 
-        return (uint32_t)(m_pcmDataSize / this->getFrameSize());
+        uint32_t frameSize = this->getFrameSize();
+        uint32_t frameCount = (uint32_t)(m_pcmDataSize / frameSize);
+
+        return frameCount;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t AudioUnitSoundBufferMemory::renderMixerFrames( AudioBufferList * _ioData, uint32_t _frameOffset, uint32_t _frames, uint32_t _framePosition, bool _loop, uint32_t * const _outFramePosition )
     {
         *_outFramePosition = _framePosition;
 
-        if( _ioData == nullptr || _frames == 0 || m_channels == 0 )
+        if( _ioData == nullptr )
+        {
+            return 0;
+        }
+
+        if( _frames == 0 )
+        {
+            return 0;
+        }
+
+        if( m_channels == 0 )
         {
             return 0;
         }
@@ -193,14 +212,12 @@ namespace Mengine
         {
             if( currentFrame >= totalFrames )
             {
-                if( _loop == true )
-                {
-                    currentFrame = 0;
-                }
-                else
+                if( _loop == false )
                 {
                     break;
                 }
+
+                currentFrame = 0;
             }
 
             uint32_t copyFrames = totalFrames - currentFrame;
@@ -216,18 +233,21 @@ namespace Mengine
             {
                 AudioBuffer & buffer = _ioData->mBuffers[0];
 
-                if( buffer.mData != nullptr && buffer.mNumberChannels != 0 )
+                if( buffer.mData != nullptr )
                 {
-                    UInt32 destinationChannels = buffer.mNumberChannels;
-                    Float32 * dst = static_cast<Float32 *>( buffer.mData ) + (_frameOffset + renderedFrames) * destinationChannels;
-
-                    for( uint32_t frame = 0; frame != copyFrames; ++frame )
+                    if( buffer.mNumberChannels != 0 )
                     {
-                        const int16_t * srcFrame = src + frame * m_channels;
+                        UInt32 destinationChannels = buffer.mNumberChannels;
+                        Float32 * dst = static_cast<Float32 *>(buffer.mData) + (_frameOffset + renderedFrames) * destinationChannels;
 
-                        for( UInt32 channel = 0; channel != destinationChannels; ++channel )
+                        for( uint32_t frame = 0; frame != copyFrames; ++frame )
                         {
-                            dst[frame * destinationChannels + channel] = Helper::resolveAudioUnitSoundPCM16Sample( srcFrame, m_channels, channel, destinationChannels );
+                            const int16_t * srcFrame = src + frame * m_channels;
+
+                            for( UInt32 channel = 0; channel != destinationChannels; ++channel )
+                            {
+                                dst[frame * destinationChannels + channel] = Helper::resolveAudioUnitSoundPCM16Sample( srcFrame, m_channels, channel, destinationChannels );
+                            }
                         }
                     }
                 }
@@ -243,7 +263,7 @@ namespace Mengine
                         continue;
                     }
 
-                    Float32 * dst = static_cast<Float32 *>( buffer.mData ) + (_frameOffset + renderedFrames);
+                    Float32 * dst = static_cast<Float32 *>(buffer.mData) + (_frameOffset + renderedFrames);
 
                     for( uint32_t frame = 0; frame != copyFrames; ++frame )
                     {

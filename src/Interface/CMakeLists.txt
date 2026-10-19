@@ -28,6 +28,7 @@ Common
     MemoryInterface.h
     MemoryServiceInterface.h
     PlatformServiceInterface.h
+    RenderPlatformInterface.h
     PlatformSystemInterface.h
     ImageCodecInterface.h
     PickCodecInterface.h
@@ -52,6 +53,11 @@ Common
     EasingInterface.h
     EasingServiceInterface.h
     BootstrapperInterface.h
+    WebViewBootstrapperInterface.h
+    WebViewBridgeServiceInterface.h
+    WebViewBridgeSenderInterface.h
+    WebViewPlatformServiceInterface.h
+    WebViewPlatformExtensionInterface.h
     SecureServiceInterface.h
     GameInterface.h
     ConverterInterface.h

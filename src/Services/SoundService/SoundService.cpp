@@ -9,6 +9,7 @@
 #include "Kernel/EnumeratorHelper.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
+#include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
@@ -27,6 +28,7 @@
 #include "Kernel/TimestampHelper.h"
 
 #include "Config/StdAlgorithm.h"
+#include "Config/StdMath.h"
 
 #include "math/utils.h"
 
@@ -283,6 +285,8 @@ namespace Mengine
                 if( source->play() == false )
                 {
                     LOGGER_ASSERTION( "invalid resume (stop)" );
+
+                    identity->setState( ESS_STOP );
 
                     continue;
                 }
@@ -734,17 +738,29 @@ namespace Mengine
                 this->updateSourceVolume_( identity );
             }
 
-            if( identity->getLoop() == true )
-            {
-                continue;
-            }
-
             if( identity->getTurn() == false )
             {
                 continue;
             }
 
             const ThreadWorkerSoundBufferUpdatePtr & worker = identity->getWorkerUpdateBuffer();
+
+            if( worker != nullptr )
+            {
+                if( worker->isDone() == true )
+                {
+                    identity->setState( ESS_STOP );
+
+                    m_soundIdentitiesEndAux.emplace_back( identity );
+
+                    continue;
+                }
+            }
+
+            if( identity->getLoop() == true )
+            {
+                continue;
+            }
 
             const SoundSourceInterfacePtr & source = identity->getSoundSource();
 
@@ -757,42 +773,32 @@ namespace Mengine
                 continue;
             }
 
-            float time_left = identity->getTimeLeft();
-            float time_new = time_left - _context->time;
+            float timeLeft = identity->getTimeLeft();
+            float timeNew = timeLeft - _context->time;
 
-            if( worker != nullptr )
+            if( timeNew > 0.f )
             {
-                if( worker->isDone() == true )
-                {
-                    identity->setState( ESS_STOP );
+                identity->setTimeLeft( timeNew );
 
-                    m_soundIdentitiesEndAux.emplace_back( identity );
-                }
-                else
+                continue;
+            }
+
+            identity->setTimeLeft( 0.f );
+
+            bool silent = SOUND_SYSTEM()
+                ->isSilent();
+
+            if( source != nullptr )
+            {
+                if( silent == false )
                 {
-                    if( time_new <= 0.f )
-                    {
-                        identity->setTimeLeft( 0.f );
-                    }
-                    else
-                    {
-                        identity->setTimeLeft( time_new );
-                    }
+                    continue;
                 }
             }
-            else
-            {
-                if( time_new <= 0.f )
-                {
-                    identity->setState( ESS_STOP );
 
-                    m_soundIdentitiesEndAux.emplace_back( identity );
-                }
-                else
-                {
-                    identity->setTimeLeft( time_new );
-                }
-            }
+            identity->setState( ESS_STOP );
+
+            m_soundIdentitiesEndAux.emplace_back( identity );
         }
 
         if( process == true )
@@ -901,6 +907,8 @@ namespace Mengine
                         LOGGER_ASSERTION( "invalid play identity: %u"
                             , _identity->getUniqueIdentity()
                         );
+
+                        _identity->setState( ESS_STOP );
 
                         return false;
                     }
@@ -1329,15 +1337,25 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid identity set pos ms" );
 
+        MENGINE_ASSERTION( StdMath::isfinite( _position ) == true, "invalid sound position %f"
+            , _position
+        );
+
+        uint32_t identityId = _identity->getUniqueIdentity();
         const SoundSourceInterfacePtr & source = _identity->getSoundSource();
 
         if( source == nullptr )
         {
             LOGGER_ERROR( "not setup source identity: %u"
-                , _identity->getUniqueIdentity()
+                , identityId
             );
 
             return false;
+        }
+
+        if( _position < 0.f )
+        {
+            _position = 0.f;
         }
 
         float duration = source->getDuration();
@@ -1345,7 +1363,7 @@ namespace Mengine
         if( _position > duration )
         {
             LOGGER_ASSERTION( "emitter %u invalid position %f because length %f"
-                , _identity->getUniqueIdentity()
+                , identityId
                 , _position
                 , duration
             );
@@ -1353,8 +1371,15 @@ namespace Mengine
             _position = duration;
         }
 
-        float timeLeft = duration - _position;
-        _identity->setTimeLeft( timeLeft );
+        float currentPosition = source->getPosition();
+
+        if( mt::equal_f_f( currentPosition, _position ) == true )
+        {
+            float timeLeft = duration - _position;
+            _identity->setTimeLeft( timeLeft );
+
+            return true;
+        }
 
         bool hasBufferUpdate = _identity->getWorkerUpdateBuffer() != nullptr;
         bool playing = source->isPlay();
@@ -1364,24 +1389,15 @@ namespace Mengine
         if( resumeBufferUpdate == true )
         {
             this->pauseSoundBufferUpdate_( _identity );
-        }
-
-        float current_position = source->getPosition();
-
-        if( mt::equal_f_f( current_position, _position ) == true )
-        {
-            return true;
-        }
-
-        if( resumeBufferUpdate == true )
-        {
             source->pause();
         }
 
-        if( source->setPosition( _position ) == false )
+        bool successful = source->setPosition( _position );
+
+        if( successful == false )
         {
             LOGGER_ASSERTION( "invalid set position identity: %u"
-                , _identity->getUniqueIdentity()
+                , identityId
             );
         }
 
@@ -1390,19 +1406,24 @@ namespace Mengine
             if( source->resume() == false )
             {
                 LOGGER_ASSERTION( "invalid resume identity: %u"
-                    , _identity->getUniqueIdentity()
+                    , identityId
                 );
 
                 _identity->setState( ESS_STOP );
 
                 return false;
             }
-        }
 
-        if( resumeBufferUpdate == true )
-        {
             this->resumeSoundBufferUpdate_( _identity );
         }
+
+        if( successful == false )
+        {
+            return false;
+        }
+
+        float timeLeft = duration - _position;
+        _identity->setTimeLeft( timeLeft );
 
         return true;
     }
@@ -1525,15 +1546,20 @@ namespace Mengine
     {
         uint32_t playCount = (uint32_t)StdAlgorithm::count_if( m_soundIdentities.begin(), m_soundIdentities.end(), []( const SoundIdentityInterfacePtr & _identity )
         {
-            return _identity->getState() == ESS_PLAY;
+            if( _identity->getState() != ESS_PLAY )
+            {
+                return false;
+            }
+
+            return true;
         } );
 
-        uint32_t Limit_MaxSoundPlay = CONFIG_VALUE_INTEGER( "Limit", "MaxSoundPlay", 32 );
+        uint32_t maxSoundPlay = CONFIG_VALUE_INTEGER( "Limit", "MaxSoundPlay", 32 );
 
-        if( playCount > Limit_MaxSoundPlay )
+        if( playCount >= maxSoundPlay )
         {
             Stringstream ss;
-            ss << "max sound play count exceeded: " << Limit_MaxSoundPlay;
+            ss << "max sound play count exceeded: " << maxSoundPlay;
 
 #if defined(MENGINE_LOGGER_INFO)
             Timestamp timestamp = Helper::getSystemTimestamp();

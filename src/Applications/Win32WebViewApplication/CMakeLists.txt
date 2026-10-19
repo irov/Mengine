@@ -1,0 +1,30 @@
+MENGINE_PROJECT(Win32WebViewApplication)
+
+ADD_FILTER(
+src
+    Win32WebViewApplication.h
+    Win32WebViewApplication.cpp
+    Win32WebViewMain.cpp
+)
+
+OPTION(MENGINE_WEBVIEW_MCP "Include the native WebView MCP test adapter" OFF)
+SET(MENGINE_WEBVIEW_CONTENT_DIRECTORY "" CACHE PATH "Built WebView content")
+SET(MENGINE_WEBVIEW_PROFILE_NAME "Mengine/WebViewApplication" CACHE STRING "WebView application profile below LocalAppData")
+IF(NOT EXISTS "${MENGINE_WEBVIEW_CONTENT_DIRECTORY}/index.html")
+    MESSAGE(FATAL_ERROR "Set MENGINE_WEBVIEW_CONTENT_DIRECTORY to built web content containing index.html")
+ENDIF()
+IF(MENGINE_WEBVIEW_MCP)
+    ADD_DEFINITIONS(-DMENGINE_WEBVIEW_MCP)
+    LIST(APPEND SRC_FILES
+        Win32WebViewMCP.h
+        Win32WebViewMCP.cpp
+        ${MENGINE_SOURCE_DIR}/Plugins/MCPPlugin/MCPProtocol.cpp)
+ENDIF()
+
+ADD_MENGINE_EXECUTABLE_WIN32()
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} MengineWebViewRuntime Win32WebViewPlatform Windows Kernel shell32 ole32 ws2_32)
+TARGET_COMPILE_DEFINITIONS(${PROJECT_NAME} PRIVATE MENGINE_WEBVIEW_PROFILE_NAME=L"${MENGINE_WEBVIEW_PROFILE_NAME}")
+ADD_CUSTOM_COMMAND(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${MENGINE_WEBVIEW_CONTENT_DIRECTORY}" "$<TARGET_FILE_DIR:${PROJECT_NAME}>/WebView"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${MENGINE_SOURCE_DIR}/WebView/MengineWebViewBridge.js" "$<TARGET_FILE_DIR:${PROJECT_NAME}>/WebView/MengineWebViewBridge.js"
+    VERBATIM)

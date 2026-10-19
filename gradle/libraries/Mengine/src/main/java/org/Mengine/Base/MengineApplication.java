@@ -33,7 +33,7 @@ public abstract class MengineApplication extends Application {
     private static final String PREFERENCE_EXPECTED_PROCESS_EXIT = "expected_process_exit";
 
     static {
-        System.loadLibrary("AndroidApplication");
+        System.loadLibrary(BuildConfig.MENGINE_NATIVE_APPLICATION);
     }
 
     public static MengineApplication INSTANCE = null;
@@ -1085,6 +1085,11 @@ public abstract class MengineApplication extends Application {
         this.setState("application.init", "native_app_run");
 
         m_main = new MengineMain(m_nativeApplication);
+
+        if (BuildConfig.MENGINE_RUNTIME_WEBVIEW == true) {
+            MengineMain.runLatch();
+        }
+
         m_main.start();
 
         this.setState("application.init", "completed");
@@ -1193,6 +1198,13 @@ public abstract class MengineApplication extends Application {
             l.onAppTerminate(this);
         }
 
+        MenginePlatformEventQueue.pushQuitEvent();
+
+        if (m_main != null) {
+            m_main.stop();
+            m_main = null;
+        }
+
         for (MengineServiceInterface p : m_services) {
             if (p.onAvailable(this) == false) {
                 continue;
@@ -1212,13 +1224,6 @@ public abstract class MengineApplication extends Application {
         }
 
         MengineNative.AndroidKernelService_removePlugin("Application");
-
-        MenginePlatformEventQueue.pushQuitEvent();
-
-        if (m_main != null) {
-            m_main.stop();
-            m_main = null;
-        }
 
         this.destroyNativeApplication();
 
@@ -1283,7 +1288,9 @@ public abstract class MengineApplication extends Application {
 
         this.setState("activity.low_memory", true);
 
-        MenginePlatformEventQueue.pushLowMemoryEvent();
+        if (BuildConfig.MENGINE_RUNTIME_NATIVE == true) {
+            MenginePlatformEventQueue.pushLowMemoryEvent();
+        }
 
         MengineLog.logDebug(TAG, "[END] onLowMemory");
     }
@@ -1306,7 +1313,9 @@ public abstract class MengineApplication extends Application {
 
         this.setState("activity.trim_memory", level);
 
-        MenginePlatformEventQueue.pushTrimMemoryEvent(level);
+        if (BuildConfig.MENGINE_RUNTIME_NATIVE == true) {
+            MenginePlatformEventQueue.pushTrimMemoryEvent(level);
+        }
 
         MengineLog.logDebug(TAG, "[END] onTrimMemory");
     }

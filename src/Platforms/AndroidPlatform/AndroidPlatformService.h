@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/PlatformServiceInterface.h"
+#include "Interface/RenderPlatformInterface.h"
 
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/ThreadSystemInterface.h"
@@ -21,7 +22,7 @@
 #include "Interface/LoggerInterface.h"
 
 #include "Environment/Android/AndroidIncluder.h"
-#include "Environment/Android/AndroidPlatformServiceExtensionInterface.h"
+#include "Environment/Android/AndroidRenderPlatformServiceExtensionInterface.h"
 
 #include "AndroidNativeRunnable.h"
 
@@ -39,7 +40,8 @@ namespace Mengine
 {
     class AndroidPlatformService
         : public ServiceBase<PlatformServiceInterface>
-        , public AndroidPlatformServiceExtensionInterface
+        , public RenderPlatformInterface
+        , public AndroidRenderPlatformServiceExtensionInterface
     {
         DECLARE_UNKNOWABLE();
 
@@ -62,6 +64,7 @@ namespace Mengine
         void loopPlatform() override;
         bool updatePlatform() override;
         void tickPlatform( float _frameTime ) override;
+        RenderPlatformInterface * getRenderPlatform() override;
         bool renderPlatform() override;
         void stopPlatform()	override;
 

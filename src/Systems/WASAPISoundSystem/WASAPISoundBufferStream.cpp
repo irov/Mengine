@@ -6,13 +6,14 @@
 #include "WASAPISoundPCMHelper.h"
 
 #include "Kernel/ThreadMutexScope.h"
+#include "Kernel/SpinLockScope.h"
+#include "Kernel/SpinLockTryScope.h"
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ThreadMutexHelper.h"
 
 #include "Config/StdAlgorithm.h"
 #include "Config/StdMath.h"
-#include "Config/StdThread.h"
 
 #include <cstring>
 
@@ -35,12 +36,10 @@ namespace Mengine
         : m_looped( false )
         , m_updating( false )
         , m_finished( false )
-        , m_renderBarrier( false )
         , m_readOffset( 0 )
         , m_writeOffset( 0 )
         , m_availableBytes( 0 )
         , m_playPositionBytes( 0 )
-        , m_activeRenders( 0 )
         , m_ringBufferSize( 0 )
         , m_ringBuffer( nullptr )
         , m_decodeBuffer( nullptr )
@@ -108,7 +107,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void WASAPISoundBufferStream::_releaseSoundBuffer()
     {
-        this->beginMutableState_();
+        MENGINE_SPINLOCK_SCOPE( m_renderLock );
 
         {
             MENGINE_THREAD_MUTEX_SCOPE( m_mutexUpdating );
@@ -137,8 +136,6 @@ namespace Mengine
 
         m_mutexDecoder = nullptr;
         m_mutexUpdating = nullptr;
-
-        this->endMutableState_();
     }
     //////////////////////////////////////////////////////////////////////////
     bool WASAPISoundBufferStream::load( const SoundDecoderInterfacePtr & _soundDecoder )
@@ -182,16 +179,24 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool WASAPISoundBufferStream::playSource( bool _looped, float _position )
     {
-        this->beginMutableState_();
+        MENGINE_SPINLOCK_SCOPE( m_renderLock );
 
-        if( _position < 0.f || _position > m_duration )
+        if( _position < 0.f )
         {
             LOGGER_ASSERTION( "pos %f > length %f"
                 , _position
                 , m_duration
             );
 
-            this->endMutableState_();
+            return false;
+        }
+
+        if( _position > m_duration )
+        {
+            LOGGER_ASSERTION( "pos %f > length %f"
+                , _position
+                , m_duration
+            );
 
             return false;
         }
@@ -206,22 +211,18 @@ namespace Mengine
 
             if( this->seekPosition_( _position ) == false )
             {
-                this->endMutableState_();
-
                 return false;
             }
         }
 
         m_updating = true;
 
-        this->endMutableState_();
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void WASAPISoundBufferStream::stopSource()
     {
-        this->beginMutableState_();
+        MENGINE_SPINLOCK_SCOPE( m_renderLock );
 
         {
             MENGINE_THREAD_MUTEX_SCOPE( m_mutexUpdating );
@@ -235,8 +236,6 @@ namespace Mengine
             MENGINE_THREAD_MUTEX_SCOPE( m_mutexDecoder );
             this->resetDecodeBuffer_();
         }
-
-        this->endMutableState_();
     }
     //////////////////////////////////////////////////////////////////////////
     void WASAPISoundBufferStream::pauseSource()
@@ -251,12 +250,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool WASAPISoundBufferStream::setTimePosition( float _position )
     {
-        if( _position < 0.f || _position > m_duration )
+        if( _position < 0.f )
         {
             return false;
         }
 
-        this->beginMutableState_();
+        if( _position > m_duration )
+        {
+            return false;
+        }
+
+        MENGINE_SPINLOCK_SCOPE( m_renderLock );
 
         {
             MENGINE_THREAD_MUTEX_SCOPE( m_mutexUpdating );
@@ -264,27 +268,30 @@ namespace Mengine
 
             if( this->seekPosition_( _position ) == false )
             {
-                this->endMutableState_();
-
                 return false;
             }
         }
-
-        this->endMutableState_();
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool WASAPISoundBufferStream::setLoopSource( bool _looped )
     {
-        if( m_mutexUpdating == nullptr || m_mutexDecoder == nullptr )
+        if( m_mutexUpdating == nullptr )
         {
             m_looped = _looped;
 
             return true;
         }
 
-        this->beginMutableState_();
+        if( m_mutexDecoder == nullptr )
+        {
+            m_looped = _looped;
+
+            return true;
+        }
+
+        MENGINE_SPINLOCK_SCOPE( m_renderLock );
 
         bool successful = true;
 
@@ -340,8 +347,6 @@ namespace Mengine
             }
         }
 
-        this->endMutableState_();
-
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -389,19 +394,22 @@ namespace Mengine
             return false;
         }
 
-        // Keep the worker alive until SoundService stops the source. This lets a
-        // non-looping stream be switched back to looping after reaching EOF.
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool WASAPISoundBufferStream::isEndOfStream() const
     {
-        if( m_finished.load() == true && m_availableBytes.load() == 0 )
+        if( m_finished.load() == false )
         {
-            return true;
+            return false;
         }
 
-        return false;
+        if( m_availableBytes.load() != 0 )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void WASAPISoundBufferStream::setVolume( float _gain )
@@ -416,22 +424,37 @@ namespace Mengine
 
         *_outFramePosition = _framePosition;
 
-        if( _mixBuffer == nullptr || _frames == 0 || _outputChannels == 0 )
+        if( _mixBuffer == nullptr )
         {
             return 0;
         }
 
-        if( this->tryEnterRender_() == false )
+        if( _frames == 0 )
+        {
+            return 0;
+        }
+
+        if( _outputChannels == 0 )
+        {
+            return 0;
+        }
+
+        SpinLockTryScope renderScope( m_renderLock );
+
+        if( renderScope.isLocked() == false )
         {
             return 0;
         }
 
         uint32_t frameSize = this->getFrameSize();
 
-        if( frameSize == 0 || m_ringBuffer == nullptr )
+        if( frameSize == 0 )
         {
-            this->leaveRender_();
+            return 0;
+        }
 
+        if( m_ringBuffer == nullptr )
+        {
             return 0;
         }
 
@@ -480,8 +503,6 @@ namespace Mengine
 
             renderedFrames += copyFrames;
         }
-
-        this->leaveRender_();
 
         return renderedFrames;
     }
@@ -793,46 +814,6 @@ namespace Mengine
                 dstFrame[channel] += Helper::resolveWASAPISoundPCM16Sample( srcFrame, m_channels, channel, _outputChannels ) * _gain;
             }
         }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void WASAPISoundBufferStream::beginMutableState_()
-    {
-        m_renderBarrier = true;
-
-        while( m_activeRenders.load() != 0 )
-        {
-            StdThread::yield();
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void WASAPISoundBufferStream::endMutableState_()
-    {
-        m_renderBarrier = false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool WASAPISoundBufferStream::tryEnterRender_()
-    {
-        for( ;; )
-        {
-            if( m_renderBarrier.load() == true )
-            {
-                return false;
-            }
-
-            m_activeRenders.fetch_add( 1 );
-
-            if( m_renderBarrier.load() == false )
-            {
-                return true;
-            }
-
-            m_activeRenders.fetch_sub( 1 );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void WASAPISoundBufferStream::leaveRender_()
-    {
-        m_activeRenders.fetch_sub( 1 );
     }
     //////////////////////////////////////////////////////////////////////////
 }

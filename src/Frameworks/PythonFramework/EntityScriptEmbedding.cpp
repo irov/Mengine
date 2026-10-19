@@ -327,9 +327,9 @@ namespace Mengine
 
                 EntityPtr entity = Helper::generateNodeFactorable<Entity>( MENGINE_DOCUMENT_PYTHON );
 
+                // The object being created belongs to its creator: the embed
+                // does not hold it.
                 entity->setEmbed( _kernel, _obj );
-
-                _kernel->decref( _obj );
 
                 Entity * entity_ptr = entity.get();
 
@@ -366,9 +366,9 @@ namespace Mengine
 
                 ScenePtr scene = Helper::generateNodeFactorable<Scene>( MENGINE_DOCUMENT_PYTHON );
 
+                // The object being created belongs to its creator: the embed
+                // does not hold it.
                 scene->setEmbed( _kernel, _obj );
-
-                _kernel->decref( _obj );
 
                 Scene * scene_ptr = scene.get();
 

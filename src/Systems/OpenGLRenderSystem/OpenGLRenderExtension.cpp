@@ -5,7 +5,7 @@
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_UNIX)
 #include "Interface/PlatformServiceInterface.h"
 
-#include "Environment/Unix/UnixPlatformServiceExtensionInterface.h"
+#include "Environment/Unix/UnixRenderPlatformServiceExtensionInterface.h"
 #endif
 
 namespace Mengine
@@ -16,7 +16,7 @@ namespace Mengine
         // Native macOS OpenGL exposes core symbols through the framework.
         return true;
 #elif defined(MENGINE_ENVIRONMENT_PLATFORM_UNIX)
-        UnixPlatformServiceExtensionInterface * unixPlatform = PLATFORM_SERVICE()
+        UnixRenderPlatformServiceExtensionInterface * unixPlatform = PLATFORM_SERVICE()
             ->getDynamicUnknown();
 
         if( unixPlatform == nullptr )
@@ -26,7 +26,7 @@ namespace Mengine
 
         int gladVersion = gladLoadGL( []( const char * _name ) -> GLADapiproc
         {
-            UnixPlatformServiceExtensionInterface * platform = PLATFORM_SERVICE()
+            UnixRenderPlatformServiceExtensionInterface * platform = PLATFORM_SERVICE()
                 ->getDynamicUnknown();
 
             if( platform == nullptr )

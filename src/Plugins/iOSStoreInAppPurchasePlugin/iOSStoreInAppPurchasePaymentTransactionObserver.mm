@@ -7,7 +7,6 @@
 #import "iOSStoreInAppPurchaseEntitlements.h"
 
 #include "Kernel/FactorableUnique.h"
-#include "Kernel/Logger.h"
 #include "Kernel/ThreadHelper.h"
 
 @implementation iOSStoreInAppPurchasePaymentTransactionObserver
@@ -84,7 +83,7 @@
 
     if( copy_provider == nullptr )
     {
-        LOGGER_ERROR( "payment transaction provider is not set" );
+        IOS_LOGGER_ERROR( @"payment transaction provider is not set" );
 
         return;
     }
@@ -205,7 +204,7 @@
 
     if( copy_provider == nullptr )
     {
-        LOGGER_ERROR( "payment transaction provider is not set" );
+        IOS_LOGGER_ERROR( @"payment transaction provider is not set" );
 
         return;
     }
@@ -231,7 +230,7 @@
 
     if( copy_provider == nullptr )
     {
-        LOGGER_ERROR( "payment transaction provider is not set" );
+        IOS_LOGGER_ERROR( @"payment transaction provider is not set" );
 
         return;
     }

@@ -2,6 +2,8 @@
 
 #include "Environment/Android/AndroidIncluder.h"
 
+#include "Kernel/IntrusivePtr.h"
+
 #include "Config/Char.h"
 
 namespace Mengine
@@ -60,6 +62,15 @@ namespace Mengine
     jfloat Mengine_JNI_GetFloatField( JNIEnv * _jenv, jobject _jobject, jfieldID _fieldID );
     jdouble Mengine_JNI_GetDoubleField( JNIEnv * _jenv, jobject _jobject, jfieldID _fieldID );
     jobject Mengine_JNI_GetObjectField( JNIEnv * _jenv, jobject _jobject, jfieldID _fieldID );
+
+    template<class T>
+    T Mengine_JNI_GetEnumField( JNIEnv * _jenv, jobject _jobject, jfieldID _fieldID )
+    {
+        jint value = Mengine_JNI_GetIntField( _jenv, _jobject, _fieldID );
+        T result = static_cast<T>(value);
+
+        return result;
+    }
 
     jfieldID Mengine_JNI_GetStaticFieldID( JNIEnv * _jenv, jclass _jclass, const Char * _name, const Char * _signature );
     jobject Mengine_JNI_GetStaticObjectField( JNIEnv * _jenv, jclass _jclass, jfieldID _fieldID );
@@ -135,6 +146,33 @@ namespace Mengine
     jobject Mengine_JNI_NewDirectByteBuffer( JNIEnv * _jenv, void * _address, jlong _capacity );
     void * Mengine_JNI_GetDirectBufferAddress( JNIEnv * _jenv, jobject _jbuffer );
     jlong Mengine_JNI_GetDirectBufferCapacity( JNIEnv * _jenv, jobject _jbuffer );
+
+    template<class T>
+    jobject Mengine_JNI_NewDirectByteBuffer( JNIEnv * _jenv, T * _value )
+    {
+        void * address = _value;
+        jlong capacity = sizeof( T * );
+        jobject buffer = Mengine_JNI_NewDirectByteBuffer( _jenv, address, capacity );
+
+        return buffer;
+    }
+
+    template<class T, class D>
+    jobject Mengine_JNI_NewDirectByteBuffer( JNIEnv * _jenv, const IntrusivePtr<T, D> & _value )
+    {
+        jobject buffer = Mengine_JNI_NewDirectByteBuffer( _jenv, _value.get() );
+
+        return buffer;
+    }
+
+    template<class T>
+    T Mengine_JNI_GetDirectBufferAddress( JNIEnv * _jenv, jobject _jbuffer )
+    {
+        void * address = Mengine_JNI_GetDirectBufferAddress( _jenv, _jbuffer );
+        T result = static_cast<T>(address);
+
+        return result;
+    }
 
     jclass Mengine_JNI_GetClassMengineCallback( JNIEnv * _jenv );
     jclass Mengine_JNI_GetClassMengineNativeRunnable( JNIEnv * _jenv );

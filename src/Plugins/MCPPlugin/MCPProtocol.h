@@ -39,6 +39,8 @@ namespace Mengine
         Data payload;
     };
     //////////////////////////////////////////////////////////////////////////
+    typedef Vector<MCPFrame> VectorMCPFrames;
+    //////////////////////////////////////////////////////////////////////////
     class MCPFrameDecoder
     {
     public:
@@ -46,7 +48,7 @@ namespace Mengine
         ~MCPFrameDecoder();
 
     public:
-        bool append( const void * _buffer, size_t _size, Vector<MCPFrame> * const _frames, const Char ** const _error );
+        bool append( const void * _buffer, size_t _size, VectorMCPFrames * const _frames, const Char ** const _error );
         void reset();
 
     protected:

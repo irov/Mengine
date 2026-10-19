@@ -31,12 +31,12 @@ namespace Mengine
         {
             if( m_cb.is_invalid() == true )
             {
-                return pybind::detail::extract_operator_t();
+                return this->make_invalid_();
             }
 
             if( m_cb.is_callable() == false )
             {
-                return pybind::detail::extract_operator_t();
+                return this->make_invalid_();
             }
 
             return m_cb.call_args( std::forward<Args>( _args ) ..., m_args );
@@ -47,7 +47,7 @@ namespace Mengine
         {
             if( m_cb.is_invalid() == true )
             {
-                return pybind::detail::extract_operator_t();
+                return this->make_invalid_();
             }
 
             if( m_cb.is_dict() == true )
@@ -56,7 +56,7 @@ namespace Mengine
 
                 if( py_cb.is_callable() == false )
                 {
-                    return pybind::detail::extract_operator_t();
+                    return this->make_invalid_();
                 }
 
                 return py_cb.call_args( std::forward<Args>( _args ) ..., m_args );
@@ -66,7 +66,17 @@ namespace Mengine
                 return m_cb.call_args( _method, std::forward<Args>( _args ) ..., m_args );
             }
 
-            return pybind::detail::extract_operator_t();
+            return this->make_invalid_();
+        }
+
+    protected:
+        pybind::detail::extract_operator_t make_invalid_() const
+        {
+            // A result of the kernel, which a typed extract reports as invalid
+            // rather than reaches through a null kernel.
+            pybind::kernel_interface * kernel = pybind::get_kernel();
+
+            return pybind::detail::extract_operator_t( kernel, nullptr, pybind::borrowed );
         }
 
     private:

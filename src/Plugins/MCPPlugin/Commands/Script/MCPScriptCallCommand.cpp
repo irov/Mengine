@@ -122,7 +122,7 @@ namespace Mengine
             jpp::array arguments( argumentsObject );
             size_t argumentCount = arguments.size();
             PyObject * tupleObject = kernel->tuple_new( argumentCount );
-            pybind::tuple tuple( kernel, tupleObject );
+            pybind::tuple tuple( kernel, tupleObject, pybind::borrowed );
 
             for( size_t index = 0; index != argumentCount; ++index )
             {
@@ -162,7 +162,7 @@ namespace Mengine
             PyObject * tupleValue = tuple.ptr();
             PyObject * keywordArgumentsValue = keywordArguments.ptr();
             PyObject * valueObject = kernel->ask_native_kw( callableValue, tupleValue, keywordArgumentsValue );
-            pybind::object value( kernel, valueObject );
+            pybind::object value( kernel, valueObject, pybind::borrowed );
             jpp::object serialized;
             bool serializedSuccessful = m_scriptContext->scriptToJSON( value, 2, 100, 0, &serialized, &error );
 

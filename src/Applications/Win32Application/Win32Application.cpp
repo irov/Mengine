@@ -20,7 +20,7 @@
 #   include "Environment/Windows/Win32OutputDebugLogger.h"
 #endif
 
-#include "Mengine/MenginePlugin.h"
+#include "Runtime/MengineRuntime.h"
 
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/OptionHelper.h"

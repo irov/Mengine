@@ -26,10 +26,15 @@
 #include "Kernel/UniqueHelper.h"
 #include "Kernel/VocabularyHelper.h"
 
+#include "Config/Limits.h"
 #include "Config/Path.h"
 #include "Config/StdAlgorithm.h"
+#include "Config/StdErrno.h"
 #include "Config/StdIO.h"
+#include "Config/StdInt.h"
 #include "Config/StdLib.h"
+#include "Config/StdLocale.h"
+#include "Config/StdSignal.h"
 #include "Config/StdString.h"
 
 #include <X11/Xatom.h>
@@ -40,12 +45,6 @@
 
 #include <GL/glxext.h>
 
-#include <cerrno>
-#include <climits>
-#include <clocale>
-#include <csignal>
-#include <cstring>
-
 #include <dlfcn.h>
 #include <fcntl.h>
 #include <pwd.h>
@@ -55,6 +54,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+//////////////////////////////////////////////////////////////////////////
 #ifndef GLX_CONTEXT_MAJOR_VERSION_ARB
 #   define GLX_CONTEXT_MAJOR_VERSION_ARB 0x2091
 #endif
@@ -84,17 +84,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
-        using GLXCreateContextAttribsProc = GLXContext (*)(Display *, GLXFBConfig, GLXContext, Bool, const int *);
-        using GLXSwapIntervalEXTProc = void (*)(Display *, GLXDrawable, int);
-        using GLXSwapIntervalMESAProc = int (*)(unsigned int);
-        using GLXSwapIntervalSGIProc = int (*)(int);
-
-        struct KeyRepeatCheckData
+        //////////////////////////////////////////////////////////////////////////
+        typedef GLXContext (*GLXCreateContextAttribsProc)( Display *, GLXFBConfig, GLXContext, Bool, const int * );
+        typedef void (*GLXSwapIntervalEXTProc)( Display *, GLXDrawable, int );
+        typedef int (*GLXSwapIntervalMESAProc)( unsigned int );
+        typedef int (*GLXSwapIntervalSGIProc)( int );
+        //////////////////////////////////////////////////////////////////////////
+        struct KeyRepeatCheckDesc
         {
             const XEvent * event;
             bool found;
         };
-
+        //////////////////////////////////////////////////////////////////////////
         static bool s_contextError = false;
         //////////////////////////////////////////////////////////////////////////
         static int contextErrorHandler( Display * _display, XErrorEvent * _event )
@@ -120,7 +121,6 @@ namespace Mengine
             }
 
             struct stat existing;
-
             if( ::stat( _path, &existing ) != 0 )
             {
                 return false;
@@ -136,14 +136,26 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool getHomeDirectory( Char * const _home )
         {
+            uid_t userId = ::getuid();
+            Char pwBuffer[4096];
             struct passwd pw;
             struct passwd * pwResult = nullptr;
-            Char pwBuffer[4096];
+            if( ::getpwuid_r( userId, &pw, pwBuffer, sizeof( pwBuffer ), &pwResult ) != 0 )
+            {
+                return false;
+            }
 
-            if( ::getpwuid_r( ::getuid(), &pw, pwBuffer, sizeof( pwBuffer ), &pwResult ) != 0
-                || pwResult == nullptr
-                || pw.pw_dir == nullptr
-                || MENGINE_PATH_EMPTY( pw.pw_dir ) == true )
+            if( pwResult == nullptr )
+            {
+                return false;
+            }
+
+            if( pw.pw_dir == nullptr )
+            {
+                return false;
+            }
+
+            if( MENGINE_PATH_EMPTY( pw.pw_dir ) == true )
             {
                 return false;
             }
@@ -155,12 +167,27 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool hasExtension( const Char * _extensions, const Char * _extension )
         {
-            if( _extensions == nullptr || _extension == nullptr || _extension[0] == '\0' || StdString::strchr( _extension, ' ' ) != nullptr )
+            if( _extensions == nullptr )
             {
                 return false;
             }
 
-            const size_t extensionLength = StdString::strlen( _extension );
+            if( _extension == nullptr )
+            {
+                return false;
+            }
+
+            if( _extension[0] == '\0' )
+            {
+                return false;
+            }
+
+            if( StdString::strchr( _extension, ' ' ) != nullptr )
+            {
+                return false;
+            }
+
+            size_t extensionLength = StdString::strlen( _extension );
             const Char * cursor = _extensions;
 
             for( ;; )
@@ -172,9 +199,9 @@ namespace Mengine
                     return false;
                 }
 
-                const bool beginValid = found == _extensions || found[-1] == ' ';
-                const Char end = found[extensionLength];
-                const bool endValid = end == '\0' || end == ' ';
+                bool beginValid = found == _extensions || found[-1] == ' ';
+                Char end = found[extensionLength];
+                bool endValid = end == '\0' || end == ' ';
 
                 if( beginValid == true && endValid == true )
                 {
@@ -189,7 +216,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _display );
 
-            KeyRepeatCheckData * data = reinterpret_cast<KeyRepeatCheckData *>(_data);
+            KeyRepeatCheckDesc * data = reinterpret_cast<KeyRepeatCheckDesc *>(_data);
 
             if( _event->type == KeyPress &&
                 _event->xkey.keycode == data->event->xkey.keycode &&
@@ -208,7 +235,7 @@ namespace Mengine
                 return false;
             }
 
-            KeyRepeatCheckData data;
+            KeyRepeatCheckDesc data;
             data.event = &_event;
             data.found = false;
 
@@ -247,12 +274,14 @@ namespace Mengine
 
             size_t length = StdString::strlen( path );
 
-            if( path[length - 1] != '/' )
+            if( path[length - 1] == '/' )
             {
-                if( Detail::ensureDirectory( path ) == false )
-                {
-                    return false;
-                }
+                return true;
+            }
+
+            if( Detail::ensureDirectory( path ) == false )
+            {
+                return false;
             }
 
             return true;
@@ -261,14 +290,20 @@ namespace Mengine
         static bool launchDetached( const Char * _executable, const Char * const * _arguments )
         {
             int errorPipe[2];
-
             if( ::pipe( errorPipe ) != 0 )
             {
                 return false;
             }
 
-            if( ::fcntl( errorPipe[0], F_SETFD, FD_CLOEXEC ) == -1 ||
-                ::fcntl( errorPipe[1], F_SETFD, FD_CLOEXEC ) == -1 )
+            if( ::fcntl( errorPipe[0], F_SETFD, FD_CLOEXEC ) == -1 )
+            {
+                ::close( errorPipe[0] );
+                ::close( errorPipe[1] );
+
+                return false;
+            }
+
+            if( ::fcntl( errorPipe[1], F_SETFD, FD_CLOEXEC ) == -1 )
             {
                 ::close( errorPipe[0] );
                 ::close( errorPipe[1] );
@@ -294,8 +329,9 @@ namespace Mengine
 
                 if( grandchild < 0 )
                 {
-                    const int forkError = errno;
-                    MENGINE_UNUSED( ::write( errorPipe[1], &forkError, sizeof( forkError ) ) );
+                    int forkError = errno;
+                    ssize_t written = ::write( errorPipe[1], &forkError, sizeof( forkError ) );
+                    MENGINE_UNUSED( written );
 
                     ::_exit( EXIT_FAILURE );
                 }
@@ -309,8 +345,9 @@ namespace Mengine
 
                 if( ::setsid() < 0 )
                 {
-                    const int sessionError = errno;
-                    MENGINE_UNUSED( ::write( errorPipe[1], &sessionError, sizeof( sessionError ) ) );
+                    int sessionError = errno;
+                    ssize_t written = ::write( errorPipe[1], &sessionError, sizeof( sessionError ) );
+                    MENGINE_UNUSED( written );
 
                     ::_exit( EXIT_FAILURE );
                 }
@@ -330,8 +367,9 @@ namespace Mengine
 
                 ::execvp( _executable, const_cast<Char * const *>(_arguments) );
 
-                const int executeError = errno;
-                MENGINE_UNUSED( ::write( errorPipe[1], &executeError, sizeof( executeError ) ) );
+                int executeError = errno;
+                ssize_t written = ::write( errorPipe[1], &executeError, sizeof( executeError ) );
+                MENGINE_UNUSED( written );
 
                 ::_exit( EXIT_FAILURE );
             }
@@ -339,7 +377,6 @@ namespace Mengine
             ::close( errorPipe[1] );
 
             int status = 0;
-
             while( ::waitpid( child, &status, 0 ) < 0 )
             {
                 if( errno != EINTR )
@@ -362,7 +399,10 @@ namespace Mengine
 
             while( errorSize != sizeof( executeError ) )
             {
-                ssize_t readSize = ::read( errorPipe[0], reinterpret_cast<Char *>(&executeError) + errorSize, sizeof( executeError ) - errorSize );
+                Char * errorBuffer = reinterpret_cast<Char *>(&executeError);
+                Char * buffer = errorBuffer + errorSize;
+                size_t capacity = sizeof( executeError ) - errorSize;
+                ssize_t readSize = ::read( errorPipe[0], buffer, capacity );
 
                 if( readSize > 0 )
                 {
@@ -392,7 +432,7 @@ namespace Mengine
             {
                 LOGGER_ERROR( "failed to execute '%s': %s"
                     , _executable
-                    , ::strerror( executeError )
+                    , StdString::strerror( executeError )
                 );
 
                 return false;
@@ -418,7 +458,6 @@ namespace Mengine
             }
 
             int status = 0;
-
             while( ::waitpid( child, &status, 0 ) < 0 )
             {
                 if( errno != EINTR )
@@ -448,9 +487,9 @@ namespace Mengine
         {
             static const Char hex[] = "0123456789ABCDEF";
 
-            for( const unsigned char * cursor = reinterpret_cast<const unsigned char *>(_value); *cursor != '\0'; ++cursor )
+            for( const Char * cursor = _value; *cursor != '\0'; ++cursor )
             {
-                const unsigned char ch = *cursor;
+                uint8_t ch = static_cast<uint8_t>(*cursor);
 
                 if( (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || (ch >= '0' && ch <= '9') || ch == '-' || ch == '_' || ch == '.' || ch == '~' )
                 {
@@ -510,7 +549,7 @@ namespace Mengine
     {
         m_beginTime = Helper::getSystemTimestamp();
 
-        const bool headless = HAS_OPTION( "norender" );
+        bool headless = HAS_OPTION( "norender" );
 
         if( headless == false )
         {
@@ -526,47 +565,47 @@ namespace Mengine
                 return false;
             }
 
-        m_screen = DefaultScreen( m_display );
+            m_screen = DefaultScreen( m_display );
 
-        m_wmProtocolsAtom = ::XInternAtom( m_display, "WM_PROTOCOLS", False );
-        m_wmDeleteWindowAtom = ::XInternAtom( m_display, "WM_DELETE_WINDOW", False );
-        m_netWmStateAtom = ::XInternAtom( m_display, "_NET_WM_STATE", False );
-        m_netWmStateFullscreenAtom = ::XInternAtom( m_display, "_NET_WM_STATE_FULLSCREEN", False );
-        m_netWorkAreaAtom = ::XInternAtom( m_display, "_NET_WORKAREA", False );
-        m_clipboardAtom = ::XInternAtom( m_display, "CLIPBOARD", False );
-        m_targetsAtom = ::XInternAtom( m_display, "TARGETS", False );
-        m_utf8StringAtom = ::XInternAtom( m_display, "UTF8_STRING", False );
-        m_textPlainAtom = ::XInternAtom( m_display, "text/plain;charset=utf-8", False );
-        m_clipboardPropertyAtom = ::XInternAtom( m_display, "MENGINE_CLIPBOARD", False );
+            m_wmProtocolsAtom = ::XInternAtom( m_display, "WM_PROTOCOLS", False );
+            m_wmDeleteWindowAtom = ::XInternAtom( m_display, "WM_DELETE_WINDOW", False );
+            m_netWmStateAtom = ::XInternAtom( m_display, "_NET_WM_STATE", False );
+            m_netWmStateFullscreenAtom = ::XInternAtom( m_display, "_NET_WM_STATE_FULLSCREEN", False );
+            m_netWorkAreaAtom = ::XInternAtom( m_display, "_NET_WORKAREA", False );
+            m_clipboardAtom = ::XInternAtom( m_display, "CLIPBOARD", False );
+            m_targetsAtom = ::XInternAtom( m_display, "TARGETS", False );
+            m_utf8StringAtom = ::XInternAtom( m_display, "UTF8_STRING", False );
+            m_textPlainAtom = ::XInternAtom( m_display, "text/plain;charset=utf-8", False );
+            m_clipboardPropertyAtom = ::XInternAtom( m_display, "MENGINE_CLIPBOARD", False );
 
-        Window root = RootWindow( m_display, m_screen );
-        XSetWindowAttributes clipboardAttributes;
-        StdString::memset( &clipboardAttributes, 0, sizeof( clipboardAttributes ) );
-        clipboardAttributes.event_mask = PropertyChangeMask;
+            Window root = RootWindow( m_display, m_screen );
+            XSetWindowAttributes clipboardAttributes;
+            StdString::memset( &clipboardAttributes, 0, sizeof( clipboardAttributes ) );
+            clipboardAttributes.event_mask = PropertyChangeMask;
 
-        m_clipboardWindow = ::XCreateWindow( m_display, root, -10, -10, 1, 1, 0, CopyFromParent, InputOnly, CopyFromParent, CWEventMask, &clipboardAttributes );
+            m_clipboardWindow = ::XCreateWindow( m_display, root, -10, -10, 1, 1, 0, CopyFromParent, InputOnly, CopyFromParent, CWEventMask, &clipboardAttributes );
 
-        m_inputMethod = ::XOpenIM( m_display, nullptr, nullptr, nullptr );
+            m_inputMethod = ::XOpenIM( m_display, nullptr, nullptr, nullptr );
 
-        m_defaultCursor = ::XCreateFontCursor( m_display, XC_left_ptr );
+            m_defaultCursor = ::XCreateFontCursor( m_display, XC_left_ptr );
 
-        static const Char emptyBitmap[1] = {0};
-        Pixmap emptyPixmap = ::XCreateBitmapFromData( m_display, root, emptyBitmap, 1, 1 );
+            static const Char emptyBitmap[1] = {0};
+            Pixmap emptyPixmap = ::XCreateBitmapFromData( m_display, root, emptyBitmap, 1, 1 );
 
-        if( emptyPixmap != 0 )
-        {
-            XColor emptyColor;
-            StdString::memset( &emptyColor, 0, sizeof( emptyColor ) );
-            m_hiddenCursor = ::XCreatePixmapCursor( m_display, emptyPixmap, emptyPixmap, &emptyColor, &emptyColor, 0, 0 );
-            ::XFreePixmap( m_display, emptyPixmap );
-        }
+            if( emptyPixmap != 0 )
+            {
+                XColor emptyColor;
+                StdString::memset( &emptyColor, 0, sizeof( emptyColor ) );
+                m_hiddenCursor = ::XCreatePixmapCursor( m_display, emptyPixmap, emptyPixmap, &emptyColor, &emptyColor, 0, 0 );
+                ::XFreePixmap( m_display, emptyPixmap );
+            }
 
-        const int displayWidth = DisplayWidth( m_display, m_screen );
-        const int displayWidthMM = DisplayWidthMM( m_display, m_screen );
+            int displayWidth = DisplayWidth( m_display, m_screen );
+            int displayWidthMM = DisplayWidthMM( m_display, m_screen );
 
             if( displayWidth > 0 && displayWidthMM > 0 )
             {
-                const float dpi = (float)displayWidth * 25.4f / (float)displayWidthMM;
+                float dpi = (float)displayWidth * 25.4f / (float)displayWidthMM;
                 m_displayScale = dpi / 96.f;
 
                 if( m_displayScale < 1.f )
@@ -584,11 +623,13 @@ namespace Mengine
 
         const Char * optionPlatforms[MENGINE_OPTIONS_VALUES_MAX];
         uint32_t optionPlatformsCount = 0;
-        if( OPTIONS_SERVICE()->getOptionValues( "platform", optionPlatforms, &optionPlatformsCount ) == true )
+        if( OPTIONS_SERVICE()
+            ->getOptionValues( "platform", optionPlatforms, &optionPlatformsCount ) == true )
         {
             for( uint32_t index = 0; index != optionPlatformsCount; ++index )
             {
-                m_platformTags.addTag( Helper::stringizeString( optionPlatforms[index] ) );
+                ConstString tag = Helper::stringizeString( optionPlatforms[index] );
+                m_platformTags.addTag( tag );
             }
         }
         else
@@ -664,7 +705,8 @@ namespace Mengine
     bool UnixPlatformService::_runService()
     {
         PlatformDateTime dateTime;
-        DATETIME_SYSTEM()->getLocalDateTime( &dateTime );
+        DATETIME_SYSTEM()
+            ->getLocalDateTime( &dateTime );
 
         LOGGER_INFO( "platform", "start date: %02u.%02u.%u, %02u:%02u:%02u"
             , dateTime.day
@@ -691,7 +733,8 @@ namespace Mengine
     void UnixPlatformService::_stopService()
     {
         PlatformDateTime dateTime;
-        DATETIME_SYSTEM()->getLocalDateTime( &dateTime );
+        DATETIME_SYSTEM()
+            ->getLocalDateTime( &dateTime );
 
         LOGGER_INFO( "platform", "stop date: %02u.%02u.%u, %02u:%02u:%02u"
             , dateTime.day
@@ -732,13 +775,14 @@ namespace Mengine
                 break;
             }
 
-            const double currentTime = Helper::getElapsedTime();
-            const float frameTime = (float)(currentTime - m_prevTime);
+            double currentTime = Helper::getElapsedTime();
+            float frameTime = (float)(currentTime - m_prevTime);
             m_prevTime = currentTime;
 
             if( m_active == false )
             {
-                THREAD_SYSTEM()->sleep( 100 );
+                THREAD_SYSTEM()
+                    ->sleep( 100 );
 
                 continue;
             }
@@ -747,7 +791,8 @@ namespace Mengine
 
             if( this->renderPlatform() == false )
             {
-                THREAD_SYSTEM()->sleep( 10 );
+                THREAD_SYSTEM()
+                    ->sleep( 10 );
             }
         }
     }
@@ -764,7 +809,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void UnixPlatformService::tickPlatform( float _frameTime )
     {
-        bool updating = APPLICATION_SERVICE()->beginUpdate();
+        bool updating = APPLICATION_SERVICE()
+            ->beginUpdate();
 
         if( updating == true )
         {
@@ -774,10 +820,12 @@ namespace Mengine
                 m_pauseUpdatingTime = -1.f;
             }
 
-            APPLICATION_SERVICE()->tick( _frameTime );
+            APPLICATION_SERVICE()
+                ->tick( _frameTime );
         }
 
-        APPLICATION_SERVICE()->endUpdate();
+        APPLICATION_SERVICE()
+            ->endUpdate();
 
         if( updating == false )
         {
@@ -786,27 +834,53 @@ namespace Mengine
                 m_pauseUpdatingTime = _frameTime;
             }
 
-            THREAD_SYSTEM()->sleep( 1 );
+            THREAD_SYSTEM()
+                ->sleep( 1 );
         }
-        else if( APPLICATION_SERVICE()->getVSync() == false && HAS_OPTION( "maxfps" ) == false )
+        else
         {
-            THREAD_SYSTEM()->sleep( 1 );
+            bool vsync = APPLICATION_SERVICE()
+                ->getVSync();
+            bool OPTION_maxfps = HAS_OPTION( "maxfps" );
+
+            if( vsync == false && OPTION_maxfps == false )
+            {
+                THREAD_SYSTEM()
+                    ->sleep( 1 );
+            }
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    RenderPlatformInterface * UnixPlatformService::getRenderPlatform()
+    {
+        return this;
     }
     //////////////////////////////////////////////////////////////////////////
     bool UnixPlatformService::renderPlatform()
     {
-        if( this->isNeedWindowRender_() == false || m_window == 0 || m_glContext == nullptr )
+        if( this->isNeedWindowRender_() == false )
         {
             return false;
         }
 
-        if( APPLICATION_SERVICE()->render() == false )
+        if( m_window == 0 )
         {
             return false;
         }
 
-        APPLICATION_SERVICE()->flush();
+        if( m_glContext == nullptr )
+        {
+            return false;
+        }
+
+        if( APPLICATION_SERVICE()
+            ->render() == false )
+        {
+            return false;
+        }
+
+        APPLICATION_SERVICE()
+            ->flush();
 
         ::glXSwapBuffers( m_display, m_window );
 
@@ -828,19 +902,24 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Timestamp UnixPlatformService::getPlatfomTime() const
     {
-        return Helper::getSystemTimestamp() - m_beginTime;
+        Timestamp time = Helper::getSystemTimestamp() - m_beginTime;
+
+        return time;
     }
     //////////////////////////////////////////////////////////////////////////
     Timestamp UnixPlatformService::getInputTimestamp() const
     {
-        return Helper::getPlatformTimestamp();
+        Timestamp timestamp = Helper::getPlatformTimestamp();
+
+        return timestamp;
     }
     //////////////////////////////////////////////////////////////////////////
     void UnixPlatformService::setProjectTitle( const Char * _projectTitle )
     {
         const Char * projectTitle = _projectTitle != nullptr ? _projectTitle : "";
+        const Char * currentTitle = m_projectTitle.c_str();
 
-        if( projectTitle != m_projectTitle.c_str() )
+        if( projectTitle != currentTitle )
         {
             m_projectTitle.assign( projectTitle );
         }
@@ -851,7 +930,9 @@ namespace Mengine
             ::XStoreName( m_display, m_window, title );
 
             Atom netWmName = ::XInternAtom( m_display, "_NET_WM_NAME", False );
-            ::XChangeProperty( m_display, m_window, netWmName, m_utf8StringAtom, 8, PropModeReplace, reinterpret_cast<const unsigned char *>(title), (int)m_projectTitle.size() );
+            const unsigned char * titleData = reinterpret_cast<const unsigned char *>(title);
+            int titleSize = (int)m_projectTitle.size();
+            ::XChangeProperty( m_display, m_window, netWmName, m_utf8StringAtom, 8, PropModeReplace, titleData, titleSize );
         }
 
         LOGGER_INFO( "platform", "project title: %s"
@@ -863,7 +944,9 @@ namespace Mengine
     {
         m_projectTitle.copy( _projectTitle );
 
-        return m_projectTitle.size();
+        size_t size = m_projectTitle.size();
+
+        return size;
     }
     //////////////////////////////////////////////////////////////////////////
     bool UnixPlatformService::alreadyRunningMonitor()
@@ -878,7 +961,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool UnixPlatformService::hasPlatformTag( const ConstString & _tag ) const
     {
-        return m_platformTags.hasTag( _tag );
+        if( m_platformTags.hasTag( _tag ) == false )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool UnixPlatformService::isDesktop() const
@@ -893,22 +981,30 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     int32_t UnixPlatformService::dpToWidthPx( int32_t _dp ) const
     {
-        return (int32_t)((float)_dp * m_displayScale + 0.5f);
+        int32_t px = (int32_t)((float)_dp * m_displayScale + 0.5f);
+
+        return px;
     }
     //////////////////////////////////////////////////////////////////////////
     int32_t UnixPlatformService::dpToHeightPx( int32_t _dp ) const
     {
-        return (int32_t)((float)_dp * m_displayScale + 0.5f);
+        int32_t px = (int32_t)((float)_dp * m_displayScale + 0.5f);
+
+        return px;
     }
     //////////////////////////////////////////////////////////////////////////
     int32_t UnixPlatformService::pxToWidthDp( int32_t _px ) const
     {
-        return (int32_t)((float)_px / m_displayScale + 0.5f);
+        int32_t dp = (int32_t)((float)_px / m_displayScale + 0.5f);
+
+        return dp;
     }
     //////////////////////////////////////////////////////////////////////////
     int32_t UnixPlatformService::pxToHeightDp( int32_t _px ) const
     {
-        return (int32_t)((float)_px / m_displayScale + 0.5f);
+        int32_t dp = (int32_t)((float)_px / m_displayScale + 0.5f);
+
+        return dp;
     }
     //////////////////////////////////////////////////////////////////////////
     DynamicLibraryInterfacePtr UnixPlatformService::loadDynamicLibrary( const Char * _dynamicLibraryName, const DocumentInterfacePtr & _doc )
@@ -945,7 +1041,9 @@ namespace Mengine
             return false;
         }
 
-        *_resolution = Resolution( (uint32_t)DisplayWidth( m_display, m_screen ), (uint32_t)DisplayHeight( m_display, m_screen ) );
+        uint32_t width = (uint32_t)DisplayWidth( m_display, m_screen );
+        uint32_t height = (uint32_t)DisplayHeight( m_display, m_screen );
+        *_resolution = Resolution( width, height );
 
         return true;
     }
@@ -957,41 +1055,50 @@ namespace Mengine
             return false;
         }
 
+        Window root = RootWindow( m_display, m_screen );
         Atom actualType = 0;
         int actualFormat = 0;
         unsigned long itemCount = 0;
         unsigned long bytesAfter = 0;
         unsigned char * data = nullptr;
+        int status = ::XGetWindowProperty( m_display, root, m_netWorkAreaAtom, 0, 4, False, XA_CARDINAL, &actualType, &actualFormat, &itemCount, &bytesAfter, &data );
 
-        int status = ::XGetWindowProperty( m_display, RootWindow( m_display, m_screen ), m_netWorkAreaAtom, 0, 4, False, XA_CARDINAL, &actualType, &actualFormat, &itemCount, &bytesAfter, &data );
-
-        if( status == Success && actualFormat == 32 && itemCount >= 4 && data != nullptr )
+        if( status != Success || actualFormat != 32 || itemCount < 4 || data == nullptr )
         {
-            const unsigned long * workArea = reinterpret_cast<const unsigned long *>(data);
-            *_resolution = Resolution( (uint32_t)workArea[2], (uint32_t)workArea[3] );
-            ::XFree( data );
+            if( data != nullptr )
+            {
+                ::XFree( data );
+            }
+
+            if( this->getDesktopResolution( _resolution ) == false )
+            {
+                return false;
+            }
 
             return true;
         }
 
-        if( data != nullptr )
-        {
-            ::XFree( data );
-        }
+        const unsigned long * workArea = reinterpret_cast<const unsigned long *>(data);
+        uint32_t width = (uint32_t)workArea[2];
+        uint32_t height = (uint32_t)workArea[3];
+        *_resolution = Resolution( width, height );
+        ::XFree( data );
 
-        return this->getDesktopResolution( _resolution );
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool UnixPlatformService::getSafeAreaViewport( Viewport * const _viewport ) const
     {
-        (void)_viewport;
+        MENGINE_UNUSED( _viewport );
 
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
     void UnixPlatformService::setSafeAreaViewportChangedCallback( const LambdaSafeAreaViewportChanged & _callback )
     {
-        (void)_callback;
+        MENGINE_UNUSED( _callback );
+
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     bool UnixPlatformService::getDisplayCutoutViewport( Viewport * const _viewport ) const
@@ -1013,27 +1120,26 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool UnixPlatformService::isDebuggerPresent() const
     {
-        FILE * statusFile = ::fopen( "/proc/self/status", "r" );
+        FILE * statusFile = StdIO::fopen( "/proc/self/status", "r" );
 
         if( statusFile == nullptr )
         {
             return false;
         }
 
-        Char line[256];
         bool attached = false;
-
-        while( ::fgets( line, sizeof( line ), statusFile ) != nullptr )
+        Char line[256];
+        while( StdIO::fgets( line, sizeof( line ), statusFile ) != nullptr )
         {
             int tracerPid = 0;
-            if( ::sscanf( line, "TracerPid: %d", &tracerPid ) == 1 )
+            if( MENGINE_SSCANF( line, "TracerPid: %d", &tracerPid ) == 1 )
             {
                 attached = tracerPid != 0;
                 break;
             }
         }
 
-        ::fclose( statusFile );
+        StdIO::fclose( statusFile );
 
         return attached;
     }
@@ -1070,7 +1176,9 @@ namespace Mengine
             {
                 slash[1] = '\0';
 
-                return StdString::strlen( _currentPath );
+                size_t pathLength = StdString::strlen( _currentPath );
+
+                return pathLength;
             }
         }
 
@@ -1083,20 +1191,27 @@ namespace Mengine
 
         Helper::pathCorrectFolderPathA( _currentPath, MENGINE_PATH_FORWARDSLASH );
 
-        return StdString::strlen( _currentPath );
+        size_t pathLength = StdString::strlen( _currentPath );
+
+        return pathLength;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t UnixPlatformService::getExtraPreferencesFolderName( Char * const _folderName ) const
     {
         PathString folderName = CONFIG_VALUE_PATHSTRING( "Project", "ExtraPreferencesFolderName", "" );
 
-        MENGINE_ASSERTION_FATAL( Helper::isCorrectFolderPathA( folderName.c_str() ) == true, "invalid extra preferences folder name '%s'"
-            , folderName.c_str()
+        const Char * folder = folderName.c_str();
+        bool correctFolderPath = Helper::isCorrectFolderPathA( folder );
+
+        MENGINE_ASSERTION_FATAL( correctFolderPath == true, "invalid extra preferences folder name '%s'"
+            , folder
         );
 
-        StdString::strcpy_safe( _folderName, folderName.c_str(), MENGINE_MAX_PATH );
+        StdString::strcpy_safe( _folderName, folder, MENGINE_MAX_PATH );
 
-        return folderName.size();
+        size_t size = folderName.size();
+
+        return size;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t UnixPlatformService::getUserPath( Char * const _userPath ) const
@@ -1113,7 +1228,9 @@ namespace Mengine
         PathString company = CONFIG_VALUE_PATHSTRING( "Project", "Company", "UNKNOWN" );
         PathString project = CONFIG_VALUE_PATHSTRING( "Project", "Name", "UNKNOWN" );
 
-        MENGINE_SNPRINTF( _userPath, MENGINE_MAX_PATH, "%s/%s/%s/", base, company.c_str(), project.c_str() );
+        const Char * companyName = company.c_str();
+        const Char * projectName = project.c_str();
+        MENGINE_SNPRINTF( _userPath, MENGINE_MAX_PATH, "%s/%s/%s/", base, companyName, projectName );
 
         Path extraFolder = {'\0'};
         if( this->getExtraPreferencesFolderName( extraFolder ) != 0 )
@@ -1134,7 +1251,9 @@ namespace Mengine
 
         Helper::pathCorrectFolderPathA( _userPath, MENGINE_PATH_FORWARDSLASH );
 
-        return StdString::strlen( _userPath );
+        size_t length = StdString::strlen( _userPath );
+
+        return length;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t UnixPlatformService::getTemporaryPath( Char * const _temporaryPath ) const
@@ -1159,7 +1278,22 @@ namespace Mengine
     {
         const Char * locale = ::setlocale( LC_MESSAGES, nullptr );
 
-        if( locale == nullptr || locale[0] == '\0' || (locale[0] == 'C' && (locale[1] == '\0' || locale[1] == '.' || locale[1] == '_')) || StdString::strcmp( locale, "POSIX" ) == 0 )
+        if( locale == nullptr )
+        {
+            return false;
+        }
+
+        if( locale[0] == '\0' )
+        {
+            return false;
+        }
+
+        if( locale[0] == 'C' && (locale[1] == '\0' || locale[1] == '.' || locale[1] == '_') )
+        {
+            return false;
+        }
+
+        if( StdString::strcmp( locale, "POSIX" ) == 0 )
         {
             return false;
         }
@@ -1191,7 +1325,12 @@ namespace Mengine
             , _fullscreen == true ? "true" : "false"
         );
 
-        return this->createWindow_( _resolution, _fullscreen );
+        if( this->createWindow_( _resolution, _fullscreen ) == false )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool UnixPlatformService::createWindow_( const Resolution & _resolution, bool _fullscreen )
@@ -1261,8 +1400,8 @@ namespace Mengine
         uint32_t width = _fullscreen == true ? desktopResolution.getWidth() : _resolution.getWidth();
         uint32_t height = _fullscreen == true ? desktopResolution.getHeight() : _resolution.getHeight();
 
-        const int x = _fullscreen == true ? 0 : ((int)desktopResolution.getWidth() - (int)width) / 2;
-        const int y = _fullscreen == true ? 0 : ((int)desktopResolution.getHeight() - (int)height) / 2;
+        int x = _fullscreen == true ? 0 : ((int)desktopResolution.getWidth() - (int)width) / 2;
+        int y = _fullscreen == true ? 0 : ((int)desktopResolution.getHeight() - (int)height) / 2;
 
         m_window = ::XCreateWindow( m_display, root, x, y, width, height, 0, visualInfo->depth, InputOutput, visualInfo->visual, CWBorderPixel | CWBackPixel | CWColormap | CWEventMask, &attributes );
         ::XFree( visualInfo );
@@ -1284,11 +1423,12 @@ namespace Mengine
         classHint.res_class = const_cast<Char *>("Mengine");
         ::XSetClassHint( m_display, m_window, &classHint );
 
-        const long pid = (long)::getpid();
+        long pid = (long)::getpid();
         Atom netWmPid = ::XInternAtom( m_display, "_NET_WM_PID", False );
         ::XChangeProperty( m_display, m_window, netWmPid, XA_CARDINAL, 32, PropModeReplace, reinterpret_cast<const unsigned char *>(&pid), 1 );
 
-        this->setProjectTitle( m_projectTitle.c_str() );
+        const Char * title = m_projectTitle.c_str();
+        this->setProjectTitle( title );
 
         if( this->createOpenGLContext_( config ) == false )
         {
@@ -1336,7 +1476,9 @@ namespace Mengine
 
         ::XFlush( m_display );
 
-        this->notifyVsyncChanged( APPLICATION_SERVICE()->getVSync() );
+        bool vsync = APPLICATION_SERVICE()
+            ->getVSync();
+        this->notifyVsyncChanged( vsync );
 
         m_windowAttached = true;
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_ATACH_WINDOW );
@@ -1462,7 +1604,8 @@ namespace Mengine
         event.xclient.data.l[2] = 0;
         event.xclient.data.l[3] = 1;
 
-        ::XSendEvent( m_display, RootWindow( m_display, m_screen ), False, SubstructureRedirectMask | SubstructureNotifyMask, &event );
+        Window root = RootWindow( m_display, m_screen );
+        ::XSendEvent( m_display, root, False, SubstructureRedirectMask | SubstructureNotifyMask, &event );
         ::XFlush( m_display );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1475,14 +1618,17 @@ namespace Mengine
 
         if( SERVICE_IS_INITIALIZE( RenderSystemInterface ) == true )
         {
-            RENDER_SYSTEM()->onWindowChangeFullscreenPrepare( _fullscreen );
+            RENDER_SYSTEM()
+                ->onWindowChangeFullscreenPrepare( _fullscreen );
         }
 
         this->setFullscreen_( _fullscreen );
 
         if( _fullscreen == false )
         {
-            ::XResizeWindow( m_display, m_window, _resolution.getWidth(), _resolution.getHeight() );
+            uint32_t width = _resolution.getWidth();
+            uint32_t height = _resolution.getHeight();
+            ::XResizeWindow( m_display, m_window, width, height );
         }
 
         m_fullscreen = _fullscreen;
@@ -1493,7 +1639,8 @@ namespace Mengine
 
         if( SERVICE_IS_INITIALIZE( RenderSystemInterface ) == true )
         {
-            if( RENDER_SYSTEM()->onWindowChangeFullscreen( _fullscreen ) == false )
+            if( RENDER_SYSTEM()
+                ->onWindowChangeFullscreen( _fullscreen ) == false )
             {
                 return false;
             }
@@ -1514,7 +1661,12 @@ namespace Mengine
             return true;
         }
 
-        return this->changeWindow_( _resolution, _fullscreen );
+        if( this->changeWindow_( _resolution, _fullscreen ) == false )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void UnixPlatformService::notifyVsyncChanged( bool _vsync )
@@ -1526,9 +1678,10 @@ namespace Mengine
 
         const Char * extensions = ::glXQueryExtensionsString( m_display, m_screen );
 
-        Detail::GLXSwapIntervalEXTProc swapIntervalEXT = Detail::hasExtension( extensions, "GLX_EXT_swap_control" ) == true
-            ? reinterpret_cast<Detail::GLXSwapIntervalEXTProc>(this->getOpenGLProcAddress( "glXSwapIntervalEXT" ))
+        UnixOpenGLProc swapIntervalEXTAddress = Detail::hasExtension( extensions, "GLX_EXT_swap_control" ) == true
+            ? this->getOpenGLProcAddress( "glXSwapIntervalEXT" )
             : nullptr;
+        Detail::GLXSwapIntervalEXTProc swapIntervalEXT = reinterpret_cast<Detail::GLXSwapIntervalEXTProc>(swapIntervalEXTAddress);
 
         if( swapIntervalEXT != nullptr )
         {
@@ -1537,9 +1690,10 @@ namespace Mengine
             return;
         }
 
-        Detail::GLXSwapIntervalMESAProc swapIntervalMESA = Detail::hasExtension( extensions, "GLX_MESA_swap_control" ) == true
-            ? reinterpret_cast<Detail::GLXSwapIntervalMESAProc>(this->getOpenGLProcAddress( "glXSwapIntervalMESA" ))
+        UnixOpenGLProc swapIntervalMESAAddress = Detail::hasExtension( extensions, "GLX_MESA_swap_control" ) == true
+            ? this->getOpenGLProcAddress( "glXSwapIntervalMESA" )
             : nullptr;
+        Detail::GLXSwapIntervalMESAProc swapIntervalMESA = reinterpret_cast<Detail::GLXSwapIntervalMESAProc>(swapIntervalMESAAddress);
 
         if( swapIntervalMESA != nullptr )
         {
@@ -1548,14 +1702,22 @@ namespace Mengine
             return;
         }
 
-        Detail::GLXSwapIntervalSGIProc swapIntervalSGI = Detail::hasExtension( extensions, "GLX_SGI_swap_control" ) == true
-            ? reinterpret_cast<Detail::GLXSwapIntervalSGIProc>(this->getOpenGLProcAddress( "glXSwapIntervalSGI" ))
+        UnixOpenGLProc swapIntervalSGIAddress = Detail::hasExtension( extensions, "GLX_SGI_swap_control" ) == true
+            ? this->getOpenGLProcAddress( "glXSwapIntervalSGI" )
             : nullptr;
+        Detail::GLXSwapIntervalSGIProc swapIntervalSGI = reinterpret_cast<Detail::GLXSwapIntervalSGIProc>(swapIntervalSGIAddress);
 
-        if( swapIntervalSGI != nullptr && _vsync == true )
+        if( swapIntervalSGI == nullptr )
         {
-            swapIntervalSGI( 1 );
+            return;
         }
+
+        if( _vsync == false )
+        {
+            return;
+        }
+
+        swapIntervalSGI( 1 );
     }
     //////////////////////////////////////////////////////////////////////////
     void UnixPlatformService::closeWindow()
@@ -1571,11 +1733,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void UnixPlatformService::minimizeWindow()
     {
-        if( m_window != 0 )
+        if( m_window == 0 )
         {
-            ::XIconifyWindow( m_display, m_window, m_screen );
-            ::XFlush( m_display );
+            return;
         }
+
+        ::XIconifyWindow( m_display, m_window, m_screen );
+        ::XFlush( m_display );
     }
     //////////////////////////////////////////////////////////////////////////
     void UnixPlatformService::setCursorPosition( const mt::vec2f & _cursorPosition )
@@ -1585,8 +1749,8 @@ namespace Mengine
             return;
         }
 
-        const int x = (int)(_cursorPosition.x * (float)m_windowResolution.getWidth());
-        const int y = (int)(_cursorPosition.y * (float)m_windowResolution.getHeight());
+        int x = (int)(_cursorPosition.x * (float)m_windowResolution.getWidth());
+        int y = (int)(_cursorPosition.y * (float)m_windowResolution.getHeight());
 
         ::XWarpPointer( m_display, None, m_window, 0, 0, 0, 0, x, y );
         ::XFlush( m_display );
@@ -1603,11 +1767,18 @@ namespace Mengine
     {
         MENGINE_UNUSED( _icon );
 
-        if( m_window != 0 && m_cursorVisible == true )
+        if( m_window == 0 )
         {
-            ::XDefineCursor( m_display, m_window, m_defaultCursor );
-            ::XFlush( m_display );
+            return;
         }
+
+        if( m_cursorVisible == false )
+        {
+            return;
+        }
+
+        ::XDefineCursor( m_display, m_window, m_defaultCursor );
+        ::XFlush( m_display );
     }
     //////////////////////////////////////////////////////////////////////////
     bool UnixPlatformService::hasCursorIcon( const ConstString & _icon ) const
@@ -1621,11 +1792,14 @@ namespace Mengine
     {
         m_cursorVisible = _mode;
 
-        if( m_window != 0 )
+        if( m_window == 0 )
         {
-            ::XDefineCursor( m_display, m_window, _mode == true ? m_defaultCursor : m_hiddenCursor );
-            ::XFlush( m_display );
+            return;
         }
+
+        ::Cursor cursor = _mode == true ? m_defaultCursor : m_hiddenCursor;
+        ::XDefineCursor( m_display, m_window, cursor );
+        ::XFlush( m_display );
     }
     //////////////////////////////////////////////////////////////////////////
     bool UnixPlatformService::notifyCursorIconSetup( const ConstString & _name, const ContentInterfacePtr & _content, const MemoryInterfacePtr & _memory )
@@ -1641,20 +1815,24 @@ namespace Mengine
     {
         m_keyboardVisible = true;
 
-        if( m_inputContext != nullptr )
+        if( m_inputContext == nullptr )
         {
-            ::XSetICFocus( m_inputContext );
+            return;
         }
+
+        ::XSetICFocus( m_inputContext );
     }
     //////////////////////////////////////////////////////////////////////////
     void UnixPlatformService::hideKeyboard()
     {
         m_keyboardVisible = false;
 
-        if( m_inputContext != nullptr )
+        if( m_inputContext == nullptr )
         {
-            ::XUnsetICFocus( m_inputContext );
+            return;
         }
+
+        ::XUnsetICFocus( m_inputContext );
     }
     //////////////////////////////////////////////////////////////////////////
     bool UnixPlatformService::isShowKeyboard() const
@@ -1666,6 +1844,8 @@ namespace Mengine
     {
         MENGINE_UNUSED( _event );
         MENGINE_UNUSED( _params );
+
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     size_t UnixPlatformService::getSystemFontPath( ConstString * const _groupName, const Char * _fontName, Char * const _fontPath ) const
@@ -1705,7 +1885,13 @@ namespace Mengine
         uri.append( "&body=" );
         Detail::appendUrlEncoded( &uri, _body );
 
-        return this->openUrlInDefaultBrowser( uri.c_str() );
+        const Char * url = uri.c_str();
+        if( this->openUrlInDefaultBrowser( url ) == false )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool UnixPlatformService::openDeleteAccount( const LambdaDeleteAccountAccepted & _accepted, const LambdaDeleteAccountCanceled & _canceled )
@@ -1761,20 +1947,20 @@ namespace Mengine
         Path filePath = {'\0'};
         MENGINE_SNPRINTF( filePath, MENGINE_MAX_PATH, "%s%s", directory, _filePath );
 
-        FILE * file = ::fopen( filePath, "wb" );
+        FILE * file = StdIO::fopen( filePath, "wb" );
 
         if( file == nullptr )
         {
             LOGGER_ERROR( "failed to open file '%s': %s"
                 , filePath
-                , ::strerror( errno )
+                , StdString::strerror( errno )
             );
 
             return false;
         }
 
-        const size_t written = ::fwrite( _data, 1, _size, file );
-        const int closeResult = ::fclose( file );
+        size_t written = StdIO::fwrite( _data, 1, _size, file );
+        int closeResult = StdIO::fclose( file );
 
         if( written != _size || closeResult != 0 )
         {
@@ -1790,12 +1976,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool UnixPlatformService::createDirectoryUserPicture( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size )
     {
-        return this->writeUserFile_( "Pictures", _directoryPath, _filePath, _data, _size );
+        if( this->writeUserFile_( "Pictures", _directoryPath, _filePath, _data, _size ) == false )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool UnixPlatformService::createDirectoryUserMusic( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size )
     {
-        return this->writeUserFile_( "Music", _directoryPath, _filePath, _data, _size );
+        if( this->writeUserFile_( "Music", _directoryPath, _filePath, _data, _size ) == false )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void UnixPlatformService::messageBox( const Char * _caption, const Char * _format, ... ) const
@@ -1881,12 +2077,14 @@ namespace Mengine
         ::XSetSelectionOwner( m_display, m_clipboardAtom, m_clipboardWindow, CurrentTime );
         ::XFlush( m_display );
 
-        if( ::XGetSelectionOwner( m_display, m_clipboardAtom ) == m_clipboardWindow )
+        Window owner = ::XGetSelectionOwner( m_display, m_clipboardAtom );
+
+        if( owner != m_clipboardWindow )
         {
-            return true;
+            return false;
         }
 
-        return false;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool UnixPlatformService::getClipboardText( Char * _value, size_t _capacity ) const
@@ -1902,7 +2100,8 @@ namespace Mengine
 
         if( owner == m_clipboardWindow )
         {
-            StdString::strcpy_safe( _value, m_clipboardText.c_str(), _capacity );
+            const Char * text = m_clipboardText.c_str();
+            StdString::strcpy_safe( _value, text, _capacity );
 
             return true;
         }
@@ -1916,9 +2115,8 @@ namespace Mengine
         ::XConvertSelection( m_display, m_clipboardAtom, m_utf8StringAtom, m_clipboardPropertyAtom, m_clipboardWindow, CurrentTime );
         ::XFlush( m_display );
 
-        const Timestamp begin = Helper::getPlatformTimestamp();
+        Timestamp begin = Helper::getPlatformTimestamp();
         XEvent event;
-
         for( ;; )
         {
             if( ::XCheckTypedWindowEvent( m_display, m_clipboardWindow, SelectionNotify, &event ) != 0 )
@@ -1931,7 +2129,8 @@ namespace Mengine
                 return false;
             }
 
-            THREAD_SYSTEM()->sleep( 1 );
+            THREAD_SYSTEM()
+                ->sleep( 1 );
         }
 
         if( event.xselection.property == 0 )
@@ -1939,13 +2138,12 @@ namespace Mengine
             return false;
         }
 
+        long requestedLongs = (long)((_capacity + 3) / 4);
         Atom actualType = 0;
         int actualFormat = 0;
         unsigned long itemCount = 0;
         unsigned long bytesAfter = 0;
         unsigned char * data = nullptr;
-
-        const long requestedLongs = (long)((_capacity + 3) / 4);
         int status = ::XGetWindowProperty( m_display, m_clipboardWindow, m_clipboardPropertyAtom, 0, requestedLongs, True, AnyPropertyType, &actualType, &actualFormat, &itemCount, &bytesAfter, &data );
 
         if( status != Success || actualFormat != 8 || data == nullptr )
@@ -1958,7 +2156,7 @@ namespace Mengine
             return false;
         }
 
-        const size_t copySize = MENGINE_MIN( (size_t)itemCount, _capacity - 1 );
+        size_t copySize = MENGINE_MIN( (size_t)itemCount, _capacity - 1 );
         StdString::strzcpy_safe( _value, reinterpret_cast<const Char *>(data), copySize, _capacity );
         ::XFree( data );
 
@@ -1982,13 +2180,17 @@ namespace Mengine
         if( _request.target == m_targetsAtom )
         {
             Atom targets[] = {m_targetsAtom, m_utf8StringAtom, m_textPlainAtom, XA_STRING};
-            ::XChangeProperty( m_display, _request.requestor, property, XA_ATOM, 32, PropModeReplace, reinterpret_cast<const unsigned char *>(targets), 4 );
+            const unsigned char * data = reinterpret_cast<const unsigned char *>(targets);
+            ::XChangeProperty( m_display, _request.requestor, property, XA_ATOM, 32, PropModeReplace, data, 4 );
             response.property = property;
         }
         else if( _request.target == m_utf8StringAtom || _request.target == m_textPlainAtom || _request.target == XA_STRING )
         {
-            const Atom type = _request.target == XA_STRING ? XA_STRING : m_utf8StringAtom;
-            ::XChangeProperty( m_display, _request.requestor, property, type, 8, PropModeReplace, reinterpret_cast<const unsigned char *>(m_clipboardText.c_str()), (int)m_clipboardText.size() );
+            Atom type = _request.target == XA_STRING ? XA_STRING : m_utf8StringAtom;
+            const Char * text = m_clipboardText.c_str();
+            const unsigned char * data = reinterpret_cast<const unsigned char *>(text);
+            int size = (int)m_clipboardText.size();
+            ::XChangeProperty( m_display, _request.requestor, property, type, 8, PropModeReplace, data, size );
             response.property = property;
         }
 
@@ -2037,24 +2239,32 @@ namespace Mengine
             {
             case ConfigureNotify:
                 {
-                    if( event.xconfigure.width > 0 && event.xconfigure.height > 0 )
+                    if( event.xconfigure.width <= 0 || event.xconfigure.height <= 0 )
                     {
-                        Resolution resolution( (uint32_t)event.xconfigure.width, (uint32_t)event.xconfigure.height );
+                        break;
+                    }
 
-                        if( m_windowResolution != resolution )
-                        {
-                            m_windowResolution = resolution;
+                    uint32_t width = (uint32_t)event.xconfigure.width;
+                    uint32_t height = (uint32_t)event.xconfigure.height;
+                    Resolution resolution( width, height );
 
-                            if( SERVICE_IS_INITIALIZE( ApplicationInterface ) == true )
-                            {
-                                APPLICATION_SERVICE()->setWindowResolution( resolution );
-                            }
+                    if( m_windowResolution == resolution )
+                    {
+                        break;
+                    }
 
-                            if( SERVICE_IS_INITIALIZE( RenderSystemInterface ) == true )
-                            {
-                                RENDER_SYSTEM()->onWindowMovedOrResized();
-                            }
-                        }
+                    m_windowResolution = resolution;
+
+                    if( SERVICE_IS_INITIALIZE( ApplicationInterface ) == true )
+                    {
+                        APPLICATION_SERVICE()
+                            ->setWindowResolution( resolution );
+                    }
+
+                    if( SERVICE_IS_INITIALIZE( RenderSystemInterface ) == true )
+                    {
+                        RENDER_SYSTEM()
+                            ->onWindowMovedOrResized();
                     }
                 }break;
             case Expose:
@@ -2140,7 +2350,7 @@ namespace Mengine
                 }
             }
 
-            const bool releaseEvent = event.type == KeyRelease || event.type == ButtonRelease;
+            bool releaseEvent = event.type == KeyRelease || event.type == ButtonRelease;
 
             if( (handled == false || releaseEvent == true) && m_input != nullptr )
             {
@@ -2151,10 +2361,23 @@ namespace Mengine
             {
                 KeySym keySym = ::XkbKeycodeToKeysym( m_display, (KeyCode)event.xkey.keycode, 0, 0 );
 
-                if( (keySym == XK_Return || keySym == XK_KP_Enter) && APPLICATION_SERVICE()->getAllowFullscreenSwitchShortcut() == true )
+                if( keySym != XK_Return && keySym != XK_KP_Enter )
                 {
-                    APPLICATION_SERVICE()->setFullscreenMode( APPLICATION_SERVICE()->getFullscreenMode() == false );
+                    continue;
                 }
+
+                bool allowFullscreenSwitchShortcut = APPLICATION_SERVICE()
+                    ->getAllowFullscreenSwitchShortcut();
+
+                if( allowFullscreenSwitchShortcut == false )
+                {
+                    continue;
+                }
+
+                bool fullscreen = APPLICATION_SERVICE()
+                    ->getFullscreenMode();
+                APPLICATION_SERVICE()
+                    ->setFullscreenMode( fullscreen == false );
             }
         }
 
@@ -2169,7 +2392,7 @@ namespace Mengine
         }
 
         XKeyEvent keyEvent = _event.xkey;
-        const int textCapacity = (int)MENGINE_MIN( _capacity - 1, (size_t)INT_MAX );
+        int textCapacity = (int)MENGINE_MIN( _capacity - 1, (size_t)MENGINE_INT_MAX );
         int textSize = 0;
 
         if( m_inputContext != nullptr )
@@ -2197,7 +2420,9 @@ namespace Mengine
 
         _text[textSize] = '\0';
 
-        return (size_t)textSize;
+        size_t size = (size_t)textSize;
+
+        return size;
     }
     //////////////////////////////////////////////////////////////////////////
     void UnixPlatformService::pushQuitEvent_()
@@ -2209,10 +2434,18 @@ namespace Mengine
 
         m_quitRequested = true;
 
-        if( SERVICE_PROVIDER_EXIST() == true && SERVICE_IS_INITIALIZE( ApplicationInterface ) == true )
+        if( SERVICE_PROVIDER_EXIST() == false )
         {
-            APPLICATION_SERVICE()->quit();
+            return;
         }
+
+        if( SERVICE_IS_INITIALIZE( ApplicationInterface ) == false )
+        {
+            return;
+        }
+
+        APPLICATION_SERVICE()
+            ->quit();
     }
     //////////////////////////////////////////////////////////////////////////
     void UnixPlatformService::setActive_( bool _active, Timestamp _timestamp )
@@ -2224,7 +2457,12 @@ namespace Mengine
 
         m_active = _active;
 
-        if( SERVICE_IS_INITIALIZE( ApplicationInterface ) == false || SERVICE_IS_INITIALIZE( InputServiceInterface ) == false )
+        if( SERVICE_IS_INITIALIZE( ApplicationInterface ) == false )
+        {
+            return;
+        }
+
+        if( SERVICE_IS_INITIALIZE( InputServiceInterface ) == false )
         {
             return;
         }
@@ -2281,17 +2519,28 @@ namespace Mengine
             return false;
         }
 
-        if( APPLICATION_SERVICE()->getNopause() == true )
+        bool nopause = APPLICATION_SERVICE()
+            ->getNopause();
+
+        if( nopause == true )
         {
             return true;
         }
 
-        if( m_active == true && APPLICATION_SERVICE()->isFocus() == true )
+        if( m_active == false )
         {
-            return true;
+            return false;
         }
 
-        return false;
+        bool focus = APPLICATION_SERVICE()
+            ->isFocus();
+
+        if( focus == false )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     Display * UnixPlatformService::getX11Display() const
@@ -2310,7 +2559,9 @@ namespace Mengine
 
         if( address != nullptr )
         {
-            return reinterpret_cast<UnixOpenGLProc>(address);
+            UnixOpenGLProc proc = reinterpret_cast<UnixOpenGLProc>(address);
+
+            return proc;
         }
 
         void * symbol = ::dlsym( RTLD_DEFAULT, _name );
@@ -2324,7 +2575,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     UniqueId UnixPlatformService::addUnixEventHandler( const LambdaUnixEventHandler & _lambda, const DocumentInterfacePtr & _doc )
     {
-        UniqueId id = ENUMERATOR_SERVICE()->generateUniqueIdentity();
+        UniqueId id = ENUMERATOR_SERVICE()
+            ->generateUniqueIdentity();
 
         UnixEventHandlerDesc desc;
         desc.id = id;
@@ -2354,9 +2606,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool UnixPlatformService::initializeFileService()
     {
+        const FilePath & rootPath = FilePath::none();
         FileGroupInterfacePtr defaultFileGroup = nullptr;
-
-        if( FILE_SERVICE()->mountFileGroup( ConstString::none(), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "dir" ), &defaultFileGroup, false, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        if( FILE_SERVICE()
+            ->mountFileGroup( ConstString::none(), nullptr, nullptr, rootPath, STRINGIZE_STRING_LOCAL( "dir" ), &defaultFileGroup, false, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             LOGGER_ERROR( "failed to mount application directory" );
 
@@ -2367,8 +2620,8 @@ namespace Mengine
 
 #if defined(MENGINE_MASTER_RELEASE_DISABLE)
         FileGroupInterfacePtr developmentFileGroup = nullptr;
-
-        if( FILE_SERVICE()->mountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "dir" ), &developmentFileGroup, false, MENGINE_DOCUMENT_FACTORABLE ) == false )
+        if( FILE_SERVICE()
+            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ), nullptr, nullptr, rootPath, STRINGIZE_STRING_LOCAL( "dir" ), &developmentFileGroup, false, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             LOGGER_ERROR( "failed to mount development directory" );
 
@@ -2384,11 +2637,13 @@ namespace Mengine
     void UnixPlatformService::finalizeFileService()
     {
 #if defined(MENGINE_MASTER_RELEASE_DISABLE)
-        FILE_SERVICE()->unmountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) );
+        FILE_SERVICE()
+            ->unmountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FileGroup" ), STRINGIZE_STRING_LOCAL( "dev" ) );
 #endif
 
-        FILE_SERVICE()->unmountFileGroup( ConstString::none() );
+        FILE_SERVICE()
+            ->unmountFileGroup( ConstString::none() );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FileGroup" ), ConstString::none() );
     }
     //////////////////////////////////////////////////////////////////////////

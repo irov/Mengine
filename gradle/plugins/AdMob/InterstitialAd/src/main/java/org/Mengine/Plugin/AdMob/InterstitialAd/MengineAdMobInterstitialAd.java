@@ -231,12 +231,10 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
             if (m_interstitialAd != null) {
                 ResponseInfo responseInfo = m_interstitialAd.getResponseInfo();
 
-                if (responseInfo != null) {
-                    long valueMicros = adValue.getValueMicros();
-                    double value = valueMicros / 1000000.0;
+                long valueMicros = adValue.getValueMicros();
+                double value = valueMicros / 1000000.0;
 
-                    MengineAdMobInterstitialAd.this.revenuePaid(responseInfo, MengineAdFormat.ADFORMAT_INTERSTITIAL, m_placement, value);
-                }
+                MengineAdMobInterstitialAd.this.revenuePaid(responseInfo, MengineAdFormat.ADFORMAT_INTERSTITIAL, m_placement, value);
             }
         });
 

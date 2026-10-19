@@ -8,16 +8,7 @@ import java.util.List;
 public class MengineNativeCallQueue {
     private static final MengineTag TAG = MengineTag.of("MNGNativeCallQueue");
 
-    private static class NativeCall {
-        final public String plugin;
-        final public String method;
-        final public Object[] args;
-
-        public NativeCall(String plugin, String method, Object[] args) {
-            this.plugin = plugin;
-            this.method = method;
-            this.args = args;
-        }
+    private record NativeCall(String plugin, String method, Object[] args) {
     }
 
     private static final Object m_syncCalls = new Object();

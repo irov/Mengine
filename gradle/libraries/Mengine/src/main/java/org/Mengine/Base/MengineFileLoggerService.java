@@ -182,7 +182,7 @@ public class MengineFileLoggerService extends MengineService implements MengineL
 
         String line = String.format(Locale.US, "%s [%s] |%s| %s"
             , timestamp
-            , message.MESSAGE_CATEGORY.toString()
+            , message.MESSAGE_CATEGORY
             , message.MESSAGE_THREAD
             , message.MESSAGE_DATA);
 

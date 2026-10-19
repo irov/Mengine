@@ -105,11 +105,11 @@ public class MengineParamTransparencyConsent {
         String tcString = preferences.getString("IABTCF_TCString", "");
         String purposeConsents = preferences.getString("IABTCF_PurposeConsents", "");
 
-        if (tcString == null || tcString.isEmpty() == true) {
+        if (tcString.isEmpty()) {
             return true;
         }
 
-        if (purposeConsents == null || purposeConsents.isEmpty() == true) {
+        if (purposeConsents.isEmpty()) {
             return true;
         }
 

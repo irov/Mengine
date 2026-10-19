@@ -223,12 +223,10 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
             if (m_rewardedAd != null) {
                 ResponseInfo responseInfo = m_rewardedAd.getResponseInfo();
 
-                if (responseInfo != null) {
-                    long valueMicros = adValue.getValueMicros();
-                    double value = valueMicros / 1000000.0;
+                long valueMicros = adValue.getValueMicros();
+                double value = valueMicros / 1000000.0;
 
-                    MengineAdMobRewardedAd.this.revenuePaid(responseInfo, MengineAdFormat.ADFORMAT_REWARDED, m_placement, value);
-                }
+                MengineAdMobRewardedAd.this.revenuePaid(responseInfo, MengineAdFormat.ADFORMAT_REWARDED, m_placement, value);
             }
         });
 

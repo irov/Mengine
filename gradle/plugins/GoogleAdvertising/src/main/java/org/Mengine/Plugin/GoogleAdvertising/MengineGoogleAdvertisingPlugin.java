@@ -115,7 +115,7 @@ public class MengineGoogleAdvertisingPlugin extends MengineService implements Me
                 m_advertisingLimitTrackingFetch = true;
             }
 
-            MengineFragmentAdvertisingId.INSTANCE.setAdvertisingId(m_advertisingId, m_advertisingLimitTrackingEnabled);
+            MengineFragmentAdvertisingId.INSTANCE.setAdvertisingId(m_advertisingId, true);
 
             return;
         }

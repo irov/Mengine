@@ -7,14 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class MengineFactoryManager {
-    private static final class Entry {
-        final MengineFactory factory;
-        final Class<?>[] types;
-
-        Entry(MengineFactory factory, Class<?>... types) {
-            this.factory = factory;
-            this.types = types;
-        }
+    private record Entry(MengineFactory factory, Class<?>... types) {
     }
 
     private static final Map<String, Entry> m_factories = new HashMap<>();

@@ -16,15 +16,7 @@ public class MengineProcedureDeleteAccount implements MengineProcedureInterface 
     private static final int DELETE_ACCOUNT_REASON_SUPPORT_UNSOLVED = 1004;
     private static final int DELETE_ACCOUNT_REASON_OTHER = 1099;
 
-    private static class DeleteAccountReason {
-        final int m_id;
-        @StringRes
-        final int m_stringId;
-
-        DeleteAccountReason(int id, @StringRes int stringId) {
-            m_id = id;
-            m_stringId = stringId;
-        }
+    private record DeleteAccountReason(int m_id, @StringRes int m_stringId) {
     }
 
     private static final List<DeleteAccountReason> DELETE_ACCOUNT_REASONS = List.of(

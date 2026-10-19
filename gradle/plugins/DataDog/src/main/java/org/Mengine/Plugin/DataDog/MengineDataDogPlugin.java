@@ -58,10 +58,6 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
     }
 
     protected TrackingConsent getTrackingConsent(@NonNull MengineParamTransparencyConsent consentParam) {
-        if (consentParam == null) {
-            return TrackingConsent.GRANTED;
-        }
-
         if (consentParam.isPending() == true) {
             return TrackingConsent.PENDING;
         }

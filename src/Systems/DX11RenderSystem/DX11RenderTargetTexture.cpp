@@ -157,8 +157,8 @@ namespace Mengine
         ID3D11DepthStencilView * pDepthStencilMainOld;
         pImmediateContext->OMGetRenderTargets( 1, &pRenderTargetViewOld, &pDepthStencilMainOld );
 
-        m_pRenderTargetViewOld = pRenderTargetViewOld;
-        m_pDepthStencilMainOld = pDepthStencilMainOld;
+        m_pRenderTargetViewOld.Attach( pRenderTargetViewOld );
+        m_pDepthStencilMainOld.Attach( pDepthStencilMainOld );
 
         UINT NumViewports = 1;
         D3D11_VIEWPORT VPOld;

@@ -28,6 +28,10 @@ android {
         buildConfig = true
         prefab = true
     }
+
+    lint {
+        fatal 'NewApi', 'InlinedApi'
+    }
 }
 
 dependencies {

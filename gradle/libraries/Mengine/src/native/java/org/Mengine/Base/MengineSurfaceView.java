@@ -106,9 +106,11 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
         List<Rect> cutouts = displayCutout.getBoundingRects();
 
         for (Rect cutout : cutouts) {
-            if (cutout.bottom <= top) {
-                return cutout;
+            if (cutout.bottom > top) {
+                continue;
             }
+
+            return cutout;
         }
 
         return null;

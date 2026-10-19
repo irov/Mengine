@@ -201,38 +201,6 @@ namespace Mengine
 
         for( PluginDesc & desc : reverse_plugins )
         {
-            if( desc.dynamicLibrary != nullptr )
-            {
-                continue;
-            }
-
-            if( desc.plugin->isSystemPlugin() == true && this->isInitializeService() == true )
-            {
-                m_plugins.push_back( desc );
-
-                desc.plugin = nullptr;
-
-                continue;
-            }
-
-            if( desc.plugin->isFrameworkMode() == true && this->isInitializeService() == true )
-            {
-                continue;
-            }
-
-            desc.plugin->finalizePlugin();
-            desc.plugin = nullptr;
-
-            desc.dynamicLibrary = nullptr;
-        }
-
-        for( PluginDesc & desc : reverse_plugins )
-        {
-            if( desc.dynamicLibrary == nullptr )
-            {
-                continue;
-            }
-
             if( desc.plugin->isSystemPlugin() == true && this->isInitializeService() == true )
             {
                 m_plugins.push_back( desc );
@@ -251,6 +219,8 @@ namespace Mengine
             desc.plugin = nullptr;
         }
 
+        StdAlgorithm::reverse( m_plugins.begin(), m_plugins.end() );
+
         for( PluginDesc & desc : reverse_plugins )
         {
             if( desc.plugin == nullptr )
@@ -258,32 +228,9 @@ namespace Mengine
                 continue;
             }
 
-            if( desc.dynamicLibrary != nullptr )
-            {
-                continue;
-            }
-
             desc.plugin->finalizePlugin();
             desc.plugin = nullptr;
-
-            desc.dynamicLibrary = nullptr;
         }
-
-        for( PluginDesc & desc : reverse_plugins )
-        {
-            if( desc.plugin == nullptr )
-            {
-                continue;
-            }
-
-            if( desc.dynamicLibrary == nullptr )
-            {
-                continue;
-            }
-
-            desc.plugin->finalizePlugin();
-            desc.plugin = nullptr;
-        }            
     }
     //////////////////////////////////////////////////////////////////////////
     bool PluginService::addPlugin( const PluginInterfacePtr & _plugin, const DynamicLibraryInterfacePtr & _dynamicLibrary )

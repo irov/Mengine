@@ -202,7 +202,7 @@ public class MengineSentryPlugin extends MengineService implements MengineListen
 
         SentryLogLevel level = MengineSentryPlugin.getSentryLogLevel(message);
 
-        SentryAttributes attributes = SentryAttributes.of(null);
+        SentryAttributes attributes = SentryAttributes.of();
         attributes.add(SentryAttribute.stringAttribute("log.category", message.MESSAGE_CATEGORY.toString()));
         attributes.add(SentryAttribute.stringAttribute("log.thread", message.MESSAGE_THREAD));
 

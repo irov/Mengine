@@ -6,8 +6,9 @@ import androidx.annotation.StringRes;
 import com.amplitude.android.Amplitude;
 import com.amplitude.android.AutocaptureOption;
 import com.amplitude.android.Configuration;
+import com.amplitude.android.ConfigurationBuilder;
+import com.amplitude.android.network.NetworkTrackingPlugin;
 import com.amplitude.core.events.Revenue;
-import com.amplitude.core.network.NetworkTrackingPlugin;
 import com.amplitude.core.events.Identify;
 
 import org.Mengine.Base.MengineAnalyticsEventCategory;
@@ -41,13 +42,14 @@ public class MengineAmplitudePlugin extends MengineService implements MengineLis
     public void onAppPrepare(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
         String MengineAmplitudePlugin_ApiKey = this.getResourceString(METADATA_API_KEY);
 
-        Configuration configuration = new Configuration(MengineAmplitudePlugin_ApiKey, application);
-        Set<AutocaptureOption> autocaptureOptions = configuration.getAutocapture();
+        ConfigurationBuilder configurationBuilder = new ConfigurationBuilder(MengineAmplitudePlugin_ApiKey, application);
+        Set<AutocaptureOption> autocaptureOptions = configurationBuilder.getAutocapture();
         autocaptureOptions.add(AutocaptureOption.SESSIONS);
         autocaptureOptions.add(AutocaptureOption.APP_LIFECYCLES);
         autocaptureOptions.add(AutocaptureOption.SCREEN_VIEWS);
-        configuration.setFlushEventsOnClose(true);
+        configurationBuilder.setFlushEventsOnClose(true);
 
+        Configuration configuration = configurationBuilder.build();
         Amplitude amplitude = new Amplitude(configuration);
 
         Identify identify = new Identify();

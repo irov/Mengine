@@ -9,7 +9,7 @@ import com.appsflyer.AppsFlyerLib;
 import com.appsflyer.adrevenue.adnetworks.AppsFlyerAdNetworkEventType;
 import com.appsflyer.adrevenue.adnetworks.generic.MediationNetwork;
 import com.appsflyer.adrevenue.adnetworks.generic.Scheme;
-import com.appsflyer.attribution.AppsFlyerRequestListener;
+import com.appsflyer.share.attribution.AppsFlyerRequestListener;
 import com.appsflyer.adrevenue.AppsFlyerAdRevenue;
 
 import org.Mengine.Base.BuildConfig;
@@ -58,10 +58,18 @@ public class MengineAppsFlyerPlugin extends MengineService implements MengineLis
         appsFlyer.setCustomerUserId(userId);
 
         appsFlyer.init(MengineAppsFlyerPlugin_ApiKey, null, context);
-        appsFlyer.start(context);
+        appsFlyer.registerSessionReadyListener(() -> {
+            appsFlyer.start();
+        });
 
         AppsFlyerAdRevenue.Builder afRevenueBuilder = new AppsFlyerAdRevenue.Builder(application);
         AppsFlyerAdRevenue.initialize(afRevenueBuilder.build());
+    }
+
+    @Override
+    public void onAppTerminate(@NonNull MengineApplication application) {
+        AppsFlyerLib appsFlyer = AppsFlyerLib.getInstance();
+        appsFlyer.unregisterSessionReadyListener();
     }
 
     @Override

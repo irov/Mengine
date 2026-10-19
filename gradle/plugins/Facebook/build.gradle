@@ -6,6 +6,6 @@ android {
 }
 
 dependencies {
-    implementation api('com.facebook.android:facebook-android-sdk:18.3.0')
-    implementation api('com.facebook.android:facebook-login:18.3.0')
+    implementation api('com.facebook.android:facebook-android-sdk:19.0.0')
+    implementation api('com.facebook.android:facebook-login:19.0.0')
 }

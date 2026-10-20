@@ -632,10 +632,11 @@ namespace Mengine
 
             if( autoPlay == true )
             {
-                float time = TIMELINE_SERVICE()
-                    ->getTotalTime();
+                UpdateContext context;
+                TIMELINE_SERVICE()
+                    ->getTotalContext( &context );
 
-                if( animation->play( time ) == 0 )
+                if( animation->play( &context ) == 0 )
                 {
                     LOGGER_ERROR( "spine '%s' sampler '%s' resource '%s' auto play return 0"
                         , this->getName().c_str()

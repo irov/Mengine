@@ -19,6 +19,7 @@ namespace Mengine
 
     public:
         virtual const UpdateContext * getCurrentContext() const = 0;
+        virtual void getTotalContext( UpdateContext * const _context ) const = 0;
 
     public:
         virtual float getTotalTime() const = 0;

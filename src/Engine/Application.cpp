@@ -1883,6 +1883,7 @@ namespace Mengine
         applicationContext.revision = m_updateRevision;
         applicationContext.current = current;
         applicationContext.time = time;
+        applicationContext.offset = 0.f;
 
         TIMELINE_SERVICE()
             ->begin( &applicationContext );

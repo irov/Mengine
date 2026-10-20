@@ -508,20 +508,22 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             UniqueId s_Animation_play( AnimationInterface * _animation )
             {
-                float time = TIMELINE_SERVICE()
-                    ->getTotalTime();
+                UpdateContext context;
+                TIMELINE_SERVICE()
+                    ->getTotalContext( &context );
 
-                UniqueId id = _animation->play( time );
+                UniqueId id = _animation->play( &context );
 
                 return id;
             }
             //////////////////////////////////////////////////////////////////////////
             void s_Animation_resume( AnimationInterface * _animation )
             {
-                float time = TIMELINE_SERVICE()
-                    ->getTotalTime();
+                UpdateContext context;
+                TIMELINE_SERVICE()
+                    ->getTotalContext( &context );
 
-                _animation->resume( time );
+                _animation->resume( &context );
             }
             //////////////////////////////////////////////////////////////////////////
             void s_Eventation_callEvent( pybind::kernel_interface * _kernel, EventationInterface * _eventation, const ConstString & _method, PyObject * _args )

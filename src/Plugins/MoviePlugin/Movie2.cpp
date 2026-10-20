@@ -1886,14 +1886,15 @@ namespace Mengine
         {
         case AE_MOVIE_STATE_UPDATE_BEGIN:
             {
-                float time = TIMELINE_SERVICE()
-                    ->getTotalTime();
+                UpdateContext context;
+                TIMELINE_SERVICE()
+                    ->getTotalContext( &context );
 
                 if( _callbackData->loop == AE_TRUE && _animation->calcTotalLoop() == true )
                 {
                     if( _animation->isPlay() == false )
                     {
-                        if( _animation->play( time ) == 0 )
+                        if( _animation->play( &context ) == 0 )
                         {
                             return;
                         }
@@ -1903,7 +1904,7 @@ namespace Mengine
                 {
                     _animation->setTime( AE_TIME_MILLISECOND( _callbackData->offset ) );
 
-                    if( _animation->play( time ) == 0 )
+                    if( _animation->play( &context ) == 0 )
                     {
                         return;
                     }
@@ -1937,10 +1938,11 @@ namespace Mengine
             }break;
         case AE_MOVIE_STATE_UPDATE_RESUME:
             {
-                float time = TIMELINE_SERVICE()
-                    ->getTotalTime();
+                UpdateContext context;
+                TIMELINE_SERVICE()
+                    ->getTotalContext( &context );
 
-                _animation->resume( time );
+                _animation->resume( &context );
             }break;
         case AE_MOVIE_STATE_UPDATE_SEEK:
             {
@@ -2763,10 +2765,11 @@ namespace Mengine
 
         if( autoPlay == true )
         {
-            float time = TIMELINE_SERVICE()
-                ->getTotalTime();
+            UpdateContext context;
+            TIMELINE_SERVICE()
+                ->getTotalContext( &context );
 
-            if( this->play( time ) == 0 )
+            if( this->play( &context ) == 0 )
             {
                 LOGGER_ERROR( "movie2 '%s' resource '%s' auto play return 0"
                     , this->getName().c_str()

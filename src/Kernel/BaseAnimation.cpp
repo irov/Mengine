@@ -3,6 +3,7 @@
 #include "Interface/UpdationInterface.h"
 
 #include "Kernel/Assertion.h"
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/MixinDebug.h"
 #include "Kernel/EnumeratorHelper.h"
 
@@ -15,6 +16,8 @@ namespace Mengine
         : m_relationAnimation( nullptr )
         , m_playId( INVALID_UNIQUE_ID )
         , m_playTime( 0.f )
+        , m_playRevision( 0 )
+        , m_playOffset( 0.f )
         , m_animationSpeedFactor( 1.f )
         , m_intervalStart( 0.f )
         , m_intervalBegin( 0.f )
@@ -200,12 +203,14 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    UniqueId BaseAnimation::play( float _time )
+    UniqueId BaseAnimation::play( const UpdateContext * _context )
     {
         if( m_pause == true )
         {
             return INVALID_UNIQUE_ID;
         }
+
+        MENGINE_ASSERTION_MEMORY_PANIC( _context, "invalid animation play context" );
 
         m_playIterator = m_playCount;
 
@@ -213,8 +218,12 @@ namespace Mengine
 
         m_playId = id;
 
+        float playTime = _context->current + _context->offset;
+
         m_interrupt = false;
-        m_playTime = _time;
+        m_playTime = playTime;
+        m_playRevision = _context->revision;
+        m_playOffset = _context->offset;
 
         bool old_play = m_play;
         m_play = true;
@@ -222,7 +231,7 @@ namespace Mengine
 
         if( old_play == true )
         {
-            if( this->_restart( m_playId, _time ) == false )
+            if( this->_restart( m_playId, playTime ) == false )
             {
                 m_play = false;
 
@@ -231,7 +240,7 @@ namespace Mengine
         }
         else
         {
-            if( this->_play( m_playId, _time ) == false )
+            if( this->_play( m_playId, playTime ) == false )
             {
                 m_play = false;
 
@@ -250,6 +259,8 @@ namespace Mengine
         }
 
         m_playTime = 0.f;
+        m_playRevision = 0;
+        m_playOffset = 0.f;
         m_play = false;
         m_pause = false;
         m_interrupt = false;
@@ -276,7 +287,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseAnimation::resume( float _time )
+    void BaseAnimation::resume( const UpdateContext * _context )
     {
         if( m_play == false )
         {
@@ -288,10 +299,16 @@ namespace Mengine
             return;
         }
 
-        m_pause = false;
-        m_playTime = _time;
+        MENGINE_ASSERTION_MEMORY_PANIC( _context, "invalid animation resume context" );
 
-        this->_resume( m_playId, _time );
+        float playTime = _context->current + _context->offset;
+
+        m_pause = false;
+        m_playTime = playTime;
+        m_playRevision = _context->revision;
+        m_playOffset = _context->offset;
+
+        this->_resume( m_playId, playTime );
     }
     //////////////////////////////////////////////////////////////////////////
     bool BaseAnimation::interrupt()
@@ -323,18 +340,27 @@ namespace Mengine
     {
         float totalTime = _context->time;
 
-        if( m_playTime > _context->current )
+        if( m_playRevision != _context->revision )
         {
-            float delta = m_playTime - _context->current;
-            totalTime -= delta;
+            MENGINE_ASSERTION_FATAL( totalTime >= 0.f, "BaseAnimation name: %s type: %s calcTotalTime invalid context time %f < 0.f play revision: %u context revision: %u"
+                , MENGINE_MIXIN_DEBUG_NAME( this )
+                , MENGINE_MIXIN_DEBUG_TYPE( this )
+                , _context->time
+                , m_playRevision
+                , _context->revision
+            );
+        }
+        else if( m_playOffset > 0.f )
+        {
+            totalTime -= m_playOffset;
 
-            MENGINE_ASSERTION_FATAL( totalTime >= 0.f, "BaseAnimation name: %s type: %s calcTotalTime invalid totalTime %f < 0.f play time: %f context time: %f current: %f"
+            MENGINE_ASSERTION_FATAL( totalTime >= 0.f, "BaseAnimation name: %s type: %s calcTotalTime invalid totalTime %f < 0.f play offset: %f context time: %f revision: %u"
                 , MENGINE_MIXIN_DEBUG_NAME( this )
                 , MENGINE_MIXIN_DEBUG_TYPE( this )
                 , totalTime
-                , m_playTime
+                , m_playOffset
                 , _context->time
-                , _context->current
+                , _context->revision
             );
 
             if( totalTime < 0.f )

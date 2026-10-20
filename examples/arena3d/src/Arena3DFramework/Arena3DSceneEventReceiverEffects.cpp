@@ -793,7 +793,8 @@ namespace Mengine
         {
             animation->stop();
         }
-        animation->play( 0.f );
+        UpdateContext context{};
+        animation->play( &context );
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Kernel/Mixin.h"
+#include "Kernel/UpdateContext.h"
 
 #include "Config/UniqueId.h"
 
@@ -58,10 +59,10 @@ namespace Mengine
         virtual float getStretch() const = 0;
 
     public:
-        virtual UniqueId play( float _time ) = 0;
+        virtual UniqueId play( const UpdateContext * _context ) = 0;
         virtual bool stop() = 0;
         virtual bool pause() = 0;
-        virtual void resume( float _time ) = 0;
+        virtual void resume( const UpdateContext * _context ) = 0;
         virtual bool interrupt() = 0;
         virtual void end() = 0;
 

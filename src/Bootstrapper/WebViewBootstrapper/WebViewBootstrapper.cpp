@@ -66,7 +66,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     WebViewBootstrapper::WebViewBootstrapper()
-        : m_context{0, 0.f, 0.f}
+        : m_context{0, 0.f, 0.f, 0.f}
         , m_state( STATE_CREATED )
     {
     }

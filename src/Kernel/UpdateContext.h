@@ -9,5 +9,6 @@ namespace Mengine
         uint32_t revision;
         float current;
         float time;
+        float offset;
     };
 }

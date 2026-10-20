@@ -280,7 +280,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DazzleEffect::restartEffect( float _prewarm )
     {
-        UniqueId playId = BaseAnimation::play( 0.f );
+        UpdateContext context{};
+        UniqueId playId = BaseAnimation::play( &context );
 
         if( playId == INVALID_UNIQUE_ID )
         {

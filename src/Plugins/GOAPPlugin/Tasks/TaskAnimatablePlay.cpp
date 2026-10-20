@@ -28,7 +28,8 @@ namespace Mengine
             return true;
         }
 
-        animation->play( 0.f );
+        UpdateContext context{};
+        animation->play( &context );
 
         return true;
     }

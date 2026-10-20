@@ -27,6 +27,7 @@ namespace Mengine
 
     public:
         const UpdateContext * getCurrentContext() const override;
+        void getTotalContext( UpdateContext * const _context ) const override;
 
     public:
         float getTotalTime() const override;

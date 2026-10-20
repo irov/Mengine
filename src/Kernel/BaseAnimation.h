@@ -57,10 +57,10 @@ namespace Mengine
         float getStretch() const override final;
 
     public:
-        UniqueId play( float _time ) override final;
+        UniqueId play( const UpdateContext * _context ) override final;
         bool stop() override final;
         bool pause() override final;
-        void resume( float _time ) override final;
+        void resume( const UpdateContext * _context ) override final;
         bool interrupt() override final;
         void end() override final;
 
@@ -82,7 +82,7 @@ namespace Mengine
         bool calcTotalLoop() const override final;
 
     protected:
-        float calcTotalTime( const UpdateContext * _context ) const;        
+        float calcTotalTime( const UpdateContext * _context ) const;
 
     protected:
         virtual void _setLoop( bool _value );
@@ -114,6 +114,8 @@ namespace Mengine
         UniqueId m_playId;
 
         float m_playTime;
+        uint32_t m_playRevision;
+        float m_playOffset;
 
         float m_animationSpeedFactor;
         float m_intervalStart;

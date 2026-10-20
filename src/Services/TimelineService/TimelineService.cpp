@@ -12,7 +12,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     TimelineService::TimelineService()
-        : m_context{MENGINE_UINT32_C(~0), -1.f, -1.f}
+        : m_context{MENGINE_UINT32_C(~0), -1.f, -1.f, 0.f}
         , m_total( 0.f )
         , m_timeFactorBase( 1.f )
         , m_timeFactorCoefficient( 0.0625f )
@@ -50,6 +50,7 @@ namespace Mengine
         );
 
         m_offsets.emplace_back( _offset );
+        m_context.offset = _offset;
     }
     //////////////////////////////////////////////////////////////////////////
     float TimelineService::getOffset() const
@@ -67,11 +68,29 @@ namespace Mengine
     void TimelineService::endOffset()
     {
         m_offsets.pop_back();
+        m_context.offset = this->getOffset();
     }
     //////////////////////////////////////////////////////////////////////////
     const UpdateContext * TimelineService::getCurrentContext() const
     {
         return &m_context;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TimelineService::getTotalContext( UpdateContext * const _context ) const
+    {
+        MENGINE_ASSERTION_MEMORY_PANIC( _context, "invalid total context" );
+
+        if( m_context.revision == MENGINE_UINT32_C(~0) )
+        {
+            _context->revision = m_context.revision;
+            _context->current = m_total;
+            _context->time = 0.f;
+            _context->offset = 0.f;
+
+            return;
+        }
+
+        *_context = m_context;
     }
     //////////////////////////////////////////////////////////////////////////
     float TimelineService::getTotalTime() const
@@ -110,6 +129,7 @@ namespace Mengine
         m_context.revision = MENGINE_UINT32_C(~0);
         m_context.current = -1.f;
         m_context.time = -1.f;
+        m_context.offset = 0.f;
     }
     //////////////////////////////////////////////////////////////////////////
     float TimelineService::calcTimeFactor() const

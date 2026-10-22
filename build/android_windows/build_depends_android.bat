@@ -2,7 +2,7 @@
 
 if ["%~1"]==[""] (
   @echo invalid arguments, please select configuration
-  goto end
+  exit /b 2
 )
 
 setlocal
@@ -28,42 +28,44 @@ set CMAKELIST_PATH=%~dp0..\..\cmake\Depends_Android
 set BUILD_TEMP_DIR=%~dp0..\..\solutions\dependencies_android_windows
 
 for %%A in (x86 x86_64 armeabi-v7a arm64-v8a) do (
-    @mkdir %BUILD_TEMP_DIR%\%CONFIGURATION%\%%A
-    @pushd %BUILD_TEMP_DIR%\%CONFIGURATION%\%%A
+    @mkdir "%BUILD_TEMP_DIR%\%CONFIGURATION%\%%A"
+    @pushd "%BUILD_TEMP_DIR%\%CONFIGURATION%\%%A"
+    if errorlevel 1 exit /b
 
-    @call %CMAKE_EXE% -G %CMAKE_GENERATOR% ^
+    @call "%CMAKE_EXE%" -G %CMAKE_GENERATOR% ^
         -DANDROID_PLATFORM=%ANDROID_PLATFORM% ^
         -DANDROID_ARM_NEON=TRUE ^
         -DANDROID_ABI=%%A ^
-        -DANDROID_NDK=%ANDROID_NDK% ^
+        "-DANDROID_NDK=%ANDROID_NDK%" ^
         -DANDROID_STL=c++_shared ^
         -DANDROID_TOOLCHAIN=clang ^
         -DCMAKE_SYSTEM_NAME=Android ^
         -DCMAKE_SYSTEM_VERSION=%ANDROID_PLATFORM_VERSION% ^
         -DCMAKE_BUILD_TYPE=%CONFIGURATION% ^
         -DCMAKE_CONFIGURATION_TYPES:STRING=%CONFIGURATION% ^
-        -DCMAKE_MAKE_PROGRAM=%CMAKE_MAKE_PROGRAM% ^
-        -DCMAKE_TOOLCHAIN_FILE=%CMAKE_TOOLCHAIN_FILE% ^
-        -S %CMAKELIST_PATH%
+        -DCMAKE_COMPILE_WARNING_AS_ERROR=ON ^
+        "-DCMAKE_MAKE_PROGRAM=%CMAKE_MAKE_PROGRAM%" ^
+        "-DCMAKE_TOOLCHAIN_FILE=%CMAKE_TOOLCHAIN_FILE%" ^
+        -S "%CMAKELIST_PATH%"
         
-    if %errorlevel% NEQ 0 (
+    if errorlevel 1 (
         @echo %ESC%[91m*****************************************%ESC%[0m
         @echo %ESC%[91m***************  Failure  ***************%ESC%[0m
         @echo %ESC%[91m*****************************************%ESC%[0m
-        goto end
+        goto failed_in_directory
     ) else (
         @echo %ESC%[92m=========================================%ESC%[0m
         @echo %ESC%[92m=============  Successful  ==============%ESC%[0m
         @echo %ESC%[92m=========================================%ESC%[0m
     )
     
-    @call %CMAKE_EXE% --build .\ --config %CONFIGURATION% -- -j8
+    @call "%CMAKE_EXE%" --build .\ --config %CONFIGURATION% -- -j8
     
-    if %errorlevel% NEQ 0 (
+    if errorlevel 1 (
         @echo %ESC%[91m*****************************************%ESC%[0m
         @echo %ESC%[91m***************  Failure  ***************%ESC%[0m
         @echo %ESC%[91m*****************************************%ESC%[0m
-        goto end
+        goto failed_in_directory
     ) else (
         @echo %ESC%[92m=========================================%ESC%[0m
         @echo %ESC%[92m=============  Successful  ==============%ESC%[0m
@@ -73,11 +75,11 @@ for %%A in (x86 x86_64 armeabi-v7a arm64-v8a) do (
     @popd
 )
 
-if %errorlevel% NEQ 0 (
+if errorlevel 1 (
     @echo %ESC%[91m*****************************************%ESC%[0m
     @echo %ESC%[91m***************  Failure  ***************%ESC%[0m
     @echo %ESC%[91m*****************************************%ESC%[0m
-    goto :end
+    exit /b
 ) else (
     @echo %ESC%[92m=========================================%ESC%[0m
     @echo %ESC%[92m=============  Successful  ==============%ESC%[0m
@@ -87,7 +89,7 @@ if %errorlevel% NEQ 0 (
 :end
 @echo Done
 
-@pause
+exit /b 0
 
 :setESC
 for /F "tokens=1,2 delims=#" %%a in ('"prompt #$H#$E# & echo on & for %%b in (1) do rem"') do (
@@ -95,3 +97,8 @@ for /F "tokens=1,2 delims=#" %%a in ('"prompt #$H#$E# & echo on & for %%b in (1)
 )
 
 exit /B 0
+
+:failed_in_directory
+set "BUILD_EXIT_CODE=%ERRORLEVEL%"
+@popd
+exit /b %BUILD_EXIT_CODE%

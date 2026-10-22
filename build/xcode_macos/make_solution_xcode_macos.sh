@@ -70,6 +70,6 @@ mkdir -p "${SOLUTION_DIR}"
     -DMENGINE_BUILD_VERSION:STRING="${BUILD_VERSION}" \
     -DMENGINE_APPLICATION_OUTPUT_PATH:PATH="${APPLICATION_OUTPUT_PATH}"
 
-if test -f "${SOLUTION_DIR}/mengine_xcode_packages.json"; then
-    "${CMAKE}" "-DMENGINE_XCODE_SOLUTION_DIR:PATH=${SOLUTION_DIR}" -P "${SOURCE_DIRECTORY}/../xcode_packages_template.cmake"
+if test -f "${SOLUTION_DIR}/mengine_swiftpods.json"; then
+    "${CMAKE}" "-DMENGINE_SWIFTPODS_SOLUTION_DIR:PATH=${SOLUTION_DIR}" -P "${SOURCE_DIRECTORY}/../swiftpods_template.cmake"
 fi

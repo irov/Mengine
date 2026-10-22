@@ -31,9 +31,7 @@ ADD_DEFINITIONS(-DMENGINE_FIREBASE_REMOTECONFIG_PLIST_NAME="${MENGINE_APPLICATIO
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_IOS_FIREBASE_REMOTECONFIG)
 
-ADD_MENGINE_SWIFT_PACKAGE("FirebaseRemoteConfig" "https://github.com/firebase/firebase-ios-sdk.git" "13.0.0")
-
-TARGET_INCLUDE_DIRECTORIES(${PROJECT_NAME} PRIVATE "${CMAKE_BINARY_DIR}/SourcePackages/checkouts/firebase-ios-sdk/FirebaseRemoteConfig/Sources/Public")
+ADD_MENGINE_SWIFT_PACKAGE("FirebaseRemoteConfig" "https://github.com/firebase/firebase-ios-sdk.git" "13.1.0")
 
 ADD_MENGINE_APPLE_APPLICATION_DELEGATE("iOSFirebaseRemoteConfigPlugin")
 

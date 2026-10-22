@@ -35,15 +35,19 @@ xcodebuild -project "$PROJECT" \
     CODE_SIGNING_ALLOWED=NO \
     build
 
+WORKSPACE="$SOLUTION_DIR/Arena3D_Xcode_MacOS.xcworkspace"
+
 if test -n "$CODE_SIGNING_ALLOWED"; then
-    xcodebuild -project "$PROJECT" \
-        -target MacOSApplication \
+    xcodebuild -workspace "$WORKSPACE" \
+        -scheme MacOSApplication \
+        -clonedSourcePackagesDirPath "$SOLUTION_DIR/SourcePackages" \
         -configuration "$CONFIGURATION" \
         CODE_SIGNING_ALLOWED="$CODE_SIGNING_ALLOWED" \
         build
 else
-    xcodebuild -project "$PROJECT" \
-        -target MacOSApplication \
+    xcodebuild -workspace "$WORKSPACE" \
+        -scheme MacOSApplication \
+        -clonedSourcePackagesDirPath "$SOLUTION_DIR/SourcePackages" \
         -configuration "$CONFIGURATION" \
         build
 fi

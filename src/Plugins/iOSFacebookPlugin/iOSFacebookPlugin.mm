@@ -7,6 +7,7 @@
 
 #import <AuthenticationServices/AuthenticationServices.h>
 #import <SafariServices/SafariServices.h>
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKCoreKit/FBSDKCoreKit-Swift.h>
 
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)

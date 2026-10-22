@@ -16,8 +16,6 @@ if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
     INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)
 endif()
 
-INCLUDE_DIRECTORIES("${CMAKE_BINARY_DIR}/SourcePackages/checkouts/ios_sdk/Adjust")
-
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_IOS_ADJUST)
 
 ADD_MENGINE_SWIFT_PACKAGE("AdjustSdk" "https://github.com/adjust/ios_sdk.git" "5.8.0")

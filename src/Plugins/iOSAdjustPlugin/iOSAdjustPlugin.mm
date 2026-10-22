@@ -4,15 +4,17 @@
 #import "Environment/iOS/iOSDetail.h"
 #import "Environment/iOS/iOSLog.h"
 
+#include "Config/Char.h"
+
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
 #   include "Kernel/ScriptEmbeddingHelper.h"
 
 #   include "iOSAdjustScriptEmbedding.h"
 #endif
 
-#import "ADJDeeplink.h"
-#import "ADJEvent.h"
-#import "ADJLogger.h"
+#import <AdjustSdk/ADJDeeplink.h>
+#import <AdjustSdk/ADJEvent.h>
+#import <AdjustSdk/ADJLogger.h>
 
 #define PLUGIN_BUNDLE_NAME @"MengineiOSAdjustPlugin"
 

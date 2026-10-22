@@ -51,8 +51,8 @@ if [ $? -ne 0 ]; then
 fi
 popd
 
-if test -f "$SOLUTION_DIR/mengine_xcode_packages.json"; then
-    "$CMAKE" "-DMENGINE_XCODE_SOLUTION_DIR:PATH=$SOLUTION_DIR" -P "$SOURCE_DIRECTORY/../xcode_packages_template.cmake" || exit 1
+if test -f "$SOLUTION_DIR/mengine_swiftpods.json"; then
+    "$CMAKE" "-DMENGINE_SWIFTPODS_SOLUTION_DIR:PATH=$SOLUTION_DIR" -P "$SOURCE_DIRECTORY/../swiftpods_template.cmake" || exit 1
 fi
 
 exit 0

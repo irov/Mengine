@@ -22,7 +22,7 @@ fi
 WORKSPACE="$SOLUTION_DIR/Mengine_Xcode_MacOS.xcworkspace"
 
 if test -d "$WORKSPACE"; then
-    xcodebuild -workspace "$WORKSPACE" -scheme MacOSApplication -configuration "$CONFIGURATION" build
+    xcodebuild -workspace "$WORKSPACE" -scheme MacOSApplication -configuration "$CONFIGURATION" -clonedSourcePackagesDirPath "$SOLUTION_DIR/SourcePackages" build
 else
     cmake --build "$SOLUTION_DIR" --config "$CONFIGURATION"
 fi

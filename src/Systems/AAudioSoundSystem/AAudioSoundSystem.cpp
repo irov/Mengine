@@ -128,7 +128,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AAudioSoundSystem::isSilent() const
     {
-        if( m_started == true )
+        if( m_stream != nullptr )
         {
             return false;
         }

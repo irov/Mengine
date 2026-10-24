@@ -8,7 +8,7 @@ android {
     namespace = 'org.Mengine.Base'
 
     defaultConfig {
-        manifestPlaceholders = [ANDROID_APP_SCREEN_ORIENTATION: Utils.getStringProperty("ANDROID_APP_SCREEN_ORIENTATION", "sensorPortrait")]
+        manifestPlaceholders += [ANDROID_APP_SCREEN_ORIENTATION: Utils.getStringProperty("ANDROID_APP_SCREEN_ORIENTATION", "sensorPortrait")]
         consumerProguardFiles new File(engineGradle, 'libraries/Mengine/proguard-rules.pro'), 'proguard-rules.pro'
         buildConfigField 'String', 'MENGINE_NATIVE_APPLICATION', '"AndroidWebViewApplication"'
         buildConfigField 'String', 'MENGINE_ACTIVITY_CONTENT', '"org.Mengine.Base.MengineWebViewActivityContent"'

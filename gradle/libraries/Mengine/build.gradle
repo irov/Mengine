@@ -48,7 +48,7 @@ android {
     }
 
     defaultConfig {
-        manifestPlaceholders = [
+        manifestPlaceholders += [
             ANDROID_APP_BUILD_NUMBER                          : ANDROID_APP_BUILD_NUMBER,
             ANDROID_APP_BUILD_VERSION                         : ANDROID_APP_BUILD_VERSION,
             ANDROID_APP_SCREEN_ORIENTATION                    : ANDROID_APP_SCREEN_ORIENTATION,

@@ -1,6 +1,13 @@
 apply plugin: 'com.android.library'
 
 final String ANDROID_APP_MAIN_PROJECT = Utils.getStringProperty("ANDROID_APP_MAIN_PROJECT", "app")
+final String ANDROID_APP_GWP_ASAN_MODE = Utils.getStringProperty("ANDROID_APP_GWP_ASAN_MODE", "always")
+
+if (["default", "always", "never"].contains(ANDROID_APP_GWP_ASAN_MODE) == false) {
+    throw new GradleException("ANDROID_APP_GWP_ASAN_MODE must be default, always or never, but got '${ANDROID_APP_GWP_ASAN_MODE}'")
+}
+
+Utils.logString("ANDROID_APP_GWP_ASAN_MODE", ANDROID_APP_GWP_ASAN_MODE)
 
 apply from: rootProject.projectDir.getAbsolutePath() + '/base.gradle'
 apply from: rootProject.projectDir.getAbsolutePath() + '/androidx.gradle'
@@ -8,6 +15,10 @@ apply from: rootProject.projectDir.getAbsolutePath() + '/library_minify.gradle'
 apply from: rootProject.projectDir.getAbsolutePath() + '/split.gradle'
 
 android {
+    defaultConfig {
+        manifestPlaceholders += [ANDROID_APP_GWP_ASAN_MODE: ANDROID_APP_GWP_ASAN_MODE]
+    }
+
     sourceSets {
         main {
             if (project.hasProperty("ANDROID_APP_ASSETS_RES_DIR") == true) {

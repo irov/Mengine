@@ -32,6 +32,71 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+        typedef Vector<uint32_t> VectorFontIds;
+        //////////////////////////////////////////////////////////////////////////
+        static void appendTextRange( const U32String & _text, const VectorFontIds & _fontIds, size_t _begin, size_t _end, VectorTextLineChunks * const _chunks )
+        {
+            while( _begin != _end )
+            {
+                size_t end = _begin + 1;
+                uint32_t fontId = _fontIds[_begin];
+
+                while( end != _end && _fontIds[end] == fontId )
+                {
+                    ++end;
+                }
+
+                TextLineChunk chunk;
+                chunk.fontId = fontId;
+                chunk.value = _text.substr( _begin, end - _begin );
+
+                _chunks->emplace_back( chunk );
+
+                _begin = end;
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool calcTextRangeLength( const U32String & _text, const VectorFontIds & _fontIds, const VectorCacheFonts & _fonts, size_t _begin, size_t _end, float _charOffset, float * const _length )
+        {
+            float length = 0.f;
+
+            for( size_t index = _begin; index != _end; ++index )
+            {
+                uint32_t fontId = _fontIds[index];
+                const FontInterfacePtr & font = _fonts[fontId].font;
+
+                GlyphCode code = _text[index];
+                GlyphCode next = 0;
+
+                if( index + 1 != _end && _fontIds[index + 1] == fontId )
+                {
+                    next = _text[index + 1];
+                }
+
+                Glyph glyph;
+                if( font->getGlyph( 0, code, next, &glyph ) == false )
+                {
+                    continue;
+                }
+
+                length += glyph.advance + _charOffset;
+            }
+
+            if( _begin != _end )
+            {
+                length -= _charOffset;
+            }
+
+            *_length = length;
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+    }
+    //////////////////////////////////////////////////////////////////////////
     TextField::TextField()
         : m_horizontAlign( ETFHA_LEFT )
         , m_verticalAlign( ETFVA_BOTTOM )
@@ -277,6 +342,12 @@ namespace Mengine
 
         ColorValue_ARGB cacheFontARGB[16 + 1] = {'\0'};
 
+        MENGINE_ASSERTION_FATAL( m_cacheFonts.size() <= MENGINE_ARRAY_SIZE( cacheFontARGB ), "text field '%s' uses %zu fonts, maximum is %zu"
+            , this->getName().c_str()
+            , m_cacheFonts.size()
+            , MENGINE_ARRAY_SIZE( cacheFontARGB )
+        );
+
         const Color & paramsFontColor = this->calcFontColor();
         Color colorBaseFont = paramsFontColor * _color;
 
@@ -327,7 +398,7 @@ namespace Mengine
         {
             float alignOffsetX = this->getHorizontAlignOffset_( lines2 );
 
-            offset.x = alignOffsetX * charScaleTotal;
+            offset.x = alignOffsetX * m_autoScaleFactor;
 
             for( const VectorTextLines & lines : lines2 )
             {
@@ -389,8 +460,7 @@ namespace Mengine
                 offset.x = offset2.x;
             }
 
-            offset.y += fontAscent;
-            offset.y += lineOffset;
+            offset.y += (fontAscent + lineOffset) * charScaleTotal;
         }
 
         if( chunk.vertex_count != 0 )
@@ -989,128 +1059,125 @@ namespace Mengine
         *_textSize = textSize * m_autoScaleFactor;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::updateTextLinesWrap_( VectorTextLineChunks2 * const _textLines ) const
+    bool TextField::updateTextLinesWrap_( VectorTextLineChunks2 * const _textLines ) const
     {
         if( m_wrap == false )
         {
-            return;
+            return true;
+        }
+
+        float maxLength = this->calcMaxLength();
+
+        if( maxLength < 0.f )
+        {
+            return true;
         }
 
         float charOffset = this->calcCharOffset();
         float charScale = this->calcCharScale();
-        float maxLength = this->calcMaxLength();
 
-        U32String space_delim = U" ";
+        VectorTextLineChunks2 wrappedLines;
 
-        VectorU32String space_delims;
-        space_delims.emplace_back( space_delim );
-        space_delims.emplace_back( U"\r" );
-
-        VectorTextLineChunks2 new_textLines;
-        for( const VectorTextLineChunks & textChunks : *_textLines )
+        for( const VectorTextLineChunks & chunks : *_textLines )
         {
-            float length = 0.f;
+            U32String text;
+            Detail::VectorFontIds fontIds;
 
-            VectorTextLineChunks new_textChunks;
-            for( const TextLineChunk & textChunk : textChunks )
+            for( const TextLineChunk & chunk : chunks )
             {
-                const U32String & text = textChunk.value;
-                const CacheFont & cache = m_cacheFonts[textChunk.fontId];
+                text.append( chunk.value );
 
-                const FontInterfacePtr & font = cache.font;
-
-                float space_length = 0.f;
-
-                Glyph space_glyph;
-                if( font->getGlyph( 0, ' ', 0, &space_glyph ) == true )
-                {
-                    space_length = (space_glyph.advance + charOffset) * charScale;
-                }
-
-                VectorU32String words;
-                Helper::u32split2( &words, text, false, space_delims );
-
-                TextLineChunk new_textChunk;
-                new_textChunk.fontId = textChunk.fontId;
-
-                for( const U32String & word : words )
-                {
-                    float word_length = 0.f;
-
-                    for( U32String::const_iterator
-                        it = word.begin(),
-                        it_end = word.end();
-                        it != it_end;
-                        ++it )
-                    {
-                        Char32 c = *it;
-                        GlyphCode glyphChar = (GlyphCode)c;
-
-                        U32String::const_iterator it_kerning = it;
-                        StdIterator::advance( it_kerning, 1 );
-
-                        GlyphCode glyphCharNext = (it_kerning != word.end()) ? *it_kerning : 0;
-
-                        Glyph glyph;
-                        if( font->getGlyph( 0, glyphChar, glyphCharNext, &glyph ) == false )
-                        {
-                            continue;
-                        }
-
-                        float char_length = (glyph.advance + charOffset) * charScale;
-
-                        word_length += char_length;
-                    }
-
-                    if( word.empty() == false )
-                    {
-                        word_length -= charOffset * charScale;
-                    }
-
-                    if( maxLength >= 0.f && length + word_length > maxLength && new_textChunk.value.empty() == false )
-                    {
-                        length = 0.f;
-
-                        new_textChunks.emplace_back( new_textChunk );
-                        new_textChunk.value.clear();
-
-                        new_textLines.emplace_back( new_textChunks );
-                        new_textChunks.clear();
-                    }
-
-                    length += word_length;
-                    length += space_length;
-
-                    if( new_textChunk.value.empty() == true )
-                    {
-                        if( word.empty() == true )
-                        {
-                            new_textChunk.value.insert( new_textChunk.value.end(), space_delim.begin(), space_delim.end() );
-                        }
-                        else
-                        {
-                            new_textChunk.value.insert( new_textChunk.value.end(), word.begin(), word.end() );
-                        }
-                    }
-                    else
-                    {
-                        new_textChunk.value.insert( new_textChunk.value.end(), space_delim.begin(), space_delim.end() );
-                        new_textChunk.value.insert( new_textChunk.value.end(), word.begin(), word.end() );
-                    }
-                }
-
-                if( words.empty() == false )
-                {
-                    length -= space_length;
-                }
-
-                new_textChunks.emplace_back( new_textChunk );
+                size_t textSize = text.size();
+                fontIds.resize( textSize, chunk.fontId );
             }
 
-            new_textLines.emplace_back( new_textChunks );
+            if( text.empty() == true )
+            {
+                wrappedLines.emplace_back( chunks );
+
+                continue;
+            }
+
+            size_t lineBegin = 0;
+            size_t tokenBegin = 0;
+            float length = 0.f;
+
+            while( tokenBegin != text.size() )
+            {
+                size_t wordBegin = text.find_first_not_of( U" ", tokenBegin );
+                size_t tokenEnd = U32String::npos;
+
+                if( wordBegin != U32String::npos )
+                {
+                    tokenEnd = text.find( U' ', wordBegin );
+                }
+
+                if( tokenEnd == U32String::npos )
+                {
+                    tokenEnd = text.size();
+                }
+
+                float tokenLength;
+                if( Detail::calcTextRangeLength( text, fontIds, m_cacheFonts, tokenBegin, tokenEnd, charOffset, &tokenLength ) == false )
+                {
+                    return false;
+                }
+
+                float boundaryLength = 0.f;
+
+                if( tokenBegin != lineBegin )
+                {
+                    boundaryLength = charOffset;
+
+                    uint32_t fontId = fontIds[tokenBegin];
+                    const FontInterfacePtr & font = m_cacheFonts[fontId].font;
+
+                    if( fontIds[tokenBegin - 1] == fontId )
+                    {
+                        GlyphCode previous = text[tokenBegin - 1];
+                        GlyphCode next = text[tokenBegin];
+
+                        Glyph last;
+                        if( font->getGlyph( 0, previous, 0, &last ) == true )
+                        {
+                            Glyph joined;
+                            if( font->getGlyph( 0, previous, next, &joined ) == true )
+                            {
+                                boundaryLength += joined.advance - last.advance;
+                            }
+                        }
+                    }
+                }
+
+                if( tokenBegin != lineBegin && wordBegin != U32String::npos && (length + boundaryLength + tokenLength) * charScale > maxLength )
+                {
+                    VectorTextLineChunks lineChunks;
+                    Detail::appendTextRange( text, fontIds, lineBegin, tokenBegin, &lineChunks );
+                    wrappedLines.emplace_back( lineChunks );
+
+                    if( Detail::calcTextRangeLength( text, fontIds, m_cacheFonts, wordBegin, tokenEnd, charOffset, &tokenLength ) == false )
+                    {
+                        return false;
+                    }
+
+                    lineBegin = wordBegin;
+                    length = 0.f;
+                    boundaryLength = 0.f;
+                }
+
+                length += boundaryLength + tokenLength;
+                tokenBegin = tokenEnd;
+            }
+
+            VectorTextLineChunks lineChunks;
+            size_t textSize = text.size();
+            Detail::appendTextRange( text, fontIds, lineBegin, textSize, &lineChunks );
+            wrappedLines.emplace_back( lineChunks );
         }
 
-        _textLines->swap( new_textLines );
+        _textLines->swap( wrappedLines );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void TextField::updateTextLinesMaxCount_( VectorTextLineChunks2 * const _textLines ) const
@@ -1163,45 +1230,116 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextField::updateTextLinesDimension_( const FontInterfacePtr & _font, const VectorTextLineChunks2 & _textLines, float _justifyLength, uint32_t * const _charCount, uint32_t * const _layoutCount, mt::vec2f * const _textOffset, mt::vec2f * const _textSize ) const
+    bool TextField::updateTextLinesLayout_( const VectorTextLineChunks2 & _textLines, float _justifyLength, VectorTextLinesLayout * const _layouts ) const
     {
         float charOffset = this->calcCharOffset();
-        float lineOffset = this->calcLineOffset();
+        float charScale = this->calcCharScale();
 
-        VectorTextLinesLayout layouts;
         for( const VectorTextLineChunks & textChunks : _textLines )
         {
-            VectorTextLines2 textLines2;
+            VectorTextLines2 textLines;
+            uint32_t spaceCount = 0;
+
             for( const TextLineChunk & textChunk : textChunks )
             {
-                const CacheFont & cache = m_cacheFonts[textChunk.fontId];
+                const FontInterfacePtr & font = m_cacheFonts[textChunk.fontId].font;
+                uint32_t layoutCount = font->getLayoutCount();
 
-                const FontInterfacePtr & chunkFont = cache.font;
+                VectorTextLines layouts;
 
-                uint32_t layoutCount = chunkFont->getLayoutCount();
-
-                VectorTextLines textLines;
-                for( uint32_t layoutIndex = 0; layoutIndex != layoutCount; ++layoutIndex )
+                for( uint32_t index = 0; index != layoutCount; ++index )
                 {
-                    TextLine tl( layoutIndex, charOffset, _justifyLength );
-                    if( tl.initialize( textChunk.fontId, chunkFont, textChunk.value ) == false )
+                    TextLine line( index, charOffset );
+
+                    if( line.initialize( textChunk.fontId, font, textChunk.value ) == false )
                     {
-                        LOGGER_ERROR( "text field '%s' textId '%s' text '%s' invalid setup line"
+                        LOGGER_ERROR( "text field '%s' textId '%s' text '%s' invalid setup line for font '%s'"
                             , this->getName().c_str()
-                            , m_textId.c_str()
+                            , this->getTotalTextId().c_str()
                             , m_text.c_str()
+                            , font->getName().c_str()
                         );
 
                         return false;
                     }
 
-                    textLines.emplace_back( tl );
+                    layouts.emplace_back( line );
                 }
 
-                textLines2.emplace_back( textLines );
+                textLines.emplace_back( layouts );
+
+                for( Char32 code : textChunk.value )
+                {
+                    if( code == ' ' )
+                    {
+                        ++spaceCount;
+                    }
+                }
             }
 
-            layouts.emplace_back( textLines2 );
+            if( spaceCount != 0 && charScale > 0.f && _justifyLength >= 0.f )
+            {
+                float length = this->calcTextLineLength_( textLines );
+                float justifyLength = _justifyLength / charScale;
+
+                if( justifyLength > length )
+                {
+                    float spaceAdvance = (justifyLength - length) / (float)spaceCount;
+
+                    for( VectorTextLines & layouts : textLines )
+                    {
+                        for( TextLine & line : layouts )
+                        {
+                            line.justify( spaceAdvance );
+                        }
+                    }
+                }
+            }
+
+            _layouts->emplace_back( textLines );
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float TextField::calcTextLineLength_( const VectorTextLines2 & _lines ) const
+    {
+        float charOffset = this->calcCharOffset();
+        float length = 0.f;
+        bool hasChars = false;
+
+        for( const VectorTextLines & layouts : _lines )
+        {
+            const TextLine & line = layouts[0];
+            uint32_t charCount = line.getCharsDataSize();
+
+            if( charCount == 0 )
+            {
+                continue;
+            }
+
+            if( hasChars == true )
+            {
+                length += charOffset;
+            }
+
+            length += line.getLength();
+            hasChars = true;
+        }
+
+        return length;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TextField::updateTextLinesDimension_( const FontInterfacePtr & _font, const VectorTextLineChunks2 & _textLines, float _justifyLength, uint32_t * const _charCount, uint32_t * const _layoutCount, mt::vec2f * const _textSize ) const
+    {
+        float charScale = this->calcCharScale();
+        float lineOffset = this->calcLineOffset();
+
+        VectorTextLinesLayout layouts;
+
+        if( this->updateTextLinesLayout_( _textLines, _justifyLength, &layouts ) == false )
+        {
+            return false;
         }
 
         if( layouts.empty() == true )
@@ -1209,40 +1347,32 @@ namespace Mengine
             *_layoutCount = 0;
             *_charCount = 0;
             *_textSize = mt::vec2f( 0.f, 0.f );
-            *_textOffset = mt::vec2f( 0.f, 0.f );
 
             return true;
         }
 
         uint32_t charCount = 0;
 
-        const VectorTextLines2 & layout0 = layouts[0];
-
         float text_length = 0.f;
-        float text_offset = this->getHorizontAlignOffset_( layout0 );
 
         for( const VectorTextLines2 & lines2 : layouts )
         {
-            float line_length = 0.f;
+            float line_length = this->calcTextLineLength_( lines2 );
             uint32_t line_chars = 0;
 
             for( const VectorTextLines & lines : lines2 )
             {
                 const TextLine & line0 = lines[0];
 
-                line_length += line0.getLength();
                 line_chars += line0.getCharsDataSize();
             }
 
-            float line_offset = this->getHorizontAlignOffset_( lines2 );
-
             text_length = MENGINE_MAX( text_length, line_length );
-            text_offset = MENGINE_MIN( text_offset, line_offset );
             charCount += line_chars;
         }
 
         mt::vec2f textSize;
-        textSize.x = text_length;
+        textSize.x = text_length * charScale;
 
         float fontHeight = _font->getFontHeight();
         //float fontAscent = _font->getFontAscent();
@@ -1262,16 +1392,11 @@ namespace Mengine
             textSize.y = (lineOffset + fontHeight) * (layoutCount - 1) + fontHeight + m_extraThickness * 2.f;
         }
 
-        float lines_offset = this->calcLinesOffset( lineOffset, _font );
-
-        mt::vec2f textOffset;
-        textOffset.x = text_offset;
-        textOffset.y = lines_offset * m_autoScaleFactor;
+        textSize.y *= charScale;
 
         *_layoutCount = layoutCount;
         *_charCount = charCount;
         *_textSize = textSize;
-        *_textOffset = textOffset;
 
         return true;
     }
@@ -1329,14 +1454,28 @@ namespace Mengine
         m_cacheFonts.emplace_back( baseCacheFont );
 
         m_cacheTextChars.clear();
-        Helper::test( &m_cacheTextChars, m_cacheText, &m_cacheFonts, 0 );
 
-        for( const CacheFont & cache : m_cacheFonts )
+        if( Helper::test( &m_cacheTextChars, m_cacheText, &m_cacheFonts, 0 ) == false )
         {
-            const FontInterfacePtr & font = cache.font;
+            LOGGER_ERROR( "text field '%s' invalid font tags id '%s' text '%s'"
+                , this->getName().c_str()
+                , totalTextId.c_str()
+                , m_text.c_str()
+            );
+
+            m_cacheFonts.clear();
+
+            return false;
+        }
+
+        for( VectorCacheFonts::size_type index = 0; index != m_cacheFonts.size(); ++index )
+        {
+            const FontInterfacePtr & font = m_cacheFonts[index].font;
 
             if( font->compileFont() == false )
             {
+                m_cacheFonts.resize( index );
+
                 return false;
             }
         }
@@ -1388,73 +1527,63 @@ namespace Mengine
             justifyLength = maxLength;
         }
 
-        this->updateTextLinesWrap_( &m_cacheTextLines );
+        if( this->updateTextLinesWrap_( &m_cacheTextLines ) == false )
+        {
+            LOGGER_ERROR( "text field '%s' invalid wrap text id '%s' text '%s'"
+                , this->getName().c_str()
+                , totalTextId.c_str()
+                , m_text.c_str()
+            );
+
+            return false;
+        }
 
         uint32_t charCount;
         uint32_t layoutCount;
-        mt::vec2f textOffset;
         mt::vec2f textSize;
 
-        if( this->updateTextLinesDimension_( baseFont, m_cacheTextLines, justifyLength, &charCount, &layoutCount, &textOffset, &textSize ) == false )
+        if( this->updateTextLinesDimension_( baseFont, m_cacheTextLines, justifyLength, &charCount, &layoutCount, &textSize ) == false )
         {
             return false;
         }
 
         m_cacheCharCount = charCount;
         m_cacheLayoutCount = layoutCount;
-        m_cacheTextOffset = textOffset;
         m_cacheTextSize = textSize;
 
         m_autoScaleFactor = 1.f;
 
-        if( autoScale == true && maxHeight == -1.f )
+        if( autoScale == true )
         {
-            if( m_cacheTextSize.x > maxLength )
+            if( maxLength >= 0.f && m_cacheTextSize.x > maxLength )
             {
                 m_autoScaleFactor = maxLength / m_cacheTextSize.x;
+            }
+
+            if( maxHeight >= 0.f && m_cacheTextSize.y > maxHeight )
+            {
+                float heightScale = maxHeight / m_cacheTextSize.y;
+                m_autoScaleFactor = MENGINE_MIN( m_autoScaleFactor, heightScale );
             }
         }
 
         this->updateTextLinesMaxCount_( &m_cacheTextLines );
 
-        float charOffset = this->calcCharOffset();
-
-        for( const VectorTextLineChunks & textChunks : m_cacheTextLines )
+        if( this->updateTextLinesLayout_( m_cacheTextLines, justifyLength, &m_layouts ) == false )
         {
-            VectorTextLines2 textLine2;
-            for( const TextLineChunk & textChunk : textChunks )
-            {
-                uint32_t fontId = textChunk.fontId;
+            m_layouts.clear();
 
-                const CacheFont & cache = m_cacheFonts[fontId];
-
-                const FontInterfacePtr & chunkFont = cache.font;
-
-                uint32_t fontLayoutCount = chunkFont->getLayoutCount();
-
-                VectorTextLines textLine;
-                for( uint32_t layoutIndex = 0; layoutIndex != fontLayoutCount; ++layoutIndex )
-                {
-                    TextLine tl( layoutIndex, charOffset, justifyLength );
-                    if( tl.initialize( fontId, chunkFont, textChunk.value ) == false )
-                    {
-                        LOGGER_ERROR( "text field '%s' textId '%s' text '%s' invalid setup line"
-                            , this->getName().c_str()
-                            , totalTextId.c_str()
-                            , m_text.c_str()
-                        );
-
-                        return false;
-                    }
-
-                    textLine.emplace_back( tl );
-                }
-
-                textLine2.emplace_back( textLine );
-            }
-
-            m_layouts.emplace_back( textLine2 );
+            return false;
         }
+
+        for( const VectorTextLines2 & lines : m_layouts )
+        {
+            float offset = this->getHorizontAlignOffset_( lines );
+            m_cacheTextOffset.x = MENGINE_MIN( m_cacheTextOffset.x, offset );
+        }
+
+        float lineOffset = this->calcLineOffset();
+        m_cacheTextOffset.y = this->calcLinesOffset( lineOffset, baseFont );
 
         return true;
     }
@@ -1864,10 +1993,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float TextField::calcLinesOffset( float _lineOffset, const FontInterfacePtr & _font ) const
     {
-        float fontAscender = _font->getFontAscender();
+        float charScale = this->calcCharScale();
+        float fontAscender = _font->getFontAscender() * charScale;
         //float fontDescent = _font->getFontDescent();
-        float fontHeight = _font->getFontHeight();
-        float fontBearingYA = _font->getFontBearingYA();
+        float fontHeight = _font->getFontHeight() * charScale;
+        float fontBearingYA = _font->getFontBearingYA() * charScale;
 
         ETextVerticalAlign verticalAlign = this->calcVerticalAlign();
 
@@ -1879,7 +2009,7 @@ namespace Mengine
             {
             case ETFVA_BOTTOM:
                 {
-                    offset = fontAscender + m_extraThickness * 2.f;
+                    offset = fontAscender + m_extraThickness * 2.f * charScale;
                 }break;
             case ETFVA_CENTER:
                 {
@@ -1899,11 +2029,11 @@ namespace Mengine
             {
             case ETFVA_BOTTOM:
                 {
-                    offset = fontAscender + m_extraThickness * 2.f;
+                    offset = fontAscender + m_extraThickness * 2.f * charScale;
                 }break;
             case ETFVA_CENTER:
                 {
-                    offset = fontAscender - (fontHeight + _lineOffset) * layoutCountf * 0.5f;
+                    offset = fontAscender - (fontHeight + _lineOffset * charScale) * layoutCountf * 0.5f;
 
                     if( m_anchorVerticalAlign == false )
                     {
@@ -1912,7 +2042,7 @@ namespace Mengine
                 }break;
             case ETFVA_TOP:
                 {
-                    offset = -(fontHeight + _lineOffset) * layoutCountf;
+                    offset = -(fontHeight + _lineOffset * charScale) * layoutCountf;
 
                     if( m_anchorVerticalAlign == false )
                     {
@@ -1958,11 +2088,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float TextField::getHorizontAlignOffset_( const VectorTextLines2 & _lines ) const
     {
-        float length = 0.f;
-        for( const VectorTextLines & line : _lines )
-        {
-            length += line[0].getLength();
-        }
+        float charScale = this->calcCharScale();
+        float length = this->calcTextLineLength_( _lines ) * charScale;
 
         float offset = 0.f;
 

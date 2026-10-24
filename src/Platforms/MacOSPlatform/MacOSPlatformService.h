@@ -108,7 +108,6 @@ namespace Mengine
         size_t getUserPath( Char * const _userPath ) const override;
         size_t getTemporaryPath( Char * const _temporaryPath ) const override;
         size_t getExtraPreferencesFolderName( Char * const _folderName ) const override;
-        bool getUserLocaleLanguage( Char * const _userLocaleLanguage ) const override;
 
         void closeWindow() override;
         void minimizeWindow() override;

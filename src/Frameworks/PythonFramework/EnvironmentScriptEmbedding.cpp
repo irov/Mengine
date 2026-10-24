@@ -1,6 +1,7 @@
 #include "EnvironmentScriptEmbedding.h"
 
 #include "Interface/EnvironmentServiceInterface.h"
+#include "Interface/LanguageServiceInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
 #include "Environment/Python/PythonDocument.h"
@@ -35,9 +36,10 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static PyObject * getEnvironmentDeviceLanguage( pybind::kernel_interface * _kernel )
         {
-            Char deviceLanguage[MENGINE_ENVIRONMENT_DEVICE_LANGUAGE_MAXNAME + 1] = {'\0'};
-            ENVIRONMENT_SERVICE()
-                ->getDeviceLanguage( deviceLanguage );
+            const ConstString & userLanguage = LANGUAGE_SERVICE()
+                ->getUserLanguage();
+
+            const Char * deviceLanguage = userLanguage.c_str();
 
             PyObject * py_deviceLanguage = _kernel->string_from_char( deviceLanguage );
 

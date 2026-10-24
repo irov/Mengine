@@ -73,12 +73,19 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32CryptographySystem::generateRandomHexadecimal( size_t _length, Char * const _hexadecimal, bool _lowercase ) const
+    bool Win32CryptographySystem::generateRandomHexadecimal( Char * const _hexadecimal, size_t _capacity, bool _lowercase ) const
     {
-        MENGINE_ASSERTION_FATAL( _length < 1024, "invalid length %zu", _length );
-        MENGINE_ASSERTION_FATAL( _length % 2 == 0, "invalid odd %zu", _length );
+        if( _capacity == 0 )
+        {
+            return false;
+        }
 
-        DWORD dwLen = (DWORD)_length / 2;
+        size_t length = _capacity - 1;
+        MENGINE_ASSERTION_FATAL( length < 1024, "invalid length %zu", length );
+        MENGINE_ASSERTION_FATAL( length % 2 == 0, "invalid odd %zu", length );
+
+        size_t dataSize = length / 2;
+        DWORD dwLen = (DWORD)dataSize;
 
         BYTE pbData[512];
         if( ::CryptGenRandom( m_hCryptProvider, dwLen, pbData ) == FALSE )
@@ -90,10 +97,7 @@ namespace Mengine
             return false;
         }
 
-        size_t dataSize = _length / 2;
-        size_t hexadecimalCapacity = _length + 1;
-
-        if( Helper::encodeHexadecimal( pbData, dataSize, _hexadecimal, hexadecimalCapacity, _lowercase, nullptr ) == false )
+        if( Helper::encodeHexadecimal( pbData, dataSize, _hexadecimal, _capacity, _lowercase, nullptr ) == false )
         {
             return false;
         }

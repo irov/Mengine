@@ -1,0 +1,12 @@
+MENGINE_PROJECT(Win32LanguageSystem)
+
+ADD_FILTER(
+src
+    Win32LanguageSystem.h
+    Win32LanguageSystem.cpp
+)
+
+ADD_MENGINE_LIBRARY(Systems)
+
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} Windows)

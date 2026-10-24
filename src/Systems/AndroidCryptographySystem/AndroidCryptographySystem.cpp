@@ -1,6 +1,7 @@
 #include "AndroidCryptographySystem.h"
 
-#include "Config/StdString.h"
+#include "Kernel/Assertion.h"
+#include "Kernel/Hexadecimal.h"
 
 #include <stdlib.h>
 
@@ -40,34 +41,25 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidCryptographySystem::generateRandomHexadecimal( size_t _length, Char * const _hexadecimal, bool _lowercase ) const
+    bool AndroidCryptographySystem::generateRandomHexadecimal( Char * const _hexadecimal, size_t _capacity, bool _lowercase ) const
     {
-        size_t bytes_needed = (_length + 1) / 2;
-        uint8_t random_bytes[bytes_needed];
-
-        ::arc4random_buf( random_bytes, bytes_needed );
-
-        if( _lowercase == false )
+        if( _capacity == 0 )
         {
-            for( size_t i = 0; i != bytes_needed; ++i )
-            {
-                uint8_t b = random_bytes[i];
-
-                ::sprintf( _hexadecimal + i * 2, "%02x", b );
-            }
-        }
-        else
-        {
-            for( size_t i = 0; i != bytes_needed; ++i )
-            {
-                uint8_t b = random_bytes[i];
-
-                ::sprintf( _hexadecimal + i * 2, "%02X", b );
-            }
+            return false;
         }
 
+        size_t length = _capacity - 1;
+        MENGINE_ASSERTION_FATAL( length < 1024, "invalid length %zu", length );
+        MENGINE_ASSERTION_FATAL( length % 2 == 0, "invalid odd %zu", length );
 
-        _hexadecimal[_length] = '\0';
+        uint8_t randomBytes[512];
+        size_t randomSize = length / 2;
+        ::arc4random_buf( randomBytes, randomSize );
+
+        if( Helper::encodeHexadecimal( randomBytes, randomSize, _hexadecimal, _capacity, _lowercase, nullptr ) == false )
+        {
+            return false;
+        }
 
         return true;
     }

@@ -39,53 +39,73 @@ namespace Mengine
 
         size_t capacity() const
         {
-            return N;
+            return N + 1;
         }
 
         size_t size() const
         {
-            return Detail::staticWStringSize( m_buffer, N );
+            size_t capacity = this->capacity();
+
+            size_t result = Detail::staticWStringSize( m_buffer, capacity );
+
+            return result;
         }
 
         void clear()
         {
-            Detail::staticWStringChange( m_buffer, N, 0, L'\0');
+            size_t capacity = this->capacity();
+
+            Detail::staticWStringChange( m_buffer, capacity, 0, L'\0' );
         }
 
     public:
         void assign( WChar _value )
         {
-            StdString::wcschrcpy_safe( m_buffer, _value, N );
+            size_t capacity = this->capacity();
+
+            StdString::wcschrcpy_safe( m_buffer, _value, capacity );
         }
 
         void assign( const WChar * _value )
         {
-            StdString::wcscpy_safe( m_buffer, _value, N );
+            size_t capacity = this->capacity();
+
+            StdString::wcscpy_safe( m_buffer, _value, capacity );
         }
 
         void assign( const WChar * _value, size_t _size )
         {
-            StdString::wcszcpy_safe( m_buffer, _value, _size, N );
+            size_t capacity = this->capacity();
+
+            StdString::wcszcpy_safe( m_buffer, _value, _size, capacity );
         }
 
         void append( const WChar * _value )
         {
-            StdString::wcscat_safe( m_buffer, _value, N );
+            size_t capacity = this->capacity();
+
+            StdString::wcscat_safe( m_buffer, _value, capacity );
         }
 
         void append( const WChar * _value, size_t _size )
         {
-            StdString::wcszcat_safe( m_buffer, _value, _size, N );
+            size_t capacity = this->capacity();
+
+            StdString::wcszcat_safe( m_buffer, _value, _size, capacity );
         }
 
         void copy( WChar * _value ) const
         {
-            StdString::wcscpy_safe( _value, m_buffer, N );
+            size_t capacity = this->capacity();
+
+            StdString::wcscpy_safe( _value, m_buffer, capacity );
         }
          
         int32_t compare( const WChar * _value ) const
         {
-            int32_t result = Detail::staticWStringCompare( m_buffer, N, _value );
+            size_t capacity = this->capacity();
+
+            int32_t result = Detail::staticWStringCompare( m_buffer, capacity, _value );
 
             return result;
         }
@@ -93,20 +113,26 @@ namespace Mengine
         template<size_t N2>
         int32_t compare( const StaticWString<N2> & _value ) const
         {
-            int32_t result = Detail::staticWStringCompare( m_buffer, N, _value.c_str() );
+            const WChar * value_str = _value.c_str();
+
+            int32_t result = this->compare( value_str );
 
             return result;
         }
 
         void change( size_t _index, WChar _ch )
         {
-            Detail::staticWStringChange( m_buffer, N, _index, _ch );
+            size_t capacity = this->capacity();
+
+            Detail::staticWStringChange( m_buffer, capacity, _index, _ch );
         }
 
     public:
         WChar operator []( size_t _index ) const
         {
-            WChar c = Detail::staticWStringIndex( m_buffer, N, _index );
+            size_t capacity = this->capacity();
+
+            WChar c = Detail::staticWStringIndex( m_buffer, capacity, _index );
 
             return c;
         }

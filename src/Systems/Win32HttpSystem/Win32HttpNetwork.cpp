@@ -456,8 +456,9 @@ namespace Mengine
             }
 
             Char boundary[16 + 1] = {'\0'};
+            size_t boundaryCapacity = sizeof( boundary );
             CRYPTOGRAPHY_SYSTEM()
-                ->generateRandomHexadecimal( 16, boundary, false );
+                ->generateRandomHexadecimal( boundary, boundaryCapacity, false );
 
             ArrayString<4096> header;
             header.append( "Content-Type: multipart/form-data; boundary=" );

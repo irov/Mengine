@@ -69,14 +69,21 @@ namespace Mengine
             {
                 _utf8->clear();
 
-                return true;
+                return false;
             }
 
             _utf8->resize( utf8Size );
 
-            Char * utf8_data = _utf8->data();
+            Char * utf8Data = _utf8->data();
 
-            utf8_from_unicode( _unicode, utf8_data, utf8Size );
+            size_t convertedSize = utf8_from_unicode( _unicode, utf8Data, utf8Size );
+
+            if( convertedSize == UTF8_UNKNOWN )
+            {
+                _utf8->clear();
+
+                return false;
+            }
 
             return true;
         }
@@ -89,14 +96,21 @@ namespace Mengine
             {
                 _utf8->clear();
 
-                return true;
+                return false;
             }
 
             _utf8->resize( utf8Size );
 
-            Char * utf8_data = _utf8->data();
+            Char * utf8Data = _utf8->data();
 
-            utf8_from_unicodez( _unicode, _unicodeSize, utf8_data, utf8Size );
+            size_t convertedSize = utf8_from_unicodez( _unicode, _unicodeSize, utf8Data, utf8Size );
+
+            if( convertedSize == UTF8_UNKNOWN )
+            {
+                _utf8->clear();
+
+                return false;
+            }
 
             return true;
         }
@@ -120,12 +134,17 @@ namespace Mengine
                 return false;
             }
 
-            if( utf8Size + 1 >= _utf8Capacity )
+            if( utf8Size >= _utf8Capacity )
             {
                 return false;
             }
 
-            utf8_from_unicode( _unicode, _utf8, _utf8Capacity );
+            size_t convertedSize = utf8_from_unicode( _unicode, _utf8, _utf8Capacity );
+
+            if( convertedSize == UTF8_UNKNOWN )
+            {
+                return false;
+            }
 
             _utf8[utf8Size] = '\0';
 
@@ -146,12 +165,17 @@ namespace Mengine
                 return false;
             }
 
-            if( utf8Size + 1 >= _utf8Capacity )
+            if( utf8Size >= _utf8Capacity )
             {
                 return false;
             }
 
-            utf8_from_unicodez( _unicode, _unicodeSize, _utf8, _utf8Capacity );
+            size_t convertedSize = utf8_from_unicodez( _unicode, _unicodeSize, _utf8, _utf8Capacity );
+
+            if( convertedSize == UTF8_UNKNOWN )
+            {
+                return false;
+            }
 
             _utf8[utf8Size] = '\0';
 
@@ -175,14 +199,21 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool utf8ToUnicode( const Char * _utf8, WChar * const _unicode, size_t _unicodeCapacity, size_t * const _unicodeSize )
         {
-            size_t unicodeSize = utf8_to_unicode( _utf8, _unicode, _unicodeCapacity );
+            size_t unicodeSize = utf8_to_unicode_size( _utf8 );
 
             if( unicodeSize == UTF8_UNKNOWN )
             {
                 return false;
             }
 
-            if( unicodeSize + 1 >= _unicodeCapacity )
+            if( unicodeSize >= _unicodeCapacity )
+            {
+                return false;
+            }
+
+            size_t convertedSize = utf8_to_unicode( _utf8, _unicode, _unicodeCapacity );
+
+            if( convertedSize == UTF8_UNKNOWN )
             {
                 return false;
             }
@@ -215,23 +246,37 @@ namespace Mengine
 
             _unicode->resize( unicodeSize );
 
-            WChar * unicode_data = _unicode->data();
+            WChar * unicodeData = _unicode->data();
 
-            utf8_to_unicode( _utf8, unicode_data, unicodeSize );
+            size_t convertedSize = utf8_to_unicode( _utf8, unicodeData, unicodeSize );
+
+            if( convertedSize == UTF8_UNKNOWN )
+            {
+                _unicode->clear();
+
+                return false;
+            }
 
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
         bool utf8ToUnicode( const Char * _utf8, size_t _utf8Size, WChar * const _unicode, size_t _unicodeCapacity, size_t * const _unicodeSize )
         {
-            size_t unicodeSize = utf8_to_unicodez( _utf8, _utf8Size, _unicode, _unicodeCapacity );
+            size_t unicodeSize = utf8_to_unicodez_size( _utf8, _utf8Size );
 
             if( unicodeSize == UTF8_UNKNOWN )
             {
                 return false;
             }
 
-            if( unicodeSize + 1 >= _unicodeCapacity )
+            if( unicodeSize >= _unicodeCapacity )
+            {
+                return false;
+            }
+
+            size_t convertedSize = utf8_to_unicodez( _utf8, _utf8Size, _unicode, _unicodeCapacity );
+
+            if( convertedSize == UTF8_UNKNOWN )
             {
                 return false;
             }
@@ -264,9 +309,16 @@ namespace Mengine
 
             _unicode->resize( unicodeSize );
 
-            WChar * unicode_data = _unicode->data();
+            WChar * unicodeData = _unicode->data();
 
-            utf8_to_unicodez( _utf8, _utf8Size, unicode_data, unicodeSize );
+            size_t convertedSize = utf8_to_unicodez( _utf8, _utf8Size, unicodeData, unicodeSize );
+
+            if( convertedSize == UTF8_UNKNOWN )
+            {
+                _unicode->clear();
+
+                return false;
+            }
 
             return true;
         }

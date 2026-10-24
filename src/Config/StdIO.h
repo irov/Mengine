@@ -23,6 +23,7 @@ namespace Mengine
         using std::ftell;
         using std::fprintf;
         using std::printf;
+        using std::vsnprintf;
     }
 }
 //////////////////////////////////////////////////////////////////////////

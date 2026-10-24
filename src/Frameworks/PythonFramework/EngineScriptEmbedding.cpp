@@ -2,6 +2,7 @@
 
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/EnvironmentServiceInterface.h"
+#include "Interface/LanguageServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/TimelineServiceInterface.h"
@@ -1884,11 +1885,14 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             PyObject * s_getDeviceLanguage( pybind::kernel_interface * _kernel )
             {
-                Char deviceLanguage[MENGINE_ENVIRONMENT_DEVICE_LANGUAGE_MAXNAME + 1] = {'\0'};
-                ENVIRONMENT_SERVICE()
-                    ->getDeviceLanguage( deviceLanguage );
+                const ConstString & userLanguage = LANGUAGE_SERVICE()
+                    ->getUserLanguage();
 
-                return _kernel->string_from_char( deviceLanguage );
+                const Char * deviceLanguage = userLanguage.c_str();
+
+                PyObject * py_deviceLanguage = _kernel->string_from_char( deviceLanguage );
+
+                return py_deviceLanguage;
             }
             //////////////////////////////////////////////////////////////////////////
             const RenderCameraInterfacePtr & s_getDefaultSceneRenderCamera2D()
@@ -2455,7 +2459,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             bool s_updateUserWallpaper( const String & _filePath )
             {
-                Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME + 1] = {'\0'};
+                Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME + 2] = {'\0'};
                 APPLICATION_SERVICE()
                     ->getProjectName( projectName );
 
@@ -2482,7 +2486,7 @@ namespace Mengine
                     return false;
                 }
 
-                Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME + 1] = {'\0'};
+                Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME + 2] = {'\0'};
                 APPLICATION_SERVICE()
                     ->getProjectName( projectName );
 
@@ -2512,7 +2516,7 @@ namespace Mengine
                     return false;
                 }
 
-                Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME + 1] = {'\0'};
+                Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME + 2] = {'\0'};
                 APPLICATION_SERVICE()
                     ->getProjectName( projectName );
 

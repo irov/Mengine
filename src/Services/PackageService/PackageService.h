@@ -40,6 +40,7 @@ namespace Mengine
 
     public:
         void getLocales( const Tags & _platformTags, VectorConstString * const _locales ) const override;
+        const ConstString & getDefaultLocale() const override;
 
     public:
         bool enablePackages( const ConstString & _locale, const Tags & _platformTags ) override;

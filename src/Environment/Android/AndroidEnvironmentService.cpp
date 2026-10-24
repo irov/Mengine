@@ -23,11 +23,18 @@ namespace Mengine
         template<size_t N>
         static void getAndroidInfo( JNIEnv * _jenv, const Char * _method, StaticString<N> * const _value )
         {
-            jstring jobject_AndroidInfo = (jstring)Helper::AndroidCallObjectApplicationMethod( _jenv, _method, "()Ljava/lang/String;" );
+            jstring jinfo = (jstring)Helper::AndroidCallObjectApplicationMethod( _jenv, _method, "()Ljava/lang/String;" );
 
-            Helper::AndroidCopyStringFromJString( _jenv, jobject_AndroidInfo, _value );
+            if( jinfo == nullptr )
+            {
+                _value->clear();
 
-            Mengine_JNI_DeleteLocalRef( _jenv, jobject_AndroidInfo );
+                return;
+            }
+
+            Helper::AndroidCopyStringFromJString( _jenv, jinfo, _value );
+
+            Mengine_JNI_DeleteLocalRef( _jenv, jinfo );
         }
         //////////////////////////////////////////////////////////////////////////
         static void getAndroidInfo( JNIEnv * _jenv, const Char * _method, Timestamp * const _value )
@@ -66,7 +73,6 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
 
         Detail::getAndroidInfo( jenv, "getDeviceModel", &m_deviceModel );
-        Detail::getAndroidInfo( jenv, "getDeviceLanguage", &m_deviceLanguage );
         Detail::getAndroidInfo( jenv, "getOSVersion", &m_osVersion );
         Detail::getAndroidInfo( jenv, "getPackageName", &m_bundleId );
         Detail::getAndroidInfo( jenv, "getInstallId", &m_installId );
@@ -94,7 +100,7 @@ namespace Mengine
         fingerprintGarbage.append( '_' );
         fingerprintGarbage.append( androidId );
         
-        StaticString<MENGINE_SHA1_HEX_COUNT + 1> fingerprint;
+        StaticString<MENGINE_SHA1_HEX_COUNT> fingerprint;
         Helper::makeSHA1HEX( fingerprintGarbage.data(), fingerprintGarbage.size(), fingerprint.data(), false );
 
         m_userName.assign( m_deviceModel );
@@ -117,11 +123,6 @@ namespace Mengine
     void AndroidEnvironmentService::getDeviceModel( Char * const _deviceModel ) const
     {
         m_deviceModel.copy( _deviceModel );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidEnvironmentService::getDeviceLanguage( Char * const _deviceLanguage ) const
-    {
-        m_deviceLanguage.copy( _deviceLanguage );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidEnvironmentService::getOSFamily( Char * _osFamily ) const

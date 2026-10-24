@@ -13,6 +13,7 @@
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/SoundServiceInterface.h"
 #include "Interface/EnvironmentServiceInterface.h"
+#include "Interface/LanguageServiceInterface.h"
 #include "Interface/AccountServiceInterface.h"
 #include "Interface/AnalyticsServiceInterface.h"
 
@@ -210,36 +211,6 @@ namespace Mengine
         size_t Project_ExtraPreferencesFolderNameLen = Project_ExtraPreferencesFolderName.size();
 
         return Project_ExtraPreferencesFolderNameLen;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool iOSPlatformService::getUserLocaleLanguage( Char * const _userLocaleLanguage ) const
-    {
-        NSString * localeLanguage = [[NSLocale currentLocale] objectForKey:NSLocaleLanguageCode];
-        
-        if( localeLanguage == nil )
-        {
-            return false;
-        }
-        
-        const Char * localeLanguage_str = [localeLanguage UTF8String];
-
-        if( localeLanguage_str == nullptr )
-        {
-            return false;
-        }
-
-        size_t localeLanguageLen = StdString::strlen( localeLanguage_str );
-
-        if( localeLanguageLen < 2 )
-        {
-            return false;
-        }
-
-        _userLocaleLanguage[0] = localeLanguage_str[0];
-        _userLocaleLanguage[1] = localeLanguage_str[1];
-        _userLocaleLanguage[2] = '\0';
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t iOSPlatformService::getSystemFontPath( ConstString * const _groupName, const Char * _fontName, Char * const _fontPath ) const
@@ -727,15 +698,14 @@ namespace Mengine
         }
 
         {
-            Mengine::Char userName[MENGINE_ENVIRONMENT_USER_MAXNAME] = {'\0'};
-            Mengine::Char deviceModel[MENGINE_ENVIRONMENT_DEVICE_MODEL_MAXNAME] = {'\0'};
-            Mengine::Char deviceLanguage[MENGINE_ENVIRONMENT_DEVICE_LANGUAGE_MAXNAME] = {'\0'};
-            Mengine::Char osFamily[MENGINE_ENVIRONMENT_OS_FAMILY_MAXNAME] = {'\0'};
-            Mengine::Char osVersion[MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME] = {'\0'};
-            Mengine::Char bundleId[MENGINE_ENVIRONMENT_BUNDLEID_MAXNAME] = {'\0'};
-            Mengine::Char installId[MENGINE_ENVIRONMENT_INSTALLID_MAXNAME] = {'\0'};
-            Mengine::Char installVersion[MENGINE_ENVIRONMENT_INSTALLVERSION_MAXNAME] = {'\0'};
-            Mengine::Char sessionId[MENGINE_ENVIRONMENT_SESSIONID_MAXNAME] = {'\0'};
+            Mengine::Char userName[MENGINE_ENVIRONMENT_USER_MAXNAME + 1] = {'\0'};
+            Mengine::Char deviceModel[MENGINE_ENVIRONMENT_DEVICE_MODEL_MAXNAME + 1] = {'\0'};
+            Mengine::Char osFamily[MENGINE_ENVIRONMENT_OS_FAMILY_MAXNAME + 1] = {'\0'};
+            Mengine::Char osVersion[MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME + 1] = {'\0'};
+            Mengine::Char bundleId[MENGINE_ENVIRONMENT_BUNDLEID_MAXNAME + 1] = {'\0'};
+            Mengine::Char installId[MENGINE_ENVIRONMENT_INSTALLID_MAXNAME + 1] = {'\0'};
+            Mengine::Char installVersion[MENGINE_ENVIRONMENT_INSTALLVERSION_MAXNAME + 1] = {'\0'};
+            Mengine::Char sessionId[MENGINE_ENVIRONMENT_SESSIONID_MAXNAME + 1] = {'\0'};
 
             ENVIRONMENT_SERVICE()
                 ->getUserName( userName );
@@ -743,8 +713,10 @@ namespace Mengine
             ENVIRONMENT_SERVICE()
                 ->getDeviceModel( deviceModel );
 
-            ENVIRONMENT_SERVICE()
-                ->getDeviceLanguage( deviceLanguage );
+            const Mengine::ConstString & userLanguage = LANGUAGE_SERVICE()
+                ->getUserLanguage();
+
+            const Mengine::Char * deviceLanguage = userLanguage.c_str();
 
             ENVIRONMENT_SERVICE()
                 ->getOSFamily( osFamily );

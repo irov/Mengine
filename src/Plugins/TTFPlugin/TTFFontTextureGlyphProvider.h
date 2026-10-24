@@ -10,7 +10,7 @@ namespace Mengine
         : public TTFTextureGlyphProviderInterface
     {
     public:
-        TTFFontTextureGlyphProvider( uint32_t _width, uint32_t _height, const void * _ttfmemory, size_t _ttfpitch, uint32_t _ttfchannel );
+        TTFFontTextureGlyphProvider( uint32_t _width, uint32_t _height, const void * _ttfmemory, ptrdiff_t _ttfpitch, uint32_t _ttfchannel );
         ~TTFFontTextureGlyphProvider();
 
     public:
@@ -21,7 +21,7 @@ namespace Mengine
         uint32_t m_height;
 
         const void * m_ttfmemory;
-        size_t m_ttfpitch;
+        ptrdiff_t m_ttfpitch;
         uint32_t m_ttfchannel;
     };
 }

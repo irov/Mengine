@@ -1,7 +1,6 @@
 #include "StaticWString.h"
 
-#include "Kernel/Assertion.h"
-#include "Kernel/AssertionMemoryPanic.h"
+#include "Config/StdAssert.h"
 
 namespace Mengine
 {
@@ -14,11 +13,7 @@ namespace Mengine
 
             size_t buffer_size = StdString::wcslen( _buffer );
 
-            MENGINE_ASSERTION_FATAL( buffer_size < _capacity, "static wstring buffer '%ls' [size %zu] > [capacity %zu]"
-                , _buffer
-                , buffer_size
-                , _capacity
-            );
+            assert( buffer_size < _capacity );
 
             return buffer_size;
         }
@@ -27,11 +22,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _capacity );
 
-            MENGINE_ASSERTION_FATAL( _index < _capacity, "static wstring buffer '%ls' [index %zu] > [capacity %zu]"
-                , _buffer
-                , _index
-                , _capacity
-            );
+            assert( _index < _capacity );
 
             WChar c = _buffer[_index];
 
@@ -42,20 +33,17 @@ namespace Mengine
         {
             MENGINE_UNUSED( _capacity );
 
-            MENGINE_ASSERTION_FATAL( _index < _capacity, "static wstring buffer '%ls' [index %zu] > [capacity %zu]"
-                , _buffer
-                , _index
-                , _capacity
-            );
+            assert( _index < _capacity );
+            assert( _index < _capacity - 1 || _ch == L'\0' );
 
             _buffer[_index] = _ch;
         }
         //////////////////////////////////////////////////////////////////////////
-        int32_t staticWStringCompare( const WChar * _buffer, size_t _size, const WChar * _value )
+        int32_t staticWStringCompare( const WChar * _buffer, size_t _capacity, const WChar * _value )
         {
-            MENGINE_ASSERTION_MEMORY_PANIC( _value, "invalid compare value" );
+            assert( _value != nullptr );
 
-            int32_t result = StdString::wcsncmp( _buffer, _value, _size );
+            int32_t result = StdString::wcsncmp( _buffer, _value, _capacity );
 
             return result;
         }

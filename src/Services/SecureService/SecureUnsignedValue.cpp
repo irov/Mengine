@@ -207,7 +207,10 @@ namespace Mengine
 
         writer.writePOD( m_hash );
         writer.writePOD( m_value );
-        writer.writeBuffer( m_buffer.c_str(), m_buffer.capacity() );
+
+        const Char * bufferData = m_buffer.c_str();
+        size_t bufferSize = m_buffer.capacity() - 1;
+        writer.writeBuffer( bufferData, bufferSize );
 
         Data blob_raving;
         blob_raving.resize( blob.size() );
@@ -259,7 +262,11 @@ namespace Mengine
         uint32_t load_hash;
         uint32_t load_value;
 
-        if( blob.size() != sizeof( load_hash ) + sizeof( load_value ) + m_buffer.capacity() )
+        size_t bufferSize = m_buffer.capacity() - 1;
+        size_t blobSize = blob.size();
+        size_t expectedBlobSize = sizeof( load_hash ) + sizeof( load_value ) + bufferSize;
+
+        if( blobSize != expectedBlobSize )
         {
             return false;
         }
@@ -269,10 +276,8 @@ namespace Mengine
         reader.readPOD( load_hash );
         reader.readPOD( load_value );
 
-        void * buffer_data = m_buffer.data();
-        size_t buffer_capacity = m_buffer.capacity();
-
-        reader.readBuffer( buffer_data, buffer_capacity );
+        void * bufferData = m_buffer.data();
+        reader.readBuffer( bufferData, bufferSize );
 
         m_hash = load_hash;
         m_value = load_value;

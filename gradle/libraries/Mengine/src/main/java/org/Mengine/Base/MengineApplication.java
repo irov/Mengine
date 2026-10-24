@@ -242,7 +242,7 @@ public abstract class MengineApplication extends Application {
 
     public String getDeviceLanguage() {
         Locale locale = Locale.getDefault();
-        String language = locale.getLanguage();
+        String language = locale.toLanguageTag();
 
         return language;
     }

@@ -26,8 +26,6 @@ namespace Mengine
         void split2( VectorString * const _outStrings, const String & _str, bool _trimDelims, const VectorString & _delims );
         void u32split2( VectorU32String * const _outStrings, const U32String & _str, bool _trimDelims, const VectorU32String & _delims );
         //////////////////////////////////////////////////////////////////////////
-        bool u32split3( VectorU32String * const _outStrings, const U32String & _str, const VectorU32String & _delims );
-        //////////////////////////////////////////////////////////////////////////
         void join( const String & _delim, const VectorString & _stringArray, String * const _outString );
         void trim( String * const _str, bool _left = true, bool _right = true );
         //////////////////////////////////////////////////////////////////////////

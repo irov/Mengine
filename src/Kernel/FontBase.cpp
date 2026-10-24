@@ -256,10 +256,6 @@ namespace Mengine
                 {
                     continue;
                 }break;
-            case 160:
-                {
-                    code = 32;
-                }break;
             case 9:
                 {
                     code = 32;
@@ -280,6 +276,10 @@ namespace Mengine
         {
             switch( code )
             {
+            case 160:
+                {
+                    code = 32;
+                }break;
             case 10:
             case 13:
                 {

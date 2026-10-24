@@ -86,6 +86,8 @@ Common
     TimeSystemInterface.h
     PackageInterface.h
     PackageServiceInterface.h
+    LanguageSystemInterface.h
+    LanguageServiceInterface.h
     UserdataServiceInterface.h
     OptionInterface.h
     OptionsServiceInterface.h

@@ -109,6 +109,7 @@ SERVICE_EXTERN( TextService );
 SERVICE_EXTERN( FontService );
 SERVICE_EXTERN( WatchdogService );
 SERVICE_EXTERN( GraveyardService );
+SERVICE_EXTERN( LanguageService );
 SERVICE_EXTERN( PackageService );
 SERVICE_EXTERN( UserdataService );
 SERVICE_EXTERN( PickerService );
@@ -151,6 +152,10 @@ SERVICE_EXTERN( ThreadSystem );
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_SYSTEM_CRYPTOGRAPHY)
 SERVICE_EXTERN( CryptographySystem );
+#endif
+//////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_SYSTEM_LANGUAGE)
+SERVICE_EXTERN( LanguageSystem );
 #endif
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_SYSTEM_DATETIME)
@@ -634,6 +639,7 @@ namespace Mengine
         SERVICE_FINALIZE( ChronometerService );
         SERVICE_FINALIZE( PrefetcherService );
         SERVICE_FINALIZE( PackageService );
+        SERVICE_FINALIZE( LanguageService );
         SERVICE_FINALIZE( UserdataService );
         SERVICE_FINALIZE( GraveyardService );
         SERVICE_FINALIZE( ResourceService );
@@ -742,6 +748,8 @@ namespace Mengine
 
         SERVICE_FINALIZE( EnvironmentService );
 
+        SERVICE_FINALIZE( LanguageSystem );
+
         this->unregisterBaseTypes_();
 
         SERVICE_FINALIZE( AttributionService );
@@ -785,6 +793,7 @@ namespace Mengine
         SERVICE_DESTROY( ChronometerService );
         SERVICE_DESTROY( PrefetcherService );
         SERVICE_DESTROY( PackageService );
+        SERVICE_DESTROY( LanguageService );
         SERVICE_DESTROY( UserdataService );
         SERVICE_DESTROY( GraveyardService );
         SERVICE_DESTROY( ResourceService );
@@ -849,6 +858,7 @@ namespace Mengine
 #endif
 
         SERVICE_DESTROY( EnvironmentService );
+        SERVICE_DESTROY( LanguageSystem );
 
         SERVICE_DESTROY( PlatformService );
         SERVICE_DESTROY( NotificationService );
@@ -1119,7 +1129,7 @@ namespace Mengine
         Helper::makeSHA1String( projectIdentity.c_str(), projectHash, true );
         projectHash[6] = '\0';
 
-        Char sessionId[MENGINE_ENVIRONMENT_SESSIONID_MAXNAME] = {'\0'};
+        Char sessionId[MENGINE_ENVIRONMENT_SESSIONID_MAXNAME + 1] = {'\0'};
         ENVIRONMENT_SERVICE()
             ->getSessionId( sessionId );
 
@@ -1478,6 +1488,8 @@ namespace Mengine
         MENGINE_ADD_SERVICE( TimepipeService, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_ADD_SERVICE( PluginService, MENGINE_DOCUMENT_FACTORABLE );
 
+        MENGINE_ADD_SERVICE( LanguageSystem, MENGINE_DOCUMENT_FACTORABLE );
+
         MENGINE_ADD_SERVICE( EnvironmentService, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ADD_SERVICE( PlatformService, MENGINE_DOCUMENT_FACTORABLE );
@@ -1679,6 +1691,7 @@ namespace Mengine
         BOOTSTRAPPER_SERVICE_CREATE( FontService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( WatchdogService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( GraveyardService, MENGINE_DOCUMENT_FACTORABLE );
+        BOOTSTRAPPER_SERVICE_CREATE( LanguageService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( PackageService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( UserdataService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( PickerService, MENGINE_DOCUMENT_FACTORABLE );

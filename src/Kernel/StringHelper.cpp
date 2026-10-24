@@ -157,67 +157,59 @@ namespace Mengine
         static void t_split2( C * const _outStrings, const T & _str, bool _trimDelims, const C & _delims )
         {
             typename T::size_type start = 0;
-            typename T::size_type pos = 0;
 
-            do
+            for( ;; )
             {
-                pos = T::npos;
+                typename T::size_type pos = T::npos;
+                typename T::size_type delimSize = 0;
 
-                for( typename C::const_iterator
-                    it = _delims.begin(),
-                    it_end = _delims.end();
-                    it != it_end;
-                    ++it )
+                for( const T & delim : _delims )
                 {
-                    const T & delim = *it;
-
-                    typename T::size_type pos_delim = _str.find_first_of( delim, start );
-
-                    if( pos > pos_delim )
+                    if( delim.empty() == true )
                     {
-                        pos = pos_delim;
+                        continue;
                     }
+
+                    typename T::size_type posDelim = _str.find( delim, start );
+
+                    if( posDelim == T::npos )
+                    {
+                        continue;
+                    }
+
+                    if( posDelim > pos )
+                    {
+                        continue;
+                    }
+
+                    typename T::size_type sizeDelim = delim.size();
+
+                    if( posDelim == pos && sizeDelim <= delimSize )
+                    {
+                        continue;
+                    }
+
+                    pos = posDelim;
+                    delimSize = sizeDelim;
                 }
 
                 if( pos == T::npos )
                 {
-                    if( start != T::npos )
+                    if( _trimDelims == false || start != _str.size() )
                     {
                         _outStrings->emplace_back( _str.substr( start ) );
                     }
 
                     break;
                 }
-                else
+
+                if( _trimDelims == false || pos != start )
                 {
                     _outStrings->emplace_back( _str.substr( start, pos - start ) );
-
-                    start = pos + 1;
                 }
 
-                if( _trimDelims == true )
-                {
-                    typename T::size_type pos_n = T::npos;
-
-                    for( typename C::const_iterator
-                        it = _delims.begin(),
-                        it_end = _delims.end();
-                        it != it_end;
-                        ++it )
-                    {
-                        const T & delim = *it;
-
-                        typename T::size_type pos_delim = _str.find_first_not_of( delim, start );
-
-                        if( pos_n > pos_delim )
-                        {
-                            pos_n = pos_delim;
-                        }
-                    }
-
-                    start = pos_n;
-                }
-            } while( pos != T::npos );
+                start = pos + delimSize;
+            }
         }
         //////////////////////////////////////////////////////////////////////////
         void split2( VectorString * const _outStrings, const String & _str, bool _trimDelims, const VectorString & _delims )
@@ -228,64 +220,6 @@ namespace Mengine
         void u32split2( VectorU32String * const _outStrings, const U32String & _str, bool _trimDelims, const VectorU32String & _delims )
         {
             t_split2( _outStrings, _str, _trimDelims, _delims );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        template<class T, class C = Vector<T> >
-        static bool t_split3( C * const _outStrings, const T & _str, const C & _delims )
-        {
-            typename T::size_type start = 0;
-            typename T::size_type pos = 0;
-
-            do
-            {
-                pos = T::npos;
-
-                for( typename C::const_iterator
-                    it = _delims.begin(),
-                    it_end = _delims.end();
-                    it != it_end;
-                    ++it )
-                {
-                    const T & delim = *it;
-
-                    typename T::size_type pos_delim = _str.find_first_of( delim, start );
-
-                    if( pos > pos_delim )
-                    {
-                        pos = pos_delim;
-                    }
-                }
-
-                if( pos == T::npos )
-                {
-                    if( start != 0 )
-                    {
-                        if( start != _str.size() )
-                        {
-                            _outStrings->emplace_back( _str.substr( start ) );
-                        }
-
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
-                else
-                {
-                    _outStrings->emplace_back( _str.substr( start, pos - start ) );
-
-                    start = pos + 1;
-                }
-            } while( pos != T::npos );
-
-            return true;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool u32split3( VectorU32String * const _outStrings, const U32String & _str, const VectorU32String & _delims )
-        {
-            return t_split3( _outStrings, _str, _delims );
         }
         //////////////////////////////////////////////////////////////////////////
         void wsplit( VectorWString * const _outStrings, const WString & _str, bool _trimDelims, const WString & _delims )

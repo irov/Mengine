@@ -214,9 +214,9 @@ namespace Mengine
 
 
         bool updateTextLines_() const;
-        void updateTextLinesWrap_( VectorTextLineChunks2 * const _textLines ) const;
+        bool updateTextLinesWrap_( VectorTextLineChunks2 * const _textLines ) const;
         void updateTextLinesMaxCount_( VectorTextLineChunks2 * const _textLines ) const;
-        bool updateTextLinesDimension_( const FontInterfacePtr & _font, const VectorTextLineChunks2 & _textLines, float _justifyLength, uint32_t * const _charCount, uint32_t * const _layoutCount, mt::vec2f * const _textOffset, mt::vec2f * const _textSize ) const;
+        bool updateTextLinesDimension_( const FontInterfacePtr & _font, const VectorTextLineChunks2 & _textLines, float _justifyLength, uint32_t * const _charCount, uint32_t * const _layoutCount, mt::vec2f * const _textSize ) const;
 
     public:
         MENGINE_INLINE const ConstString & getTotalTextId() const;
@@ -334,6 +334,8 @@ namespace Mengine
         mutable bool m_invalidateTextArguments;
 
     protected:
+        bool updateTextLinesLayout_( const VectorTextLineChunks2 & _textLines, float _justifyLength, VectorTextLinesLayout * const _layouts ) const;
+        float calcTextLineLength_( const VectorTextLines2 & _lines ) const;
         const VectorTextLinesLayout & getTextLayots() const;
         float getHorizontAlignOffset_( const VectorTextLines2 & _lines ) const;
     };

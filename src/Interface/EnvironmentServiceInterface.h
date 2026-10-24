@@ -13,10 +13,6 @@
 #define MENGINE_ENVIRONMENT_DEVICE_MODEL_MAXNAME 128
 #endif
 
-#ifndef MENGINE_ENVIRONMENT_DEVICE_LANGUAGE_MAXNAME
-#define MENGINE_ENVIRONMENT_DEVICE_LANGUAGE_MAXNAME 64
-#endif
-
 #ifndef MENGINE_ENVIRONMENT_OS_FAMILY_MAXNAME
 #define MENGINE_ENVIRONMENT_OS_FAMILY_MAXNAME 64
 #endif
@@ -51,7 +47,6 @@ namespace Mengine
     public:
         virtual void getUserName( Char * const _userName ) const = 0;
         virtual void getDeviceModel( Char * const _deviceModel ) const = 0;
-        virtual void getDeviceLanguage( Char * const _deviceLanguage ) const = 0;
         virtual void getOSFamily( Char * const _osVersion ) const = 0;
         virtual void getOSVersion( Char * const _osVersion ) const = 0;
         virtual void getBundleId( Char * const _bundleId ) const = 0;

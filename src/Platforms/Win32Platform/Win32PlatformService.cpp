@@ -315,7 +315,9 @@ namespace Mengine
 
         PathString Window_ClassName = CONFIG_VALUE_PATHSTRING( "Window", "ClassName", MENGINE_WINDOW_CLASSNAME );
 
-        Helper::utf8ToUnicode( Window_ClassName, m_windowClassName.data(), MENGINE_MAX_PATH );
+        WChar * windowClassName = m_windowClassName.data();
+        size_t windowClassNameCapacity = m_windowClassName.capacity();
+        Helper::utf8ToUnicode( Window_ClassName, windowClassName, windowClassNameCapacity );
 
 #if defined(MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA)
         if( HAS_OPTION( "workdir" ) == true )
@@ -840,7 +842,9 @@ namespace Mengine
             return;
         }
 
-        Helper::utf8ToUnicode( _projectTitle, m_projectTitle.data(), MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME );
+        WChar * projectTitle = m_projectTitle.data();
+        size_t projectTitleCapacity = m_projectTitle.capacity();
+        Helper::utf8ToUnicode( _projectTitle, projectTitle, projectTitleCapacity );
 
         LOGGER_INFO( "platform", "project title: %s"
             , _projectTitle
@@ -849,8 +853,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t Win32PlatformService::getProjectTitle( Char * const _projectTitle ) const
     {
+        const WChar * projectTitle = m_projectTitle.c_str();
+        size_t projectTitleCapacity = m_projectTitle.capacity();
+
         size_t utf8Size;
-        Helper::unicodeToUtf8( m_projectTitle.c_str(), _projectTitle, MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME, &utf8Size );
+        if( Helper::unicodeToUtf8( projectTitle, _projectTitle, projectTitleCapacity, &utf8Size ) == false )
+        {
+            _projectTitle[0] = '\0';
+
+            return 0;
+        }
 
         return utf8Size;
     }
@@ -2640,7 +2652,12 @@ namespace Mengine
 
         ExtraWindowDesc windowDesc;
         windowDesc.hWnd = hWnd;
-        StdString::wcscpy_safe( windowDesc.className.data(), windowClassNameExtra.c_str(), MENGINE_MAX_PATH );
+
+        WChar * className = windowDesc.className.data();
+        const WChar * classNameExtra = windowClassNameExtra.c_str();
+        size_t classNameCapacity = windowDesc.className.capacity();
+        StdString::wcscpy_safe( className, classNameExtra, classNameCapacity );
+
         windowDesc.wndProc = _wndProc;
         m_extraWindows.emplace_back( windowDesc );
 
@@ -3687,27 +3704,6 @@ namespace Mengine
         size_t Project_ExtraPreferencesFolderNameLen = Project_ExtraPreferencesFolderName.size();
 
         return Project_ExtraPreferencesFolderNameLen;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Win32PlatformService::getUserLocaleLanguage( Char * const _userLocaleLanguage ) const
-    {
-        // Get ISO 639 language code Set1
-
-        WCHAR unicode_userLocaleISO639[LOCALE_NAME_MAX_LENGTH + 1] = {L'\0'};
-        if( ::GetUserDefaultLocaleName( unicode_userLocaleISO639, LOCALE_NAME_MAX_LENGTH ) == 0 )
-        {
-            LOGGER_ERROR( "invalid get user default locale name %ls"
-                , Helper::Win32GetLastErrorMessageW()
-            );
-
-            return false;
-        }
-
-        _userLocaleLanguage[0] = (Char)unicode_userLocaleISO639[0];
-        _userLocaleLanguage[1] = (Char)unicode_userLocaleISO639[1];
-        _userLocaleLanguage[2] = '\0';
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32PlatformService::closeWindow()

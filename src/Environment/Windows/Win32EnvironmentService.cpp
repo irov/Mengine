@@ -40,17 +40,6 @@ namespace Mengine
             );
         }
         //////////////////////////////////////////////////////////////////////////
-        static void getDeviceLanguage( Char * const _deviceLanguage )
-        {
-            LCID lcid = GetUserDefaultLCID();
-
-            ::GetLocaleInfoA( lcid, LOCALE_SISO639LANGNAME, _deviceLanguage, LOCALE_NAME_MAX_LENGTH );
-
-            LOGGER_INFO_PROTECTED( "environment", "device language '%s'"
-                , _deviceLanguage
-            );
-        }
-        //////////////////////////////////////////////////////////////////////////
         static void getOSFamily( Char * const _osFamily )
         {
             MENGINE_STRCPY_STATIC( _osFamily, "Windows", MENGINE_ENVIRONMENT_OS_FAMILY_MAXNAME );
@@ -189,7 +178,6 @@ namespace Mengine
 
         Detail::getUserName( m_userName.data() );
         Detail::getDeviceModel( m_deviceModel.data() );
-        Detail::getDeviceLanguage( m_deviceLanguage.data() );
         Detail::getOSFamily( m_osFamily.data() );
         Detail::getOSVersion( &osInfo, m_osVersion.data() );
 
@@ -228,17 +216,17 @@ namespace Mengine
             fingerprintGarbage.append( VolumeSerialNumberBuffer );
         }
 
-        StaticString<MENGINE_SHA1_HEX_COUNT + 1> fingerprint;
+        StaticString<MENGINE_SHA1_HEX_COUNT> fingerprint;
         Helper::makeSHA1HEX( fingerprintGarbage.data(), fingerprintGarbage.size(), fingerprint.data(), true );
 
         m_installId.assign( fingerprint );
 
         m_sessionTimestamp = Helper::getSystemTimestamp();
         
-        size_t sessionIdLength = m_sessionId.capacity();
         Char * sessionIdData = m_sessionId.data();
+        size_t sessionIdCapacity = m_sessionId.capacity();
 
-        if( Helper::generateRandomHexadecimal( sessionIdLength, sessionIdData, false ) == false )
+        if( Helper::generateRandomHexadecimal( sessionIdData, sessionIdCapacity, false ) == false )
         {
             return false;
         }
@@ -259,11 +247,6 @@ namespace Mengine
     void Win32EnvironmentService::getDeviceModel( Char * const _deviceModel ) const
     {
         m_deviceModel.copy( _deviceModel );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Win32EnvironmentService::getDeviceLanguage( Char * const _deviceLanguage ) const
-    {
-        m_deviceLanguage.copy( _deviceLanguage );
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32EnvironmentService::getOSFamily( Char * const _osFamily ) const

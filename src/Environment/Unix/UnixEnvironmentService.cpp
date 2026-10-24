@@ -35,8 +35,8 @@ namespace Mengine
                 return;
             }
 
-            Char line[N] = {'\0'};
-            if( ::fgets( line, N, file ) != nullptr )
+            Char line[N + 1] = {'\0'};
+            if( ::fgets( line, N + 1, file ) != nullptr )
             {
                 size_t length = StdString::strlen( line );
                 while( length != 0 && (line[length - 1] == '\n' || line[length - 1] == '\r') )
@@ -60,7 +60,7 @@ namespace Mengine
                 return;
             }
 
-            Char line[512];
+            Char line[512] = {'\0'};
             while( ::fgets( line, sizeof( line ), file ) != nullptr )
             {
                 static const Char prefix[] = "PRETTY_NAME=";
@@ -113,7 +113,6 @@ namespace Mengine
 
         m_userName.assign( "" );
         m_deviceModel.assign( "Linux" );
-        m_deviceLanguage.assign( "" );
         m_osFamily.assign( "Linux" );
         m_osVersion.assign( "" );
         m_bundleId.assign( "" );
@@ -139,12 +138,6 @@ namespace Mengine
 
         Detail::readOSVersion( &m_osVersion );
 
-        const Char * locale = ::setlocale( LC_MESSAGES, nullptr );
-        if( locale != nullptr )
-        {
-            m_deviceLanguage.assign( locale );
-        }
-
         StaticString<256> machineId;
         machineId.assign( "" );
         Detail::readFirstLine( "/etc/machine-id", &machineId );
@@ -157,7 +150,7 @@ namespace Mengine
         fingerprintSource.append( '_' );
         fingerprintSource.append( machineId );
 
-        StaticString<MENGINE_SHA1_HEX_COUNT + 1> fingerprint;
+        StaticString<MENGINE_SHA1_HEX_COUNT> fingerprint;
         Helper::makeSHA1HEX( fingerprintSource.data(), fingerprintSource.size(), fingerprint.data(), true );
         m_installId.assign( fingerprint );
 
@@ -169,10 +162,10 @@ namespace Mengine
             m_sessionRND = (int64_t)randomSeed;
         }
 
-        size_t sessionIdLength = m_sessionId.capacity();
         Char * sessionIdData = m_sessionId.data();
+        size_t sessionIdCapacity = m_sessionId.capacity();
 
-        if( Helper::generateRandomHexadecimal( sessionIdLength, sessionIdData, false ) == false )
+        if( Helper::generateRandomHexadecimal( sessionIdData, sessionIdCapacity, false ) == false )
         {
             return false;
         }
@@ -192,11 +185,6 @@ namespace Mengine
     void UnixEnvironmentService::getDeviceModel( Char * const _deviceModel ) const
     {
         m_deviceModel.copy( _deviceModel );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void UnixEnvironmentService::getDeviceLanguage( Char * const _deviceLanguage ) const
-    {
-        m_deviceLanguage.copy( _deviceLanguage );
     }
     //////////////////////////////////////////////////////////////////////////
     void UnixEnvironmentService::getOSFamily( Char * const _osFamily ) const

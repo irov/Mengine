@@ -54,7 +54,9 @@ namespace Mengine
 
         size_t size() const
         {
-            size_t result = Detail::staticStringSize( m_buffer, N );
+            size_t capacity = this->capacity();
+
+            size_t result = Detail::staticStringSize( m_buffer, capacity );
 
             return result;
         }
@@ -68,28 +70,36 @@ namespace Mengine
 
         size_t capacity() const
         {
-            return N;
+            return N + 1;
         }
 
         void clear()
         {
-            Detail::staticStringChange( m_buffer, N, 0, '\0' );
+            size_t capacity = this->capacity();
+
+            Detail::staticStringChange( m_buffer, capacity, 0, '\0' );
         }
 
     public:
         void assign( Char _value )
         {
-            StdString::strchrcpy_safe( m_buffer, _value, N );
+            size_t capacity = this->capacity();
+
+            StdString::strchrcpy_safe( m_buffer, _value, capacity );
         }
 
         void assign( const Char * _value )
         {
-            StdString::strcpy_safe( m_buffer, _value, N );
+            size_t capacity = this->capacity();
+
+            StdString::strcpy_safe( m_buffer, _value, capacity );
         }
 
         void assign( const Char * _value, size_t _size )
         {
-            StdString::strzcpy_safe( m_buffer, _value, _size, N );
+            size_t capacity = this->capacity();
+
+            StdString::strzcpy_safe( m_buffer, _value, _size, capacity );
         }
 
         template<size_t N2>
@@ -111,17 +121,23 @@ namespace Mengine
 
         void append( Char _value )
         {
-            StdString::strchrcat_safe( m_buffer, _value, N );
+            size_t capacity = this->capacity();
+
+            StdString::strchrcat_safe( m_buffer, _value, capacity );
         }
 
         void append( const Char * _value )
         {
-            StdString::strcat_safe( m_buffer, _value, N );
+            size_t capacity = this->capacity();
+
+            StdString::strcat_safe( m_buffer, _value, capacity );
         }
 
         void append( const Char * _value, size_t _size )
         {
-            StdString::strzcat_safe( m_buffer, _value, _size, N );
+            size_t capacity = this->capacity();
+
+            StdString::strzcat_safe( m_buffer, _value, _size, capacity );
         }
 
         template<size_t N2>
@@ -135,7 +151,9 @@ namespace Mengine
 
         void copy( Char * _value ) const
         {
-            StdString::strcpy_safe( _value, m_buffer, N );
+            size_t capacity = this->capacity();
+
+            StdString::strcpy_safe( _value, m_buffer, capacity );
         }
 
         void format( const Char * _format, ... )
@@ -143,14 +161,18 @@ namespace Mengine
             MENGINE_VA_LIST_TYPE args;
             MENGINE_VA_LIST_START( args, _format );
 
-            Detail::staticStringFormat( m_buffer, N, _format, args );
+            size_t capacity = this->capacity();
+
+            Detail::staticStringFormat( m_buffer, capacity, _format, args );
 
             MENGINE_VA_LIST_END( args );
         }
 
         int32_t compare( const Char * _value ) const
         {
-            int32_t result = Detail::staticStringCompare( m_buffer, N, _value );
+            size_t capacity = this->capacity();
+
+            int32_t result = Detail::staticStringCompare( m_buffer, capacity, _value );
 
             return result;
         }
@@ -167,13 +189,17 @@ namespace Mengine
 
         void change( size_t _index, Char _ch )
         {
-            Detail::staticStringChange( m_buffer, N, _index, _ch );
+            size_t capacity = this->capacity();
+
+            Detail::staticStringChange( m_buffer, capacity, _index, _ch );
         }
 
     public:
         Char operator []( size_t _index ) const
         {
-            Char c = Detail::staticStringIndex( m_buffer, N, _index );
+            size_t capacity = this->capacity();
+
+            Char c = Detail::staticStringIndex( m_buffer, capacity, _index );
 
             return c;
         }

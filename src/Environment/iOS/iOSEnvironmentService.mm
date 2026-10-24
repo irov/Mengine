@@ -39,10 +39,6 @@ namespace Mengine
         
         m_deviceModel.assign( [deviceModel UTF8String] );
         
-        NSString * language = [[NSLocale preferredLanguages] firstObject];
-        
-        m_deviceLanguage.assign( [language UTF8String] );
-        
         m_osFamily.assign( "iOS" );
         
         NSString * systemVersion = [iOSDetail getSystemVersion];
@@ -101,11 +97,6 @@ namespace Mengine
     void iOSEnvironmentService::getDeviceModel( Char * const _deviceModel ) const
     {
         m_deviceModel.copy( _deviceModel );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void iOSEnvironmentService::getDeviceLanguage( Char * const _deviceLanguage ) const
-    {
-        m_deviceLanguage.copy( _deviceLanguage );
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSEnvironmentService::getOSFamily( Char * const _osFamily ) const

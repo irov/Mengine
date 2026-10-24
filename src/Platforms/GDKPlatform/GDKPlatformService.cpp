@@ -194,7 +194,9 @@ namespace Mengine
 
         PathString Window_ClassName = CONFIG_VALUE_PATHSTRING( "Window", "ClassName", MENGINE_WINDOW_CLASSNAME );
 
-        Helper::utf8ToUnicode( Window_ClassName, m_windowClassName.data(), MENGINE_MAX_PATH );
+        WChar * windowClassName = m_windowClassName.data();
+        size_t windowClassNameCapacity = m_windowClassName.capacity();
+        Helper::utf8ToUnicode( Window_ClassName, windowClassName, windowClassNameCapacity );
 
         m_factoryDynamicLibraries = Helper::makeFactoryPool<GDKDynamicLibrary, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -532,7 +534,9 @@ namespace Mengine
             return;
         }
 
-        Helper::utf8ToUnicodeSize( _projectTitle, MENGINE_UNKNOWN_SIZE, m_projectTitle.data(), MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME );
+        WChar * projectTitle = m_projectTitle.data();
+        size_t projectTitleCapacity = m_projectTitle.capacity();
+        Helper::utf8ToUnicode( _projectTitle, projectTitle, projectTitleCapacity );
 
         LOGGER_INFO( "platform", "GDK project title: %s"
             , _projectTitle
@@ -541,8 +545,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t GDKPlatformService::getProjectTitle( Char * const _projectTitle ) const
     {
+        const WChar * projectTitle = m_projectTitle.c_str();
+        size_t projectTitleCapacity = m_projectTitle.capacity();
+
         size_t utf8Size;
-        Helper::unicodeToUtf8( m_projectTitle.c_str(), _projectTitle, MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME, &utf8Size );
+        if( Helper::unicodeToUtf8( projectTitle, _projectTitle, projectTitleCapacity, &utf8Size ) == false )
+        {
+            _projectTitle[0] = '\0';
+
+            return 0;
+        }
 
         return utf8Size;
     }
@@ -1001,21 +1013,6 @@ namespace Mengine
         _folderName[0] = '\0';
 
         return 0;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool GDKPlatformService::getUserLocaleLanguage( Char * const _userLocaleLanguage ) const
-    {
-        LANGID langId = ::GetUserDefaultUILanguage();
-
-        Char lang[8] = {'\0'};
-        if( ::GetLocaleInfoA( langId, LOCALE_SISO639LANGNAME, lang, 8 ) == 0 )
-        {
-            return false;
-        }
-
-        StdString::strcpy( _userLocaleLanguage, lang );
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void GDKPlatformService::closeWindow()

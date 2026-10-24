@@ -61,7 +61,7 @@ namespace Mengine
         m_lineDelims.emplace_back( U"\n" );
         m_lineDelims.emplace_back( U"\r\n" );
         m_lineDelims.emplace_back( U"\n\r" );
-        m_lineDelims.emplace_back( U"\n\r\t" );
+        m_lineDelims.emplace_back( U"\r" );
 
         return true;
     }

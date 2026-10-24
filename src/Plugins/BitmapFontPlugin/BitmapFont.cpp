@@ -107,6 +107,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool BitmapFont::getGlyph( uint32_t _layout, GlyphCode _code, GlyphCode _next, Glyph * const _glyph ) const
     {
+        if( _code == 160 )
+        {
+            _code = 32;
+        }
+
+        if( _next == 160 )
+        {
+            _next = 32;
+        }
+
         MENGINE_UNUSED( _layout );
 
         const BitmapFontGlyphDescriptionPtr & symbols = m_glyph->getBitmapFontGlyphDescription();
@@ -133,6 +143,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool BitmapFont::hasGlyph( GlyphCode _code ) const
     {
+        if( _code == 160 )
+        {
+            _code = 32;
+        }
+
         const BitmapFontGlyphDescriptionPtr & symbols = m_glyph->getBitmapFontGlyphDescription();
 
         const BitmapFontGlyphFace * ch = symbols->getGlyphFace( _code );

@@ -502,6 +502,11 @@ namespace Mengine
         *_locales = {localesSet.begin(), localesSet.end()};
     }
     //////////////////////////////////////////////////////////////////////////
+    const ConstString & PackageService::getDefaultLocale() const
+    {
+        return m_defaultLocale;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void PackageService::loadAllLocalePacksByName_( const Tags & _platformTags, VectorPackages * const _packs ) const
     {
         for( const PackageInterfacePtr & package : m_packages )

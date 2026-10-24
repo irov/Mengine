@@ -35,6 +35,7 @@ namespace Mengine
 
     public:
         virtual void getLocales( const Tags & _platformTags, VectorConstString * const _locales ) const = 0;
+        virtual const ConstString & getDefaultLocale() const = 0;
 
     public:
         virtual bool enablePackages( const ConstString & _locale, const Tags & _platformTags ) = 0;

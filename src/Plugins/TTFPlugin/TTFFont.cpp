@@ -31,6 +31,96 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+        static MemoryInterfacePtr normalizeBitmap( const FT_Bitmap & _bitmap, uint32_t _channel, bool _rgba, const DocumentInterfacePtr & _doc )
+        {
+            size_t pitch = (size_t)_bitmap.width * _channel;
+            size_t size = pitch * _bitmap.rows;
+
+            MemoryInterfacePtr memory = Helper::createMemoryCacheBuffer( size, _doc );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( memory, "invalid allocate font bitmap memory %zu", size );
+
+            uint8_t * buffer = memory->getBuffer();
+
+            uint32_t depth = 8;
+
+            switch( _bitmap.pixel_mode )
+            {
+            case FT_PIXEL_MODE_MONO:
+                {
+                    depth = 1;
+                }break;
+            case FT_PIXEL_MODE_GRAY2:
+                {
+                    depth = 2;
+                }break;
+            case FT_PIXEL_MODE_GRAY4:
+                {
+                    depth = 4;
+                }break;
+            default:
+                break;
+            }
+
+            uint32_t maxValue = (1U << depth) - 1U;
+
+            if( _bitmap.pixel_mode == FT_PIXEL_MODE_GRAY && _bitmap.num_grays > 1 )
+            {
+                maxValue = _bitmap.num_grays - 1U;
+            }
+
+            const uint8_t * origin = _bitmap.buffer;
+
+            if( _bitmap.pitch < 0 )
+            {
+                origin -= (ptrdiff_t)_bitmap.pitch * (ptrdiff_t)(_bitmap.rows - 1);
+            }
+
+            for( uint32_t y = 0; y != _bitmap.rows; ++y )
+            {
+                const uint8_t * source = origin + (ptrdiff_t)y * _bitmap.pitch;
+                uint8_t * target = buffer + y * pitch;
+
+                for( uint32_t x = 0; x != _bitmap.width; ++x )
+                {
+                    if( _channel == 1 )
+                    {
+                        uint32_t bit = x * depth;
+                        uint32_t shift = 8U - depth - (bit % 8U);
+                        uint32_t value = (source[bit / 8U] >> shift) & ((1U << depth) - 1U);
+
+                        target[x] = (uint8_t)(value * 255U / maxValue);
+
+                        continue;
+                    }
+
+                    uint32_t alpha = source[x * 4U + 3U];
+                    uint32_t red = 0;
+                    uint32_t green = 0;
+                    uint32_t blue = 0;
+
+                    if( alpha != 0 )
+                    {
+                        red = MENGINE_MIN( 255U, (source[x * 4U + 2U] * 255U + alpha / 2U) / alpha );
+                        green = MENGINE_MIN( 255U, (source[x * 4U + 1U] * 255U + alpha / 2U) / alpha );
+                        blue = MENGINE_MIN( 255U, (source[x * 4U] * 255U + alpha / 2U) / alpha );
+                    }
+
+                    target[x * 4U] = (uint8_t)(_rgba == true ? red : blue);
+                    target[x * 4U + 1U] = (uint8_t)green;
+                    target[x * 4U + 2U] = (uint8_t)(_rgba == true ? blue : red);
+                    target[x * 4U + 3U] = (uint8_t)alpha;
+                }
+            }
+
+            return memory;
+        }
+        //////////////////////////////////////////////////////////////////////////
+    }
+    //////////////////////////////////////////////////////////////////////////
     TTFFont::TTFFont()
         : m_ftlibrary( nullptr )
         , m_ttfAscender( 0.f )
@@ -232,11 +322,6 @@ namespace Mengine
 
         const FT_Glyph_Metrics & metrics = glyph->metrics;
 
-        float glyph_dx = (float)metrics.horiBearingX * MENGINE_FT_INV64;
-        float glyph_dy = (float)metrics.horiBearingY * MENGINE_FT_INV64;
-        float glyph_w = (float)metrics.width * MENGINE_FT_INV64;
-        float glyph_h = (float)metrics.height * MENGINE_FT_INV64;
-
         float glyph_advance = (float)metrics.horiAdvance * MENGINE_FT_INV64;
 
         const FT_Bitmap & glyph_bitmap = glyph->bitmap;
@@ -255,11 +340,11 @@ namespace Mengine
             }break;
         case FT_PIXEL_MODE_GRAY2:
             {
-                bitmap_channel = 2;
+                bitmap_channel = 1;
             }break;
         case FT_PIXEL_MODE_GRAY4:
             {
-                bitmap_channel = 4;
+                bitmap_channel = 1;
             }break;
         case FT_PIXEL_MODE_BGRA:
             {
@@ -309,11 +394,28 @@ namespace Mengine
             return true;
         }
 
+        const uint8_t * bitmapBuffer = glyph_bitmap.buffer;
+        ptrdiff_t bitmapPitch = glyph_bitmap.pitch;
+        MemoryInterfacePtr bitmapMemory;
+
+        if( glyph_bitmap.pixel_mode != FT_PIXEL_MODE_GRAY || glyph_bitmap.num_grays != 256 || glyph_bitmap.pitch < 0 )
+        {
+#if defined(MENGINE_RENDER_TEXTURE_RGBA)
+            bool rgba = true;
+#else
+            bool rgba = (m_effect != nullptr);
+#endif
+
+            bitmapMemory = Detail::normalizeBitmap( glyph_bitmap, bitmap_channel, rgba, _doc );
+            bitmapBuffer = bitmapMemory->getBuffer();
+            bitmapPitch = (ptrdiff_t)glyph_bitmap.width * bitmap_channel;
+        }
+
         uint32_t texture_border = 1;
 
         if( m_effect != nullptr )
         {
-            m_effect->apply( glyph_bitmap.width, glyph_bitmap.rows, glyph_bitmap.pitch, glyph_bitmap.buffer, bitmap_channel, glyph->bitmap_left, glyph->bitmap_top, m_height, [texture_border, &ttf_glyph, sampleInv, _doc]( uint32_t _index, int32_t _x, int32_t _y, uint32_t _width, uint32_t _height, const void * _buffer, uint32_t _pitch, uint32_t _bytespp )
+            m_effect->apply( glyph_bitmap.width, glyph_bitmap.rows, (uint32_t)bitmapPitch, bitmapBuffer, bitmap_channel, glyph->bitmap_left, glyph->bitmap_top, m_height, [texture_border, &ttf_glyph, sampleInv, _doc]( uint32_t _index, int32_t _x, int32_t _y, uint32_t _width, uint32_t _height, const void * _buffer, uint32_t _pitch, uint32_t _bytespp )
             {
                 MENGINE_ASSERTION_FATAL( _index < MENGINE_TTF_FONT_MAX_LAYOUTS, "invalid font effect layout index %u max %u"
                     , _index
@@ -340,7 +442,7 @@ namespace Mengine
         }
         else
         {
-            TTFFontTextureGlyphProvider provider( glyph_bitmap.width, glyph_bitmap.rows, glyph_bitmap.buffer, glyph_bitmap.pitch, bitmap_channel );
+            TTFFontTextureGlyphProvider provider( glyph_bitmap.width, glyph_bitmap.rows, bitmapBuffer, bitmapPitch, bitmap_channel );
 
             mt::uv4f uv;
             RenderTextureInterfacePtr texture = TTFATLAS_SERVICE()
@@ -350,10 +452,10 @@ namespace Mengine
 
             TTFGlyphQuad & quad = ttf_glyph.quads[0];
 
-            quad.offset.x = glyph_dx * sampleInv;
-            quad.offset.y = -glyph_dy * sampleInv;
-            quad.size.x = glyph_w * sampleInv;
-            quad.size.y = glyph_h * sampleInv;
+            quad.offset.x = (float)glyph->bitmap_left * sampleInv;
+            quad.offset.y = -(float)glyph->bitmap_top * sampleInv;
+            quad.size.x = (float)glyph_bitmap.width * sampleInv;
+            quad.size.y = (float)glyph_bitmap.rows * sampleInv;
             quad.uv = uv;
             quad.texture = texture;
         }
@@ -598,7 +700,8 @@ namespace Mengine
             return true;
         }
 
-        float kerning = (float)ttf_kerning.x * MENGINE_FT_INV64;
+        float sampleInv = this->getSampleInv();
+        float kerning = (float)ttf_kerning.x * MENGINE_FT_INV64 * sampleInv;
 
         _glyph->advance += kerning;
 

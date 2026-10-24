@@ -148,7 +148,7 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT jstring JNICALL MENGINE_JAVA_INTERFACE( AndroidEnvironmentService_1getProjectName )(JNIEnv * env, jclass cls)
     {
-        Mengine::Char projectName[MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME + 1] = {'\0'};
+        Mengine::Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME + 1] = {'\0'};
         APPLICATION_SERVICE()
             ->getProjectName( projectName );
 
@@ -904,26 +904,6 @@ namespace Mengine
         size_t Project_ExtraPreferencesFolderNameLen = Project_ExtraPreferencesFolderName.size();
 
         return Project_ExtraPreferencesFolderNameLen;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool AndroidPlatformService::getUserLocaleLanguage( Char * const _userLocaleLanguage ) const
-    {
-        JNIEnv * jenv = Mengine_JNI_GetEnv();
-
-        MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
-
-        jstring jstring_locale = (jstring)Helper::AndroidCallObjectApplicationMethod( jenv, "getDeviceLanguage", "()Ljava/lang/String;" );
-
-        Char deviceLanguage[128 + 1] = {'\0'};
-        Helper::AndroidCopyStringFromJString( jenv, jstring_locale, deviceLanguage, 128 );
-
-        Mengine_JNI_DeleteLocalRef( jenv, jstring_locale );
-
-        _userLocaleLanguage[0] = deviceLanguage[0];
-        _userLocaleLanguage[1] = deviceLanguage[1];
-        _userLocaleLanguage[2] = '\0';
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t AndroidPlatformService::getSystemFontPath( ConstString * const _groupName, const Char * _fontName, Char * const _fontPath ) const

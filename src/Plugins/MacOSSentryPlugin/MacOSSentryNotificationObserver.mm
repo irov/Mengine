@@ -75,7 +75,7 @@ namespace Mengine
 
             [scope setExtraValue:@(companyName) forKey:@"Company"];
 
-            Char projectName[MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME + 1] = {'\0'};
+            Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME + 1] = {'\0'};
             APPLICATION_SERVICE()
                 ->getProjectName( projectName );
 

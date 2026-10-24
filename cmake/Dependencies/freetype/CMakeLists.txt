@@ -367,6 +367,9 @@ endif ()
 # Create the options file.
 file(READ "${PROJECT_SOURCE_DIR}/include/freetype/config/ftoption.h"
   FTOPTION_H)
+string(REGEX REPLACE
+  "/\\* +(#define +TT_CONFIG_OPTION_GPOS_KERNING) +\\*/" "\\1"
+  FTOPTION_H "${FTOPTION_H}")
 if (ZLIB_FOUND)
   string(REGEX REPLACE
     "/\\* +(#define +FT_CONFIG_OPTION_SYSTEM_ZLIB) +\\*/" "\\1"

@@ -7,11 +7,10 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    TextLine::TextLine( uint32_t _layout, float _charOffset, float _justifyLength )
+    TextLine::TextLine( uint32_t _layout, float _charOffset )
         : m_layout( _layout )
         , m_length( 0.f )
         , m_charOffset( _charOffset )
-        , m_justifyLength( _justifyLength )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -25,8 +24,6 @@ namespace Mengine
         m_charsData.reserve( text_size );
 
         bool successful = true;
-
-        float spaceCount = 0.f;
 
         for( U32String::const_iterator
             it = _text.begin(),
@@ -70,40 +67,28 @@ namespace Mengine
 
             m_length += charData.advance;
             m_length += m_charOffset;
-
-            if( c == ' ' )
-            {
-                spaceCount += 1.f;
-            }
         }
 
         if( _text.empty() == false )
         {
             m_length -= m_charOffset;
-
-            if( m_justifyLength >= 0.f && m_justifyLength > m_length )
-            {
-                if( spaceCount > 0.f )
-                {
-                    float advanceSpaceLength = m_justifyLength - m_length;
-                    float advanceSpace = advanceSpaceLength / spaceCount;
-
-                    for( TextCharData & charData : m_charsData )
-                    {
-                        if( charData.code != ' ' )
-                        {
-                            continue;
-                        }
-
-                        charData.advance += advanceSpace;
-                    }
-                }
-
-                m_length = m_justifyLength;
-            }
         }
 
         return successful;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextLine::justify( float _spaceAdvance )
+    {
+        for( TextCharData & charData : m_charsData )
+        {
+            if( charData.code != ' ' )
+            {
+                continue;
+            }
+
+            charData.advance += _spaceAdvance;
+            m_length += _spaceAdvance;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t TextLine::getCharsDataSize() const

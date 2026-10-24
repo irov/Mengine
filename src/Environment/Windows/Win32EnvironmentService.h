@@ -25,7 +25,6 @@ namespace Mengine
     public:
         void getUserName( Char * const _userName ) const override;
         void getDeviceModel( Char * const _deviceModel ) const override;
-        void getDeviceLanguage( Char * const _deviceLanguage ) const override;
         void getOSFamily( Char * const _osVersion ) const override;
         void getOSVersion( Char * const _osVersion ) const override;
         void getBundleId( Char * const _bundleId ) const override;
@@ -43,7 +42,6 @@ namespace Mengine
     protected:
         StaticString<MENGINE_ENVIRONMENT_USER_MAXNAME> m_userName;
         StaticString<MENGINE_ENVIRONMENT_DEVICE_MODEL_MAXNAME> m_deviceModel;
-        StaticString<MENGINE_ENVIRONMENT_DEVICE_LANGUAGE_MAXNAME> m_deviceLanguage;
         StaticString<MENGINE_ENVIRONMENT_OS_FAMILY_MAXNAME> m_osFamily;
         StaticString<MENGINE_ENVIRONMENT_OS_VERSION_MAXNAME> m_osVersion;
         StaticString<MENGINE_ENVIRONMENT_BUNDLEID_MAXNAME> m_bundleId;

@@ -8,8 +8,10 @@ namespace Mengine
     {
         void fingerprintSHA1( Char * const _fingerprint, bool _lowercase )
         {
+            size_t fingerprintCapacity = MENGINE_SHA1_HEX_COUNT + 1;
+
             CRYPTOGRAPHY_SYSTEM()
-                ->generateRandomHexadecimal( MENGINE_SHA1_HEX_COUNT, _fingerprint, _lowercase );
+                ->generateRandomHexadecimal( _fingerprint, fingerprintCapacity, _lowercase );
         }
     }
 }

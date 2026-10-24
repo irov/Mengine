@@ -283,36 +283,6 @@ namespace Mengine
         return Project_ExtraPreferencesFolderNameLen;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MacOSPlatformService::getUserLocaleLanguage( Char * const _userLocaleLanguage ) const
-    {
-        NSString * localeLanguage = [[NSLocale currentLocale] objectForKey:NSLocaleLanguageCode];
-
-        if( localeLanguage == nil )
-        {
-            return false;
-        }
-
-        const Char * localeLanguageStr = [localeLanguage UTF8String];
-
-        if( localeLanguageStr == nullptr )
-        {
-            return false;
-        }
-
-        size_t localeLanguageLen = StdString::strlen( localeLanguageStr );
-
-        if( localeLanguageLen < 2 )
-        {
-            return false;
-        }
-
-        _userLocaleLanguage[0] = localeLanguageStr[0];
-        _userLocaleLanguage[1] = localeLanguageStr[1];
-        _userLocaleLanguage[2] = '\0';
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     size_t MacOSPlatformService::getSystemFontPath( ConstString * const _groupName, const Char * _fontName, Char * const _fontPath ) const
     {
         MENGINE_UNUSED( _fontName );

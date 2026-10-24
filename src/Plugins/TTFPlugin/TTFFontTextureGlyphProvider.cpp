@@ -5,7 +5,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    TTFFontTextureGlyphProvider::TTFFontTextureGlyphProvider( uint32_t _width, uint32_t _height, const void * _ttfmemory, size_t _ttfpitch, uint32_t _ttfchannel )
+    TTFFontTextureGlyphProvider::TTFFontTextureGlyphProvider( uint32_t _width, uint32_t _height, const void * _ttfmemory, ptrdiff_t _ttfpitch, uint32_t _ttfchannel )
         : m_width( _width )
         , m_height( _height )
         , m_ttfmemory( _ttfmemory )
@@ -23,7 +23,6 @@ namespace Mengine
         const uint8_t * glyph_memory = reinterpret_cast<const uint8_t *>(m_ttfmemory);
 
         uint8_t * it_texture_memory = _memory;
-        const uint8_t * it_glyph_memory = glyph_memory;
 
         it_texture_memory += _border * _pitch; //y offset one pixel
         it_texture_memory += _border * _channel; //x offset one pixel
@@ -33,6 +32,7 @@ namespace Mengine
             for( uint32_t h = 0; h != m_height; ++h )
             {
                 uint8_t * it_texture_memory_place = it_texture_memory;
+                const uint8_t * it_glyph_memory = glyph_memory + (ptrdiff_t)h * m_ttfpitch;
 
                 for( uint32_t w = 0; w != m_width; ++w )
                 {
@@ -50,6 +50,7 @@ namespace Mengine
             for( uint32_t h = 0; h != m_height; ++h )
             {
                 uint8_t * it_texture_memory_place = it_texture_memory;
+                const uint8_t * it_glyph_memory = glyph_memory + (ptrdiff_t)h * m_ttfpitch;
 
                 for( uint32_t w = 0; w != m_width; ++w )
                 {

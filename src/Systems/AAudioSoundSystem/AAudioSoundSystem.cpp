@@ -46,7 +46,7 @@ namespace Mengine
     AAudioSoundSystem::AAudioSoundSystem()
         : m_stream( nullptr )
         , m_reopenTimestamp( 0 )
-        , m_started( false )
+        , m_startRequested( false )
         , m_active( true )
     {
     }
@@ -128,12 +128,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AAudioSoundSystem::isSilent() const
     {
-        if( m_started == true )
+        if( m_stream == nullptr )
         {
-            return false;
+            return true;
         }
 
-        return true;
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     SoundSourceInterfacePtr AAudioSoundSystem::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer, const DocumentInterfacePtr & _doc )
@@ -337,7 +337,7 @@ namespace Mengine
         }
 
         m_mixer->setStream( m_stream );
-        m_started = false;
+        m_startRequested = false;
         m_reopenTimestamp = 0;
 
         LOGGER_MESSAGE( "AAudioSoundSystem initialized with %d Hz, %d channels"
@@ -359,7 +359,7 @@ namespace Mengine
             m_stream = nullptr;
         }
 
-        m_started = false;
+        m_startRequested = false;
     }
     //////////////////////////////////////////////////////////////////////////
     void AAudioSoundSystem::updateStreamState_()
@@ -371,7 +371,7 @@ namespace Mengine
 
         bool active = m_active;
 
-        if( active == m_started )
+        if( active == m_startRequested )
         {
             return;
         }
@@ -401,7 +401,7 @@ namespace Mengine
             return;
         }
 
-        m_started = active;
+        m_startRequested = active;
     }
     //////////////////////////////////////////////////////////////////////////
     void AAudioSoundSystem::onDestroyMixerSoundSource_( MixerSoundSource * _source )

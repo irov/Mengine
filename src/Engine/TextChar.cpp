@@ -4,7 +4,7 @@
 #include "Interface/FontServiceInterface.h"
 
 #include "Kernel/ConstStringHelper.h"
-#include "Kernel/StringHelper.h"
+#include "Kernel/Assertion.h"
 
 #include "Config/StdAlgorithm.h"
 #include "Config/StdIterator.h"
@@ -55,6 +55,11 @@ namespace Mengine
             U32String::size_type pre_size = _pre.size();
             U32String::size_type name_begin = found_pre + pre_size;
             U32String::size_type name_count = found_post - name_begin;
+
+            MENGINE_ASSERTION_FATAL( name_count <= 256, "text font name length %zu exceeds 256 characters"
+                , name_count
+            );
+
             U32String name = _in.substr( name_begin, name_count );
 
             U32String::size_type found_end = _in.find( _end, found_post );
@@ -155,47 +160,77 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void split( VectorTextLineChunks2 * const _lines, const VectorTextLineChunks & _chunks, const VectorU32String & _delims )
         {
-            VectorTextLineChunks collect;
+            U32String text;
 
             for( const TextLineChunk & chunk : _chunks )
             {
-                VectorU32String outStrings;
-                if( Helper::u32split3( &outStrings, chunk.value, _delims ) == false )
+                text.append( chunk.value );
+            }
+
+            VectorTextLineChunks collect;
+            size_t begin = 0;
+            size_t chunkEnd = 0;
+
+            for( const TextLineChunk & chunk : _chunks )
+            {
+                size_t chunkBegin = chunkEnd;
+                chunkEnd += chunk.value.size();
+
+                size_t index = begin;
+
+                while( index < chunkEnd )
                 {
-                    collect.emplace_back( chunk );
+                    size_t delimiterSize = 0;
 
-                    continue;
-                }
+                    for( const U32String & delimiter : _delims )
+                    {
+                        size_t size = delimiter.size();
 
-                VectorU32String::const_iterator it_strings = outStrings.begin();
+                        if( size <= delimiterSize )
+                        {
+                            continue;
+                        }
 
-                const U32String & first_value = *it_strings;
+                        if( text.compare( index, size, delimiter ) != 0 )
+                        {
+                            continue;
+                        }
 
-                TextLineChunk new_chunk;
-                new_chunk.value = first_value;
-                new_chunk.fontId = chunk.fontId;
+                        delimiterSize = size;
+                    }
 
-                collect.emplace_back( new_chunk );
+                    if( delimiterSize == 0 )
+                    {
+                        ++index;
 
-                ++it_strings;
+                        continue;
+                    }
 
-                for( VectorU32String::const_iterator
-                    it = it_strings,
-                    it_end = outStrings.end();
-                    it != it_end;
-                    ++it )
-                {
-                    const U32String & next_value = *it;
+                    TextLineChunk lineChunk;
+                    lineChunk.value = chunk.value.substr( begin - chunkBegin, index - begin );
+                    lineChunk.fontId = chunk.fontId;
 
-                    TextLineChunk next_chunk;
-                    next_chunk.value = next_value;
-                    next_chunk.fontId = chunk.fontId;
+                    collect.emplace_back( lineChunk );
 
                     _lines->emplace_back( collect );
                     collect.clear();
 
-                    collect.emplace_back( next_chunk );
+                    index += delimiterSize;
+                    begin = index;
                 }
+
+                if( begin > chunkEnd )
+                {
+                    continue;
+                }
+
+                TextLineChunk tailChunk;
+                tailChunk.value = chunk.value.substr( begin - chunkBegin );
+                tailChunk.fontId = chunk.fontId;
+
+                collect.emplace_back( tailChunk );
+
+                begin = chunkEnd;
             }
 
             if( collect.empty() == false )

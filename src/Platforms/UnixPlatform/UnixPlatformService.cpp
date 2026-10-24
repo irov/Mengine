@@ -1274,42 +1274,6 @@ namespace Mengine
         return length;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool UnixPlatformService::getUserLocaleLanguage( Char * const _userLocaleLanguage ) const
-    {
-        const Char * locale = ::setlocale( LC_MESSAGES, nullptr );
-
-        if( locale == nullptr )
-        {
-            return false;
-        }
-
-        if( locale[0] == '\0' )
-        {
-            return false;
-        }
-
-        if( locale[0] == 'C' && (locale[1] == '\0' || locale[1] == '.' || locale[1] == '_') )
-        {
-            return false;
-        }
-
-        if( StdString::strcmp( locale, "POSIX" ) == 0 )
-        {
-            return false;
-        }
-
-        _userLocaleLanguage[0] = locale[0] >= 'A' && locale[0] <= 'Z' ? (Char)(locale[0] - 'A' + 'a') : locale[0];
-        _userLocaleLanguage[1] = locale[1] >= 'A' && locale[1] <= 'Z' ? (Char)(locale[1] - 'A' + 'a') : locale[1];
-        _userLocaleLanguage[2] = '\0';
-
-        if( locale[1] != '\0' && locale[1] != '_' && locale[1] != '-' )
-        {
-            return true;
-        }
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool UnixPlatformService::createWindow( const Resolution & _resolution, bool _fullscreen )
     {
         if( HAS_OPTION( "norender" ) == true )

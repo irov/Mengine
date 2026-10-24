@@ -27,6 +27,7 @@
 #include "Interface/FactoryServiceInterface.h"
 #include "Interface/UpdateServiceInterface.h"
 #include "Interface/PlatformServiceInterface.h"
+#include "Interface/LanguageServiceInterface.h"
 #include "Interface/RenderPlatformInterface.h"
 #include "Interface/AnalyticsServiceInterface.h"
 #include "Interface/TimerServiceInterface.h"
@@ -270,19 +271,6 @@ namespace Mengine
         {
             m_locale = CONFIG_VALUE_CONSTSTRING( "Locale", "Force", ConstString::none() );
         }
-        else
-        {
-            Char userLocaleLanguage[MENGINE_LOCALE_LANGUAGE_SIZE + 1] = {'\0'};
-            if( PLATFORM_SERVICE()
-                ->getUserLocaleLanguage( userLocaleLanguage ) == true )
-            {
-                m_locale = Helper::stringizeString( userLocaleLanguage );
-            }
-        }
-
-        LOGGER_INFO( "system", "setup locale '%s'"
-            , m_locale.c_str()
-        );
 
 #if defined(MENGINE_PLATFORM_IOS)
 #elif defined(MENGINE_PLATFORM_ANDROID)
@@ -922,6 +910,26 @@ namespace Mengine
 
         LOGGER_INFO( "system", "load game resource tags '%s'"
             , Helper::tagsToString( platformTags ).c_str()
+        );
+
+        if( m_locale.empty() == true )
+        {
+            VectorConstString locales;
+            PACKAGE_SERVICE()
+                ->getLocales( platformTags, &locales );
+
+            if( LANGUAGE_SERVICE()
+                ->findUserLocale( locales, &m_locale ) == false )
+            {
+                const ConstString & defaultLocale = PACKAGE_SERVICE()
+                    ->getDefaultLocale();
+
+                m_locale = defaultLocale;
+            }
+        }
+
+        LOGGER_INFO( "system", "setup locale '%s'"
+            , m_locale.c_str()
         );
 
         if( PACKAGE_SERVICE()
@@ -2414,6 +2422,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::setLocale( const ConstString & _locale )
     {
+        if( _locale.empty() == true )
+        {
+            LOGGER_ERROR( "cannot set empty locale" );
+
+            return;
+        }
+
         if( m_locale == _locale )
         {
             LOGGER_WARNING( "already set locale '%s'"

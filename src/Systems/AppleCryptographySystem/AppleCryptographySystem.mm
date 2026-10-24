@@ -51,23 +51,27 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleCryptographySystem::generateRandomHexadecimal( size_t _length, Char * const _hexadecimal, bool _lowercase ) const
+    bool AppleCryptographySystem::generateRandomHexadecimal( Char * const _hexadecimal, size_t _capacity, bool _lowercase ) const
     {
-        MENGINE_ASSERTION_FATAL( _length < 1024, "invalid length %zu", _length );
-        MENGINE_ASSERTION_FATAL( _length % 2 == 0, "invalid odd %zu", _length );
+        if( _capacity == 0 )
+        {
+            return false;
+        }
+
+        size_t length = _capacity - 1;
+        MENGINE_ASSERTION_FATAL( length < 1024, "invalid length %zu", length );
+        MENGINE_ASSERTION_FATAL( length % 2 == 0, "invalid odd %zu", length );
         
         uint8_t buffer[512];
-        int result = ::SecRandomCopyBytes( kSecRandomDefault, sizeof(buffer), buffer );
+        size_t dataSize = length / 2;
+        int result = ::SecRandomCopyBytes( kSecRandomDefault, dataSize, buffer );
             
         if( result != errSecSuccess)
         {
             return false;
         }
         
-        size_t dataSize = _length / 2;
-        size_t hexadecimalCapacity = _length + 1;
-
-        if( Helper::encodeHexadecimal( buffer, dataSize, _hexadecimal, hexadecimalCapacity, _lowercase, nullptr ) == false )
+        if( Helper::encodeHexadecimal( buffer, dataSize, _hexadecimal, _capacity, _lowercase, nullptr ) == false )
         {
             return false;
         }

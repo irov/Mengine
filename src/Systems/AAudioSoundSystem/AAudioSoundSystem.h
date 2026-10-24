@@ -66,7 +66,7 @@ namespace Mengine
         AAudioSoundMixerPtr m_mixer;
         AAudioStream * m_stream;
         Timestamp m_reopenTimestamp;
-        bool m_started;
+        bool m_startRequested;
         bool m_active;
 
         FactoryInterfacePtr m_factorySoundBuffer;

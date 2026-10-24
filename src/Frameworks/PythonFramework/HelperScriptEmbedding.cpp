@@ -17,6 +17,7 @@
 #include "Interface/PlayerServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/PackageServiceInterface.h"
+#include "Interface/LanguageServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/ArchivatorInterface.h"
 #include "Interface/StatisticServiceInterface.h"
@@ -150,6 +151,13 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool s_setLocale( const ConstString & _locale )
         {
+            if( _locale.empty() == true )
+            {
+                LOGGER_ERROR( "cannot set empty locale" );
+
+                return false;
+            }
+
             const Tags & platformTags = PLATFORM_SERVICE()
                 ->getPlatformTags();
 
@@ -179,6 +187,11 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool s_hasLocale( const ConstString & _locale )
         {
+            if( _locale.empty() == true )
+            {
+                return false;
+            }
+
             const Tags & platformTags = PLATFORM_SERVICE()
                 ->getPlatformTags();
 
@@ -189,6 +202,32 @@ namespace Mengine
             }
 
             return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static PyObject * s_getLocaleForLanguage( pybind::kernel_interface * _kernel, const ConstString & _language )
+        {
+            const Tags & platformTags = PLATFORM_SERVICE()
+                ->getPlatformTags();
+
+            VectorConstString locales;
+            PACKAGE_SERVICE()
+                ->getLocales( platformTags, &locales );
+
+            const Char * language = _language.c_str();
+
+            ConstString locale;
+            if( LANGUAGE_SERVICE()
+                ->lookupLanguageLocale( language, locales, &locale ) == false )
+            {
+                PyObject * py_empty = _kernel->string_from_char( "" );
+
+                return py_empty;
+            }
+
+            const Char * localeStr = locale.c_str();
+            PyObject * py_locale = _kernel->string_from_char( localeStr );
+
+            return py_locale;
         }
         //////////////////////////////////////////////////////////////////////////
         static VectorConstString s_getLocales()
@@ -4558,6 +4597,7 @@ namespace Mengine
         pybind::def_function( _kernel, "getLocale", &Detail::s_getLocale );
         pybind::def_function( _kernel, "hasLocale", &Detail::s_hasLocale );
         pybind::def_function( _kernel, "getLocales", &Detail::s_getLocales );
+        pybind::def_function_kernel( _kernel, "getLocaleForLanguage", &Detail::s_getLocaleForLanguage );
 
         pybind::def_function( _kernel, "isometric_length_v3_v3", &Detail::s_isometric_length_v3_v3 );
         pybind::def_function( _kernel, "isometric_sqrlength_v3_v3", &Detail::s_isometric_sqrlength_v3_v3 );

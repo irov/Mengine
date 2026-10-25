@@ -2,6 +2,7 @@
 
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
+#include "Interface/DateTimeSystemInterface.h"
 
 #import "Environment/Apple/AppleBundle.h"
 
@@ -22,6 +23,7 @@ namespace Mengine
         , m_sessionTimestamp( -1 )
         , m_sessionIndex( -1 )
         , m_sessionRND( -1 )
+        , m_sessionGap( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -78,9 +80,16 @@ namespace Mengine
         m_sessionIndex = (int64_t)sessionIndex;
         
         NSInteger sessionRND = [iOSApplication.sharedInstance getSessionRND];
-        
+
         m_sessionRND = (int64_t)sessionRND;
-        
+
+        NSInteger sessionGap = [iOSApplication.sharedInstance getSessionGap];
+
+        m_sessionGap = (int64_t)sessionGap;
+
+        DATETIME_SYSTEM()
+            ->getDateTimeFromMilliseconds( m_sessionTimestamp, &m_sessionDate );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -152,6 +161,36 @@ namespace Mengine
     int64_t iOSEnvironmentService::getSessionRND() const
     {
         return m_sessionRND;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t iOSEnvironmentService::getSessionDateYear() const
+    {
+        return m_sessionDate.year;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t iOSEnvironmentService::getSessionDateMonth() const
+    {
+        return m_sessionDate.month;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t iOSEnvironmentService::getSessionDateDay() const
+    {
+        return m_sessionDate.day;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t iOSEnvironmentService::getSessionDateHour() const
+    {
+        return m_sessionDate.hour;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t iOSEnvironmentService::getSessionDateWeekday() const
+    {
+        return m_sessionDate.weekday;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int64_t iOSEnvironmentService::getSessionGap() const
+    {
+        return m_sessionGap;
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -56,6 +56,15 @@ namespace Mengine
         void _unfetch() override;
 
     public:
+        void setShapingLanguage( const ConstString & _language );
+        const ConstString & getShapingLanguage() const;
+
+    public:
+        bool isTextShaping() const override;
+        bool shapeText( const U32String & _text, VectorFontShapedGlyphs * const _glyphs, const DocumentInterfacePtr & _doc ) override;
+        bool getShapedGlyph( uint32_t _layout, uint32_t _index, Glyph * const _glyph ) const override;
+
+    public:
         bool hasGlyph( GlyphCode _code ) const override;
         bool getGlyph( uint32_t _layout, GlyphCode _code, GlyphCode _next, Glyph * const _glyph ) const override;
 
@@ -78,6 +87,8 @@ namespace Mengine
 
     protected:
         bool loadFaceGlyph_( GlyphCode _code, FT_Face * const _face ) const;
+        bool prepareGlyphIndex_( FT_Face _face, uint32_t _index, const DocumentInterfacePtr & _doc );
+        bool getGlyphIndex_( uint32_t _layout, uint32_t _index, Glyph * const _glyph ) const;
 
     protected:
         void notifyRenderDeviceLostPrepare();
@@ -95,6 +106,9 @@ namespace Mengine
 
     protected:
         FT_Library m_ftlibrary;
+
+        ConstString m_shapingLanguage;
+        hb_font_t * m_hbFont;
 
         FontEffectInterfacePtr m_effect;
 
@@ -115,7 +129,7 @@ namespace Mengine
 
         struct TTFGlyph
         {
-            uint32_t ch;
+            uint32_t index;
 
             float advance;
 

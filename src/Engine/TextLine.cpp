@@ -10,6 +10,7 @@ namespace Mengine
     TextLine::TextLine( uint32_t _layout, float _charOffset )
         : m_layout( _layout )
         , m_length( 0.f )
+        , m_charCount( 0 )
         , m_charOffset( _charOffset )
     {
     }
@@ -18,8 +19,20 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextLine::initialize( uint32_t _fontId, const FontInterfacePtr & _font, const U32String & _text )
+    bool TextLine::initialize( uint32_t _fontId, const FontInterfacePtr & _font, const U32String & _text, const VectorFontShapedGlyphs & _glyphs )
     {
+        m_charCount = (uint32_t)_text.size();
+
+        if( _font->isTextShaping() == true )
+        {
+            if( this->initializeShaped_( _fontId, _font, _text, _glyphs ) == false )
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         U32String::size_type text_size = _text.size();
         m_charsData.reserve( text_size );
 
@@ -57,6 +70,7 @@ namespace Mengine
             TextCharData charData;
             charData.code = glyphChar;
             charData.advance = glyph.advance;
+            charData.charOffset = m_charOffset;
             charData.offset = glyph.offset;
             charData.size = glyph.size;
             charData.uv = glyph.uv;
@@ -89,6 +103,48 @@ namespace Mengine
             charData.advance += _spaceAdvance;
             m_length += _spaceAdvance;
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TextLine::initializeShaped_( uint32_t _fontId, const FontInterfacePtr & _font, const U32String & _text, const VectorFontShapedGlyphs & _glyphs )
+    {
+        m_charsData.reserve( _glyphs.size() );
+
+        for( size_t index = 0; index != _glyphs.size(); ++index )
+        {
+            const FontShapedGlyphDesc & shaped = _glyphs[index];
+            bool clusterEnd = (index + 1 == _glyphs.size() || shaped.cluster != _glyphs[index + 1].cluster);
+
+            Glyph glyph;
+            if( _font->getShapedGlyph( m_layout, shaped.index, &glyph ) == false )
+            {
+                return false;
+            }
+
+            TextCharData charData;
+            charData.code = _text[shaped.cluster];
+            charData.advance = shaped.advance;
+            charData.charOffset = clusterEnd == true ? m_charOffset : 0.f;
+            charData.offset = glyph.offset + shaped.offset;
+            charData.size = glyph.size;
+            charData.uv = glyph.uv;
+            charData.fontId = _fontId;
+            charData.texture = glyph.texture;
+
+            m_charsData.emplace_back( charData );
+            m_length += charData.advance + charData.charOffset;
+        }
+
+        if( _glyphs.empty() == false )
+        {
+            m_length -= m_charOffset;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t TextLine::getCharCount() const
+    {
+        return m_charCount;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t TextLine::getCharsDataSize() const
@@ -127,7 +183,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextLine::advanceCharOffset( const TextCharData & _cd, float _charScale, mt::vec2f * const _offset ) const
     {
-        _offset->x += (_cd.advance + m_charOffset) * _charScale;
+        _offset->x += (_cd.advance + _cd.charOffset) * _charScale;
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -119,10 +119,103 @@ namespace Mengine
             return memory;
         }
         //////////////////////////////////////////////////////////////////////////
+        static bool shapeText( hb_font_t * _font, const U32String & _text, const Char * _language, float _scale, VectorFontShapedGlyphs * const _glyphs )
+        {
+            hb_buffer_t * buffer = hb_buffer_create();
+            hb_unicode_funcs_t * unicode = hb_unicode_funcs_get_default();
+            hb_language_t language = hb_language_from_string( _language, -1 );
+
+            bool successful = true;
+            size_t begin = 0;
+            size_t size = _text.size();
+
+            while( begin != size )
+            {
+                hb_script_t script = HB_SCRIPT_UNKNOWN;
+                size_t end = begin;
+
+                for( ; end != size; ++end )
+                {
+                    hb_script_t next = hb_unicode_script( unicode, _text[end] );
+
+                    if( next == HB_SCRIPT_COMMON || next == HB_SCRIPT_INHERITED || next == HB_SCRIPT_UNKNOWN )
+                    {
+                        continue;
+                    }
+
+                    if( script == HB_SCRIPT_UNKNOWN )
+                    {
+                        script = next;
+
+                        continue;
+                    }
+
+                    if( next != script )
+                    {
+                        break;
+                    }
+                }
+
+                MENGINE_ASSERTION_FATAL( hb_script_get_horizontal_direction( script ) != HB_DIRECTION_RTL, "shaping language '%s' got right-to-left text, only left-to-right is supported"
+                    , _language
+                );
+
+                hb_buffer_reset( buffer );
+                hb_buffer_set_direction( buffer, HB_DIRECTION_LTR );
+                hb_buffer_set_script( buffer, script );
+                hb_buffer_set_language( buffer, language );
+                hb_buffer_set_cluster_level( buffer, HB_BUFFER_CLUSTER_LEVEL_MONOTONE_GRAPHEMES );
+
+                for( size_t index = begin; index != end; ++index )
+                {
+                    Char32 code = _text[index];
+                    uint32_t cluster = (uint32_t)index;
+
+                    hb_buffer_add( buffer, code, cluster );
+                }
+
+                hb_buffer_set_content_type( buffer, HB_BUFFER_CONTENT_TYPE_UNICODE );
+
+                if( hb_shape_full( _font, buffer, nullptr, 0, nullptr ) == false )
+                {
+                    successful = false;
+
+                    break;
+                }
+
+                unsigned int count;
+                const hb_glyph_info_t * infos = hb_buffer_get_glyph_infos( buffer, &count );
+                const hb_glyph_position_t * positions = hb_buffer_get_glyph_positions( buffer, nullptr );
+
+                for( unsigned int index = 0; index != count; ++index )
+                {
+                    const hb_glyph_info_t & info = infos[index];
+                    const hb_glyph_position_t & position = positions[index];
+
+                    FontShapedGlyphDesc glyph;
+                    glyph.index = info.codepoint;
+                    glyph.cluster = info.cluster;
+                    glyph.unsafeToBreak = (hb_glyph_info_get_glyph_flags( &info ) & HB_GLYPH_FLAG_UNSAFE_TO_BREAK) != 0;
+                    glyph.advance = (float)position.x_advance * MENGINE_FT_INV64 * _scale;
+                    glyph.offset.x = (float)position.x_offset * MENGINE_FT_INV64 * _scale;
+                    glyph.offset.y = -(float)position.y_offset * MENGINE_FT_INV64 * _scale;
+
+                    _glyphs->emplace_back( glyph );
+                }
+
+                begin = end;
+            }
+
+            hb_buffer_destroy( buffer );
+
+            return successful;
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     TTFFont::TTFFont()
         : m_ftlibrary( nullptr )
+        , m_hbFont( nullptr )
         , m_ttfAscender( 0.f )
         , m_ttfDescender( 0.f )
         , m_ttfHeight( 0.f )
@@ -252,11 +345,25 @@ namespace Mengine
         m_ttfSpacing *= sampleInv;
         m_ttfBearingYA *= sampleInv;
 
+        if( this->isTextShaping() == true )
+        {
+            hb_font_t * hbFont = hb_ft_font_create_referenced( face );
+            hb_ft_font_set_load_flags( hbFont, FT_LOAD_NO_AUTOHINT | FT_LOAD_COLOR );
+
+            m_hbFont = hbFont;
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void TTFFont::_release()
     {
+        if( m_hbFont != nullptr )
+        {
+            hb_font_destroy( m_hbFont );
+            m_hbFont = nullptr;
+        }
+
         if( m_effect != nullptr )
         {
             m_effect->release();
@@ -296,29 +403,48 @@ namespace Mengine
     {
         MENGINE_PROFILER_CATEGORY();
 
-        uint32_t code_hash = _code % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
-        VectorTTFGlyphs & glyphs = m_glyphsHash[code_hash];
+        const TTFFontGlyph * fontGlyph = m_glyph.getT<const TTFFontGlyph *>();
+        FT_Face face = this->getFTFace( fontGlyph->getTTFData() );
 
-        VectorTTFGlyphs::const_iterator it_found = StdAlgorithm::find_if( glyphs.begin(), glyphs.end(), [_code]( const TTFGlyph & _glyph )
-        {
-            return _glyph.ch == _code;
-        } );
-
-        if( it_found != glyphs.end() )
-        {
-            const TTFGlyph & g = *it_found;
-            MENGINE_UNUSED( g );
-
-            return true;
-        }
-
-        FT_Face face;
-        if( this->loadFaceGlyph_( _code, &face ) == false )
+        if( face == nullptr )
         {
             return false;
         }
 
-        FT_GlyphSlot glyph = face->glyph;
+        FT_UInt index = FT_Get_Char_Index( face, _code );
+
+        return this->prepareGlyphIndex_( face, index, _doc );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TTFFont::prepareGlyphIndex_( FT_Face _face, uint32_t _index, const DocumentInterfacePtr & _doc )
+    {
+        uint32_t code_hash = _index % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
+        VectorTTFGlyphs & glyphs = m_glyphsHash[code_hash];
+
+        VectorTTFGlyphs::const_iterator it_found = StdAlgorithm::find_if( glyphs.begin(), glyphs.end(), [_index]( const TTFGlyph & _glyph )
+        {
+            return _glyph.index == _index;
+        } );
+
+        if( it_found != glyphs.end() )
+        {
+            return true;
+        }
+
+        FT_Error error = FT_Load_Glyph( _face, _index, FT_LOAD_RENDER | FT_LOAD_NO_AUTOHINT | FT_LOAD_COLOR );
+
+        if( error != FT_Err_Ok )
+        {
+            LOGGER_ERROR( "ttf font '%s' invalid load glyph index %u error [%s]"
+                , this->getName().c_str()
+                , _index
+                , FT_Error_String( error )
+            );
+
+            return false;
+        }
+
+        FT_GlyphSlot glyph = _face->glyph;
 
         const FT_Glyph_Metrics & metrics = glyph->metrics;
 
@@ -363,7 +489,7 @@ namespace Mengine
         float sampleInv = this->getSampleInv();
 
         TTFGlyph ttf_glyph;
-        ttf_glyph.ch = _code;
+        ttf_glyph.index = _index;
         ttf_glyph.advance = glyph_advance * sampleInv;
 
         if( glyph_bitmap.width == 0 || glyph_bitmap.rows == 0 )
@@ -610,17 +736,59 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TTFFont::hasGlyph( GlyphCode _code ) const
+    void TTFFont::setShapingLanguage( const ConstString & _language )
     {
-        uint32_t code_hash = _code % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
-        const VectorTTFGlyphs & glyphs = m_glyphsHash[code_hash];
+        m_shapingLanguage = _language;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ConstString & TTFFont::getShapingLanguage() const
+    {
+        return m_shapingLanguage;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TTFFont::isTextShaping() const
+    {
+        return m_shapingLanguage.empty() == false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TTFFont::shapeText( const U32String & _text, VectorFontShapedGlyphs * const _glyphs, const DocumentInterfacePtr & _doc )
+    {
+        MENGINE_ASSERTION_MEMORY_PANIC( m_hbFont, "ttf font '%s' shape text without shaping font"
+            , this->getName().c_str()
+        );
 
-        VectorTTFGlyphs::const_iterator it_found = StdAlgorithm::find_if( glyphs.begin(), glyphs.end(), [_code]( const TTFGlyph & _glyph )
+        const TTFFontGlyph * fontGlyph = m_glyph.getT<const TTFFontGlyph *>();
+        FT_Face face = this->getFTFace( fontGlyph->getTTFData() );
+
+        if( face == nullptr )
         {
-            return _glyph.ch == _code;
-        } );
+            return false;
+        }
 
-        if( it_found == glyphs.end() )
+        hb_ft_font_changed( m_hbFont );
+
+        const Char * language = m_shapingLanguage.c_str();
+        float sampleInv = this->getSampleInv();
+
+        if( Detail::shapeText( m_hbFont, _text, language, sampleInv, _glyphs ) == false )
+        {
+            return false;
+        }
+
+        for( const FontShapedGlyphDesc & glyph : *_glyphs )
+        {
+            if( this->prepareGlyphIndex_( face, glyph.index, _doc ) == false )
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TTFFont::getShapedGlyph( uint32_t _layout, uint32_t _index, Glyph * const _glyph ) const
+    {
+        if( this->getGlyphIndex_( _layout, _index, _glyph ) == false )
         {
             return false;
         }
@@ -628,14 +796,29 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TTFFont::getGlyph( uint32_t _layout, GlyphCode _code, GlyphCode _next, Glyph * const _glyph ) const
+    bool TTFFont::hasGlyph( GlyphCode _code ) const
     {
-        uint32_t code_hash = _code % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
+        const TTFFontGlyph * fontGlyph = m_glyph.getT<const TTFFontGlyph *>();
+        FT_Face face = this->getFTFace( fontGlyph->getTTFData() );
+
+        if( face == nullptr )
+        {
+            return false;
+        }
+
+        FT_UInt index = FT_Get_Char_Index( face, _code == 160 ? 32 : _code );
+        Glyph glyph;
+        return this->getGlyphIndex_( 0, index, &glyph );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TTFFont::getGlyphIndex_( uint32_t _layout, uint32_t _index, Glyph * const _glyph ) const
+    {
+        uint32_t code_hash = _index % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
         const VectorTTFGlyphs & glyphs = m_glyphsHash[code_hash];
 
-        VectorTTFGlyphs::const_iterator it_found = StdAlgorithm::find_if( glyphs.begin(), glyphs.end(), [_code]( const TTFGlyph & _glyph )
+        VectorTTFGlyphs::const_iterator it_found = StdAlgorithm::find_if( glyphs.begin(), glyphs.end(), [_index]( const TTFGlyph & _glyph )
         {
-            return _glyph.ch == _code;
+            return _glyph.index == _index;
         } );
 
         if( it_found == glyphs.end() )
@@ -644,26 +827,40 @@ namespace Mengine
         }
 
         const TTFGlyph & glyph = *it_found;
-
-        _glyph->advance = glyph.advance;
-
         const TTFGlyphQuad & quad = glyph.quads[_layout];
 
+        _glyph->advance = glyph.advance;
         _glyph->offset = quad.offset;
         _glyph->size = quad.size;
         _glyph->uv = quad.uv;
         _glyph->texture = quad.texture;
 
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TTFFont::getGlyph( uint32_t _layout, GlyphCode _code, GlyphCode _next, Glyph * const _glyph ) const
+    {
+        const TTFFontGlyph * fontGlyph = m_glyph.getT<const TTFFontGlyph *>();
+        FT_Face face = this->getFTFace( fontGlyph->getTTFData() );
+
+        if( face == nullptr )
+        {
+            return false;
+        }
+
+        _code = _code == 160 ? 32 : _code;
+        _next = _next == 160 ? 32 : _next;
+        FT_UInt index = FT_Get_Char_Index( face, _code );
+
+        if( this->getGlyphIndex_( _layout, index, _glyph ) == false )
+        {
+            return false;
+        }
+
         if( _next == 0 )
         {
             return true;
         }
-
-        const TTFFontGlyph * fontGlyph = m_glyph.getT<const TTFFontGlyph *>();
-
-        const TTFDataInterfacePtr dataTTF = fontGlyph->getTTFData();
-
-        FT_Face face = this->getFTFace( dataTTF );
 
         if( FT_HAS_KERNING( face ) == false )
         {

@@ -38,6 +38,12 @@
     return millis;
 }
 
++ (NSInteger)getTimestampOffsetSeconds:(NSInteger)timestamp baseTimestamp:(NSInteger)baseTimestamp {
+    NSInteger offset = MAX(0L, (timestamp - baseTimestamp) / 1000L);
+
+    return offset;
+}
+
 + (NSInteger)getSecureRandomInteger {
     NSInteger randomNumber;
     size_t size = sizeof(randomNumber);

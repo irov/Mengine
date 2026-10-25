@@ -215,7 +215,7 @@ namespace Mengine
 
         bool updateTextLines_() const;
         bool updateTextLinesWrap_( VectorTextLineChunks2 * const _textLines ) const;
-        void updateTextLinesMaxCount_( VectorTextLineChunks2 * const _textLines ) const;
+        bool updateTextLinesMaxCount_( VectorTextLineChunks2 * const _textLines ) const;
         bool updateTextLinesDimension_( const FontInterfacePtr & _font, const VectorTextLineChunks2 & _textLines, float _justifyLength, uint32_t * const _charCount, uint32_t * const _layoutCount, mt::vec2f * const _textSize ) const;
 
     public:

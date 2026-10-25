@@ -19,6 +19,7 @@ namespace Mengine
             _dateTime->year = _systemTime.wYear;
             _dateTime->month = _systemTime.wMonth;
             _dateTime->day = _systemTime.wDay;
+            _dateTime->weekday = (_systemTime.wDayOfWeek + 6) % 7 + 1;
             _dateTime->hour = _systemTime.wHour;
             _dateTime->minute = _systemTime.wMinute;
             _dateTime->second = _systemTime.wSecond;

@@ -1,5 +1,7 @@
 #include "AndroidEnvironmentService.h"
 
+#include "Interface/DateTimeSystemInterface.h"
+
 #include "Environment/Android/AndroidEnv.h"
 #include "Environment/Android/AndroidHelper.h"
 #include "Environment/Android/AndroidActivityHelper.h"
@@ -59,6 +61,7 @@ namespace Mengine
         , m_sessionIndex( 0 )
         , m_sessionTimestamp( 0 )
         , m_sessionRND( 0 )
+        , m_sessionGap( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -84,6 +87,10 @@ namespace Mengine
         Detail::getAndroidInfo( jenv, "getSessionTimestamp", &m_sessionTimestamp );
         Detail::getAndroidInfo( jenv, "getSessionId", &m_sessionId );
         Detail::getAndroidInfo( jenv, "getSessionRND", &m_sessionRND );
+        Detail::getAndroidInfo( jenv, "getSessionGap", &m_sessionGap );
+
+        DATETIME_SYSTEM()
+            ->getDateTimeFromMilliseconds( m_sessionTimestamp, &m_sessionDate );
 
         m_osFamily.assign( "Android" );
 
@@ -177,6 +184,36 @@ namespace Mengine
     void AndroidEnvironmentService::getSessionId( Char * const _sessionId ) const
     {
         m_sessionId.copy( _sessionId );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t AndroidEnvironmentService::getSessionDateYear() const
+    {
+        return m_sessionDate.year;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t AndroidEnvironmentService::getSessionDateMonth() const
+    {
+        return m_sessionDate.month;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t AndroidEnvironmentService::getSessionDateDay() const
+    {
+        return m_sessionDate.day;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t AndroidEnvironmentService::getSessionDateHour() const
+    {
+        return m_sessionDate.hour;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t AndroidEnvironmentService::getSessionDateWeekday() const
+    {
+        return m_sessionDate.weekday;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int64_t AndroidEnvironmentService::getSessionGap() const
+    {
+        return m_sessionGap;
     }
     //////////////////////////////////////////////////////////////////////////
 }

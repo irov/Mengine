@@ -399,6 +399,12 @@ public class MengineUtils {
         return duration;
     }
 
+    public static long getTimestampOffsetSeconds(long timestamp, long baseTimestamp) {
+        long offset = Math.max(0L, (timestamp - baseTimestamp) / 1000L);
+
+        return offset;
+    }
+
     public static long getThreadLocalRandomNumber() {
         long randomNumber = java.util.concurrent.ThreadLocalRandom.current().nextLong();
 

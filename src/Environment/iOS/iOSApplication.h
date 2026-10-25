@@ -24,6 +24,12 @@
 - (NSString * _Nonnull)getSessionId;
 - (NSInteger)getSessionTimestamp;
 - (NSInteger)getSessionRND;
+- (NSInteger)getSessionDateYear;
+- (NSInteger)getSessionDateMonth;
+- (NSInteger)getSessionDateDay;
+- (NSInteger)getSessionDateHour;
+- (NSInteger)getSessionDateWeekday;
+- (NSInteger)getSessionGap;
 
 - (NSString * _Nonnull)getUserId;
 
@@ -35,6 +41,8 @@
 @property (nonatomic, strong) NSString * _Nonnull m_sessionId;
 @property (nonatomic) NSInteger m_sessionTimestamp;
 @property (nonatomic) NSInteger m_sessionRND;
+@property (nonatomic, copy) NSDateComponents * _Nonnull m_sessionDate;
+@property (nonatomic) NSInteger m_sessionGap;
 
 @property (nonatomic, strong) NSString * _Nonnull m_userId;
 

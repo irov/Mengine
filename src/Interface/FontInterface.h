@@ -15,6 +15,7 @@
 #include "Kernel/Color.h"
 #include "Kernel/TextParams.h"
 #include "Kernel/U32String.h"
+#include "Kernel/Vector.h"
 
 #include "math/vec4.h"
 #include "math/uv4.h"
@@ -32,6 +33,18 @@ namespace Mengine
         mt::uv4f uv;
         RenderTextureInterfacePtr texture;
     };
+    //////////////////////////////////////////////////////////////////////////
+    struct FontShapedGlyphDesc
+    {
+        uint32_t index;
+        uint32_t cluster;
+        bool unsafeToBreak;
+
+        float advance;
+        mt::vec2f offset;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef Vector<FontShapedGlyphDesc> VectorFontShapedGlyphs;
     //////////////////////////////////////////////////////////////////////////
     class FontInterface
         : public ServantInterface
@@ -82,6 +95,11 @@ namespace Mengine
         virtual bool validateText( const ConstString & _key, const Char * _text, size_t _size ) const = 0;
         virtual bool prepareText( const Char * _text, size_t _size, U32String * const _out ) const = 0;
         virtual bool prepareGlyph( const U32String & _code, const DocumentInterfacePtr & _doc ) = 0;
+
+    public:
+        virtual bool isTextShaping() const = 0;
+        virtual bool shapeText( const U32String & _text, VectorFontShapedGlyphs * const _glyphs, const DocumentInterfacePtr & _doc ) = 0;
+        virtual bool getShapedGlyph( uint32_t _layout, uint32_t _index, Glyph * const _glyph ) const = 0;
 
     public:
         virtual bool hasGlyph( GlyphCode _char ) const = 0;

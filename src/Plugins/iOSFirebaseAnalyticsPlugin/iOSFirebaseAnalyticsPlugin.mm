@@ -76,7 +76,6 @@
     NSString * intstallVersion = [iOSApplication.sharedInstance getInstallVersion];
     NSInteger installRND = [iOSApplication.sharedInstance getInstallRND];
     NSInteger sessionIndex = [iOSApplication.sharedInstance getSessionIndex];
-    NSInteger sessionTimestamp = [iOSApplication.sharedInstance getSessionTimestamp];
 
     [FIRAnalytics setUserPropertyString:MENGINE_BUILD_PUBLISH_VALUE(@"true", @"false") forName:@"is_publish"];
     [FIRAnalytics setUserPropertyString:MENGINE_DEBUG_VALUE(@"true", @"false") forName:@"is_debug"];
@@ -85,7 +84,8 @@
     [FIRAnalytics setUserPropertyString:intstallVersion forName:@"install_version"];
     [FIRAnalytics setUserPropertyString:[NSString stringWithFormat:@"%ld", (long)installRND] forName:@"install_rnd"];
     [FIRAnalytics setUserPropertyString:[NSString stringWithFormat:@"%ld", (long)sessionIndex] forName:@"session_index"];
-    [FIRAnalytics setUserPropertyString:[NSString stringWithFormat:@"%ld", (long)sessionTimestamp] forName:@"session_timestamp"];
+
+    [FIRAnalytics setUserPropertyString:nil forName:@"session_timestamp"];
 
     NSInteger currentTimestamp = [AppleDetail getTimestamp];
     NSInteger lifeTime = currentTimestamp - installTimestamp;

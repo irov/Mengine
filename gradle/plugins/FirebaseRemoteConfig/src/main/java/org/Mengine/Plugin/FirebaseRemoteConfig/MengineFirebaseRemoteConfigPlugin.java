@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.remoteconfig.CustomSignals;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigValue;
@@ -23,6 +24,7 @@ import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineListenerActivity;
 import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
+import org.Mengine.Base.MengineUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,12 +37,39 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
     public static final boolean SERVICE_EMBEDDING = true;
 
     private Map<String, String> m_defaults = new HashMap<>();
+    private CustomSignals m_signals;
 
     private volatile boolean m_prefetching = false;
 
     @Override
     public void onAppCreate(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
         FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
+
+        long installTimestamp = application.getInstallTimestamp();
+        long sessionTimestamp = application.getSessionTimestamp();
+        long installAgeSeconds = MengineUtils.getTimestampOffsetSeconds(sessionTimestamp, installTimestamp);
+
+        long sessionDateYear = application.getSessionDateYear();
+        long sessionDateMonth = application.getSessionDateMonth();
+        long sessionDateDay = application.getSessionDateDay();
+        long sessionDateHour = application.getSessionDateHour();
+        long sessionDateWeekday = application.getSessionDateWeekday();
+        long sessionRND = application.getSessionRND();
+        long sessionGap = application.getSessionGap();
+
+        CustomSignals signals = new CustomSignals.Builder()
+            .put("session_dateyear", sessionDateYear)
+            .put("session_datemonth", sessionDateMonth)
+            .put("session_dateday", sessionDateDay)
+            .put("session_datehour", sessionDateHour)
+            .put("session_dateweekday", sessionDateWeekday)
+            .put("session_timestamp", sessionTimestamp)
+            .put("session_rnd", sessionRND)
+            .put("session_gap", sessionGap)
+            .put("install_age", installAgeSeconds)
+            .build();
+
+        m_signals = signals;
 
         FirebaseRemoteConfigSettings.Builder configSettingsBuilder = new FirebaseRemoteConfigSettings.Builder();
 
@@ -218,7 +247,16 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
 
         m_prefetching = true;
 
-        remoteConfig.fetchAndActivate()
+        remoteConfig.setCustomSignals(m_signals)
+            .continueWithTask(task -> {
+                if (task.isSuccessful() == false) {
+                    this.logError("[ERROR] remote config invalid set custom signals: %s"
+                        , task.getException()
+                    );
+                }
+
+                return remoteConfig.fetchAndActivate();
+            })
             .addOnSuccessListener(updated -> {
                 m_prefetching = false;
 

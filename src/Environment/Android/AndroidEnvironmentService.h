@@ -2,6 +2,7 @@
 
 #include "Interface/EnvironmentServiceInterface.h"
 
+#include "Kernel/DateTime.h"
 #include "Kernel/ServiceBase.h"
 #include "Kernel/StaticString.h"
 
@@ -34,6 +35,12 @@ namespace Mengine
         Timestamp getSessionTimestamp() const override;
         int64_t getSessionRND() const override;
         void getSessionId( Char * const _sessionId ) const override;
+        uint32_t getSessionDateYear() const override;
+        uint32_t getSessionDateMonth() const override;
+        uint32_t getSessionDateDay() const override;
+        uint32_t getSessionDateHour() const override;
+        uint32_t getSessionDateWeekday() const override;
+        int64_t getSessionGap() const override;
 
     protected:
         StaticString<MENGINE_ENVIRONMENT_USER_MAXNAME> m_userName;
@@ -48,7 +55,9 @@ namespace Mengine
         StaticString<MENGINE_ENVIRONMENT_INSTALLVERSION_MAXNAME> m_installVersion;
         int64_t m_installRND;
         Timestamp m_sessionTimestamp;
+        PlatformDateTime m_sessionDate;
         int64_t m_sessionRND;
         int64_t m_sessionIndex;
+        int64_t m_sessionGap;
     };
 }

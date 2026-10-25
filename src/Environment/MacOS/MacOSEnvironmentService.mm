@@ -1,5 +1,6 @@
 #import "MacOSEnvironmentService.h"
 
+#include "Interface/DateTimeSystemInterface.h"
 #import "Interface/PlatformServiceInterface.h"
 
 #import "Environment/Apple/AppleBundle.h"
@@ -75,6 +76,8 @@ namespace Mengine
 
         NSInteger sessionTimestamp = [MacOSApplication.sharedInstance getSessionTimestamp];
         m_sessionTimestamp = (Timestamp)sessionTimestamp;
+        DATETIME_SYSTEM()
+            ->getDateTimeFromMilliseconds( m_sessionTimestamp, &m_sessionDate );
 
         NSInteger sessionIndex = [MacOSApplication.sharedInstance getSessionIndex];
         m_sessionIndex = (int64_t)sessionIndex;
@@ -201,6 +204,36 @@ namespace Mengine
         }
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t MacOSEnvironmentService::getSessionDateYear() const
+    {
+        return m_sessionDate.year;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t MacOSEnvironmentService::getSessionDateMonth() const
+    {
+        return m_sessionDate.month;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t MacOSEnvironmentService::getSessionDateDay() const
+    {
+        return m_sessionDate.day;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t MacOSEnvironmentService::getSessionDateHour() const
+    {
+        return m_sessionDate.hour;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t MacOSEnvironmentService::getSessionDateWeekday() const
+    {
+        return m_sessionDate.weekday;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int64_t MacOSEnvironmentService::getSessionGap() const
+    {
+        return 0;
     }
     //////////////////////////////////////////////////////////////////////////
 }

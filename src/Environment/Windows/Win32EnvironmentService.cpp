@@ -1,5 +1,7 @@
 #include "Win32EnvironmentService.h"
 
+#include "Interface/DateTimeSystemInterface.h"
+
 #include "Environment/Windows/Win32Helper.h"
 
 #include "Kernel/Logger.h"
@@ -222,6 +224,8 @@ namespace Mengine
         m_installId.assign( fingerprint );
 
         m_sessionTimestamp = Helper::getSystemTimestamp();
+        DATETIME_SYSTEM()
+            ->getDateTimeFromMilliseconds( m_sessionTimestamp, &m_sessionDate );
         
         Char * sessionIdData = m_sessionId.data();
         size_t sessionIdCapacity = m_sessionId.capacity();
@@ -302,6 +306,36 @@ namespace Mengine
     void Win32EnvironmentService::getSessionId( Char * const _sessionId ) const
     {
         m_sessionId.copy( _sessionId );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t Win32EnvironmentService::getSessionDateYear() const
+    {
+        return m_sessionDate.year;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t Win32EnvironmentService::getSessionDateMonth() const
+    {
+        return m_sessionDate.month;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t Win32EnvironmentService::getSessionDateDay() const
+    {
+        return m_sessionDate.day;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t Win32EnvironmentService::getSessionDateHour() const
+    {
+        return m_sessionDate.hour;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t Win32EnvironmentService::getSessionDateWeekday() const
+    {
+        return m_sessionDate.weekday;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int64_t Win32EnvironmentService::getSessionGap() const
+    {
+        return 0;
     }
     //////////////////////////////////////////////////////////////////////////
 }

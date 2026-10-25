@@ -56,6 +56,11 @@ namespace Mengine
         bool prepareText( const Char * _text, size_t _size, U32String * const _out ) const override;
         bool prepareGlyph( const U32String & _text, const DocumentInterfacePtr & _doc ) override;
 
+    public:
+        bool isTextShaping() const override;
+        bool shapeText( const U32String & _text, VectorFontShapedGlyphs * const _glyphs, const DocumentInterfacePtr & _doc ) override;
+        bool getShapedGlyph( uint32_t _layout, uint32_t _index, Glyph * const _glyph ) const override;
+
     protected:
         virtual bool _validateGlyphes( const U32String & _codes ) const = 0;
         virtual bool _prepareGlyph( GlyphCode _code, const DocumentInterfacePtr & _doc ) = 0;

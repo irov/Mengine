@@ -11,8 +11,36 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
+        //////////////////////////////////////////////////////////////////////////
+        namespace Detail
+        {
+            //////////////////////////////////////////////////////////////////////////
+            static void appendChunk( VectorTextLineChunks * const _chunks, const TextLineChunk & _chunk )
+            {
+                if( _chunks->empty() == false )
+                {
+                    if( _chunk.value.empty() == true )
+                    {
+                        return;
+                    }
+
+                    TextLineChunk & lastChunk = _chunks->back();
+
+                    if( lastChunk.fontId == _chunk.fontId )
+                    {
+                        lastChunk.value.append( _chunk.value );
+
+                        return;
+                    }
+                }
+
+                _chunks->emplace_back( _chunk );
+            }
+            //////////////////////////////////////////////////////////////////////////
+        }
         //////////////////////////////////////////////////////////////////////////
         static MENGINE_CONSTEXPR VectorTextLineChunks::size_type TextChunkNPos = MENGINE_UNKNOWN_SIZE;
         //////////////////////////////////////////////////////////////////////////
@@ -210,7 +238,7 @@ namespace Mengine
                     lineChunk.value = chunk.value.substr( begin - chunkBegin, index - begin );
                     lineChunk.fontId = chunk.fontId;
 
-                    collect.emplace_back( lineChunk );
+                    Detail::appendChunk( &collect, lineChunk );
 
                     _lines->emplace_back( collect );
                     collect.clear();
@@ -228,7 +256,7 @@ namespace Mengine
                 tailChunk.value = chunk.value.substr( begin - chunkBegin );
                 tailChunk.fontId = chunk.fontId;
 
-                collect.emplace_back( tailChunk );
+                Detail::appendChunk( &collect, tailChunk );
 
                 begin = chunkEnd;
             }

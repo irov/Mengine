@@ -20,11 +20,14 @@ import androidx.annotation.StringRes;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class MengineApplication extends Application {
@@ -49,6 +52,8 @@ public abstract class MengineApplication extends Application {
     private long m_sessionTimestamp = -1;
     private long m_sessionRND = -1;
     private String m_sessionId;
+    private Calendar m_sessionDate;
+    private long m_sessionGap = 0;
 
     protected String m_userId;
 
@@ -220,6 +225,30 @@ public abstract class MengineApplication extends Application {
 
     public String getSessionId() {
         return m_sessionId;
+    }
+
+    public long getSessionDateYear() {
+        return m_sessionDate.get(Calendar.YEAR);
+    }
+
+    public long getSessionDateMonth() {
+        return m_sessionDate.get(Calendar.MONTH) + 1L;
+    }
+
+    public long getSessionDateDay() {
+        return m_sessionDate.get(Calendar.DAY_OF_MONTH);
+    }
+
+    public long getSessionDateHour() {
+        return m_sessionDate.get(Calendar.HOUR_OF_DAY);
+    }
+
+    public long getSessionDateWeekday() {
+        return (m_sessionDate.get(Calendar.DAY_OF_WEEK) + 5L) % 7L + 1L;
+    }
+
+    public long getSessionGap() {
+        return m_sessionGap;
     }
 
     public String getDeviceManufacturer() {
@@ -804,7 +833,7 @@ public abstract class MengineApplication extends Application {
             }
         }
 
-        long sessionTimestamp = MengineUtils.getTimestamp();
+        long currentTimestamp = MengineUtils.getTimestamp();
 
         this.setState("application.init", "started");
 
@@ -816,9 +845,10 @@ public abstract class MengineApplication extends Application {
         String old_installId = MenginePreferences.getPreferenceString("install_id", null); //Deprecated
         String installId = MenginePreferences.getPreferenceString("install_id", old_installId);
         long installTimestamp = MenginePreferences.getPreferenceLong("install_timestamp", -1);
-        String installVersion = MenginePreferences.getPreferenceString("install_version", "");
+        String installVersion = MenginePreferences.getPreferenceString("install_version", null);
         long installRND = MenginePreferences.getPreferenceLong("install_rnd", -1);
         long sessionIndex = MenginePreferences.getPreferenceLong("session_index", 0);
+        long sessionTimestamp = MenginePreferences.getPreferenceLong("session_timestamp", -1);
 
         String old_userId = MenginePreferences.getPreferenceString("session_id", null); //Deprecated
         String userId = MenginePreferences.getPreferenceString("user_id", old_userId);
@@ -854,6 +884,7 @@ public abstract class MengineApplication extends Application {
         }
 
         preferences.putLong("session_index", sessionIndex + 1);
+        preferences.putLong("session_timestamp", currentTimestamp);
 
         MenginePreferences.setPreferences(preferences);
 
@@ -863,9 +894,20 @@ public abstract class MengineApplication extends Application {
         m_installVersion = installVersion;
         m_installRND = installRND;
         m_sessionIndex = sessionIndex;
-        m_sessionTimestamp = sessionTimestamp;
+        m_sessionTimestamp = currentTimestamp;
         m_sessionRND = MengineUtils.getSecureRandomNumber();
         m_sessionId = MengineUtils.getSecureRandomHexString(32);
+
+        long sessionGap = 0;
+        if (sessionTimestamp != -1) {
+            sessionGap = MengineUtils.getTimestampOffsetSeconds(currentTimestamp, sessionTimestamp);
+        }
+
+        Calendar sessionDate = new GregorianCalendar(TimeZone.getTimeZone("UTC"), Locale.ROOT);
+        sessionDate.setTimeInMillis(currentTimestamp);
+
+        m_sessionDate = sessionDate;
+        m_sessionGap = sessionGap;
 
         m_userId = userId;
 
@@ -1094,7 +1136,7 @@ public abstract class MengineApplication extends Application {
 
         this.setState("application.init", "completed");
 
-        MengineLog.logDebug(TAG, "[END] onCreate time: %d", MengineUtils.getTimestamp() - sessionTimestamp);
+        MengineLog.logDebug(TAG, "[END] onCreate time: %d", MengineUtils.getTimestamp() - currentTimestamp);
     }
 
     public void onServicesLoad() {

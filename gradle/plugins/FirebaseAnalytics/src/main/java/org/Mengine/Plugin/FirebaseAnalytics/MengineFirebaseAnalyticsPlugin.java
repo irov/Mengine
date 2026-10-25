@@ -67,7 +67,6 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
         String installVersion = application.getInstallVersion();
         long installRND = application.getInstallRND();
         long sessionIndex = application.getSessionIndex();
-        long sessionTimestamp = application.getSessionTimestamp();
 
         boolean is_publish = application.isBuildPublish();
 
@@ -78,7 +77,8 @@ public class MengineFirebaseAnalyticsPlugin extends MengineService implements Me
         firebaseAnalytics.setUserProperty("install_version", installVersion);
         firebaseAnalytics.setUserProperty("install_rnd", String.valueOf(installRND));
         firebaseAnalytics.setUserProperty("session_index", String.valueOf(sessionIndex));
-        firebaseAnalytics.setUserProperty("session_timestamp", String.valueOf(sessionTimestamp));
+
+        firebaseAnalytics.setUserProperty("session_timestamp", null);
 
         String acquisitionNetwork = application.getAcquisitionNetwork();
         String acquisitionCampaign = application.getAcquisitionCampaign();

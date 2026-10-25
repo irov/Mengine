@@ -270,6 +270,29 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool FontBase::isTextShaping() const
+    {
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FontBase::shapeText( const U32String & _text, VectorFontShapedGlyphs * const _glyphs, const DocumentInterfacePtr & _doc )
+    {
+        MENGINE_UNUSED( _text );
+        MENGINE_UNUSED( _glyphs );
+        MENGINE_UNUSED( _doc );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FontBase::getShapedGlyph( uint32_t _layout, uint32_t _index, Glyph * const _glyph ) const
+    {
+        MENGINE_UNUSED( _layout );
+        MENGINE_UNUSED( _index );
+        MENGINE_UNUSED( _glyph );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool FontBase::prepareGlyph( const U32String & _text, const DocumentInterfacePtr & _doc )
     {
         for( Char32 code : _text )

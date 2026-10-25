@@ -31,6 +31,12 @@ namespace Mengine
 
         const ConstString & name = font->getName();
 
+        ConstString shapingLanguage;
+        if( _config->hasValue( name.c_str(), "ShapingLanguage", ConstString::none(), &shapingLanguage ) == true )
+        {
+            font->setShapingLanguage( shapingLanguage );
+        }
+
         Color colorFont;
         if( _config->hasValue( name.c_str(), "ColorFont", Color(), &colorFont ) == true )
         {

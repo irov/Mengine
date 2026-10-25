@@ -4402,6 +4402,7 @@ namespace Mengine
             .def_member( "year", &PlatformDateTime::year )
             .def_member( "month", &PlatformDateTime::month )
             .def_member( "day", &PlatformDateTime::day )
+            .def_member( "weekday", &PlatformDateTime::weekday )
             .def_member( "hour", &PlatformDateTime::hour )
             .def_member( "minute", &PlatformDateTime::minute )
             .def_member( "second", &PlatformDateTime::second )

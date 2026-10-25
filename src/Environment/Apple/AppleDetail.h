@@ -25,6 +25,7 @@
 + (NSString * _Nonnull)getMessageFromNSError:(NSError * _Nonnull)error;
 
 + (NSInteger)getTimestamp;
++ (NSInteger)getTimestampOffsetSeconds:(NSInteger)timestamp baseTimestamp:(NSInteger)baseTimestamp;
 + (NSInteger)getSecureRandomInteger;
 + (NSString * _Nonnull)getRandomHexString:(NSUInteger)length;
 

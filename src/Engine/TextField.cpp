@@ -68,6 +68,39 @@ namespace Mengine
                 uint32_t fontId = _fontIds[index];
                 const FontInterfacePtr & font = _fonts[fontId].font;
 
+                if( font->isTextShaping() == true )
+                {
+                    size_t end = index + 1;
+
+                    while( end != _end && _fontIds[end] == fontId )
+                    {
+                        ++end;
+                    }
+
+                    U32String runText = _text.substr( index, end - index );
+
+                    VectorFontShapedGlyphs glyphs;
+                    if( font->shapeText( runText, &glyphs, MENGINE_DOCUMENT_FUNCTION ) == false )
+                    {
+                        return false;
+                    }
+
+                    for( size_t glyphIndex = 0; glyphIndex != glyphs.size(); ++glyphIndex )
+                    {
+                        const FontShapedGlyphDesc & glyph = glyphs[glyphIndex];
+                        length += glyph.advance;
+
+                        if( glyphIndex + 1 == glyphs.size() || glyph.cluster != glyphs[glyphIndex + 1].cluster )
+                        {
+                            length += _charOffset;
+                        }
+                    }
+
+                    index = end - 1;
+
+                    continue;
+                }
+
                 GlyphCode code = _text[index];
                 GlyphCode next = 0;
 
@@ -1082,6 +1115,7 @@ namespace Mengine
         {
             U32String text;
             Detail::VectorFontIds fontIds;
+            bool shaping = false;
 
             for( const TextLineChunk & chunk : chunks )
             {
@@ -1089,6 +1123,13 @@ namespace Mengine
 
                 size_t textSize = text.size();
                 fontIds.resize( textSize, chunk.fontId );
+
+                const FontInterfacePtr & font = m_cacheFonts[chunk.fontId].font;
+
+                if( font->isTextShaping() == true )
+                {
+                    shaping = true;
+                }
             }
 
             if( text.empty() == true )
@@ -1096,6 +1137,24 @@ namespace Mengine
                 wrappedLines.emplace_back( chunks );
 
                 continue;
+            }
+
+            if( shaping == true )
+            {
+                float lineLength;
+                if( Detail::calcTextRangeLength( text, fontIds, m_cacheFonts, 0, text.size(), charOffset, &lineLength ) == false )
+                {
+                    return false;
+                }
+
+                if( lineLength * charScale <= maxLength )
+                {
+                    VectorTextLineChunks lineChunks;
+                    Detail::appendTextRange( text, fontIds, 0, text.size(), &lineChunks );
+                    wrappedLines.emplace_back( lineChunks );
+
+                    continue;
+                }
             }
 
             size_t lineBegin = 0;
@@ -1117,15 +1176,16 @@ namespace Mengine
                     tokenEnd = text.size();
                 }
 
+                size_t measureBegin = shaping == true ? lineBegin : tokenBegin;
                 float tokenLength;
-                if( Detail::calcTextRangeLength( text, fontIds, m_cacheFonts, tokenBegin, tokenEnd, charOffset, &tokenLength ) == false )
+                if( Detail::calcTextRangeLength( text, fontIds, m_cacheFonts, measureBegin, tokenEnd, charOffset, &tokenLength ) == false )
                 {
                     return false;
                 }
 
                 float boundaryLength = 0.f;
 
-                if( tokenBegin != lineBegin )
+                if( shaping == false && tokenBegin != lineBegin )
                 {
                     boundaryLength = charOffset;
 
@@ -1149,7 +1209,9 @@ namespace Mengine
                     }
                 }
 
-                if( tokenBegin != lineBegin && wordBegin != U32String::npos && (length + boundaryLength + tokenLength) * charScale > maxLength )
+                float candidateLength = shaping == true ? tokenLength : length + boundaryLength + tokenLength;
+
+                if( tokenBegin != lineBegin && wordBegin != U32String::npos && candidateLength * charScale > maxLength )
                 {
                     VectorTextLineChunks lineChunks;
                     Detail::appendTextRange( text, fontIds, lineBegin, tokenBegin, &lineChunks );
@@ -1161,11 +1223,10 @@ namespace Mengine
                     }
 
                     lineBegin = wordBegin;
-                    length = 0.f;
-                    boundaryLength = 0.f;
+                    candidateLength = tokenLength;
                 }
 
-                length += boundaryLength + tokenLength;
+                length = candidateLength;
                 tokenBegin = tokenEnd;
             }
 
@@ -1180,11 +1241,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::updateTextLinesMaxCount_( VectorTextLineChunks2 * const _textLines ) const
+    bool TextField::updateTextLinesMaxCount_( VectorTextLineChunks2 * const _textLines ) const
     {
         if( m_maxCharCount == MENGINE_UNKNOWN_COUNT )
         {
-            return;
+            return true;
         }
 
         uint32_t charIterator = 0;
@@ -1213,7 +1274,31 @@ namespace Mengine
                     continue;
                 }
 
-                chunk.value = chunk.value.substr( 0, m_maxCharCount - charIterator );
+                uint32_t count = m_maxCharCount - charIterator;
+                const FontInterfacePtr & font = m_cacheFonts[chunk.fontId].font;
+
+                if( font->isTextShaping() == true && count < value_size )
+                {
+                    VectorFontShapedGlyphs glyphs;
+                    if( font->shapeText( chunk.value, &glyphs, MENGINE_DOCUMENT_FACTORABLE ) == false )
+                    {
+                        return false;
+                    }
+
+                    uint32_t clusterEnd = 0;
+
+                    for( const FontShapedGlyphDesc & glyph : glyphs )
+                    {
+                        if( glyph.cluster <= count )
+                        {
+                            clusterEnd = MENGINE_MAX( clusterEnd, glyph.cluster );
+                        }
+                    }
+
+                    count = clusterEnd;
+                }
+
+                chunk.value = chunk.value.substr( 0, count );
 
                 VectorTextLineChunks::iterator it_chars_erase = it_chars;
                 StdIterator::advance( it_chars_erase, 1 );
@@ -1225,9 +1310,11 @@ namespace Mengine
 
                 _textLines->erase( it_lines_erase, _textLines->end() );
 
-                return;
+                return true;
             }
         }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool TextField::updateTextLinesLayout_( const VectorTextLineChunks2 & _textLines, float _justifyLength, VectorTextLinesLayout * const _layouts ) const
@@ -1245,13 +1332,30 @@ namespace Mengine
                 const FontInterfacePtr & font = m_cacheFonts[textChunk.fontId].font;
                 uint32_t layoutCount = font->getLayoutCount();
 
+                VectorFontShapedGlyphs glyphs;
+
+                if( font->isTextShaping() == true )
+                {
+                    if( font->shapeText( textChunk.value, &glyphs, MENGINE_DOCUMENT_FACTORABLE ) == false )
+                    {
+                        LOGGER_ERROR( "text field '%s' textId '%s' text '%s' invalid shape text for font '%s'"
+                            , this->getName().c_str()
+                            , this->getTotalTextId().c_str()
+                            , m_text.c_str()
+                            , font->getName().c_str()
+                        );
+
+                        return false;
+                    }
+                }
+
                 VectorTextLines layouts;
 
                 for( uint32_t index = 0; index != layoutCount; ++index )
                 {
                     TextLine line( index, charOffset );
 
-                    if( line.initialize( textChunk.fontId, font, textChunk.value ) == false )
+                    if( line.initialize( textChunk.fontId, font, textChunk.value, glyphs ) == false )
                     {
                         LOGGER_ERROR( "text field '%s' textId '%s' text '%s' invalid setup line for font '%s'"
                             , this->getName().c_str()
@@ -1364,7 +1468,7 @@ namespace Mengine
             {
                 const TextLine & line0 = lines[0];
 
-                line_chars += line0.getCharsDataSize();
+                line_chars += line0.getCharCount();
             }
 
             text_length = MENGINE_MAX( text_length, line_length );
@@ -1567,7 +1671,16 @@ namespace Mengine
             }
         }
 
-        this->updateTextLinesMaxCount_( &m_cacheTextLines );
+        if( this->updateTextLinesMaxCount_( &m_cacheTextLines ) == false )
+        {
+            LOGGER_ERROR( "text field '%s' invalid max char count text id '%s' text '%s'"
+                , this->getName().c_str()
+                , totalTextId.c_str()
+                , m_text.c_str()
+            );
+
+            return false;
+        }
 
         if( this->updateTextLinesLayout_( m_cacheTextLines, justifyLength, &m_layouts ) == false )
         {

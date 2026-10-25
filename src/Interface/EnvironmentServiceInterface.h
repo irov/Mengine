@@ -60,6 +60,14 @@ namespace Mengine
         virtual int64_t getSessionIndex() const = 0;
         virtual int64_t getSessionRND() const = 0;
         virtual void getSessionId( Char * const _sessionId ) const = 0;
+
+    public:
+        virtual uint32_t getSessionDateYear() const = 0;
+        virtual uint32_t getSessionDateMonth() const = 0;
+        virtual uint32_t getSessionDateDay() const = 0;
+        virtual uint32_t getSessionDateHour() const = 0;
+        virtual uint32_t getSessionDateWeekday() const = 0;
+        virtual int64_t getSessionGap() const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

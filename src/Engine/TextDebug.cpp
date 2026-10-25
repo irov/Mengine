@@ -49,8 +49,18 @@ namespace Mengine
 
                 for( const U32String & text : drawTexts )
                 {
+                    VectorFontShapedGlyphs glyphs;
+
+                    if( _font->isTextShaping() == true )
+                    {
+                        if( _font->shapeText( text, &glyphs, _doc ) == false )
+                        {
+                            return;
+                        }
+                    }
+
                     TextLine tl( 0, 0.f );
-                    tl.initialize( 0, _font, text );
+                    tl.initialize( 0, _font, text, glyphs );
 
                     uint32_t vertexCount = 0;
 

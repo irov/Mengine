@@ -16,6 +16,7 @@ namespace Mengine
             _dateTime->year = 1900 + _tm.tm_year;
             _dateTime->month = _tm.tm_mon + 1;
             _dateTime->day = _tm.tm_mday;
+            _dateTime->weekday = (_tm.tm_wday + 6) % 7 + 1;
             _dateTime->hour = _tm.tm_hour;
             _dateTime->minute = _tm.tm_min;
             _dateTime->second = _tm.tm_sec;

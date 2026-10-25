@@ -20,6 +20,7 @@ static NSString * const kMengineAccountDeletionRestartKey = @"mengine.app.accoun
 }
 
 - (BOOL)didFinishLaunchingWithOptions:(nullable NSDictionary<UIApplicationLaunchOptionsKey, id> *)launchOptions {
+    NSInteger session_timestamp = [AppleDetail getTimestamp];
     //ToDo remove install_key
     NSString * old_install_id = [AppleKeyChain getStringForKey:@"mengine.app.install_key" defaultValue:nil];
     NSString * install_id = [AppleKeyChain getStringForKey:@"mengine.app.install_id" defaultValue:old_install_id];
@@ -27,6 +28,7 @@ static NSString * const kMengineAccountDeletionRestartKey = @"mengine.app.accoun
     NSString * install_version = [AppleKeyChain getStringForKey:@"mengine.app.install_version" defaultValue:nil];
     NSInteger install_rnd = [AppleKeyChain getIntegerForKey:@"mengine.app.install_rnd" defaultValue:-1];
     NSInteger session_index = [AppleKeyChain getIntegerForKey:@"mengine.app.session_index" defaultValue:0];
+    NSInteger previous_session_timestamp = [AppleKeyChain getIntegerForKey:@"mengine.app.session_timestamp" defaultValue:0];
     //ToDo remove session_id
     NSString * session_id = [AppleKeyChain getStringForKey:@"mengine.session_id" defaultValue:nil];
     NSString * user_id = [AppleKeyChain getStringForKey:@"mengine.app.user_id" defaultValue:session_id];
@@ -59,6 +61,7 @@ static NSString * const kMengineAccountDeletionRestartKey = @"mengine.app.accoun
     NSInteger next_session_index = session_index + 1;
     
     [AppleKeyChain setIntegerForKey:@"mengine.app.session_index" value:next_session_index];
+    [AppleKeyChain setIntegerForKey:@"mengine.app.session_timestamp" value:session_timestamp];
     
     self.m_installId = install_id;
     self.m_installTimestamp = install_timestamp;
@@ -66,8 +69,21 @@ static NSString * const kMengineAccountDeletionRestartKey = @"mengine.app.accoun
     self.m_installRND = install_rnd;
     self.m_sessionIndex = session_index;
     self.m_sessionId = [AppleDetail getRandomHexString:32];
-    self.m_sessionTimestamp = [AppleDetail getTimestamp];
+    self.m_sessionTimestamp = session_timestamp;
     self.m_sessionRND = [AppleDetail getSecureRandomInteger];
+
+    NSInteger sessionGap = 0;
+    if (previous_session_timestamp > 0) {
+        sessionGap = [AppleDetail getTimestampOffsetSeconds:session_timestamp baseTimestamp:previous_session_timestamp];
+    }
+
+    NSCalendar * sessionCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+    sessionCalendar.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+    NSDate * sessionDate = [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval)session_timestamp / 1000.0];
+    NSDateComponents * components = [sessionCalendar components:NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitHour | NSCalendarUnitWeekday fromDate:sessionDate];
+
+    self.m_sessionDate = components;
+    self.m_sessionGap = sessionGap;
     
     self.m_userId = user_id;
     
@@ -140,6 +156,30 @@ static NSString * const kMengineAccountDeletionRestartKey = @"mengine.app.accoun
 
 - (NSInteger)getSessionRND {
     return self.m_sessionRND;
+}
+
+- (NSInteger)getSessionDateYear {
+    return self.m_sessionDate.year;
+}
+
+- (NSInteger)getSessionDateMonth {
+    return self.m_sessionDate.month;
+}
+
+- (NSInteger)getSessionDateDay {
+    return self.m_sessionDate.day;
+}
+
+- (NSInteger)getSessionDateHour {
+    return self.m_sessionDate.hour;
+}
+
+- (NSInteger)getSessionDateWeekday {
+    return (self.m_sessionDate.weekday + 5) % 7 + 1;
+}
+
+- (NSInteger)getSessionGap {
+    return self.m_sessionGap;
 }
 
 - (NSString * _Nonnull)getUserId {

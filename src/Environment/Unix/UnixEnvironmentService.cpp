@@ -1,5 +1,7 @@
 #include "UnixEnvironmentService.h"
 
+#include "Interface/DateTimeSystemInterface.h"
+
 #include "Kernel/CryptographyHelper.h"
 #include "Kernel/SHA1.h"
 #include "Kernel/TimestampHelper.h"
@@ -155,6 +157,8 @@ namespace Mengine
         m_installId.assign( fingerprint );
 
         m_sessionTimestamp = Helper::getSystemTimestamp();
+        DATETIME_SYSTEM()
+            ->getDateTimeFromMilliseconds( m_sessionTimestamp, &m_sessionDate );
 
         uint64_t randomSeed = 0;
         if( Helper::generateRandomSeed( &randomSeed ) == true )
@@ -240,6 +244,36 @@ namespace Mengine
     void UnixEnvironmentService::getSessionId( Char * const _sessionId ) const
     {
         m_sessionId.copy( _sessionId );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t UnixEnvironmentService::getSessionDateYear() const
+    {
+        return m_sessionDate.year;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t UnixEnvironmentService::getSessionDateMonth() const
+    {
+        return m_sessionDate.month;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t UnixEnvironmentService::getSessionDateDay() const
+    {
+        return m_sessionDate.day;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t UnixEnvironmentService::getSessionDateHour() const
+    {
+        return m_sessionDate.hour;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t UnixEnvironmentService::getSessionDateWeekday() const
+    {
+        return m_sessionDate.weekday;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int64_t UnixEnvironmentService::getSessionGap() const
+    {
+        return 0;
     }
     //////////////////////////////////////////////////////////////////////////
 }

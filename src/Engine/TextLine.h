@@ -23,6 +23,7 @@ namespace Mengine
         GlyphCode code;
 
         float advance;
+        float charOffset;
 
         mt::vec2f offset;
         mt::vec2f size;
@@ -43,7 +44,7 @@ namespace Mengine
         ~TextLine();
 
     public:
-        bool initialize( uint32_t _fontId, const FontInterfacePtr & _font, const U32String & _text );
+        bool initialize( uint32_t _fontId, const FontInterfacePtr & _font, const U32String & _text, const VectorFontShapedGlyphs & _glyphs );
         void justify( float _spaceAdvance );
 
     public:
@@ -51,6 +52,7 @@ namespace Mengine
 
     public:
         float getLength() const;
+        uint32_t getCharCount() const;
         uint32_t getCharsDataSize() const;
 
     public:
@@ -58,8 +60,12 @@ namespace Mengine
         void advanceCharOffset( const TextCharData & _cd, float _charScale, mt::vec2f * const _offset ) const;
 
     protected:
+        bool initializeShaped_( uint32_t _fontId, const FontInterfacePtr & _font, const U32String & _text, const VectorFontShapedGlyphs & _glyphs );
+
+    protected:
         uint32_t m_layout;
         float m_length;
+        uint32_t m_charCount;
 
         float m_charOffset;
 

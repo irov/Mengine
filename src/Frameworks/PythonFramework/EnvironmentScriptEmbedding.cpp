@@ -131,6 +131,66 @@ namespace Mengine
             return sessionIndex;
         }
         //////////////////////////////////////////////////////////////////////////
+        static uint32_t getEnvironmentSessionDateYear( pybind::kernel_interface * _kernel )
+        {
+            MENGINE_UNUSED( _kernel );
+
+            uint32_t sessionDateYear = ENVIRONMENT_SERVICE()
+                ->getSessionDateYear();
+
+            return sessionDateYear;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static uint32_t getEnvironmentSessionDateMonth( pybind::kernel_interface * _kernel )
+        {
+            MENGINE_UNUSED( _kernel );
+
+            uint32_t sessionDateMonth = ENVIRONMENT_SERVICE()
+                ->getSessionDateMonth();
+
+            return sessionDateMonth;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static uint32_t getEnvironmentSessionDateDay( pybind::kernel_interface * _kernel )
+        {
+            MENGINE_UNUSED( _kernel );
+
+            uint32_t sessionDateDay = ENVIRONMENT_SERVICE()
+                ->getSessionDateDay();
+
+            return sessionDateDay;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static uint32_t getEnvironmentSessionDateHour( pybind::kernel_interface * _kernel )
+        {
+            MENGINE_UNUSED( _kernel );
+
+            uint32_t sessionDateHour = ENVIRONMENT_SERVICE()
+                ->getSessionDateHour();
+
+            return sessionDateHour;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static uint32_t getEnvironmentSessionDateWeekday( pybind::kernel_interface * _kernel )
+        {
+            MENGINE_UNUSED( _kernel );
+
+            uint32_t sessionDateWeekday = ENVIRONMENT_SERVICE()
+                ->getSessionDateWeekday();
+
+            return sessionDateWeekday;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static int64_t getEnvironmentSessionGap( pybind::kernel_interface * _kernel )
+        {
+            MENGINE_UNUSED( _kernel );
+
+            int64_t sessionGap = ENVIRONMENT_SERVICE()
+                ->getSessionGap();
+
+            return sessionGap;
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     EnvironmentScriptEmbedding::EnvironmentScriptEmbedding()
@@ -154,6 +214,12 @@ namespace Mengine
         pybind::def_function_kernel( _kernel, "getEnvironmentInstallTimestamp", &Detail::getEnvironmentInstallTimestamp );
         pybind::def_function_kernel( _kernel, "getEnvironmentInstallRND", &Detail::getEnvironmentInstallRND );
         pybind::def_function_kernel( _kernel, "getEnvironmentSessionIndex", &Detail::getEnvironmentSessionIndex );
+        pybind::def_function_kernel( _kernel, "getEnvironmentSessionDateYear", &Detail::getEnvironmentSessionDateYear );
+        pybind::def_function_kernel( _kernel, "getEnvironmentSessionDateMonth", &Detail::getEnvironmentSessionDateMonth );
+        pybind::def_function_kernel( _kernel, "getEnvironmentSessionDateDay", &Detail::getEnvironmentSessionDateDay );
+        pybind::def_function_kernel( _kernel, "getEnvironmentSessionDateHour", &Detail::getEnvironmentSessionDateHour );
+        pybind::def_function_kernel( _kernel, "getEnvironmentSessionDateWeekday", &Detail::getEnvironmentSessionDateWeekday );
+        pybind::def_function_kernel( _kernel, "getEnvironmentSessionGap", &Detail::getEnvironmentSessionGap );
 
         return true;
     }
@@ -172,6 +238,12 @@ namespace Mengine
         _kernel->remove_from_module( "getEnvironmentInstallTimestamp", nullptr );
         _kernel->remove_from_module( "getEnvironmentInstallRND", nullptr );
         _kernel->remove_from_module( "getEnvironmentSessionIndex", nullptr );
+        _kernel->remove_from_module( "getEnvironmentSessionDateYear", nullptr );
+        _kernel->remove_from_module( "getEnvironmentSessionDateMonth", nullptr );
+        _kernel->remove_from_module( "getEnvironmentSessionDateDay", nullptr );
+        _kernel->remove_from_module( "getEnvironmentSessionDateHour", nullptr );
+        _kernel->remove_from_module( "getEnvironmentSessionDateWeekday", nullptr );
+        _kernel->remove_from_module( "getEnvironmentSessionGap", nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -193,6 +193,7 @@ namespace Mengine
         bool processEvents_();
         void pushQuitEvent_();
         void setActive_( bool _active, Timestamp _timestamp );
+        void updateCursorVisibility_();
         bool updateCursorCapture_();
         bool isNeedWindowRender() const;
         void updateWindowResolution_();
@@ -237,6 +238,7 @@ namespace Mengine
         bool m_desktop;
         bool m_touchpad;
         bool m_quitRequested;
+        bool m_cursorMode;
         bool m_cursorVisible;
         bool m_cursorCaptureRequested;
         bool m_cursorCaptureApplied;

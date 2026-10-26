@@ -145,6 +145,7 @@ namespace Mengine
         , m_desktop( true )
         , m_touchpad( false )
         , m_quitRequested( false )
+        , m_cursorMode( true )
         , m_cursorVisible( true )
         , m_cursorCaptureRequested( false )
         , m_cursorCaptureApplied( false )
@@ -1015,23 +1016,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MacOSPlatformService::notifyCursorModeChanged( bool _mode )
     {
-        const bool cursorVisible = HAS_OPTION( "systemcursoralwaysvisible" ) == true ? true : _mode;
+        m_cursorMode = HAS_OPTION( "systemcursoralwaysvisible" ) == true ? true : _mode;
 
-        if( m_cursorVisible == cursorVisible )
-        {
-            return;
-        }
-
-        m_cursorVisible = cursorVisible;
-
-        if( cursorVisible == true )
-        {
-            [NSCursor unhide];
-        }
-        else
-        {
-            [NSCursor hide];
-        }
+        this->updateCursorVisibility_();
     }
     //////////////////////////////////////////////////////////////////////////
     bool MacOSPlatformService::notifyCursorIconSetup( const ConstString & _name, const ContentInterfacePtr & _content, const MemoryInterfacePtr & _buffer )
@@ -1545,6 +1532,8 @@ namespace Mengine
         }
 
         m_windowDelegate = nil;
+
+        this->updateCursorVisibility_();
     }
     //////////////////////////////////////////////////////////////////////////
     bool MacOSPlatformService::processEvents_()
@@ -1605,6 +1594,8 @@ namespace Mengine
             [NSApp updateWindows];
         }
 
+        this->updateCursorVisibility_();
+
         return m_quitRequested;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1633,6 +1624,7 @@ namespace Mengine
 
         m_active = _active;
 
+        this->updateCursorVisibility_();
         this->updateCursorCapture_();
 
         bool nopause = APPLICATION_SERVICE()
@@ -1683,6 +1675,53 @@ namespace Mengine
 
             APPLICATION_SERVICE()
                 ->turnSound( true );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MacOSPlatformService::updateCursorVisibility_()
+    {
+        bool cursorVisible = m_cursorMode == true || m_active == false;
+
+        if( m_window == nil )
+        {
+            cursorVisible = true;
+        }
+
+        if( cursorVisible == false )
+        {
+            NSView * view = this->getNSView();
+
+            if( view == nil )
+            {
+                cursorVisible = true;
+            }
+            else
+            {
+                NSPoint point = [view convertPoint:[m_window mouseLocationOutsideOfEventStream] fromView:nil];
+                cursorVisible = NSPointInRect( point, view.bounds ) == NO;
+            }
+        }
+
+        if( m_cursorVisible == cursorVisible )
+        {
+            return;
+        }
+
+        m_cursorVisible = cursorVisible;
+
+        LOGGER_INFO( "platform", "macOS system cursor visible [%u] active [%u] requested [%u]"
+            , m_cursorVisible
+            , m_active
+            , m_cursorMode
+        );
+
+        if( cursorVisible == true )
+        {
+            [NSCursor unhide];
+        }
+        else
+        {
+            [NSCursor hide];
         }
     }
     //////////////////////////////////////////////////////////////////////////

@@ -42,3 +42,5 @@ if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
 endif()
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} iOSAdvertisementPlugin)
+
+target_compile_options(${PROJECT_NAME} PRIVATE -fcxx-modules)

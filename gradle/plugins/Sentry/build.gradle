@@ -6,6 +6,6 @@ android {
 }
 
 dependencies {
-    api enforcedPlatform('io.sentry:sentry-bom:8.61.0')
+    api enforcedPlatform('io.sentry:sentry-bom:8.61.1')
     implementation 'io.sentry:sentry-android'
 }

@@ -6,7 +6,7 @@ android {
 }
 
 dependencies {
-    implementation 'com.squareup.okhttp3:okhttp:5.5.0'
+    implementation 'com.squareup.okhttp3:okhttp:5.5.1'
 
-    implementation 'com.amplitude:analytics-android:1.35.0'
+    implementation 'com.amplitude:analytics-android:1.36.0'
 }

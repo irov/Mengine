@@ -17,7 +17,7 @@ ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_IOS_FIREBASE_CRASHLYTICS)
 
 ADD_MENGINE_APPLE_APPLICATION_DELEGATE("iOSFirebaseCrashlyticsPlugin")
 
-ADD_MENGINE_SWIFT_PACKAGE("FirebaseCrashlytics" "https://github.com/firebase/firebase-ios-sdk.git" "13.1.0")
+ADD_MENGINE_SWIFT_PACKAGE("FirebaseCrashlytics" "https://github.com/firebase/firebase-ios-sdk.git" "13.1.1")
 
 if(MENGINE_FIREBASE_CRASHLYTICS_UPLOAD_SYMBOLS)
     MESSAGE(STATUS "Firebase Crashlytics symbols upload is enabled.")

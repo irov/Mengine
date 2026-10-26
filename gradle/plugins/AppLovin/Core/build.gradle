@@ -106,7 +106,7 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_BIDMACHINE == true) {
-        implementation 'com.applovin.mediation:bidmachine-adapter:3.8.0.0'
+        implementation 'com.applovin.mediation:bidmachine-adapter:3.8.0.1'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_BIGO == true) {
@@ -130,17 +130,17 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_INMOBI == true) {
-        implementation 'com.applovin.mediation:inmobi-adapter:11.5.0.0'
+        implementation 'com.applovin.mediation:inmobi-adapter:11.5.1.0'
         implementation 'com.squareup.picasso:picasso:2.8'
         implementation 'androidx.recyclerview:recyclerview:1.4.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_IRONSOURCE == true) {
-        implementation 'com.applovin.mediation:ironsource-adapter:9.6.1.0.0'
+        implementation 'com.applovin.mediation:ironsource-adapter:9.7.0.0.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_LIFTOFF == true) {
-        implementation 'com.applovin.mediation:vungle-adapter:7.7.9.0'
+        implementation 'com.applovin.mediation:vungle-adapter:7.7.9.1'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_LINE == true) {
@@ -156,7 +156,7 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MINTEGRAL == true) {
-        implementation 'com.applovin.mediation:mintegral-adapter:17.1.81.0'
+        implementation 'com.applovin.mediation:mintegral-adapter:17.1.91.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MOBILEFUSE == true) {
@@ -164,15 +164,15 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MOLOCO == true) {
-        implementation 'com.applovin.mediation:moloco-adapter:4.13.0.0'
+        implementation 'com.applovin.mediation:moloco-adapter:4.13.0.1'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_OGURY == true) {
-        implementation 'com.applovin.mediation:ogury-presage-adapter:6.3.1.0'
+        implementation 'com.applovin.mediation:ogury-presage-adapter:6.3.1.1'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_PANGLE == true) {
-        implementation 'com.applovin.mediation:bytedance-adapter:8.3.0.4.1'
+        implementation 'com.applovin.mediation:bytedance-adapter:8.4.0.5.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_PUBMATIC == true) {
@@ -184,7 +184,7 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_UNITYADS == true) {
-        implementation 'com.applovin.mediation:unityads-adapter:4.21.0.0'
+        implementation 'com.applovin.mediation:unityads-adapter:4.21.0.1'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_VERVE == true) {

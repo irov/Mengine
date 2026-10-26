@@ -10,7 +10,7 @@ src
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_IOS_FIREBASE_MESSAGING)
 
-ADD_MENGINE_SWIFT_PACKAGE("FirebaseMessaging" "https://github.com/firebase/firebase-ios-sdk.git" "13.1.0")
+ADD_MENGINE_SWIFT_PACKAGE("FirebaseMessaging" "https://github.com/firebase/firebase-ios-sdk.git" "13.1.1")
 
 ADD_MENGINE_APPLE_APPLICATION_DELEGATE("iOSFirebaseMessagingPlugin")
 

@@ -8,7 +8,7 @@ src
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_IOS_FIREBASE)
 
-ADD_MENGINE_SWIFT_PACKAGE("FirebaseCore" "https://github.com/firebase/firebase-ios-sdk.git" "13.1.0")
+ADD_MENGINE_SWIFT_PACKAGE("FirebaseCore" "https://github.com/firebase/firebase-ios-sdk.git" "13.1.1")
 
 ADD_MENGINE_APPLE_APPLICATION_DELEGATE("iOSFirebasePlugin")
 

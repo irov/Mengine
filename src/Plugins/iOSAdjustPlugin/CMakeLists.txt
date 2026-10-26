@@ -18,7 +18,7 @@ endif()
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_IOS_ADJUST)
 
-ADD_MENGINE_SWIFT_PACKAGE("AdjustSdk" "https://github.com/adjust/ios_sdk.git" "5.8.0")
+ADD_MENGINE_SWIFT_PACKAGE("AdjustSdk" "https://github.com/adjust/ios_sdk.git" "5.8.1")
 ADD_MENGINE_APPLE_APPLICATION_DELEGATE("iOSAdjustPlugin")
 
 IF(MENGINE_TARGET_IOS)

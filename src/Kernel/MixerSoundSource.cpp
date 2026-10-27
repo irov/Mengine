@@ -140,15 +140,7 @@ namespace Mengine
         m_playing = true;
         m_pausing = true;
 
-        uint32_t busIndex = this->getBusIndex_();
-
-        if( busIndex != INVALID_BUS_INDEX )
-        {
-            MixerSoundExtensionInterface * soundSystemExtension = SOUND_SYSTEM()
-                ->getUnknown();
-
-            soundSystemExtension->enableSourceBus( busIndex, false );
-        }
+        this->releaseSourceBus_();
 
         soundBuffer->pauseSource();
     }

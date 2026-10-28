@@ -376,7 +376,17 @@ namespace Mengine
             return;
         }
 
-        aaudio_stream_state_t state = AAudioStream_getState( m_stream );
+        // Refresh asynchronous state transitions without blocking the engine thread.
+        aaudio_stream_state_t state;
+        aaudio_result_t result = AAudioStream_waitForStateChange( m_stream, AAUDIO_STREAM_STATE_UNKNOWN, &state, 0 );
+
+        if( result != AAUDIO_OK )
+        {
+            AAudioStream * stream = m_stream;
+            m_mixer->onAAudioSoundMixerAudioError( stream, result );
+
+            return;
+        }
 
         if( active == true )
         {
@@ -391,7 +401,7 @@ namespace Mengine
             }
         }
 
-        aaudio_result_t result = active == true ? AAudioStream_requestStart( m_stream ) : AAudioStream_requestStop( m_stream );
+        result = active == true ? AAudioStream_requestStart( m_stream ) : AAudioStream_requestStop( m_stream );
 
         if( result != AAUDIO_OK )
         {

@@ -256,7 +256,7 @@ namespace Mengine
         EVENTABLE_METHOD( EVENT_ANIMATION_RESTART )
             ->onAnimationRestart( _enumerator, _time );
 
-        return false;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void SurfaceSound::_pause( UniqueId _enumerator )

@@ -6,9 +6,7 @@
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/PlayerServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
-
 #include "Interface/MetabufLoaderServiceInterface.h"
-
 #include "Interface/DataServiceInterface.h"
 #include "Interface/ModuleServiceInterface.h"
 #include "Interface/AllocatorSystemInterface.h"
@@ -19,14 +17,10 @@
 
 #include "DataflowAEZ.h"
 #include "Movie2DebugRender.h"
-
 #include "Movie2.h"
 #include "ResourceMovie2.h"
-
 #include "MetabufLoaderResourceMovie2.h"
-
 #include "Movie2Slot.h"
-
 #include "ResourceMovie2Validator.h"
 #include "Movie2DebuggerBoundingBox.h"
 
@@ -53,7 +47,7 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static ae_voidptr_t stdex_movie_alloc( ae_userdata_t _userdata, ae_size_t _size )
+        static ae_voidptr_t movieAllocate( ae_userdata_t _userdata, ae_size_t _size )
         {
             AE_UNUSED( _userdata );
 
@@ -62,7 +56,7 @@ namespace Mengine
             return p;
         }
         //////////////////////////////////////////////////////////////////////////
-        static ae_voidptr_t stdex_movie_alloc_n( ae_userdata_t _userdata, ae_size_t _size, ae_size_t _count )
+        static ae_voidptr_t movieAllocateArray( ae_userdata_t _userdata, ae_size_t _size, ae_size_t _count )
         {
             AE_UNUSED( _userdata );
 
@@ -73,21 +67,21 @@ namespace Mengine
             return p;
         }
         //////////////////////////////////////////////////////////////////////////
-        static void stdex_movie_free( ae_userdata_t _userdata, ae_constvoidptr_t _ptr )
+        static void movieFree( ae_userdata_t _userdata, ae_constvoidptr_t _ptr )
         {
             AE_UNUSED( _userdata );
 
             Helper::deallocateMemory( (void *)_ptr, "movie" );
         }
         //////////////////////////////////////////////////////////////////////////
-        static void stdex_movie_free_n( ae_userdata_t _userdata, ae_constvoidptr_t _ptr )
+        static void movieFreeArray( ae_userdata_t _userdata, ae_constvoidptr_t _ptr )
         {
             AE_UNUSED( _userdata );
 
             Helper::deallocateMemory( (void *)_ptr, "movie" );
         }
         //////////////////////////////////////////////////////////////////////////
-        static void stdex_movie_logerror( ae_userdata_t _userdata, aeMovieErrorCode _code, const ae_char_t * _format, ... )
+        static void movieLogError( ae_userdata_t _userdata, aeMovieErrorCode _code, const ae_char_t * _format, ... )
         {
             AE_UNUSED( _userdata );
 
@@ -106,10 +100,10 @@ namespace Mengine
 
             MENGINE_VA_LIST_TYPE args;
             MENGINE_VA_LIST_START( args, _format );
-            int32_t size_vsnprintf = MENGINE_VSNPRINTF( msg, 4096, _format, args );
+            int32_t sizeVsnprintf = MENGINE_VSNPRINTF( msg, 4096, _format, args );
             MENGINE_VA_LIST_END( args );
 
-            if( size_vsnprintf < 0 )
+            if( sizeVsnprintf < 0 )
             {
                 LOGGER_ERROR( "invalid format error '%s' code [%u]"
                     , _format
@@ -139,11 +133,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MoviePlugin::_initializePlugin()
     {
-        String MoviePlugin_HASHKEY = CONFIG_VALUE_STRING( "MoviePlugin", "HASHKEY", "" );
+        m_hashKey = CONFIG_VALUE_STRING( "MoviePlugin", "HASHKEY", "" );
 
-        m_hashkey = MoviePlugin_HASHKEY;
-
-        m_movieInstance = ae_create_movie_instance( m_hashkey.c_str(), &Detail::stdex_movie_alloc, &Detail::stdex_movie_alloc_n, &Detail::stdex_movie_free, &Detail::stdex_movie_free_n, 0, &Detail::stdex_movie_logerror, this );
+        m_movieInstance = ae_create_movie_instance( m_hashKey.c_str(), &Detail::movieAllocate, &Detail::movieAllocateArray, &Detail::movieFree, &Detail::movieFreeArray, 0, &Detail::movieLogError, this );
 
         if( Helper::addNodePrototype<Movie2, 128>( MENGINE_DOCUMENT_FACTORABLE ) == false )
         {

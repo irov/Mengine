@@ -8,6 +8,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class ResourceMovie2Validator
         : public Validator<ResourceMovie2Ptr>
     {

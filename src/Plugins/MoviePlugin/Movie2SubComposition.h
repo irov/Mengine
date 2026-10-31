@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Movie2Interface.h"
+#include "Movie2Includer.h"
+#include "Movie2SubCompositionEventReceiver.h"
 
 #include "Kernel/Identity.h"
 #include "Kernel/Animatable.h"
@@ -10,18 +12,10 @@
 #include "Kernel/BaseEventation.h"
 #include "Kernel/Factorable.h"
 
-#include "movie/movie.hpp"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class Movie2;
-    //////////////////////////////////////////////////////////////////////////
-    class Movie2SubCompositionEventReceiver
-        : public AnimationEventReceiverInterface
-    {
-    public:
-    };
     //////////////////////////////////////////////////////////////////////////
     class Movie2SubComposition
         : public Movie2SubCompositionInterface
@@ -51,9 +45,6 @@ namespace Mengine
         void setSubCompositionEnable( bool _enable ) override;
         bool getSubCompositionEnable() const override;
 
-    protected:
-        void updateEnable_();
-
     public:
         bool initialize( const aeMovieComposition * _composition );
         void finalize();
@@ -76,6 +67,7 @@ namespace Mengine
         void _setLastFrame() override;
 
     protected:
+        void updateEnable_();
         void updateLoop_();
         void updateTime_();
 

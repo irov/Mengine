@@ -1,0 +1,19 @@
+#include "PythonMovie2MarkerEventReceiver.h"
+
+namespace Mengine
+{
+    //////////////////////////////////////////////////////////////////////////
+    PythonMovie2MarkerEventReceiver::PythonMovie2MarkerEventReceiver()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    PythonMovie2MarkerEventReceiver::~PythonMovie2MarkerEventReceiver()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PythonMovie2MarkerEventReceiver::onMovieMarker( const ConstString & _name, float _time, uint32_t _iteration )
+    {
+        m_cb.call( _name, _time, _iteration );
+    }
+    //////////////////////////////////////////////////////////////////////////
+}

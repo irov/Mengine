@@ -1,13 +1,13 @@
 #pragma once
 
+#include "Movie2Includer.h"
+
 #include "Kernel/PluginBase.h"
 #include "Kernel/String.h"
 
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
 #   include "Movie2ScriptEmbedding.h"
 #endif
-
-#include "movie/movie.hpp"
 
 namespace Mengine
 {
@@ -30,6 +30,6 @@ namespace Mengine
     protected:
         const aeMovieInstance * m_movieInstance;
 
-        String m_hashkey;
+        String m_hashKey;
     };
 }

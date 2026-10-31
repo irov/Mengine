@@ -2,9 +2,9 @@
 
 #include "Interface/RenderServiceInterface.h"
 
-#include "Kernel/RenderVertex2D.h"
-
 #include "Plugins/NodeDebugRenderPlugin/NodeDebugRenderServiceInterface.h"
+
+#include "Kernel/RenderVertex2D.h"
 
 namespace Mengine
 {
@@ -21,8 +21,10 @@ namespace Mengine
     {
         _node->foreachRenderSlots( _renderPipeline, _context, [_hide]( Node * _node, const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context )
         {
+            NodePtr node = NodePtr::from( _node );
+
             NODEDEBUGRENDER_SERVICE()
-                ->renderDebugNode( NodePtr::from( _node ), _renderPipeline, _context, true, _hide );
+                ->renderDebugNode( node, _renderPipeline, _context, true, _hide );
         } );
     }
     //////////////////////////////////////////////////////////////////////////

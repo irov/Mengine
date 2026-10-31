@@ -28,9 +28,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceMovie2::hasComposition( const ConstString & _compositionName ) const
     {
-        MapCompositions::const_iterator it_found = m_compositions.find( _compositionName );
+        MapCompositions::const_iterator itFound = m_compositions.find( _compositionName );
 
-        if( it_found == m_compositions.end() )
+        if( itFound == m_compositions.end() )
         {
             return false;
         }
@@ -40,14 +40,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceMovie2::hasCompositionLayer( const ConstString & _compositionName, const ConstString & _layerName ) const
     {
-        MapCompositions::const_iterator it_found = m_compositions.find( _compositionName );
+        MapCompositions::const_iterator itFound = m_compositions.find( _compositionName );
 
-        if( it_found == m_compositions.end() )
+        if( itFound == m_compositions.end() )
         {
             return false;
         }
 
-        const CompositionDesc & composition = it_found->second;
+        const CompositionDesc & composition = itFound->second;
 
         for( const CompositionLayer & layer : composition.layers )
         {
@@ -64,28 +64,28 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float ResourceMovie2::getCompositionDuration( const ConstString & _compositionName ) const
     {
-        MapCompositions::const_iterator it_found = m_compositions.find( _compositionName );
+        MapCompositions::const_iterator itFound = m_compositions.find( _compositionName );
 
-        if( it_found == m_compositions.end() )
+        if( itFound == m_compositions.end() )
         {
             return 0.f;
         }
 
-        const CompositionDesc & composition = it_found->second;
+        const CompositionDesc & composition = itFound->second;
 
         return composition.duration;
     }
     //////////////////////////////////////////////////////////////////////////
     float ResourceMovie2::getCompositionFrameDuration( const ConstString & _compositionName ) const
     {
-        MapCompositions::const_iterator it_found = m_compositions.find( _compositionName );
+        MapCompositions::const_iterator itFound = m_compositions.find( _compositionName );
 
-        if( it_found == m_compositions.end() )
+        if( itFound == m_compositions.end() )
         {
             return 0.f;
         }
 
-        const CompositionDesc & composition = it_found->second;
+        const CompositionDesc & composition = itFound->second;
 
         return composition.frameDuration;
     }
@@ -132,23 +132,23 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ResourceMovie2::CompositionDesc * ResourceMovie2::getCompositionDesc( const ConstString & _compositionName ) const
     {
-        MapCompositions::const_iterator it_found = m_compositions.find( _compositionName );
+        MapCompositions::const_iterator itFound = m_compositions.find( _compositionName );
 
-        if( it_found == m_compositions.end() )
+        if( itFound == m_compositions.end() )
         {
             return nullptr;
         }
 
-        const CompositionDesc & composition = it_found->second;
+        const CompositionDesc & composition = itFound->second;
 
         return &composition;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceMovie2::foreachCompositionLayers( const ConstString & _compositionName, const LambdaCompositionLayers & _lambda ) const
     {
-        MapCompositions::const_iterator it_found = m_compositions.find( _compositionName );
+        MapCompositions::const_iterator itFound = m_compositions.find( _compositionName );
 
-        if( it_found == m_compositions.end() )
+        if( itFound == m_compositions.end() )
         {
             LOGGER_ERROR( "resource movie2 '%s' path '%s' invalid get composition name '%s'"
                 , this->getName().c_str()
@@ -159,7 +159,7 @@ namespace Mengine
             return false;
         }
 
-        const CompositionDesc & compositionDesc = it_found->second;
+        const CompositionDesc & compositionDesc = itFound->second;
 
         const VectorCompositionLayers & layers = compositionDesc.layers;
 

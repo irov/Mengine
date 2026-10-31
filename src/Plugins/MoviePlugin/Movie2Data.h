@@ -25,6 +25,10 @@ namespace Mengine
         const ConstString & getGroupName() const override;
 
     public:
+        void setMovieData( const aeMovieData * _movieData );
+        const aeMovieData * getMovieData() const override;
+
+    public:
         bool acquire() override;
         void release() override;
 
@@ -36,16 +40,12 @@ namespace Mengine
         void foreachCompositionDataResources( const aeMovieCompositionData * _compositionData, const LambdaCompositionDataResource & _lambda ) override;
 
     public:
-        void setMovieData( const aeMovieData * _movieData );
-        const aeMovieData * getMovieData() const override;
-
-    public:
         const ResourcePtr & getResource( const Char * _resourceName );
 
     public:
         struct ImageDesc
         {
-            uint32_t refcount;
+            uint32_t refCount;
 
             ResourceImage * resourceImage;
             RenderMaterialInterfacePtr materials[4];

@@ -1,5 +1,15 @@
 #pragma once
 
+#include "Movie2Interface.h"
+#include "Movie2Includer.h"
+#include "Movie2EventReceiverInterface.h"
+#include "Movie2MarkerEventReceiverInterface.h"
+
+#include "ResourceMovie2.h"
+#include "Movie2Slot.h"
+#include "Movie2SubComposition.h"
+#include "Movie2Scissor.h"
+
 #include "Engine/HotSpotPolygon.h"
 #include "Engine/TextField.h"
 
@@ -17,24 +27,10 @@
 #include "Kernel/MatrixProxy.h"
 #include "Kernel/Hashtable.h"
 #include "Kernel/Map.h"
-
-#include "Movie2Interface.h"
-
-#include "ResourceMovie2.h"
-#include "Movie2Slot.h"
-#include "Movie2SubComposition.h"
-#include "Movie2Scissor.h"
-
-#include "movie/movie.hpp"
+#include "Kernel/VectorConstString.h"
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    class Movie2EventReceiverInterface
-        : public AnimationEventReceiverInterface
-    {
-    public:
-    };
     //////////////////////////////////////////////////////////////////////////
     class Movie2
         : public Node
@@ -67,6 +63,19 @@ namespace Mengine
         const ConstString & getCompositionName() const override;
 
     public:
+        const aeMovieComposition * getComposition() const;
+
+    public:
+        bool setMotionParameter( aeMovieMotionParameter _parameter, float _value );
+        float getMotionParameter( aeMovieMotionParameter _parameter ) const;
+        void getMotionParameters( VectorConstString * const _names ) const;
+
+    public:
+        bool setMotionRegister( uint32_t _index, float _value );
+        float getMotionRegister( uint32_t _index ) const;
+        void getMotionRegisters( VectorConstString * const _names ) const;
+
+    public:
         void setTextAliasEnvironment( const ConstString & _aliasEnvironment ) override;
         const ConstString & getTextAliasEnvironment() const override;
 
@@ -97,6 +106,48 @@ namespace Mengine
 
     public:
         void foreachRenderSlots( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const LambdaMovieRenderSlot & _lambda ) const override;
+
+    public:
+        typedef Lambda<void( Movie2 * _movie, uint32_t _index, const NodePtr & _node )> LambdaNodes;
+
+    public:
+        const ShapeQuadFixedPtr & findSprite( const ConstString & _name ) const;
+        bool hasSprite( const ConstString & _name ) const;
+
+    public:
+        const NodePtr & findParticle( const ConstString & _name ) const;
+        bool hasParticle( const ConstString & _name ) const;
+
+    public:
+        const Movie2SlotPtr & findSlot( const ConstString & _name ) const;
+        bool hasSlot( const ConstString & _name ) const;
+        void foreachSlots( const LambdaNodes & _lambda );
+
+    public:
+        const HotSpotPolygonPtr & findSocket( const ConstString & _name ) const;
+        bool hasSocket( const ConstString & _name ) const;
+        void foreachSockets( const LambdaNodes & _lambda );
+
+    public:
+        const TextFieldPtr & findText( const ConstString & _name ) const;
+        bool hasText( const ConstString & _name ) const;
+        void foreachTexts( const LambdaNodes & _lambda );
+
+    public:
+        struct Camera
+        {
+            RenderCameraProjectionPtr projection;
+            RenderViewportPtr viewport;
+        };
+
+        Camera * addCamera_( const ConstString & _name, const RenderCameraProjectionPtr & _projection, const RenderViewportPtr & _viewport );
+        bool removeCamera_( const ConstString & _name );
+        bool hasCamera_( const ConstString & _name ) const;
+        bool getCamera_( const ConstString & _name, Camera ** const _camera );
+
+    public:
+        bool interruptElements_();
+        bool checkInterruptElement_() const;
 
     protected:
         bool _play( UniqueId _playId, float _time ) override;
@@ -147,69 +198,27 @@ namespace Mengine
         void addSprite_( uint32_t _index, const ShapeQuadFixedPtr & _sprite );
         const ShapeQuadFixedPtr & getSprite_( uint32_t _index ) const;
 
-    public:
-        const ShapeQuadFixedPtr & findSprite( const ConstString & _name ) const;
-        bool hasSprite( const ConstString & _name ) const;
-
     protected:
         void addParticle_( uint32_t _index, const NodePtr & _particleEmitter );
         const NodePtr & getParticle_( uint32_t _index ) const;
-
-    public:
-        const NodePtr & findParticle( const ConstString & _name ) const;
-        bool hasParticle( const ConstString & _name ) const;
 
     protected:
         void addSlot_( uint32_t _index, const Movie2SlotPtr & _slot );
         const Movie2SlotPtr & getSlot_( uint32_t _index ) const;
 
-    public:
-        typedef Lambda<void( Movie2 * _movie, uint32_t _index, const NodePtr & _node )> LambdaNodes;
-
-    public:
-        const Movie2SlotPtr & findSlot( const ConstString & _name ) const;
-        bool hasSlot( const ConstString & _name ) const;
-        void foreachSlots( const LambdaNodes & _lambda );
-
     protected:
         void addSocket_( uint32_t _index, const HotSpotPolygonPtr & _hotspot );
         const HotSpotPolygonPtr & getSocket_( uint32_t _index ) const;
 
-    public:
-        const HotSpotPolygonPtr & findSocket( const ConstString & _name ) const;
-        bool hasSocket( const ConstString & _name ) const;
-        void foreachSockets( const LambdaNodes & _lambda );
-
     protected:
         void addText_( uint32_t _index, const TextFieldPtr & _text );
         const TextFieldPtr & getText_( uint32_t _index ) const;
-
-    public:
-        const TextFieldPtr & findText( const ConstString & _name ) const;
-        bool hasText( const ConstString & _name ) const;
-        void foreachTexts( const LambdaNodes & _lambda );
 
     protected:
         void addSubMovieComposition_( const ConstString & _name, const Movie2SubCompositionPtr & _subComposition );
 
     protected:
         void addMatrixProxy_( const MatrixProxyPtr & _matrixProxy );
-
-    public:
-        struct Camera
-        {
-            RenderCameraProjectionPtr projection;
-            RenderViewportPtr viewport;
-        };
-
-        Camera * addCamera_( const ConstString & _name, const RenderCameraProjectionPtr & _projection, const RenderViewportPtr & _viewport );
-        bool removeCamera_( const ConstString & _name );
-        bool hasCamera_( const ConstString & _name ) const;
-        bool getCamera_( const ConstString & _name, Camera ** const _camera );
-
-    public:
-        bool interruptElements_();
-        bool checkInterruptElement_() const;
 
     protected:
         bool createCompositionLayers_();
@@ -218,7 +227,27 @@ namespace Mengine
     protected:
         void _dispose() override;
 
-    public:
+    protected:
+        static ae_bool_t movieCompositionNodeProvider_( const aeMovieNodeProviderCallbackData * _callbackData, ae_voidptrptr_t _node, ae_voidptr_t _userdata );
+        static ae_void_t movieCompositionNodeDeleter_( const aeMovieNodeDeleterCallbackData * _callbackData, ae_voidptr_t _userdata );
+
+    protected:
+        static void movieMarkerCallback_( const aeMovieMarkerCallbackData * _callbackData, ae_userdata_t _userdata );
+        void flushMovieMarkers_();
+
+    protected:
+        struct MarkerDesc
+        {
+            ConstString name;
+            float time;
+            uint32_t iteration;
+        };
+
+        typedef Vector<MarkerDesc> VectorMarkerDescs;
+        VectorMarkerDescs m_pendingMarkers;
+        uint32_t m_compositionRevision;
+
+    protected:
         ResourceMovie2Ptr m_resourceMovie2;
 
         ConstString m_compositionName;
@@ -266,10 +295,6 @@ namespace Mengine
         VectorMatrixProxies m_matrixProxies;
 
         ae_bool_t m_compositionAlive;
-
-    protected:
-        static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCallbackData * _callbackData, ae_voidptrptr_t _nd, ae_voidptr_t _ud );
-        static ae_void_t __movie_composition_node_deleter( const aeMovieNodeDeleterCallbackData * _callbackData, ae_voidptr_t _ud );
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusiveNodePtr<Movie2> Movie2Ptr;

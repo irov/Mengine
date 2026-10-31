@@ -19,90 +19,105 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static ae_size_t __movie_read_stream( ae_voidptr_t _buff, ae_size_t _carriage, ae_size_t _size, ae_userdata_t _ud )
+        static ae_size_t movieReadStream( ae_voidptr_t _buffer, ae_size_t _carriage, ae_size_t _size, ae_userdata_t _userdata )
         {
-            Helper::memoryCopy( _buff, 0, _ud, _carriage, _size );
+            const MemoryInterface * memory = static_cast<const MemoryInterface *>(_userdata);
+            size_t memorySize = memory->getSize();
+
+            if( _carriage >= memorySize )
+            {
+                return 0;
+            }
+
+            if( _size > memorySize - _carriage )
+            {
+                return 0;
+            }
+
+            const void * memoryBuffer = memory->getBuffer();
+            Helper::memoryCopy( _buffer, 0, memoryBuffer, _carriage, _size );
 
             return _size;
         }
         //////////////////////////////////////////////////////////////////////////
-        static ae_void_t __movie_copy_stream( ae_constvoidptr_t _src, ae_voidptr_t _dst, ae_size_t _size, ae_userdata_t _ud )
+        static ae_void_t movieCopyStream( ae_constvoidptr_t _src, ae_voidptr_t _dst, ae_size_t _size, ae_userdata_t _userdata )
         {
-            MENGINE_UNUSED( _ud );
+            MENGINE_UNUSED( _userdata );
 
             Helper::memoryCopy( _dst, 0, _src, 0, _size );
         }
         //////////////////////////////////////////////////////////////////////////
-        static ae_bool_t __movie_resource_provider( const aeMovieResource * _resource, ae_voidptrptr_t _rd, ae_voidptr_t _ud )
+        static ae_bool_t movieResourceProvider( const aeMovieResource * _resource, ae_voidptrptr_t _resourceData, ae_voidptr_t _userdata )
         {
-            Movie2Data * data = static_cast<Movie2Data *>(_ud);
+            Movie2Data * data = static_cast<Movie2Data *>(_userdata);
 
-            aeMovieResourceTypeEnum resource_type = _resource->type;
+            aeMovieResourceTypeEnum resourceType = _resource->type;
 
-            switch( resource_type )
+            switch( resourceType )
             {
             case AE_MOVIE_RESOURCE_IMAGE:
                 {
-                    const aeMovieResourceImage * resource_image = reinterpret_cast<const aeMovieResourceImage *>(_resource);
+                    const aeMovieResourceImage * movieResourceImage = reinterpret_cast<const aeMovieResourceImage *>(_resource);
 
-                    const ResourcePtr & data_resource = data->getResource( resource_image->name );
+                    const ResourcePtr & dataResource = data->getResource( movieResourceImage->name );
 
-                    if( data_resource == AE_NULLPTR )
+                    if( dataResource == AE_NULLPTR )
                     {
                         return AE_FALSE;
                     }
 
-                    Movie2Data::ImageDesc * desc = data->makeImageDesc( data_resource );
+                    Movie2Data::ImageDesc * desc = data->makeImageDesc( dataResource );
 
-                    *_rd = desc;
+                    *_resourceData = desc;
 
                     return AE_TRUE;
                 }break;
             case AE_MOVIE_RESOURCE_VIDEO:
                 {
-                    const aeMovieResourceVideo * resource_video = reinterpret_cast<const aeMovieResourceVideo *>(_resource);
+                    const aeMovieResourceVideo * movieResourceVideo = reinterpret_cast<const aeMovieResourceVideo *>(_resource);
 
-                    const ResourcePtr & data_resource = data->getResource( resource_video->name );
+                    const ResourcePtr & dataResource = data->getResource( movieResourceVideo->name );
 
-                    if( data_resource == AE_NULLPTR )
+                    if( dataResource == AE_NULLPTR )
                     {
                         return AE_FALSE;
                     }
 
-                    *_rd = data_resource.get();
+                    *_resourceData = dataResource.get();
 
                     return AE_TRUE;
                 }break;
             case AE_MOVIE_RESOURCE_SOUND:
                 {
-                    const aeMovieResourceSound * resource_sound = reinterpret_cast<const aeMovieResourceSound *>(_resource);
+                    const aeMovieResourceSound * movieResourceSound = reinterpret_cast<const aeMovieResourceSound *>(_resource);
 
-                    const ResourcePtr & data_resource = data->getResource( resource_sound->name );
+                    const ResourcePtr & dataResource = data->getResource( movieResourceSound->name );
 
-                    if( data_resource == AE_NULLPTR )
+                    if( dataResource == AE_NULLPTR )
                     {
                         return AE_FALSE;
                     }
 
-                    *_rd = data_resource.get();
+                    *_resourceData = dataResource.get();
 
                     return AE_TRUE;
                 }break;
             case AE_MOVIE_RESOURCE_PARTICLE:
                 {
-                    const aeMovieResourceParticle * resource_particle = reinterpret_cast<const aeMovieResourceParticle *>(_resource);
+                    const aeMovieResourceParticle * movieResourceParticle = reinterpret_cast<const aeMovieResourceParticle *>(_resource);
 
-                    const ResourcePtr & data_resource = data->getResource( resource_particle->name );
+                    const ResourcePtr & dataResource = data->getResource( movieResourceParticle->name );
 
-                    if( data_resource == AE_NULLPTR )
+                    if( dataResource == AE_NULLPTR )
                     {
                         return AE_FALSE;
                     }
 
-                    *_rd = data_resource.get();
+                    *_resourceData = dataResource.get();
 
                     return AE_TRUE;
                 }break;
@@ -110,14 +125,14 @@ namespace Mengine
                 break;
             }
 
-            *_rd = AE_NULLPTR;
+            *_resourceData = AE_NULLPTR;
 
             return AE_TRUE;
         }
         //////////////////////////////////////////////////////////////////////////
-        static ae_void_t __movie_resource_deleter( aeMovieResourceTypeEnum _type, ae_userdata_t _data, ae_userdata_t _ud )
+        static ae_void_t movieResourceDeleter( aeMovieResourceTypeEnum _type, ae_userdata_t _data, ae_userdata_t _userdata )
         {
-            Movie2Data * data = reinterpret_cast<Movie2Data *>(_ud);
+            Movie2Data * data = reinterpret_cast<Movie2Data *>(_userdata);
 
             switch( _type )
             {
@@ -132,57 +147,53 @@ namespace Mengine
             }
         }
         //////////////////////////////////////////////////////////////////////////
-        static ae_bool_t __movie_cache_uv_available( const aeMovieDataCacheUVAvailableCallbackData * _callbackData, ae_voidptr_t _ud )
+        static ae_bool_t movieCacheUvAvailable( const aeMovieDataCacheUVAvailableCallbackData * _callbackData, ae_voidptr_t _userdata )
         {
             AE_UNUSED( _callbackData );
-            AE_UNUSED( _ud );
+            AE_UNUSED( _userdata );
 
             return AE_TRUE;
         }
         //////////////////////////////////////////////////////////////////////////
-        static ae_bool_t __movie_cache_uv_provider( const aeMovieDataCacheUVProviderCallbackData * _callbackData, ae_voidptrptr_t _rd, ae_voidptr_t _ud )
+        static ae_bool_t movieCacheUvProvider( const aeMovieDataCacheUVProviderCallbackData * _callbackData, ae_voidptrptr_t _resourceData, ae_voidptr_t _userdata )
         {
-            AE_UNUSED( _ud );
+            AE_UNUSED( _userdata );
 
-            const aeMovieResource * movie_resource = _callbackData->resource;
+            const aeMovieResource * movieResource = _callbackData->resource;
 
-            aeMovieResourceTypeEnum resource_type = movie_resource->type;
+            aeMovieResourceTypeEnum resourceType = movieResource->type;
 
-            switch( resource_type )
+            switch( resourceType )
             {
             case AE_MOVIE_RESOURCE_IMAGE:
                 {
-                    const aeMovieResourceImage * movie_resource_image = reinterpret_cast<const aeMovieResourceImage *>(movie_resource);
+                    const aeMovieResourceImage * movieResourceImage = reinterpret_cast<const aeMovieResourceImage *>(movieResource);
 
-                    if( movie_resource_image->atlas_image != AE_NULLPTR )
+                    if( movieResourceImage->atlas_image != AE_NULLPTR )
                     {
                         break;
                     }
 
-                    const Movie2Data::ImageDesc * image_desc = reinterpret_cast<const Movie2Data::ImageDesc *>(movie_resource->userdata);
+                    const Movie2Data::ImageDesc * imageDesc = reinterpret_cast<const Movie2Data::ImageDesc *>(movieResource->userdata);
 
-                    ResourceImage * resourceImage = image_desc->resourceImage;
+                    ResourceImage * resourceImage = imageDesc->resourceImage;
 
-                    ae_uint32_t vertex_count = _callbackData->vertex_count;
+                    ae_uint32_t vertexCount = _callbackData->vertex_count;
 
-                    mt::vec2f * uvs = Helper::allocateMemoryNT<mt::vec2f>( vertex_count, "movie" );
+                    mt::vec2f * uvs = Helper::allocateMemoryNT<mt::vec2f>( vertexCount, "movie" );
 
-                    mt::vec2f * uvs_iterator = uvs;
+                    mt::vec2f * uvsIterator = uvs;
 
-                    for( const ae_vector2_t
-                        * it = _callbackData->uvs,
-                        *it_end = _callbackData->uvs + vertex_count;
-                        it != it_end;
-                        ++it, ++uvs_iterator )
+                    for( const ae_vector2_t * uvIterator = _callbackData->uvs, * uvEnd = _callbackData->uvs + vertexCount; uvIterator != uvEnd; ++uvIterator, ++uvsIterator )
                     {
                         mt::vec2f uv;
-                        const float * uv2 = *it;
+                        const float * uv2 = *uvIterator;
                         uv.from_f2( uv2 );
 
-                        resourceImage->correctUV( 0, uv, uvs_iterator );
+                        resourceImage->correctUV( 0, uv, uvsIterator );
                     }
 
-                    *_rd = uvs;
+                    *_resourceData = uvs;
                 }break;
             default:
                 {
@@ -192,9 +203,9 @@ namespace Mengine
             return AE_TRUE;
         }
         //////////////////////////////////////////////////////////////////////////
-        static ae_void_t __movie_cache_uv_deleter( const aeMovieDataCacheUVDeleterCallbackData * _callbackData, ae_userdata_t _ud )
+        static ae_void_t movieCacheUvDeleter( const aeMovieDataCacheUVDeleterCallbackData * _callbackData, ae_userdata_t _userdata )
         {
-            MENGINE_UNUSED( _ud );
+            MENGINE_UNUSED( _userdata );
 
             if( _callbackData->uv_cache_userdata == AE_NULLPTR )
             {
@@ -282,37 +293,35 @@ namespace Mengine
 
         data->setGroupName( _context->groupName );
 
-        void * memory_buffer = _memory->getBuffer();
+        aeMovieDataProviders dataProviders;
+        ae_clear_movie_data_providers( &dataProviders );
 
-        aeMovieDataProviders data_providers;
-        ae_clear_movie_data_providers( &data_providers );
+        dataProviders.resource_provider = &Detail::movieResourceProvider;
+        dataProviders.resource_deleter = &Detail::movieResourceDeleter;
+        dataProviders.cache_uv_available = &Detail::movieCacheUvAvailable;
+        dataProviders.cache_uv_provider = &Detail::movieCacheUvProvider;
+        dataProviders.cache_uv_deleter = &Detail::movieCacheUvDeleter;
 
-        data_providers.resource_provider = &Detail::__movie_resource_provider;
-        data_providers.resource_deleter = &Detail::__movie_resource_deleter;
-        data_providers.cache_uv_available = &Detail::__movie_cache_uv_available;
-        data_providers.cache_uv_provider = &Detail::__movie_cache_uv_provider;
-        data_providers.cache_uv_deleter = &Detail::__movie_cache_uv_deleter;
+        aeMovieData * movieData = ae_create_movie_data( m_movieInstance, &dataProviders, data );
 
-        aeMovieData * movieData = ae_create_movie_data( m_movieInstance, &data_providers, data );
+        aeMovieStream * movieStream = ae_create_movie_stream( m_movieInstance, &Detail::movieReadStream, &Detail::movieCopyStream, _memory.get() );
 
-        aeMovieStream * movie_stream = ae_create_movie_stream( m_movieInstance, &Detail::__movie_read_stream, &Detail::__movie_copy_stream, memory_buffer );
+        ae_uint32_t majorVersion;
+        ae_uint32_t minorVersion;
+        ae_result_t resultLoadMovieData = ae_load_movie_data( movieData, movieStream, &majorVersion, &minorVersion );
 
-        ae_uint32_t major_version;
-        ae_uint32_t minor_version;
-        ae_result_t result_load_movie_data = ae_load_movie_data( movieData, movie_stream, &major_version, &minor_version );
+        ae_delete_movie_stream( movieStream );
 
-        ae_delete_movie_stream( movie_stream );
-
-        if( result_load_movie_data != AE_RESULT_SUCCESSFUL )
+        if( resultLoadMovieData != AE_RESULT_SUCCESSFUL )
         {
-            const ae_char_t * result_string_info = ae_get_movie_result_string_info( result_load_movie_data );
+            const ae_char_t * resultStringInfo = ae_get_movie_result_string_info( resultLoadMovieData );
 
             LOGGER_ERROR( "invalid load data result '%s'\ncurrent version '%u.%u'\nload version '%u.%u'"
-                , result_string_info
+                , resultStringInfo
                 , AE_MOVIE_SDK_MAJOR_VERSION
                 , AE_MOVIE_SDK_MINOR_VERSION
-                , major_version
-                , minor_version
+                , majorVersion
+                , minorVersion
             );
 
             return false;

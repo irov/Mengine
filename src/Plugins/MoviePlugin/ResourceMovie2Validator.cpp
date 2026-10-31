@@ -22,52 +22,62 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        namespace
+        struct MovieLayerDataVisitorDesc
         {
-            struct MovieLayerDataVisitorDesc
-            {
-                ResourceMovie2Ptr resource;
-                bool successful;
-            };
-        }
+            ResourceMovie2Ptr resource;
+            bool successful;
+        };
         //////////////////////////////////////////////////////////////////////////
-        static ae_size_t __movie_read_stream( ae_voidptr_t _buff, ae_size_t _carriage, ae_size_t _size, ae_userdata_t _userdata )
+        static ae_size_t movieReadStream( ae_voidptr_t _buffer, ae_size_t _carriage, ae_size_t _size, ae_userdata_t _userdata )
         {
-            ae_uint8_t * memory_userdata = (ae_uint8_t *)_userdata;
+            const MemoryInterface * memory = static_cast<const MemoryInterface *>(_userdata);
+            size_t memorySize = memory->getSize();
 
-            Helper::memoryCopy( _buff, 0, memory_userdata, _carriage, _size );
+            if( _carriage >= memorySize )
+            {
+                return 0;
+            }
+
+            if( _size > memorySize - _carriage )
+            {
+                return 0;
+            }
+
+            const void * memoryBuffer = memory->getBuffer();
+            Helper::memoryCopy( _buffer, 0, memoryBuffer, _carriage, _size );
 
             return _size;
         }
         //////////////////////////////////////////////////////////////////////////
-        static ae_void_t __movie_copy_stream( ae_constvoidptr_t _src, ae_voidptr_t _dst, ae_size_t _size, ae_userdata_t _userdata )
+        static ae_void_t movieCopyStream( ae_constvoidptr_t _src, ae_voidptr_t _dst, ae_size_t _size, ae_userdata_t _userdata )
         {
             MENGINE_UNUSED( _userdata );
 
             Helper::memoryCopy( _dst, 0, _src, 0, _size );
         }
         //////////////////////////////////////////////////////////////////////////
-        static ae_bool_t __movie_resource_provider( const aeMovieResource * _resource, ae_voidptrptr_t _rd, ae_voidptr_t _ud )
+        static ae_bool_t movieResourceProvider( const aeMovieResource * _resource, ae_voidptrptr_t _resourceData, ae_voidptr_t _userdata )
         {
-            MENGINE_UNUSED( _rd );
+            MENGINE_UNUSED( _resourceData );
 
-            ResourceMovie2 * resourceMovie2 = (ResourceMovie2 *)_ud;
+            ResourceMovie2 * resourceMovie2 = (ResourceMovie2 *)_userdata;
             MENGINE_UNUSED( resourceMovie2 );
 
             const ConstString & groupName = resourceMovie2->getGroupName();
 
-            aeMovieResourceTypeEnum resource_type = _resource->type;
+            aeMovieResourceTypeEnum resourceType = _resource->type;
 
-            switch( resource_type )
+            switch( resourceType )
             {
             case AE_MOVIE_RESOURCE_IMAGE:
                 {
-                    const aeMovieResourceImage * resource_image = reinterpret_cast<const aeMovieResourceImage *>(_resource);
+                    const aeMovieResourceImage * movieResourceImage = reinterpret_cast<const aeMovieResourceImage *>(_resource);
 
-                    const Char * resource_image_name = resource_image->name;
+                    const Char * movieResourceName = movieResourceImage->name;
+                    const ConstString & resourceName = Helper::stringizeString( movieResourceName );
 
                     const ResourcePtr & resource = RESOURCE_SERVICE()
-                        ->getResourceReference( groupName, Helper::stringizeString( resource_image_name ) );
+                        ->getResourceReference( groupName, resourceName );
 
                     if( resource == nullptr )
                     {
@@ -81,12 +91,13 @@ namespace Mengine
                 }break;
             case AE_MOVIE_RESOURCE_VIDEO:
                 {
-                    const aeMovieResourceVideo * resource_video = reinterpret_cast<const aeMovieResourceVideo *>(_resource);
+                    const aeMovieResourceVideo * movieResourceVideo = reinterpret_cast<const aeMovieResourceVideo *>(_resource);
 
-                    const Char * resource_video_name = resource_video->name;
+                    const Char * movieResourceName = movieResourceVideo->name;
+                    const ConstString & resourceName = Helper::stringizeString( movieResourceName );
 
                     const ResourcePtr & resource = RESOURCE_SERVICE()
-                        ->getResourceReference( groupName, Helper::stringizeString( resource_video_name ) );
+                        ->getResourceReference( groupName, resourceName );
 
                     if( resource == nullptr )
                     {
@@ -100,12 +111,13 @@ namespace Mengine
                 }break;
             case AE_MOVIE_RESOURCE_SOUND:
                 {
-                    const aeMovieResourceSound * resource_sound = reinterpret_cast<const aeMovieResourceSound *>(_resource);
+                    const aeMovieResourceSound * movieResourceSound = reinterpret_cast<const aeMovieResourceSound *>(_resource);
 
-                    const Char * resource_sound_name = resource_sound->name;
+                    const Char * movieResourceName = movieResourceSound->name;
+                    const ConstString & resourceName = Helper::stringizeString( movieResourceName );
 
                     const ResourcePtr & resource = RESOURCE_SERVICE()
-                        ->getResourceReference( groupName, Helper::stringizeString( resource_sound_name ) );
+                        ->getResourceReference( groupName, resourceName );
 
                     if( resource == nullptr )
                     {
@@ -119,12 +131,13 @@ namespace Mengine
                 }break;
             case AE_MOVIE_RESOURCE_PARTICLE:
                 {
-                    const aeMovieResourceParticle * resource_particle = reinterpret_cast<const aeMovieResourceParticle *>(_resource);
+                    const aeMovieResourceParticle * movieResourceParticle = reinterpret_cast<const aeMovieResourceParticle *>(_resource);
 
-                    const Char * resource_particle_name = resource_particle->name;
+                    const Char * movieResourceName = movieResourceParticle->name;
+                    const ConstString & resourceName = Helper::stringizeString( movieResourceName );
 
                     const ResourcePtr & resource = RESOURCE_SERVICE()
-                        ->getResourceReference( groupName, Helper::stringizeString( resource_particle_name ) );
+                        ->getResourceReference( groupName, resourceName );
 
                     if( resource == nullptr )
                     {
@@ -143,9 +156,29 @@ namespace Mengine
             return AE_TRUE;
         }
         //////////////////////////////////////////////////////////////////////////
-        static ae_bool_t __movie_layer_data_visitor( const aeMovieCompositionData * _compositionData, const aeMovieLayerData * _layerData, ae_voidptr_t _ud )
+        static bool isMovieLayerScaleValid( float _x, float _y, float _z, float _minimum )
         {
-            MovieLayerDataVisitorDesc * desc = (MovieLayerDataVisitorDesc *)_ud;
+            if( (MENGINE_ABS( _x ) >= _minimum) == false )
+            {
+                return false;
+            }
+
+            if( (MENGINE_ABS( _y ) >= _minimum) == false )
+            {
+                return false;
+            }
+
+            if( (MENGINE_ABS( _z ) >= _minimum) == false )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static ae_bool_t movieLayerDataVisitor( const aeMovieCompositionData * _compositionData, const aeMovieLayerData * _layerData, ae_voidptr_t _userdata )
+        {
+            MovieLayerDataVisitorDesc * desc = (MovieLayerDataVisitorDesc *)_userdata;
 
             const ae_char_t * compositionDataName = ae_get_movie_composition_data_name( _compositionData );
             const ae_char_t * layerDataName = ae_get_movie_layer_data_name( _layerData );
@@ -156,13 +189,13 @@ namespace Mengine
             {
             case AE_MOVIE_LAYER_TYPE_SLOT:
                 {
-                    ae_float_t immutable_opacity;
-                    if( ae_get_movie_layer_data_immutable_opacity( _layerData, &immutable_opacity ) == AE_FALSE )
+                    ae_float_t immutableOpacity;
+                    if( ae_get_movie_layer_data_immutable_opacity( _layerData, &immutableOpacity ) == AE_FALSE )
                     {
                         break;
                     }
 
-                    if( immutable_opacity >= MENGINE_COLOR_MINIMAL_ALPHA )
+                    if( immutableOpacity >= MENGINE_COLOR_MINIMAL_ALPHA )
                     {
                         break;
                     }
@@ -177,13 +210,13 @@ namespace Mengine
                 }break;
             case AE_MOVIE_LAYER_TYPE_TEXT:
                 {
-                    ae_float_t immutable_opacity;
-                    if( ae_get_movie_layer_data_immutable_opacity( _layerData, &immutable_opacity ) == AE_FALSE )
+                    ae_float_t immutableOpacity;
+                    if( ae_get_movie_layer_data_immutable_opacity( _layerData, &immutableOpacity ) == AE_FALSE )
                     {
                         break;
                     }
 
-                    if( immutable_opacity >= MENGINE_COLOR_MINIMAL_ALPHA )
+                    if( immutableOpacity >= MENGINE_COLOR_MINIMAL_ALPHA )
                     {
                         break;
                     }
@@ -198,17 +231,17 @@ namespace Mengine
                 }break;
             case AE_MOVIE_LAYER_TYPE_IMAGE:
                 {
-                    ae_float_t immutable_scale_x;
-                    ae_float_t immutable_scale_y;
-                    ae_float_t immutable_scale_z;
-                    if( ae_get_movie_layer_data_immutable_scale( _layerData, &immutable_scale_x, &immutable_scale_y, &immutable_scale_z ) == AE_FALSE )
+                    ae_float_t immutableScaleX;
+                    ae_float_t immutableScaleY;
+                    ae_float_t immutableScaleZ;
+                    if( ae_get_movie_layer_data_immutable_scale( _layerData, &immutableScaleX, &immutableScaleY, &immutableScaleZ ) == AE_FALSE )
                     {
                         break;
                     }
 
-                    float Limit_Movie2ImageImmutableScale = CONFIG_VALUE_FLOAT( "Limit", "Movie2ImageImmutableScale", 0.8f );
+                    float imageImmutableScaleLimit = CONFIG_VALUE_FLOAT( "Limit", "Movie2ImageImmutableScale", 0.8f );
 
-                    if( MENGINE_ABS( immutable_scale_x ) >= Limit_Movie2ImageImmutableScale && MENGINE_ABS( immutable_scale_y ) >= Limit_Movie2ImageImmutableScale && MENGINE_ABS( immutable_scale_z ) >= Limit_Movie2ImageImmutableScale )
+                    if( Detail::isMovieLayerScaleValid( immutableScaleX, immutableScaleY, immutableScaleZ, imageImmutableScaleLimit ) == true )
                     {
                         break;
                     }
@@ -217,27 +250,27 @@ namespace Mengine
                         , desc->resource->getName().c_str()
                         , compositionDataName
                         , layerDataName
-                        , immutable_scale_x
-                        , immutable_scale_y
-                        , immutable_scale_z
-                        , Limit_Movie2ImageImmutableScale
+                        , immutableScaleX
+                        , immutableScaleY
+                        , immutableScaleZ
+                        , imageImmutableScaleLimit
                     );
 
                     desc->successful = false;
                 }break;
             case AE_MOVIE_LAYER_TYPE_VIDEO:
                 {
-                    ae_float_t immutable_scale_x;
-                    ae_float_t immutable_scale_y;
-                    ae_float_t immutable_scale_z;
-                    if( ae_get_movie_layer_data_immutable_scale( _layerData, &immutable_scale_x, &immutable_scale_y, &immutable_scale_z ) == AE_FALSE )
+                    ae_float_t immutableScaleX;
+                    ae_float_t immutableScaleY;
+                    ae_float_t immutableScaleZ;
+                    if( ae_get_movie_layer_data_immutable_scale( _layerData, &immutableScaleX, &immutableScaleY, &immutableScaleZ ) == AE_FALSE )
                     {
                         break;
                     }
 
-                    float Limit_Movie2VideoImmutableScale = CONFIG_VALUE_FLOAT( "Limit", "Movie2VideoImmutableScale", 0.9f );
+                    float videoImmutableScaleLimit = CONFIG_VALUE_FLOAT( "Limit", "Movie2VideoImmutableScale", 0.9f );
 
-                    if( MENGINE_ABS( immutable_scale_x ) >= Limit_Movie2VideoImmutableScale && MENGINE_ABS( immutable_scale_y ) >= Limit_Movie2VideoImmutableScale && MENGINE_ABS( immutable_scale_z ) >= Limit_Movie2VideoImmutableScale )
+                    if( Detail::isMovieLayerScaleValid( immutableScaleX, immutableScaleY, immutableScaleZ, videoImmutableScaleLimit ) == true )
                     {
                         break;
                     }
@@ -246,10 +279,10 @@ namespace Mengine
                         , desc->resource->getName().c_str()
                         , compositionDataName
                         , layerDataName
-                        , immutable_scale_x
-                        , immutable_scale_y
-                        , immutable_scale_z
-                        , Limit_Movie2VideoImmutableScale
+                        , immutableScaleX
+                        , immutableScaleY
+                        , immutableScaleZ
+                        , videoImmutableScaleLimit
                     );
 
                     desc->successful = false;
@@ -262,23 +295,23 @@ namespace Mengine
             return AE_TRUE;
         }
         //////////////////////////////////////////////////////////////////////////
-        static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCallbackData * _callbackData, ae_voidptrptr_t _nd, ae_voidptr_t _ud )
+        static ae_bool_t movieCompositionNodeProvider( const aeMovieNodeProviderCallbackData * _callbackData, ae_voidptrptr_t _node, ae_voidptr_t _userdata )
         {
-            MovieLayerDataVisitorDesc * desc = (MovieLayerDataVisitorDesc *)_ud;
+            MovieLayerDataVisitorDesc * desc = (MovieLayerDataVisitorDesc *)_userdata;
 
-            const aeMovieLayerData * layer_data = _callbackData->layer_data;
+            const aeMovieLayerData * layerData = _callbackData->layer_data;
 
             if( _callbackData->track_matte_layer_data != AE_NULLPTR )
             {
-                aeMovieLayerTypeEnum layer_type = ae_get_movie_layer_data_type( layer_data );
+                aeMovieLayerTypeEnum layerType = ae_get_movie_layer_data_type( layerData );
 
-                switch( layer_type )
+                switch( layerType )
                 {
                 case AE_MOVIE_LAYER_TYPE_IMAGE:
                     {
-                        aeMovieLayerTypeEnum track_matte_layer_type = ae_get_movie_layer_data_type( _callbackData->track_matte_layer_data );
+                        aeMovieLayerTypeEnum trackMatteLayerType = ae_get_movie_layer_data_type( _callbackData->track_matte_layer_data );
 
-                        if( track_matte_layer_type != AE_MOVIE_LAYER_TYPE_IMAGE )
+                        if( trackMatteLayerType != AE_MOVIE_LAYER_TYPE_IMAGE )
                         {
                             const ae_char_t * compositionDataName = ae_get_movie_composition_data_name( _callbackData->composition_data );
                             const ae_char_t * layerDataName = ae_get_movie_layer_data_name( _callbackData->layer_data );
@@ -296,9 +329,9 @@ namespace Mengine
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SEQUENCE:
                     {
-                        aeMovieLayerTypeEnum track_matte_layer_type = ae_get_movie_layer_data_type( _callbackData->track_matte_layer_data );
+                        aeMovieLayerTypeEnum trackMatteLayerType = ae_get_movie_layer_data_type( _callbackData->track_matte_layer_data );
 
-                        if( track_matte_layer_type != AE_MOVIE_LAYER_TYPE_IMAGE )
+                        if( trackMatteLayerType != AE_MOVIE_LAYER_TYPE_IMAGE )
                         {
                             const ae_char_t * compositionDataName = ae_get_movie_composition_data_name( _callbackData->composition_data );
                             const ae_char_t * layerDataName = ae_get_movie_layer_data_name( _callbackData->layer_data );
@@ -320,21 +353,21 @@ namespace Mengine
                 }
             }
 
-            *_nd = AE_NULLPTR;
+            *_node = AE_NULLPTR;
 
             return AE_TRUE;
         }
         //////////////////////////////////////////////////////////////////////////
-        static ae_bool_t __movie_composition_data_visitor( const aeMovieData * _movieData, const aeMovieCompositionData * _compositionData, ae_userdata_t _ud )
+        static ae_bool_t movieCompositionDataVisitor( const aeMovieData * _movieData, const aeMovieCompositionData * _compositionData, ae_userdata_t _userdata )
         {
             AE_UNUSED( _movieData );
 
-            aeMovieCompositionProviders composition_providers;
-            ae_initialize_movie_composition_providers( &composition_providers );
+            aeMovieCompositionProviders compositionProviders;
+            ae_initialize_movie_composition_providers( &compositionProviders );
 
-            composition_providers.node_provider = &__movie_composition_node_provider;
+            compositionProviders.node_provider = &movieCompositionNodeProvider;
 
-            const aeMovieComposition * composition = ae_create_movie_composition( _compositionData, AE_TRUE, &composition_providers, _ud );
+            const aeMovieComposition * composition = ae_create_movie_composition( _compositionData, AE_TRUE, &compositionProviders, _userdata );
 
             if( composition == AE_NULLPTR )
             {
@@ -421,44 +454,42 @@ namespace Mengine
             return false;
         }
 
-        void * memory_buffer = memory->getBuffer();
+        aeMovieDataProviders dataProviders;
+        ae_clear_movie_data_providers( &dataProviders );
 
-        aeMovieDataProviders data_providers;
-        ae_clear_movie_data_providers( &data_providers );
+        dataProviders.resource_provider = &Detail::movieResourceProvider;
 
-        data_providers.resource_provider = &Detail::__movie_resource_provider;
-
-        aeMovieData * movieData = ae_create_movie_data( m_movieInstance, &data_providers, (ae_voidptr_t)_resource.get() );
+        aeMovieData * movieData = ae_create_movie_data( m_movieInstance, &dataProviders, (ae_voidptr_t)_resource.get() );
 
         if( movieData == nullptr )
         {
             return false;
         }
 
-        aeMovieStream * movieStream = ae_create_movie_stream( m_movieInstance, &Detail::__movie_read_stream, &Detail::__movie_copy_stream, memory_buffer );
+        aeMovieStream * movieStream = ae_create_movie_stream( m_movieInstance, &Detail::movieReadStream, &Detail::movieCopyStream, memory.get() );
 
         if( movieStream == nullptr )
         {
             return false;
         }
 
-        ae_uint32_t major_version;
-        ae_uint32_t minor_version;
-        ae_result_t result_load_movie_data = ae_load_movie_data( movieData, movieStream, &major_version, &minor_version );
+        ae_uint32_t majorVersion;
+        ae_uint32_t minorVersion;
+        ae_result_t resultLoadMovieData = ae_load_movie_data( movieData, movieStream, &majorVersion, &minorVersion );
 
-        if( result_load_movie_data != AE_RESULT_SUCCESSFUL )
+        if( resultLoadMovieData != AE_RESULT_SUCCESSFUL )
         {
-            const ae_char_t * result_string_info = ae_get_movie_result_string_info( result_load_movie_data );
+            const ae_char_t * resultStringInfo = ae_get_movie_result_string_info( resultLoadMovieData );
 
             LOGGER_MESSAGE_RELEASE_ERROR( "movie2 '%s' group '%s' file '%s' check movie data invalid '%s'\ncurrent version '%u.%u'\nload version '%u.%u'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , content->getFilePath().c_str()
-                , result_string_info
+                , resultStringInfo
                 , AE_MOVIE_SDK_MAJOR_VERSION
                 , AE_MOVIE_SDK_MINOR_VERSION
-                , major_version
-                , minor_version
+                , majorVersion
+                , minorVersion
             );
 
             return false;
@@ -470,7 +501,7 @@ namespace Mengine
         desc.resource = _resource;
         desc.successful = true;
 
-        if( ae_visit_movie_layer_data( movieData, &Detail::__movie_layer_data_visitor, &desc ) == AE_FALSE )
+        if( ae_visit_movie_layer_data( movieData, &Detail::movieLayerDataVisitor, &desc ) == AE_FALSE )
         {
             LOGGER_MESSAGE_RELEASE_ERROR( "movie2 '%s' group '%s' file '%s' check movie data invalid"
                 , _resource->getName().c_str()
@@ -486,7 +517,7 @@ namespace Mengine
             successful = false;
         }
 
-        if( ae_visit_movie_composition_data( movieData, &Detail::__movie_composition_data_visitor, &desc ) == AE_FALSE )
+        if( ae_visit_movie_composition_data( movieData, &Detail::movieCompositionDataVisitor, &desc ) == AE_FALSE )
         {
             LOGGER_MESSAGE_RELEASE_ERROR( "movie2 '%s' group '%s' file '%s' check movie data invalid"
                 , _resource->getName().c_str()

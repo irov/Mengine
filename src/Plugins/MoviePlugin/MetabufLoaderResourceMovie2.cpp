@@ -48,54 +48,53 @@ namespace Mengine
 
         content->setDataflow( dataflow );
 
-        const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2::VectorMeta_Composition & includes_composition = metadata->get_Includes_Composition();
+        const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2::VectorMeta_Composition & includesComposition = metadata->get_Includes_Composition();
 
-        for( const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition & meta_composition : includes_composition )
+        for( const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition & metaComposition : includesComposition )
         {
-            const ConstString & compositionName = meta_composition.get_Name();
+            const ConstString & compositionName = metaComposition.get_Name();
 
             ResourceMovie2::CompositionDesc desc;
 
-            //ToDo convert to milliseconds
-            desc.duration = meta_composition.get_Duration() * 1000.f;
-            desc.frameDuration = meta_composition.get_FrameDuration() * 1000.f;
+            desc.duration = metaComposition.get_Duration() * 1000.f;
+            desc.frameDuration = metaComposition.get_FrameDuration() * 1000.f;
 
-            desc.has_bounds = meta_composition.get_Bounds( &desc.bounds );
+            desc.hasBounds = metaComposition.get_Bounds( &desc.bounds );
 
-            desc.master = meta_composition.getd_Master( true );
+            desc.master = metaComposition.getd_Master( true );
 
-            const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::VectorMeta_Layer & includes_layer = meta_composition.get_Includes_Layer();
+            const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::VectorMeta_Layer & includesLayer = metaComposition.get_Includes_Layer();
 
-            for( const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_Layer & meta_layer : includes_layer )
+            for( const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_Layer & metaLayer : includesLayer )
             {
                 ResourceMovie2::CompositionLayer layer;
-                layer.index = meta_layer.get_Index();
-                layer.name = meta_layer.get_Name();
-                layer.type = meta_layer.get_Type();
-                meta_layer.getd_Matrix( &layer.matrix, mt::mat4f::identity() );
-                meta_layer.getd_Color( &layer.color, Color::identity() );
+                layer.index = metaLayer.get_Index();
+                layer.name = metaLayer.get_Name();
+                layer.type = metaLayer.get_Type();
+                metaLayer.getd_Matrix( &layer.matrix, mt::mat4f::identity() );
+                metaLayer.getd_Color( &layer.color, Color::identity() );
 
                 mt::box2f dimension;
-                if( meta_layer.get_Dimension( &dimension ) == true )
+                if( metaLayer.get_Dimension( &dimension ) == true )
                 {
                     layer.dimension = dimension;
                 }
 
-                layer.trackMatte = meta_layer.get_TrackMatte();
+                layer.trackMatte = metaLayer.get_TrackMatte();
 
-                meta_layer.get_Options( &layer.options );
+                metaLayer.get_Options( &layer.options );
 
                 desc.layers.emplace_back( layer );
             }
 
-            const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::VectorMeta_SubComposition & includes_subcomposition = meta_composition.get_Includes_SubComposition();
+            const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::VectorMeta_SubComposition & includesSubcomposition = metaComposition.get_Includes_SubComposition();
 
-            for( const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_SubComposition & meta_subcomposition : includes_subcomposition )
+            for( const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_SubComposition & metaSubcomposition : includesSubcomposition )
             {
-                uint32_t subcompositionIndex = meta_subcomposition.get_Index();
-                const ConstString & subcompositionName = meta_subcomposition.get_Name();
-                float subcompositionDuration = meta_subcomposition.get_Duration();
-                float subcompositionFrameDuration = meta_subcomposition.get_FrameDuration();
+                uint32_t subcompositionIndex = metaSubcomposition.get_Index();
+                const ConstString & subcompositionName = metaSubcomposition.get_Name();
+                float subcompositionDuration = metaSubcomposition.get_Duration();
+                float subcompositionFrameDuration = metaSubcomposition.get_FrameDuration();
 
                 ResourceMovie2::CompositionSubComposition subcomposition;
                 subcomposition.index = subcompositionIndex;

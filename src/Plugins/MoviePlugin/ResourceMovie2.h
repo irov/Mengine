@@ -3,6 +3,7 @@
 #include "Interface/DataInterface.h"
 
 #include "Movie2Interface.h"
+#include "Movie2Includer.h"
 #include "Movie2DataInterface.h"
 
 #include "Kernel/Resource.h"
@@ -13,8 +14,6 @@
 #include "Kernel/Floats.h"
 
 #include "math/mat4.h"
-
-#include "movie/movie.hpp"
 
 namespace Mengine
 {
@@ -71,7 +70,7 @@ namespace Mengine
             float duration;
             float frameDuration;
 
-            bool has_bounds;
+            bool hasBounds;
             mt::box2f bounds;
 
             bool master;

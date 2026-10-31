@@ -1,0 +1,3 @@
+LIBRARY "MP3Plugin"
+EXPORTS
+    dllMengineCreatePlugin @1

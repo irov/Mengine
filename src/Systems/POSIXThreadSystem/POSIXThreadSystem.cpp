@@ -66,6 +66,11 @@ namespace Mengine
         m_factoryThreadConditionVariable = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool POSIXThreadSystem::isThreadSupported() const
+    {
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     ThreadIdentityInterfacePtr POSIXThreadSystem::createThreadIdentity( const ThreadDescription & _description, EThreadPriority _priority, const DocumentInterfacePtr & _doc )
     {
         POSIXThreadIdentityPtr identity = m_factoryThreadIdentity->createObject( _doc );

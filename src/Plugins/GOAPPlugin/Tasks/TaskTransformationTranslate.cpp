@@ -4,6 +4,8 @@
 
 #include "Kernel/FactorableUnique.h"
 
+#include "Config/StdMath.h"
+
 #include "GOAP/NodeInterface.h"
 
 namespace Mengine
@@ -39,19 +41,26 @@ namespace Mengine
 
                 const mt::vec3f & position = transformation->getLocalPosition();
 
-                float way_sqrlength = mt::sqrlength_v3_v3( position, m_to );
-                float translate_sqrlength = mt::sqrlength_v3( translate );
+                float waySqrLength = mt::sqrlength_v3_v3( position, m_to );
+                float translateSqrLength = mt::sqrlength_v3( translate );
 
-                if( translate_sqrlength < way_sqrlength )
+                if( translateSqrLength < waySqrLength )
                 {
                     *_used = time;
 
                     transformation->translate( translate );
 
-                    return true;
+                    return false;
                 }
 
-                *_used = (way_sqrlength - translate_sqrlength) / translate_sqrlength;
+                float wayFactor = 0.f;
+
+                if( translateSqrLength > 0.f )
+                {
+                    wayFactor = StdMath::sqrtf( waySqrLength / translateSqrLength );
+                }
+
+                *_used = time * wayFactor;
 
                 transformation->setLocalPosition( m_to );
 
@@ -99,6 +108,15 @@ namespace Mengine
         TransformationInterface * transformation = m_transformable->getTransformation();
 
         const mt::vec3f & position = transformation->getLocalPosition();
+
+        float waySqrLength = mt::sqrlength_v3_v3( position, m_to );
+
+        if( waySqrLength == 0.f )
+        {
+            transformation->setLocalPosition( m_to );
+
+            return true;
+        }
 
         mt::vec3f dir;
         mt::dir_v3_v3( &dir, position, m_to );

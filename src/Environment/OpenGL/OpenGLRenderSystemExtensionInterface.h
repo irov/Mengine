@@ -4,12 +4,17 @@
 
 #include "Environment/OpenGL/OpenGLRenderIncluder.h"
 
+#include "Kernel/Resolution.h"
+
 namespace Mengine
 {
     class OpenGLRenderSystemExtensionInterface
         : public UnknownInterface
     {
     public:
+        virtual void setRenderTargetResolution( const Resolution & _resolution ) = 0;
+        virtual const Resolution & getRenderTargetResolution() const = 0;
+
         virtual GLuint genTexture() = 0;
         virtual void deleteTexture( GLuint _id ) = 0;
 

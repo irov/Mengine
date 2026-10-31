@@ -51,6 +51,12 @@ namespace Mengine
         void setChromaticOffset( float _pixels );
         float getChromaticOffset() const;
 
+        void setBlurRadius( float _pixels );
+        float getBlurRadius() const;
+
+        void setBlurDirection( const mt::vec2f & _direction );
+        const mt::vec2f & getBlurDirection() const;
+
         void setHitFlash( const mt::vec3f & _color, float _intensity );
         const mt::vec3f & getHitFlashColor() const;
         float getHitFlashIntensity() const;
@@ -105,6 +111,8 @@ namespace Mengine
         float m_vignetteStrength;
         float m_vignetteSoftness;
         float m_chromaticOffset;
+        float m_blurRadius;
+        mt::vec2f m_blurDirection;
         mt::vec3f m_hitFlashColor;
         float m_hitFlashIntensity;
 

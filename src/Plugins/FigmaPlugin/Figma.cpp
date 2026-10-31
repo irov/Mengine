@@ -685,7 +685,11 @@ namespace Mengine
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
                 Detail::addUniqueDirectory( &m_directories, "C:/Windows/Fonts/" );
-#elif defined(MENGINE_PLATFORM_MACOS) || defined(MENGINE_PLATFORM_IOS)
+#elif defined(MENGINE_PLATFORM_MACOS)
+                Detail::addUniqueDirectory( &m_directories, "/System/Library/Fonts/Supplemental/" );
+                Detail::addUniqueDirectory( &m_directories, "/System/Library/Fonts/" );
+                Detail::addUniqueDirectory( &m_directories, "/Library/Fonts/" );
+#elif defined(MENGINE_PLATFORM_IOS)
                 Detail::addUniqueDirectory( &m_directories, "/System/Library/Fonts/Supplemental/" );
                 Detail::addUniqueDirectory( &m_directories, "/System/Library/Fonts/" );
                 Detail::addUniqueDirectory( &m_directories, "/Library/Fonts/" );

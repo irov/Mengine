@@ -19,6 +19,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Scheduler::Scheduler()
         : m_speedFactor( 1.f )
+        , m_speedFactorInv( 1.f )
         , m_time( 0.f )
         , m_freezeAll( false )
         , m_update( false )
@@ -318,8 +319,6 @@ namespace Mengine
                 continue;
             }
 
-            float old_time_delay = desc.time_delay;
-
             desc.time_delay += total_time;
 
             switch( desc.type )
@@ -331,7 +330,7 @@ namespace Mengine
                         continue;
                     }
 
-                    float timeOffset = desc.delay - old_time_delay;
+                    float timeOffset = _context->time - (desc.time_delay - desc.delay) * m_speedFactorInv;
 
                     TIMELINE_SERVICE()
                         ->beginOffset( timeOffset, MENGINE_DOCUMENT_VALUE( desc.doc, nullptr ) );
@@ -350,8 +349,6 @@ namespace Mengine
                 }break;
             case EST_TIMING:
                 {
-                    float acc_delay = 0.f;
-
                     for( ;; )
                     {
                         if( desc.iterate_invalid == true )
@@ -388,13 +385,11 @@ namespace Mengine
                             break;
                         }
 
-                        acc_delay += desc.delay;
-
-                        float timeOffset = acc_delay - old_time_delay;
-
                         uint32_t iterate = desc.iterate;
 
                         desc.time_delay -= desc.delay;
+
+                        float timeOffset = _context->time - desc.time_delay * m_speedFactorInv;
 
                         desc.iterate++;
                         desc.iterate_invalid = true;
@@ -504,6 +499,8 @@ namespace Mengine
     void Scheduler::setSpeedFactor( float _factor )
     {
         m_speedFactor = _factor;
+
+        m_speedFactorInv = _factor > 0.f ? 1.f / _factor : 0.f;
     }
     //////////////////////////////////////////////////////////////////////////
     float Scheduler::getSpeedFactor() const

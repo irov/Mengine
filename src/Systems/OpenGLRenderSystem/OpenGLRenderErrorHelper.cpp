@@ -36,6 +36,13 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool OpenGLRenderErrorCheck( GLenum _err, const Char * _file, int32_t _line, const Char * _function, const Char * _method, const String & _args )
         {
+#if defined(MENGINE_PLATFORM_EMSCRIPTEN)
+            if( _err == GL_CONTEXT_LOST_WEBGL )
+            {
+                return false;
+            }
+#endif
+
             const Char * err_str = glGetErrorString( _err );
 
             LOGGER_VERBOSE_LEVEL( "opengl", LM_ERROR, LFILTER_NONE, LCOLOR_RED, _file, _line, _function, LFLAG_SHORT | LFLAG_FILESTAMP | LFLAG_FUNCTIONSTAMP )("call '%s(%s)' get error: %s (hr:%d)"

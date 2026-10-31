@@ -1,5 +1,7 @@
 #include "AreaOfInterestScriptEmbedding.h"
 
+#include "PythonNodeAreaOfInterestTriggerEventReceiver.h"
+
 #include "Interface/PluginServiceInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
@@ -23,36 +25,6 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        class PythonNodeAreaOfInterestTriggerEventReceiver
-            : public PythonEventReceiver
-            , public NodeAreaOfInterestTriggerEventReceiverInterface
-            , public Factorable
-        {
-        public:
-            PythonNodeAreaOfInterestTriggerEventReceiver()
-            {
-            }
-
-            ~PythonNodeAreaOfInterestTriggerEventReceiver() override
-            {
-            }
-
-        public:
-            void onAreaOfInterestTriggerEnter( const AreaOfInterestActorProviderInterfacePtr & _enemy, uint32_t _iff1, uint32_t _iff2 ) override
-            {
-                NodeAreaOfInterestActorPtr enemy = NodeAreaOfInterestActorPtr::from( _enemy );
-
-                m_cb.call( enemy, _iff1, _iff2 );
-            }
-
-            void onAreaOfInterestTriggerLeave( const AreaOfInterestActorProviderInterfacePtr & _enemy, uint32_t _iff1, uint32_t _iff2 ) override
-            {
-                NodeAreaOfInterestActorPtr enemy = NodeAreaOfInterestActorPtr::from( _enemy );
-
-                m_cb.call( enemy, _iff1, _iff2 );
-            }
-        };
-        //////////////////////////////////////////////////////////////////////////
         static PyObject * NodeAOITrigger_setEventListener( pybind::kernel_interface * _kernel, NodeAreaOfInterestTrigger * _node, PyObject * _args, PyObject * _kwds )
         {
             MENGINE_UNUSED( _args );
@@ -61,8 +33,8 @@ namespace Mengine
 
             pybind::dict py_kwds( _kernel, _kwds );
 
-            Helper::registerPythonEventReceiver<Detail::PythonNodeAreaOfInterestTriggerEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onTriggerEnter" ), EVENT_AREAOFINTEREST_TRIGGER_ENTER, MENGINE_DOCUMENT_PYTHON );
-            Helper::registerPythonEventReceiver<Detail::PythonNodeAreaOfInterestTriggerEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onTriggerLeave" ), EVENT_AREAOFINTEREST_TRIGGER_LEAVE, MENGINE_DOCUMENT_PYTHON );
+            Helper::registerPythonEventReceiver<PythonNodeAreaOfInterestTriggerEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onTriggerEnter" ), EVENT_AREAOFINTEREST_TRIGGER_ENTER, MENGINE_DOCUMENT_PYTHON );
+            Helper::registerPythonEventReceiver<PythonNodeAreaOfInterestTriggerEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onTriggerLeave" ), EVENT_AREAOFINTEREST_TRIGGER_LEAVE, MENGINE_DOCUMENT_PYTHON );
 
             MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _node, py_kwds );
 

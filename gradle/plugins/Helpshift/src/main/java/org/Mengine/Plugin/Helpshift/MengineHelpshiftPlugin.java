@@ -89,11 +89,24 @@ public class MengineHelpshiftPlugin extends MengineService implements HelpshiftE
     public boolean onMengineRemoteMessageReceived(@NonNull MengineApplication application, @NonNull MengineParamRemoteMessage message) {
         Map<String, Object> data = message.REMOTEMESSAGE_DATA;
 
-        String origin = (String)data.get("origin");
+        if (data == null) {
+            return false;
+        }
+
+        Object origin = data.get("origin");
         if (Objects.equals(origin, "helpshift") == true) {
-            Map<String, String> helpshifData = new HashMap<>();
-            data.putAll(message.REMOTEMESSAGE_DATA);
-            Helpshift.handlePush(helpshifData);
+            Map<String, String> helpshiftData = new HashMap<>();
+
+            for (Map.Entry<String, Object> entry : data.entrySet()) {
+                Object value = entry.getValue();
+                if (value instanceof String == false) {
+                    continue;
+                }
+
+                helpshiftData.put(entry.getKey(), (String)value);
+            }
+
+            Helpshift.handlePush(helpshiftData);
 
             return true;
         }

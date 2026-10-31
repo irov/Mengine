@@ -1,21 +1,26 @@
 @echo off
 
-set "CONFIGURATION=%1"
-set "SOLUTION_NAME=dependencies_emscripten"
-set "SOURCE_DIRECTORY=%~dp0..\..\cmake\Depends_EMSCRIPTEN"
+setlocal EnableExtensions
 
-@call "%~dp0..\..\dependencies\emsdk\emsdk_env.bat"
+set "CONFIGURATION=%~1"
 
-set "BUILD_TEMP_DIR=%~dp0..\..\solutions\%SOLUTION_NAME%\%CONFIGURATION%"
+if "%CONFIGURATION%" == "" (
+    echo Usage: %~nx0 ^<Debug^|Release^> 1>&2
+    exit /b 2
+)
 
-@mkdir "%BUILD_TEMP_DIR%"
+set "REPOSITORY_DIR=%~dp0..\.."
+set "BUILD_DIR=%REPOSITORY_DIR%\solutions\dependencies_emscripten\%CONFIGURATION%"
 
-@pushd "%BUILD_TEMP_DIR%"
+call "%REPOSITORY_DIR%\dependencies\emsdk\emsdk_env.bat"
+if errorlevel 1 exit /b %errorlevel%
 
-@call emcmake cmake -S "%SOURCE_DIRECTORY%" -DCMAKE_CONFIGURATION_TYPES:STRING=%CONFIGURATION% -DCMAKE_BUILD_TYPE:STRING=%CONFIGURATION%
+cmake -G Ninja ^
+    -S "%REPOSITORY_DIR%\cmake\Depends_EMSCRIPTEN" ^
+    -B "%BUILD_DIR%" ^
+    "-DCMAKE_TOOLCHAIN_FILE:FILEPATH=%EMSDK%\upstream\emscripten\cmake\Modules\Platform\Emscripten.cmake" ^
+    "-DCMAKE_BUILD_TYPE:STRING=%CONFIGURATION%"
+if errorlevel 1 exit /b %errorlevel%
 
-@call emmake make
-
-@popd
-
-@exit /b %errorlevel%
+cmake --build "%BUILD_DIR%" --parallel 8 --config %CONFIGURATION%
+exit /b %errorlevel%

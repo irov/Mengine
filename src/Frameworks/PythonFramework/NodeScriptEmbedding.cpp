@@ -29,6 +29,9 @@
 #include "ScriptableAffectorCallback.h"
 #include "PythonEntityBehavior.h"
 #include "PythonHotSpotEventReceiver.h"
+#include "PythonMeshEventReceiver.h"
+#include "PythonScriptHolderEventReceiver.h"
+#include "PythonVirtualAreaEventReceiver.h"
 #include "PythonScheduleTiming.h"
 #include "PythonSchedulePipe.h"
 #include "PythonScheduleEvent.h"
@@ -629,27 +632,6 @@ namespace Mengine
                 return _kernel->ret_none();
             }
             //////////////////////////////////////////////////////////////////////////
-            class PythonMeshEventReceiver
-                : public PythonEventReceiver
-                , public MeshgetEventReceiverInterface
-                , public Factorable
-            {
-            public:
-                PythonMeshEventReceiver()
-                {
-                }
-
-                ~PythonMeshEventReceiver() override
-                {
-                }
-
-            public:
-                void onMeshgetUpdate( const UpdateContext * _context ) override
-                {
-                    m_cb.call( _context->revision, _context->current, _context->time );
-                }
-            };
-            //////////////////////////////////////////////////////////////////////////
             PyObject * Meshget_setEventListener( pybind::kernel_interface * _kernel, Meshget * _node, PyObject * _args, PyObject * _kwds )
             {
                 MENGINE_UNUSED( _args );
@@ -663,32 +645,6 @@ namespace Mengine
 
                 return _kernel->ret_none();
             }
-            //////////////////////////////////////////////////////////////////////////
-            class PythonScriptHolderEventReceiver
-                : public PythonEventReceiver
-                , public ScriptHolderEventReceiverInterface
-                , public Factorable
-            {
-            public:
-                PythonScriptHolderEventReceiver()
-                {
-                }
-
-                ~PythonScriptHolderEventReceiver() override
-                {
-                }
-
-            public:
-                pybind::object onScriptHolderKeepScript() override
-                {
-                    return m_cb.call();
-                }
-
-                void onScriptHolderReleaseScript( const pybind::object & _script ) override
-                {
-                    m_cb.call( _script );
-                }
-            };
             //////////////////////////////////////////////////////////////////////////
             PyObject * ScriptHolder_setEventListener( pybind::kernel_interface * _kernel, ScriptHolder * _node, PyObject * _args, PyObject * _kwds )
             {
@@ -729,52 +685,6 @@ namespace Mengine
 
                 return _kernel->ret_none();
             }
-            //////////////////////////////////////////////////////////////////////////
-            class PythonVirtualAreaEventReceiver
-                : public PythonEventReceiver
-                , public VirtualAreaEventReceiverInterface
-                , public Factorable
-            {
-            public:
-                PythonVirtualAreaEventReceiver()
-                {
-                }
-
-                ~PythonVirtualAreaEventReceiver() override
-                {
-                }
-
-            public:
-                void onVirtualAreaDrag( const mt::vec2f & _position, const mt::vec2f & _percentage ) override
-                {
-                    m_cb.call( _position, _percentage );
-                }
-
-                void onVirtualAreaDragStart( const mt::vec2f & _position ) override
-                {
-                    m_cb.call( _position );
-                }
-
-                void onVirtualAreaDragMove( const mt::vec2f & _position, const mt::vec2f & _velocity ) override
-                {
-                    m_cb.call( _position, _velocity );
-                }
-
-                void onVirtualAreaDragEnd( const mt::vec2f & _position, const mt::vec2f & _velocity ) override
-                {
-                    m_cb.call( _position, _velocity );
-                }
-
-                void onVirtualAreaScale( float _scaleFactor ) override
-                {
-                    m_cb.call( _scaleFactor );
-                }
-
-                void onVirtualAreaTouch( uint32_t _touchCount ) override
-                {
-                    m_cb.call( _touchCount );
-                }
-            };
             //////////////////////////////////////////////////////////////////////////
             PyObject * VirtualArea_setEventListener( pybind::kernel_interface * _kernel, VirtualArea * _node, PyObject * _args, PyObject * _kwds )
             {
@@ -1404,6 +1314,10 @@ namespace Mengine
                 .def( "getVignetteSoftness", &PostProcessFx3D::getVignetteSoftness )
                 .def( "setChromaticOffset", &PostProcessFx3D::setChromaticOffset )
                 .def( "getChromaticOffset", &PostProcessFx3D::getChromaticOffset )
+                .def( "setBlurRadius", &PostProcessFx3D::setBlurRadius )
+                .def( "getBlurRadius", &PostProcessFx3D::getBlurRadius )
+                .def( "setBlurDirection", &PostProcessFx3D::setBlurDirection )
+                .def( "getBlurDirection", &PostProcessFx3D::getBlurDirection )
                 .def( "setHitFlash", &PostProcessFx3D::setHitFlash )
                 .def( "getHitFlashColor", &PostProcessFx3D::getHitFlashColor )
                 .def( "getHitFlashIntensity", &PostProcessFx3D::getHitFlashIntensity )

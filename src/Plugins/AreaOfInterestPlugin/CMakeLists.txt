@@ -28,7 +28,10 @@ if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
     embedding
         AreaOfInterestScriptEmbedding.cpp
         AreaOfInterestScriptEmbedding.h
-        )
+
+        PythonNodeAreaOfInterestTriggerEventReceiver.h
+        PythonNodeAreaOfInterestTriggerEventReceiver.cpp
+    )
 
     INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)
 endif()

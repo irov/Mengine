@@ -587,7 +587,7 @@ namespace Mengine
 
                 m_prevTime = currentTime;
 
-                if( m_active == false )
+                if( this->isNeedWindowRender() == false )
                 {
                     THREAD_SYSTEM()
                         ->sleep( 100 );

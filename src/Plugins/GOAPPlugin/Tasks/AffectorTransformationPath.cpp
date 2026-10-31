@@ -62,7 +62,7 @@ namespace Mengine
         if( complete == true )
         {
             m_elapsed = m_duration;
-            *_used = remaining / speedFactor;
+            *_used = _context->time - (scaledTime - remaining) / speedFactor;
         }
         else
         {

@@ -156,6 +156,9 @@ namespace Mengine
         void updatePMWMatrix_();
 
     protected:
+        void setRenderTargetResolution( const Resolution & _resolution ) override;
+        const Resolution & getRenderTargetResolution() const override;
+
         GLuint genTexture() override;
         void deleteTexture( GLuint _id ) override;
 
@@ -182,6 +185,7 @@ namespace Mengine
         mt::mat4f m_totalWVPMatrix;
 
         Resolution m_windowResolution;
+        Resolution m_renderTargetResolution;
         Viewport m_windowViewport;
 
         OpenGLRenderProgramPtr m_currentProgram;

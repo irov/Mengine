@@ -463,19 +463,21 @@ namespace Mengine
     bool MCPService::_runService()
     {
 #if defined(MENGINE_PLATFORM_WINDOWS) || defined(MENGINE_PLATFORM_MACOS) || defined(MENGINE_PLATFORM_LINUX) || defined(MENGINE_PLATFORM_IOS)
-        if( HAS_OPTION( "mcp" ) == true )
+        if( HAS_OPTION( "mcp" ) == false )
         {
-            const String host = GET_OPTION_VALUE( "mcp-host", "127.0.0.1" );
-            const String port = GET_OPTION_VALUE( "mcp-port", "" );
-            const String token = GET_OPTION_VALUE( "mcp-token", "" );
-            const String mode = GET_OPTION_VALUE( "mcp-mode", "visible" );
+            return true;
+        }
 
-            if( this->run( host, port, token, mode ) == false )
-            {
-                LOGGER_ERROR( "MCP activation failed" );
+        const String host = GET_OPTION_VALUE( "mcp-host", "127.0.0.1" );
+        const String port = GET_OPTION_VALUE( "mcp-port", "" );
+        const String token = GET_OPTION_VALUE( "mcp-token", "" );
+        const String mode = GET_OPTION_VALUE( "mcp-mode", "visible" );
 
-                return false;
-            }
+        if( this->run( host, port, token, mode ) == false )
+        {
+            LOGGER_ERROR( "MCP activation failed" );
+
+            return false;
         }
 #endif
 

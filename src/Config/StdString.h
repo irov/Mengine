@@ -391,6 +391,8 @@ namespace Mengine
 #   define MENGINE_STRICMP(a, b) ::_stricmp((a), (b))
 #elif defined(MENGINE_PLATFORM_LINUX) && defined(MENGINE_COMPILER_GCC)
 #   define MENGINE_STRICMP(a, b) ::strcasecmp((a), (b))
+#elif defined(MENGINE_PLATFORM_EMSCRIPTEN)
+#   define MENGINE_STRICMP(a, b) ::strcasecmp((a), (b))
 #elif defined(MENGINE_PLATFORM_ANDROID)
 #   define MENGINE_STRICMP(a, b) ::strcasecmp((a), (b))
 #elif defined(MENGINE_PLATFORM_MACOS)

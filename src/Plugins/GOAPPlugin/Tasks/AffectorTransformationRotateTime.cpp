@@ -27,11 +27,13 @@ namespace Mengine
     {
         float time = _context->time;
 
-        if( m_progress + time < m_time )
+        float progress = m_progress + time;
+
+        if( progress < m_time )
         {
             *_used = time;
 
-            m_progress += time;
+            m_progress = progress;
 
             float t = m_progress / m_time;
 
@@ -42,7 +44,7 @@ namespace Mengine
             return false;
         }
 
-        *_used = m_time - m_progress;
+        *_used = time - (progress - m_time);
 
         m_transformCb( m_to );
 

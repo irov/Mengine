@@ -54,25 +54,26 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MCPPlugin::_availablePlugin() const
     {
-        bool available = false;
-
-        if( Helper::isBuildPublish() == true || Helper::isDebugMode() == false )
+        if( Helper::isBuildPublish() == true )
         {
-            return available;
+            return false;
+        }
+
+        if( Helper::isDebugMode() == false )
+        {
+            return false;
         }
 
         if( HAS_OPTION( "nomcp" ) == true )
         {
-            return available;
+            return false;
         }
 
-#if defined(MENGINE_PLATFORM_ANDROID)
-        available = true;
-#elif defined(MENGINE_PLATFORM_WINDOWS) || defined(MENGINE_PLATFORM_MACOS) || defined(MENGINE_PLATFORM_LINUX) || defined(MENGINE_PLATFORM_IOS)
-        available = true;
+#if defined(MENGINE_PLATFORM_ANDROID) || defined(MENGINE_PLATFORM_WINDOWS) || defined(MENGINE_PLATFORM_MACOS) || defined(MENGINE_PLATFORM_LINUX) || defined(MENGINE_PLATFORM_IOS)
+        return true;
+#else
+        return false;
 #endif
-
-        return available;
     }
     //////////////////////////////////////////////////////////////////////////
     bool MCPPlugin::_initializePlugin()

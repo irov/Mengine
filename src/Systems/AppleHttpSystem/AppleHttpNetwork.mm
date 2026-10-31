@@ -1,6 +1,8 @@
 #import "AppleHttpNetwork.h"
 
-#if defined(MENGINE_ENVIRONMENT_TARGET_IOS) || defined(MENGINE_ENVIRONMENT_TARGET_IOS_SIMULATOR)
+#if defined(MENGINE_ENVIRONMENT_TARGET_IOS)
+#   import "Environment/iOS/iOSLog.h"
+#elif defined(MENGINE_ENVIRONMENT_TARGET_IOS_SIMULATOR)
 #   import "Environment/iOS/iOSLog.h"
 #else
 #   define IOS_LOGGER_ERROR(...) NSLog(__VA_ARGS__)

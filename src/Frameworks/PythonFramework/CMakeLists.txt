@@ -122,6 +122,12 @@ EventReceiver
     PythonLayerEventReceiver.cpp
     PythonSceneEventReceiver.h
     PythonSceneEventReceiver.cpp
+    PythonMeshEventReceiver.h
+    PythonMeshEventReceiver.cpp
+    PythonScriptHolderEventReceiver.h
+    PythonScriptHolderEventReceiver.cpp
+    PythonVirtualAreaEventReceiver.h
+    PythonVirtualAreaEventReceiver.cpp
 )
 
 ADD_FILTER(

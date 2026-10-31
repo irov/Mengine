@@ -115,7 +115,7 @@ namespace Mengine
 
         if( successful == true && m_withTemp == true )
         {
-            if( this->flush() == false )
+            if( this->flush_() == false )
             {
                 successful = false;
             }
@@ -247,6 +247,16 @@ namespace Mengine
     {
         MENGINE_THREAD_GUARD_SCOPE( POSIXFileOutputStream, this );
 
+        if( this->flush_() == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool POSIXFileOutputStream::flush_()
+    {
         if( m_file == nullptr )
         {
             return false;

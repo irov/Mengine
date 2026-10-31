@@ -1,5 +1,7 @@
 #include "SpineScriptEmbedding.h"
 
+#include "PythonSpineEventReceiver.h"
+
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/PluginServiceInterface.h"
 
@@ -24,21 +26,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
-        //////////////////////////////////////////////////////////////////////////
-        class PythonSpineEventReceiver
-            : public PythonAnimatableEventReceiver<SamplerSpineEventReceiverInterface>
-        {
-        public:
-            void onSamplerSpineEvent( const Char * _eventName, int32_t _eventIntValue, float _eventFloatValue, const Char * _eventStringValue ) override
-            {
-                m_cb.call( _eventName, _eventIntValue, _eventFloatValue, _eventStringValue );
-            }
-
-            void onSamplerSpineStateAnimationEnd( const ConstString & _state, const ConstString & _animation, bool _isEnd ) override
-            {
-                m_cb.call( _state, _animation, _isEnd );
-            }
-        };
         //////////////////////////////////////////////////////////////////////////
         static PyObject * SamplerSpineAnimationInterface_setEventListener(pybind::kernel_interface * _kernel, SamplerSpineAnimationInterface * _sampler, PyObject * _args, PyObject * _kwds )
         {

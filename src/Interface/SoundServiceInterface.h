@@ -19,9 +19,6 @@ namespace Mengine
         SERVICE_DECLARE( "SoundService" )
 
     public:
-        virtual bool isSupportStreamSound() const = 0;
-
-    public:
         virtual void addSoundVolumeProvider( const SoundVolumeProviderInterfacePtr & _soundVolumeProvider ) = 0;
         virtual bool removeSoundVolumeProvider( const SoundVolumeProviderInterfacePtr & _soundVolumeProvider ) = 0;
 

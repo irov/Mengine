@@ -36,9 +36,6 @@ namespace Mengine
         void _stopService() override;
 
     public:
-        bool isSupportStreamSound() const override;
-
-    public:
         void onTimepipe( const UpdateContext * _context ) override;
 
     public:
@@ -127,6 +124,7 @@ namespace Mengine
         void stopSoundBufferUpdate_( const SoundIdentityInterfacePtr & _source );
         void pauseSoundBufferUpdate_( const SoundIdentityInterfacePtr & _source );
         void resumeSoundBufferUpdate_( const SoundIdentityInterfacePtr & _source );
+        bool processSoundBufferUpdate_( const SoundIdentityInterfacePtr & _source );
 
     protected:
         bool checkMaxSoundPlay_() const;
@@ -151,8 +149,6 @@ namespace Mengine
 
         typedef Vector<SoundVolumeProviderInterfacePtr> VectorSoundVolumeProviders;
         VectorSoundVolumeProviders m_soundVolumeProviders;
-
-        bool m_supportStream;        
 
         bool m_turnStream;
         bool m_turnSound;

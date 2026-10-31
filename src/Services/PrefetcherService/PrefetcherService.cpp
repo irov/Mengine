@@ -1,5 +1,6 @@
 #include "PrefetcherService.h"
 
+#include "Interface/ThreadSystemInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
 
@@ -34,6 +35,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PrefetcherService::_availableService() const
     {
+        if( THREAD_SYSTEM()
+            ->isThreadSupported() == false )
+        {
+            return false;
+        }
+
         bool Engine_PrefetcherServiceAvailable = CONFIG_VALUE_BOOLEAN( "Engine", "PrefetcherServiceAvailable", true );
 
         if( Engine_PrefetcherServiceAvailable == false )

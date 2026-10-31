@@ -73,6 +73,11 @@ namespace Mengine
         m_factoryThreadConditionVariable = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Win32ThreadSystem::isThreadSupported() const
+    {
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     ThreadIdentityInterfacePtr Win32ThreadSystem::createThreadIdentity( const ThreadDescription & _description, EThreadPriority _priority, const DocumentInterfacePtr & _doc )
     {
         Win32ThreadIdentityPtr threadIdentity = m_factoryThreadIdentity->createObject( _doc );

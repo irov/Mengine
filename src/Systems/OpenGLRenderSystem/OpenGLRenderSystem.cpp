@@ -367,7 +367,9 @@ namespace Mengine
         float local_top = by < ey ? ey : by;
         float local_bottom = by < ey ? by : ey;
 
-        float windowHeight = m_windowResolution.getHeightF();
+        const Resolution & renderTargetResolution = this->getRenderTargetResolution();
+        uint32_t renderTargetHeight = renderTargetResolution.getHeight();
+        float windowHeight = renderTargetHeight == 0 ? m_windowResolution.getHeightF() : (float)renderTargetHeight;
         float viewport_bottom = windowHeight - m_viewport.begin.y - m_viewport.getHeight();
 
         uint32_t left = (uint32_t)(m_viewport.begin.x + local_left);
@@ -395,7 +397,9 @@ namespace Mengine
 
         m_viewport = _viewport;
 
-        float windowHeight = m_windowResolution.getHeightF();
+        const Resolution & renderTargetResolution = this->getRenderTargetResolution();
+        uint32_t renderTargetHeight = renderTargetResolution.getHeight();
+        float windowHeight = renderTargetHeight == 0 ? m_windowResolution.getHeightF() : (float)renderTargetHeight;
 
         float viewportWidth = m_viewport.getWidth();
         float viewportHeight = m_viewport.getHeight();
@@ -1447,6 +1451,16 @@ namespace Mengine
     void OpenGLRenderSystem::updatePMWMatrix_()
     {
         m_totalWVPMatrix = m_worldMatrix * m_viewMatrix * m_projectionMatrix;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderSystem::setRenderTargetResolution( const Resolution & _resolution )
+    {
+        m_renderTargetResolution = _resolution;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const Resolution & OpenGLRenderSystem::getRenderTargetResolution() const
+    {
+        return m_renderTargetResolution;
     }
     //////////////////////////////////////////////////////////////////////////
     GLuint OpenGLRenderSystem::genTexture()

@@ -25,9 +25,11 @@ namespace Mengine
 
         float add = delta * m_speed * time;
 
-        if( m_progress + add < m_to )
+        float progress = m_progress + add;
+
+        if( progress < m_to )
         {
-            m_progress += add;
+            m_progress = progress;
 
             *_used = time;
 
@@ -36,7 +38,7 @@ namespace Mengine
             return false;
         }
 
-        *_used = time * (m_to - m_progress) / add;
+        *_used = time - time * (progress - m_to) / add;
 
         m_progress = m_to;
 

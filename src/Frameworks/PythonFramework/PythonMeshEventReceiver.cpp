@@ -1,0 +1,21 @@
+#include "PythonMeshEventReceiver.h"
+
+#include "Kernel/UpdateContext.h"
+
+namespace Mengine
+{
+    //////////////////////////////////////////////////////////////////////////
+    PythonMeshEventReceiver::PythonMeshEventReceiver()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    PythonMeshEventReceiver::~PythonMeshEventReceiver()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PythonMeshEventReceiver::onMeshgetUpdate( const UpdateContext * _context )
+    {
+        m_cb.call( _context->revision, _context->current, _context->time );
+    }
+    //////////////////////////////////////////////////////////////////////////
+}

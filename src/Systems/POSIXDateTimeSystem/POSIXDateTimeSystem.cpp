@@ -25,7 +25,13 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void localTime( time_t _time, tm * const _tm )
         {
-#if defined(MENGINE_PLATFORM_LINUX) || defined(MENGINE_PLATFORM_ANDROID) || defined(MENGINE_VENDOR_APPLE)
+#if defined(MENGINE_PLATFORM_LINUX)
+            ::localtime_r( &_time, _tm );
+#elif defined(MENGINE_PLATFORM_ANDROID)
+            ::localtime_r( &_time, _tm );
+#elif defined(MENGINE_VENDOR_APPLE)
+            ::localtime_r( &_time, _tm );
+#elif defined(MENGINE_PLATFORM_EMSCRIPTEN)
             ::localtime_r( &_time, _tm );
 #else
             ::localtime_s( _tm, &_time );
@@ -34,7 +40,13 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void gmTime( time_t _time, tm * const _tm )
         {
-#if defined(MENGINE_PLATFORM_LINUX) || defined(MENGINE_PLATFORM_ANDROID) || defined(MENGINE_VENDOR_APPLE)
+#if defined(MENGINE_PLATFORM_LINUX)
+            ::gmtime_r( &_time, _tm );
+#elif defined(MENGINE_PLATFORM_ANDROID)
+            ::gmtime_r( &_time, _tm );
+#elif defined(MENGINE_VENDOR_APPLE)
+            ::gmtime_r( &_time, _tm );
+#elif defined(MENGINE_PLATFORM_EMSCRIPTEN)
             ::gmtime_r( &_time, _tm );
 #else
             ::gmtime_s( _tm, &_time );
@@ -43,7 +55,13 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void getTime( timespec * const _ts )
         {
-#if defined(MENGINE_PLATFORM_LINUX) || defined(MENGINE_PLATFORM_ANDROID) || defined(MENGINE_VENDOR_APPLE)
+#if defined(MENGINE_PLATFORM_LINUX)
+            ::clock_gettime( CLOCK_REALTIME, _ts );
+#elif defined(MENGINE_PLATFORM_ANDROID)
+            ::clock_gettime( CLOCK_REALTIME, _ts );
+#elif defined(MENGINE_VENDOR_APPLE)
+            ::clock_gettime( CLOCK_REALTIME, _ts );
+#elif defined(MENGINE_PLATFORM_EMSCRIPTEN)
             ::clock_gettime( CLOCK_REALTIME, _ts );
 #else
             ::timespec_get( _ts, TIME_UTC );

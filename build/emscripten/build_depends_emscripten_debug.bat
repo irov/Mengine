@@ -1,3 +1,6 @@
-@call %~dp0build_depends_emscripten.bat Debug
+@setlocal
+@call %~dp0build_depends_emscripten.bat Debug %*
+@set "MENGINE_RESULT=%errorlevel%"
 
-@pause
+@if not defined MENGINE_NO_PAUSE pause
+@endlocal & exit /b %MENGINE_RESULT%

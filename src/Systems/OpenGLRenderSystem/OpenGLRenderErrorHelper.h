@@ -81,6 +81,6 @@ namespace Mengine
     R = Method Args
 //////////////////////////////////////////////////////////////////////////
 #define MENGINE_IF_GLCALL( Method, Args )\
-    if( GLenum MENGINE_PP_CONCATENATE(__glcall_err, MENGINE_CODE_LINE) = Mengine::Detail::OpenGLRenderCaller(Method) Args; MENGINE_PP_CONCATENATE(__glcall_err, MENGINE_CODE_LINE) != GL_NO_ERROR )
+    if( Method Args; false )
 #endif
 //////////////////////////////////////////////////////////////////////////

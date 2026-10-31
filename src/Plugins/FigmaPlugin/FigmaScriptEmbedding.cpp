@@ -1,5 +1,7 @@
 #include "FigmaScriptEmbedding.h"
 
+#include "PythonFigmaEventReceiver.h"
+
 #include "Figma.h"
 #include "ResourceFigma.h"
 
@@ -16,51 +18,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
-        //////////////////////////////////////////////////////////////////////////
-        class PythonFigmaEventReceiver
-            : public PythonEventReceiver
-            , public FigmaEventReceiverInterface
-            , public Factorable
-        {
-        public:
-            void onFigmaTrigger( const FigmaTriggerEvent & _event ) override
-            {
-                m_cb.call( _event );
-            }
-
-            void onFigmaAction( const FigmaActionEvent & _event, FigmaActionResponse * const _response ) override
-            {
-                pybind::kernel_interface * kernel = m_cb.kernel();
-
-                // FigmaActionResponse binds as a struct, which Python takes by
-                // value: the handler fills a copy, which is the response.
-                pybind::object response = pybind::make_object_t( kernel, *_response );
-
-                m_cb.call( _event, response );
-
-                *_response = pybind::extract<FigmaActionResponse>( kernel, response.ptr() );
-            }
-
-            void onFigmaFrameChanged( const String & _previousFrameId, const String & _currentFrameId ) override
-            {
-                m_cb.call( _previousFrameId, _currentFrameId );
-            }
-
-            void onFigmaOverlayOpened( const String & _frameId ) override
-            {
-                m_cb.call( _frameId );
-            }
-
-            void onFigmaOverlayClosed( const String & _frameId ) override
-            {
-                m_cb.call( _frameId );
-            }
-
-            void onFigmaStateChanged( const String & _sourceNodeId, const String & _previousStateId, const String & _currentStateId ) override
-            {
-                m_cb.call( _sourceNodeId, _previousStateId, _currentStateId );
-            }
-        };
         //////////////////////////////////////////////////////////////////////////
         static PyObject * Figma_setEventListener( pybind::kernel_interface * _kernel, Figma * _node, PyObject * _args, PyObject * _kwds )
         {

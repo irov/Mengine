@@ -221,6 +221,10 @@ PLUGIN_EXPORT( WAV );
 PLUGIN_EXPORT( OggVorbis );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_PLUGIN_MP3_STATIC)
+PLUGIN_EXPORT( MP3 );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLUGIN_ASTRALAX_STATIC)
 PLUGIN_EXPORT( Astralax );
 #endif
@@ -1834,6 +1838,10 @@ namespace Mengine
 
 #if defined(MENGINE_PLUGIN_OGG_VORBIS_STATIC)
         MENGINE_ADD_PLUGIN( OggVorbis, "plugin OggVorbis...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#if defined(MENGINE_PLUGIN_MP3_STATIC)
+        MENGINE_ADD_PLUGIN( MP3, "plugin MP3...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #if defined(MENGINE_PLUGIN_PVRTC_STATIC)

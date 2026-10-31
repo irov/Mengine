@@ -132,7 +132,11 @@ namespace Mengine
                 return MTLPixelFormatA8Unorm;
             case PF_L8:
                 return MTLPixelFormatR8Unorm;
-#if defined(MENGINE_PLATFORM_IOS) || defined(MENGINE_PLATFORM_MACOS)
+#if defined(MENGINE_PLATFORM_IOS)
+            case PF_PVRTC4_RGB:
+            case PF_PVRTC4_RGBA:
+                return MTLPixelFormatPVRTC_RGBA_4BPP;
+#elif defined(MENGINE_PLATFORM_MACOS)
             case PF_PVRTC4_RGB:
             case PF_PVRTC4_RGBA:
                 return MTLPixelFormatPVRTC_RGBA_4BPP;

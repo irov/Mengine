@@ -45,7 +45,10 @@ if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
     embedding
         SpineScriptEmbedding.h
         SpineScriptEmbedding.cpp
-        )
+
+        PythonSpineEventReceiver.h
+        PythonSpineEventReceiver.cpp
+    )
 
     INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)
 endif()

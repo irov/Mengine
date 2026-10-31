@@ -238,6 +238,13 @@ namespace Mengine
         
         m_oldfuid = oldFBO;
         
+        OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
+            ->getUnknown();
+        m_oldRenderTargetResolution = extension->getRenderTargetResolution();
+
+        Resolution renderTargetResolution( m_width, m_height );
+        extension->setRenderTargetResolution( renderTargetResolution );
+
         MENGINE_GLCALL( glBindFramebuffer, (GL_FRAMEBUFFER, m_fuid) );
 
         MENGINE_GLCALL( glViewport, (0, 0, m_width, m_height) );
@@ -248,6 +255,10 @@ namespace Mengine
     void OpenGLRenderTargetTexture::end() const
     {
         MENGINE_GLCALL( glBindFramebuffer, (GL_FRAMEBUFFER, m_oldfuid) );
+
+        OpenGLRenderSystemExtensionInterface * extension = RENDER_SYSTEM()
+            ->getUnknown();
+        extension->setRenderTargetResolution( m_oldRenderTargetResolution );
     }
     //////////////////////////////////////////////////////////////////////////
     const mt::uv4f & OpenGLRenderTargetTexture::getUV() const

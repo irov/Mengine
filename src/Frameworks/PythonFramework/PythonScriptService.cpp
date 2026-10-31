@@ -526,6 +526,7 @@ namespace Mengine
             this->addGlobalModuleT( "_APPLE", false );
             this->addGlobalModuleT( "_IOS", false );
             this->addGlobalModuleT( "_IOS_SIMULATOR", false );
+            this->addGlobalModuleT( "_EMSCRIPTEN", false );
             this->addGlobalModuleT( "_PLATFORM", "");
             this->addGlobalModuleT( "_MOBILE", false );
             this->addGlobalModuleT( "_MASTER_RELEASE", false );
@@ -633,6 +634,13 @@ namespace Mengine
             this->addGlobalModuleT( "_PLATFORM", "IOS_SIMULATOR" );
 #else
             this->addGlobalModuleT( "_IOS_SIMULATOR", false );
+#endif
+
+#if defined(MENGINE_PLATFORM_EMSCRIPTEN)
+            this->addGlobalModuleT( "_EMSCRIPTEN", true );
+            this->addGlobalModuleT( "_PLATFORM", "EMSCRIPTEN" );
+#else
+            this->addGlobalModuleT( "_EMSCRIPTEN", false );
 #endif
 
 #if defined(MENGINE_DEVICE_MOBILE)

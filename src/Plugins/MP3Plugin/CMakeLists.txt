@@ -1,0 +1,21 @@
+MENGINE_PROJECT(MP3Plugin)
+
+ADD_FILTER(
+src
+    MP3Plugin.cpp
+    MP3Plugin.def
+    MP3Plugin.h
+
+    SoundDecoderMP3.cpp
+    SoundDecoderMP3.h
+
+    MP3Implementation.cpp
+)
+
+INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/dr_libs)
+
+ADD_DEFINITIONS(-DDR_MP3_NO_STDIO)
+
+ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_MP3)
+
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel)

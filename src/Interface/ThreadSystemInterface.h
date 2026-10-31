@@ -22,6 +22,9 @@ namespace Mengine
         SERVICE_DECLARE( "ThreadSystem" )
 
     public:
+        virtual bool isThreadSupported() const = 0;
+
+    public:
         virtual ThreadIdentityInterfacePtr createThreadIdentity( const ThreadDescription & _description, EThreadPriority _priority, const DocumentInterfacePtr & _doc ) = 0;
         virtual ThreadProcessorInterfacePtr createThreadProcessor( const ThreadDescription & _description, EThreadPriority _priority, const DocumentInterfacePtr & _doc ) = 0;
         virtual ThreadMutexInterfacePtr createMutex( const DocumentInterfacePtr & _doc ) = 0;

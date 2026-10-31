@@ -9,7 +9,13 @@
 
 #define GL_ETC1_RGB8_OES 0x8D64
 
-#if defined(MENGINE_PLATFORM_IOS)
+#if defined(MENGINE_PLATFORM_EMSCRIPTEN)
+#   include <GLES2/gl2.h>
+#   include <GLES2/gl2ext.h>
+#   define MENGINE_RENDER_OPENGL_ES
+#   define MENGINE_RENDER_OPENGL_ES2
+#   define GL_CONTEXT_LOST_WEBGL 0x9242
+#elif defined(MENGINE_PLATFORM_IOS)
 #   error "OpenGL is not supported on iOS"
 #elif defined(MENGINE_PLATFORM_ANDROID)
 #   define GL_GLEXT_PROTOTYPES

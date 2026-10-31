@@ -66,6 +66,7 @@ namespace Mengine
 
     protected:
         float m_speedFactor;
+        float m_speedFactorInv;
         float m_time;
 
         enum ESchdulerType

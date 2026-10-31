@@ -1,5 +1,6 @@
 #include "SoundService.h"
 
+#include "Interface/ThreadSystemInterface.h"
 #include "Interface/SoundCodecInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
@@ -45,8 +46,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     SoundService::SoundService()
-        : m_supportStream( true )
-        , m_turnStream( false )
+        : m_turnStream( false )
         , m_turnSound( false )
     {
     }
@@ -81,10 +81,16 @@ namespace Mengine
         m_voiceVolume = PROTOTYPE_SERVICE()
             ->generatePrototype( ConstString::none(), MixerMultiplicative::getFactorableType(), MENGINE_DOCUMENT_FACTORABLE );
 
-        m_supportStream = THREAD_SERVICE()
-            ->isAvailableService();
+        bool threadSupported = THREAD_SYSTEM()
+            ->isThreadSupported();
 
-        if( m_supportStream == true )
+        if( threadSupported == true )
+        {
+            threadSupported = THREAD_SERVICE()
+                ->isAvailableService();
+        }
+
+        if( threadSupported == true )
         {
             ThreadJobPtr threadJobSoundBufferUpdate = THREAD_SERVICE()
                 ->createJob( MENGINE_SOUND_BUFFER_UPDATE_JOB_DELAY, MENGINE_DOCUMENT_FACTORABLE );
@@ -160,10 +166,7 @@ namespace Mengine
                 ->joinTask( m_threadJobSoundBufferUpdate );
 
             m_threadJobSoundBufferUpdate = nullptr;
-        }
 
-        if( m_supportStream == true )
-        {
             THREAD_SERVICE()
                 ->destroyThreadProcessor( STRINGIZE_STRING_LOCAL_I( SOUNDBUFFERUPDATE_PROCESSOR_NAME ) );
         }
@@ -199,11 +202,6 @@ namespace Mengine
         }
 
         m_soundIdentities.clear();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool SoundService::isSupportStreamSound() const
-    {
-        return m_supportStream;
     }
     //////////////////////////////////////////////////////////////////////////
     void SoundService::addSoundVolumeProvider( const SoundVolumeProviderInterfacePtr & _soundVolumeProvider )
@@ -362,13 +360,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     SoundIdentityInterfacePtr SoundService::createSoundIdentity( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer, ESoundSourceCategory _category, bool _streamable, const DocumentInterfacePtr & _doc )
     {
-        if( m_supportStream == false && _streamable == true )
-        {
-            LOGGER_WARNING( "unsupport stream sound" );
-
-            _streamable = false;
-        }
-
         if( this->isStopService() == true )
         {
             LOGGER_ASSERTION( "service is stopped" );
@@ -505,15 +496,6 @@ namespace Mengine
             LOGGER_ASSERTION( "service is stopped" );
 
             return nullptr;
-        }
-
-        if( m_supportStream == false && _streamable == true )
-        {
-            LOGGER_WARNING( "unsupport stream sound '%s'"
-                , Helper::getContentFullPath( _content ).c_str()
-            );
-
-            _streamable = false;
         }
 
         SoundDecoderInterfacePtr decoder;
@@ -740,6 +722,15 @@ namespace Mengine
 
             if( identity->getTurn() == false )
             {
+                continue;
+            }
+
+            if( this->processSoundBufferUpdate_( identity ) == false )
+            {
+                identity->setState( ESS_STOP );
+
+                m_soundIdentitiesEndAux.emplace_back( identity );
+
                 continue;
             }
 
@@ -1540,6 +1531,30 @@ namespace Mengine
 
             m_threadJobSoundBufferUpdate->resumeWorker( workerId );
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SoundService::processSoundBufferUpdate_( const SoundIdentityInterfacePtr & _identity )
+    {
+        if( _identity->getStreamable() == false )
+        {
+            return true;
+        }
+
+        if( m_threadJobSoundBufferUpdate != nullptr )
+        {
+            return true;
+        }
+
+        const SoundSourceInterfacePtr & source = _identity->getSoundSource();
+
+        const SoundBufferInterfacePtr & soundBuffer = source->getSoundBuffer();
+
+        if( soundBuffer->updateSoundBuffer() == false )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::checkMaxSoundPlay_() const

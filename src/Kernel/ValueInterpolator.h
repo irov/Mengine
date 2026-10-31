@@ -103,9 +103,11 @@ namespace Mengine
                 return true;
             }
 
-            if( m_time + _context->time >= m_duration )
+            float time = m_time + _context->time;
+
+            if( time >= m_duration )
             {
-                *_used = m_duration - m_time;
+                *_used = _context->time - (time - m_duration);
 
                 m_duration = 0.f;
                 m_time = 0.f;
@@ -116,7 +118,7 @@ namespace Mengine
                 return true;
             }
 
-            m_time += _context->time;
+            m_time = time;
 
             float dt = m_time / m_duration;
 

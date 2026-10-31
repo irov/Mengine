@@ -36,7 +36,10 @@ if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
     embedding
         FigmaScriptEmbedding.cpp
         FigmaScriptEmbedding.h
-        )
+
+        PythonFigmaEventReceiver.h
+        PythonFigmaEventReceiver.cpp
+    )
 
     INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)
 endif()

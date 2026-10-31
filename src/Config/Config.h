@@ -48,7 +48,9 @@
 #   define MENGINE_MACHINE_ARM64 _M_ARM64
 #endif
 
-#if defined(_WIN32)
+#if defined(__EMSCRIPTEN__)
+#   define MENGINE_PLATFORM_EMSCRIPTEN
+#elif defined(_WIN32)
 #   define MENGINE_PLATFORM_WINDOWS
 #   define MENGINE_VENDOR_MICROSOFT
 #   define MENGINE_DEVICE_DESKTOP
@@ -128,7 +130,13 @@
 #endif
 
 #ifndef MENGINE_RTTI
-#   if defined(MENGINE_COMPILER_GCC) || defined(MENGINE_COMPILER_CLANG)
+#   if defined(MENGINE_COMPILER_GCC)
+#       ifdef __GXX_RTTI
+#           define MENGINE_RTTI 1
+#       else
+#           define MENGINE_RTTI 0
+#       endif
+#   elif defined(MENGINE_COMPILER_CLANG)
 #       ifdef __GXX_RTTI
 #           define MENGINE_RTTI 1
 #       else
@@ -175,7 +183,9 @@
 #endif
 
 #ifndef MENGINE_CODE_FUNCTION
-#   if defined(MENGINE_COMPILER_GCC) || defined(MENGINE_COMPILER_CLANG)
+#   if defined(MENGINE_COMPILER_GCC)
+#       define MENGINE_CODE_FUNCTION __PRETTY_FUNCTION__
+#   elif defined(MENGINE_COMPILER_CLANG)
 #       define MENGINE_CODE_FUNCTION __PRETTY_FUNCTION__
 #   elif defined(MENGINE_COMPILER_MSVC)
 #       define MENGINE_CODE_FUNCTION __FUNCTION__
@@ -366,7 +376,9 @@
 #endif
 
 #if defined(MENGINE_DEBUG)
-#   if defined(MENGINE_COMPILER_GCC) || defined(MENGINE_COMPILER_CLANG)
+#   if defined(MENGINE_COMPILER_GCC)
+#       define MENGINE_ATTRIBUTE_FORMAT_STRING(Format, Args) __attribute__ (( __format__ (printf, Format, Args) ))
+#   elif defined(MENGINE_COMPILER_CLANG)
 #       define MENGINE_ATTRIBUTE_FORMAT_STRING(Format, Args) __attribute__ (( __format__ (printf, Format, Args) ))
 #   else
 #       define MENGINE_ATTRIBUTE_FORMAT_STRING(Format, Args)
@@ -385,6 +397,8 @@
 #   elif defined(MENGINE_PLATFORM_IOS)
 #       define MENGINE_MAX_PATH 1024
 #   elif defined(MENGINE_PLATFORM_ANDROID)
+#       define MENGINE_MAX_PATH 1024
+#   elif defined(MENGINE_PLATFORM_EMSCRIPTEN)
 #       define MENGINE_MAX_PATH 1024
 #   else
 #       error "undefine MENGINE_MAX_PATH for this platform"
@@ -448,6 +462,8 @@
 
 #ifndef MENGINE_MAX_ALIGNED_POINTER_VALUE
 #   if defined(MENGINE_ENVIRONMENT_ARCHITECTURE_X86)
+#       define MENGINE_MAX_ALIGNED_POINTER_VALUE (0xfffffffc)
+#   elif defined(MENGINE_ENVIRONMENT_ARCHITECTURE_WASM32)
 #       define MENGINE_MAX_ALIGNED_POINTER_VALUE (0xfffffffc)
 #   elif defined(MENGINE_ENVIRONMENT_ARCHITECTURE_X64)
 #       define MENGINE_MAX_ALIGNED_POINTER_VALUE (0xfffffffffffffff8)

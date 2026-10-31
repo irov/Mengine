@@ -7,6 +7,7 @@
 #include "OpenGLRenderResourceHandler.h"
 
 #include "Kernel/Factorable.h"
+#include "Kernel/Resolution.h"
 
 namespace Mengine
 {
@@ -67,6 +68,7 @@ namespace Mengine
         GLuint m_fuid;
         
         mutable GLuint m_oldfuid;
+        mutable Resolution m_oldRenderTargetResolution;
 
         uint32_t m_width;
         uint32_t m_height;

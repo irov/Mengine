@@ -32,6 +32,9 @@ namespace Mengine
         bool flush() override;
 
     protected:
+        bool flush_();
+
+    protected:
         FILE * m_file;
 
         size_t m_size;

@@ -19,6 +19,9 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
+        bool isThreadSupported() const override;
+
+    public:
         ThreadIdentityInterfacePtr createThreadIdentity( const ThreadDescription & _description, EThreadPriority _priority, const DocumentInterfacePtr & _doc ) override;
         ThreadProcessorInterfacePtr createThreadProcessor( const ThreadDescription & _description, EThreadPriority _priority, const DocumentInterfacePtr & _doc ) override;
         ThreadMutexInterfacePtr createMutex( const DocumentInterfacePtr & _doc ) override;

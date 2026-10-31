@@ -829,13 +829,15 @@ namespace Mengine
                 {
                     TransformationInterface * transformation = m_node->getTransformation();
 
-                    if( m_time - _context->time < 0.f )
+                    float time = _context->time;
+
+                    if( m_time > time )
                     {
-                        transformation->translate( m_velocity * m_time );
+                        transformation->translate( m_velocity * time );
 
-                        m_time = 0.f;
+                        m_time -= time;
 
-                        *_used = _context->time - m_time;
+                        *_used = time;
 
                         return false;
                     }
@@ -843,6 +845,8 @@ namespace Mengine
                     transformation->translate( m_velocity * m_time );
 
                     *_used = m_time;
+
+                    m_time = 0.f;
 
                     return true;
                 }
@@ -2752,6 +2756,7 @@ namespace Mengine
             .def( "pause", &AnimationInterface::pause )
             .def_proxy_static( "resume", scriptMethod, &KernelScriptMethod::s_Animation_resume )
             .def( "interrupt", &AnimationInterface::interrupt )
+            .def( "end", &AnimationInterface::end )
             .def( "isInterrupt", &AnimationInterface::isInterrupt )
             .def( "isPlay", &AnimationInterface::isPlay )
             .def( "getPlayId", &AnimationInterface::getPlayId )

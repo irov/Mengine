@@ -10,6 +10,10 @@ if(MENGINE_PLUGIN_OGG_VORBIS)
     ADD_SUBDIRECTORY(OggVorbisPlugin)
 endif()
 
+if(MENGINE_PLUGIN_MP3)
+    ADD_SUBDIRECTORY(MP3Plugin)
+endif()
+
 if(MENGINE_PLUGIN_ZIP)
     ADD_SUBDIRECTORY(ZipPlugin)
 endif()

@@ -25,6 +25,8 @@ namespace Mengine
         , m_vignetteStrength( 0.4f )
         , m_vignetteSoftness( 0.5f )
         , m_chromaticOffset( 0.f )
+        , m_blurRadius( 0.f )
+        , m_blurDirection( 1.f, 0.f )
         , m_hitFlashColor( 1.f, 0.f, 0.f )
         , m_hitFlashIntensity( 0.f )
         , m_invalidateVerticesWM( true )
@@ -115,6 +117,26 @@ namespace Mengine
     float PostProcessFx3D::getChromaticOffset() const
     {
         return m_chromaticOffset;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PostProcessFx3D::setBlurRadius( float _pixels )
+    {
+        m_blurRadius = _pixels;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float PostProcessFx3D::getBlurRadius() const
+    {
+        return m_blurRadius;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PostProcessFx3D::setBlurDirection( const mt::vec2f & _direction )
+    {
+        m_blurDirection = _direction;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const mt::vec2f & PostProcessFx3D::getBlurDirection() const
+    {
+        return m_blurDirection;
     }
     //////////////////////////////////////////////////////////////////////////
     void PostProcessFx3D::setHitFlash( const mt::vec3f & _color, float _intensity )
@@ -345,7 +367,7 @@ namespace Mengine
         float texelU = (m_size.x > 0.f) ? (1.f / m_size.x) : 0.f;
         float texelV = (m_size.y > 0.f) ? (1.f / m_size.y) : 0.f;
 
-        float buffer[12];
+        float buffer[16];
         buffer[0] = m_exposure;
         buffer[1] = m_vignetteStrength;
         buffer[2] = m_vignetteSoftness;
@@ -361,15 +383,20 @@ namespace Mengine
         buffer[10] = texelU;
         buffer[11] = texelV;
 
+        buffer[12] = m_blurRadius;
+        buffer[13] = m_blurDirection.x;
+        buffer[14] = m_blurDirection.y;
+        buffer[15] = 0.f;
+
         if( m_pixelUniformsRegistered == false )
         {
-            m_programVariable->setPixelVariables( "PostFx", 0u, buffer, 4u, 3u );
+            m_programVariable->setPixelVariables( "PostFx", 0u, buffer, 4u, 4u );
 
             m_pixelUniformsRegistered = true;
         }
         else
         {
-            m_programVariable->updatePixelVariables( 0u, buffer, 4u, 3u );
+            m_programVariable->updatePixelVariables( 0u, buffer, 4u, 4u );
         }
     }
     //////////////////////////////////////////////////////////////////////////

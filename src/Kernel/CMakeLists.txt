@@ -822,6 +822,8 @@ Core
 
     ThreadMutexDummy.h
     ThreadMutexDummy.cpp
+    ThreadSharedMutexDummy.h
+    ThreadSharedMutexDummy.cpp
 
     PluginBase.h
     PluginBase.cpp

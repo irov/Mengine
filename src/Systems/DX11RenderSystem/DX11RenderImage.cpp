@@ -23,6 +23,7 @@ namespace Mengine
         , m_hwPixelFormat( PF_UNKNOWN )
         , m_hwWidthInv( 0.f )
         , m_hwHeightInv( 0.f )
+        , m_upscalePow2( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -55,6 +56,8 @@ namespace Mengine
         m_hwLayers = _layers;
         m_hwChannels = hwChannels;
         m_hwDepth = hwDepth;
+
+        m_upscalePow2 = _width != m_hwWidth || _height != m_hwHeight;
 
         m_hwWidthInv = 1.f / (float)m_hwWidth;
         m_hwHeightInv = 1.f / (float)m_hwHeight;
@@ -288,7 +291,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX11RenderImage::getUpscalePow2() const
     {
-        return false;
+        return m_upscalePow2;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t DX11RenderImage::getHWMipmaps() const

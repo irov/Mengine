@@ -439,6 +439,14 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
     }
 }
 
+- (void)dispatchRemoteNotification_:(NSDictionary *)userInfo toPlugin:(id<iOSPluginInterface>)plugin {
+    if ([plugin respondsToSelector:@selector(handleRemoteNotification:opened:)] == NO) {
+        return;
+    }
+
+    [plugin handleRemoteNotification:userInfo opened:NO];
+}
+
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler API_AVAILABLE(ios(7.0)) {
     [AppleLog withFormat:@"Mengine application didReceiveRemoteNotification"];
 
@@ -446,6 +454,8 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
 
     @autoreleasepool {
         for (id plugin in self.m_plugins) {
+            [self dispatchRemoteNotification_:userInfo toPlugin:plugin];
+
             if ([plugin respondsToSelector:@selector(application: didReceiveRemoteNotification: fetchCompletionHandler:)] == NO) {
                 continue;
             }

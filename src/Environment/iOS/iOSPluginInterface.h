@@ -35,6 +35,9 @@
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken;
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler;
 
+// opened is YES only for the default action on a remote notification.
+- (BOOL)handleRemoteNotification:(NSDictionary *)userInfo opened:(BOOL)opened;
+
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary *)options;
 - (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray<id<UIUserActivityRestoring>> * restorableObjects))restorationHandler;
 

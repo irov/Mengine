@@ -116,6 +116,27 @@
 
 #pragma mark - UNUserNotificationCenterDelegate Protocol
 
+- (void)dispatchRemoteNotification_:(UNNotification *)notification opened:(BOOL)opened {
+    UNNotificationRequest * request = notification.request;
+    UNNotificationTrigger * trigger = request.trigger;
+    if ([trigger isKindOfClass:UNPushNotificationTrigger.class] == NO) {
+        return;
+    }
+
+    UNNotificationContent * content = request.content;
+    NSDictionary * userInfo = content.userInfo;
+
+    NSObject<iOSUIMainApplicationDelegateInterface> * delegate = [iOSDetail getUIMainApplicationDelegate];
+    NSArray * plugins = [delegate getPlugins];
+    for (id<iOSPluginInterface> plugin in plugins) {
+        if ([plugin respondsToSelector:@selector(handleRemoteNotification:opened:)] == NO) {
+            continue;
+        }
+
+        [plugin handleRemoteNotification:userInfo opened:opened];
+    }
+}
+
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler API_AVAILABLE(macos(10.14), ios(10.0), watchos(3.0), tvos(10.0)); {
 
     NSLog(@"userNotificationCenter willPresentNotification identifier: %@ title: %@ body: %@"
@@ -123,6 +144,8 @@
         , notification.request.content.title
         , notification.request.content.body
     );
+
+    [self dispatchRemoteNotification_:notification opened:NO];
 
     completionHandler(UNNotificationPresentationOptionBanner | UNNotificationPresentationOptionList | UNNotificationPresentationOptionSound | UNNotificationPresentationOptionBadge);
 }
@@ -134,6 +157,16 @@
         , response.notification.request.content.title
         , response.notification.request.content.body
     );
+
+    NSString * actionIdentifier = response.actionIdentifier;
+    if ([actionIdentifier isEqualToString:UNNotificationDefaultActionIdentifier] == NO) {
+        completionHandler();
+
+        return;
+    }
+
+    UNNotification * notification = response.notification;
+    [self dispatchRemoteNotification_:notification opened:YES];
 
     completionHandler();
 }

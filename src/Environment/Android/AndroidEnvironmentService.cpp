@@ -69,6 +69,15 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & AndroidEnvironmentService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( DateTimeSystemInterface )
+        };
+
+        return required;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool AndroidEnvironmentService::_initializeService()
     {
         JNIEnv * jenv = Mengine_JNI_GetEnv();

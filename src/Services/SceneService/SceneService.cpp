@@ -32,6 +32,16 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & SceneService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( ResourceServiceInterface ),
+            SERVICE_ID( ModuleServiceInterface )
+        };
+
+        return required;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool SceneService::_initializeService()
     {
         //Empty

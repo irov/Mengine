@@ -1,5 +1,7 @@
 #include "AttributionService.h"
 
+#include "Interface/ThreadSystemInterface.h"
+
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 #include "Kernel/ThreadMutexHelper.h"
@@ -109,6 +111,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AttributionService::~AttributionService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & AttributionService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( ThreadSystemInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AttributionService::_initializeService()

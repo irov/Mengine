@@ -1,7 +1,11 @@
 #include "AndroidFileSystem.h"
 
+#include "Interface/VocabularyServiceInterface.h"
+
 #include "AndroidFileGroupDirectory.h"
 #include "AndroidAssetGroupDirectory.h"
+
+#include "Environment/Android/AndroidAssetServiceInterface.h"
 
 #include "Kernel/FactoryHelper.h"
 #include "Kernel/FactoryDefault.h"
@@ -95,6 +99,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AndroidFileSystem::~AndroidFileSystem()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & AndroidFileSystem::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( VocabularyServiceInterface ),
+#if !defined(MENGINE_ENVIRONMENT_RUNTIME_WEBVIEW)
+            SERVICE_ID( AndroidAssetServiceInterface )
+#endif
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidFileSystem::_initializeService()

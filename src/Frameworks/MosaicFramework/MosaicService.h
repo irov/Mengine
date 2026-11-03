@@ -29,6 +29,7 @@ namespace Mengine
         ~MosaicService() override;
 
     protected:
+        const ServiceRequiredList & requiredServices() const override;
         void _dependencyService() override;
         bool _initializeService() override;
         void _finalizeService() override;

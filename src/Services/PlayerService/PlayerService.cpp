@@ -1,5 +1,8 @@
 #include "PlayerService.h"
 
+#include "Interface/NotificationServiceInterface.h"
+#include "Interface/OptionsServiceInterface.h"
+#include "Interface/TimeSystemInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
@@ -69,6 +72,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     PlayerService::~PlayerService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & PlayerService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( NotificationServiceInterface ),
+            SERVICE_ID( ArrowServiceInterface ),
+            SERVICE_ID( TimeSystemInterface ),
+            SERVICE_ID( OptionsServiceInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool PlayerService::_initializeService()

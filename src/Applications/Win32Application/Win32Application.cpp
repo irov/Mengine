@@ -11,6 +11,7 @@
 #include "Interface/FileServiceInterface.h"
 
 #include "Environment/Windows/Win32Helper.h"
+#include "Environment/Windows/Win32FileHelper.h"
 #include "Environment/Windows/Win32MessageBoxLogger.h"
 #include "Environment/Windows/Win32ConsoleLogger.h"
 #include "Environment/Windows/Win32ExtraFileLogger.h"
@@ -304,7 +305,17 @@ namespace Mengine
         }
 #endif
 
-        ServiceProviderInterface * serviceProvider = API_MengineCreate( &_configuration );
+        Configuration configuration = _configuration;
+
+        if( MENGINE_PATH_EMPTY( configuration.workingDirectory ) == true )
+        {
+            if( Helper::Win32GetCurrentDirectory( configuration.workingDirectory ) == false )
+            {
+                return false;
+            }
+        }
+
+        ServiceProviderInterface * serviceProvider = API_MengineCreate( &configuration );
 
         if( serviceProvider == nullptr )
         {

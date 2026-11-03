@@ -19,11 +19,44 @@
 
 #include "Config/StdString.h"
 
+#include <unistd.h>
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+        static bool getExecutableDirectory( Char * const _directory )
+        {
+            ssize_t length = ::readlink( "/proc/self/exe", _directory, MENGINE_MAX_PATH - 2 );
+
+            if( length > 0 )
+            {
+                _directory[length] = '\0';
+
+                Char * slash = StdString::strrchr( _directory, '/' );
+
+                if( slash != nullptr )
+                {
+                    slash[1] = '\0';
+
+                    return true;
+                }
+            }
+
+            if( ::getcwd( _directory, MENGINE_MAX_PATH - 2 ) == nullptr )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+    }
     //////////////////////////////////////////////////////////////////////////
     UnixApplication::UnixApplication()
     {
@@ -85,10 +118,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool UnixApplication::bootstrap( int32_t _argc, Char ** const _argv, const Configuration & _configuration )
     {
+        Configuration configuration = _configuration;
+
+        if( MENGINE_PATH_EMPTY( configuration.workingDirectory ) == true )
+        {
+            if( Detail::getExecutableDirectory( configuration.workingDirectory ) == false )
+            {
+                return false;
+            }
+        }
+
 #if defined(MENGINE_PLUGIN_MENGINE_SHARED)
 #   error "MENGINE_PLUGIN_MENGINE_SHARED for Unix not implemented"
 #elif defined(MENGINE_PLUGIN_MENGINE_STATIC)
-        ServiceProviderInterface * serviceProvider = ::API_MengineCreate( &_configuration );
+        ServiceProviderInterface * serviceProvider = ::API_MengineCreate( &configuration );
 #else
         ServiceProviderInterface * serviceProvider = nullptr;
 #endif

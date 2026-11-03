@@ -1,5 +1,10 @@
 #include "LoggerService.h"
 
+#include "Interface/DateTimeSystemInterface.h"
+#include "Interface/NotificationServiceInterface.h"
+#include "Interface/OptionsServiceInterface.h"
+#include "Interface/ThreadSystemInterface.h"
+
 #include "LoggerRecord.h"
 
 #include "Kernel/AssertionMemoryPanic.h"
@@ -57,6 +62,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     LoggerService::~LoggerService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & LoggerService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( OptionsServiceInterface ),
+            SERVICE_ID( ThreadSystemInterface ),
+            SERVICE_ID( NotificationServiceInterface ),
+            SERVICE_ID( DateTimeSystemInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool LoggerService::_initializeService()

@@ -1,5 +1,6 @@
 #include "MockupRenderSystem.h"
 
+#include "Interface/ConfigServiceInterface.h"
 #include "Interface/LifecycleServiceInterface.h"
 #include "Interface/RenderServiceInterface.h"
 
@@ -73,6 +74,15 @@ namespace Mengine
         return RP_OPENGL;
 #   endif
 #endif
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & MockupRenderSystem::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( ConfigServiceInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & MockupRenderSystem::getRenderPlatformName() const

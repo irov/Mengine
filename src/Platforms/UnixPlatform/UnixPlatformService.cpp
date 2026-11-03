@@ -1,5 +1,6 @@
 #include "UnixPlatformService.h"
 
+#include "Interface/OptionsServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/DateTimeSystemInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
@@ -543,6 +544,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     UnixPlatformService::~UnixPlatformService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & UnixPlatformService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( OptionsServiceInterface ),
+            SERVICE_ID( DateTimeSystemInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool UnixPlatformService::_initializeService()
@@ -1147,53 +1158,6 @@ namespace Mengine
     void UnixPlatformService::debugBreak()
     {
         ::raise( SIGTRAP );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    size_t UnixPlatformService::getCurrentPath( Char * const _currentPath ) const
-    {
-        const Configuration & configuration = SERVICE_PROVIDER_GET()
-            ->getConfiguration();
-
-        if( MENGINE_PATH_EMPTY( configuration.workingDirectory ) == false )
-        {
-            StdString::strcpy_safe( _currentPath, configuration.workingDirectory, MENGINE_MAX_PATH );
-            Helper::pathCorrectBackslashA( _currentPath );
-            Helper::pathCorrectFolderPathA( _currentPath, MENGINE_PATH_FORWARDSLASH );
-
-            size_t currentPathLen = StdString::strlen( _currentPath );
-
-            return currentPathLen;
-        }
-
-        ssize_t length = ::readlink( "/proc/self/exe", _currentPath, MENGINE_MAX_PATH - 2 );
-
-        if( length > 0 )
-        {
-            _currentPath[length] = '\0';
-
-            Char * slash = StdString::strrchr( _currentPath, '/' );
-            if( slash != nullptr )
-            {
-                slash[1] = '\0';
-
-                size_t pathLength = StdString::strlen( _currentPath );
-
-                return pathLength;
-            }
-        }
-
-        if( ::getcwd( _currentPath, MENGINE_MAX_PATH - 2 ) == nullptr )
-        {
-            _currentPath[0] = '\0';
-
-            return 0;
-        }
-
-        Helper::pathCorrectFolderPathA( _currentPath, MENGINE_PATH_FORWARDSLASH );
-
-        size_t pathLength = StdString::strlen( _currentPath );
-
-        return pathLength;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t UnixPlatformService::getExtraPreferencesFolderName( Char * const _folderName ) const

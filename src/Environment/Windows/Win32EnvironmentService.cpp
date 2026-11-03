@@ -142,6 +142,15 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & Win32EnvironmentService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( DateTimeSystemInterface )
+        };
+
+        return required;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Win32EnvironmentService::_initializeService()
     {
         OSVERSIONINFOEXW osInfo;

@@ -1,5 +1,7 @@
 #include "MemoryService.h"
 
+#include "Interface/ThreadSystemInterface.h"
+
 #include "Kernel/EnumeratorHelper.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
@@ -23,6 +25,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     MemoryService::~MemoryService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & MemoryService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( ThreadSystemInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool MemoryService::_initializeService()

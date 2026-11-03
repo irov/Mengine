@@ -19,6 +19,7 @@ namespace Mengine
         ~ArrowService() override;
 
     protected:
+        const ServiceRequiredList & requiredServices() const override;
         bool _initializeService() override;
         void _finalizeService() override;
 

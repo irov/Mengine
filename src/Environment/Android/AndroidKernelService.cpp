@@ -1,5 +1,6 @@
 #include "AndroidKernelService.h"
 
+#include "Interface/ThreadSystemInterface.h"
 #include "Interface/PluginServiceInterface.h"
 
 #include "Environment/Android/AndroidEnv.h"
@@ -92,6 +93,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AndroidKernelService::~AndroidKernelService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & AndroidKernelService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( ThreadSystemInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidKernelService::_initializeService()

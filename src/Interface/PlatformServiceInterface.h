@@ -113,7 +113,6 @@ namespace Mengine
         virtual bool isDebuggerPresent() const = 0;
         virtual void debugBreak() = 0;
 
-        virtual size_t getCurrentPath( Char * const _filePath ) const = 0;
         virtual size_t getUserPath( Char * const _filePath ) const = 0;
         virtual size_t getTemporaryPath( Char * const _filePath ) const = 0;
         virtual size_t getExtraPreferencesFolderName( Char * const _folderName ) const = 0;        

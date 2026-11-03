@@ -1,5 +1,7 @@
 #include "FileService.h"
 
+#include "Interface/ThreadSystemInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/ServiceInterface.h"
 #include "Interface/MemoryInterface.h"
 #include "Interface/ThreadServiceInterface.h"
@@ -35,6 +37,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     FileService::~FileService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & FileService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( PrototypeServiceInterface ),
+            SERVICE_ID( VocabularyServiceInterface ),
+            SERVICE_ID( ThreadSystemInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool FileService::_initializeService()

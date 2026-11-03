@@ -1,5 +1,7 @@
 #include "Win32SentryService.h"
 
+#include "Interface/ConfigServiceInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 #include "Interface/EnvironmentServiceInterface.h"
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
@@ -11,6 +13,7 @@
 #endif
 
 #include "Kernel/ConfigHelper.h"
+#include "Kernel/ConfigurationHelper.h"
 #include "Kernel/Crash.h"
 #include "Kernel/Stringalized.h"
 #include "Kernel/UnicodeHelper.h"
@@ -114,6 +117,19 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & Win32SentryService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( ConfigServiceInterface ),
+            SERVICE_ID( FileServiceInterface ),
+            SERVICE_ID( LoggerServiceInterface ),
+            SERVICE_ID( NotificationServiceInterface ),
+            SERVICE_ID( PlatformServiceInterface )
+        };
+
+        return required;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Win32SentryService::_initializeService()
     {
         bool OPTION_sentrydebug = HAS_OPTION( "sentrydebug" );
@@ -186,8 +202,7 @@ namespace Mengine
 #endif
 
         Path currentPath = {'\0'};
-        size_t currentPathLen = PLATFORM_SERVICE()
-            ->getCurrentPath( currentPath );
+        size_t currentPathLen = Helper::getWorkingDirectory( currentPath );
 
         PathString sentryHandlerPath;
         sentryHandlerPath.append( currentPath, (PathString::size_type)currentPathLen );

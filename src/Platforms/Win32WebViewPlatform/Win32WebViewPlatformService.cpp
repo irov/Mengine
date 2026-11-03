@@ -147,6 +147,15 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & Win32WebViewPlatformService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( WebViewBridgeServiceInterface )
+        };
+
+        return required;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Win32WebViewPlatformService::_initializeService()
     {
         WebViewBridgeSenderInterfacePtr sender = WebViewBridgeSenderInterfacePtr::from( this );

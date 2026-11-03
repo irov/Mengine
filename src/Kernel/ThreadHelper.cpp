@@ -27,6 +27,15 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void dispatchMainThreadEvent( const LambdaDispatchMainThreadEvent & _event )
         {
+            ServiceProviderInterface * serviceProvider = SERVICE_PROVIDER_GET();
+
+            if( serviceProvider == nullptr )
+            {
+                _event();
+
+                return;
+            }
+
             if( SERVICE_IS_INITIALIZE( ThreadServiceInterface ) == false )
             {
                 _event();
@@ -34,8 +43,11 @@ namespace Mengine
                 return;
             }
 
-            THREAD_SERVICE()
-                ->dispatchMainThreadEvent( _event );
+            static const ServiceInterfacePtr & service = serviceProvider->getService( SERVICE_ID( ThreadServiceInterface ) );
+
+            ThreadServiceInterface * thread = static_cast<ThreadServiceInterface *>(service.get());
+
+            thread->dispatchMainThreadEvent( _event );
         }
         //////////////////////////////////////////////////////////////////////////
         ThreadIdentityInterfacePtr createThreadIdentity( const ThreadDescription & _description, EThreadPriority _priority, const LambdaThreadRunner & _lambda, Timestamp _sleep, const DocumentInterfacePtr & _doc )

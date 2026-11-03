@@ -6,6 +6,7 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/SpinLockScope.h"
+#include "Kernel/Logger.h"
 
 #include "Config/StdString.h"
 #include "Config/StdAlgorithm.h"
@@ -18,8 +19,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     ServiceProvider::ServiceProvider()
-        : m_servicesCount( 0 )
-        , m_dependenciesCount( 0 )
+        : m_dependenciesCount( 0 )
+        , m_servicesCount( 0 )
         , m_leaveCount( 0 )
         , m_waitsCount( 0 )
 #if defined(MENGINE_DEBUG)
@@ -134,19 +135,45 @@ namespace Mengine
 
             const ServiceRequiredList & required = service->requiredServices();
 
-            MENGINE_ASSERTION_FATAL( required.size() <= MENGINE_SERVICE_PROVIDER_MAX_REQUIRED, "service '%s' required service count '%zu' exceeds maximum '%u' (doc: %s)"
-                , service->getServiceId()
-                , required.size()
-                , MENGINE_SERVICE_PROVIDER_MAX_REQUIRED
-                , MENGINE_DOCUMENT_STR( _doc )
-            );
+            size_t requiredCount = required.size();
+
+            if( requiredCount > MENGINE_SERVICE_PROVIDER_MAX_REQUIRED )
+            {
+                desc.service = nullptr;
+                desc.exist = false;
+                desc.available = false;
+
+                MENGINE_ASSERTION_EXCEPTION( _safe == true, "service '%s' required service count '%zu' exceeds maximum '%u'"
+                    , name
+                    , requiredCount
+                    , MENGINE_SERVICE_PROVIDER_MAX_REQUIRED
+                );
+
+                return false;
+            }
 
             for( const Char * require_name : required )
             {
                 desc.required[desc.required_count++] = require_name;
             }
 
-            if( this->isRequired_( desc ) == false )
+            bool visited[MENGINE_SERVICE_PROVIDER_COUNT] = {};
+
+            if( this->hasDependency_( desc, name, visited ) == true )
+            {
+                desc.service = nullptr;
+                desc.exist = false;
+                desc.available = false;
+                desc.required_count = 0;
+
+                MENGINE_ASSERTION_EXCEPTION( _safe == true, "cyclic required services for '%s'"
+                    , name
+                );
+
+                return false;
+            }
+
+            if( this->findUninitializedRequiredService_( desc ) != nullptr )
             {
                 desc.requiring = true;
 
@@ -224,19 +251,10 @@ namespace Mengine
 
         _desc->initialize = true;
 
-        if( this->checkWaits_( service ) == false )
-        {
-            *_result = false;
-
-            MENGINE_THROW_EXCEPTION( "invalid initialize service '%s' (waits) (doc: %s)"
-                , service->getServiceId()
-                , MENGINE_DOCUMENT_STR( _doc )
-            );
-        }
-
         if( service->runService() == false )
         {
             *_result = false;
+            _desc->initialize = false;
 
             MENGINE_THROW_EXCEPTION( "invalid run service '%s' (waits) (doc: %s)"
                 , service->getServiceId()
@@ -247,8 +265,24 @@ namespace Mengine
         if( this->autoRegistration_( _desc ) == false )
         {
             *_result = false;
+            _desc->initialize = false;
+
+            this->autoUnregistration_( _desc );
 
             MENGINE_THROW_EXCEPTION( "invalid auto registration service '%s' (doc: %s)"
+                , service->getServiceId()
+                , MENGINE_DOCUMENT_STR( _doc )
+            );
+        }
+
+        if( this->checkWaits_( service ) == false )
+        {
+            *_result = false;
+            _desc->initialize = false;
+
+            this->autoUnregistration_( _desc );
+
+            MENGINE_THROW_EXCEPTION( "invalid initialize service '%s' (waits) (doc: %s)"
                 , service->getServiceId()
                 , MENGINE_DOCUMENT_STR( _doc )
             );
@@ -279,87 +313,109 @@ namespace Mengine
 
         for( uint32_t index = 0; index != m_dependenciesCount; ++index )
         {
-            const DependencyDesc & desc = m_dependencies[index];
+            const DependencyDesc & dependency = m_dependencies[index];
 
-            if( desc.dependency.compare( _name ) != 0 )
+            if( dependency.dependency.compare( _name ) != 0 )
             {
                 continue;
             }
 
-            this->finalizeService( desc.name.c_str() );
+            this->finalizeService( dependency.name.c_str() );
         }
 
-        for( uint32_t index = 0; index != m_servicesCount; ++index )
+        ServiceDesc * desc = this->findServiceDesc_( _name );
+
+        if( desc == nullptr )
         {
-            ServiceDesc & desc = m_services[index];
-
-            if( desc.name.compare( _name ) != 0 )
-            {
-                continue;
-            }
-
-            if( desc.service == nullptr )
-            {
-                break;
-            }
-
-            desc.exist = false;
-            desc.available = false;
-            desc.initialize = false;
-            desc.service->finalizeService();
-
-            this->autoUnregistration_( &desc );
-
-            return true;
+            return false;
         }
 
-        return false;
+        if( desc->service == nullptr )
+        {
+            return false;
+        }
+
+        this->markServiceFinalized_( desc );
+
+        this->autoUnregistration_( desc );
+
+        desc->service->finalizeService();
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ServiceProvider::destroyService( const Char * _name )
     {
-        for( uint32_t index = 0; index != m_dependenciesCount; ++index )
+        for( uint32_t index = 0; index != m_dependenciesCount; )
         {
-            const DependencyDesc & desc = m_dependencies[index];
+            const DependencyDesc & dependency = m_dependencies[index];
 
-            if( desc.dependency.compare( _name ) != 0 )
+            if( dependency.dependency.compare( _name ) != 0 )
             {
+                ++index;
+
                 continue;
             }
 
-            this->destroyService( desc.name.c_str() );
+            StaticString<MENGINE_SERVICE_PROVIDER_NAME_SIZE> dependentName = dependency.name;
+
+            this->destroyService( dependentName.c_str() );
+            this->removeDependency_( dependentName.c_str() );
         }
 
+        this->finalizeService( _name );
+
+        ServiceDesc * desc = this->findServiceDesc_( _name );
+
+        if( desc == nullptr )
+        {
+            return false;
+        }
+
+        if( desc->service == nullptr )
+        {
+            return false;
+        }
+
+        this->removeDependency_( _name );
+
+        ServiceInterfacePtr service = this->detachService_( desc );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ServiceProvider::validateServices() const
+    {
         for( uint32_t index = 0; index != m_servicesCount; ++index )
         {
-            ServiceDesc & desc = m_services[index];
-
-            if( desc.name.compare( _name ) != 0 )
-            {
-                continue;
-            }
+            const ServiceDesc & desc = m_services[index];
 
             if( desc.service == nullptr )
             {
-                break;
+                continue;
             }
 
-            this->removeDependency_( desc.service );
+            if( desc.initialize == true )
+            {
+                continue;
+            }
 
-            desc.exist = false;
-            desc.available = false;
-            desc.initialize = false;
+            const Char * serviceName = desc.name.c_str();
+            const Char * requiredName = this->findUninitializedRequiredService_( desc );
 
-            desc.service->finalizeService();
+            if( requiredName != nullptr )
+            {
+                LOGGER_ERROR( "service '%s' requires uninitialized service '%s'", serviceName, requiredName );
 
-            this->autoUnregistration_( &desc );
+                return false;
+            }
 
-            desc.service = nullptr;
+            LOGGER_ERROR( "service '%s' failed to initialize", serviceName );
 
-            return true;
+            return false;
         }
 
-        return false;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void ServiceProvider::dependencyService( const Char * _name, const Char * _dependency )
@@ -401,7 +457,7 @@ namespace Mengine
                 continue;
             }
 
-            if( desc.service == nullptr )
+            if( desc.initialize == false )
             {
                 break;
             }
@@ -496,37 +552,6 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ServiceProvider::removeDependency_( const ServiceInterfacePtr & _service )
-    {
-        MENGINE_SPINLOCK_SCOPE( m_spinLockDependencies );
-
-        const Char * name = _service->getServiceId();
-
-        for( uint32_t index = 0; index != m_dependenciesCount; )
-        {
-            DependencyDesc & desc = m_dependencies[index];
-
-            if( desc.name[0] != '\0' )
-            {
-                ++index;
-
-                continue;
-            }
-
-            if( desc.name.compare( name ) != 0 )
-            {
-                ++index;
-
-                continue;
-            }
-
-            DependencyDesc & last_desc = m_dependencies[--m_dependenciesCount];
-
-            desc.name.assign( last_desc.name );
-            desc.dependency.assign( last_desc.dependency );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool ServiceProvider::checkWaits_( const ServiceInterfacePtr & _service )
     {
         MENGINE_SPINLOCK_SCOPE( m_spinLockWaits );
@@ -547,11 +572,12 @@ namespace Mengine
             LambdaWaitService lambda = desc.lambda;
 
             uint32_t last = --m_waitsCount;
-            
+
             if( index != last )
             {
                 WaitDesc & last_desc = m_waits[last];
 
+                desc.owner.assign( last_desc.owner );
                 desc.name.assign( last_desc.name );
                 desc.lambda = last_desc.lambda;
             }
@@ -565,38 +591,126 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ServiceProvider::isRequired_( const ServiceDesc & _desc )
+    ServiceProvider::ServiceDesc * ServiceProvider::findServiceDesc_( const Char * _name )
     {
-        for( uint32_t index_required = 0; index_required != _desc.required_count; ++index_required )
+        for( uint32_t index = 0; index != m_servicesCount; ++index )
         {
-            const Char * name_required = _desc.required[index_required].c_str();
+            ServiceDesc & desc = m_services[index];
 
-            bool required = false;
-
-            for( uint32_t index_service = 0; index_service != m_servicesCount; ++index_service )
+            if( desc.name.compare( _name ) != 0 )
             {
-                const ServiceDesc & service_desc = m_services[index_service];
-
-                if( service_desc.name.compare( name_required ) != 0 )
-                {
-                    continue;
-                }
-
-                if( service_desc.initialize == false )
-                {
-                    return false;
-                }
-
-                required = true;
+                continue;
             }
 
-            if( required == false )
+            return &desc;
+        }
+
+        return nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceProvider::ServiceDesc * ServiceProvider::findServiceDesc_( const Char * _name ) const
+    {
+        for( uint32_t index = 0; index != m_servicesCount; ++index )
+        {
+            const ServiceDesc & desc = m_services[index];
+
+            if( desc.name.compare( _name ) != 0 )
             {
-                return false;
+                continue;
+            }
+
+            return &desc;
+        }
+
+        return nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const Char * ServiceProvider::findUninitializedRequiredService_( const ServiceDesc & _desc ) const
+    {
+        for( uint32_t index = 0; index != _desc.required_count; ++index )
+        {
+            const Char * requiredName = _desc.required[index].c_str();
+            const ServiceDesc * required = this->findServiceDesc_( requiredName );
+
+            if( required == nullptr )
+            {
+                return requiredName;
+            }
+
+            if( required->initialize == false )
+            {
+                return requiredName;
             }
         }
 
-        return true;
+        return nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ServiceProvider::hasRequiredService_( const ServiceDesc & _desc, const Char * _name ) const
+    {
+        for( uint32_t index = 0; index != _desc.required_count; ++index )
+        {
+            if( _desc.required[index].compare( _name ) == 0 )
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ServiceProvider::hasDependency_( const ServiceDesc & _desc, const Char * _name, bool * const _visited ) const
+    {
+        if( this->hasRequiredService_( _desc, _name ) == true )
+        {
+            return true;
+        }
+
+        for( uint32_t index = 0; index != _desc.required_count; ++index )
+        {
+            const Char * requiredName = _desc.required[index].c_str();
+            const ServiceDesc * required = this->findServiceDesc_( requiredName );
+
+            if( required == nullptr )
+            {
+                continue;
+            }
+
+            uint32_t serviceIndex = static_cast<uint32_t>(required - m_services);
+
+            if( _visited[serviceIndex] == true )
+            {
+                continue;
+            }
+
+            _visited[serviceIndex] = true;
+
+            if( this->hasDependency_( *required, _name, _visited ) == true )
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ServiceProvider::removeDependency_( const Char * _name )
+    {
+        MENGINE_SPINLOCK_SCOPE( m_spinLockDependencies );
+
+        for( uint32_t index = 0; index != m_dependenciesCount; )
+        {
+            DependencyDesc & dependency = m_dependencies[index];
+
+            if( dependency.name.compare( _name ) != 0 )
+            {
+                ++index;
+
+                continue;
+            }
+
+            dependency = m_dependencies[--m_dependenciesCount];
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool ServiceProvider::autoRegistration_( ServiceDesc * const _desc )
@@ -670,7 +784,7 @@ namespace Mengine
                 continue;
             }
 
-            if( this->isRequired_( desc ) == false )
+            if( this->findUninitializedRequiredService_( desc ) != nullptr )
             {
                 continue;
             }
@@ -679,6 +793,28 @@ namespace Mengine
 
             this->initializeService_( &desc, _doc, _result );
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ServiceProvider::markServiceFinalized_( ServiceDesc * const _desc )
+    {
+        MENGINE_SPINLOCK_SCOPE( m_spinLockServices );
+
+        _desc->exist = false;
+        _desc->available = false;
+        _desc->initialize = false;
+        _desc->requiring = false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ServiceInterfacePtr ServiceProvider::detachService_( ServiceDesc * const _desc )
+    {
+        MENGINE_SPINLOCK_SCOPE( m_spinLockServices );
+
+        ServiceInterfacePtr service = _desc->service;
+
+        _desc->service = nullptr;
+        _desc->required_count = 0;
+
+        return service;
     }
     //////////////////////////////////////////////////////////////////////////
     const bool * ServiceProvider::isExistServiceProvider( const Char * _name )
@@ -691,16 +827,11 @@ namespace Mengine
 
         MENGINE_SPINLOCK_SCOPE( m_spinLockServices );
 
-        for( uint32_t index = 0; index != m_servicesCount; ++index )
+        ServiceDesc * found = this->findServiceDesc_( _name );
+
+        if( found != nullptr )
         {
-            const ServiceDesc & desc = m_services[index];
-
-            if( desc.name.compare( _name ) != 0 )
-            {
-                continue;
-            }
-
-            return &desc.exist;
+            return &found->exist;
         }
 
         MENGINE_ASSERTION_EXCEPTION( m_servicesCount != MENGINE_SERVICE_PROVIDER_COUNT, "overflow service count [exist]" );
@@ -730,16 +861,11 @@ namespace Mengine
 
         MENGINE_SPINLOCK_SCOPE( m_spinLockServices );
 
-        for( uint32_t index = 0; index != m_servicesCount; ++index )
+        ServiceDesc * found = this->findServiceDesc_( _name );
+
+        if( found != nullptr )
         {
-            const ServiceDesc & desc = m_services[index];
-
-            if( desc.name.compare( _name ) != 0 )
-            {
-                continue;
-            }
-
-            return &desc.available;
+            return &found->available;
         }
 
         MENGINE_ASSERTION_EXCEPTION( m_servicesCount != MENGINE_SERVICE_PROVIDER_COUNT, "overflow service count [available]" );
@@ -769,16 +895,11 @@ namespace Mengine
 
         MENGINE_SPINLOCK_SCOPE( m_spinLockServices );
 
-        for( uint32_t index = 0; index != m_servicesCount; ++index )
+        ServiceDesc * found = this->findServiceDesc_( _name );
+
+        if( found != nullptr )
         {
-            const ServiceDesc & desc = m_services[index];
-
-            if( desc.name.compare( _name ) != 0 )
-            {
-                continue;
-            }
-
-            return &desc.initialize;
+            return &found->initialize;
         }
 
         MENGINE_ASSERTION_EXCEPTION( m_servicesCount != MENGINE_SERVICE_PROVIDER_COUNT, "overflow service count [initialize]" );
@@ -832,35 +953,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ServiceProvider::destroy()
     {
-        for( uint32_t index = 0; index != m_servicesCount; ++index )
-        {
-            ServiceDesc & desc = m_services[index];
-
-            if( desc.service == nullptr )
-            {
-                continue;
-            }
-
-            this->autoUnregistration_( &desc );
-        }
-
-        for( uint32_t index = 0; index != m_servicesCount; ++index )
-        {
-            ServiceDesc & desc = m_services[index];
-
-            if( desc.service == nullptr )
-            {
-                continue;
-            }
-
-            if( desc.service->isInitializeService() == false )
-            {
-                continue;
-            }
-
-            desc.service->finalizeService();
-        }
-
         for( uint32_t index = m_servicesCount; index != 0; --index )
         {
             ServiceDesc & desc = m_services[index - 1];
@@ -870,7 +962,8 @@ namespace Mengine
                 continue;
             }
 
-            desc.service = nullptr;
+            const Char * serviceName = desc.name.c_str();
+            this->destroyService( serviceName );
         }
 
         for( uint32_t index = 0; index != m_waitsCount; ++index )
@@ -909,6 +1002,11 @@ namespace Mengine
             ServiceDesc & desc = m_services[index - 1];
 
             if( desc.service == nullptr )
+            {
+                continue;
+            }
+
+            if( desc.service->isInitializeService() == false )
             {
                 continue;
             }

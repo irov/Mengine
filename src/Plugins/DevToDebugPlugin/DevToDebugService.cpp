@@ -1,5 +1,7 @@
 #include "DevToDebugService.h"
 
+#include "Interface/ConfigServiceInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 #include "Interface/EnvironmentServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/ThreadSystemInterface.h"
@@ -61,9 +63,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ServiceRequiredList & DevToDebugService::requiredServices() const
     {
-        static ServiceRequiredList required = {
+        static const ServiceRequiredList required = {
             SERVICE_ID( HttpServiceInterface ),
-            SERVICE_ID( ThreadSystemInterface )
+            SERVICE_ID( ThreadSystemInterface ),
+            SERVICE_ID( ConfigServiceInterface ),
+            SERVICE_ID( NotificationServiceInterface ),
+            SERVICE_ID( TimerServiceInterface )
         };
 
         return required;

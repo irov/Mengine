@@ -1,5 +1,9 @@
 #include "SoundService.h"
 
+#include "Interface/ConfigServiceInterface.h"
+#include "Interface/NotificationServiceInterface.h"
+#include "Interface/PrototypeServiceInterface.h"
+#include "Interface/SoundSystemInterface.h"
 #include "Interface/ThreadSystemInterface.h"
 #include "Interface/SoundCodecInterface.h"
 #include "Interface/CodecServiceInterface.h"
@@ -57,8 +61,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ServiceRequiredList & SoundService::requiredServices() const
     {
-        static ServiceRequiredList required = {
-            SERVICE_ID( ThreadServiceInterface )
+        static const ServiceRequiredList required = {
+            SERVICE_ID( PrototypeServiceInterface ),
+            SERVICE_ID( ThreadServiceInterface ),
+            SERVICE_ID( ThreadSystemInterface ),
+            SERVICE_ID( SoundSystemInterface ),
+            SERVICE_ID( TimepipeServiceInterface ),
+            SERVICE_ID( ConfigServiceInterface ),
+            SERVICE_ID( NotificationServiceInterface )
         };
 
         return required;

@@ -1,5 +1,6 @@
 #include "PluginService.h"
 
+#include "Interface/ThreadSystemInterface.h"
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/LifecycleServiceInterface.h"
 
@@ -30,8 +31,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ServiceRequiredList & PluginService::requiredServices() const
     {
-        static ServiceRequiredList required = {
-            SERVICE_ID( LifecycleServiceInterface )
+        static const ServiceRequiredList required = {
+            SERVICE_ID( LifecycleServiceInterface ),
+            SERVICE_ID( ThreadSystemInterface )
         };
 
         return required;

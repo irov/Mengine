@@ -34,6 +34,7 @@ namespace Mengine
         ~RenderService() override;
 
     public:
+        const ServiceRequiredList & requiredServices() const override;
         bool _initializeService() override;
         void _finalizeService() override;
         void _stopService() override;

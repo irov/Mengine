@@ -1,5 +1,6 @@
 #include "Win32HttpSystem.h"
 
+#include "Interface/ThreadSystemInterface.h"
 #include "Interface/EnvironmentServiceInterface.h"
 
 #include "Win32HttpRequestPing.h"
@@ -29,6 +30,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Win32HttpSystem::~Win32HttpSystem()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & Win32HttpSystem::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( EnvironmentServiceInterface ),
+            SERVICE_ID( ThreadSystemInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32HttpSystem::_initializeService()

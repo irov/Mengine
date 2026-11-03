@@ -1,5 +1,6 @@
 #include "EmscriptenPlatformService.h"
 
+#include "Interface/DateTimeSystemInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/InputServiceInterface.h"
@@ -197,6 +198,16 @@ namespace Mengine
         return timestamp;
     }
     //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & EmscriptenPlatformService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( OptionsServiceInterface ),
+            SERVICE_ID( DateTimeSystemInterface )
+        };
+
+        return required;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void EmscriptenPlatformService::setProjectTitle( const Char * _projectTitle )
     {
         m_title = _projectTitle;
@@ -310,17 +321,6 @@ namespace Mengine
         MENGINE_UNUSED( _viewport );
 
         return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    size_t EmscriptenPlatformService::getCurrentPath( Char * const _filePath ) const
-    {
-        const Char * path = "/app/";
-
-        StdString::strcpy_safe( _filePath, path, MENGINE_MAX_PATH );
-
-        size_t length = Helper::stringLength( path );
-
-        return length;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t EmscriptenPlatformService::getUserPath( Char * const _filePath ) const

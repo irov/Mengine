@@ -25,6 +25,15 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & AreaOfInterestService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( TimepipeServiceInterface )
+        };
+
+        return required;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool AreaOfInterestService::_initializeService()
     {
         Helper::addNodePrototype<NodeAreaOfInterestTrigger, 32>( MENGINE_DOCUMENT_FACTORABLE );

@@ -1,5 +1,6 @@
 #include "TextService.h"
 
+#include "Interface/ConfigServiceInterface.h"
 #include "Interface/ServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/FileGroupInterface.h"
@@ -44,6 +45,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     TextService::~TextService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & TextService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( ConfigServiceInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool TextService::_initializeService()

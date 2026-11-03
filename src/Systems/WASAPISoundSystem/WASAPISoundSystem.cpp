@@ -4,6 +4,7 @@
 #include "WASAPISoundBufferMemory.h"
 #include "WASAPISoundBufferStream.h"
 
+#include "Interface/ThreadSystemInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 
 #include "Kernel/FactoryPool.h"
@@ -592,6 +593,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     WASAPISoundSystem::~WASAPISoundSystem()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & WASAPISoundSystem::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( ThreadSystemInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool WASAPISoundSystem::_initializeService()

@@ -19,6 +19,8 @@
 #include "Kernel/Logger.h"
 #include "Kernel/StdioLogger.h"
 
+#include "Config/StdString.h"
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 //////////////////////////////////////////////////////////////////////////
@@ -93,7 +95,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool EmscriptenApplication::bootstrap( int32_t _argc, Char ** const _argv, const Configuration & _configuration )
     {
-        ServiceProviderInterface * serviceProvider = ::API_MengineCreate( &_configuration );
+        Configuration configuration = _configuration;
+
+        if( MENGINE_PATH_EMPTY( configuration.workingDirectory ) == true )
+        {
+            StdString::strcpy_safe( configuration.workingDirectory, "/app/", MENGINE_MAX_PATH );
+        }
+
+        ServiceProviderInterface * serviceProvider = ::API_MengineCreate( &configuration );
 
         if( serviceProvider == nullptr )
         {

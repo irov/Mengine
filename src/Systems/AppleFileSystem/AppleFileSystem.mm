@@ -1,6 +1,7 @@
 #include "AppleFileSystem.h"
 
-#include "Interface/PlatformServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
+#include "Interface/OptionsServiceInterface.h"
 
 #import "Environment/Apple/AppleIncluder.h"
 #import "Environment/Apple/AppleDetail.h"
@@ -9,6 +10,7 @@
 #include "AppleFileGroupDirectoryFactory.h"
 
 #include "Kernel/Configuration.h"
+#include "Kernel/ConfigurationHelper.h"
 #include "Kernel/FactoryHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
@@ -166,6 +168,16 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & AppleFileSystem::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( OptionsServiceInterface ),
+            SERVICE_ID( VocabularyServiceInterface )
+        };
+
+        return required;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool AppleFileSystem::_initializeService()
     {
         FactoryInterfacePtr factoryGlobalFileGroupDirectory = Helper::makeFactory<AppleFileGroupDirectoryFactory, AppleFileGroupDirectory>( MENGINE_DOCUMENT_FACTORABLE, FilePath::none() );
@@ -184,8 +196,7 @@ namespace Mengine
         }
         else
         {
-            PLATFORM_SERVICE()
-                ->getCurrentPath( utf8_currentPath );
+            Helper::getWorkingDirectory( utf8_currentPath );
 
             StdString::strcat_safe( utf8_currentPath, "Data", MENGINE_MAX_PATH );
             StdString::strchrcat_safe( utf8_currentPath, MENGINE_PATH_FORWARDSLASH, MENGINE_MAX_PATH );

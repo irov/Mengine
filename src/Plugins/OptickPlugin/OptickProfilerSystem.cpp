@@ -31,6 +31,15 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & OptickProfilerSystem::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( ThreadSystemInterface )
+        };
+
+        return required;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool OptickProfilerSystem::_initializeService()
     {
         m_factoryThreadProfilers = Helper::makeFactoryPool<OptickThreadProfiler, 16>( MENGINE_DOCUMENT_FACTORABLE );

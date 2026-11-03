@@ -1,5 +1,7 @@
 #include "Win32SocketSystem.h"
 
+#include "Interface/ThreadSystemInterface.h"
+
 #include "Win32Socket.h"
 #include "Win32Datagram.h"
 
@@ -57,6 +59,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Win32SocketSystem::~Win32SocketSystem()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & Win32SocketSystem::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( ThreadSystemInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32SocketSystem::_initializeService()

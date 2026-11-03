@@ -1,5 +1,6 @@
 #include "ResourcePrefetcherService.h"
 
+#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/FileGroupInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 
@@ -30,6 +31,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ResourcePrefetcherService::~ResourcePrefetcherService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & ResourcePrefetcherService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( VocabularyServiceInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourcePrefetcherService::_initializeService()

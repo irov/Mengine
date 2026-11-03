@@ -1,5 +1,7 @@
 #include "AndroidHttpSystem.h"
 
+#include "Interface/ThreadSystemInterface.h"
+
 #include "AndroidHttpRequestPing.h"
 #include "AndroidHttpRequestGetMessage.h"
 #include "AndroidHttpRequestPostMessage.h"
@@ -22,6 +24,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AndroidHttpSystem::~AndroidHttpSystem()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & AndroidHttpSystem::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( ThreadSystemInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidHttpSystem::_initializeService()

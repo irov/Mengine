@@ -1,5 +1,6 @@
 #include "RenderMaterialService.h"
 
+#include "Interface/ConfigServiceInterface.h"
 #include "Interface/ConverterServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
 
@@ -103,6 +104,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderMaterialService::~RenderMaterialService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & RenderMaterialService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( ConfigServiceInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderMaterialService::_initializeService()

@@ -1,5 +1,6 @@
 #include "AppleHttpSystem.h"
 
+#include "Interface/ThreadSystemInterface.h"
 #include "Interface/FileServiceInterface.h"
 
 #import "Environment/Apple/AppleBundle.h"
@@ -32,6 +33,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AppleHttpSystem::~AppleHttpSystem()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & AppleHttpSystem::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( FileServiceInterface ),
+            SERVICE_ID( ThreadSystemInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AppleHttpSystem::_initializeService()

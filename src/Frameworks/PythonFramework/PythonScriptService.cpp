@@ -1,5 +1,7 @@
 #include "PythonScriptService.h"
 
+#include "Interface/NotificationServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
@@ -305,8 +307,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ServiceRequiredList & PythonScriptService::requiredServices() const
     {
-        static ServiceRequiredList required = {
-            SERVICE_ID( ScriptProviderServiceInterface )
+        static const ServiceRequiredList required = {
+            SERVICE_ID( ScriptProviderServiceInterface ),
+            SERVICE_ID( VocabularyServiceInterface ),
+            SERVICE_ID( NotificationServiceInterface ),
+            SERVICE_ID( OptionsServiceInterface )
         };
 
         return required;

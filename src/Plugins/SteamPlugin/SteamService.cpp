@@ -10,6 +10,7 @@
 #   include "SteamScriptEmbedding.h"
 #endif
 
+#include "Interface/NotificationServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
@@ -53,6 +54,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     SteamService::~SteamService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & SteamService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( NotificationServiceInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SteamService::_initializeService()

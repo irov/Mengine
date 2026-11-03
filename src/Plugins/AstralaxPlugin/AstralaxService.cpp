@@ -1,5 +1,9 @@
 #include "AstralaxService.h"
 
+#include "Interface/ConfigServiceInterface.h"
+#include "Interface/RenderMaterialServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
+
 #include "Kernel/ResourceImage.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryPoolWithListener.h"
@@ -32,6 +36,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AstralaxService::~AstralaxService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & AstralaxService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( ConfigServiceInterface ),
+            SERVICE_ID( VocabularyServiceInterface ),
+            SERVICE_ID( RenderMaterialServiceInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxService::_initializeService()

@@ -49,6 +49,16 @@ namespace Mengine
         SERVICE_DEPENDENCY( MosaicService, GraphicsServiceInterface );
     }
     //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & MosaicService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( GraphicsServiceInterface ),
+            SERVICE_ID( PrototypeServiceInterface )
+        };
+
+        return required;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool MosaicService::_initializeService()
     {
         Mosaic::setDefaultAllocator( &m_allocator );

@@ -1,5 +1,6 @@
 #include "TTFAtlasService.h"
 
+#include "Interface/ConfigServiceInterface.h"
 #include "Interface/RenderTextureServiceInterface.h"
 
 #include "Kernel/ConfigHelper.h"
@@ -24,6 +25,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     TTFAtlasService::~TTFAtlasService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & TTFAtlasService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( ConfigServiceInterface ),
+            SERVICE_ID( RenderTextureServiceInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool TTFAtlasService::_initializeService()

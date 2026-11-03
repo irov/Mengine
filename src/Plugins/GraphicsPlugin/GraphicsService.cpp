@@ -1,5 +1,7 @@
 #include "GraphicsService.h"
 
+#include "Interface/ConfigServiceInterface.h"
+
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/MemoryAllocator.h"
@@ -47,6 +49,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     GraphicsService::~GraphicsService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & GraphicsService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( ConfigServiceInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool GraphicsService::_initializeService()

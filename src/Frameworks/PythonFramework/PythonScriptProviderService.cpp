@@ -1,5 +1,6 @@
 #include "PythonScriptProviderService.h"
 
+#include "Interface/OptionsServiceInterface.h"
 #include "Interface/AllocatorSystemInterface.h"
 #include "Interface/ThreadSystemInterface.h"
 
@@ -100,6 +101,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     PythonScriptProviderService::~PythonScriptProviderService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & PythonScriptProviderService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( ThreadSystemInterface ),
+            SERVICE_ID( OptionsServiceInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool PythonScriptProviderService::_initializeService()

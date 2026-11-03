@@ -1,6 +1,7 @@
 #include "Win32FileHelper.h"
 
 #include "Win32Helper.h"
+#include "Win32UnicodeHelper.h"
 
 #include "Kernel/PathHelper.h"
 #include "Kernel/Logger.h"
@@ -429,6 +430,24 @@ namespace Mengine
             }
 
             *_stop = false;
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool Win32GetCurrentDirectory( Char * const _directory )
+        {
+            WPath currentDirectory = {L'\0'};
+            DWORD currentDirectoryLen = ::GetCurrentDirectoryW( MENGINE_MAX_PATH, currentDirectory );
+
+            if( currentDirectoryLen == 0 )
+            {
+                return false;
+            }
+
+            if( Helper::Win32UnicodeToUtf8( currentDirectory, _directory, MENGINE_MAX_PATH ) == false )
+            {
+                return false;
+            }
 
             return true;
         }

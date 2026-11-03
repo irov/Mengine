@@ -21,6 +21,7 @@ namespace Mengine
         ~PrefetcherService() override;
 
     public:
+        const ServiceRequiredList & requiredServices() const override;
         bool _availableService() const override;
         bool _initializeService() override;
         void _finalizeService() override;

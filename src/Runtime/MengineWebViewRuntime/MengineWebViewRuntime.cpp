@@ -93,6 +93,12 @@ extern "C" bool API_MengineBootstrap()
         return false;
     }
 
+    if( SERVICE_PROVIDER_GET()
+        ->validateServices() == false )
+    {
+        return false;
+    }
+
     return true;
 }
 //////////////////////////////////////////////////////////////////////////

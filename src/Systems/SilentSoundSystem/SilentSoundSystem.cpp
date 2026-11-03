@@ -1,5 +1,7 @@
 #include "SilentSoundSystem.h"
 
+#include "Interface/ThreadSystemInterface.h"
+
 #include "Kernel/EnumeratorHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/FactoryPool.h"
@@ -20,6 +22,15 @@ namespace Mengine
     SilentSoundSystem::~SilentSoundSystem()
     {
 
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & SilentSoundSystem::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( ThreadSystemInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SilentSoundSystem::_initializeService()

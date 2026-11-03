@@ -1,5 +1,7 @@
 #include "GraveyardService.h"
 
+#include "Interface/ConfigServiceInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 #include "Interface/RenderImageInterface.h"
 #include "Interface/RenderTextureInterface.h"
 #include "Interface/RenderTextureServiceInterface.h"
@@ -24,6 +26,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     GraveyardService::~GraveyardService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & GraveyardService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( ConfigServiceInterface ),
+            SERVICE_ID( NotificationServiceInterface ),
+            SERVICE_ID( TimepipeServiceInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool GraveyardService::_initializeService()

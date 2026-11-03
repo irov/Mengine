@@ -1,5 +1,7 @@
 #include "DataService.h"
 
+#include "Interface/VocabularyServiceInterface.h"
+
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionVocabulary.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -18,6 +20,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DataService::~DataService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & DataService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( VocabularyServiceInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool DataService::_initializeService()

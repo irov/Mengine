@@ -8,6 +8,7 @@
 #include "ThreadQueue.h"
 
 #include "Kernel/ServiceBase.h"
+#include "Kernel/SpinLock.h"
 #include "Kernel/String.h"
 #include "Kernel/Vector.h"
 
@@ -26,6 +27,7 @@ namespace Mengine
         ~ThreadService() override;
 
     public:
+        const ServiceRequiredList & requiredServices() const override;
         bool _initializeService() override;
         void _finalizeService() override;
 
@@ -69,9 +71,10 @@ namespace Mengine
     protected:
         ThreadMutexInterfacePtr m_mutexTasks;
         ThreadMutexInterfacePtr m_mutexThreads;
-        ThreadMutexInterfacePtr m_mutexDispatchEvents;
+        SpinLock m_spinLockDispatchEvents;
 
         bool m_dispatchStopped;
+        bool m_dispatchInitialized;
 
         typedef Vector<LambdaEvent> VectorEvents;
         VectorEvents m_dispatchEvents;
@@ -114,6 +117,8 @@ namespace Mengine
         ThreadId m_mainThreadId;
 
     protected:
+        void setDispatchInitialized_( bool _initialized );
+        bool deferMainThreadEvent_( const LambdaEvent & _event );
         void tryFastProcessTask_( ThreadTaskDesc & _desc );
     };
 }

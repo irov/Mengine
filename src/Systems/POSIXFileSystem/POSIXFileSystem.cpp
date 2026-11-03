@@ -1,11 +1,13 @@
 #include "POSIXFileSystem.h"
 
-#include "Interface/PlatformServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
+#include "Interface/OptionsServiceInterface.h"
 
 #include "POSIXFileGroupDirectory.h"
 #include "POSIXFileGroupDirectoryFactory.h"
 
 #include "Kernel/Configuration.h"
+#include "Kernel/ConfigurationHelper.h"
 #include "Kernel/FactoryHelper.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/VocabularyHelper.h"
@@ -252,6 +254,16 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & POSIXFileSystem::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( OptionsServiceInterface ),
+            SERVICE_ID( VocabularyServiceInterface )
+        };
+
+        return required;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool POSIXFileSystem::_initializeService()
     {
         FactoryInterfacePtr factoryGlobalFileGroupDirectory = Helper::makeFactory<POSIXFileGroupDirectoryFactory, POSIXFileGroupDirectory>( MENGINE_DOCUMENT_FACTORABLE, FilePath::none() );
@@ -269,9 +281,7 @@ namespace Mengine
         }
         else
         {
-            PLATFORM_SERVICE()
-                ->getCurrentPath( currentPath );
-            Helper::pathCorrectFolderPathA( currentPath, MENGINE_PATH_FORWARDSLASH );
+            Helper::getWorkingDirectory( currentPath );
         }
 
         size_t currentPathLen = StdString::strlen( currentPath );

@@ -23,7 +23,7 @@ ENABLE_PLUGIN_DEBUG(MENGINE_PLUGIN_MACOS_FINDPYTHON3)
 ENABLE_PLUGIN_DEBUG(MENGINE_PLUGIN_XLSEXPORT)
 ```
 
-The launcher must set the current working directory to the project root. The child process inherits that directory, so the fixed script path is relative to it. `PlatformServiceInterface::getCurrentPath` is deliberately not used: on macOS it points to bundle resources. No Python path is supplied by CMake. `ENABLE_PLUGIN_DEBUG` keeps Python discovery, credentials, and source-network access out of Release runtime.
+The launcher must set the current working directory to the project root. The child process inherits that directory, so the fixed script path is relative to it. `Helper::getWorkingDirectory` is deliberately not used: on macOS it points to bundle resources. No Python path is supplied by CMake. `ENABLE_PLUGIN_DEBUG` keeps Python discovery, credentials, and source-network access out of Release runtime.
 
 The common `FindPython3ServiceInterface` is implemented on macOS by `MacOSFindPython3Service`. It requires Python 3.10 or newer and checks candidates in this order:
 

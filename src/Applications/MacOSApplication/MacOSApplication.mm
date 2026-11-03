@@ -116,10 +116,26 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MacOSApplication::bootstrap( int32_t _argc, Char ** const _argv, const Configuration & _configuration )
     {
+        Configuration configuration = _configuration;
+
+        if( MENGINE_PATH_EMPTY( configuration.workingDirectory ) == true )
+        {
+            NSString * resourcePath = [[NSBundle mainBundle] resourcePath];
+
+            if( resourcePath == nil )
+            {
+                resourcePath = [[NSBundle mainBundle] bundlePath];
+            }
+
+            const Char * resourcePathRepresentation = [resourcePath fileSystemRepresentation];
+
+            StdString::strcpy_safe( configuration.workingDirectory, resourcePathRepresentation, MENGINE_MAX_PATH );
+        }
+
 #if defined(MENGINE_PLUGIN_MENGINE_SHARED)
 #   error "MENGINE_PLUGIN_MENGINE_SHARED for MacOS not implemented"
 #elif defined(MENGINE_PLUGIN_MENGINE_STATIC)
-        ServiceProviderInterface * serviceProvider = ::API_MengineCreate( &_configuration );
+        ServiceProviderInterface * serviceProvider = ::API_MengineCreate( &configuration );
 #else
         ServiceProviderInterface * serviceProvider = nullptr;
 #endif

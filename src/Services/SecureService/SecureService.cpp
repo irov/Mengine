@@ -1,5 +1,7 @@
 #include "SecureService.h"
 
+#include "Interface/PrototypeServiceInterface.h"
+
 #include "SecureUnsignedValue.h"
 #include "SecureStringValue.h"
 
@@ -26,6 +28,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     SecureService::~SecureService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & SecureService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( PrototypeServiceInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SecureService::_initializeService()

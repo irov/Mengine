@@ -1,5 +1,11 @@
 #include "PackageService.h"
 
+#include "Interface/FontServiceInterface.h"
+#include "Interface/NotificationServiceInterface.h"
+#include "Interface/RenderSystemInterface.h"
+#include "Interface/SettingsServiceInterface.h"
+#include "Interface/TextServiceInterface.h"
+#include "Interface/UserdataServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
@@ -102,6 +108,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     PackageService::~PackageService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & PackageService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( ConfigServiceInterface ),
+            SERVICE_ID( NotificationServiceInterface ),
+            SERVICE_ID( FileServiceInterface ),
+            SERVICE_ID( FontServiceInterface ),
+            SERVICE_ID( TextServiceInterface ),
+            SERVICE_ID( SettingsServiceInterface ),
+            SERVICE_ID( UserdataServiceInterface ),
+            SERVICE_ID( RenderSystemInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool PackageService::_initializeService()

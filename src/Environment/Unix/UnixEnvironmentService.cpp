@@ -109,6 +109,15 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & UnixEnvironmentService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( DateTimeSystemInterface )
+        };
+
+        return required;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool UnixEnvironmentService::_initializeService()
     {
         ::setlocale( LC_ALL, "" );

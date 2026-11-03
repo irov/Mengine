@@ -1,5 +1,6 @@
 #include "CodecService.h"
 
+#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/FactoryInterface.h"
 #include "Interface/DecoderInterface.h"
 #include "Interface/EncoderInterface.h"
@@ -25,6 +26,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     CodecService::~CodecService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & CodecService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( VocabularyServiceInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool CodecService::_initializeService()

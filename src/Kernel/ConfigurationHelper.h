@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Config/Config.h"
+#include "Config/Char.h"
+#include "Config/StdDef.h"
 
 namespace Mengine
 {
@@ -45,5 +47,7 @@ namespace Mengine
         // SilentSoundSystem for CLI / headless / automated runs. Returns
         // false when ServiceProvider is not available yet.
         bool isMuteSound();
+
+        size_t getWorkingDirectory( Char * const _workingDirectory );
     }
 }

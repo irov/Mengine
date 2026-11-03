@@ -22,5 +22,7 @@ namespace Mengine
 
         typedef Lambda<bool(const WChar *)> LambdaListDirectoryFilePath;
         bool Win32ListDirectory( const WChar * _dir, const WChar * _mask, const WChar * _path, const LambdaListDirectoryFilePath & _lambda, bool * const _stop );
+
+        bool Win32GetCurrentDirectory( Char * const _directory );
     }
 }

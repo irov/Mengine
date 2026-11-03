@@ -1,5 +1,6 @@
 #include "ALSASoundSystem.h"
 
+#include "Interface/ThreadSystemInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 
 #include "Kernel/MixerSoundBufferMemory.h"
@@ -58,6 +59,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ALSASoundSystem::~ALSASoundSystem()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & ALSASoundSystem::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( ThreadSystemInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ALSASoundSystem::_initializeService()

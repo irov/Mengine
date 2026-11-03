@@ -22,6 +22,7 @@ namespace Mengine
         ~SilentSoundSystem() override;
 
     public:
+        const ServiceRequiredList & requiredServices() const override;
         bool _initializeService() override;
         void _finalizeService() override;
 

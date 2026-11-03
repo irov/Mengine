@@ -1,5 +1,6 @@
 #include "iOSPlatformService.h"
 
+#include "Interface/OptionsServiceInterface.h"
 #include "Interface/LifecycleServiceInterface.h"
 #include "Interface/LoggerInterface.h"
 #include "Interface/FileServiceInterface.h"
@@ -116,32 +117,6 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t iOSPlatformService::getCurrentPath( Char * const _currentPath ) const
-    {
-        const Configuration & configuration = SERVICE_PROVIDER_GET()
-            ->getConfiguration();
-
-        if( MENGINE_PATH_EMPTY( configuration.workingDirectory ) == false )
-        {
-            StdString::strcpy_safe( _currentPath, configuration.workingDirectory, MENGINE_MAX_PATH );
-            Helper::pathCorrectBackslashA( _currentPath );
-            Helper::pathCorrectFolderPathA( _currentPath, MENGINE_PATH_FORWARDSLASH );
-
-            size_t currentPathLen = StdString::strlen( _currentPath );
-
-            return currentPathLen;
-        }
-
-        NSString * path = [[NSBundle mainBundle] resourcePath];
-        
-        StdString::strcpy_safe( _currentPath, [path UTF8String], MENGINE_MAX_PATH );
-        StdString::strchrcat_safe( _currentPath, MENGINE_PATH_FORWARDSLASH, MENGINE_MAX_PATH );
-
-        size_t path_length = [path length] + 1;
-        
-        return path_length;
-    }
-    //////////////////////////////////////////////////////////////////////////
     size_t iOSPlatformService::getUserPath( Char * const _userPath ) const
     {
         NSArray * paths = NSSearchPathForDirectoriesInDomains( NSApplicationSupportDirectory, NSUserDomainMask, YES );
@@ -222,6 +197,18 @@ namespace Mengine
         _fontPath[0] = '\0';
 
         return 0;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & iOSPlatformService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( OptionsServiceInterface ),
+            SERVICE_ID( DateTimeSystemInterface ),
+            SERVICE_ID( AnalyticsServiceInterface ),
+            SERVICE_ID( AttributionServiceInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool iOSPlatformService::getMaxClientResolution( Resolution * const _resolution ) const

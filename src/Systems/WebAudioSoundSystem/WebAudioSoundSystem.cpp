@@ -1,5 +1,7 @@
 #include "WebAudioSoundSystem.h"
 
+#include "Interface/ThreadSystemInterface.h"
+
 #include "WebAudioBridge.h"
 #include "WebAudioSoundBuffer.h"
 #include "WebAudioSoundSource.h"
@@ -23,6 +25,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     WebAudioSoundSystem::~WebAudioSoundSystem()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & WebAudioSoundSystem::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( ThreadSystemInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool WebAudioSoundSystem::_initializeService()

@@ -50,7 +50,6 @@ namespace Mengine
         bool getDisplayCutoutViewport( Viewport * const _viewport ) const override;
 
     public:
-        size_t getCurrentPath( Char * const _filePath ) const override;
         size_t getUserPath( Char * const _filePath ) const override;
         size_t getTemporaryPath( Char * const _filePath ) const override;
         size_t getExtraPreferencesFolderName( Char * const _folderName ) const override;
@@ -69,6 +68,7 @@ namespace Mengine
         bool getClipboardText( Char * const _value, size_t _capacity ) const override;
 
     public:
+        const ServiceRequiredList & requiredServices() const override;
         bool _initializeService() override;
         void _finalizeService() override;
 

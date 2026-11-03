@@ -3,6 +3,11 @@
 #include "Interface/ServiceProviderInterface.h"
 
 #include "Kernel/Configuration.h"
+#include "Kernel/OptionHelper.h"
+#include "Kernel/PathHelper.h"
+
+#include "Config/StdString.h"
+#include "Config/Path.h"
 
 namespace Mengine
 {
@@ -161,6 +166,29 @@ namespace Mengine
             s_cached = true;
 
             return s_muteSound;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        size_t getWorkingDirectory( Char * const _workingDirectory )
+        {
+            const Char * option_workdir;
+            if( HAS_OPTION_VALUE( "workdir", &option_workdir ) == true )
+            {
+                StdString::strcpy_safe( _workingDirectory, option_workdir, MENGINE_MAX_PATH );
+            }
+            else
+            {
+                const Configuration & configuration = SERVICE_PROVIDER_GET()
+                    ->getConfiguration();
+
+                StdString::strcpy_safe( _workingDirectory, configuration.workingDirectory, MENGINE_MAX_PATH );
+            }
+
+            Helper::pathCorrectBackslashA( _workingDirectory );
+            Helper::pathCorrectFolderPathA( _workingDirectory, MENGINE_PATH_FORWARDSLASH );
+
+            size_t workingDirectoryLen = StdString::strlen( _workingDirectory );
+
+            return workingDirectoryLen;
         }
         //////////////////////////////////////////////////////////////////////////
     }

@@ -1,5 +1,6 @@
 #include "ArrowService.h"
 
+#include "Interface/NotificationServiceInterface.h"
 #include "Interface/InputServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/TransformationInterface.h"
@@ -27,6 +28,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ArrowService::~ArrowService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & ArrowService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( InputServiceInterface ),
+            SERVICE_ID( NotificationServiceInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ArrowService::_initializeService()

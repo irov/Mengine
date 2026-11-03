@@ -1,7 +1,8 @@
 #include "Win32FileSystem.h"
 
+#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
-#include "Interface/PlatformServiceInterface.h"
+#include "Interface/OptionsServiceInterface.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
 #include "Environment/Windows/Win32Helper.h"
@@ -11,6 +12,7 @@
 #include "Win32FileGroupDirectory.h"
 
 #include "Kernel/Configuration.h"
+#include "Kernel/ConfigurationHelper.h"
 #include "Kernel/FactoryHelper.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/ConstStringHelper.h"
@@ -37,6 +39,16 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & Win32FileSystem::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( OptionsServiceInterface ),
+            SERVICE_ID( VocabularyServiceInterface )
+        };
+
+        return required;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Win32FileSystem::_initializeService()
     {
         FactoryInterfacePtr factoryGlobalFileGroupDirectory = Helper::makeFactory<Win32FileGroupDirectoryFactory, Win32FileGroupDirectory>( MENGINE_DOCUMENT_FACTORABLE, FilePath::none() );
@@ -55,8 +67,7 @@ namespace Mengine
         }
         else
         {
-            PLATFORM_SERVICE()
-                ->getCurrentPath( currentPath );
+            Helper::getWorkingDirectory( currentPath );
         }
 
         size_t currentPathLen = StdString::strlen( currentPath );

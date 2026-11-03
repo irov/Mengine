@@ -1,5 +1,6 @@
 #include "InputService.h"
 
+#include "Interface/ThreadSystemInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/ActionServiceInterface.h"
 
@@ -30,6 +31,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     InputService::~InputService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & InputService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( ThreadSystemInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool InputService::_initializeService()

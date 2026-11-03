@@ -1,5 +1,7 @@
 #include "FileModifyHookService.h"
 
+#include "Interface/ConfigServiceInterface.h"
+#include "Interface/ThreadSystemInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/TimerServiceInterface.h"
 #include "Interface/FileSystemInterface.h"
@@ -32,8 +34,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ServiceRequiredList & FileModifyHookService::requiredServices() const
     {
-        static ServiceRequiredList required = {
-            SERVICE_ID( ThreadServiceInterface )
+        static const ServiceRequiredList required = {
+            SERVICE_ID( ThreadServiceInterface ),
+            SERVICE_ID( ThreadSystemInterface ),
+            SERVICE_ID( ConfigServiceInterface ),
+            SERVICE_ID( TimerServiceInterface )
         };
 
         return required;

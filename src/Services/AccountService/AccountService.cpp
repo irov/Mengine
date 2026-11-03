@@ -1,5 +1,6 @@
 #include "AccountService.h"
 
+#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
@@ -43,6 +44,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AccountService::~AccountService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & AccountService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( FileServiceInterface ),
+            SERVICE_ID( VocabularyServiceInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AccountService::_initializeService()

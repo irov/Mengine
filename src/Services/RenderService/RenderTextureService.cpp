@@ -1,5 +1,7 @@
 #include "RenderTextureService.h"
 
+#include "Interface/ConfigServiceInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 #include "Interface/WatchdogServiceInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/GraveyardServiceInterface.h"
@@ -39,6 +41,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderTextureService::~RenderTextureService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & RenderTextureService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( RenderSystemInterface ),
+            SERVICE_ID( ConfigServiceInterface ),
+            SERVICE_ID( NotificationServiceInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderTextureService::_initializeService()

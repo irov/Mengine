@@ -50,6 +50,10 @@
 #import <sys/utsname.h>
 
 
+
+#include "Interface/DateTimeSystemInterface.h"
+#include "Interface/OptionsServiceInterface.h"
+
 #include <clocale>
 #include <ctime>
 #include <unistd.h>
@@ -156,52 +160,6 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t MacOSPlatformService::getCurrentPath( Char * const _currentPath ) const
-    {
-        const Configuration & configuration = SERVICE_PROVIDER_GET()
-            ->getConfiguration();
-
-        if( MENGINE_PATH_EMPTY( configuration.workingDirectory ) == false )
-        {
-            StdString::strcpy_safe( _currentPath, configuration.workingDirectory, MENGINE_MAX_PATH );
-            Helper::pathCorrectBackslashA( _currentPath );
-            Helper::pathCorrectFolderPathA( _currentPath, MENGINE_PATH_FORWARDSLASH );
-
-            size_t currentPathLen = StdString::strlen( _currentPath );
-
-            return currentPathLen;
-        }
-
-        const Char * option_workdir;
-        if( HAS_OPTION_VALUE( "workdir", &option_workdir ) == true )
-        {
-            StdString::strcpy_safe( _currentPath, option_workdir, MENGINE_MAX_PATH );
-            Helper::pathCorrectFolderPathA( _currentPath, MENGINE_PATH_FORWARDSLASH );
-            Helper::pathCorrectBackslashA( _currentPath );
-
-            size_t option_workdir_len = StdString::strlen( _currentPath );
-
-            return option_workdir_len;
-        }
-
-        NSString * path = [[NSBundle mainBundle] resourcePath];
-
-        if( path == nil )
-        {
-            path = [[NSBundle mainBundle] bundlePath];
-        }
-
-        const Char * pathRepresentation = [path fileSystemRepresentation];
-
-        StdString::strcpy_safe( _currentPath, pathRepresentation, MENGINE_MAX_PATH );
-        Helper::pathCorrectFolderPathA( _currentPath, MENGINE_PATH_FORWARDSLASH );
-        Helper::pathCorrectBackslashA( _currentPath );
-
-        size_t pathLen = StdString::strlen( _currentPath );
-
-        return pathLen;
-    }
-    //////////////////////////////////////////////////////////////////////////
     size_t MacOSPlatformService::getUserPath( Char * const _userPath ) const
     {
         NSArray * paths = NSSearchPathForDirectoriesInDomains( NSApplicationSupportDirectory, NSUserDomainMask, YES );
@@ -292,6 +250,16 @@ namespace Mengine
         _fontPath[0] = '\0';
 
         return 0;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & MacOSPlatformService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( OptionsServiceInterface ),
+            SERVICE_ID( DateTimeSystemInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool MacOSPlatformService::getMaxClientResolution( Resolution * const _resolution ) const

@@ -16,6 +16,7 @@ namespace Mengine
         ~UnixEnvironmentService() override;
 
     public:
+        const ServiceRequiredList & requiredServices() const override;
         bool _initializeService() override;
         void _finalizeService() override;
 

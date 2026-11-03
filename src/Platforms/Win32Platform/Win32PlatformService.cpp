@@ -2,6 +2,7 @@
 
 #include "Configuration/Configurations.h"
 
+#include "Interface/OptionsServiceInterface.h"
 #include "Interface/LifecycleServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/FileServiceInterface.h"
@@ -141,6 +142,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Win32PlatformService::~Win32PlatformService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & Win32PlatformService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( OptionsServiceInterface ),
+            SERVICE_ID( DateTimeSystemInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32PlatformService::_initializeService()
@@ -323,7 +334,7 @@ namespace Mengine
         if( HAS_OPTION( "workdir" ) == true )
         {
             Path currentPath = {'\0'};
-            if( this->getCurrentPath( currentPath ) == 0 )
+            if( Helper::getWorkingDirectory( currentPath ) == 0 )
             {
                 LOGGER_ERROR( "invalid get current path for dll directory" );
 
@@ -3464,64 +3475,6 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t Win32PlatformService::getCurrentPath( Char * const _currentPath ) const
-    {
-        const Configuration & configuration = SERVICE_PROVIDER_GET()
-            ->getConfiguration();
-
-        if( MENGINE_PATH_EMPTY( configuration.workingDirectory ) == false )
-        {
-            StdString::strcpy_safe( _currentPath, configuration.workingDirectory, MENGINE_MAX_PATH );
-            Helper::pathCorrectBackslashA( _currentPath );
-            Helper::pathCorrectFolderPathA( _currentPath, MENGINE_PATH_FORWARDSLASH );
-
-            size_t currentPathLen = StdString::strlen( _currentPath );
-
-            return currentPathLen;
-        }
-
-        const Char * option_workdir;
-        if( HAS_OPTION_VALUE( "workdir", &option_workdir ) == true )
-        {
-            StdString::strcpy_safe( _currentPath, option_workdir, MENGINE_MAX_PATH );
-
-            Helper::pathCorrectBackslashA( _currentPath );
-
-            size_t option_workdir_len = StdString::strlen( _currentPath );
-
-            return option_workdir_len;
-        }
-
-        WPath currentDirectory = {L'\0'};
-        DWORD currentDirectoryLen = ::GetCurrentDirectory( MENGINE_MAX_PATH, currentDirectory );
-
-        if( currentDirectoryLen == 0 )
-        {
-            LOGGER_ERROR( "GetCurrentDirectory invalid %ls"
-                , Helper::Win32GetLastErrorMessageW()
-            );
-
-            _currentPath[0] = '\0';
-
-            return 0;
-        }
-
-        ::PathRemoveBackslashW( currentDirectory );
-        ::PathAddBackslashW( currentDirectory );
-
-        Helper::pathCorrectBackslashW( currentDirectory );
-
-        size_t currentPathLen;
-        if( Helper::unicodeToUtf8( currentDirectory, _currentPath, MENGINE_MAX_PATH, &currentPathLen ) == false )
-        {
-            _currentPath[0] = '\0';
-
-            return 0;
-        }
-
-        return currentPathLen;
-    }
-    //////////////////////////////////////////////////////////////////////////
     size_t Win32PlatformService::getUserPath( Char * const _userPath ) const
     {
         bool developmentMode = Helper::isDevelopmentMode();
@@ -4219,7 +4172,7 @@ namespace Mengine
     bool Win32PlatformService::initializeFileService()
     {
         Path currentPath = {'\0'};
-        size_t currentPathLen = this->getCurrentPath( currentPath );
+        size_t currentPathLen = Helper::getWorkingDirectory( currentPath );
 
         if( currentPathLen == 0 )
         {

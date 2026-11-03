@@ -1,5 +1,6 @@
 #include "NotificationService.h"
 
+#include "Interface/ThreadSystemInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 
 #include "Kernel/Assertion.h"
@@ -22,6 +23,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     NotificationService::~NotificationService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & NotificationService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( ThreadSystemInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool NotificationService::_initializeService()

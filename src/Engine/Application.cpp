@@ -1,5 +1,8 @@
 #include "Application.h"
 
+#include "Interface/CodecServiceInterface.h"
+#include "Interface/ConfigServiceInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/ThreadSystemInterface.h"
@@ -194,6 +197,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Application::~Application()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & Application::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( PrototypeServiceInterface ),
+            SERVICE_ID( CodecServiceInterface ),
+            SERVICE_ID( ConfigServiceInterface ),
+            SERVICE_ID( PlatformServiceInterface ),
+            SERVICE_ID( NotificationServiceInterface ),
+            SERVICE_ID( RenderServiceInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::_initializeService()

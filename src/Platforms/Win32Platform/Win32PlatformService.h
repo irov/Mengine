@@ -35,6 +35,7 @@ namespace Mengine
         ~Win32PlatformService() override;
 
     public:
+        const ServiceRequiredList & requiredServices() const override;
         bool _initializeService() override;
         void _finalizeService() override;
         bool _runService() override;
@@ -102,7 +103,6 @@ namespace Mengine
         bool getNoFullscreen() const override;
         bool getAlwaysFullscreen() const override;
 
-        size_t getCurrentPath( Char * const _currentPath ) const override;
         size_t getUserPath( Char * const _userPath ) const override;
         size_t getTemporaryPath( Char * const _temporaryPath ) const override;
         size_t getExtraPreferencesFolderName( Char * const _folderName ) const override;

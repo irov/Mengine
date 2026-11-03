@@ -1,5 +1,6 @@
 #include "AAudioSoundSystem.h"
 
+#include "Interface/ThreadSystemInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 
 #include "AAudioSoundMixer.h"
@@ -53,6 +54,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AAudioSoundSystem::~AAudioSoundSystem()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & AAudioSoundSystem::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( ThreadSystemInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AAudioSoundSystem::_initializeService()

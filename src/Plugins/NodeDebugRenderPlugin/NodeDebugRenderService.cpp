@@ -56,6 +56,16 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & NodeDebugRenderService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( PlayerServiceInterface ),
+            SERVICE_ID( TimerServiceInterface )
+        };
+
+        return required;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool NodeDebugRenderService::_availableService() const
     {
         bool developmentMode = Helper::isDevelopmentMode();

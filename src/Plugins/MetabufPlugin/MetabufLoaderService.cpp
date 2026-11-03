@@ -1,5 +1,6 @@
 #include "MetabufLoaderService.h"
 
+#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 
@@ -37,6 +38,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     MetabufLoaderService::~MetabufLoaderService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & MetabufLoaderService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( VocabularyServiceInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool MetabufLoaderService::_initializeService()

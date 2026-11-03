@@ -57,6 +57,15 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & EmscriptenEnvironmentService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( DateTimeSystemInterface )
+        };
+
+        return required;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool EmscriptenEnvironmentService::_initializeService()
     {
         m_userName.assign( "" );

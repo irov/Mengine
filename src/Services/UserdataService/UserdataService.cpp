@@ -1,5 +1,9 @@
 #include "UserdataService.h"
 
+#include "Interface/ArchiveServiceInterface.h"
+#include "Interface/FileServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
+
 #include "Kernel/Logger.h"
 #include "Kernel/StreamHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -20,6 +24,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     UserdataService::~UserdataService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & UserdataService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( VocabularyServiceInterface ),
+            SERVICE_ID( FileServiceInterface ),
+            SERVICE_ID( ArchiveServiceInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool UserdataService::_initializeService()

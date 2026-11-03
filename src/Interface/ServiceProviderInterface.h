@@ -44,6 +44,7 @@ namespace Mengine
         virtual bool destroyService( const Char * _name ) = 0;
 
     public:
+        virtual bool validateServices() const = 0;
         virtual void dependencyService( const Char * _name, const Char * _dependency ) = 0;
 
     public:

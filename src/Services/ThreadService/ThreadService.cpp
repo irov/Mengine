@@ -12,6 +12,7 @@
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/ThreadMutexScope.h"
+#include "Kernel/SpinLockScope.h"
 #include "Kernel/ThreadMutexHelper.h"
 
 #include "Config/StdAlgorithm.h"
@@ -24,12 +25,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ThreadService::ThreadService()
         : m_dispatchStopped( false )
+        , m_dispatchInitialized( false )
         , m_mainThreadId( MENGINE_UINT32_C(~0) )
     {
     }
     //////////////////////////////////////////////////////////////////////////
     ThreadService::~ThreadService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & ThreadService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( ThreadSystemInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ThreadService::_initializeService()
@@ -39,18 +50,23 @@ namespace Mengine
 
         m_mutexTasks = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
         m_mutexThreads = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
-        m_mutexDispatchEvents = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         ThreadId mainThreadId = THREAD_SYSTEM()
             ->getCurrentThreadId();
 
         m_mainThreadId = mainThreadId;
 
+        this->setDispatchInitialized_( true );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void ThreadService::_finalizeService()
     {
+        this->setDispatchInitialized_( false );
+
+        this->stopDispatching();
+
         for( const ThreadTaskDesc & desc : m_tasks )
         {
             const ThreadTaskInterfacePtr & task = desc.task;
@@ -87,11 +103,8 @@ namespace Mengine
 
         m_threadProcessors.clear();
 
-        this->stopDispatching();
-
         m_mutexTasks = nullptr;
         m_mutexThreads = nullptr;
-        m_mutexDispatchEvents = nullptr;
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadQueue );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadJob );
@@ -192,27 +205,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ThreadService::dispatchMainThreadEvent( const LambdaEvent & _event )
     {
-        m_mutexDispatchEvents->lock();
-
-        if( m_dispatchStopped == true )
+        if( this->deferMainThreadEvent_( _event ) == true )
         {
-            m_mutexDispatchEvents->unlock();
-
             return;
         }
 
-        if( this->isMainThread() == true )
-        {
-            m_mutexDispatchEvents->unlock();
-
-            _event();
-
-            return;
-        }
-
-        m_dispatchEvents.emplace_back( _event );
-
-        m_mutexDispatchEvents->unlock();
+        _event();
     }
     //////////////////////////////////////////////////////////////////////////
     void ThreadService::stopDispatching()
@@ -222,10 +220,10 @@ namespace Mengine
 
         VectorEvents events;
 
-        m_mutexDispatchEvents->lock();
+        m_spinLockDispatchEvents.lock();
         m_dispatchStopped = true;
         events.swap( m_dispatchEvents );
-        m_mutexDispatchEvents->unlock();
+        m_spinLockDispatchEvents.unlock();
 
         events.clear();
         m_dispatchEventsAux.clear();
@@ -398,10 +396,12 @@ namespace Mengine
     ///////////////////////////////////////////////////////////////////////////
     void ThreadService::_preUpdate()
     {
-        m_mutexDispatchEvents->lock();
-        std::swap( m_dispatchEventsAux, m_dispatchEvents );
+        MENGINE_ASSERTION_FATAL( this->isMainThread() == true, "event dispatch must run on the main thread" );
+
+        m_spinLockDispatchEvents.lock();
+        m_dispatchEventsAux.swap( m_dispatchEvents );
         m_dispatchEvents.clear();
-        m_mutexDispatchEvents->unlock();
+        m_spinLockDispatchEvents.unlock();
 
         for( const LambdaEvent & ev : m_dispatchEventsAux )
         {
@@ -584,6 +584,37 @@ namespace Mengine
         }
 
         return STRINGIZE_STRING_LOCAL( "MengineUnknownThread" );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ThreadService::setDispatchInitialized_( bool _initialized )
+    {
+        MENGINE_SPINLOCK_SCOPE( m_spinLockDispatchEvents );
+
+        m_dispatchInitialized = _initialized;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ThreadService::deferMainThreadEvent_( const LambdaEvent & _event )
+    {
+        MENGINE_SPINLOCK_SCOPE( m_spinLockDispatchEvents );
+
+        if( m_dispatchInitialized == false )
+        {
+            return false;
+        }
+
+        if( m_dispatchStopped == true )
+        {
+            return true;
+        }
+
+        if( this->isMainThread() == true )
+        {
+            return false;
+        }
+
+        m_dispatchEvents.emplace_back( _event );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void ThreadService::tryFastProcessTask_( ThreadTaskDesc & _desc )

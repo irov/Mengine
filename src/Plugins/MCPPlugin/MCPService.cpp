@@ -123,7 +123,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ServiceRequiredList & MCPService::requiredServices() const
     {
-        static ServiceRequiredList required = {
+        static const ServiceRequiredList required = {
             SERVICE_ID( ApplicationInterface ),
             SERVICE_ID( CodecServiceInterface ),
             SERVICE_ID( FileServiceInterface ),

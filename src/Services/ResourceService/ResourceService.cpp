@@ -1,5 +1,8 @@
 #include "ResourceService.h"
 
+#include "Interface/ConfigServiceInterface.h"
+#include "Interface/NotificationServiceInterface.h"
+#include "Interface/ThreadSystemInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ContentInterface.h"
 
@@ -32,6 +35,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ResourceService::~ResourceService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & ResourceService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( ConfigServiceInterface ),
+            SERVICE_ID( NotificationServiceInterface ),
+            SERVICE_ID( ThreadSystemInterface ),
+            SERVICE_ID( PrototypeServiceInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceService::_initializeService()

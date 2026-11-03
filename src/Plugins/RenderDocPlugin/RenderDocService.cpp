@@ -1,5 +1,7 @@
 #include "RenderDocService.h"
 
+#include "Interface/NotificationServiceInterface.h"
+
 #include "Environment/Windows/Win32Helper.h"
 
 #include "Kernel/Logger.h"
@@ -23,6 +25,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderDocService::~RenderDocService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & RenderDocService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( NotificationServiceInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderDocService::_initializeService()

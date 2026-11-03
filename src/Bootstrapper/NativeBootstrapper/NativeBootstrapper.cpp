@@ -1537,8 +1537,7 @@ namespace Mengine
 
 #if defined(MENGINE_DEBUG)
         Path currentPath = {'\0'};
-        PLATFORM_SERVICE()
-            ->getCurrentPath( currentPath );
+        Helper::getWorkingDirectory( currentPath );
 
         LOGGER_MESSAGE_PROTECTED( "current folder '%s'"
             , currentPath
@@ -1669,10 +1668,13 @@ namespace Mengine
 
 #if defined(MENGINE_SYSTEM_SOCKET)
         BOOTSTRAPPER_SERVICE_CREATE( SocketSystem, MENGINE_DOCUMENT_FACTORABLE );
+        BOOTSTRAPPER_SERVICE_CREATE( SocketService, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
-        BOOTSTRAPPER_SERVICE_CREATE( SocketService, MENGINE_DOCUMENT_FACTORABLE );
+#if defined(MENGINE_SYSTEM_HTTP)
         BOOTSTRAPPER_SERVICE_CREATE( HttpService, MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
         BOOTSTRAPPER_SERVICE_CREATE( SoundService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( ModuleService, MENGINE_DOCUMENT_FACTORABLE );
         BOOTSTRAPPER_SERVICE_CREATE( CodecService, MENGINE_DOCUMENT_FACTORABLE );

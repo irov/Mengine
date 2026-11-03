@@ -48,6 +48,16 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & AndroidNativePythonService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( ScriptProviderServiceInterface ),
+            SERVICE_ID( AndroidKernelServiceInterface )
+        };
+
+        return required;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool AndroidNativePythonService::_initializeService()
     {
         pybind::kernel_interface * kernel = SCRIPTPROVIDER_SERVICE()

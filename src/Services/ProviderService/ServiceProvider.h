@@ -49,31 +49,22 @@ namespace Mengine
         const bool * isAvailableServiceProvider( const Char * _name ) override;
         const bool * isInitializeServiceProvider( const Char * _name ) override;
 
-    protected:
-        const ServiceInterfacePtr & getService( const Char * _name ) const override;
-
-    protected:
-        bool createService( FServiceProviderGenerator _generator, bool _safe, const DocumentInterfacePtr & _doc ) override;
-        bool finalizeService( const Char * _name ) override;
-
-        bool destroyService( const Char * _name ) override;
+    public:
+        bool validateServices() const override;
+        void dependencyService( const Char * _name, const Char * _dependency ) override;
 
     public:
-        void dependencyService( const Char * _name, const Char * _dependency ) override;
         bool waitService( const Char * _owner, const Char * _name, const LambdaWaitService & _lambda ) override;
         bool leaveService( const Char * _owner, const Char * _name, const LambdaLeaveService & _lambda ) override;
         void unlinkService( const Char * _owner ) override;
 
     protected:
+        const ServiceInterfacePtr & getService( const Char * _name ) const override;
+        bool createService( FServiceProviderGenerator _generator, bool _safe, const DocumentInterfacePtr & _doc ) override;
+        bool finalizeService( const Char * _name ) override;
+        bool destroyService( const Char * _name ) override;
         void stopServices() override;
-
-    protected:
         void destroy() override;
-
-    protected:
-        ServiceInterfacePtr generateService_( FServiceProviderGenerator _generator, const DocumentInterfacePtr & _doc );
-        void removeDependency_( const ServiceInterfacePtr & _service );
-        bool checkWaits_( const ServiceInterfacePtr & _service );
 
     protected:
         struct ServiceDesc
@@ -89,30 +80,12 @@ namespace Mengine
             bool requiring = false;
         };
 
-        ServiceDesc m_services[MENGINE_SERVICE_PROVIDER_COUNT];
-
-        uint32_t m_servicesCount;
-
-        struct DependencyDesc
-        {
-            StaticString<MENGINE_SERVICE_PROVIDER_NAME_SIZE> name;
-            StaticString<MENGINE_SERVICE_PROVIDER_NAME_SIZE> dependency;
-        };
-
-        DependencyDesc m_dependencies[MENGINE_SERVICE_PROVIDER_DEPENDENCY_COUNT];
-
-        uint32_t m_dependenciesCount;
-
         struct LeaveDesc
         {
             StaticString<MENGINE_SERVICE_PROVIDER_NAME_SIZE> owner;
             StaticString<MENGINE_SERVICE_PROVIDER_NAME_SIZE> name;
             LambdaLeaveService lambda;
         };
-
-        LeaveDesc m_leaves[MENGINE_SERVICE_PROVIDER_LEAVE_COUNT];
-
-        uint32_t m_leaveCount;
 
         struct WaitDesc
         {
@@ -121,8 +94,41 @@ namespace Mengine
             LambdaWaitService lambda;
         };
 
-        WaitDesc m_waits[MENGINE_SERVICE_PROVIDER_MAX_WAIT];
+    protected:
+        ServiceDesc * findServiceDesc_( const Char * _name );
+        const ServiceDesc * findServiceDesc_( const Char * _name ) const;
+        const Char * findUninitializedRequiredService_( const ServiceDesc & _desc ) const;
+        bool hasRequiredService_( const ServiceDesc & _desc, const Char * _name ) const;
+        bool hasDependency_( const ServiceDesc & _desc, const Char * _name, bool * const _visited ) const;
 
+    protected:
+        ServiceInterfacePtr generateService_( FServiceProviderGenerator _generator, const DocumentInterfacePtr & _doc );
+        void removeDependency_( const Char * _name );
+        void initializeService_( ServiceDesc * const _desc, const DocumentInterfacePtr & _doc, bool * const _result );
+        bool autoRegistration_( ServiceDesc * const _desc );
+        void autoUnregistration_( ServiceDesc * const _desc );
+        bool checkWaits_( const ServiceInterfacePtr & _service );
+        void deferredRequiredInitialize_( ServiceDesc * const _desc, const DocumentInterfacePtr & _doc, bool * const _result );
+        void markServiceFinalized_( ServiceDesc * const _desc );
+        ServiceInterfacePtr detachService_( ServiceDesc * const _desc );
+
+    protected:
+        struct DependencyDesc
+        {
+            StaticString<MENGINE_SERVICE_PROVIDER_NAME_SIZE> name;
+            StaticString<MENGINE_SERVICE_PROVIDER_NAME_SIZE> dependency;
+        };
+
+        DependencyDesc m_dependencies[MENGINE_SERVICE_PROVIDER_DEPENDENCY_COUNT];
+        uint32_t m_dependenciesCount;
+
+        ServiceDesc m_services[MENGINE_SERVICE_PROVIDER_COUNT];
+        uint32_t m_servicesCount;
+
+        LeaveDesc m_leaves[MENGINE_SERVICE_PROVIDER_LEAVE_COUNT];
+        uint32_t m_leaveCount;
+
+        WaitDesc m_waits[MENGINE_SERVICE_PROVIDER_MAX_WAIT];
         uint32_t m_waitsCount;
 
         SpinLock m_spinLockServices;
@@ -135,12 +141,5 @@ namespace Mengine
 #if defined(MENGINE_DEBUG)
         const Char * m_initializeServiceName;
 #endif
-
-    protected:
-        bool isRequired_( const ServiceDesc & _desc );
-        void initializeService_( ServiceDesc * const _desc, const DocumentInterfacePtr & _doc, bool * const _result );
-        bool autoRegistration_( ServiceDesc * const _desc );
-        void autoUnregistration_( ServiceDesc * const _desc );
-        void deferredRequiredInitialize_( ServiceDesc * const _desc, const DocumentInterfacePtr & _doc, bool * const _result );
     };
 }

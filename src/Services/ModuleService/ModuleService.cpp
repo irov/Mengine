@@ -1,5 +1,6 @@
 #include "ModuleService.h"
 
+#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/FactoryInterface.h"
 #include "Interface/TimepipeServiceInterface.h"
 
@@ -23,6 +24,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ModuleService::~ModuleService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & ModuleService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( VocabularyServiceInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ModuleService::_initializeService()

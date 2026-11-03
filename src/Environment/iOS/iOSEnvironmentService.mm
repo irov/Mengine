@@ -31,6 +31,15 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & iOSEnvironmentService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( DateTimeSystemInterface )
+        };
+
+        return required;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool iOSEnvironmentService::_initializeService()
     {
         NSString * deviceName = [iOSDetail getDeviceName];

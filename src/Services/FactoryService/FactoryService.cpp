@@ -1,5 +1,6 @@
 #include "FactoryService.h"
 
+#include "Interface/OptionsServiceInterface.h"
 #include "Interface/ThreadSystemInterface.h"
 
 #include "Kernel/Logger.h"
@@ -33,6 +34,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     FactoryService::~FactoryService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & FactoryService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( OptionsServiceInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool FactoryService::_initializeService()

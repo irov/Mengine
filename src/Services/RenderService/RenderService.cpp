@@ -1,5 +1,6 @@
 #include "RenderService.h"
 
+#include "Interface/ConfigServiceInterface.h"
 #include "Interface/LifecycleServiceInterface.h"
 #include "Interface/RenderTextureServiceInterface.h"
 #include "Interface/ImageCodecInterface.h"
@@ -81,6 +82,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderService::~RenderService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & RenderService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( RenderSystemInterface ),
+            SERVICE_ID( PrototypeServiceInterface ),
+            SERVICE_ID( ConfigServiceInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderService::_initializeService()

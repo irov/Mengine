@@ -1,5 +1,6 @@
 #include "GDKPlatformService.h"
 
+#include "Interface/OptionsServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/InputServiceInterface.h"
@@ -141,6 +142,16 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & GDKPlatformService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( OptionsServiceInterface ),
+            SERVICE_ID( DateTimeSystemInterface )
+        };
+
+        return required;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool GDKPlatformService::_initializeService()
     {
         // Initialize GDK Game Runtime as early as possible
@@ -268,7 +279,7 @@ namespace Mengine
     bool GDKPlatformService::initializeFileService()
     {
         Path currentPath = {'\0'};
-        size_t currentPathLen = this->getCurrentPath( currentPath );
+        size_t currentPathLen = Helper::getWorkingDirectory( currentPath );
 
         if( currentPathLen == 0 )
         {
@@ -765,76 +776,6 @@ namespace Mengine
     bool GDKPlatformService::getAlwaysFullscreen() const
     {
         return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    size_t GDKPlatformService::getCurrentPath( Char * const _currentPath ) const
-    {
-        const Configuration & configuration = SERVICE_PROVIDER_GET()
-            ->getConfiguration();
-
-        if( MENGINE_PATH_EMPTY( configuration.workingDirectory ) == false )
-        {
-            StdString::strcpy_safe( _currentPath, configuration.workingDirectory, MENGINE_MAX_PATH );
-            Helper::pathCorrectBackslashA( _currentPath );
-            Helper::pathCorrectFolderPathA( _currentPath, MENGINE_PATH_FORWARDSLASH );
-
-            size_t currentPathLen = StdString::strlen( _currentPath );
-
-            return currentPathLen;
-        }
-
-        const Char * option_workdir;
-        if( HAS_OPTION_VALUE( "workdir", &option_workdir ) == true )
-        {
-            StdString::strcpy_safe( _currentPath, option_workdir, MENGINE_MAX_PATH );
-
-            Helper::pathCorrectBackslashA( _currentPath );
-
-            size_t option_workdir_len = StdString::strlen( _currentPath );
-
-            return option_workdir_len;
-        }
-
-        WPath currentDirectory = {L'\0'};
-        DWORD currentDirectoryLen = ::GetCurrentDirectory( MENGINE_MAX_PATH, currentDirectory );
-
-        if( currentDirectoryLen == 0 )
-        {
-            LOGGER_ERROR( "GetCurrentDirectory invalid %ls"
-                , Helper::Win32GetLastErrorMessageW()
-            );
-
-            _currentPath[0] = '\0';
-
-            return 0;
-        }
-
-        if( currentDirectoryLen >= MENGINE_MAX_PATH )
-        {
-            LOGGER_ERROR( "GetCurrentDirectory len %lu great capacity %u"
-                , currentDirectoryLen
-                , MENGINE_MAX_PATH
-            );
-
-            _currentPath[0] = '\0';
-
-            return 0;
-        }
-
-        ::PathRemoveBackslashW( currentDirectory );
-        ::PathAddBackslashW( currentDirectory );
-
-        Helper::pathCorrectBackslashW( currentDirectory );
-
-        size_t currentPathLen;
-        if( Helper::unicodeToUtf8( currentDirectory, _currentPath, MENGINE_MAX_PATH, &currentPathLen ) == false )
-        {
-            _currentPath[0] = '\0';
-
-            return 0;
-        }
-
-        return currentPathLen;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t GDKPlatformService::getUserPath( Char * const _userPath ) const

@@ -1,5 +1,7 @@
 #include "EasingService.h"
 
+#include "Interface/VocabularyServiceInterface.h"
+
 #include "EasingHelper.h"
 
 #include "Kernel/FactorableUnique.h"
@@ -21,6 +23,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     EasingService::~EasingService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & EasingService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( VocabularyServiceInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool EasingService::_initializeService()

@@ -1,5 +1,6 @@
 #include "UpdateService.h"
 
+#include "Interface/ConfigServiceInterface.h"
 #include "Interface/TimepipeServiceInterface.h"
 
 #include "Kernel/Updatable.h"
@@ -46,6 +47,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     UpdateService::~UpdateService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & UpdateService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( ConfigServiceInterface ),
+            SERVICE_ID( TimepipeServiceInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool UpdateService::_initializeService()

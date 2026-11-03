@@ -33,7 +33,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ServiceRequiredList & ConfigService::requiredServices() const
     {
-        static ServiceRequiredList required = {
+        static const ServiceRequiredList required = {
             SERVICE_ID( ThreadSystemInterface )
         };
 

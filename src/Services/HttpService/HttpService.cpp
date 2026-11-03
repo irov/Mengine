@@ -1,5 +1,8 @@
 #include "HttpService.h"
 
+#include "Interface/ConfigServiceInterface.h"
+#include "Interface/NotificationServiceInterface.h"
+#include "Interface/OptionsServiceInterface.h"
 #include "Interface/FileGroupInterface.h"
 #include "Interface/HttpSystemInterface.h"
 #include "Interface/ThreadServiceInterface.h"
@@ -47,12 +50,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ServiceRequiredList & HttpService::requiredServices() const
     {
-        static const ServiceRequiredList service = {
+        static const ServiceRequiredList required = {
             SERVICE_ID( HttpSystemInterface ),
-            SERVICE_ID( ThreadSystemInterface )
+            SERVICE_ID( ThreadSystemInterface ),
+            SERVICE_ID( ThreadServiceInterface ),
+            SERVICE_ID( ConfigServiceInterface ),
+            SERVICE_ID( NotificationServiceInterface ),
+            SERVICE_ID( OptionsServiceInterface )
         };
 
-        return service;
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool HttpService::_availableService() const

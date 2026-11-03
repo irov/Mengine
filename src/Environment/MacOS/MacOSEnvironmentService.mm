@@ -36,6 +36,15 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & MacOSEnvironmentService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( DateTimeSystemInterface )
+        };
+
+        return required;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool MacOSEnvironmentService::_initializeService()
     {
         Char hostName[MENGINE_ENVIRONMENT_USER_MAXNAME] = {'\0'};

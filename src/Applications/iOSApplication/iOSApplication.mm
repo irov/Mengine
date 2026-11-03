@@ -25,6 +25,7 @@
 #include "Kernel/Error.h"
 
 #include "Config/StdAlgorithm.h"
+#include "Config/StdString.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
@@ -112,7 +113,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool iOSApplication::bootstrap( NSArray<NSString *> * _arguments )
     {
-        ServiceProviderInterface * serviceProvider = ::API_MengineCreate( nullptr );
+        Configuration configuration;
+
+        NSString * resourcePath = [[NSBundle mainBundle] resourcePath];
+
+        const Char * resourcePathRepresentation = [resourcePath UTF8String];
+
+        StdString::strcpy_safe( configuration.workingDirectory, resourcePathRepresentation, MENGINE_MAX_PATH );
+
+        ServiceProviderInterface * serviceProvider = ::API_MengineCreate( &configuration );
 
         SERVICE_PROVIDER_SETUP( serviceProvider );
 

@@ -1,5 +1,7 @@
 #include "GameService.h"
 
+#include "Interface/AnalyticsServiceInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 #include "Interface/SoundServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/WatchdogServiceInterface.h"
@@ -42,6 +44,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     GameService::~GameService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & GameService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( AccountServiceInterface ),
+            SERVICE_ID( AnalyticsServiceInterface ),
+            SERVICE_ID( SoundServiceInterface ),
+            SERVICE_ID( NotificationServiceInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool GameService::_initializeService()

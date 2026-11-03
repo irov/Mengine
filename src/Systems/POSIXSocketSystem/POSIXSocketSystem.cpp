@@ -1,5 +1,7 @@
 #include "POSIXSocketSystem.h"
 
+#include "Interface/ThreadSystemInterface.h"
+
 #include "POSIXSocket.h"
 #include "POSIXDatagram.h"
 
@@ -61,6 +63,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     POSIXSocketSystem::~POSIXSocketSystem()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & POSIXSocketSystem::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( ThreadSystemInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool POSIXSocketSystem::_initializeService()

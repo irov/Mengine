@@ -3,6 +3,8 @@
 #include "Win32PilotLogger.h"
 #include "Win32PilotAnalyticsEventProvider.h"
 
+#include "Interface/ConfigServiceInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 #include "Interface/EnvironmentServiceInterface.h"
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
@@ -47,6 +49,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Win32PilotService::~Win32PilotService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & Win32PilotService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( AnalyticsServiceInterface ),
+            SERVICE_ID( EnvironmentServiceInterface ),
+            SERVICE_ID( LoggerServiceInterface ),
+            SERVICE_ID( NotificationServiceInterface ),
+            SERVICE_ID( ConfigServiceInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32PilotService::_initializeService()

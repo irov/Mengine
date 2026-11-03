@@ -1,5 +1,6 @@
 #include "FontService.h"
 
+#include "Interface/ConfigServiceInterface.h"
 #include "Interface/ServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/FileGroupInterface.h"
@@ -39,6 +40,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     FontService::~FontService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & FontService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( ConfigServiceInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool FontService::_initializeService()

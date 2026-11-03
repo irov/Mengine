@@ -34,6 +34,15 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & AndroidWebViewPlatformService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( WebViewBridgeServiceInterface )
+        };
+
+        return required;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool AndroidWebViewPlatformService::_initializeService()
     {
         WebViewBridgeSenderInterfacePtr sender = WebViewBridgeSenderInterfacePtr::from( this );

@@ -169,6 +169,15 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & LanguageService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( LanguageSystemInterface )
+        };
+
+        return required;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool LanguageService::_initializeService()
     {
         Char language[MENGINE_LOCALE_LANGUAGE_SIZE + 1] = {'\0'};

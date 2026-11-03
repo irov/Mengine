@@ -1,5 +1,7 @@
 #include "ResourceValidateService.h"
 
+#include "Interface/NotificationServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/ValidatorInterface.h"
 
@@ -24,6 +26,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ResourceValidateService::~ResourceValidateService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & ResourceValidateService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( NotificationServiceInterface ),
+            SERVICE_ID( VocabularyServiceInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceValidateService::_initializeService()

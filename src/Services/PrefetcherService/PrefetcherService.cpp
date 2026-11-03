@@ -1,5 +1,7 @@
 #include "PrefetcherService.h"
 
+#include "Interface/ConfigServiceInterface.h"
+#include "Interface/OptionsServiceInterface.h"
 #include "Interface/ThreadSystemInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
@@ -31,6 +33,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     PrefetcherService::~PrefetcherService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ServiceRequiredList & PrefetcherService::requiredServices() const
+    {
+        static const ServiceRequiredList required = {
+            SERVICE_ID( ThreadServiceInterface ),
+            SERVICE_ID( ThreadSystemInterface ),
+            SERVICE_ID( ConfigServiceInterface ),
+            SERVICE_ID( OptionsServiceInterface )
+        };
+
+        return required;
     }
     //////////////////////////////////////////////////////////////////////////
     bool PrefetcherService::_availableService() const

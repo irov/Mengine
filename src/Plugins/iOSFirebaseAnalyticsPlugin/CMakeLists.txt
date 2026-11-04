@@ -1,5 +1,11 @@
 MENGINE_PROJECT(iOSFirebaseAnalyticsPlugin)
 
+if(MENGINE_BUILD_TYPE_DEBUG)
+    set(FIREBASE_ANALYTICS_DEACTIVATED true CACHE INTERNAL "Deactivate Firebase Analytics collection" FORCE)
+else()
+    set(FIREBASE_ANALYTICS_DEACTIVATED false CACHE INTERNAL "Deactivate Firebase Analytics collection" FORCE)
+endif()
+
 ADD_FILTER(
 src
     iOSFirebaseAnalyticsPlugin.h

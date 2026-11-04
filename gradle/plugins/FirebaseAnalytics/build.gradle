@@ -3,6 +3,16 @@ apply from: rootProject.projectDir.getAbsolutePath() + '/gms.gradle'
 
 android {
     namespace = "org.Mengine.Plugin.FirebaseAnalytics"
+
+    buildTypes {
+        debug {
+            manifestPlaceholders.mengineFirebaseAnalyticsCollectionDeactivated = true
+        }
+
+        release {
+            manifestPlaceholders.mengineFirebaseAnalyticsCollectionDeactivated = false
+        }
+    }
 }
 
 dependencies {

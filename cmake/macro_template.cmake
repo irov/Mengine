@@ -1044,19 +1044,7 @@ MACRO(ADD_MENGINE_POD NAME VERSION)
     endforeach()
 
     if(POD_BUILD_SETTINGS)
-        SET(POD_SETTINGS "{}")
-
-        foreach(SETTING IN LISTS POD_BUILD_SETTINGS)
-            if(NOT SETTING MATCHES "^([A-Za-z_][A-Za-z0-9_]*)=(.*)$")
-                message(FATAL_ERROR "Invalid pod build setting for ${NAME}: ${SETTING}")
-            endif()
-
-            SET(SETTING_KEY "${CMAKE_MATCH_1}")
-            _MENGINE_SWIFTPODS_QUOTE(SETTING_VALUE "${CMAKE_MATCH_2}")
-            string(JSON POD_SETTINGS SET "${POD_SETTINGS}" "${SETTING_KEY}" "${SETTING_VALUE}")
-        endforeach()
-
-        string(JSON POD_OPTIONS SET "${POD_OPTIONS}" build_settings "${POD_SETTINGS}")
+        message(FATAL_ERROR "ADD_MENGINE_POD BUILD_SETTINGS is not supported by SwiftPods: ${NAME}")
     endif()
 
     SET(POD_OWNER "${PROJECT_NAME}")

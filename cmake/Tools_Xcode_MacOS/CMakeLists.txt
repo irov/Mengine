@@ -89,6 +89,7 @@ foreach(SERVICE
     OptionsService
     LoggerService
     PluginService
+    LifecycleService
     ThreadService
     ConfigService
     TextService

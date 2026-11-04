@@ -152,6 +152,10 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
 
     switch( resource_type )
     {
+    case AE_MOVIE_RESOURCE_NONE:
+    case AE_MOVIE_RESOURCE_SOLID:
+    case AE_MOVIE_RESOURCE_SLOT:
+        break;
     case AE_MOVIE_RESOURCE_IMAGE:
         {
             const aeMovieResourceImage * resource_image = reinterpret_cast<const aeMovieResourceImage *>(_resource);

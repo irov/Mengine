@@ -23,6 +23,7 @@ TARGET_LINK_LIBRARIES(${PROJECT_NAME} PUBLIC
     FileService
     LoggerService
     PluginService
+    LifecycleService
     ProviderService
     StringizeService
     ThreadService

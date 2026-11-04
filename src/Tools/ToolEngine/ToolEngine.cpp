@@ -69,6 +69,7 @@ SERVICE_EXTERN( EnumeratorService );
 SERVICE_EXTERN( FactoryService );
 SERVICE_EXTERN( FileService );
 SERVICE_EXTERN( FileSystem );
+SERVICE_EXTERN( LifecycleService );
 SERVICE_EXTERN( LoggerService );
 SERVICE_EXTERN( MemoryService );
 SERVICE_EXTERN( ModuleService );
@@ -104,6 +105,7 @@ namespace Mengine
         SERVICE_CREATE( ThreadSystem, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( DateTimeSystem, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( NotificationService, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( LifecycleService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( OptionsService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( FactoryService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( ArchiveService, MENGINE_DOCUMENT_FUNCTION );
@@ -203,6 +205,7 @@ namespace Mengine
         SERVICE_FINALIZE( OptionsService );
         SERVICE_FINALIZE( PrototypeService );
         SERVICE_FINALIZE( VocabularyService );
+        SERVICE_FINALIZE( LifecycleService );
         SERVICE_FINALIZE( NotificationService );
         SERVICE_FINALIZE( EnumeratorService );
         SERVICE_FINALIZE( DateTimeSystem );

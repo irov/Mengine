@@ -153,11 +153,6 @@ namespace Mengine
             return false;
         }
 
-        if( ::API_MengineRun() == false )
-        {
-            return false;
-        }
-
         LOGGER_INFO( "application", "creating render window..." );
 
         ConstString Window_ApplicationTitleTextId = CONFIG_VALUE_CONSTSTRING( "Window", "ApplicationTitleTextId", STRINGIZE_STRING_LOCAL( "APPLICATION_TITLE" ) );
@@ -222,6 +217,11 @@ namespace Mengine
         {
             LOGGER_FATAL( "invalid create render window" );
 
+            return false;
+        }
+
+        if( ::API_MengineRun() == false )
+        {
             return false;
         }
 

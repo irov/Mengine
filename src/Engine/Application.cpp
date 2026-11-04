@@ -855,25 +855,12 @@ namespace Mengine
 
         m_createRenderWindow = true;
 
-        GAME_SERVICE()
-            ->initializeRenderResources();
-
         PLAYER_SERVICE()
             ->initializeRenderResources();
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_CREATE_RENDER_WINDOW );
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, fullscreen, m_currentWindowResolution );
-
-        GAME_SERVICE()
-            ->setRenderViewport( m_renderViewport, m_contentResolution );
-
-        float gameViewportAspect;
-        Viewport gameViewport;
-        this->getGameViewport( &gameViewportAspect, &gameViewport );
-
-        GAME_SERVICE()
-            ->setGameViewport( gameViewport, gameViewportAspect );
 
         ResourceCook resourceWhitePixelCook;
         resourceWhitePixelCook.name = STRINGIZE_STRING_LOCAL( "WhitePixel" );
@@ -2591,6 +2578,8 @@ namespace Mengine
 
                 return;
             }
+
+            *_aspect = contentAspect;
 
             _viewport->begin.x = 0.f;
             _viewport->begin.y = 0.f;

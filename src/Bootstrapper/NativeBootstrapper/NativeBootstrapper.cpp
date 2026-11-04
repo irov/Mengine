@@ -877,6 +877,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool NativeBootstrapper::initializeResources()
     {
+        THREAD_SERVICE()
+            ->updateMainThread();
+
         FileGroupInterfacePtr fileGroup = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FileGroup" ), ConstString::none() );
 
         MENGINE_ASSERTION_MEMORY_PANIC( fileGroup, "not found default file group" );
@@ -922,6 +925,26 @@ namespace Mengine
 
             return false;
         }
+
+        GAME_SERVICE()
+            ->initializeRenderResources();
+
+        const Viewport & renderViewport = APPLICATION_SERVICE()
+            ->getRenderViewport();
+
+        const Resolution & contentResolution = APPLICATION_SERVICE()
+            ->getContentResolution();
+
+        GAME_SERVICE()
+            ->setRenderViewport( renderViewport, contentResolution );
+
+        float gameViewportAspect;
+        Viewport gameViewport;
+        APPLICATION_SERVICE()
+            ->getGameViewport( &gameViewportAspect, &gameViewport );
+
+        GAME_SERVICE()
+            ->setGameViewport( gameViewport, gameViewportAspect );
 
         LOGGER_INFO( "bootstrapper", "bootstrapper run" );
 

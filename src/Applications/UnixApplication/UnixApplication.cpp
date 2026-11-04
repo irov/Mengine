@@ -185,11 +185,6 @@ namespace Mengine
         {
             return false;
         }
-
-        if( ::API_MengineRun() == false )
-        {
-            return false;
-        }
 #endif
 
         LOGGER_INFO( "application", "creating render window..." );
@@ -257,6 +252,13 @@ namespace Mengine
 
             return false;
         }
+
+#if defined(MENGINE_PLUGIN_MENGINE_STATIC)
+        if( ::API_MengineRun() == false )
+        {
+            return false;
+        }
+#endif
 
         APPLICATION_SERVICE()
             ->turnSound( true );

@@ -51,28 +51,11 @@ namespace Mengine
         , m_maxTexture2DSize( 0 )
         , m_renderWindowCreate( false )
         , m_renderDeviceLost( false )
-        , m_depthMask( false )
-        , m_depthTest( false )
-        , m_alphaBlend( false )
         , m_clearDepth( 1.0 )
         , m_clearStencil( 0 )
-        , m_cullMode( CM_CULL_NONE )
         , m_fillMode( FM_SOLID )
-        , m_depthFunction( CMPF_LESS )
-        , m_blendSrc( BF_ONE )
-        , m_blendDst( BF_ZERO )
-        , m_blendOp( BOP_ADD )
-        , m_blendSeparateSrc( BF_ONE )
-        , m_blendSeparateDst( BF_ZERO )
-        , m_blendSeparateOp( BOP_ADD )
-        , m_blendSeparate( false )
-        , m_colorMaskR( true )
-        , m_colorMaskG( true )
-        , m_colorMaskB( true )
-        , m_colorMaskA( true )
         , m_device( nil )
         , m_commandQueue( nil )
-        , m_depthStencilState( nil )
     {
         m_frameContext.frameId = 0;
         m_frameContext.commandBuffer = nil;
@@ -109,6 +92,7 @@ namespace Mengine
         m_factoryRenderProgram = Helper::makeFactoryPoolWithListener<MetalRenderProgram, 16>( this, &MetalRenderSystem::onRenderProgramDestroy_, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderProgramVariableStatic = Helper::makeFactoryPool<MetalRenderProgramVariableStatic, 16>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderProgramVariableDynamic = Helper::makeFactoryPool<MetalRenderProgramVariableDynamic, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRenderMaterialStageCache = Helper::makeFactoryPool<MetalRenderMaterialStageCache, 16>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderSurface = Helper::makeFactoryPoolWithListener<MetalRenderSurface, 2>( this, &MetalRenderSystem::onRenderSurfaceDestroy_, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderDevice = Helper::makeFactoryPoolWithListener<MetalRenderDevice, 2>( this, &MetalRenderSystem::onRenderDeviceDestroy_, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -170,6 +154,7 @@ namespace Mengine
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderProgram );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderProgramVariableStatic );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderProgramVariableDynamic );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderMaterialStageCache );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderSurface );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderDevice );
 
@@ -184,6 +169,7 @@ namespace Mengine
         m_factoryRenderProgram = nullptr;
         m_factoryRenderProgramVariableStatic = nullptr;
         m_factoryRenderProgramVariableDynamic = nullptr;
+        m_factoryRenderMaterialStageCache = nullptr;
         m_factoryRenderSurface = nullptr;
         m_factoryRenderDevice = nullptr;
 
@@ -191,7 +177,10 @@ namespace Mengine
         m_frameContext.renderPassDescriptor = nil;
         m_frameContext.commandBuffer = nil;
         m_commandQueue = nil;
-        m_depthStencilState = nil;
+        m_depthStencilStates[0][0] = nil;
+        m_depthStencilStates[0][1] = nil;
+        m_depthStencilStates[1][0] = nil;
+        m_depthStencilStates[1][1] = nil;
         m_frameContext.depthStencilTexture = nil;
         m_frameContext.drawableTexture = nil;
         m_device = nil;
@@ -294,7 +283,7 @@ namespace Mengine
             , m_maxTexture2DSize
         );
 
-        this->updateDepthStencilState_();
+        this->createDepthStencilStates_();
 
         for( const MetalRenderProgramPtr & program : m_deferredCompilePrograms )
         {
@@ -808,26 +797,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MetalRenderSystem::drawIndexedPrimitive( const RenderMaterialStageCacheInterfacePtr & _stageCache, const RenderIndexedPrimitiveDesc & _desc )
     {
-        MENGINE_UNUSED( _stageCache );
-
+        MENGINE_ASSERTION_MEMORY_PANIC( _stageCache, "stage cache not set" );
         MENGINE_ASSERTION_FATAL( m_currentIndexBuffer != nullptr, "index buffer not set" );
         MENGINE_ASSERTION_FATAL( m_currentVertexBuffer != nullptr, "vertex buffer not set" );
         MENGINE_ASSERTION_FATAL( m_currentProgram != nullptr, "program not set" );
         MENGINE_ASSERTION_FATAL( m_frameContext.renderEncoder != nil, "render encoder not set" );
 
-        MetalBlendStateKey blendKey;
-        blendKey.alphaBlend = m_alphaBlend;
-        blendKey.blendSrc = m_blendSrc;
-        blendKey.blendDst = m_blendDst;
-        blendKey.blendOp = m_blendOp;
-        blendKey.blendSeparateSrc = m_blendSeparateSrc;
-        blendKey.blendSeparateDst = m_blendSeparateDst;
-        blendKey.blendSeparateOp = m_blendSeparateOp;
-        blendKey.blendSeparate = m_blendSeparate;
-        blendKey.colorMaskR = m_colorMaskR;
-        blendKey.colorMaskG = m_colorMaskG;
-        blendKey.colorMaskB = m_colorMaskB;
-        blendKey.colorMaskA = m_colorMaskA;
+        const MetalRenderMaterialStageCache * stageCache = _stageCache.getT<const MetalRenderMaterialStageCache *>();
+
+        const MetalBlendStateKey & blendKey = stageCache->getBlendKey();
 
         id<MTLRenderPipelineState> pipelineState = m_currentProgram->getOrCreatePipelineState( blendKey
             , m_frameContext.colorAttachmentPixelFormat
@@ -868,7 +846,9 @@ namespace Mengine
             {
                 [m_frameContext.renderEncoder setFragmentTexture:mtlTexture atIndex:stageId];
 
-                id<MTLSamplerState> samplerState = this->getOrCreateSamplerState_( textureStage );
+                const RenderTextureStage & materialTextureStage = stageCache->getTextureStage( stageId );
+
+                id<MTLSamplerState> samplerState = this->getOrCreateSamplerState_( materialTextureStage );
 
                 [m_frameContext.renderEncoder setFragmentSamplerState:samplerState atIndex:stageId];
             }
@@ -877,10 +857,13 @@ namespace Mengine
         id<MTLBuffer> vertexBuffer = m_currentVertexBuffer->getMetalBuffer();
         [m_frameContext.renderEncoder setVertexBuffer:vertexBuffer offset:0 atIndex:0];
 
-        [m_frameContext.renderEncoder setDepthStencilState:m_depthStencilState];
+        uint32_t depthTest = stageCache->getDepthBufferTestEnable() == true ? 1 : 0;
+        uint32_t depthWrite = stageCache->getDepthBufferWriteEnable() == true ? 1 : 0;
 
-        MTLCullMode mtlCullMode = Helper::toMTLCullMode( m_cullMode );
-        [m_frameContext.renderEncoder setCullMode:mtlCullMode];
+        id<MTLDepthStencilState> depthStencilState = m_depthStencilStates[depthTest][depthWrite];
+        [m_frameContext.renderEncoder setDepthStencilState:depthStencilState];
+
+        [m_frameContext.renderEncoder setCullMode:MTLCullModeNone];
 
         [m_frameContext.renderEncoder setFrontFacingWinding:MTLWindingClockwise];
 
@@ -935,57 +918,9 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void MetalRenderSystem::setTextureAddressing( uint32_t _stageId, ETextureAddressMode _modeU, ETextureAddressMode _modeV, uint32_t _border )
-    {
-        MENGINE_ASSERTION_FATAL( _stageId < MENGINE_MAX_TEXTURE_STAGES, "invalid stage id %u"
-            , _stageId
-        );
-
-        m_textureStage[_stageId].wrapU = _modeU;
-        m_textureStage[_stageId].wrapV = _modeV;
-        m_textureStage[_stageId].border = _border;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MetalRenderSystem::setBlendFactor( EBlendFactor _src, EBlendFactor _dst, EBlendOp _op, EBlendFactor _separateSrc, EBlendFactor _separateDst, EBlendOp _separateOp, bool _separate )
-    {
-        m_blendSrc = _src;
-        m_blendDst = _dst;
-        m_blendOp = _op;
-        m_blendSeparateSrc = _separateSrc;
-        m_blendSeparateDst = _separateDst;
-        m_blendSeparateOp = _separateOp;
-        m_blendSeparate = _separate;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MetalRenderSystem::setCullMode( ECullMode _mode )
-    {
-        m_cullMode = _mode;
-    }
-    //////////////////////////////////////////////////////////////////////////
     uint32_t MetalRenderSystem::getAvailableTextureMemory() const
     {
         return 0U;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MetalRenderSystem::setDepthBufferTestEnable( bool _depthTest )
-    {
-        m_depthTest = _depthTest;
-
-        this->updateDepthStencilState_();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MetalRenderSystem::setDepthBufferWriteEnable( bool _depthWrite )
-    {
-        m_depthMask = _depthWrite;
-
-        this->updateDepthStencilState_();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MetalRenderSystem::setDepthBufferCmpFunc( ECompareFunction _depthFunction )
-    {
-        m_depthFunction = _depthFunction;
-
-        this->updateDepthStencilState_();
     }
     //////////////////////////////////////////////////////////////////////////
     void MetalRenderSystem::setFillMode( EFillMode _mode )
@@ -997,32 +932,6 @@ namespace Mengine
             MTLTriangleFillMode mtlFillMode = Helper::toMTLFillMode( _mode );
             [m_frameContext.renderEncoder setTriangleFillMode:mtlFillMode];
         }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MetalRenderSystem::setColorBufferWriteEnable( bool _r, bool _g, bool _b, bool _a )
-    {
-        m_colorMaskR = _r;
-        m_colorMaskG = _g;
-        m_colorMaskB = _b;
-        m_colorMaskA = _a;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MetalRenderSystem::setAlphaBlendEnable( bool _alphaBlend )
-    {
-        m_alphaBlend = _alphaBlend;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MetalRenderSystem::setTextureStageFilter( uint32_t _stageId, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification )
-    {
-        MENGINE_ASSERTION_FATAL( _stageId < MENGINE_MAX_TEXTURE_STAGES, "invalid stage id %u"
-            , _stageId
-        );
-
-        TextureStage & tStage = m_textureStage[_stageId];
-
-        tStage.minFilter = _minification;
-        tStage.magFilter = _magnification;
-        tStage.mipFilter = _mipmap;
     }
     //////////////////////////////////////////////////////////////////////////
     void MetalRenderSystem::findFormatFromChannels_( EPixelFormat _format, EPixelFormat * const _hwFormat ) const
@@ -1395,12 +1304,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderMaterialStageCacheInterfacePtr MetalRenderSystem::createRenderMaterialStageCache( const RenderMaterialStage * _stage, const DocumentInterfacePtr & _doc )
     {
-        MENGINE_UNUSED( _stage );
-        MENGINE_UNUSED( _doc );
+        MetalRenderMaterialStageCachePtr materialStageCache = m_factoryRenderMaterialStageCache->createObject( _doc );
 
-        //Empty
+        MENGINE_ASSERTION_MEMORY_PANIC( materialStageCache, "invalid create material stage cache" );
 
-        return nullptr;
+        materialStageCache->initialize( _stage );
+
+        return materialStageCache;
     }
     //////////////////////////////////////////////////////////////////////////
     id<MTLDevice> MetalRenderSystem::getMetalDevice() const
@@ -1508,36 +1418,28 @@ namespace Mengine
         m_totalWVPMatrix = m_worldMatrix * m_viewMatrix * m_projectionMatrix;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MetalRenderSystem::updateDepthStencilState_()
+    void MetalRenderSystem::createDepthStencilStates_()
     {
-        if( m_device == nil )
+        for( uint32_t depthTest = 0; depthTest != 2; ++depthTest )
         {
-            return;
+            for( uint32_t depthWrite = 0; depthWrite != 2; ++depthWrite )
+            {
+                MTLDepthStencilDescriptor * depthDesc = [[MTLDepthStencilDescriptor alloc] init];
+                depthDesc.depthCompareFunction = depthTest == 1 ? MTLCompareFunctionLessEqual : MTLCompareFunctionAlways;
+                depthDesc.depthWriteEnabled = depthWrite == 1 ? YES : NO;
+
+                m_depthStencilStates[depthTest][depthWrite] = [m_device newDepthStencilStateWithDescriptor:depthDesc];
+            }
         }
-
-        MTLDepthStencilDescriptor * depthDesc = [[MTLDepthStencilDescriptor alloc] init];
-
-        if( m_depthTest == true )
-        {
-            depthDesc.depthCompareFunction = Helper::toMTLCmpFunc( m_depthFunction );
-        }
-        else
-        {
-            depthDesc.depthCompareFunction = MTLCompareFunctionAlways;
-        }
-
-        depthDesc.depthWriteEnabled = m_depthMask ? YES : NO;
-
-        m_depthStencilState = [m_device newDepthStencilStateWithDescriptor:depthDesc];
     }
     //////////////////////////////////////////////////////////////////////////
-    id<MTLSamplerState> MetalRenderSystem::getOrCreateSamplerState_( const TextureStage & _textureStage )
+    id<MTLSamplerState> MetalRenderSystem::getOrCreateSamplerState_( const RenderTextureStage & _textureStage )
     {
-        MTLSamplerMinMagFilter minFilter = Helper::toMTLMinFilter( _textureStage.minFilter );
-        MTLSamplerMinMagFilter magFilter = Helper::toMTLMagFilter( _textureStage.magFilter );
-        MTLSamplerMipFilter mipFilter = Helper::toMTLMipFilter( _textureStage.mipFilter );
-        MTLSamplerAddressMode sAddressMode = Helper::toMTLAddressMode( _textureStage.wrapU );
-        MTLSamplerAddressMode tAddressMode = Helper::toMTLAddressMode( _textureStage.wrapV );
+        MTLSamplerMinMagFilter minFilter = Helper::toMTLMinFilter( _textureStage.minification );
+        MTLSamplerMinMagFilter magFilter = Helper::toMTLMagFilter( _textureStage.magnification );
+        MTLSamplerMipFilter mipFilter = Helper::toMTLMipFilter( _textureStage.mipmap );
+        MTLSamplerAddressMode sAddressMode = Helper::toMTLAddressMode( _textureStage.addressU );
+        MTLSamplerAddressMode tAddressMode = Helper::toMTLAddressMode( _textureStage.addressV );
 
         MENGINE_ASSERTION_FATAL( minFilter < MENGINE_METAL_SAMPLER_MINMAG_FILTER_COUNT && magFilter < MENGINE_METAL_SAMPLER_MINMAG_FILTER_COUNT && mipFilter < MENGINE_METAL_SAMPLER_MIP_FILTER_COUNT && sAddressMode < MENGINE_METAL_SAMPLER_ADDRESS_MODE_COUNT && tAddressMode < MENGINE_METAL_SAMPLER_ADDRESS_MODE_COUNT, "invalid metal sampler state value" );
 

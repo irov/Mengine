@@ -433,6 +433,16 @@ namespace Mengine
             return nullptr;
         }
 
+        RenderMaterialStageCacheInterfacePtr stageCache = RENDER_SYSTEM()
+            ->createRenderMaterialStageCache( &_stage, _doc );
+
+        if( stageCache == nullptr )
+        {
+            LOGGER_ERROR( "invalid create render material stage cache" );
+
+            return nullptr;
+        }
+
         m_stages[m_stageCount] = _stage;
 
         RenderMaterialStage & cache_stage = m_stages[m_stageCount];
@@ -440,8 +450,7 @@ namespace Mengine
         m_stageCount++;
 
         cache_stage.id = m_stageCount;
-        cache_stage.stageCache = RENDER_SYSTEM()
-            ->createRenderMaterialStageCache( &cache_stage, _doc );
+        cache_stage.stageCache = stageCache;
 
         return &cache_stage;
     }
@@ -665,9 +674,14 @@ namespace Mengine
 
         const RenderMaterialStage * cache_stage = this->cacheMaterialStage( _stage, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( cache_stage, "'%s' invalid cache"
-            , _materialName.c_str()
-        );
+        if( cache_stage == nullptr )
+        {
+            LOGGER_ERROR( "'%s' invalid cache"
+                , _materialName.c_str()
+            );
+
+            return nullptr;
+        }
 
         m_materialStageIndexer.emplace( _materialName, cache_stage );
 

@@ -241,6 +241,10 @@ PLUGIN_EXPORT( BitmapFont );
 PLUGIN_EXPORT( NodeDebugRender );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_PLUGIN_DEVELOPMENTHOTKEY_STATIC)
+PLUGIN_EXPORT( DevelopmentHotkey );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLUGIN_DEBUGPANEL_STATIC)
 PLUGIN_EXPORT( DebugPanel );
 #endif
@@ -568,6 +572,16 @@ namespace Mengine
         if( this->createApplication_() == false )
         {
             LOGGER_ERROR( "invalid create application" );
+
+            return false;
+        }
+
+        LOGGER_INFO( "bootstrapper", "bootstrapper start plugins" );
+
+        if( PLUGIN_SERVICE()
+            ->startPlugins() == false )
+        {
+            LOGGER_ERROR( "invalid start plugins" );
 
             return false;
         }
@@ -1792,6 +1806,10 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( NodeDebugRender, "plugin NodeDebugRender...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
+#if defined(MENGINE_PLUGIN_DEVELOPMENTHOTKEY_STATIC)
+        MENGINE_ADD_PLUGIN( DevelopmentHotkey, "plugin DevelopmentHotkey...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
 #if defined(MENGINE_PLUGIN_DEBUGPANEL_STATIC)
         MENGINE_ADD_PLUGIN( DebugPanel, "plugin DebugPanel...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
@@ -2479,6 +2497,12 @@ namespace Mengine
 
         this->stopModules_();
         this->stopDevModules_();
+
+        if( SERVICE_IS_INITIALIZE( PluginServiceInterface ) == true )
+        {
+            PLUGIN_SERVICE()
+                ->stopPlugins();
+        }
     }
     //////////////////////////////////////////////////////////////////////////
 }

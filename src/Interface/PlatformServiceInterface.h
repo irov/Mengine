@@ -27,6 +27,10 @@
 #define MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME 256
 #endif
 
+#ifndef MENGINE_PLATFORM_TARGET_FRAME_TIME
+#define MENGINE_PLATFORM_TARGET_FRAME_TIME (1000.0 / 60.0)
+#endif
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

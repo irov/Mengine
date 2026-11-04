@@ -76,21 +76,7 @@ namespace Mengine
 
     public:
         void setTexture( const RenderProgramInterfacePtr & _program, uint32_t _stage, const RenderImageInterfacePtr & _texture ) override;
-        void setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV, uint32_t _border ) override;
-
-        void setBlendFactor( EBlendFactor _src, EBlendFactor _dst, EBlendOp _op, EBlendFactor _separateSrc, EBlendFactor _separateDst, EBlendOp _separateOp, bool _separate ) override;
-
-        void setCullMode( ECullMode _mode ) override;
-
-        void setDepthBufferTestEnable( bool _depthTest ) override;
-        void setDepthBufferWriteEnable( bool _depthWrite ) override;
-        void setDepthBufferCmpFunc( ECompareFunction _depthFunction ) override;
-
         void setFillMode( EFillMode _mode ) override;
-        void setColorBufferWriteEnable( bool _r, bool _g, bool _b, bool _a ) override;
-        void setAlphaBlendEnable( bool _alphaBlend ) override;
-
-        void setTextureStageFilter( uint32_t _stage, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification ) override;
 
         RenderImageInterfacePtr createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _layers, EPixelFormat _format, const DocumentInterfacePtr & _doc ) override;
 
@@ -169,6 +155,7 @@ namespace Mengine
         FactoryInterfacePtr m_factoryRenderFragmentShader;
         FactoryInterfacePtr m_factoryRenderProgram;
         FactoryInterfacePtr m_factoryRenderProgramVariable;
+        FactoryInterfacePtr m_factoryRenderMaterialStageCache;
         FactoryInterfacePtr m_factoryVertexBuffer;
         FactoryInterfacePtr m_factoryIndexBuffer;
         FactoryInterfacePtr m_factoryRenderImage;

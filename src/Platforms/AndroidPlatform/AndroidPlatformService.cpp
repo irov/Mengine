@@ -812,7 +812,6 @@ namespace Mengine
         , m_safeAreaViewportValid( false )
         , m_displayCutoutViewportValid( false )
         , m_prevTime( 0.0 )
-        , m_pauseUpdatingTime( -1.f )
         , m_active( false )
         , m_desktop( false )
         , m_touchpad( false )
@@ -1186,31 +1185,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::tickPlatform( float _frameTime )
     {
-        bool updating = APPLICATION_SERVICE()
-            ->beginUpdate();
-
-        if( updating == true )
-        {
-            if( m_pauseUpdatingTime >= 0.f )
-            {
-                _frameTime = m_pauseUpdatingTime;
-                m_pauseUpdatingTime = -1.f;
-            }
-
-            APPLICATION_SERVICE()
-                ->tick( _frameTime );
-        }
-
         APPLICATION_SERVICE()
-            ->endUpdate();
-
-        if( updating == false )
-        {
-            if( m_pauseUpdatingTime < 0.f )
-            {
-                m_pauseUpdatingTime = _frameTime;
-            }
-        }
+            ->tick( _frameTime );
     }
     //////////////////////////////////////////////////////////////////////////
     RenderPlatformInterface * AndroidPlatformService::getRenderPlatform()

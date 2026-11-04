@@ -455,7 +455,8 @@ namespace Mengine
 
             if( m_active == false )
             {
-                ::Sleep( 100 );
+                THREAD_SYSTEM()
+                    ->sleep( 100 );
 
                 continue;
             }
@@ -464,7 +465,8 @@ namespace Mengine
 
             if( this->renderPlatform() == false )
             {
-                ::Sleep( 100 );
+                THREAD_SYSTEM()
+                    ->sleep( 100 );
 
                 continue;
             }
@@ -472,10 +474,27 @@ namespace Mengine
             bool vsync = APPLICATION_SERVICE()
                 ->getVSync();
 
-            if( vsync == false )
+            if( vsync == true )
             {
-                ::Sleep( 1 );
+                continue;
             }
+
+            bool OPTION_maxfps = HAS_OPTION( "maxfps" );
+
+            if( OPTION_maxfps == true )
+            {
+                continue;
+            }
+
+            double frameDuration = Helper::getElapsedTime() - currentTime;
+
+            if( frameDuration >= MENGINE_PLATFORM_TARGET_FRAME_TIME )
+            {
+                continue;
+            }
+
+            THREAD_SYSTEM()
+                ->sleep( 1 );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -493,17 +512,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void GDKPlatformService::tickPlatform( float _frameTime )
     {
-        bool updating = APPLICATION_SERVICE()
-            ->beginUpdate();
-
-        if( updating == true )
-        {
-            APPLICATION_SERVICE()
-                ->tick( _frameTime );
-        }
-
         APPLICATION_SERVICE()
-            ->endUpdate();
+            ->tick( _frameTime );
     }
     //////////////////////////////////////////////////////////////////////////
     RenderPlatformInterface * GDKPlatformService::getRenderPlatform()

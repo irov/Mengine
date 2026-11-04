@@ -33,6 +33,10 @@ namespace Mengine
         void unloadPlugins() override;
 
     public:
+        bool startPlugins() override;
+        void stopPlugins() override;
+
+    public:
         bool addPlugin( const PluginInterfacePtr & _plugin, const DynamicLibraryInterfacePtr & _dynamicLibrary ) override;
         bool removePlugin( const PluginInterfacePtr & _plugin ) override;
         bool hasPlugin( const ConstString & _pluginName ) const override;
@@ -62,6 +66,8 @@ namespace Mengine
 
         typedef Vector<PluginDesc> VectorPlugins;
         VectorPlugins m_plugins;
+
+        bool m_startPlugins;
 
         ThreadMutexInterfacePtr m_pluginsMutex;
 

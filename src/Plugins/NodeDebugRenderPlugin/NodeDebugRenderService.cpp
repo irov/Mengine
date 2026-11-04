@@ -16,6 +16,7 @@
 #include "Interface/FontServiceInterface.h"
 #include "Interface/TimerServiceInterface.h"
 #include "Interface/ArrowServiceInterface.h"
+#include "Interface/ConfigServiceInterface.h"
 
 #include "Plugins/AstralaxPlugin/AstralaxInterface.h"
 
@@ -32,9 +33,9 @@
 #include "Kernel/StatisticHelper.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/PrefetcherHelper.h"
-#include "Kernel/GlobalInputHandlerHelper.h"
 #include "Kernel/VectorString.h"
 #include "Kernel/Surface.h"
+#include "Kernel/ConfigHelper.h"
 
 #include <iomanip>
 
@@ -44,10 +45,18 @@ SERVICE_FACTORY( NodeDebugRenderService, Mengine::NodeDebugRenderService );
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    enum ENodeDebugRenderMask
+    {
+        ENDRM_HOTSPOTS = 1 << 0,
+        ENDRM_NODES = 1 << 1,
+        ENDRM_TILEPOLYGON = 1 << 2,
+    };
+    //////////////////////////////////////////////////////////////////////////
     NodeDebugRenderService::NodeDebugRenderService()
         : m_fps( 0 )
         , m_showDebugText( 0 )
-        , m_globalKeyHandlerF9( INVALID_UNIQUE_ID )
+        , m_debugMask( 0 )
+        , m_wireframe( false )
         , m_timerFPS( INVALID_UNIQUE_ID )
     {
     }
@@ -59,6 +68,7 @@ namespace Mengine
     const ServiceRequiredList & NodeDebugRenderService::requiredServices() const
     {
         static const ServiceRequiredList required = {
+            SERVICE_ID( ConfigServiceInterface ),
             SERVICE_ID( PlayerServiceInterface ),
             SERVICE_ID( TimerServiceInterface )
         };
@@ -85,11 +95,49 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool NodeDebugRenderService::_initializeService()
     {
-        m_globalKeyHandlerF9 = Helper::addGlobalKeyHandler( KC_F9, true, [this]( const InputKeyEvent & _event )
+        m_hotkeys.addHotkey( KC_F9, [this]( const InputKeyEvent & _event )
         {
             MENGINE_UNUSED( _event );
+
             this->toggleDebugText_();
         }, MENGINE_DOCUMENT_FACTORABLE );
+
+#if defined(MENGINE_DEVICE_DESKTOP)
+        m_hotkeys.addHotkey( KC_F6, [this]( const InputKeyEvent & _event )
+        {
+            MENGINE_UNUSED( _event );
+
+            this->toggleDebugMask_( ENDRM_HOTSPOTS );
+        }, MENGINE_DOCUMENT_FACTORABLE );
+
+        m_hotkeys.addHotkey( KC_F8, [this]( const InputKeyEvent & _event )
+        {
+            MENGINE_UNUSED( _event );
+
+            this->toggleDebugMask_( ENDRM_TILEPOLYGON );
+        }, MENGINE_DOCUMENT_FACTORABLE );
+
+        m_hotkeys.addHotkey( KC_F10, [this]( const InputKeyEvent & _event )
+        {
+            MENGINE_UNUSED( _event );
+
+            this->toggleDebugMask_( ENDRM_NODES );
+        }, MENGINE_DOCUMENT_FACTORABLE );
+
+        m_hotkeys.addHotkey( KC_F11, [this]( const InputKeyEvent & _event )
+        {
+            MENGINE_UNUSED( _event );
+
+            this->toggleWireframe_();
+        }, MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+        bool showHotspots = CONFIG_VALUE_BOOLEAN( "Debug", "ShowHotspots", false );
+
+        if( showHotspots == true )
+        {
+            this->toggleDebugMask_( ENDRM_HOTSPOTS );
+        }
 
         m_timerFPS = TIMER_SERVICE()
             ->addTimer( MENGINE_UINT64_C( 1000 ), [this]( UniqueId _id )
@@ -114,11 +162,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebugRenderService::_stopService()
     {
-        if( m_globalKeyHandlerF9 != INVALID_UNIQUE_ID )
+        m_hotkeys.removeHotkeys();
+
+        if( m_wireframe == true )
         {
-            Helper::removeGlobalHandler( m_globalKeyHandlerF9 );
-            m_globalKeyHandlerF9 = INVALID_UNIQUE_ID;
+            m_wireframe = false;
+
+            RENDER_SYSTEM()
+                ->setFillMode( FM_SOLID );
         }
+
+        m_debugMask = 0;
+
+        this->updateSceneRenderProvider_();
 
         if( m_timerFPS != INVALID_UNIQUE_ID )
         {
@@ -129,14 +185,16 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebugRenderService::renderDebugArrow( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, bool _external, bool _hide )
+    void NodeDebugRenderService::renderScene( const NodePtr & _scene, const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context )
     {
-        const NodePtr & node = ARROW_SERVICE()
-            ->getArrowNode();
+        this->renderDebugNode( _scene, _renderPipeline, _context, false, false );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebugRenderService::renderArrow( const NodePtr & _arrow, const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context )
+    {
+        this->renderDebugNode( _arrow, _renderPipeline, _context, false, false );
 
-        this->renderDebugNode( node, _renderPipeline, _context, _external, _hide );
-
-        const TransformationInterface * transformation = node->getTransformation();
+        const TransformationInterface * transformation = _arrow->getTransformation();
 
         const mt::mat4f & wm = transformation->getWorldMatrix();
 
@@ -630,11 +688,50 @@ namespace Mengine
             );
         }
     }
-    //////////////////////////////////////////////////////////////////////////     
+    //////////////////////////////////////////////////////////////////////////
     void NodeDebugRenderService::toggleDebugText_()
     {
         ++m_showDebugText;
         m_showDebugText %= 7;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebugRenderService::toggleDebugMask_( uint32_t _mask )
+    {
+        m_debugMask ^= _mask;
+
+        this->updateSceneRenderProvider_();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebugRenderService::toggleWireframe_()
+    {
+        m_wireframe = !m_wireframe;
+
+        if( m_wireframe == true )
+        {
+            RENDER_SYSTEM()
+                ->setFillMode( FM_WIREFRAME );
+        }
+        else
+        {
+            RENDER_SYSTEM()
+                ->setFillMode( FM_SOLID );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebugRenderService::updateSceneRenderProvider_()
+    {
+        if( m_debugMask == 0 )
+        {
+            PLAYER_SERVICE()
+                ->setSceneRenderProvider( nullptr );
+
+            return;
+        }
+
+        PlayerSceneRenderProviderInterfacePtr sceneRenderProvider = PlayerSceneRenderProviderInterfacePtr::from( this );
+
+        PLAYER_SERVICE()
+            ->setSceneRenderProvider( sceneRenderProvider );
     }
     //////////////////////////////////////////////////////////////////////////
 }

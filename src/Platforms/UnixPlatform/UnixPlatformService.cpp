@@ -530,7 +530,6 @@ namespace Mengine
         , m_defaultCursor( 0 )
         , m_hiddenCursor( 0 )
         , m_prevTime( 0.0 )
-        , m_pauseUpdatingTime( -1.f )
         , m_displayScale( 1.f )
         , m_active( false )
         , m_fullscreen( false )
@@ -804,7 +803,34 @@ namespace Mengine
             {
                 THREAD_SYSTEM()
                     ->sleep( 10 );
+
+                continue;
             }
+
+            bool vsync = APPLICATION_SERVICE()
+                ->getVSync();
+
+            if( vsync == true )
+            {
+                continue;
+            }
+
+            bool OPTION_maxfps = HAS_OPTION( "maxfps" );
+
+            if( OPTION_maxfps == true )
+            {
+                continue;
+            }
+
+            double frameDuration = Helper::getElapsedTime() - currentTime;
+
+            if( frameDuration >= MENGINE_PLATFORM_TARGET_FRAME_TIME )
+            {
+                continue;
+            }
+
+            THREAD_SYSTEM()
+                ->sleep( 1 );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -820,46 +846,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void UnixPlatformService::tickPlatform( float _frameTime )
     {
-        bool updating = APPLICATION_SERVICE()
-            ->beginUpdate();
-
-        if( updating == true )
-        {
-            if( m_pauseUpdatingTime >= 0.f )
-            {
-                _frameTime = m_pauseUpdatingTime;
-                m_pauseUpdatingTime = -1.f;
-            }
-
-            APPLICATION_SERVICE()
-                ->tick( _frameTime );
-        }
-
         APPLICATION_SERVICE()
-            ->endUpdate();
-
-        if( updating == false )
-        {
-            if( m_pauseUpdatingTime < 0.f )
-            {
-                m_pauseUpdatingTime = _frameTime;
-            }
-
-            THREAD_SYSTEM()
-                ->sleep( 1 );
-        }
-        else
-        {
-            bool vsync = APPLICATION_SERVICE()
-                ->getVSync();
-            bool OPTION_maxfps = HAS_OPTION( "maxfps" );
-
-            if( vsync == false && OPTION_maxfps == false )
-            {
-                THREAD_SYSTEM()
-                    ->sleep( 1 );
-            }
-        }
+            ->tick( _frameTime );
     }
     //////////////////////////////////////////////////////////////////////////
     RenderPlatformInterface * UnixPlatformService::getRenderPlatform()

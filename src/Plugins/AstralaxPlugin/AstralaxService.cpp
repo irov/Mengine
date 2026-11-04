@@ -406,6 +406,13 @@ namespace Mengine
             const RenderMaterialStage * cache_stage = RENDERMATERIAL_SERVICE()
                 ->cacheMaterialStage( rs, MENGINE_DOCUMENT_FACTORABLE );
 
+            if( cache_stage == nullptr )
+            {
+                LOGGER_ERROR( "invalid cache material stage" );
+
+                return false;
+            }
+
             m_stages[i] = cache_stage;
         }
 

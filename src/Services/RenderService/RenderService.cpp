@@ -53,16 +53,6 @@ namespace Mengine
         , m_currentRenderTextureStage( 0 )
         , m_currentMaterialId( 0 )
         , m_currentRenderMaterialStage( nullptr )
-        , m_currentBlendSrc( BF_ONE )
-        , m_currentBlendDst( BF_ZERO )
-        , m_currentBlendOp( BOP_ADD )
-        , m_currentSeparateAlphaBlendSrc( BF_ONE )
-        , m_currentSeparateAlphaBlendDst( BF_ZERO )
-        , m_currentSeparateAlphaBlendOp( BOP_ADD )
-        , m_currentSeparateAlphaBlendEnable( false )
-        , m_currentAlphaBlendEnable( false )
-        , m_currentDepthBufferTestEnable( false )
-        , m_currentDepthBufferWriteEnable( false )
     {
         StdAlgorithm::fill_n( m_currentTexturesId, MENGINE_MAX_TEXTURE_STAGES, MENGINE_UINT32_C(0) );
 
@@ -241,15 +231,6 @@ namespace Mengine
 
             return false;
         }
-
-        m_defaultRenderTextureStage.mipmap = RENDERMATERIAL_SERVICE()
-            ->getDefaultTextureFilterMipmap();
-
-        m_defaultRenderTextureStage.minification = RENDERMATERIAL_SERVICE()
-            ->getDefaultTextureFilterMinification();
-
-        m_defaultRenderTextureStage.magnification = RENDERMATERIAL_SERVICE()
-            ->getDefaultTextureFilterMagnification();
 
         this->restoreRenderSystemStates_();
 
@@ -718,84 +699,6 @@ namespace Mengine
 
         m_currentRenderMaterialStage = _stage;
 
-        for( uint32_t stageId = 0; stageId != m_currentRenderTextureStage; ++stageId )
-        {
-            RenderTextureStage & current_texture_stage = m_renderTextureStages[stageId];
-            const RenderTextureStage & texture_stage = m_currentRenderMaterialStage->textureStages[stageId];
-
-            if( current_texture_stage.addressU != texture_stage.addressU
-                || current_texture_stage.addressV != texture_stage.addressV
-                || current_texture_stage.addressBorder != texture_stage.addressBorder )
-            {
-                current_texture_stage.addressU = texture_stage.addressU;
-                current_texture_stage.addressV = texture_stage.addressV;
-                current_texture_stage.addressBorder = texture_stage.addressBorder;
-
-                m_renderSystem->setTextureAddressing( stageId
-                    , current_texture_stage.addressU
-                    , current_texture_stage.addressV
-                    , current_texture_stage.addressBorder
-                );
-            }
-
-            if( current_texture_stage.mipmap != texture_stage.mipmap ||
-                current_texture_stage.magnification != texture_stage.magnification ||
-                current_texture_stage.minification != texture_stage.minification )
-            {
-                current_texture_stage.mipmap = texture_stage.mipmap;
-                current_texture_stage.magnification = texture_stage.magnification;
-                current_texture_stage.minification = texture_stage.minification;
-
-                m_renderSystem->setTextureStageFilter( stageId
-                    , current_texture_stage.minification
-                    , current_texture_stage.mipmap
-                    , current_texture_stage.magnification
-                );
-            }
-        }
-
-        if( m_currentAlphaBlendEnable != m_currentRenderMaterialStage->alphaBlendEnable )
-        {
-            m_currentAlphaBlendEnable = m_currentRenderMaterialStage->alphaBlendEnable;
-
-            m_renderSystem->setAlphaBlendEnable( m_currentAlphaBlendEnable );
-        }
-
-        if( m_currentDepthBufferTestEnable != m_currentRenderMaterialStage->depthBufferTestEnable )
-        {
-            m_currentDepthBufferTestEnable = m_currentRenderMaterialStage->depthBufferTestEnable;
-
-            m_renderSystem->setDepthBufferTestEnable( m_currentDepthBufferTestEnable );
-        }
-
-        if( m_currentDepthBufferWriteEnable != m_currentRenderMaterialStage->depthBufferWriteEnable )
-        {
-            m_currentDepthBufferWriteEnable = m_currentRenderMaterialStage->depthBufferWriteEnable;
-
-            m_renderSystem->setDepthBufferWriteEnable( m_currentDepthBufferWriteEnable );
-        }
-
-        if( m_currentBlendSrc != m_currentRenderMaterialStage->blendSrc ||
-            m_currentBlendDst != m_currentRenderMaterialStage->blendDst ||
-            m_currentBlendOp != m_currentRenderMaterialStage->blendOp ||
-            m_currentSeparateAlphaBlendEnable != m_currentRenderMaterialStage->separateAlphaBlendEnable ||
-            m_currentSeparateAlphaBlendSrc != m_currentRenderMaterialStage->separateAlphaBlendSrc ||
-            m_currentSeparateAlphaBlendDst != m_currentRenderMaterialStage->separateAlphaBlendDst ||
-            m_currentSeparateAlphaBlendOp != m_currentRenderMaterialStage->separateAlphaBlendOp )
-        {
-            m_currentBlendSrc = m_currentRenderMaterialStage->blendSrc;
-            m_currentBlendDst = m_currentRenderMaterialStage->blendDst;
-            m_currentBlendOp = m_currentRenderMaterialStage->blendOp;
-
-            m_currentSeparateAlphaBlendEnable = m_currentRenderMaterialStage->separateAlphaBlendEnable;
-
-            m_currentSeparateAlphaBlendSrc = m_currentRenderMaterialStage->separateAlphaBlendSrc;
-            m_currentSeparateAlphaBlendDst = m_currentRenderMaterialStage->separateAlphaBlendDst;
-            m_currentSeparateAlphaBlendOp = m_currentRenderMaterialStage->separateAlphaBlendOp;
-
-            m_renderSystem->setBlendFactor( m_currentBlendSrc, m_currentBlendDst, m_currentBlendOp, m_currentSeparateAlphaBlendSrc, m_currentSeparateAlphaBlendDst, m_currentSeparateAlphaBlendOp, m_currentSeparateAlphaBlendEnable );
-        }
-
         if( m_currentRenderProgram != m_currentRenderMaterialStage->program )
         {
             m_currentRenderProgram = m_currentRenderMaterialStage->program;
@@ -911,23 +814,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderService::restoreTextureStage_( uint32_t _stage )
     {
-        m_renderTextureStages[_stage] = m_defaultRenderTextureStage;
-
         m_currentTexturesId[_stage] = 0;
 
         m_renderSystem->setTexture( m_currentRenderProgram, _stage, nullptr );
-
-        m_renderSystem->setTextureAddressing( _stage
-            , m_defaultRenderTextureStage.addressU
-            , m_defaultRenderTextureStage.addressV
-            , m_defaultRenderTextureStage.addressBorder
-        );
-
-        m_renderSystem->setTextureStageFilter( _stage
-            , m_defaultRenderTextureStage.minification
-            , m_defaultRenderTextureStage.mipmap
-            , m_defaultRenderTextureStage.magnification
-        );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderService::restoreRenderFrameStates_()
@@ -986,19 +875,6 @@ namespace Mengine
         m_currentRenderTextureStage = 0;
         m_currentRenderMaterialStage = nullptr;
 
-        m_currentBlendSrc = BF_ONE;
-        m_currentBlendDst = BF_ZERO;
-        m_currentBlendOp = BOP_ADD;
-
-        m_currentSeparateAlphaBlendSrc = BF_ONE;
-        m_currentSeparateAlphaBlendDst = BF_ZERO;
-        m_currentSeparateAlphaBlendOp = BOP_ADD;
-
-        m_currentSeparateAlphaBlendEnable = false;
-        m_currentAlphaBlendEnable = false;
-        m_currentDepthBufferTestEnable = false;
-        m_currentDepthBufferWriteEnable = false;
-
         for( uint32_t i = 0; i != MENGINE_MAX_TEXTURE_STAGES; ++i )
         {
             this->restoreTextureStage_( i );
@@ -1014,14 +890,6 @@ namespace Mengine
         m_renderSystem->setVertexBuffer( m_currentRenderVertexBuffer );
         m_renderSystem->setIndexBuffer( m_currentRenderIndexBuffer );
         m_renderSystem->setProgram( m_currentRenderProgram );
-        m_renderSystem->setCullMode( CM_CULL_NONE );
-        //m_renderSystem->setFillMode( FM_SOLID );
-        //m_renderSystem->setFillMode( FM_WIREFRAME );
-        m_renderSystem->setDepthBufferTestEnable( m_currentDepthBufferTestEnable );
-        m_renderSystem->setDepthBufferWriteEnable( m_currentDepthBufferWriteEnable );
-        m_renderSystem->setDepthBufferCmpFunc( CMPF_LESS_EQUAL );
-        m_renderSystem->setAlphaBlendEnable( m_currentAlphaBlendEnable );
-        m_renderSystem->setBlendFactor( m_currentBlendSrc, m_currentBlendDst, m_currentBlendOp, m_currentSeparateAlphaBlendSrc, m_currentSeparateAlphaBlendDst, m_currentSeparateAlphaBlendOp, m_currentSeparateAlphaBlendEnable );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderService::calcRenderTargetViewport_( const RenderTargetInterface * _target, Viewport * const _renderViewport ) const

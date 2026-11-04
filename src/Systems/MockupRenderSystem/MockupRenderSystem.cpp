@@ -16,6 +16,7 @@
 #include "MockupRenderVertexBuffer.h"
 #include "MockupRenderIndexBuffer.h"
 #include "MockupRenderProgramVariable.h"
+#include "MockupRenderMaterialStageCache.h"
 
 #include "MockupRenderImageLockedFactoryStorage.h"
 
@@ -117,6 +118,7 @@ namespace Mengine
         m_factoryRenderFragmentShader = Helper::makeFactoryPool<MockupRenderFragmentShader, 16>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderProgram = Helper::makeFactoryPoolWithListener<MockupRenderProgram, 64>( this, &MockupRenderSystem::onDestroyRenderProgram_, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderProgramVariable = Helper::makeFactoryPool<MockupRenderProgramVariable, 64>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRenderMaterialStageCache = Helper::makeFactoryPool<MockupRenderMaterialStageCache, 16>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryVertexBuffer = Helper::makeFactoryPool<MockupRenderVertexBuffer, 8>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryIndexBuffer = Helper::makeFactoryPool<MockupRenderIndexBuffer, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -140,6 +142,7 @@ namespace Mengine
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderFragmentShader );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderProgram );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderProgramVariable );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderMaterialStageCache );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryVertexBuffer );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryIndexBuffer );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderImage );
@@ -152,6 +155,7 @@ namespace Mengine
         m_factoryRenderFragmentShader = nullptr;
         m_factoryRenderProgram = nullptr;
         m_factoryRenderProgramVariable = nullptr;
+        m_factoryRenderMaterialStageCache = nullptr;
         m_factoryVertexBuffer = nullptr;
         m_factoryIndexBuffer = nullptr;
         m_factoryRenderImage = nullptr;
@@ -325,9 +329,12 @@ namespace Mengine
     RenderMaterialStageCacheInterfacePtr MockupRenderSystem::createRenderMaterialStageCache( const RenderMaterialStage * _stage, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _stage );
-        MENGINE_UNUSED( _doc );
 
-        return nullptr;
+        MockupRenderMaterialStageCachePtr materialStageCache = m_factoryRenderMaterialStageCache->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( materialStageCache, "invalid create material stage cache" );
+
+        return materialStageCache;
     }
     //////////////////////////////////////////////////////////////////////////
     bool MockupRenderSystem::beginScene()
@@ -595,105 +602,9 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void MockupRenderSystem::setBlendFactor( EBlendFactor _src, EBlendFactor _dst, EBlendOp _op, EBlendFactor _separateSrc, EBlendFactor _separateDst, EBlendOp _separateOp, bool _separate )
-    {
-        MENGINE_UNUSED( _src );
-        MENGINE_UNUSED( _dst );
-        MENGINE_UNUSED( _op );
-        MENGINE_UNUSED( _separateSrc );
-        MENGINE_UNUSED( _separateDst );
-        MENGINE_UNUSED( _separateOp );
-        MENGINE_UNUSED( _separate );
-
-        //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MockupRenderSystem::setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV, uint32_t _border )
-    {
-        MENGINE_UNUSED( _modeU );
-        MENGINE_UNUSED( _modeV );
-        MENGINE_UNUSED( _border );
-
-        if( _stage >= m_dxMaxCombinedTextureImageUnits )
-        {
-            LOGGER_ASSERTION( "no support stage [%u] (max %u)"
-                , _stage
-                , m_dxMaxCombinedTextureImageUnits
-            );
-
-            return;
-        }
-
-        //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MockupRenderSystem::setCullMode( ECullMode _mode )
-    {
-        MENGINE_UNUSED( _mode );
-
-        //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MockupRenderSystem::setDepthBufferTestEnable( bool _depthTest )
-    {
-        MENGINE_UNUSED( _depthTest );
-
-        //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MockupRenderSystem::setDepthBufferWriteEnable( bool _depthWrite )
-    {
-        MENGINE_UNUSED( _depthWrite );
-
-        //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MockupRenderSystem::setDepthBufferCmpFunc( ECompareFunction _depthFunction )
-    {
-        MENGINE_UNUSED( _depthFunction );
-
-        //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
     void MockupRenderSystem::setFillMode( EFillMode _mode )
     {
         MENGINE_UNUSED( _mode );
-
-        //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MockupRenderSystem::setColorBufferWriteEnable( bool _r, bool _g, bool _b, bool _a )
-    {
-        MENGINE_UNUSED( _r );
-        MENGINE_UNUSED( _g );
-        MENGINE_UNUSED( _b );
-        MENGINE_UNUSED( _a );
-
-        //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MockupRenderSystem::setAlphaBlendEnable( bool _alphaBlend )
-    {
-        MENGINE_UNUSED( _alphaBlend );
-
-        //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MockupRenderSystem::setTextureStageFilter( uint32_t _stage, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification )
-    {
-        MENGINE_UNUSED( _minification );
-        MENGINE_UNUSED( _mipmap );
-        MENGINE_UNUSED( _magnification );
-
-        if( _stage >= m_dxMaxCombinedTextureImageUnits )
-        {
-            LOGGER_ASSERTION( "no support stage [%u] (max %u)"
-                , _stage
-                , m_dxMaxCombinedTextureImageUnits
-            );
-
-            return;
-        }
 
         //Empty
     }

@@ -60,25 +60,6 @@ namespace Mengine
         TAM_MIRRORONCE
     };
     //////////////////////////////////////////////////////////////////////////
-    enum ECullMode
-    {
-        CM_CULL_NONE = 0,
-        CM_CULL_CW, // D3D11 using FrontCounterClockwise for order of polygons
-        CM_CULL_CCW,
-    };
-    //////////////////////////////////////////////////////////////////////////
-    enum ECompareFunction
-    {
-        CMPF_ALWAYS_FAIL = 0,
-        CMPF_ALWAYS_PASS,
-        CMPF_LESS,
-        CMPF_LESS_EQUAL,
-        CMPF_EQUAL,
-        CMPF_NOT_EQUAL,
-        CMPF_GREATER_EQUAL,
-        CMPF_GREATER
-    };
-    //////////////////////////////////////////////////////////////////////////
     enum EVertexAttributeType
     {
         VAT_FLOAT = 0,

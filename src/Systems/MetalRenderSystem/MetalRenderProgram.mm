@@ -236,12 +236,7 @@ namespace Mengine
             pipelineDesc.colorAttachments[0].blendingEnabled = NO;
         }
 
-        MTLColorWriteMask writeMask = MTLColorWriteMaskNone;
-        if( _key.colorMaskR == true ) writeMask |= MTLColorWriteMaskRed;
-        if( _key.colorMaskG == true ) writeMask |= MTLColorWriteMaskGreen;
-        if( _key.colorMaskB == true ) writeMask |= MTLColorWriteMaskBlue;
-        if( _key.colorMaskA == true ) writeMask |= MTLColorWriteMaskAlpha;
-        pipelineDesc.colorAttachments[0].writeMask = writeMask;
+        pipelineDesc.colorAttachments[0].writeMask = MTLColorWriteMaskAll;
 
         pipelineDesc.depthAttachmentPixelFormat = _depthAttachmentPixelFormat;
         pipelineDesc.stencilAttachmentPixelFormat = _stencilAttachmentPixelFormat;

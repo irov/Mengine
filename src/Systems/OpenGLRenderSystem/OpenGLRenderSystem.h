@@ -17,6 +17,7 @@
 #include "OpenGLRenderProgramVariableInterface.h"
 #include "OpenGLRenderProgramVariableStatic.h"
 #include "OpenGLRenderProgramVariableDynamic.h"
+#include "OpenGLRenderMaterialStageCache.h"
 #include "OpenGLRenderExtension.h"
 
 #include "Kernel/IntrusiveList.h"
@@ -72,18 +73,7 @@ namespace Mengine
 
     public:
         void setTexture( const RenderProgramInterfacePtr & _program, uint32_t _stageId, const RenderImageInterfacePtr & _texture ) override;
-        void setTextureAddressing( uint32_t _stageId, ETextureAddressMode _modeU, ETextureAddressMode _modeV, uint32_t _border ) override;
-        void setBlendFactor( EBlendFactor _src, EBlendFactor _dst, EBlendOp _op, EBlendFactor _separateSrc, EBlendFactor _separateDst, EBlendOp _separateOp, bool _separate ) override;
-        void setCullMode( ECullMode _mode ) override;
-        void setDepthBufferTestEnable( bool _depthTest ) override;
-        void setDepthBufferWriteEnable( bool _depthWrite ) override;
-        void setDepthBufferCmpFunc( ECompareFunction _depthFunction ) override;
         void setFillMode( EFillMode _mode ) override;
-        void setColorBufferWriteEnable( bool _r, bool _g, bool _b, bool _a ) override;
-        void setAlphaBlendEnable( bool _alphaBlend ) override;
-
-    public:
-        void setTextureStageFilter( uint32_t _stage, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification ) override;
 
     public:
         RenderVertexAttributeInterfacePtr createVertexAttribute( const ConstString & _name, uint32_t _elementSize, const DocumentInterfacePtr & _doc ) override;
@@ -189,6 +179,7 @@ namespace Mengine
         Viewport m_windowViewport;
 
         OpenGLRenderProgramPtr m_currentProgram;
+        OpenGLRenderMaterialStageCachePtr m_currentMaterialStageCache;
         OpenGLRenderProgramVariableInterfacePtr m_currentProgramVariable;
         OpenGLRenderVertexAttributePtr m_currentVertexAttribute;
         OpenGLRenderIndexBufferPtr m_currentIndexBuffer;
@@ -204,13 +195,6 @@ namespace Mengine
         struct TextureStage
         {
             RenderImageInterface * texture = nullptr;
-
-            GLenum minFilter = GL_NONE;
-            GLenum magFilter = GL_NONE;
-            GLenum wrapS = GL_NONE;
-            GLenum wrapT = GL_NONE;
-
-            uint32_t border = 0;
         };
 
         TextureStage m_textureStage[MENGINE_MAX_TEXTURE_STAGES];
@@ -242,6 +226,7 @@ namespace Mengine
         FactoryInterfacePtr m_factoryRenderProgram;
         FactoryInterfacePtr m_factoryRenderProgramVariableStatic;
         FactoryInterfacePtr m_factoryRenderProgramVariableDynamic;
+        FactoryInterfacePtr m_factoryRenderMaterialStageCache;
 
 #if defined(MENGINE_RENDER_OPENGL_NORMAL)
         GLuint m_vertexArrayId;

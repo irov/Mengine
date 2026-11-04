@@ -27,10 +27,6 @@ namespace Mengine
         EBlendFactor blendSeparateDst;
         EBlendOp blendSeparateOp;
         bool blendSeparate;
-        bool colorMaskR;
-        bool colorMaskG;
-        bool colorMaskB;
-        bool colorMaskA;
 
         bool operator == ( const MetalBlendStateKey & _other ) const
         {
@@ -41,11 +37,7 @@ namespace Mengine
                 && blendSeparateSrc == _other.blendSeparateSrc
                 && blendSeparateDst == _other.blendSeparateDst
                 && blendSeparateOp == _other.blendSeparateOp
-                && blendSeparate == _other.blendSeparate
-                && colorMaskR == _other.colorMaskR
-                && colorMaskG == _other.colorMaskG
-                && colorMaskB == _other.colorMaskB
-                && colorMaskA == _other.colorMaskA;
+                && blendSeparate == _other.blendSeparate;
         }
 
         bool operator != ( const MetalBlendStateKey & _other ) const

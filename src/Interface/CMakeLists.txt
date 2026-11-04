@@ -66,6 +66,7 @@ Common
     GameEventReceiverInterface.h
     GameServiceInterface.h
     PlayerServiceInterface.h
+    PlayerSceneRenderProviderInterface.h
     SchedulerInterface.h
     LayoutInterface.h
     LayoutBoxInterface.h

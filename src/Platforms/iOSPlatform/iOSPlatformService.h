@@ -262,8 +262,6 @@ namespace Mengine
 
         double m_prevTime;
 
-        float m_pauseUpdatingTime;
-
         bool m_active;
 
         bool m_desktop;

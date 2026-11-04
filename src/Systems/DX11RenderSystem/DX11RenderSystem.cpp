@@ -570,10 +570,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderMaterialStageCacheInterfacePtr DX11RenderSystem::createRenderMaterialStageCache( const RenderMaterialStage * _stage, const DocumentInterfacePtr & _doc )
     {
+        MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
+
         DX11RenderMaterialStageCachePtr materialStageCache = m_factoryRenderMaterialStageCache->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( materialStageCache, "invalid create material stage cache" );
 
         if( materialStageCache->initialize( m_pD3DDevice, _stage ) == false )
         {
+            LOGGER_ERROR( "invalid initialize material stage cache" );
+
             return nullptr;
         }
 
@@ -1026,6 +1032,7 @@ namespace Mengine
     void DX11RenderSystem::drawIndexedPrimitive( const RenderMaterialStageCacheInterfacePtr & _stageCache, const RenderIndexedPrimitiveDesc & _desc )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
+        MENGINE_ASSERTION_MEMORY_PANIC( _stageCache, "stage cache not set" );
 
         D3D11_PRIMITIVE_TOPOLOGY primitiveType = Helper::toD3DPrimitiveType( _desc.primitiveType );
 
@@ -1046,11 +1053,9 @@ namespace Mengine
             }
         }
 
-        if( _stageCache != nullptr )
-        {
-            DX11RenderMaterialStageCache * dx11MaterialStageCache = _stageCache.getT<DX11RenderMaterialStageCache *>();
-            dx11MaterialStageCache->begin( m_pD3DDeviceContext );
-        }
+        DX11RenderMaterialStageCache * dx11MaterialStageCache = _stageCache.getT<DX11RenderMaterialStageCache *>();
+
+        dx11MaterialStageCache->begin( m_pD3DDeviceContext );
 
         m_pD3DDeviceContext->RSSetState( m_pD3DRasterizerState.Get() );
 
@@ -1059,11 +1064,7 @@ namespace Mengine
 
         m_pD3DDeviceContext->RSSetState( nullptr );
 
-        if( _stageCache != nullptr )
-        {
-            DX11RenderMaterialStageCache * dx11MaterialStageCache = _stageCache.getT<DX11RenderMaterialStageCache *>();
-            dx11MaterialStageCache->end( m_pD3DDeviceContext );
-        }
+        dx11MaterialStageCache->end( m_pD3DDeviceContext );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setTexture( const RenderProgramInterfacePtr & _program, uint32_t _stage, const RenderImageInterfacePtr & _texture )
@@ -1100,60 +1101,6 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX11RenderSystem::setBlendFactor( EBlendFactor _src, EBlendFactor _dst, EBlendOp _op, EBlendFactor _separateSrc, EBlendFactor _separateDst, EBlendOp _separateOp, bool _separate )
-    {
-        MENGINE_UNUSED( _src );
-        MENGINE_UNUSED( _dst );
-        MENGINE_UNUSED( _op );
-        MENGINE_UNUSED( _separateSrc );
-        MENGINE_UNUSED( _separateDst );
-        MENGINE_UNUSED( _separateOp );
-        MENGINE_UNUSED( _separate );
-
-        //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DX11RenderSystem::setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV, uint32_t _border )
-    {
-        MENGINE_UNUSED( _stage );
-        MENGINE_UNUSED( _modeU );
-        MENGINE_UNUSED( _modeV );
-        MENGINE_UNUSED( _border );
-
-        //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DX11RenderSystem::setCullMode( ECullMode _mode )
-    {
-        MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
-        MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDeviceContext, "context not created" );
-
-        m_D3DRasterizerStateDesc.CullMode = Helper::toD3DCullMode( _mode );
-
-        m_invalidateRasterizerState = true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DX11RenderSystem::setDepthBufferTestEnable( bool _depthTest )
-    {
-        MENGINE_UNUSED( _depthTest );
-
-        //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DX11RenderSystem::setDepthBufferWriteEnable( bool _depthWrite )
-    {
-        MENGINE_UNUSED( _depthWrite );
-
-        //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DX11RenderSystem::setDepthBufferCmpFunc( ECompareFunction _depthFunction )
-    {
-        MENGINE_UNUSED( _depthFunction );
-
-        //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::setFillMode( EFillMode _mode )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, "device not created" );
@@ -1162,31 +1109,6 @@ namespace Mengine
         m_D3DRasterizerStateDesc.FillMode = Helper::toD3DFillMode( _mode );
 
         m_invalidateRasterizerState = true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DX11RenderSystem::setColorBufferWriteEnable( bool _r, bool _g, bool _b, bool _a )
-    {
-        MENGINE_UNUSED( _r );
-        MENGINE_UNUSED( _g );
-        MENGINE_UNUSED( _b );
-        MENGINE_UNUSED( _a );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DX11RenderSystem::setAlphaBlendEnable( bool _alphaBlend )
-    {
-        MENGINE_UNUSED( _alphaBlend );
-
-        //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DX11RenderSystem::setTextureStageFilter( uint32_t _stage, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification )
-    {
-        MENGINE_UNUSED( _stage );
-        MENGINE_UNUSED( _minification );
-        MENGINE_UNUSED( _mipmap );
-        MENGINE_UNUSED( _magnification );
-
-        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     RenderVertexAttributeInterfacePtr DX11RenderSystem::createVertexAttribute( const ConstString & _name, uint32_t _elementSize, const DocumentInterfacePtr & _doc )

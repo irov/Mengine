@@ -17,6 +17,7 @@
 #include "MetalRenderProgramVariableInterface.h"
 #include "MetalRenderProgramVariableStatic.h"
 #include "MetalRenderProgramVariableDynamic.h"
+#include "MetalRenderMaterialStageCache.h"
 
 #include "Kernel/IntrusiveList.h"
 #include "Kernel/ServiceBase.h"
@@ -78,18 +79,7 @@ namespace Mengine
 
     public:
         void setTexture( const RenderProgramInterfacePtr & _program, uint32_t _stageId, const RenderImageInterfacePtr & _texture ) override;
-        void setTextureAddressing( uint32_t _stageId, ETextureAddressMode _modeU, ETextureAddressMode _modeV, uint32_t _border ) override;
-        void setBlendFactor( EBlendFactor _src, EBlendFactor _dst, EBlendOp _op, EBlendFactor _separateSrc, EBlendFactor _separateDst, EBlendOp _separateOp, bool _separate ) override;
-        void setCullMode( ECullMode _mode ) override;
-        void setDepthBufferTestEnable( bool _depthTest ) override;
-        void setDepthBufferWriteEnable( bool _depthWrite ) override;
-        void setDepthBufferCmpFunc( ECompareFunction _depthFunction ) override;
         void setFillMode( EFillMode _mode ) override;
-        void setColorBufferWriteEnable( bool _r, bool _g, bool _b, bool _a ) override;
-        void setAlphaBlendEnable( bool _alphaBlend ) override;
-
-    public:
-        void setTextureStageFilter( uint32_t _stage, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification ) override;
 
     public:
         RenderVertexAttributeInterfacePtr createVertexAttribute( const ConstString & _name, uint32_t _elementSize, const DocumentInterfacePtr & _doc ) override;
@@ -171,7 +161,7 @@ namespace Mengine
 
     protected:
         void updatePMWMatrix_();
-        void updateDepthStencilState_();
+        void createDepthStencilStates_();
 
     protected:
         ConstString m_renderPlatform;
@@ -203,14 +193,6 @@ namespace Mengine
         struct TextureStage
         {
             RenderImageInterface * texture = nullptr;
-
-            ETextureFilter minFilter = TF_LINEAR;
-            ETextureFilter magFilter = TF_LINEAR;
-            ETextureFilter mipFilter = TF_NONE;
-            ETextureAddressMode wrapU = TAM_CLAMP;
-            ETextureAddressMode wrapV = TAM_CLAMP;
-
-            uint32_t border = 0;
         };
 
         TextureStage m_textureStage[MENGINE_MAX_TEXTURE_STAGES];
@@ -218,7 +200,7 @@ namespace Mengine
         id<MTLSamplerState> m_samplerStates[MENGINE_METAL_SAMPLER_MINMAG_FILTER_COUNT][MENGINE_METAL_SAMPLER_MINMAG_FILTER_COUNT][MENGINE_METAL_SAMPLER_MIP_FILTER_COUNT][MENGINE_METAL_SAMPLER_ADDRESS_MODE_COUNT][MENGINE_METAL_SAMPLER_ADDRESS_MODE_COUNT];
 
     protected:
-        id<MTLSamplerState> getOrCreateSamplerState_( const TextureStage & _textureStage );
+        id<MTLSamplerState> getOrCreateSamplerState_( const RenderTextureStage & _textureStage );
 
     protected:
         typedef IntrusiveList<MetalRenderResourceHandler> IntrusiveListMetalRenderResourceHandler;
@@ -226,36 +208,18 @@ namespace Mengine
 
         bool m_renderWindowCreate;
         bool m_renderDeviceLost;
-        bool m_depthMask;
-        bool m_depthTest;
-        bool m_alphaBlend;
 
         Color m_clearColor;
         double m_clearDepth;
         int32_t m_clearStencil;
 
-        ECullMode m_cullMode;
         EFillMode m_fillMode;
-        ECompareFunction m_depthFunction;
-
-        EBlendFactor m_blendSrc;
-        EBlendFactor m_blendDst;
-        EBlendOp m_blendOp;
-        EBlendFactor m_blendSeparateSrc;
-        EBlendFactor m_blendSeparateDst;
-        EBlendOp m_blendSeparateOp;
-        bool m_blendSeparate;
-
-        bool m_colorMaskR;
-        bool m_colorMaskG;
-        bool m_colorMaskB;
-        bool m_colorMaskA;
 
         RenderDeviceInterfacePtr m_renderDevice;
 
         id<MTLDevice> m_device;
         id<MTLCommandQueue> m_commandQueue;
-        id<MTLDepthStencilState> m_depthStencilState;
+        id<MTLDepthStencilState> m_depthStencilStates[2][2];
 
         MetalRenderFrameContext m_frameContext;
 
@@ -270,6 +234,7 @@ namespace Mengine
         FactoryInterfacePtr m_factoryRenderProgram;
         FactoryInterfacePtr m_factoryRenderProgramVariableStatic;
         FactoryInterfacePtr m_factoryRenderProgramVariableDynamic;
+        FactoryInterfacePtr m_factoryRenderMaterialStageCache;
         FactoryInterfacePtr m_factoryRenderSurface;
         FactoryInterfacePtr m_factoryRenderDevice;
     };

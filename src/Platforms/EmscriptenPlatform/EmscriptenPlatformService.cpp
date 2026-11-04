@@ -578,17 +578,8 @@ namespace Mengine
             m_resetFrame = false;
         }
 
-        bool updating = APPLICATION_SERVICE()
-            ->beginUpdate();
-
-        if( updating == true )
-        {
-            APPLICATION_SERVICE()
-                ->tick( _frameTime );
-        }
-
         APPLICATION_SERVICE()
-            ->endUpdate();
+            ->tick( _frameTime );
     }
     //////////////////////////////////////////////////////////////////////////
     void EmscriptenPlatformService::stopPlatform()

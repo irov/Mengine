@@ -180,22 +180,11 @@ namespace Mengine
         RenderProgramInterfacePtr m_currentRenderProgram;
 
         uint32_t m_currentRenderTextureStage;
-        RenderTextureStage m_renderTextureStages[MENGINE_MAX_TEXTURE_STAGES];
-
-        RenderTextureStage m_defaultRenderTextureStage;
 
         uint32_t m_currentMaterialId;
         const RenderMaterialStage * m_currentRenderMaterialStage;
 
         UniqueId m_currentTexturesId[MENGINE_MAX_TEXTURE_STAGES];
-
-        EBlendFactor m_currentBlendSrc;
-        EBlendFactor m_currentBlendDst;
-        EBlendOp m_currentBlendOp;
-
-        EBlendFactor m_currentSeparateAlphaBlendSrc;
-        EBlendFactor m_currentSeparateAlphaBlendDst;
-        EBlendOp m_currentSeparateAlphaBlendOp;
 
         RenderContext m_currentRenderContext;
         
@@ -206,10 +195,5 @@ namespace Mengine
 
         typedef List<VectorRenderIndex> ListDebugIndices;
         ListDebugIndices m_debugRenderIndices;
-
-        bool m_currentSeparateAlphaBlendEnable;
-        bool m_currentAlphaBlendEnable;
-        bool m_currentDepthBufferTestEnable;
-        bool m_currentDepthBufferWriteEnable;
     };
 }

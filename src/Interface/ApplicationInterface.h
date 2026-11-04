@@ -12,6 +12,7 @@
 #include "Interface/ModuleInterface.h"
 #include "Interface/GameServiceInterface.h"
 #include "Interface/FileGroupInterface.h"
+#include "Interface/RenderPipelineInterface.h"
 
 #include "Config/UniqueId.h"
 #include "Config/Timestamp.h"
@@ -46,9 +47,7 @@ namespace Mengine
     public:
         virtual bool render() = 0;
         virtual void flush() = 0;
-        virtual bool beginUpdate() = 0;
-        virtual void tick( float _time ) = 0;
-        virtual void endUpdate() = 0;
+        virtual void tick( float _frameTime ) = 0;
         virtual void close() = 0;
 
         virtual void turnSound( bool _turn ) = 0;
@@ -157,10 +156,11 @@ namespace Mengine
         virtual bool getVideoEnable() const = 0;
 
     public:
-        virtual uint32_t getDebugMask() const = 0;
+        virtual void setDebugPause( bool _pause ) = 0;
+        virtual bool getDebugPause() const = 0;
 
     public:
-        virtual void debugPause( bool _pause ) = 0;
+        virtual const RenderPipelineInterfacePtr & getRenderPipeline() const = 0;
 
     public:
         virtual void quit() = 0;

@@ -4,11 +4,8 @@
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
-#include "Interface/ThreadServiceInterface.h"
-#include "Interface/ThreadSystemInterface.h"
 #include "Interface/InputServiceInterface.h"
 #include "Interface/RenderServiceInterface.h"
-#include "Interface/RenderSystemInterface.h"
 #include "Interface/SoundSystemInterface.h"
 #include "Interface/SoundServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
@@ -24,10 +21,8 @@
 #include "Interface/TimelineServiceInterface.h"
 #include "Interface/TimepipeServiceInterface.h"
 #include "Interface/ModuleServiceInterface.h"
-#include "Interface/SceneServiceInterface.h"
 #include "Interface/ChronometerServiceInterface.h"
 #include "Interface/SettingsServiceInterface.h"
-#include "Interface/FactoryServiceInterface.h"
 #include "Interface/UpdateServiceInterface.h"
 #include "Interface/PlatformServiceInterface.h"
 #include "Interface/LanguageServiceInterface.h"
@@ -150,12 +145,6 @@
 #include "Config/StdIntTypes.h"
 #include "Config/StdMath.h"
 
-#define MENGINE_DEBUG_HOTSPOTS 0x00000001
-#define MENGINE_DEBUG_PHYSICS 0x00000002
-#define MENGINE_DEBUG_NODES 0x00000004
-#define MENGINE_DEBUG_SHADOWS 0x00000008
-#define MENGINE_DEBUG_TILEPOLYGON 0x00000010
-
 /////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Application, Mengine::Application );
 //////////////////////////////////////////////////////////////////////////
@@ -169,6 +158,7 @@ namespace Mengine
         , m_focus( true )
         , m_updateGraceful( true )
         , m_nopause( false )
+        , m_pauseUpdatingTime( -1.f )
         , m_bits( 0 )
         , m_fullscreen( false )
         , m_nofullscreen( false )
@@ -181,7 +171,6 @@ namespace Mengine
         , m_fixedDisplayResolution( false )
         , m_fixedViewportResolution( false )
         , m_createRenderWindow( false )
-        , m_debugMask( 0 )
         , m_maxFrameTime( 100.f )
         , m_projectVersion( 0 )
         , m_invalidateVsync( true )
@@ -189,8 +178,6 @@ namespace Mengine
         , m_invalidateCursorMode( true )
         , m_inputMouseButtonEventBlock( false )
         , m_debugPause( false )
-        , m_debugFileOpen( false )
-        , m_debugResourceCompile( false )
         , m_initailizeGame( false )
     {
     }
@@ -379,28 +366,12 @@ namespace Mengine
             , buildNumber
         );
 
-        bool Debug_ShowHotspots = CONFIG_VALUE_BOOLEAN( "Debug", "ShowHotspots", false );
-
-        if( Debug_ShowHotspots == true )
-        {
-            m_debugMask |= MENGINE_DEBUG_HOTSPOTS;
-        }
-
         LOGGER_MESSAGE( "application company '%s' project '%s' version [%u] locale '%s'"
             , m_companyName.c_str()
             , m_projectName.c_str()
             , m_projectVersion
             , m_locale.c_str()
         );
-
-        bool OPTION_logopenfiles = HAS_OPTION( "logopenfiles" );
-
-        if( OPTION_logopenfiles == true )
-        {
-            m_debugFileOpen = true;
-
-            this->updateDebugOpenFile_();
-        }
 
         bool OPTION_novideo = HAS_OPTION( "novideo" );
 
@@ -460,17 +431,6 @@ namespace Mengine
             ->setSafeAreaViewportChangedCallback( nullptr );
 
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ENGINE_PREPARE_FINALIZE );
-
-        if( m_debugFileOpen == true )
-        {
-            NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_DEBUG_OPEN_FILE );
-        }
-
-        if( m_debugResourceCompile == true )
-        {
-            NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_DEVELOPMENT_RESOURCE_COMPILE );
-            NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_DEVELOPMENT_RESOURCE_RELEASE );
-        }
 
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "memoryImage" ) );
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "archiveImage" ) );
@@ -986,57 +946,6 @@ namespace Mengine
         NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_FINALIZE_GAME );
     }
     //////////////////////////////////////////////////////////////////////////
-    namespace Detail
-    {
-        //////////////////////////////////////////////////////////////////////////
-        static void printChildren2( const NodePtr & _node, uint32_t _tab )
-        {
-            _node->foreachChildren( [_tab]( const NodePtr & _child )
-            {
-                bool enable = _child->isEnable();
-
-                TransformationInterface * transformation = _child->getTransformation();
-
-                LOGGER_MESSAGE_RELEASE( "%.*s-%s %s[%s] |%p| lp (%.2f, %.2f, %.2f) lo (%.2f, %.2f, %.2f) wp (%.2f, %.2f, %.2f) %s"
-                    , _tab
-                    , "                                         "
-                    , (enable == false) ? "[DISABLE] " : ""
-                    , _child->getName().c_str()
-                    , Helper::getFactorableType( _child ).c_str()
-                    , _child.get()
-                    , transformation->getLocalPosition().x
-                    , transformation->getLocalPosition().y
-                    , transformation->getLocalPosition().z
-                    , transformation->getLocalOrientation().x
-                    , transformation->getLocalOrientation().y
-                    , transformation->getLocalOrientation().z
-                    , transformation->getWorldPosition().x
-                    , transformation->getWorldPosition().y
-                    , transformation->getWorldPosition().z
-                    , _child->getAnimation() == nullptr ? "" : (_child->getAnimation()->isPlay() == true ? "[Play]" : "[Stop]")
-                );
-
-                if( enable == false )
-                {
-                    return;
-                }
-
-                Detail::printChildren2( _child, _tab + 1 );
-            } );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static void printChildren( const NodePtr & _node )
-        {
-            if( _node == nullptr )
-            {
-                return;
-            }
-
-            Detail::printChildren2( _node, 0 );
-        }
-        //////////////////////////////////////////////////////////////////////////
-    }
-    //////////////////////////////////////////////////////////////////////////
     void Application::handleFocus( bool _focus )
     {
         if( SERVICE_IS_INITIALIZE( ModuleServiceInterface ) == true )
@@ -1054,365 +963,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::handleKeyEvent( const InputKeyEvent & _event )
     {
-#if defined(MENGINE_DEVICE_DESKTOP)
-        bool developmentMode = Helper::isDevelopmentMode();
-
-        if( developmentMode == true )
-        {
-            bool controlDown = _event.special.isControl;
-
-            if( _event.code == KC_F6 && _event.isDown == true )
-            {
-                if( (m_debugMask & MENGINE_DEBUG_HOTSPOTS) != 0 )
-                {
-                    m_debugMask ^= MENGINE_DEBUG_HOTSPOTS;
-                }
-                else
-                {
-                    m_debugMask |= MENGINE_DEBUG_HOTSPOTS;
-                }
-            }
-
-            if( _event.code == KC_F11 && _event.isDown == true )
-            {
-                static bool wireframeMode = false;
-
-                wireframeMode = !wireframeMode;
-
-                if( wireframeMode == true )
-                {
-                    RENDER_SYSTEM()
-                        ->setFillMode( FM_WIREFRAME );
-                }
-                else
-                {
-                    RENDER_SYSTEM()
-                        ->setFillMode( FM_SOLID );
-                }
-            }
-
-            if( _event.code == KC_F10 && _event.isDown == true )
-            {
-                if( (m_debugMask & MENGINE_DEBUG_NODES) != 0 )
-                {
-                    m_debugMask ^= MENGINE_DEBUG_NODES;
-                }
-                else
-                {
-                    m_debugMask |= MENGINE_DEBUG_NODES;
-                }
-            }
-
-            if( _event.code == KC_F8 && _event.isDown == true )
-            {
-                if( (m_debugMask & MENGINE_DEBUG_TILEPOLYGON) != 0 )
-                {
-                    m_debugMask ^= MENGINE_DEBUG_TILEPOLYGON;
-                }
-                else
-                {
-                    m_debugMask |= MENGINE_DEBUG_TILEPOLYGON;
-                }
-            }
-
-            if( _event.code == KC_F5 && _event.isDown == true && controlDown == true )
-            {
-                SCENE_SERVICE()
-                    ->removeCurrentScene( false, nullptr );
-            }
-
-            if( _event.code == KC_F5 && _event.isDown == true && controlDown == false )
-            {
-                SCENE_SERVICE()
-                    ->restartCurrentScene( false, nullptr );
-            }
-
-#if defined(MENGINE_DEBUG_FACTORY_ENABLE)
-            if( _event.code == KC_G && _event.isDown == true && controlDown == true )
-            {
-                FACTORY_SERVICE()
-                    ->debugFactoryIncrefGeneration();
-            }
-#endif
-
-            if( _event.code == KC_OEM_MINUS && _event.isDown == true )
-            {
-                if( m_renderPipeline->decrefDebugLimitRenderObjects() == false )
-                {
-                    m_debugPause = false;
-
-                    m_renderPipeline->enableDebugStepRenderMode( false );
-                }
-            }
-
-            if( _event.code == KC_MULTIPLY && _event.isDown == true )
-            {
-                m_debugPause = !m_debugPause;
-            }
-
-            if( _event.code == KC_OEM_PLUS && _event.isDown == true )
-            {
-                m_renderPipeline->increfDebugLimitRenderObjects();
-
-                if( m_debugPause == false )
-                {
-                    m_renderPipeline->enableDebugStepRenderMode( true );
-                }
-
-                m_debugPause = true;
-            }
-
-            if( _event.special.isAlt == true && _event.isDown == true )
-            {
-                float timeFactorBase = -1.f;
-
-                switch( _event.code )
-                {
-                case KC_P: timeFactorBase = 0.f; break;
-                case KC_0: timeFactorBase = 0.5f; break;
-                case KC_1: timeFactorBase = 1.f; break;
-                case KC_2: timeFactorBase = 2.f; break;
-                case KC_3: timeFactorBase = 3.f; break;
-                case KC_4: timeFactorBase = 4.f; break;
-                case KC_5: timeFactorBase = 5.f; break;
-                case KC_6: timeFactorBase = 6.f; break;
-                case KC_7: timeFactorBase = 7.f; break;
-                case KC_8: timeFactorBase = 8.f; break;
-                case KC_9: timeFactorBase = 9.f; break;
-                default: break;
-                }
-
-                if( timeFactorBase >= 0.f )
-                {
-                    TIMELINE_SERVICE()
-                        ->setTimeFactorBase( timeFactorBase );
-
-                    float timeFactor = TIMELINE_SERVICE()
-                        ->calcTimeFactor();
-
-                    LOGGER_MESSAGE_RELEASE( "time factor: %f"
-                        , timeFactor
-                    );
-                }
-            }
-
-            if( _event.code == KC_OEM_6 && _event.isDown == true )
-            {
-                int32_t timeFactorCount = TIMELINE_SERVICE()
-                    ->getTimeFactorCount();
-
-                int32_t timeFactorStep = 1;
-
-                if( _event.special.isAlt == true )
-                {
-                    timeFactorStep *= 10;
-                }
-
-                timeFactorCount += timeFactorStep;
-
-                TIMELINE_SERVICE()
-                    ->setTimeFactorCount( timeFactorCount );
-
-                float timeFactor = TIMELINE_SERVICE()
-                    ->calcTimeFactor();
-
-                LOGGER_MESSAGE_RELEASE( "time factor: %f"
-                    , timeFactor
-                );
-            }
-
-            if( _event.code == KC_OEM_4 && _event.isDown == true )
-            {
-                int32_t timeFactorCount = TIMELINE_SERVICE()
-                    ->getTimeFactorCount();
-
-                int32_t timeFactorStep = -1;
-
-                if( _event.special.isAlt == true )
-                {
-                    timeFactorStep *= 10;
-                }
-
-                timeFactorCount += timeFactorStep;
-
-                TIMELINE_SERVICE()
-                    ->setTimeFactorCount( timeFactorCount );
-
-                float timeFactor = TIMELINE_SERVICE()
-                    ->calcTimeFactor();
-
-                LOGGER_MESSAGE_RELEASE( "time factor: %f"
-                    , timeFactor
-                );
-            }
-
-            //if( _event.code == KC_F12 && _event.isDown == true )
-            //{
-            //    bool enable = RENDER_SERVICE()
-            //        ->isRedAlertMode();
-
-            //    RENDER_SERVICE()
-            //        ->enableRedAlertMode( !enable );
-            //}
-
-            if( _event.code == KC_F3 && _event.isDown == true )
-            {
-                m_debugResourceCompile = !m_debugResourceCompile;
-
-                this->updateDebugResourceCompile_();
-            }
-
-            if( _event.code == KC_F4 && _event.isDown == true )
-            {
-                m_debugFileOpen = !m_debugFileOpen;
-
-                this->updateDebugOpenFile_();
-            }
-
-            if( _event.code == KC_P && _event.isDown == true && controlDown == true )
-            {
-                static bool s_particle_enable = true;
-
-                s_particle_enable = !s_particle_enable;
-
-                APPLICATION_SERVICE()
-                    ->setParticleEnable( s_particle_enable );
-
-                LOGGER_MESSAGE_RELEASE( "particle [%s]"
-                    , s_particle_enable == true ? "enable" : "disable"
-                );
-            }
-
-            if( _event.code == KC_T && _event.isDown == true && controlDown == true )
-            {
-                static bool s_text_enable = true;
-
-                s_text_enable = !s_text_enable;
-
-                APPLICATION_SERVICE()
-                    ->setTextEnable( s_text_enable );
-
-                LOGGER_MESSAGE_RELEASE( "text [%s]"
-                    , s_text_enable == true ? "enable" : "disable"
-                );
-            }
-
-            if( _event.code == KC_V && _event.isDown == true && controlDown == true )
-            {
-                static bool s_video_enable = true;
-
-                s_video_enable = !s_video_enable;
-
-                APPLICATION_SERVICE()
-                    ->setVideoEnable( s_video_enable );
-
-                LOGGER_MESSAGE_RELEASE( "video [%s]"
-                    , s_video_enable == true ? "enable" : "disable"
-                );
-            }
-
-            if( _event.code == KC_R && _event.isDown == true && controlDown == true )
-            {
-                static bool s_text_debug = true;
-
-                s_text_debug = !s_text_debug;
-
-                NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_TEXT_MODE, s_text_debug );
-            }
-
-            if( _event.code == KC_E && _event.isDown == true && controlDown == true )
-            {
-                const ConstString & locale = APPLICATION_SERVICE()
-                    ->getLocale();
-
-                LOGGER_MESSAGE_RELEASE( "reload locale [%s]"
-                    , locale.c_str()
-                );
-
-                class MyRestartSceneChange
-                    : public SceneChangeCallbackInterface
-                    , public Factorable
-                {
-                protected:
-                    void onSceneChange( const ScenePtr & _scene, bool _enable, bool _remove, bool _error ) override
-                    {
-                        MENGINE_UNUSED( _enable );
-                        MENGINE_UNUSED( _remove );
-                        MENGINE_UNUSED( _error );
-
-                        if( _scene == nullptr )
-                        {
-                            const ConstString & locale = APPLICATION_SERVICE()
-                                ->getLocale();
-
-                            NOTIFICATION_NOTIFY( NOTIFICATOR_RELOAD_LOCALE_PREPARE );
-                            NOTIFICATION_NOTIFY( NOTIFICATOR_RELOAD_LOCALE );
-                            NOTIFICATION_NOTIFY( NOTIFICATOR_RELOAD_LOCALE_POST );
-
-                            NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_LOCALE_PREPARE, locale, locale );
-                            NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_LOCALE, locale, locale );
-                            NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_LOCALE_POST, locale, locale );
-                        }
-                    }
-                };
-
-                typedef IntrusivePtr<MyRestartSceneChange> MyRestartSceneChangePtr;
-
-                MyRestartSceneChangePtr cb = Helper::makeFactorableUnique<MyRestartSceneChange>( MENGINE_DOCUMENT_FACTORABLE );
-
-                SCENE_SERVICE()
-                    ->restartCurrentScene( false, cb );
-            }
-
-            //if( _event.code == KC_0 && _event.isDown == true )
-            //{
-            //    static uint32_t batchMode = RENDER_SERVICE()
-            //        ->getBatchMode();
-
-            //    ++batchMode;
-
-            //    ERenderBatchMode mode = ERBM_NONE;
-            //    switch( batchMode % 3 )
-            //    {
-            //    case 0:
-            //        mode = ERBM_NONE;
-            //        break;
-            //    case 1:
-            //        mode = ERBM_NORMAL;
-            //        break;
-            //    case 2:
-            //        mode = ERBM_SMART;
-            //        break;
-            //    }
-
-            //    RENDER_SERVICE()
-            //        ->setBatchMode( mode );
-            //}
-
-            //if( _event.code == KC_F3 && _event.isDown == true )
-            //{
-            //    uint32_t count = stdex_allocator_report_count();
-
-            //    for( uint32_t i = 0; i != count; ++i )
-            //    {
-            //        stdex_memory_report_t * report = stdex_allocator_report_info( i );
-
-            //        LOGGER_ERROR( "block '%s' size [%u]"
-            //            , report->name
-            //            , report->count
-            //        );
-            //    }
-            //}
-
-            if( _event.code == KC_F7 && _event.isDown == true )
-            {
-                const ScenePtr & scene = SCENE_SERVICE()
-                    ->getCurrentScene();
-
-                Detail::printChildren( scene );
-            }
-        }
-#endif
         if( MODULE_SERVICE()
             ->handleKeyEvent( _event ) == true )
         {
@@ -1543,100 +1093,6 @@ namespace Mengine
         }
 
         return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Application::updateDebugOpenFile_()
-    {
-        if( m_debugFileOpen == true )
-        {
-            NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_DEBUG_OPEN_FILE, &Application::notifyDebugOpenFile_, MENGINE_DOCUMENT_FACTORABLE );
-        }
-        else
-        {
-            NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_DEBUG_OPEN_FILE );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Application::updateDebugResourceCompile_()
-    {
-        if( m_debugResourceCompile == true )
-        {
-            NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_DEVELOPMENT_RESOURCE_COMPILE, &Application::notifyDebugResourceCompile_, MENGINE_DOCUMENT_FACTORABLE );
-            NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_DEVELOPMENT_RESOURCE_RELEASE, &Application::notifyDebugResourceRelease_, MENGINE_DOCUMENT_FACTORABLE );
-        }
-        else
-        {
-            NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_DEVELOPMENT_RESOURCE_COMPILE );
-            NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_DEVELOPMENT_RESOURCE_RELEASE );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Application::notifyDebugOpenFile_( const FilePath & _folder, const FilePath & _filePath, bool _read, bool _streaming )
-    {
-        bool isMainThread = THREAD_SERVICE()
-            ->isMainThread();
-
-        if( isMainThread == true )
-        {
-            if( _streaming == false )
-            {
-                LOGGER_VERBOSE_LEVEL( "debug", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, nullptr, LFLAG_SHORT )("open %s %s%s"
-                    , _read == true ? "read" : "write"
-                    , _folder.c_str()
-                    , _filePath.c_str()
-                    );
-            }
-            else
-            {
-                LOGGER_VERBOSE_LEVEL( "debug", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, nullptr, LFLAG_SHORT )("streaming %s %s%s"
-                    , _read == true ? "read" : "write"
-                    , _folder.c_str()
-                    , _filePath.c_str()
-                    );
-            }
-        }
-        else
-        {
-            ThreadId tid = THREAD_SYSTEM()
-                ->getCurrentThreadId();
-
-            if( _streaming == false )
-            {
-                LOGGER_VERBOSE_LEVEL( "debug", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, nullptr, LFLAG_SHORT )("open [multithread:%" MENGINE_PRIu64 "] open %s %s%s"
-                    , tid
-                    , _read == true ? "read" : "write"
-                    , _folder.c_str()
-                    , _filePath.c_str()
-                    );
-            }
-            else
-            {
-                LOGGER_VERBOSE_LEVEL( "debug", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, nullptr, LFLAG_SHORT )("streaming [multithread:%" MENGINE_PRIu64 "] open %s %s%s"
-                    , tid
-                    , _read == true ? "read" : "write"
-                    , _folder.c_str()
-                    , _filePath.c_str()
-                    );
-            }
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Application::notifyDebugResourceCompile_( Resource * _resource )
-    {
-        LOGGER_VERBOSE_LEVEL( "debug", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, nullptr, LFLAG_SHORT )("compile %s type %s [%s]"
-            , _resource->getName().c_str()
-            , Helper::getFactorableType( _resource ).c_str()
-            , _resource->getGroupName().c_str()
-            );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Application::notifyDebugResourceRelease_( Resource * _resource )
-    {
-        LOGGER_VERBOSE_LEVEL( "debug", LM_MESSAGE_RELEASE, LFILTER_NONE, LCOLOR_GREEN, nullptr, 0, nullptr, LFLAG_SHORT )("release %s type %s [%s]"
-            , _resource->getName().c_str()
-            , Helper::getFactorableType( _resource ).c_str()
-            , _resource->getGroupName().c_str()
-            );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::handleMouseWheel( const InputMouseWheelEvent & _event )
@@ -1826,7 +1282,36 @@ namespace Mengine
             ->minimizeWindow();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Application::beginUpdate()
+    void Application::tick( float _frameTime )
+    {
+        MENGINE_PROFILER_CATEGORY();
+
+        if( this->beginUpdate_() == false )
+        {
+            if( m_pauseUpdatingTime < 0.f )
+            {
+                m_pauseUpdatingTime = _frameTime;
+            }
+
+            this->endUpdate_();
+
+            return;
+        }
+
+        float frameTime = _frameTime;
+
+        if( m_pauseUpdatingTime >= 0.f )
+        {
+            frameTime = m_pauseUpdatingTime;
+            m_pauseUpdatingTime = -1.f;
+        }
+
+        this->tickTimeline_( frameTime );
+
+        this->endUpdate_();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Application::beginUpdate_()
     {
         MENGINE_PROFILER_CATEGORY();
 
@@ -1865,7 +1350,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Application::tick( float _time )
+    void Application::tickTimeline_( float _time )
     {
         MENGINE_PROFILER_CATEGORY();
 
@@ -1907,7 +1392,7 @@ namespace Mengine
             ->end();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Application::endUpdate()
+    void Application::endUpdate_()
     {
         MENGINE_PROFILER_CATEGORY();
 
@@ -2391,11 +1876,6 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t Application::getDebugMask() const
-    {
-        return m_debugMask;
-    }
-    //////////////////////////////////////////////////////////////////////////
     size_t Application::getCompanyName( Char * const _companyName ) const
     {
         m_companyName.copy( _companyName );
@@ -2783,9 +2263,19 @@ namespace Mengine
             ->notifyCursorIconSetup( name, content, buffer );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Application::debugPause( bool _pause )
+    void Application::setDebugPause( bool _pause )
     {
         m_debugPause = _pause;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Application::getDebugPause() const
+    {
+        return m_debugPause;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderPipelineInterfacePtr & Application::getRenderPipeline() const
+    {
+        return m_renderPipeline;
     }
     //////////////////////////////////////////////////////////////////////////
 }

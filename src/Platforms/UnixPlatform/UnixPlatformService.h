@@ -200,7 +200,6 @@ namespace Mengine
 
         Resolution m_windowResolution;
         double m_prevTime;
-        float m_pauseUpdatingTime;
         float m_displayScale;
 
         bool m_active;

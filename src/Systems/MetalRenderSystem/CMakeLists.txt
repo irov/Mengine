@@ -18,6 +18,8 @@ src
     MetalRenderIndexBuffer.h
     MetalRenderProgram.mm
     MetalRenderProgram.h
+    MetalRenderMaterialStageCache.mm
+    MetalRenderMaterialStageCache.h
     MetalRenderProgramVariableInterface.h
     MetalRenderProgramVariableStatic.mm
     MetalRenderProgramVariableStatic.h

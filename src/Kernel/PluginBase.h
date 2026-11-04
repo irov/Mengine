@@ -40,6 +40,10 @@ namespace Mengine
         void finalizePlugin() override;
 
     protected:
+        bool startPlugin() override;
+        void stopPlugin() override;
+
+    protected:
         bool isInitializePlugin() const override;
         bool isAvailablePlugin() const override;
         bool isSystemPlugin() const override;
@@ -50,6 +54,8 @@ namespace Mengine
     protected:
         virtual bool _initializePlugin();
         virtual void _finalizePlugin();
+        virtual bool _startPlugin();
+        virtual void _stopPlugin();
         virtual void _destroyPlugin();
         virtual bool _availablePlugin() const;
         virtual bool _systemPlugin() const;
@@ -63,6 +69,7 @@ namespace Mengine
         bool m_dynamicLoad;
         bool m_frameworkMode;
         bool m_initializePlugin;
+        bool m_startPlugin;
         bool m_availablePlugin;
         bool m_systemPlugin;
     };

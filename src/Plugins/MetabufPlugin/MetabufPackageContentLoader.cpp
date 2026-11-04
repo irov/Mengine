@@ -534,12 +534,15 @@ namespace Mengine
             const RenderMaterialStage * cache_stage = RENDERMATERIAL_SERVICE()
                 ->createMaterialStage( name, stage, MENGINE_DOCUMENT_FACTORABLE );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( cache_stage, "material '%s' invalid create stage group '%s'"
-                , Helper::getContentFullPath( _desc.content ).c_str()
-                , name.c_str()
-            );
+            if( cache_stage == nullptr )
+            {
+                LOGGER_ERROR( "material '%s' invalid create stage group '%s'"
+                    , Helper::getContentFullPath( _desc.content ).c_str()
+                    , name.c_str()
+                );
 
-            MENGINE_UNUSED( cache_stage );
+                return false;
+            }
 
             if( is_debug == true )
             {

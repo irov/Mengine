@@ -83,6 +83,7 @@ namespace Mengine
         m_factoryRenderProgram = Helper::makeFactoryPoolWithListener<OpenGLRenderProgram, 16>( this, &OpenGLRenderSystem::onRenderProgramDestroy_, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderProgramVariableStatic = Helper::makeFactoryPool<OpenGLRenderProgramVariableStatic, 16>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderProgramVariableDynamic = Helper::makeFactoryPool<OpenGLRenderProgramVariableDynamic, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRenderMaterialStageCache = Helper::makeFactoryPool<OpenGLRenderMaterialStageCache, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         OpenGLRenderImageLockedFactoryStorage::initialize( Helper::makeFactoryPool<OpenGLRenderImageLocked, 16>( MENGINE_DOCUMENT_FACTORABLE ) );
 
@@ -100,6 +101,7 @@ namespace Mengine
 #endif
 
         m_currentProgram = nullptr;
+        m_currentMaterialStageCache = nullptr;
         m_currentProgramVariable = nullptr;
         m_currentVertexAttribute = nullptr;
         m_currentIndexBuffer = nullptr;
@@ -134,6 +136,7 @@ namespace Mengine
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderProgram );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderProgramVariableStatic );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderProgramVariableDynamic );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderMaterialStageCache );
 
         m_factoryRenderVertexBuffer = nullptr;
         m_factoryRenderIndexBuffer = nullptr;
@@ -147,6 +150,7 @@ namespace Mengine
         m_factoryRenderProgram = nullptr;
         m_factoryRenderProgramVariableStatic = nullptr;
         m_factoryRenderProgramVariableDynamic = nullptr;
+        m_factoryRenderMaterialStageCache = nullptr;
 
         MENGINE_ASSERTION_STATISTIC_EMPTY( STATISTIC_RENDER_TEXTURE_ALLOC_COUNT );
         MENGINE_ASSERTION_STATISTIC_EMPTY( STATISTIC_RENDER_OPENGL_FRAMEBUFFER_COUNT );
@@ -257,7 +261,7 @@ namespace Mengine
         MENGINE_GLCALL( glDisable, (GL_DITHER) );
 
         MENGINE_GLCALL( glDepthMask, (GL_FALSE) );
-        MENGINE_GLCALL( glDepthFunc, (GL_LESS) );
+        MENGINE_GLCALL( glDepthFunc, (GL_LEQUAL) );
 
         GLfloat r = m_clearColor.getR();
         GLfloat g = m_clearColor.getG();
@@ -700,12 +704,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::drawIndexedPrimitive( const RenderMaterialStageCacheInterfacePtr & _stageCache, const RenderIndexedPrimitiveDesc & _desc )
     {
-        MENGINE_UNUSED( _stageCache );
-        MENGINE_UNUSED( _desc );
-
+        MENGINE_ASSERTION_MEMORY_PANIC( _stageCache, "stage cache not set" );
         MENGINE_ASSERTION_FATAL( m_currentIndexBuffer != nullptr, "index buffer not set" );
         MENGINE_ASSERTION_FATAL( m_currentVertexBuffer != nullptr, "vertex buffer not set" );
         MENGINE_ASSERTION_FATAL( m_currentProgram != nullptr, "program not set" );
+
+        if( m_currentMaterialStageCache != _stageCache )
+        {
+            m_currentMaterialStageCache = OpenGLRenderMaterialStageCachePtr::from( _stageCache );
+
+            m_currentMaterialStageCache->apply();
+
+            m_depthMask = m_currentMaterialStageCache->getDepthBufferWriteEnable();
+        }
 
         if( m_currentProgram->enable() == false )
         {
@@ -751,10 +762,12 @@ namespace Mengine
 
             GLenum textureTarget = extension->getTextureTarget();
 
-            MENGINE_GLCALL( glTexParameteri, (textureTarget, GL_TEXTURE_WRAP_S, textureStage.wrapS) );
-            MENGINE_GLCALL( glTexParameteri, (textureTarget, GL_TEXTURE_WRAP_T, textureStage.wrapT) );
-            MENGINE_GLCALL( glTexParameteri, (textureTarget, GL_TEXTURE_MIN_FILTER, textureStage.minFilter) );
-            MENGINE_GLCALL( glTexParameteri, (textureTarget, GL_TEXTURE_MAG_FILTER, textureStage.magFilter) );
+            const OpenGLTextureStageDesc & textureStageDesc = m_currentMaterialStageCache->getTextureStage( stageId );
+
+            MENGINE_GLCALL( glTexParameteri, (textureTarget, GL_TEXTURE_WRAP_S, textureStageDesc.wrapS) );
+            MENGINE_GLCALL( glTexParameteri, (textureTarget, GL_TEXTURE_WRAP_T, textureStageDesc.wrapT) );
+            MENGINE_GLCALL( glTexParameteri, (textureTarget, GL_TEXTURE_MIN_FILTER, textureStageDesc.minFilter) );
+            MENGINE_GLCALL( glTexParameteri, (textureTarget, GL_TEXTURE_MAG_FILTER, textureStageDesc.magFilter) );
 
             if( m_currentProgram->bindTexture( stageId ) == false )
             {
@@ -829,113 +842,9 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::setTextureAddressing( uint32_t _stageId, ETextureAddressMode _modeU, ETextureAddressMode _modeV, uint32_t _border )
-    {
-        MENGINE_ASSERTION_FATAL( _stageId < MENGINE_MAX_TEXTURE_STAGES, "invalid stage id %u"
-            , _stageId
-        );
-
-        GLenum modeUGL = Helper::toGLAddressMode( _modeU );
-        GLenum modeVGL = Helper::toGLAddressMode( _modeV );
-
-        m_textureStage[_stageId].wrapS = modeUGL;
-        m_textureStage[_stageId].wrapT = modeVGL;
-        m_textureStage[_stageId].border = _border;
-    }
-    //////////////////////////////////////////L////////////////////////////////
-    void OpenGLRenderSystem::setBlendFactor( EBlendFactor _src, EBlendFactor _dst, EBlendOp _op, EBlendFactor _separateSrc, EBlendFactor _separateDst, EBlendOp _separateOp, bool _separate )
-    {
-        const GLenum srcBlendFactor = Helper::toGLBlendFactor( _src );
-        const GLenum dstBlendFactor = Helper::toGLBlendFactor( _dst );
-        const GLenum blendOp = Helper::toGLBlendOp( _op );
-
-        if( _separate == false )
-        {
-            MENGINE_GLCALL( glBlendFunc, (srcBlendFactor, dstBlendFactor) );
-
-#if defined(MENGINE_RENDER_OPENGL_ES)
-            MENGINE_GLCALL( glBlendEquation, (blendOp) );
-#else
-            MENGINE_GLCALL( glBlendEquation_, (blendOp) );
-#endif
-        }
-        else
-        {
-            const GLenum srcSeparateBlendFactor = Helper::toGLBlendFactor( _separateSrc );
-            const GLenum dstSeparateBlendFactor = Helper::toGLBlendFactor( _separateDst );
-            const GLenum separateBlendOp = Helper::toGLBlendOp( _separateOp );
-
-#if defined(MENGINE_RENDER_OPENGL_ES)
-            MENGINE_GLCALL( glBlendFuncSeparate, (srcBlendFactor, dstBlendFactor, srcSeparateBlendFactor, dstSeparateBlendFactor) );
-#else
-            MENGINE_GLCALL( glBlendFuncSeparate_, (srcBlendFactor, dstBlendFactor, srcSeparateBlendFactor, dstSeparateBlendFactor) );
-#endif
-
-#if defined(MENGINE_RENDER_OPENGL_ES)
-            MENGINE_GLCALL( glBlendEquationSeparate, (blendOp, separateBlendOp) );
-#else
-            MENGINE_GLCALL( glBlendEquationSeparate_, (blendOp, separateBlendOp) );
-#endif
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::setCullMode( ECullMode _mode )
-    {
-        switch( _mode )
-        {
-        case CM_CULL_CW:
-            {
-                MENGINE_GLCALL( glCullFace, (GL_FRONT) );
-                MENGINE_GLCALL( glEnable, (GL_CULL_FACE) );
-            }break;
-        case CM_CULL_CCW:
-            {
-                MENGINE_GLCALL( glCullFace, (GL_BACK) );
-                MENGINE_GLCALL( glEnable, (GL_CULL_FACE) );
-            }break;
-        case CM_CULL_NONE:
-            {
-                MENGINE_GLCALL( glDisable, (GL_CULL_FACE) );
-            }break;
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
     uint32_t OpenGLRenderSystem::getAvailableTextureMemory() const
     {
         return 0U;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::setDepthBufferTestEnable( bool _depthTest )
-    {
-        if( _depthTest == true )
-        {
-            MENGINE_GLCALL( glEnable, (GL_DEPTH_TEST) );
-        }
-        else
-        {
-            MENGINE_GLCALL( glDisable, (GL_DEPTH_TEST) );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::setDepthBufferWriteEnable( bool _depthWrite )
-    {
-        m_depthMask = _depthWrite;
-
-        if( m_depthMask == true )
-        {
-            MENGINE_GLCALL( glDepthMask, (GL_TRUE) );
-        }
-        else
-        {
-            MENGINE_GLCALL( glDepthMask, (GL_FALSE) );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::setDepthBufferCmpFunc( ECompareFunction _depthFunction )
-    {
-        GLenum cmpFunc = Helper::toGLCmpFunc( _depthFunction );
-
-        MENGINE_GLCALL( glDepthFunc, (cmpFunc) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setFillMode( EFillMode _mode )
@@ -947,40 +856,6 @@ namespace Mengine
 
         MENGINE_GLCALL( glPolygonMode, (GL_FRONT_AND_BACK, mode) );
 #endif
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::setColorBufferWriteEnable( bool _r, bool _g, bool _b, bool _a )
-    {
-        GLboolean red = _r ? GL_TRUE : GL_FALSE;
-        GLboolean green = _g ? GL_TRUE : GL_FALSE;
-        GLboolean blue = _b ? GL_TRUE : GL_FALSE;
-        GLboolean alpha = _a ? GL_TRUE : GL_FALSE;
-
-        MENGINE_GLCALL( glColorMask, (red, green, blue, alpha) );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::setAlphaBlendEnable( bool _alphaBlend )
-    {
-        if( _alphaBlend == true )
-        {
-            MENGINE_GLCALL( glEnable, (GL_BLEND) );
-        }
-        else
-        {
-            MENGINE_GLCALL( glDisable, (GL_BLEND) );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::setTextureStageFilter( uint32_t _stageId, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification )
-    {
-        MENGINE_ASSERTION_FATAL( _stageId < MENGINE_MAX_TEXTURE_STAGES, "invalid stage id %u"
-            , _stageId
-        );
-
-        TextureStage & tStage = m_textureStage[_stageId];
-
-        tStage.minFilter = Helper::toGLMinFilter( _minification, _mipmap );
-        tStage.magFilter = Helper::toGLMagFilter( _magnification );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::findFormatFromChannels_( EPixelFormat _format, EPixelFormat * const _hwFormat ) const
@@ -1095,7 +970,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderSystem::beginScene()
     {
-        //Empty
+        m_currentMaterialStageCache = nullptr;
 
         return true;
     }
@@ -1242,6 +1117,8 @@ namespace Mengine
             return true;
         }
 
+        MENGINE_GLCALL( glDepthFunc, (GL_LEQUAL) );
+
 #if defined(MENGINE_RENDER_OPENGL_NORMAL)
         GLuint vertexArrayId = GL_NONE;
         MENGINE_GLCALL( glGenVertexArrays, (1, &vertexArrayId) );
@@ -1384,12 +1261,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderMaterialStageCacheInterfacePtr OpenGLRenderSystem::createRenderMaterialStageCache( const RenderMaterialStage * _stage, const DocumentInterfacePtr & _doc )
     {
-        MENGINE_UNUSED( _stage );
-        MENGINE_UNUSED( _doc );
+        OpenGLRenderMaterialStageCachePtr materialStageCache = m_factoryRenderMaterialStageCache->createObject( _doc );
 
-        //Empty
+        MENGINE_ASSERTION_MEMORY_PANIC( materialStageCache, "invalid create material stage cache" );
 
-        return nullptr;
+        materialStageCache->initialize( _stage );
+
+        return materialStageCache;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onRenderVertexBufferDestroy_( OpenGLRenderVertexBuffer * _vertexBuffer )

@@ -22,6 +22,10 @@ namespace Mengine
         virtual void unloadPlugins() = 0;
 
     public:
+        virtual bool startPlugins() = 0;
+        virtual void stopPlugins() = 0;
+
+    public:
         virtual bool addPlugin( const PluginInterfacePtr & _plugin, const DynamicLibraryInterfacePtr & _dynamicLibrary ) = 0;
         virtual bool removePlugin( const PluginInterfacePtr & _plugin ) = 0;
         virtual bool hasPlugin( const ConstString & _pluginName ) const = 0;

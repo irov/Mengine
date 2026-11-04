@@ -40,24 +40,6 @@ namespace Mengine
             return MTLBlendOperationAdd;
         }
         //////////////////////////////////////////////////////////////////////////
-        MTLCompareFunction toMTLCmpFunc( ECompareFunction _function )
-        {
-            switch( _function )
-            {
-            case CMPF_ALWAYS_FAIL: return MTLCompareFunctionNever;
-            case CMPF_ALWAYS_PASS: return MTLCompareFunctionAlways;
-            case CMPF_LESS: return MTLCompareFunctionLess;
-            case CMPF_LESS_EQUAL: return MTLCompareFunctionLessEqual;
-            case CMPF_EQUAL: return MTLCompareFunctionEqual;
-            case CMPF_NOT_EQUAL: return MTLCompareFunctionNotEqual;
-            case CMPF_GREATER_EQUAL: return MTLCompareFunctionGreaterEqual;
-            case CMPF_GREATER: return MTLCompareFunctionGreater;
-            default:;
-            }
-
-            return MTLCompareFunctionAlways;
-        }
-        //////////////////////////////////////////////////////////////////////////
         MTLSamplerMinMagFilter toMTLMagFilter( ETextureFilter _magFilter )
         {
             switch( _magFilter )
@@ -216,19 +198,6 @@ namespace Mengine
             }
 
             return MTLVertexFormatInvalid;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        MTLCullMode toMTLCullMode( ECullMode _mode )
-        {
-            switch( _mode )
-            {
-            case CM_CULL_NONE: return MTLCullModeNone;
-            case CM_CULL_CW: return MTLCullModeFront;
-            case CM_CULL_CCW: return MTLCullModeBack;
-            default:;
-            }
-
-            return MTLCullModeNone;
         }
         //////////////////////////////////////////////////////////////////////////
         MTLIndexType toMTLIndexType( uint32_t _size )

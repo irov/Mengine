@@ -60,24 +60,6 @@ namespace Mengine
             return GL_NONE;
         }
         //////////////////////////////////////////////////////////////////////////
-        GLenum toGLCmpFunc( ECompareFunction _function )
-        {
-            switch( _function )
-            {
-            case CMPF_ALWAYS_FAIL: return GL_NEVER;
-            case CMPF_ALWAYS_PASS: return GL_ALWAYS;
-            case CMPF_LESS: return GL_LESS;
-            case CMPF_LESS_EQUAL: return GL_LEQUAL;
-            case CMPF_EQUAL: return GL_EQUAL;
-            case CMPF_NOT_EQUAL: return GL_NOTEQUAL;
-            case CMPF_GREATER_EQUAL: return GL_GEQUAL;
-            case CMPF_GREATER: return GL_GREATER;
-            default:;
-            }
-
-            return GL_NONE;
-        }
-        //////////////////////////////////////////////////////////////////////////
         GLenum toGLMagFilter( ETextureFilter _magFilter )
         {
             switch( _magFilter )

@@ -210,46 +210,6 @@ namespace Mengine
             return D3D11_TEXTURE_ADDRESS_CLAMP;
         }
         //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE D3D11_CULL_MODE toD3DCullMode( ECullMode _mode )
-        {
-            switch( _mode )
-            {
-            case CM_CULL_NONE:
-                return D3D11_CULL_NONE;
-            case CM_CULL_CW:
-                return D3D11_CULL_FRONT;
-            case CM_CULL_CCW:
-                return D3D11_CULL_BACK;
-            }
-
-            return D3D11_CULL_NONE;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE D3D11_COMPARISON_FUNC toD3DCmpFunc( ECompareFunction _func )
-        {
-            switch( _func )
-            {
-            case CMPF_ALWAYS_FAIL:
-                return D3D11_COMPARISON_NEVER;
-            case CMPF_LESS:
-                return D3D11_COMPARISON_LESS;
-            case CMPF_EQUAL:
-                return D3D11_COMPARISON_EQUAL;
-            case CMPF_LESS_EQUAL:
-                return D3D11_COMPARISON_LESS_EQUAL;
-            case CMPF_GREATER:
-                return D3D11_COMPARISON_GREATER;
-            case CMPF_NOT_EQUAL:
-                return D3D11_COMPARISON_NOT_EQUAL;
-            case CMPF_GREATER_EQUAL:
-                return D3D11_COMPARISON_GREATER_EQUAL;
-            case CMPF_ALWAYS_PASS:
-                return D3D11_COMPARISON_ALWAYS;
-            }
-
-            return D3D11_COMPARISON_NEVER;
-        }
-        //////////////////////////////////////////////////////////////////////////
         MENGINE_INLINE D3D11_FILL_MODE toD3DFillMode( EFillMode _mode )
         {
             switch( _mode )

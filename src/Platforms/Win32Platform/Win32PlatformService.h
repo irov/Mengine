@@ -279,8 +279,6 @@ namespace Mengine
         bool m_sleepMode;
         bool m_windowExposed;
 
-        float m_pauseUpdatingTime;
-
         bool m_cursorInArea;
         bool m_clickOutArea[MENGINE_INPUT_MAX_MOUSE_BUTTON_CODE];
         bool m_cursorMode;

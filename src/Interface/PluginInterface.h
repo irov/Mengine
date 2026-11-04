@@ -47,6 +47,10 @@ namespace Mengine
         virtual void finalizePlugin() = 0;
 
     public:
+        virtual bool startPlugin() = 0;
+        virtual void stopPlugin() = 0;
+
+    public:
         virtual bool isInitializePlugin() const = 0;
         virtual bool isAvailablePlugin() const = 0;
         virtual bool isSystemPlugin() const = 0;

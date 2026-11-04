@@ -120,18 +120,7 @@ namespace Mengine
 
     public:
         virtual void setTexture( const RenderProgramInterfacePtr & _program, uint32_t _stageId, const RenderImageInterfacePtr & _texture ) = 0;
-        virtual void setTextureAddressing( uint32_t _stageId, ETextureAddressMode _modeU, ETextureAddressMode _modeV, uint32_t _border ) = 0;
-        virtual void setBlendFactor( EBlendFactor _src, EBlendFactor _dst, EBlendOp _op, EBlendFactor _separateSrc, EBlendFactor _separateDst, EBlendOp _separateOp, bool _separate ) = 0;
-        virtual void setCullMode( ECullMode _mode ) = 0;
-        virtual void setDepthBufferTestEnable( bool _depthTest ) = 0;
-        virtual void setDepthBufferWriteEnable( bool _depthWrite ) = 0;
-        virtual void setDepthBufferCmpFunc( ECompareFunction _depthFunction ) = 0;
         virtual void setFillMode( EFillMode _mode ) = 0;
-        virtual void setColorBufferWriteEnable( bool _r, bool _g, bool _b, bool _a ) = 0;
-        virtual void setAlphaBlendEnable( bool _alphaBlend ) = 0;
-
-    public:
-        virtual void setTextureStageFilter( uint32_t _stage, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification ) = 0;
 
     public:
         virtual RenderImageInterfacePtr createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _layers, EPixelFormat _format, const DocumentInterfacePtr & _doc ) = 0;

@@ -18,6 +18,8 @@ src
     OpenGLRenderIndexBuffer.h
     OpenGLRenderProgram.cpp
     OpenGLRenderProgram.h
+    OpenGLRenderMaterialStageCache.cpp
+    OpenGLRenderMaterialStageCache.h
     OpenGLRenderProgramVariableInterface.h
     OpenGLRenderProgramVariableStatic.cpp
     OpenGLRenderProgramVariableStatic.h

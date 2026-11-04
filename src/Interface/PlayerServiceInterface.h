@@ -12,6 +12,7 @@
 #include "Interface/RenderViewportInterface.h"
 #include "Interface/RenderCameraInterface.h"
 #include "Interface/RenderScissorInterface.h"
+#include "Interface/PlayerSceneRenderProviderInterface.h"
 
 #include "Kernel/RenderCameraOrthogonal.h"
 #include "Kernel/RenderViewport.h"
@@ -84,6 +85,10 @@ namespace Mengine
 
     public:
         virtual const RenderInterface * getRenderExtra() const = 0;
+
+    public:
+        virtual void setSceneRenderProvider( const PlayerSceneRenderProviderInterfacePtr & _sceneRenderProvider ) = 0;
+        virtual const PlayerSceneRenderProviderInterfacePtr & getSceneRenderProvider() const = 0;
 
     public:
         virtual const GlobalInputHandlerInterfacePtr & getGlobalInputHandler() const = 0;

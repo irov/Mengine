@@ -134,6 +134,14 @@ namespace Mengine
             return false;
         }
 
+        if( PLUGIN_SERVICE()
+            ->startPlugins() == false )
+        {
+            this->stop();
+
+            return false;
+        }
+
         m_state = STATE_RUNNING;
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_RUN );
@@ -198,6 +206,12 @@ namespace Mengine
             NOTIFICATION_NOTIFY( NOTIFICATOR_ENGINE_STOP );
             NOTIFICATION_NOTIFY( NOTIFICATOR_ENGINE_PREPARE_FINALIZE );
             NOTIFICATION_NOTIFY( NOTIFICATOR_ENGINE_FINALIZE );
+        }
+
+        if( SERVICE_IS_INITIALIZE( PluginServiceInterface ) == true )
+        {
+            PLUGIN_SERVICE()
+                ->stopPlugins();
         }
     }
     //////////////////////////////////////////////////////////////////////////

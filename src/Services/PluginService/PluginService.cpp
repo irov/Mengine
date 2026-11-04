@@ -22,6 +22,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     PluginService::PluginService()
+        : m_startPlugins( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -188,6 +189,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PluginService::unloadPlugins()
     {
+        this->stopPlugins();
+
         for( const PluginDesc & desc : m_plugins )
         {
             LIFECYCLE_SERVICE()
@@ -232,6 +235,48 @@ namespace Mengine
 
             desc.plugin->finalizePlugin();
             desc.plugin = nullptr;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PluginService::startPlugins()
+    {
+        if( m_startPlugins == true )
+        {
+            return true;
+        }
+
+        m_startPlugins = true;
+
+        VectorPlugins plugins = m_plugins;
+
+        for( const PluginDesc & desc : plugins )
+        {
+            if( desc.plugin->startPlugin() == false )
+            {
+                this->stopPlugins();
+
+                return false;
+            }
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PluginService::stopPlugins()
+    {
+        m_startPlugins = false;
+
+        VectorPlugins plugins = m_plugins;
+
+        for( VectorPlugins::const_reverse_iterator
+            it = plugins.rbegin(),
+            it_end = plugins.rend();
+            it != it_end;
+            ++it )
+        {
+            const PluginDesc & desc = *it;
+
+            desc.plugin->stopPlugin();
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -306,6 +351,18 @@ namespace Mengine
 
         m_plugins.emplace_back( desc );
 
+        if( m_startPlugins == false )
+        {
+            return true;
+        }
+
+        if( _plugin->startPlugin() == false )
+        {
+            this->removePlugin( _plugin );
+
+            return false;
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -330,6 +387,8 @@ namespace Mengine
             }
 
             const ConstString & pluginName = _plugin->getPluginName();
+
+            desc.plugin->stopPlugin();
 
             this->setAvailablePlugin( pluginName, false );
 

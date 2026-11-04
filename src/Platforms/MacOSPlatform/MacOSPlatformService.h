@@ -231,7 +231,6 @@ namespace Mengine
         StaticString<MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME> m_projectTitle;
 
         double m_prevTime;
-        float m_pauseUpdatingTime;
         float m_mainScreenScale;
 
         bool m_active;

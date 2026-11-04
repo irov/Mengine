@@ -102,6 +102,10 @@ namespace Mengine
         const RenderInterface * getRenderExtra() const override;
 
     public:
+        void setSceneRenderProvider( const PlayerSceneRenderProviderInterfacePtr & _sceneRenderProvider ) override;
+        const PlayerSceneRenderProviderInterfacePtr & getSceneRenderProvider() const override;
+
+    public:
         void initializeRenderResources() override;
         void finalizeRenderResources() override;
 
@@ -161,6 +165,8 @@ namespace Mengine
         RenderContext m_renderContext;
 
         RenderRootPtr m_renderExtra;
+
+        PlayerSceneRenderProviderInterfacePtr m_sceneRenderProvider;
 
         GlobalInputHandlerInterfacePtr m_globalInputHandler;
 

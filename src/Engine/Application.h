@@ -113,9 +113,7 @@ namespace Mengine
     public:
         bool render() override;
         void flush() override;
-        bool beginUpdate() override;
-        void tick( float _time ) override;
-        void endUpdate() override;
+        void tick( float _frameTime ) override;
         void close() override;
 
     public:
@@ -157,8 +155,6 @@ namespace Mengine
     public:
         void minimizeWindow() override;
 
-        uint32_t getDebugMask() const override;
-
     public:
         size_t getCompanyName( Char * const _companyName ) const override;
         size_t getProjectName( Char * const _projectName ) const override;
@@ -192,19 +188,19 @@ namespace Mengine
         void setCursorIcon( const ConstString & _resourceName ) override;
 
     public:
-        void debugPause( bool _pause ) override;
+        void setDebugPause( bool _pause ) override;
+        bool getDebugPause() const override;
+
+    public:
+        const RenderPipelineInterfacePtr & getRenderPipeline() const override;
+
+    protected:
+        bool beginUpdate_();
+        void tickTimeline_( float _time );
+        void endUpdate_();
 
     protected:
         void invalidateWindow_();
-
-    protected:
-        void updateDebugOpenFile_();
-        void notifyDebugOpenFile_( const FilePath & _folder, const FilePath & _filePath, bool _read, bool _streaming );
-
-    protected:
-        void updateDebugResourceCompile_();
-        void notifyDebugResourceCompile_( Resource * _resource );
-        void notifyDebugResourceRelease_( Resource * _resource );
 
     protected:
         void notifyEnginePrepareFinalize_();
@@ -225,6 +221,8 @@ namespace Mengine
         bool m_focus;
         bool m_updateGraceful;
         bool m_nopause;
+
+        float m_pauseUpdatingTime;
 
         MixerBooleanInterfacePtr m_updateFreezer;
         MixerBooleanInterfacePtr m_renderFreezer;
@@ -251,8 +249,6 @@ namespace Mengine
         bool m_fixedViewportResolution;
         bool m_createRenderWindow;
 
-        uint32_t m_debugMask;
-
         float m_maxFrameTime;
 
         ConstString m_cursorResourceName;
@@ -273,8 +269,6 @@ namespace Mengine
         bool m_inputMouseButtonEventBlock;
 
         bool m_debugPause;
-        bool m_debugFileOpen;
-        bool m_debugResourceCompile;
 
         bool m_initailizeGame;
     };

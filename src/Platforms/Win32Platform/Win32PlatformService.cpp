@@ -118,7 +118,6 @@ namespace Mengine
         , m_close( false )
         , m_hIcon( NULL )
         , m_windowExposed( false )
-        , m_pauseUpdatingTime( -1.f )
         , m_prevTime( 0.0 )
         , m_cursorInArea( false )
         , m_cursorMode( false )
@@ -676,31 +675,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32PlatformService::tickPlatform( float _frameTime )
     {
-        bool updating = APPLICATION_SERVICE()
-            ->beginUpdate();
-
-        if( updating == true )
-        {
-            if( m_pauseUpdatingTime >= 0.f )
-            {
-                _frameTime = m_pauseUpdatingTime;
-                m_pauseUpdatingTime = -1.f;
-            }
-
-            APPLICATION_SERVICE()
-                ->tick( _frameTime );
-        }
-
         APPLICATION_SERVICE()
-            ->endUpdate();
-
-        if( updating == false )
-        {
-            if( m_pauseUpdatingTime < 0.f )
-            {
-                m_pauseUpdatingTime = _frameTime;
-            }
-        }
+            ->tick( _frameTime );
     }
     //////////////////////////////////////////////////////////////////////////
     RenderPlatformInterface * Win32PlatformService::getRenderPlatform()
@@ -755,7 +731,8 @@ namespace Mengine
 #if defined(MENGINE_WINDOWS_SUPPORT_MIN_VERSION_VISTA)
             if( m_sessionLock == true )
             {
-                Helper::Win32Sleep( 200 );
+                THREAD_SYSTEM()
+                    ->sleep( 200 );
 
                 continue;
             }
@@ -763,7 +740,8 @@ namespace Mengine
 
             if( m_active == false )
             {
-                Helper::Win32Sleep( 100 );
+                THREAD_SYSTEM()
+                    ->sleep( 100 );
 
                 continue;
             }
@@ -772,20 +750,36 @@ namespace Mengine
 
             if( this->renderPlatform() == false )
             {
-                Helper::Win32Sleep( 100 );
+                THREAD_SYSTEM()
+                    ->sleep( 100 );
 
+                continue;
+            }
+
+            bool vsync = APPLICATION_SERVICE()
+                ->getVSync();
+
+            if( vsync == true )
+            {
                 continue;
             }
 
             bool OPTION_maxfps = HAS_OPTION( "maxfps" );
 
-            bool vsync = APPLICATION_SERVICE()
-                ->getVSync();
-
-            if( vsync == false && OPTION_maxfps == false )
+            if( OPTION_maxfps == true )
             {
-                Helper::Win32Sleep( 1 );
+                continue;
             }
+
+            double frameDuration = Helper::getElapsedTime() - currentTime;
+
+            if( frameDuration >= MENGINE_PLATFORM_TARGET_FRAME_TIME )
+            {
+                continue;
+            }
+
+            THREAD_SYSTEM()
+                ->sleep( 1 );
         }
     }
     //////////////////////////////////////////////////////////////////////////

@@ -4516,7 +4516,7 @@ namespace Mengine
         pybind::def_function_kernel( _kernel, "changeGlobalSetting", &Detail::s_changeGlobalSetting );
         pybind::def_function( _kernel, "changeGlobalSettingBool", &Detail::s_changeGlobalSettingBool );
         pybind::def_function( _kernel, "changeGlobalSettingInt", &Detail::s_changeGlobalSettingInt );
-        pybind::def_function( _kernel, "changeGlobalSettingUint", &Detail::s_changeGlobalSettingUInt );
+        pybind::def_function( _kernel, "changeGlobalSettingUInt", &Detail::s_changeGlobalSettingUInt );
         pybind::def_function( _kernel, "changeGlobalSettingUInt64", &Detail::s_changeGlobalSettingUInt64 );
         pybind::def_function( _kernel, "changeGlobalSettingFloat", &Detail::s_changeGlobalSettingFloat );
         pybind::def_function( _kernel, "changeGlobalSettingStrings", &Detail::s_changeGlobalSettingStrings );

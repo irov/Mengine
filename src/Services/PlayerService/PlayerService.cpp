@@ -18,9 +18,6 @@
 #include "Interface/ModuleServiceInterface.h"
 #include "Interface/ArrowServiceInterface.h"
 
-#include "Plugins/AstralaxPlugin/AstralaxInterface.h"
-#include "Plugins/NodeDebugRenderPlugin/NodeDebugRenderServiceInterface.h"
-
 #include "PlayerGlobalInputHandler.h"
 #include "PlayerGlobalAffectorable.h"
 
@@ -41,6 +38,7 @@
 #include "Kernel/LayoutBox.h"
 #include "Kernel/FactoryDefault.h"
 #include "Kernel/FactoryPool.h"
+#include "Kernel/Assertion.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
@@ -162,6 +160,8 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_REMOVE_SCENE_DESTROY );
 
         m_renderExtra = nullptr;
+
+        MENGINE_ASSERTION_FATAL( m_sceneRenderProvider == nullptr, "scene render provider not removed" );
 
         m_globalInputHandler = nullptr;
 
@@ -674,29 +674,32 @@ namespace Mengine
         return render;
     }
     //////////////////////////////////////////////////////////////////////////
+    void PlayerService::setSceneRenderProvider( const PlayerSceneRenderProviderInterfacePtr & _sceneRenderProvider )
+    {
+        m_sceneRenderProvider = _sceneRenderProvider;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const PlayerSceneRenderProviderInterfacePtr & PlayerService::getSceneRenderProvider() const
+    {
+        return m_sceneRenderProvider;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void PlayerService::render( const RenderPipelineInterfacePtr & _renderPipeline )
     {
         MENGINE_PROFILER_CATEGORY();
-
-        uint32_t debugMask = APPLICATION_SERVICE()
-            ->getDebugMask();
 
         const ScenePtr & scene = SCENE_SERVICE()
             ->getCurrentScene();
 
         if( scene != nullptr )
         {
-            if( debugMask == 0 )
+            if( m_sceneRenderProvider == nullptr )
             {
                 Helper::nodeRenderChildren( scene.get(), _renderPipeline, &m_renderContext, false );
             }
             else
             {
-                if( SERVICE_IS_INITIALIZE( NodeDebugRenderServiceInterface ) == true )
-                {
-                    NODEDEBUGRENDER_SERVICE()
-                        ->renderDebugNode( scene, _renderPipeline, &m_renderContext, false, false );
-                }
+                m_sceneRenderProvider->renderScene( scene, _renderPipeline, &m_renderContext );
             }
         }
 
@@ -705,20 +708,18 @@ namespace Mengine
 
         _renderPipeline->endDebugLimitRenderObjects();
 
-        if( debugMask == 0 )
-        {
-            const NodePtr & node = ARROW_SERVICE()
-                ->getArrowNode();
+        const NodePtr & arrow = ARROW_SERVICE()
+            ->getArrowNode();
 
-            Helper::nodeRenderChildren( node.get(), _renderPipeline, &m_renderContext, false );
+        if( m_sceneRenderProvider == nullptr )
+        {
+            const Node * arrowNode = arrow.get();
+
+            Helper::nodeRenderChildren( arrowNode, _renderPipeline, &m_renderContext, false );
         }
         else
         {
-            if( SERVICE_IS_INITIALIZE( NodeDebugRenderServiceInterface ) == true )
-            {
-                NODEDEBUGRENDER_SERVICE()
-                    ->renderDebugArrow( _renderPipeline, &m_renderContext, false, false );
-            }
+            m_sceneRenderProvider->renderArrow( arrow, _renderPipeline, &m_renderContext );
         }
 
         const RenderInterface * render = m_renderExtra->getRender();

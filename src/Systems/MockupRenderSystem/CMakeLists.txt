@@ -29,6 +29,8 @@ src
     MockupRenderProgram.cpp
     MockupRenderProgramVariable.h
     MockupRenderProgramVariable.cpp
+    MockupRenderMaterialStageCache.h
+    MockupRenderMaterialStageCache.cpp
 )
 
 ADD_MENGINE_LIBRARY(Systems)

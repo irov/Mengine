@@ -11,7 +11,6 @@ namespace Mengine
         GLenum toGLIndexType( uint32_t _size );
         GLenum toGLBlendFactor( EBlendFactor _filter );
         GLenum toGLBlendOp( EBlendOp _filter );
-        GLenum toGLCmpFunc( ECompareFunction _function );
         GLenum toGLMagFilter( ETextureFilter _magFilter );
         GLenum toGLMinFilter( ETextureFilter _minFilter, ETextureFilter _mipFilter );
         GLenum toGLInternalFormat( EPixelFormat _format );

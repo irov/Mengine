@@ -939,6 +939,9 @@ Core
     GlobalInputHandlerHelper.h
     GlobalInputHandlerHelper.cpp
 
+    GlobalHotkeys.h
+    GlobalHotkeys.cpp
+
     LoggerLevel.h
     LoggerMessage.h
 

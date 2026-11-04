@@ -5,6 +5,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/Assertion.h"
 #include "Kernel/AssertionObservable.h"
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/VocabularyHelper.h"
@@ -19,6 +20,7 @@ namespace Mengine
         : m_dynamicLoad( false )
         , m_frameworkMode( false )
         , m_initializePlugin( false )
+        , m_startPlugin( false )
         , m_availablePlugin( true )
         , m_systemPlugin( false )
     {
@@ -189,6 +191,10 @@ namespace Mengine
     {
         const ConstString & pluginName = this->getPluginName();
 
+        MENGINE_ASSERTION_FATAL( m_startPlugin == false, "plugin '%s' finalize without stop"
+            , pluginName.c_str()
+        );
+
         SERVICE_PROVIDER_GET()
             ->unlinkService( pluginName.c_str() );
 
@@ -206,6 +212,48 @@ namespace Mengine
         LOGGER_INFO( "plugin", "plugin finalize '%s'"
             , this->getPluginName().c_str()
         );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PluginBase::startPlugin()
+    {
+        if( m_startPlugin == true )
+        {
+            return true;
+        }
+
+        if( m_initializePlugin == false )
+        {
+            return true;
+        }
+
+        m_startPlugin = true;
+
+        bool successful = this->_startPlugin();
+
+        if( successful == false )
+        {
+            LOGGER_ERROR( "plugin '%s' not start"
+                , this->getPluginName().c_str()
+            );
+
+            this->stopPlugin();
+
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PluginBase::stopPlugin()
+    {
+        if( m_startPlugin == false )
+        {
+            return;
+        }
+
+        m_startPlugin = false;
+
+        this->_stopPlugin();
     }
     //////////////////////////////////////////////////////////////////////////
     bool PluginBase::isInitializePlugin() const
@@ -288,6 +336,18 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     void PluginBase::_finalizePlugin()
+    {
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PluginBase::_startPlugin()
+    {
+        //Empty
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PluginBase::_stopPlugin()
     {
         //Empty
     }

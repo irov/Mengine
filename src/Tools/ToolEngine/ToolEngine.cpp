@@ -167,6 +167,12 @@ namespace Mengine
         PLUGIN_CREATE( DevelopmentConverter, false, MENGINE_DOCUMENT_FUNCTION );
 #endif
 
+        if( PLUGIN_SERVICE()
+            ->startPlugins() == false )
+        {
+            return false;
+        }
+
         FileGroupInterfacePtr fileGroup;
 
         if( FILE_SERVICE()->mountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "global" ), &fileGroup, false, MENGINE_DOCUMENT_FUNCTION ) == false )
@@ -181,6 +187,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ToolEngineFinalize()
     {
+        PLUGIN_SERVICE()
+            ->stopPlugins();
         SERVICE_PROVIDER_STOP();
         PLUGIN_SERVICE()->unloadPlugins();
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FileGroup" ), STRINGIZE_STRING_LOCAL( "dev" ) );

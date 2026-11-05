@@ -27,9 +27,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Callback, View.OnKeyListener, View.OnTouchListener, SensorEventListener, InputManager.InputDeviceListener {
     public static final MengineTag TAG = MengineTag.of("MNGSurfaceView");
+
+    private static final long SURFACE_RELEASE_TIMEOUT_MS = 500;
 
     private SensorManager m_sensorManager;
     private InputManager m_inputManager;
@@ -302,7 +306,32 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
     public void surfaceDestroyed(@NonNull SurfaceHolder holder) {
         MengineLog.logInfo(TAG, "surfaceDestroyed");
 
-        MenginePlatformEventQueue.pushSurfaceDestroyedEvent();
+        CountDownLatch released = MenginePlatformEventQueue.pushSurfaceDestroyedEvent();
+
+        this.waitSurfaceReleased(released);
+    }
+
+    private void waitSurfaceReleased(@NonNull CountDownLatch released) {
+        MengineApplication application = MengineApplication.INSTANCE;
+
+        if (application == null) {
+            return;
+        }
+
+        if (application.isQuitRequested() == true) {
+            return;
+        }
+
+        try {
+            if (released.await(SURFACE_RELEASE_TIMEOUT_MS, TimeUnit.MILLISECONDS) == false) {
+                MengineLog.logWarning(TAG, "surfaceDestroyed render thread did not release surface in %d ms"
+                    , SURFACE_RELEASE_TIMEOUT_MS
+                );
+            }
+        } catch (final InterruptedException e) {
+            Thread thread = Thread.currentThread();
+            thread.interrupt();
+        }
     }
 
     @Override

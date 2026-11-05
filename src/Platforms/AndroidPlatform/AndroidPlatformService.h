@@ -191,6 +191,7 @@ namespace Mengine
         bool createContext_();
         void destroyContext_();
         bool restoreContext_();
+        bool makePbufferCurrent_();
 
         bool attachSurface_( ANativeWindow * _nativeWindow );
         void detachSurface_();

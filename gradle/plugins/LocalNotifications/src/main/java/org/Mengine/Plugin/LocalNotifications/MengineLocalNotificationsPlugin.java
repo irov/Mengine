@@ -2,7 +2,10 @@ package org.Mengine.Plugin.LocalNotifications;
 
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineActivity;
+import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineFragmentEngine;
 import org.Mengine.Base.MengineListenerActivity;
+import org.Mengine.Base.MengineListenerEngine;
 import org.Mengine.Base.MengineUtils;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -26,6 +29,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.PersistableBundle;
 import android.os.SystemClock;
 import android.os.Bundle;
@@ -39,7 +43,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-public class MengineLocalNotificationsPlugin extends MengineService implements MengineListenerActivity {
+public class MengineLocalNotificationsPlugin extends MengineService implements MengineListenerActivity, MengineListenerEngine {
     public static final String SERVICE_NAME = "LNotifications";
     public static final boolean SERVICE_EMBEDDING = true;
 
@@ -61,14 +65,81 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
     private final Set<Integer> m_scheduledAlarmNotificationIds = new HashSet<>();
 
     private boolean m_notificationPermissionGranted = false;
+    private boolean m_notificationPermissionRequested = false;
 
     @Override
     public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) {
+        if (MengineLocalNotificationsPlugin.hasPostNotificationsPermission(activity) == false) {
+            return;
+        }
+
+        this.startLocalNotifications(activity);
+    }
+
+    @Override
+    public void onResume(@NonNull MengineActivity activity) {
+        if (org.Mengine.Base.BuildConfig.MENGINE_RUNTIME_NATIVE == true) {
+            if (MengineFragmentEngine.INSTANCE.isMenginePlatformRun() == false) {
+                return;
+            }
+        }
+
+        this.requestNotificationPermission(activity);
+    }
+
+    @Override
+    public void onMenginePlatformRun(@NonNull MengineApplication application) {
+        MengineUtils.performOnMainThread(() -> {
+            MengineActivity activity = this.getMengineActivity();
+
+            if (activity == null) {
+                return;
+            }
+
+            MengineActivity.ELifecycleState lifecycleState = activity.getLifecycleState();
+
+            if (lifecycleState != MengineActivity.ELifecycleState.ACTIVITY_RESUME) {
+                return;
+            }
+
+            this.requestNotificationPermission(activity);
+        });
+    }
+
+    private void requestNotificationPermission(@NonNull MengineActivity activity) {
+        if (m_notificationPermissionGranted == true) {
+            return;
+        }
+
+        if (MengineLocalNotificationsPlugin.hasPostNotificationsPermission(activity) == true) {
+            this.startLocalNotifications(activity);
+
+            return;
+        }
+
+        if (m_notificationPermissionRequested == true) {
+            return;
+        }
+
+        m_notificationPermissionRequested = true;
+
         activity.checkPermissionPostNotifications(() -> {
                 this.startLocalNotifications(activity);
             }
             , () -> {}
         );
+    }
+
+    private static boolean hasPostNotificationsPermission(@NonNull Context context) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            return true;
+        }
+
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override

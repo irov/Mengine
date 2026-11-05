@@ -1196,15 +1196,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::renderPlatform()
     {
-        bool sucessful = APPLICATION_SERVICE()
-            ->render();
-
-        if( sucessful == true )
-        {
-            APPLICATION_SERVICE()
-                ->flush();
-        }
-
         if( ::eglMakeCurrent( m_eglDisplay, m_eglSurface, m_eglSurface, m_eglContext ) == EGL_FALSE )
         {
             LOGGER_WARNING( "[egl] failed to make current [%d]"
@@ -1214,6 +1205,17 @@ namespace Mengine
             return false;
         }
 
+        bool rendered = APPLICATION_SERVICE()
+            ->render();
+
+        if( rendered == true )
+        {
+            APPLICATION_SERVICE()
+                ->flush();
+        }
+
+        bool swapped = true;
+
         if( m_swappyInitialized == true )
         {
             if( SwappyGL_swap( m_eglDisplay, m_eglSurface ) == false )
@@ -1222,7 +1224,7 @@ namespace Mengine
                     , ::eglGetError()
                 );
 
-                return false;
+                swapped = false;
             }
         }
         else
@@ -1233,8 +1235,18 @@ namespace Mengine
                     , ::eglGetError()
                 );
 
-                return false;
+                swapped = false;
             }
+        }
+
+        if( this->makePbufferCurrent_() == false )
+        {
+            return false;
+        }
+
+        if( swapped == false )
+        {
+            return false;
         }
 
         return true;
@@ -1256,6 +1268,8 @@ namespace Mengine
 
             if( this->updatePlatform() == false )
             {
+                m_activityMutex->unlock();
+
                 break;
             }
 
@@ -2451,19 +2465,35 @@ namespace Mengine
             return false;
         }
 
-        if( ::eglMakeCurrent( m_eglDisplay, m_eglSurface, m_eglSurface, m_eglContext ) == EGL_FALSE )
-        {
-            LOGGER_ERROR( "[egl] eglMakeCurrent failed: %d"
-                , ::eglGetError()
-            );
-
-            return false;
-        }
-
         if( RENDER_SERVICE()
             ->onDeviceLostRestore() == false )
         {
             return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AndroidPlatformService::makePbufferCurrent_()
+    {
+        if( ::eglMakeCurrent( m_eglDisplay, m_eglPbufferSurface, m_eglPbufferSurface, m_eglContext ) == EGL_FALSE )
+        {
+            LOGGER_WARNING( "[egl] failed to make current pbuffer surface [%d], restore context"
+                , ::eglGetError()
+            );
+
+            if( this->restoreContext_() == false )
+            {
+                this->destroyContext_();
+
+                JNIEnv * jenv = Mengine_JNI_GetEnv();
+
+                MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );
+
+                Helper::AndroidCallBooleanApplicationMethod( jenv, "quit", "()Z" );
+
+                return false;
+            }
         }
 
         return true;
@@ -2537,6 +2567,15 @@ namespace Mengine
             {
                 return false;
             }
+
+            if( ::eglMakeCurrent( m_eglDisplay, m_eglSurface, m_eglSurface, m_eglContext ) == EGL_FALSE )
+            {
+                LOGGER_ERROR( "[egl] eglMakeCurrent failed after restore context: %d"
+                    , ::eglGetError()
+                );
+
+                return false;
+            }
         }
 
         if( m_swappyInitialized == false )
@@ -2581,6 +2620,11 @@ namespace Mengine
         else
         {
             SwappyGL_setWindow( m_nativeWindow );
+        }
+
+        if( this->makePbufferCurrent_() == false )
+        {
+            return false;
         }
 
         return true;

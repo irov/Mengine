@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 public class MenginePlatformEventQueue {
     private static final MengineTag TAG = MengineTag.of("MNGPlatformEventQueue");
@@ -30,7 +31,7 @@ public class MenginePlatformEventQueue {
     record DestroyEvent() implements PlatformEvent {}
     record FreezeEvent(String owner, boolean freeze) implements PlatformEvent {}
     record SurfaceCreateEvent(Surface surface) implements PlatformEvent {}
-    record SurfaceDestroyEvent() implements PlatformEvent {}
+    record SurfaceDestroyEvent(CountDownLatch released) implements PlatformEvent {}
     record SurfaceChangedEvent(Surface surface, int surfaceWidth, int surfaceHeight, int deviceWidth, int deviceHeight, float rate) implements PlatformEvent {}
     record WindowInsetsEvent(Rect safeArea, Rect displayCutout) implements PlatformEvent {}
     record ClipboardChangedEvent() implements PlatformEvent {}
@@ -244,10 +245,15 @@ public class MenginePlatformEventQueue {
         MengineNative.AndroidPlatform_unlockActivity();
     }
 
-    public static void pushSurfaceDestroyedEvent() {
+    public static CountDownLatch pushSurfaceDestroyedEvent() {
+        CountDownLatch released = new CountDownLatch(1);
+        SurfaceDestroyEvent event = new SurfaceDestroyEvent(released);
+
         MengineNative.AndroidPlatform_lockActivity();
-        MenginePlatformEventQueue.pushEvent(new SurfaceDestroyEvent());
+        MenginePlatformEventQueue.pushEvent(event);
         MengineNative.AndroidPlatform_unlockActivity();
+
+        return released;
     }
 
     public static void pushSurfaceChangedEvent(Surface surface, int surfaceWidth, int surfaceHeight, int deviceWidth, int deviceHeight, float rate) {
@@ -262,21 +268,27 @@ public class MenginePlatformEventQueue {
 
     public static boolean processEvents(@NonNull MengineApplication application) {
         synchronized (m_syncEvents) {
-            if (m_events.isEmpty() == true) {
-                return false;
-            }
-
             m_eventsAux.addAll(m_events);
             m_events.clear();
         }
 
-        for (PlatformEvent event : m_eventsAux) {
+        while (m_eventsAux.isEmpty() == false) {
+            PlatformEvent event = m_eventsAux.get(0);
+
             if (application.isQuitRequested() == true
-                && (event instanceof QuitEvent) == false) {
+                && (event instanceof QuitEvent) == false
+                && (event instanceof SurfaceDestroyEvent) == false) {
+                m_eventsAux.remove(0);
+
                 continue;
             }
 
-            application.setState("event.call", event.getClass().getSimpleName());
+            Class<? extends PlatformEvent> eventClass = event.getClass();
+            String eventName = eventClass.getSimpleName();
+
+            application.setState("event.call", eventName);
+
+            m_eventsAux.remove(0);
 
             if (event instanceof PauseEvent pauseEvent) {
                 float pauseX = pauseEvent.x();
@@ -350,8 +362,11 @@ public class MenginePlatformEventQueue {
                 }
 
                 MengineNative.AndroidPlatform_surfaceCreatedEvent(surfaceCreated);
-            } else if (event instanceof SurfaceDestroyEvent) {
+            } else if (event instanceof SurfaceDestroyEvent surfaceDestroyEvent) {
                 MengineNative.AndroidPlatform_surfaceDestroyedEvent();
+
+                CountDownLatch released = surfaceDestroyEvent.released();
+                released.countDown();
             } else if (event instanceof SurfaceChangedEvent surfaceChangedEvent) {
                 Surface surfaceChanged = surfaceChangedEvent.surface();
 
@@ -380,8 +395,6 @@ public class MenginePlatformEventQueue {
                 MengineLog.logError(TAG, "unknown platform event type: %s", event);
             }
         }
-
-        m_eventsAux.clear();
 
         return false;
     }

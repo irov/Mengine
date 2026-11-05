@@ -53,15 +53,23 @@ message("============@@##START##@@============")
 
 if(MENGINE_DEPENDENCE_ZLIB)
     message("================zlib================")
-    configure_file(${CMAKE_CURRENT_LIST_DIR}/zlib/CMakeLists.txt ${THIRDPARTY_DIR}/zlib/CMakeLists.txt COPYONLY)
 
     set(ZLIB_BUILD_TESTING OFF CACHE BOOL "ZLIB_BUILD_TESTING" FORCE)
     set(ZLIB_BUILD_SHARED OFF CACHE BOOL "ZLIB_BUILD_SHARED" FORCE)
     set(ZLIB_BUILD_STATIC ON CACHE BOOL "ZLIB_BUILD_STATIC" FORCE)
     set(ZLIB_INSTALL OFF CACHE BOOL "ZLIB_INSTALL" FORCE)
-    set(ZLIB_PREFIX OFF CACHE BOOL "ZLIB_PREFIX" FORCE)
+    set(ZLIB_PREFIX "" CACHE STRING "ZLIB_PREFIX" FORCE)
+
+    # Regenerate build-local templates when output directories change.
+    unset(ZLIB_CONF_WRITTEN CACHE)
+    unset(ZLIB_DEF_WRITTEN CACHE)
+    unset(ZLIB_MAP_WRITTEN CACHE)
 
     ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/zlib ${THIRDPARTY_CONFIG_DIR}/zlib)
+
+    if(MSVC)
+        set_target_properties(zlibstatic PROPERTIES ARCHIVE_OUTPUT_NAME zs)
+    endif()
     
     if(WIN32)
         set(ZLIB_LIBRARIES zs${MENGINE_DEPENDENCIES_DEBUG_SUFFIX} CACHE STRING "ZLIB_LIBRARIES" FORCE)

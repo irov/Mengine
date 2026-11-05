@@ -2,8 +2,6 @@
 
 #if defined(MENGINE_OPENGL_RENDER_CHECK_ERROR_ENABLE)
 
-#include "OpenGLRenderExtension.h"
-
 #include "Kernel/Logger.h"
 
 #include "Config/Switch.h"
@@ -36,23 +34,30 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool OpenGLRenderErrorCheck( GLenum _err, const Char * _file, int32_t _line, const Char * _function, const Char * _method, const String & _args )
         {
-#if defined(MENGINE_PLATFORM_EMSCRIPTEN)
-            if( _err == GL_CONTEXT_LOST_WEBGL )
+            bool hasError = false;
+
+            for( GLenum error = _err; error != GL_NO_ERROR; error = glGetError() )
             {
-                return false;
-            }
+#if defined(MENGINE_PLATFORM_EMSCRIPTEN)
+                if( error == GL_CONTEXT_LOST_WEBGL )
+                {
+                    continue;
+                }
 #endif
 
-            const Char * err_str = glGetErrorString( _err );
+                const Char * errorMessage = Detail::glGetErrorString( error );
 
-            LOGGER_VERBOSE_LEVEL( "opengl", LM_ERROR, LFILTER_NONE, LCOLOR_RED, _file, _line, _function, LFLAG_SHORT | LFLAG_FILESTAMP | LFLAG_FUNCTIONSTAMP )("call '%s(%s)' get error: %s (hr:%d)"
-                , _method
-                , _args.c_str()
-                , err_str
-                , _err
+                LOGGER_VERBOSE_LEVEL( "opengl", LM_ERROR, LFILTER_NONE, LCOLOR_RED, _file, _line, _function, LFLAG_SHORT | LFLAG_FILESTAMP | LFLAG_FUNCTIONSTAMP )("call '%s(%s)' get error: %s (hr:%d)"
+                    , _method
+                    , _args.c_str()
+                    , errorMessage
+                    , error
                 );
 
-            return true;
+                hasError = true;
+            }
+
+            return hasError;
         }
         //////////////////////////////////////////////////////////////////////////
     }

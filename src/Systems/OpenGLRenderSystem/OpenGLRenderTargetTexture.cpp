@@ -135,13 +135,13 @@ namespace Mengine
         MENGINE_GLCALL( glDrawBuffers, (1, DrawBuffers) );
 #endif
 
-        if( glCheckFramebufferStatus( GL_FRAMEBUFFER ) != GL_FRAMEBUFFER_COMPLETE )
-        {
-            GLenum err = glGetError();
+        GLenum framebufferStatus;
+        MENGINE_GLCALLR( framebufferStatus, glCheckFramebufferStatus, (GL_FRAMEBUFFER) );
 
-            LOGGER_ERROR( "invalid create framebuffer status: %d error: %d"
-                , glCheckFramebufferStatus( GL_FRAMEBUFFER )
-                , err
+        if( framebufferStatus != GL_FRAMEBUFFER_COMPLETE )
+        {
+            LOGGER_ERROR( "invalid create framebuffer status: %u"
+                , framebufferStatus
             );
 
             extension->deleteTexture( m_tuid );
@@ -268,32 +268,77 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderTargetTexture::getData( void * const _buffer, size_t _pitch ) const
     {
-        const size_t rowBytes = (size_t)m_hwWidth * 4;
-        if( m_fuid == GL_NONE || _buffer == nullptr || _pitch < rowBytes )
+        if( m_fuid == GL_NONE )
+        {
+            return false;
+        }
+
+        if( _buffer == nullptr )
+        {
+            return false;
+        }
+
+        size_t rowBytes = (size_t)m_hwWidth * 4;
+
+        if( _pitch < rowBytes )
         {
             return false;
         }
 
         GLint oldFBO = 0;
+        MENGINE_IF_GLCALL( glGetIntegerv, (GL_FRAMEBUFFER_BINDING, &oldFBO) )
+        {
+            return false;
+        }
+
         GLint oldPackAlignment = 0;
-        glGetIntegerv( GL_FRAMEBUFFER_BINDING, &oldFBO );
-        glGetIntegerv( GL_PACK_ALIGNMENT, &oldPackAlignment );
+        MENGINE_IF_GLCALL( glGetIntegerv, (GL_PACK_ALIGNMENT, &oldPackAlignment) )
+        {
+            return false;
+        }
 
         Data readback;
         readback.resize( rowBytes * m_hwHeight );
 
-        while( glGetError() != GL_NO_ERROR )
+        bool successful = true;
+
+        MENGINE_IF_GLCALL( glBindFramebuffer, (GL_FRAMEBUFFER, m_fuid) )
         {
+            successful = false;
         }
 
-        glBindFramebuffer( GL_FRAMEBUFFER, m_fuid );
-        glPixelStorei( GL_PACK_ALIGNMENT, 1 );
-        glReadPixels( 0, 0, m_hwWidth, m_hwHeight, GL_RGBA, GL_UNSIGNED_BYTE, readback.data() );
-        GLenum error = glGetError();
-        glPixelStorei( GL_PACK_ALIGNMENT, oldPackAlignment );
-        glBindFramebuffer( GL_FRAMEBUFFER, oldFBO );
+        MENGINE_IF_GLCALL( glPixelStorei, (GL_PACK_ALIGNMENT, 1) )
+        {
+            successful = false;
+        }
 
-        if( error != GL_NO_ERROR )
+        if( successful == true )
+        {
+            // Report readback failures even when optional GL checks are disabled.
+            glReadPixels( 0, 0, m_hwWidth, m_hwHeight, GL_RGBA, GL_UNSIGNED_BYTE, readback.data() );
+            GLenum error = glGetError();
+
+            if( error != GL_NO_ERROR )
+            {
+                successful = false;
+
+#if defined(MENGINE_OPENGL_RENDER_CHECK_ERROR_ENABLE)
+                MENGINE_GLERRORCHECK( error, "glReadPixels", (0, 0, m_hwWidth, m_hwHeight, GL_RGBA, GL_UNSIGNED_BYTE, readback.data()) );
+#endif
+            }
+        }
+
+        MENGINE_IF_GLCALL( glPixelStorei, (GL_PACK_ALIGNMENT, oldPackAlignment) )
+        {
+            successful = false;
+        }
+
+        MENGINE_IF_GLCALL( glBindFramebuffer, (GL_FRAMEBUFFER, oldFBO) )
+        {
+            successful = false;
+        }
+
+        if( successful == false )
         {
             return false;
         }

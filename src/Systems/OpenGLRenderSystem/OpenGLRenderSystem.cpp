@@ -33,6 +33,19 @@ SERVICE_FACTORY( RenderSystem, Mengine::OpenGLRenderSystem );
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+        static const Char * getOpenGLString( GLenum _name )
+        {
+            const GLubyte * value;
+            MENGINE_GLCALLR( value, glGetString, (_name) );
+
+            return reinterpret_cast<const Char *>(value);
+        }
+        //////////////////////////////////////////////////////////////////////////
+    }
+    //////////////////////////////////////////////////////////////////////////
     OpenGLRenderSystem::OpenGLRenderSystem()
         : m_glMaxCombinedTextureImageUnits( 0 )
         , m_glMaxTexture2DSize( 0 )
@@ -192,9 +205,9 @@ namespace Mengine
         }
 #endif
 
-        const Char * versionStr = reinterpret_cast<const Char *>(glGetString( GL_VERSION ));
-        const Char * vendorStr = reinterpret_cast<const Char *>(glGetString( GL_VENDOR ));
-        const Char * rendererStr = reinterpret_cast<const Char *>(glGetString( GL_RENDERER ));
+        const Char * versionStr = Detail::getOpenGLString( GL_VERSION );
+        const Char * vendorStr = Detail::getOpenGLString( GL_VENDOR );
+        const Char * rendererStr = Detail::getOpenGLString( GL_RENDERER );
 
         LOGGER_MESSAGE( "OpenGL version: %s vendor: %s renderer: %s"
             , versionStr
@@ -203,7 +216,7 @@ namespace Mengine
         );
 
 #if defined(MENGINE_RENDER_OPENGL_ES)
-        const Char * extensionsStr = reinterpret_cast<const Char *>(glGetString( GL_EXTENSIONS ));
+        const Char * extensionsStr = Detail::getOpenGLString( GL_EXTENSIONS );
 
         MENGINE_UNUSED( extensionsStr );
 
@@ -212,7 +225,7 @@ namespace Mengine
         );
 #endif
 
-        const Char * shadingLanguageVersion = reinterpret_cast<const Char *>(glGetString( GL_SHADING_LANGUAGE_VERSION ));
+        const Char * shadingLanguageVersion = Detail::getOpenGLString( GL_SHADING_LANGUAGE_VERSION );
 
         MENGINE_UNUSED( shadingLanguageVersion );
 

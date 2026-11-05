@@ -54,7 +54,7 @@ if test -f "$SOLUTION_DIR/mengine_swiftpods.json"; then
 fi
 
 pushd $SOLUTION_DIR
-xcodebuild -workspace "$SOLUTION_DIR/Mengine_Xcode_iOS.xcworkspace" \
+xcodebuild -project "$SOLUTION_DIR/Mengine_Xcode_iOS.xcodeproj" \
     -scheme iOSApplication \
     -configuration "$CONFIGURATION" \
     -clonedSourcePackagesDirPath "$SOLUTION_DIR/SourcePackages" \

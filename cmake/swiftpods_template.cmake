@@ -60,6 +60,14 @@ MACRO(MENGINE_GENERATE_SWIFTPODS)
             message(FATAL_ERROR "SwiftPods is required for Apple SDK integration. Add swiftpods to PATH or set MENGINE_SWIFTPODS_EXECUTABLE.")
         endif()
 
+        execute_process(COMMAND "${MENGINE_SWIFTPODS_EXECUTABLE}" --version
+            OUTPUT_VARIABLE MENGINE_SWIFTPODS_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE
+            COMMAND_ERROR_IS_FATAL ANY)
+
+        if(MENGINE_SWIFTPODS_VERSION VERSION_LESS "0.3.11")
+            message(FATAL_ERROR "SwiftPods 0.3.11 or later is required for generated Xcode projects; found ${MENGINE_SWIFTPODS_VERSION}. Update swiftpods or set MENGINE_SWIFTPODS_EXECUTABLE.")
+        endif()
+
         SET(SWIFTPODS_PLATFORM "osx")
 
         if(CMAKE_SYSTEM_NAME STREQUAL "iOS")
@@ -277,7 +285,7 @@ function(_MENGINE_SWIFTPODS_PREPARE_PACKAGES SOLUTION_DIR)
             list(JOIN INPUTS ", " INPUTS)
             _MENGINE_SWIFTPODS_RUBY_QUOTE(NAME_RUBY "${NAME}")
             _MENGINE_SWIFTPODS_RUBY_QUOTE(SCRIPT_RUBY "${SCRIPT}")
-            SET(SCRIPTS "${SCRIPTS}  script_phase :name => ${NAME_RUBY}, :script => ${SCRIPT_RUBY}, :input_files => [${INPUTS}], :always_out_of_date => '1'\n")
+            SET(SCRIPTS "${SCRIPTS}  script_phase :name => ${NAME_RUBY}, :script => ${SCRIPT_RUBY}, :input_files => [${INPUTS}], :based_on_dependency_analysis => false\n")
         endforeach()
     endif()
 

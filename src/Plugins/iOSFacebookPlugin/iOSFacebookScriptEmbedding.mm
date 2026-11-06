@@ -3,6 +3,7 @@
 #include "iOSFacebookInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
+#include "Plugins/iOSNativePythonPlugin/iOSNativePythonTypeCast.h"
 #include "Environment/Python/PythonDocument.h"
 
 #import "Environment/Python/ApplePythonProvider.h"
@@ -25,7 +26,7 @@
         return;
     }
 
-    py_cb.call_args( (NSDictionary *)params, self.m_args );
+    py_cb.call_args( params, self.m_args );
 }
 
 - (void)onFacebookLoginCancel {
@@ -133,31 +134,23 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool iOSFacebook_isLoggedIn()
         {
-            return [[iOSFacebookPlugin sharedInstance] isLoggedIn];
+            bool loggedIn = [[iOSFacebookPlugin sharedInstance] isLoggedIn];
+
+            return loggedIn;
         }
         //////////////////////////////////////////////////////////////////////////
-        static PyObject * iOSFacebook_getAccessToken( pybind::kernel_interface * _kernel )
+        static NSString * iOSFacebook_getAccessToken()
         {
             NSString * accessToken = [[iOSFacebookPlugin sharedInstance] getAccessToken];
 
-            if( accessToken == nil )
-            {
-                return _kernel->ret_none();
-            }
-
-            return pybind::ptr( _kernel, accessToken.UTF8String );
+            return accessToken;
         }
         //////////////////////////////////////////////////////////////////////////
-        static PyObject * iOSFacebook_getUserId( pybind::kernel_interface * _kernel )
+        static NSString * iOSFacebook_getUserId()
         {
             NSString * userId = [[iOSFacebookPlugin sharedInstance] getUserId];
 
-            if( userId == nil )
-            {
-                return _kernel->ret_none();
-            }
-
-            return pybind::ptr( _kernel, userId.UTF8String );
+            return userId;
         }
         //////////////////////////////////////////////////////////////////////////
         static NSDictionary * iOSFacebook_getUser()
@@ -167,22 +160,19 @@ namespace Mengine
             return user;
         }
         //////////////////////////////////////////////////////////////////////////
-        static void iOSFacebook_shareLink( const Char * _link, const Char * _picture )
+        static void iOSFacebook_shareLink( NSString * _link, NSString * _picture )
         {
-            NSString * link = _link != nullptr ? [NSString stringWithUTF8String:_link] : @"";
-            NSString * picture = _picture != nullptr ? [NSString stringWithUTF8String:_picture] : @"";
-
-            if( link == nil )
+            if( _link == nil )
             {
-                link = @"";
+                _link = @"";
             }
 
-            if( picture == nil )
+            if( _picture == nil )
             {
-                picture = @"";
+                _picture = @"";
             }
 
-            [[iOSFacebookPlugin sharedInstance] shareLink:link picture:picture];
+            [[iOSFacebookPlugin sharedInstance] shareLink:_link picture:_picture];
         }
         //////////////////////////////////////////////////////////////////////////
         static void iOSFacebook_getProfilePictureLink()
@@ -206,8 +196,8 @@ namespace Mengine
         pybind::def_function( _kernel, "iOSFacebookLogin", &Detail::iOSFacebook_login );
         pybind::def_function( _kernel, "iOSFacebookLogout", &Detail::iOSFacebook_logout );
         pybind::def_function( _kernel, "iOSFacebookIsLoggedIn", &Detail::iOSFacebook_isLoggedIn );
-        pybind::def_function_kernel( _kernel, "iOSFacebookGetAccessToken", &Detail::iOSFacebook_getAccessToken );
-        pybind::def_function_kernel( _kernel, "iOSFacebookGetUserId", &Detail::iOSFacebook_getUserId );
+        pybind::def_function( _kernel, "iOSFacebookGetAccessToken", &Detail::iOSFacebook_getAccessToken );
+        pybind::def_function( _kernel, "iOSFacebookGetUserId", &Detail::iOSFacebook_getUserId );
         pybind::def_function( _kernel, "iOSFacebookGetUser", &Detail::iOSFacebook_getUser );
         pybind::def_function( _kernel, "iOSFacebookShareLink", &Detail::iOSFacebook_shareLink );
         pybind::def_function( _kernel, "iOSFacebookGetProfilePictureLink", &Detail::iOSFacebook_getProfilePictureLink );

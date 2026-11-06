@@ -3,6 +3,7 @@
 #include "iOSMARSDKInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
+#include "Plugins/iOSNativePythonPlugin/iOSNativePythonTypeCast.h"
 #include "Environment/Python/PythonDocument.h"
 
 #include "Kernel/ConstString.h"
@@ -230,17 +231,23 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool iOSMARSDK_login()
         {
-            return [[iOSMARSDKPlugin sharedInstance] login];
+            bool successful = [[iOSMARSDKPlugin sharedInstance] login];
+
+            return successful;
         }
         //////////////////////////////////////////////////////////////////////////
         static bool iOSMARSDK_logout()
         {
-            return [[iOSMARSDKPlugin sharedInstance] logout];
+            bool successful = [[iOSMARSDKPlugin sharedInstance] logout];
+
+            return successful;
         }
         //////////////////////////////////////////////////////////////////////////
         static bool iOSMARSDK_switchAccount()
         {
-            return [[iOSMARSDKPlugin sharedInstance] switchAccount];
+            bool successful = [[iOSMARSDKPlugin sharedInstance] switchAccount];
+
+            return successful;
         }
         //////////////////////////////////////////////////////////////////////////
         static void iOSMARSDK_requestNonConsumablePurchased()
@@ -248,55 +255,47 @@ namespace Mengine
             [[iOSMARSDKPlugin sharedInstance] requestNonConsumablePurchased];
         }
         //////////////////////////////////////////////////////////////////////////
-        static void iOSMARSDK_submitExtendedData(const Char * _data )
+        static void iOSMARSDK_submitExtendedData( NSString * _data )
         {
-            NSString * data = _data != nullptr ? [NSString stringWithUTF8String:_data] : nil;
-
-            if( data == nil )
+            if( _data == nil )
             {
-                data = @"";
+                _data = @"";
             }
 
-            [[iOSMARSDKPlugin sharedInstance] submitExtendedData:data];
+            [[iOSMARSDKPlugin sharedInstance] submitExtendedData:_data];
         }
         //////////////////////////////////////////////////////////////////////////
-        static void iOSMARSDK_submitPaymentData(const Char * _data )
+        static void iOSMARSDK_submitPaymentData( NSString * _data )
         {
-            NSString * data = _data != nullptr ? [NSString stringWithUTF8String:_data] : nil;
-
-            if( data == nil )
+            if( _data == nil )
             {
-                data = @"";
+                _data = @"";
             }
 
-            [[iOSMARSDKPlugin sharedInstance] submitPaymentData:data];
+            [[iOSMARSDKPlugin sharedInstance] submitPaymentData:_data];
         }
         //////////////////////////////////////////////////////////////////////////
-        static void iOSMARSDK_propComplete(const ConstString & _orderId )
+        static void iOSMARSDK_propComplete( NSString * _orderId )
         {
-            NSString * orderId = [NSString stringWithUTF8String:_orderId.c_str()];
-
-            if( orderId == nil )
+            if( _orderId == nil )
             {
-                orderId = @"";
+                _orderId = @"";
             }
 
-            [[iOSMARSDKPlugin sharedInstance] propComplete:orderId];
+            [[iOSMARSDKPlugin sharedInstance] propComplete:_orderId];
         }
         //////////////////////////////////////////////////////////////////////////
-        static void iOSMARSDK_showRewardVideoAd(const ConstString & _itemName, uint32_t _itemNum )
+        static void iOSMARSDK_showRewardVideoAd( NSString * _itemName, NSUInteger _itemNum )
         {
-            NSString * itemName = [NSString stringWithUTF8String:_itemName.c_str()];
-
-            if( itemName == nil )
+            if( _itemName == nil )
             {
-                itemName = @"";
+                _itemName = @"";
             }
 
-            [[iOSMARSDKPlugin sharedInstance] showRewardVideoAd:itemName itemNum:_itemNum];
+            [[iOSMARSDKPlugin sharedInstance] showRewardVideoAd:_itemName itemNum:_itemNum];
         }
         //////////////////////////////////////////////////////////////////////////
-        static int64_t iOSMARSDK_getInternetDate()
+        static NSInteger iOSMARSDK_getInternetDate()
         {
             return [[iOSMARSDKPlugin sharedInstance] getInternetDate];
         }

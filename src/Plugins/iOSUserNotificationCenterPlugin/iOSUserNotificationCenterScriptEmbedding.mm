@@ -16,7 +16,7 @@ namespace Mengine
             pybind::args copy_args = _args;
 
             [[iOSUserNotificationCenterPlugin sharedInstance] requestAuthorization:^(BOOL granted) {
-                copy_cb.call_args( granted == YES, copy_args );
+                copy_cb.call_args( granted, copy_args );
             }];
         }
         //////////////////////////////////////////////////////////////////////////

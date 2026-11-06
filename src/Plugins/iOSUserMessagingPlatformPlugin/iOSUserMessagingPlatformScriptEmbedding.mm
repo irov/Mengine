@@ -29,7 +29,9 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool iOSUserMessagingPlatform_isConsentFlowUserGeographyGDPR()
         {
-            return [[iOSUserMessagingPlatformPlugin sharedInstance] isConsentFlowUserGeographyGDPR];
+            bool gdpr = [[iOSUserMessagingPlatformPlugin sharedInstance] isConsentFlowUserGeographyGDPR];
+
+            return gdpr;
         }
         //////////////////////////////////////////////////////////////////////////
         static void iOSUserMessagingPlatform_waitForCompletion( const pybind::object & _cb, const pybind::args & _args )

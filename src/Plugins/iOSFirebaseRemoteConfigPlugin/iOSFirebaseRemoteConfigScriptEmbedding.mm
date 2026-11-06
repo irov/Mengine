@@ -22,12 +22,9 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool iOSFirebaseRemoteConfigService_hasRemoteConfig( NSString * _key )
         {
-            if( [[iOSFirebaseRemoteConfigPlugin sharedInstance] hasRemoteConfig:_key] == NO )
-            {
-                return false;
-            }
+            bool available = [[iOSFirebaseRemoteConfigPlugin sharedInstance] hasRemoteConfig:_key];
 
-            return true;
+            return available;
         }
         //////////////////////////////////////////////////////////////////////////
         static NSDictionary * iOSFirebaseRemoteConfigService_getRemoteConfigValue( NSString * _key )

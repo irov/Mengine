@@ -49,22 +49,16 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool iOSAppLovin_hasSupportedCMP()
         {
-            if( [[iOSAppLovinPlugin sharedInstance] hasSupportedCMP] == NO )
-            {
-                return false;
-            }
+            bool supported = [[iOSAppLovinPlugin sharedInstance] hasSupportedCMP];
 
-            return true;
+            return supported;
         }
         //////////////////////////////////////////////////////////////////////////
         static bool iOSAppLovin_isConsentFlowUserGeographyGDPR()
         {
-            if( [[iOSAppLovinPlugin sharedInstance] isConsentFlowUserGeographyGDPR] == NO )
-            {
-                return false;
-            }
+            bool gdpr = [[iOSAppLovinPlugin sharedInstance] isConsentFlowUserGeographyGDPR];
 
-            return true;
+            return gdpr;
         }
         //////////////////////////////////////////////////////////////////////////
         static void iOSAppLovin_loadAndShowCMPFlow( const pybind::dict & _cbs, const pybind::args & _args )

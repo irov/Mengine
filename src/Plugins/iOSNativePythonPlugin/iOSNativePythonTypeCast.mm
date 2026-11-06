@@ -5,6 +5,11 @@ namespace pybind
     //////////////////////////////////////////////////////////////////////////
     id extract_specialized<id>::operator () ( kernel_interface * _kernel, PyObject * _obj ) const
     {
+        if( _obj == nullptr )
+        {
+            pybind::throw_exception( "cannot convert a null Python object to Objective-C" );
+        }
+
         if( _kernel->is_none( _obj ) == true )
         {
             NSNull * value = [NSNull null];
@@ -107,7 +112,7 @@ namespace pybind
         {
             if( CFGetTypeID( (__bridge CFTypeRef)_value ) == CFBooleanGetTypeID() )
             {
-                bool value = [(NSNumber *)_value boolValue] == YES;
+                BOOL value = [(NSNumber *)_value boolValue];
                 PyObject * py_value = _kernel->ret_bool( value );
 
                 return py_value;

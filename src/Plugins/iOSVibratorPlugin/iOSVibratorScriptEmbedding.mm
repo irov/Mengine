@@ -19,7 +19,7 @@ namespace Mengine
             [[iOSVibratorPlugin sharedInstance] impact:_intensity sharpness:_sharpness];
         }
         //////////////////////////////////////////////////////////////////////////
-        static void iOSVibrator_mute( bool _mute )
+        static void iOSVibrator_mute( BOOL _mute )
         {
             [[iOSVibratorPlugin sharedInstance] mute:_mute];
         }

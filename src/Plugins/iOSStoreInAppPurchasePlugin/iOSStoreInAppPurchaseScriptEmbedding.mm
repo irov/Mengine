@@ -89,7 +89,9 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool iOSStoreInAppPurchase_canMakePayments()
         {
-            return [[iOSStoreInAppPurchasePlugin sharedInstance] canMakePayments];
+            bool available = [[iOSStoreInAppPurchasePlugin sharedInstance] canMakePayments];
+
+            return available;
         }
         //////////////////////////////////////////////////////////////////////////
         class PythoniOSStoreInAppPurchaseProductsResponse
@@ -133,7 +135,9 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool iOSStoreInAppPurchase_isOwnedProduct( NSString * _productIdentifier )
         {
-            return [[iOSStoreInAppPurchasePlugin sharedInstance] isOwnedProduct:_productIdentifier];
+            bool owned = [[iOSStoreInAppPurchasePlugin sharedInstance] isOwnedProduct:_productIdentifier];
+
+            return owned;
         }
         //////////////////////////////////////////////////////////////////////////
         static bool iOSStoreInAppPurchase_purchaseProduct( const iOSStoreInAppPurchaseProductInterfacePtr & _product )

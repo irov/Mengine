@@ -3,6 +3,7 @@
 #include "iOSAppleSignInInterface.h"
 
 #include "Environment/Python/PythonIncluder.h"
+#include "Plugins/iOSNativePythonPlugin/iOSNativePythonTypeCast.h"
 
 #import "Environment/Apple/AppleDetail.h"
 #import "Environment/Python/ApplePythonProvider.h"
@@ -22,7 +23,7 @@
         return;
     }
 
-    py_cb.call_args( (NSDictionary *)credential, self.m_args );
+    py_cb.call_args( credential, self.m_args );
 }
 
 - (void)onAppleSignInCancel {
@@ -94,15 +95,14 @@ namespace Mengine
             [[iOSAppleSignInPlugin sharedInstance] setProvider:provider];
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool iOSAppleSignIn_login( bool _requestEmail, bool _requestFullName, const Char * _state, const Char * _nonce )
+        static bool iOSAppleSignIn_login( BOOL _requestEmail, BOOL _requestFullName, NSString * _state, NSString * _nonce )
         {
-            NSString * state = _state != nullptr ? [NSString stringWithUTF8String:_state] : nil;
-            NSString * nonce = _nonce != nullptr ? [NSString stringWithUTF8String:_nonce] : nil;
+            bool successful = [[iOSAppleSignInPlugin sharedInstance] loginWithEmail:_requestEmail
+                                                                           fullName:_requestFullName
+                                                                              state:_state
+                                                                              nonce:_nonce];
 
-            return [[iOSAppleSignInPlugin sharedInstance] loginWithEmail:_requestEmail == true ? YES : NO
-                                                               fullName:_requestFullName == true ? YES : NO
-                                                                  state:state
-                                                                  nonce:nonce] == YES;
+            return successful;
         }
         //////////////////////////////////////////////////////////////////////////
         static NSString * iOSAppleSignIn_getStoredUserId()
@@ -115,22 +115,22 @@ namespace Mengine
             [[iOSAppleSignInPlugin sharedInstance] clearStoredCredential];
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool iOSAppleSignIn_checkCredentialState( const Char * _userId )
+        static bool iOSAppleSignIn_checkCredentialState( NSString * _userId )
         {
-            NSString * userId = _userId != nullptr ? [NSString stringWithUTF8String:_userId] : nil;
+            bool successful = [[iOSAppleSignInPlugin sharedInstance] checkCredentialState:_userId];
 
-            return [[iOSAppleSignInPlugin sharedInstance] checkCredentialState:userId] == YES;
+            return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool iOSAppleSignIn_showButton( iOSAppleSignInButtonType _type, iOSAppleSignInButtonStyle _style, float _x, float _y, float _width, float _height, float _cornerRadius )
+        static bool iOSAppleSignIn_showButton( iOSAppleSignInButtonType _type, iOSAppleSignInButtonStyle _style, CGFloat _x, CGFloat _y, CGFloat _width, CGFloat _height, CGFloat _cornerRadius )
         {
             bool successful = [[iOSAppleSignInPlugin sharedInstance] showButtonWithType:_type
-                                                                               style:_style
-                                                                                   x:(CGFloat)_x
-                                                                                   y:(CGFloat)_y
-                                                                               width:(CGFloat)_width
-                                                                              height:(CGFloat)_height
-                                                                        cornerRadius:(CGFloat)_cornerRadius] == YES;
+                                                                                  style:_style
+                                                                                      x:_x
+                                                                                      y:_y
+                                                                                  width:_width
+                                                                                 height:_height
+                                                                           cornerRadius:_cornerRadius];
 
             return successful;
         }
@@ -142,7 +142,9 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool iOSAppleSignIn_isButtonVisible()
         {
-            return [[iOSAppleSignInPlugin sharedInstance] isButtonVisible] == YES;
+            bool visible = [[iOSAppleSignInPlugin sharedInstance] isButtonVisible];
+
+            return visible;
         }
         //////////////////////////////////////////////////////////////////////////
     }

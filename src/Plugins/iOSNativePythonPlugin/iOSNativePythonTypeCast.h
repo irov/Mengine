@@ -17,4 +17,22 @@ namespace pybind
     {
         PyObject * operator () ( kernel_interface * _kernel, const id & _value ) const;
     };
+
+    template<>
+    struct ptr_throw_specialized<NSDictionary<NSString *, id> *>
+        : public ptr_throw_specialized<NSDictionary *>
+    {
+    };
+
+    template<>
+    struct ptr_throw_specialized<NSDictionary<NSString *, NSString *> *>
+        : public ptr_throw_specialized<NSDictionary *>
+    {
+    };
+
+    template<>
+    struct ptr_throw_specialized<NSArray<NSString *> *>
+        : public ptr_throw_specialized<NSArray *>
+    {
+    };
 }

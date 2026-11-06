@@ -208,16 +208,14 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool iOSAdvertisement_hasBanner()
         {
-            if ([[iOSAdvertisementPlugin sharedInstance] hasBanner] == NO) {
-                return false;
-            }
+            bool hasBanner = [[iOSAdvertisementPlugin sharedInstance] hasBanner];
 
-            return true;
+            return hasBanner;
         }
         //////////////////////////////////////////////////////////////////////////
         static bool iOSAdvertisement_isBannerLoaded()
         {
-            bool loaded = [[iOSAdvertisementPlugin sharedInstance] isBannerLoaded] == YES;
+            bool loaded = [[iOSAdvertisementPlugin sharedInstance] isBannerLoaded];
 
             return loaded;
         }
@@ -260,16 +258,14 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool iOSAdvertisement_hasTopper()
         {
-            if ([[iOSAdvertisementPlugin sharedInstance] hasTopper] == NO) {
-                return false;
-            }
+            bool hasTopper = [[iOSAdvertisementPlugin sharedInstance] hasTopper];
 
-            return true;
+            return hasTopper;
         }
         //////////////////////////////////////////////////////////////////////////
         static bool iOSAdvertisement_isTopperLoaded()
         {
-            bool loaded = [[iOSAdvertisementPlugin sharedInstance] isTopperLoaded] == YES;
+            bool loaded = [[iOSAdvertisementPlugin sharedInstance] isTopperLoaded];
 
             return loaded;
         }
@@ -314,115 +310,102 @@ namespace Mengine
             return pyHeight;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool iOSAdvertisement_hasInterstitial() {
-            if ([[iOSAdvertisementPlugin sharedInstance] hasInterstitial] == NO) {
-                return false;
-            }
+        static bool iOSAdvertisement_hasInterstitial()
+        {
+            bool hasInterstitial = [[iOSAdvertisementPlugin sharedInstance] hasInterstitial];
 
-            return true;
+            return hasInterstitial;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool iOSAdvertisement_canYouShowInterstitial( NSString * _placement ) {
-            if ([[iOSAdvertisementPlugin sharedInstance] canYouShowInterstitial:_placement] == NO) {
-                return false;
-            }
-            return true;
+        static bool iOSAdvertisement_canYouShowInterstitial( NSString * _placement )
+        {
+            bool canShow = [[iOSAdvertisementPlugin sharedInstance] canYouShowInterstitial:_placement];
+
+            return canShow;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool iOSAdvertisement_showInterstitial( NSString * _placement ) {
-            if ([[iOSAdvertisementPlugin sharedInstance] showInterstitial:_placement] == NO) {
-                return false;
-            }
+        static bool iOSAdvertisement_showInterstitial( NSString * _placement )
+        {
+            bool successful = [[iOSAdvertisementPlugin sharedInstance] showInterstitial:_placement];
 
-            return true;
+            return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool iOSAdvertisement_isShowingInterstitial() {
-            if ([[iOSAdvertisementPlugin sharedInstance] isShowingInterstitial] == NO) {
-                return false;
-            }
+        static bool iOSAdvertisement_isShowingInterstitial()
+        {
+            bool showing = [[iOSAdvertisementPlugin sharedInstance] isShowingInterstitial];
 
-            return true;
+            return showing;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool iOSAdvertisement_hasRewarded() {
-            if ([[iOSAdvertisementPlugin sharedInstance] hasRewarded] == NO) {
-                return false;
-            }
+        static bool iOSAdvertisement_hasRewarded()
+        {
+            bool hasRewarded = [[iOSAdvertisementPlugin sharedInstance] hasRewarded];
 
-            return true;
+            return hasRewarded;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool iOSAdvertisement_canOfferRewarded( NSString * _placement ) {
-            if ([[iOSAdvertisementPlugin sharedInstance] canOfferRewarded:_placement] == NO) {
-                return false;
-            }
+        static bool iOSAdvertisement_canOfferRewarded( NSString * _placement )
+        {
+            bool canOffer = [[iOSAdvertisementPlugin sharedInstance] canOfferRewarded:_placement];
 
-            return true;
+            return canOffer;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool iOSAdvertisement_canYouShowRewarded( NSString * _placement ) {
-            if ([[iOSAdvertisementPlugin sharedInstance] canYouShowRewarded:_placement] == NO) {
-                return false;
-            }
+        static bool iOSAdvertisement_canYouShowRewarded( NSString * _placement )
+        {
+            bool canShow = [[iOSAdvertisementPlugin sharedInstance] canYouShowRewarded:_placement];
 
-            return true;
+            return canShow;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool iOSAdvertisement_showRewarded( NSString * _placement ) {
-            if ([[iOSAdvertisementPlugin sharedInstance] showRewarded:_placement] == NO) {
-                return false;
-            }
+        static bool iOSAdvertisement_showRewarded( NSString * _placement )
+        {
+            bool successful = [[iOSAdvertisementPlugin sharedInstance] showRewarded:_placement];
 
-            return true;
+            return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool iOSAdvertisement_isShowingRewarded() {
-            if ([[iOSAdvertisementPlugin sharedInstance] isShowingRewarded] == NO) {
-                return false;
-            }
+        static bool iOSAdvertisement_isShowingRewarded()
+        {
+            bool showing = [[iOSAdvertisementPlugin sharedInstance] isShowingRewarded];
 
-            return true;
+            return showing;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool iOSAdvertisement_hasRewardedInterstitial() {
-            if ([[iOSAdvertisementPlugin sharedInstance] hasRewardedInterstitial] == NO) {
-                return false;
-            }
+        static bool iOSAdvertisement_hasRewardedInterstitial()
+        {
+            bool hasRewardedInterstitial = [[iOSAdvertisementPlugin sharedInstance] hasRewardedInterstitial];
 
-            return true;
+            return hasRewardedInterstitial;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool iOSAdvertisement_canYouShowRewardedInterstitial( NSString * _placement ) {
-            if ([[iOSAdvertisementPlugin sharedInstance] canYouShowRewardedInterstitial:_placement] == NO) {
-                return false;
-            }
+        static bool iOSAdvertisement_canYouShowRewardedInterstitial( NSString * _placement )
+        {
+            bool canShow = [[iOSAdvertisementPlugin sharedInstance] canYouShowRewardedInterstitial:_placement];
 
-            return true;
+            return canShow;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool iOSAdvertisement_showRewardedInterstitial( NSString * _placement ) {
-            if ([[iOSAdvertisementPlugin sharedInstance] showRewardedInterstitial:_placement] == NO) {
-                return false;
-            }
+        static bool iOSAdvertisement_showRewardedInterstitial( NSString * _placement )
+        {
+            bool successful = [[iOSAdvertisementPlugin sharedInstance] showRewardedInterstitial:_placement];
 
-            return true;
+            return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool iOSAdvertisement_isShowingRewardedInterstitial() {
-            if ([[iOSAdvertisementPlugin sharedInstance] isShowingRewardedInterstitial] == NO) {
-                return false;
-            }
+        static bool iOSAdvertisement_isShowingRewardedInterstitial()
+        {
+            bool showing = [[iOSAdvertisementPlugin sharedInstance] isShowingRewardedInterstitial];
 
-            return true;
+            return showing;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool iOSAdvertisement_getNoAds() {
-            if ([[iOSAdvertisementPlugin sharedInstance] getNoAds] == NO) {
-                return false;
-            }
+        static bool iOSAdvertisement_getNoAds()
+        {
+            bool noAds = [[iOSAdvertisementPlugin sharedInstance] getNoAds];
 
-            return true;
+            return noAds;
         }
         //////////////////////////////////////////////////////////////////////////
     }

@@ -14,6 +14,8 @@
 #include "Kernel/ThreadHelper.h"
 #include "Kernel/Assertion.h"
 
+#include "Config/Char.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -27,28 +29,33 @@ namespace Mengine
             {
                 MENGINE_UNUSED( _nothrow );
 
-                if( _kernel->string_check( _obj ) == true )
+                if( _kernel->is_none( _obj ) == true )
                 {
-                    const Char * value_char = _kernel->string_to_char( _obj );
+                    _value = nil;
 
-                    if( value_char == nullptr )
-                    {
-                        return false;
-                    }
-
-                    NSString * value = [NSString stringWithUTF8String:value_char];
-
-                    if( value == nil )
-                    {
-                        return false;
-                    }
-
-                    _value = value;
+                    return true;
                 }
-                else
+
+                if( _kernel->string_check( _obj ) == false )
                 {
                     return false;
                 }
+
+                const Char * value_char = _kernel->string_to_char( _obj );
+
+                if( value_char == nullptr )
+                {
+                    return false;
+                }
+
+                NSString * value = [NSString stringWithUTF8String:value_char];
+
+                if( value == nil )
+                {
+                    return false;
+                }
+
+                _value = value;
 
                 return true;
             }
@@ -139,6 +146,35 @@ namespace Mengine
             }
         };
         //////////////////////////////////////////////////////////////////////////
+        struct extract_NSArray_type
+            : public pybind::type_cast_result<NSArray *>
+        {
+            bool apply( pybind::kernel_interface * _kernel, PyObject * _obj, value_type & _value, bool _nothrow ) override
+            {
+                MENGINE_UNUSED( _nothrow );
+
+                if( _kernel->list_check( _obj ) == false && _kernel->tuple_check( _obj ) == false )
+                {
+                    return false;
+                }
+
+                id value = pybind::extract<id>( _kernel, _obj );
+
+                _value = value;
+
+                return true;
+            }
+
+            PyObject * wrap( pybind::kernel_interface * _kernel, pybind::type_cast_result<value_type>::TCastRef _value ) override
+            {
+                id value = _value;
+
+                PyObject * py_value = pybind::ptr_throw( _kernel, value );
+
+                return py_value;
+            }
+        };
+        //////////////////////////////////////////////////////////////////////////
         typedef IntrusivePtr<class PythonAppleSemaphoreListener, AppleSemaphoreListenerInterface> PythonAppleSemaphoreListenerPtr;
         //////////////////////////////////////////////////////////////////////////
         class PythonAppleSemaphoreListener
@@ -214,7 +250,7 @@ namespace Mengine
             }];
         }
         ///////////////////////////////////////////////////////////////////////
-        static void iOSNativePython_setIdleTimerDisabled( bool _disabled )
+        static void iOSNativePython_setIdleTimerDisabled( BOOL _disabled )
         {
             UIApplication.sharedApplication.idleTimerDisabled = _disabled;
         }
@@ -239,9 +275,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool iOSNativePythonScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
-        pybind::registration_type_cast<NSString *>(_kernel, pybind::make_type_cast<Detail::extract_NSString_type>(_kernel));
-        pybind::registration_type_cast<NSDictionary *>(_kernel, pybind::make_type_cast<Detail::extract_NSDictionary_type>(_kernel));
-        pybind::registration_type_cast<NSSet *>(_kernel, pybind::make_type_cast<Detail::extract_NSSet_type>(_kernel));
+        pybind::registration_type_cast<NSString *>( _kernel, pybind::make_type_cast<Detail::extract_NSString_type>( _kernel ) );
+        pybind::registration_type_cast<NSDictionary *>( _kernel, pybind::make_type_cast<Detail::extract_NSDictionary_type>( _kernel ) );
+        pybind::registration_type_cast<NSSet *>( _kernel, pybind::make_type_cast<Detail::extract_NSSet_type>( _kernel ) );
+        pybind::registration_type_cast<NSArray *>( _kernel, pybind::make_type_cast<Detail::extract_NSArray_type>( _kernel ) );
 
         pybind::def_function( _kernel, "activateSemaphore", &Detail::iOSNativePython_activateSemaphore );
         pybind::def_function_args( _kernel, "waitSemaphore", &Detail::iOSNativePython_waitSemaphore );
@@ -265,6 +302,7 @@ namespace Mengine
         pybind::unregistration_type_cast<NSString *>( _kernel );
         pybind::unregistration_type_cast<NSDictionary *>( _kernel );
         pybind::unregistration_type_cast<NSSet *>( _kernel );
+        pybind::unregistration_type_cast<NSArray *>( _kernel );
     }
     //////////////////////////////////////////////////////////////////////////
 }

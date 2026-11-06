@@ -27,7 +27,7 @@
         return;
     }
 
-    py_cb.call_args( successful == YES, self.m_args );
+    py_cb.call_args( successful, self.m_args );
 }
 
 - (void)oniOSGameCenterSynchronize:(BOOL)successful {
@@ -38,7 +38,7 @@
         return;
     }
 
-    py_cb.call_args( successful == YES, self.m_args );
+    py_cb.call_args( successful, self.m_args );
 }
 
 @end
@@ -58,7 +58,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool iOSGameCenter_isConnect()
         {
-            BOOL successful = [[iOSGameCenterPlugin sharedInstance] isConnect];
+            bool successful = [[iOSGameCenterPlugin sharedInstance] isConnect];
 
             return successful;
         }
@@ -68,7 +68,7 @@ namespace Mengine
             pybind::object copy_cb = _cb;
             pybind::args copy_args = _args;
 
-            BOOL result = [[iOSGameCenterPlugin sharedInstance] requestIdentityVerificationSignature:^(NSError * error, NSString * playerId, NSURL * publicKeyURL, NSData * signature, NSData * salt, uint64_t timestamp) {
+            bool result = [[iOSGameCenterPlugin sharedInstance] requestIdentityVerificationSignature:^(NSError * error, NSString * playerId, NSURL * publicKeyURL, NSData * signature, NSData * salt, uint64_t timestamp) {
                 if (error != nil || playerId == nil || publicKeyURL == nil || signature == nil || salt == nil) {
                     copy_cb.call_args( false, @"", @"", @"", @"", @"", copy_args );
 
@@ -90,10 +90,10 @@ namespace Mengine
             pybind::object copy_cb = _cb;
             pybind::args copy_args = _args;
 
-            BOOL result = [[iOSGameCenterPlugin sharedInstance] reportAchievement:_identifier
+            bool result = [[iOSGameCenterPlugin sharedInstance] reportAchievement:_identifier
                                                                                          percent:_percent
                                                                                         response:^(BOOL successful) {
-                copy_cb.call_args( successful == YES, copy_args );
+                copy_cb.call_args( successful, copy_args );
             }];
 
             return result;
@@ -101,7 +101,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool iOSGameCenter_checkAchievement( NSString * _identifier )
         {
-            BOOL successful = [[iOSGameCenterPlugin sharedInstance] checkAchievement:_identifier];
+            bool successful = [[iOSGameCenterPlugin sharedInstance] checkAchievement:_identifier];
 
             return successful;
         }
@@ -111,7 +111,7 @@ namespace Mengine
             pybind::object copy_cb = _cb;
             pybind::args copy_args = _args;
 
-            BOOL result = [[iOSGameCenterPlugin sharedInstance] resetAchievements:^(NSError * error) {
+            bool result = [[iOSGameCenterPlugin sharedInstance] resetAchievements:^(NSError * error) {
                 if (error != nil) {
                     copy_cb.call_args( false, copy_args );
                 } else {
@@ -127,7 +127,7 @@ namespace Mengine
             pybind::object copy_cb = _cb;
             pybind::args copy_args = _args;
 
-            BOOL result = [[iOSGameCenterPlugin sharedInstance] reportScore:_identifier score:_score response:^(NSError * error) {
+            bool result = [[iOSGameCenterPlugin sharedInstance] reportScore:_identifier score:_score response:^(NSError * error) {
                 if (error != nil) {
                     copy_cb.call_args( false, copy_args );
                 } else {

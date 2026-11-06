@@ -64,8 +64,8 @@ MACRO(MENGINE_GENERATE_SWIFTPODS)
             OUTPUT_VARIABLE MENGINE_SWIFTPODS_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE
             COMMAND_ERROR_IS_FATAL ANY)
 
-        if(MENGINE_SWIFTPODS_VERSION VERSION_LESS "0.3.11")
-            message(FATAL_ERROR "SwiftPods 0.3.11 or later is required for generated Xcode projects; found ${MENGINE_SWIFTPODS_VERSION}. Update swiftpods or set MENGINE_SWIFTPODS_EXECUTABLE.")
+        if(MENGINE_SWIFTPODS_VERSION VERSION_LESS "0.3.12")
+            message(FATAL_ERROR "SwiftPods 0.3.12 or later is required for generated Xcode projects; found ${MENGINE_SWIFTPODS_VERSION}. Update swiftpods or set MENGINE_SWIFTPODS_EXECUTABLE.")
         endif()
 
         SET(SWIFTPODS_PLATFORM "osx")
@@ -239,7 +239,13 @@ function(_MENGINE_SWIFTPODS_PREPARE_PACKAGES SOLUTION_DIR)
 
                 if(TYPE STREQUAL "com.apple.product-type.library.static")
                     list(APPEND PLUGIN_TARGETS "${NAME}")
-                    list(APPEND "PACKAGES_${NAME}" "    ${DECLARATION}\n")
+                    SET(PLUGIN_DECLARATION "${DECLARATION}")
+
+                    if(KIND STREQUAL "packages")
+                        string(APPEND PLUGIN_DECLARATION ", :link => false")
+                    endif()
+
+                    list(APPEND "PACKAGES_${NAME}" "    ${PLUGIN_DECLARATION}\n")
                     continue()
                 endif()
 

@@ -61,7 +61,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
         }
         //////////////////////////////////////////////////////////////////////////
-        bool encodeHexadecimal( const void * _data, size_t _datasize, Char * const _hexadecimal, size_t _capacity, bool _lowercase, size_t * const _outsize )
+        bool encodeHexadecimal( const void * _data, size_t _datasize, Char * const _hexadecimal, size_t _capacity, uint32_t _flags, size_t * const _outsize )
         {
             if( _capacity <= (_datasize * 2) )
             {
@@ -71,7 +71,7 @@ namespace Mengine
             Char * c = _hexadecimal;
             const uint8_t * data_u8 = reinterpret_cast<const uint8_t *>(_data);
 
-            if( _lowercase == true )
+            if( (_flags & EHF_UPPERCASE) == 0 )
             {
                 for( size_t i = 0; i != _datasize; ++i )
                 {
@@ -108,7 +108,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool encodeHexadecimal( const Data & _data, String * const _hexadecimal, bool _lowercase )
+        bool encodeHexadecimal( const Data & _data, String * const _hexadecimal, uint32_t _flags )
         {
             const void * dataBuffer = _data.data();
             size_t dataSize = _data.size();
@@ -119,7 +119,7 @@ namespace Mengine
             Char * hexadecimalBuffer = _hexadecimal->data();
             size_t hexadecimalCapacity = _hexadecimal->size();
 
-            if( Helper::encodeHexadecimal( dataBuffer, dataSize, hexadecimalBuffer, hexadecimalCapacity, _lowercase, nullptr ) == false )
+            if( Helper::encodeHexadecimal( dataBuffer, dataSize, hexadecimalBuffer, hexadecimalCapacity, _flags, nullptr ) == false )
             {
                 _hexadecimal->clear();
 

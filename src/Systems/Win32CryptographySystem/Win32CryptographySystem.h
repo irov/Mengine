@@ -23,7 +23,7 @@ namespace Mengine
 
     public:
         bool generateRandomSeed( uint64_t * const _seed ) const override;
-        bool generateRandomHexadecimal( Char * const _hexadecimal, size_t _capacity, bool _lowercase ) const override;
+        bool generateRandomHexadecimal( Char * const _hexadecimal, size_t _capacity, uint32_t _flags ) const override;
 
     protected:
         HCRYPTPROV m_hCryptProvider;

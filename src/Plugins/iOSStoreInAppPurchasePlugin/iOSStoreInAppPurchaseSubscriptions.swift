@@ -41,6 +41,39 @@ public final class MengineStoreSubscriptions: NSObject {
         }
     }
 
+    @objc(queryEntitlements:completion:)
+    public func queryEntitlements(_ productIdentifiers: [String], completion: @escaping (NSDictionary) -> Void) {
+        if #available(iOS 15.0, *) {
+            m_lock.lock()
+            let generation = m_generation
+            let identity = UUID()
+            m_tasks[identity] = Task { @MainActor [weak self] in
+                var entitlements = Dictionary(uniqueKeysWithValues: productIdentifiers.map { ($0, false) })
+                var unverified = Set<String>()
+                for await result in Transaction.currentEntitlements {
+                    switch result {
+                    case .verified(let transaction):
+                        guard entitlements[transaction.productID] != nil,
+                              transaction.productType != .consumable,
+                              transaction.revocationDate == nil else { continue }
+                        entitlements[transaction.productID] = true
+                    case .unverified(let transaction, _):
+                        unverified.insert(transaction.productID)
+                    }
+                }
+                for identifier in unverified where entitlements[identifier] == false {
+                    entitlements.removeValue(forKey: identifier)
+                }
+                guard let self = self, self.complete(identity, generation: generation),
+                      !Task.isCancelled else { return }
+                completion(entitlements as NSDictionary)
+            }
+            m_lock.unlock()
+        } else {
+            completion([:])
+        }
+    }
+
     @available(iOS 15.0, *)
     private static func getStatus(_ productIdentifier: String) async -> NSDictionary {
         do {

@@ -49,3 +49,22 @@ heights in pixels and reserves space; it never positions the native ad views.
 
 The optional AppLovin provider reads its topper ID once from
 `applovin_ad_units.topper`; its existing configuration for other formats is unchanged.
+
+## Test devices
+
+In a Debug build, keep `RequestConfigurationTestDeviceIdsEnabled` enabled and
+use the existing `admob.test_device_advertising` option to register the current
+device automatically. No manual device-ID list is required.
+
+The plugin matches Google Mobile Ads 13.11.0: it uses the MD5 of the IDFA UUID
+string, falling back to the IDFV UUID string when IDFA is unavailable after ATT.
+The SDK identifier uses lowercase hexadecimal. The plugin uses the portable
+`Mengine::Helper::makeMD5String` helper in `Kernel`, backed by
+[`irov/md5`](https://github.com/irov/md5). IDFA/IDFV selection and test-device
+registration stay in the Objective-C++ plugin. Compare the plugin's test ID
+with the ID printed by the SDK when validating a new SDK version on a device.
+
+If neither identifier is available, the plugin logs the condition and continues
+normal SDK initialization. Release builds ignore the programmatic test setup.
+Devices may also be registered through the AdMob console, which requests IDFA.
+See the [Google testing guide](https://developers.google.com/admob/ios/test-ads).

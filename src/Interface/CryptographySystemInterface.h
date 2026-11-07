@@ -16,7 +16,7 @@ namespace Mengine
 
     public:
         virtual bool generateRandomSeed( uint64_t * const _seed ) const = 0;
-        virtual bool generateRandomHexadecimal( Char * const _hexadecimal, size_t _capacity, bool _lowercase ) const = 0;
+        virtual bool generateRandomHexadecimal( Char * const _hexadecimal, size_t _capacity, uint32_t _flags ) const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

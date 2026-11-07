@@ -6,6 +6,7 @@
 #include "Environment/Windows/WindowsIncluder.h"
 #include "Environment/Windows/Win32Helper.h"
 
+#include "Kernel/Hexadecimal.h"
 #include "Kernel/ArrayString.h"
 #include "Kernel/HttpLogger.h"
 #include "Kernel/Stringalized.h"
@@ -458,7 +459,7 @@ namespace Mengine
             Char boundary[16 + 1] = {'\0'};
             size_t boundaryCapacity = sizeof( boundary );
             CRYPTOGRAPHY_SYSTEM()
-                ->generateRandomHexadecimal( boundary, boundaryCapacity, false );
+                ->generateRandomHexadecimal( boundary, boundaryCapacity, EHF_UPPERCASE );
 
             ArrayString<4096> header;
             header.append( "Content-Type: multipart/form-data; boundary=" );

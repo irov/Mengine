@@ -14,13 +14,12 @@
 #import "Plugins/iOSAdvertisementPlugin/iOSAdvertisementInterface.h"
 #import "Plugins/iOSFirebaseRemoteConfigPlugin/iOSFirebaseRemoteConfigInterface.h"
 
+#include "Kernel/Hexadecimal.h"
+#include "Kernel/MD5.h"
+
 #include "Config/Version.h"
 
 #import "Configuration/Configurations.h"
-
-#if defined(MENGINE_DEBUG)
-#   import <AdSupport/AdSupport.h>
-#endif
 
 @implementation iOSAdMobPlugin
 
@@ -223,10 +222,24 @@
         GADRequestConfiguration * requestConfiguration = [GADMobileAds sharedInstance].requestConfiguration;
 
         if ([AppleDetail hasOption:@"admob.test_device_advertising"] == YES) {
-            NSString * testDeviceId = [[[ASIdentifierManager sharedManager] advertisingIdentifier] UUIDString];
-            requestConfiguration.testDeviceIdentifiers = @[testDeviceId];
+            NSString * identifier = [iOSDetail getIDFA];
 
-            IOS_LOGGER_MESSAGE(@"[AdMob] test device id: %@", testDeviceId);
+            if ([identifier isEqualToString:@"00000000-0000-0000-0000-000000000000"] == YES) {
+                identifier = [iOSDetail getDeviceId];
+            }
+
+            if (identifier.length == 0) {
+                IOS_LOGGER_MESSAGE(@"[AdMob] current test device identifier is unavailable");
+            } else {
+                const Mengine::Char * identifierString = [identifier UTF8String];
+                Mengine::Char testDeviceIdHex[MENGINE_MD5_HEX_COUNT + 1];
+                Mengine::Helper::makeMD5String( identifierString, testDeviceIdHex, Mengine::EHF_LOWERCASE );
+
+                NSString * testDeviceId = [NSString stringWithUTF8String:testDeviceIdHex];
+                requestConfiguration.testDeviceIdentifiers = @[testDeviceId];
+
+                IOS_LOGGER_MESSAGE(@"[AdMob] test device id: %@", testDeviceId);
+            }
         }
     }
 #endif

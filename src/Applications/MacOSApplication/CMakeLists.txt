@@ -301,4 +301,4 @@ if(MENGINE_PLUGIN_MENGINE_STATIC)
     endif()
 endif()
 
-set_target_properties(${PROJECT_NAME} PROPERTIES XCODE_ATTRIBUTE_OTHER_LDFLAGS "-ObjC")
+target_link_options(${PROJECT_NAME} PRIVATE -ObjC)

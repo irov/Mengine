@@ -4,6 +4,7 @@
 
 #include "Environment/Windows/Win32Helper.h"
 
+#include "Kernel/Hexadecimal.h"
 #include "Kernel/Logger.h"
 #include "Kernel/SHA1.h"
 #include "Kernel/Stringalized.h"
@@ -228,7 +229,7 @@ namespace Mengine
         }
 
         StaticString<MENGINE_SHA1_HEX_COUNT> fingerprint;
-        Helper::makeSHA1HEX( fingerprintGarbage.data(), fingerprintGarbage.size(), fingerprint.data(), true );
+        Helper::makeSHA1HEX( fingerprintGarbage.data(), fingerprintGarbage.size(), fingerprint.data(), EHF_LOWERCASE );
 
         m_installId.assign( fingerprint );
 
@@ -239,7 +240,7 @@ namespace Mengine
         Char * sessionIdData = m_sessionId.data();
         size_t sessionIdCapacity = m_sessionId.capacity();
 
-        if( Helper::generateRandomHexadecimal( sessionIdData, sessionIdCapacity, false ) == false )
+        if( Helper::generateRandomHexadecimal( sessionIdData, sessionIdCapacity, EHF_UPPERCASE ) == false )
         {
             return false;
         }

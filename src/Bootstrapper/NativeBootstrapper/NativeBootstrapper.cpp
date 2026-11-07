@@ -17,6 +17,7 @@
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/EnvironmentServiceInterface.h"
 
+#include "Kernel/Hexadecimal.h"
 #include "Kernel/Logger.h"
 #include "Kernel/ConfigurationHelper.h"
 #include "Kernel/VectorConstString.h"
@@ -1167,7 +1168,7 @@ namespace Mengine
         projectIdentity.append( project.c_str() );
 
         Char projectHash[MENGINE_SHA1_HEX_COUNT + 1] = {'\0'};
-        Helper::makeSHA1String( projectIdentity.c_str(), projectHash, true );
+        Helper::makeSHA1String( projectIdentity.c_str(), projectHash, EHF_LOWERCASE );
         projectHash[6] = '\0';
 
         Char sessionId[MENGINE_ENVIRONMENT_SESSIONID_MAXNAME + 1] = {'\0'};

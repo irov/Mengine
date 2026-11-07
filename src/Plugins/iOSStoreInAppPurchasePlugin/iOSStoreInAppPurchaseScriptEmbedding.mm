@@ -73,6 +73,23 @@ namespace Mengine
             {
                 this->call_method( "onSubscriptionStatus", _productIdentifier, _status );
             }
+
+            void onProductEntitlementChanged( NSString * _productIdentifier, bool _owned ) override
+            {
+                const pybind::object & cb = this->get_cb();
+
+                if( cb.is_dict() == true )
+                {
+                    pybind::dict callbacks( cb );
+
+                    if( callbacks.exist( "onProductEntitlementChanged" ) == false )
+                    {
+                        return;
+                    }
+                }
+
+                this->call_method( "onProductEntitlementChanged", _productIdentifier, _owned );
+            }
         };
         //////////////////////////////////////////////////////////////////////////
         static void iOSStoreInAppPurchase_setPaymentTransactionProvider(const pybind::dict & _cbs, const pybind::args & _args )

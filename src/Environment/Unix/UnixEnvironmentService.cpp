@@ -2,6 +2,7 @@
 
 #include "Interface/DateTimeSystemInterface.h"
 
+#include "Kernel/Hexadecimal.h"
 #include "Kernel/CryptographyHelper.h"
 #include "Kernel/SHA1.h"
 #include "Kernel/TimestampHelper.h"
@@ -162,7 +163,7 @@ namespace Mengine
         fingerprintSource.append( machineId );
 
         StaticString<MENGINE_SHA1_HEX_COUNT> fingerprint;
-        Helper::makeSHA1HEX( fingerprintSource.data(), fingerprintSource.size(), fingerprint.data(), true );
+        Helper::makeSHA1HEX( fingerprintSource.data(), fingerprintSource.size(), fingerprint.data(), EHF_LOWERCASE );
         m_installId.assign( fingerprint );
 
         m_sessionTimestamp = Helper::getSystemTimestamp();
@@ -178,7 +179,7 @@ namespace Mengine
         Char * sessionIdData = m_sessionId.data();
         size_t sessionIdCapacity = m_sessionId.capacity();
 
-        if( Helper::generateRandomHexadecimal( sessionIdData, sessionIdCapacity, false ) == false )
+        if( Helper::generateRandomHexadecimal( sessionIdData, sessionIdCapacity, EHF_UPPERCASE ) == false )
         {
             return false;
         }

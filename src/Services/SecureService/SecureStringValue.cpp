@@ -164,7 +164,7 @@ namespace Mengine
         SECURE_SERVICE()
             ->protectData( 1, blob.data(), blob.size(), blob_raving.data() );
 
-        if( Helper::encodeHexadecimal( blob_raving, _hexadecimal, true ) == false )
+        if( Helper::encodeHexadecimal( blob_raving, _hexadecimal, EHF_LOWERCASE ) == false )
         {
             return;
         }

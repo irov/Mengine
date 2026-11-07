@@ -32,6 +32,8 @@
     Mengine::FactoryInterfacePtr m_factoryProductsRequest;
     MengineStoreSubscriptions * m_subscriptions;
     uint32_t m_subscriptionGeneration;
+    uint32_t m_entitlementGeneration;
+    NSMutableDictionary<NSString *, NSNumber *> * m_entitlementGenerations;
 }
 
 - (instancetype)init {
@@ -42,6 +44,8 @@
         m_paymentTransactionProvider = nullptr;
         m_subscriptions = [[MengineStoreSubscriptions alloc] init];
         m_subscriptionGeneration = 0;
+        m_entitlementGeneration = 0;
+        m_entitlementGenerations = [NSMutableDictionary dictionary];
     }
 
     return self;
@@ -105,7 +109,12 @@
     [paymentTransactionObserver deactivate];
 
     [self setPaymentTransactionProvider:nullptr];
+    [m_subscriptions cancel];
     m_subscriptions = nil;
+
+    @synchronized (self) {
+        [m_entitlementGenerations removeAllObjects];
+    }
 
     MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPaymentTransaction );
     MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryProduct );
@@ -142,7 +151,6 @@
 #pragma mark - iOSStoreInAppPurchaseInterface
 
 - (void)setPaymentTransactionProvider:(const Mengine::iOSStoreInAppPurchasePaymentTransactionProviderInterfacePtr &)paymentTransactionProvider {
-    [m_subscriptions cancel];
     ++m_subscriptionGeneration;
     m_paymentTransactionProvider = paymentTransactionProvider;
 }
@@ -173,11 +181,6 @@
         return nullptr;
     }
 
-    if( [SKPaymentQueue canMakePayments] == NO )
-    {
-        return nullptr;
-    }
-
     IOS_LOGGER_MESSAGE( @"requestProducts: consumable: %@ nonconsumable: %@"
         , consumableIdentifiers
         , nonconsumableIdentifiers
@@ -186,6 +189,8 @@
     [[iOSStoreInAppPurchasePaymentTransactionObserver sharedInstance] activateWithInAppPurchase:self
                                                                             consumableIdentifiers:consumableIdentifiers
                                                                          nonconsumableIdentifiers:nonconsumableIdentifiers];
+
+    [self refreshEntitlements:nonconsumableIdentifiers];
 
     Mengine::iOSStoreInAppPurchaseProductsRequestPtr request = m_factoryProductsRequest->createObject( MENGINE_DOCUMENT_FUNCTION );
 
@@ -254,6 +259,59 @@
             }
 
             m_paymentTransactionProvider->onSubscriptionStatus( productIdentifier, status );
+        });
+    }];
+}
+
+- (void)refreshEntitlements:(NSSet<NSString *> *)productIdentifiers {
+    uint32_t generation = m_subscriptionGeneration;
+    uint32_t entitlementGeneration;
+
+    @synchronized (self) {
+        entitlementGeneration = ++m_entitlementGeneration;
+
+        for (NSString * productIdentifier in productIdentifiers) {
+            m_entitlementGenerations[productIdentifier] = @(entitlementGeneration);
+        }
+    }
+
+    NSArray<NSString *> * identifiers = productIdentifiers.allObjects;
+    [m_subscriptions queryEntitlements:identifiers completion:^(NSDictionary<NSString *, NSNumber *> * entitlements) {
+        Mengine::Helper::dispatchMainThreadEvent([self, entitlements, generation, entitlementGeneration]() {
+            for (NSString * productIdentifier in entitlements) {
+                NSNumber * currentGeneration;
+
+                @synchronized (self) {
+                    currentGeneration = m_entitlementGenerations[productIdentifier];
+                }
+
+                if (currentGeneration.unsignedIntValue != entitlementGeneration) {
+                    continue;
+                }
+
+                BOOL owned = [entitlements[productIdentifier] boolValue];
+
+                if (owned == YES) {
+                    [[iOSStoreInAppPurchaseEntitlements sharedInstance] add:productIdentifier];
+                } else {
+                    [[iOSStoreInAppPurchaseEntitlements sharedInstance] remove:productIdentifier];
+                }
+
+                if( generation != m_subscriptionGeneration )
+                {
+                    continue;
+                }
+
+                Mengine::iOSStoreInAppPurchasePaymentTransactionProviderInterfacePtr provider = m_paymentTransactionProvider;
+
+                if( provider == nullptr )
+                {
+                    continue;
+                }
+
+                bool isOwned = owned == YES;
+                provider->onProductEntitlementChanged( productIdentifier, isOwned );
+            }
         });
     }];
 }

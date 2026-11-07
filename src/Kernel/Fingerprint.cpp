@@ -6,12 +6,12 @@ namespace Mengine
 {
     namespace Helper
     {
-        void fingerprintSHA1( Char * const _fingerprint, bool _lowercase )
+        void fingerprintSHA1( Char * const _fingerprint, uint32_t _flags )
         {
             size_t fingerprintCapacity = MENGINE_SHA1_HEX_COUNT + 1;
 
             CRYPTOGRAPHY_SYSTEM()
-                ->generateRandomHexadecimal( _fingerprint, fingerprintCapacity, _lowercase );
+                ->generateRandomHexadecimal( _fingerprint, fingerprintCapacity, _flags );
         }
     }
 }

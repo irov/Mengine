@@ -18,22 +18,22 @@ namespace Mengine
             sha1_data( _buffer, _size, _sha1, _sha1size );
         }
         //////////////////////////////////////////////////////////////////////////
-        void makeSHA1HEX( const void * _buffer, size_t _size, Char * const _hex, bool _lowercase )
+        void makeSHA1HEX( const void * _buffer, size_t _size, Char * const _hex, uint32_t _flags )
         {
             uint8_t sha1[MENGINE_SHA1_UINT8_COUNT];
             Helper::makeSHA1( _buffer, _size, sha1, MENGINE_SHA1_UINT8_COUNT );
 
-            Helper::encodeHexadecimal( sha1, sizeof( sha1 ), _hex, MENGINE_UNKNOWN_SIZE, _lowercase, nullptr );
+            Helper::encodeHexadecimal( sha1, sizeof( sha1 ), _hex, MENGINE_UNKNOWN_SIZE, _flags, nullptr );
         }
         //////////////////////////////////////////////////////////////////////////
-        void makeSHA1String( const Char * _string, Char * const _hex, bool _lowercase )
+        void makeSHA1String( const Char * _string, Char * const _hex, uint32_t _flags )
         {
             size_t len = StdString::strlen( _string );
 
             uint8_t sha1[MENGINE_SHA1_UINT8_COUNT];
             Helper::makeSHA1( _string, len, sha1, MENGINE_SHA1_UINT8_COUNT );
 
-            Helper::encodeHexadecimal( sha1, sizeof( sha1 ), _hex, MENGINE_UNKNOWN_SIZE, _lowercase, nullptr );
+            Helper::encodeHexadecimal( sha1, sizeof( sha1 ), _hex, MENGINE_UNKNOWN_SIZE, _flags, nullptr );
         }
         //////////////////////////////////////////////////////////////////////////
         void makeSHA1Base64( const void * _buffer, size_t _size, Char * const _base64 )

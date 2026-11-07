@@ -18,10 +18,10 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool generateRandomHexadecimal( Char * const _hexadecimal, size_t _capacity, bool _lowercase )
+        bool generateRandomHexadecimal( Char * const _hexadecimal, size_t _capacity, uint32_t _flags )
         {
             if( CRYPTOGRAPHY_SYSTEM()
-                ->generateRandomHexadecimal( _hexadecimal, _capacity, _lowercase ) == false )
+                ->generateRandomHexadecimal( _hexadecimal, _capacity, _flags ) == false )
             {
                 return false;
             }

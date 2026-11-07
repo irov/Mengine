@@ -28,6 +28,7 @@
 #include "DevToDebugWidgetRadioButton.h"
 #include "DevToDebugWidgetSelector.h"
 
+#include "Kernel/Hexadecimal.h"
 #include "Kernel/Logger.h"
 #include "Kernel/ConfigHelper.h"
 #include "Kernel/NotificationHelper.h"
@@ -160,7 +161,7 @@ namespace Mengine
             return false;
         }
 
-        Helper::fingerprintSHA1( m_fingerprint, false );
+        Helper::fingerprintSHA1( m_fingerprint, EHF_UPPERCASE );
 
         uint32_t DevToDebug_ProccesTime = CONFIG_VALUE_INTEGER( "DevToDebugPlugin", "ProccesTime", MENGINE_UINT32_C(2000) );
 

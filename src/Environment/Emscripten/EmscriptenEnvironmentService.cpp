@@ -4,6 +4,7 @@
 
 #include "EmscriptenLocalStorage.h"
 
+#include "Kernel/Hexadecimal.h"
 #include "Kernel/CryptographyHelper.h"
 #include "Kernel/Stringalized.h"
 #include "Kernel/TimestampHelper.h"
@@ -88,7 +89,7 @@ namespace Mengine
         Char * sessionIdData = m_sessionId.data();
         size_t sessionIdCapacity = m_sessionId.capacity();
 
-        if( Helper::generateRandomHexadecimal( sessionIdData, sessionIdCapacity, false ) == false )
+        if( Helper::generateRandomHexadecimal( sessionIdData, sessionIdCapacity, EHF_UPPERCASE ) == false )
         {
             return false;
         }

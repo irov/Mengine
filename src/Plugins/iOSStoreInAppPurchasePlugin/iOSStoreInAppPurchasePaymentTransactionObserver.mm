@@ -115,6 +115,8 @@
 
                     if ([self.m_nonconsumableIdentifiers containsObject:skPaymentTransaction.payment.productIdentifier] == YES) {
                         [[iOSStoreInAppPurchaseEntitlements sharedInstance] add:skPaymentTransaction.payment.productIdentifier];
+                        NSSet<NSString *> * identifiers = [NSSet setWithObject:skPaymentTransaction.payment.productIdentifier];
+                        [self.m_inAppPurchase refreshEntitlements:identifiers];
                     }
 
                     Mengine::Helper::dispatchMainThreadEvent([copy_provider, paymentTransaction]() {
@@ -127,6 +129,8 @@
 
                     if ([self.m_nonconsumableIdentifiers containsObject:skPaymentTransaction.payment.productIdentifier] == YES) {
                         [[iOSStoreInAppPurchaseEntitlements sharedInstance] add:skPaymentTransaction.payment.productIdentifier];
+                        NSSet<NSString *> * identifiers = [NSSet setWithObject:skPaymentTransaction.payment.productIdentifier];
+                        [self.m_inAppPurchase refreshEntitlements:identifiers];
                     }
 
                     Mengine::Helper::dispatchMainThreadEvent([copy_provider, paymentTransaction]() {
@@ -152,6 +156,8 @@
 
                 if ([self.m_nonconsumableIdentifiers containsObject:skPaymentTransaction.payment.productIdentifier] == YES) {
                     [[iOSStoreInAppPurchaseEntitlements sharedInstance] add:skPaymentTransaction.payment.productIdentifier];
+                    NSSet<NSString *> * identifiers = [NSSet setWithObject:skPaymentTransaction.payment.productIdentifier];
+                    [self.m_inAppPurchase refreshEntitlements:identifiers];
                 }
 
                 Mengine::Helper::dispatchMainThreadEvent([copy_provider, paymentTransaction]() {
@@ -286,13 +292,10 @@
         , productIdentifiers
     );
 
-    for (NSString * productIdentifier in productIdentifiers) {
-        if ([productIdentifier rangeOfString:@".nonconsumable."].location != NSNotFound) {
-            [[iOSStoreInAppPurchaseEntitlements sharedInstance] remove:productIdentifier];
-        }
-    }
+    NSMutableSet<NSString *> * identifiers = [NSMutableSet setWithArray:productIdentifiers];
+    [identifiers intersectSet:self.m_nonconsumableIdentifiers];
 
-    //ToDo
+    [self.m_inAppPurchase refreshEntitlements:identifiers];
 }
 
 @end

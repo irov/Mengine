@@ -41,7 +41,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidCryptographySystem::generateRandomHexadecimal( Char * const _hexadecimal, size_t _capacity, bool _lowercase ) const
+    bool AndroidCryptographySystem::generateRandomHexadecimal( Char * const _hexadecimal, size_t _capacity, uint32_t _flags ) const
     {
         if( _capacity == 0 )
         {
@@ -56,7 +56,7 @@ namespace Mengine
         size_t randomSize = length / 2;
         ::arc4random_buf( randomBytes, randomSize );
 
-        if( Helper::encodeHexadecimal( randomBytes, randomSize, _hexadecimal, _capacity, _lowercase, nullptr ) == false )
+        if( Helper::encodeHexadecimal( randomBytes, randomSize, _hexadecimal, _capacity, _flags, nullptr ) == false )
         {
             return false;
         }

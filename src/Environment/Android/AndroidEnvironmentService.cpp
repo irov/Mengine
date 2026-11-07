@@ -7,6 +7,7 @@
 #include "Environment/Android/AndroidActivityHelper.h"
 #include "Environment/Android/AndroidApplicationHelper.h"
 
+#include "Kernel/Hexadecimal.h"
 #include "Kernel/SHA1.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
@@ -117,7 +118,7 @@ namespace Mengine
         fingerprintGarbage.append( androidId );
         
         StaticString<MENGINE_SHA1_HEX_COUNT> fingerprint;
-        Helper::makeSHA1HEX( fingerprintGarbage.data(), fingerprintGarbage.size(), fingerprint.data(), false );
+        Helper::makeSHA1HEX( fingerprintGarbage.data(), fingerprintGarbage.size(), fingerprint.data(), EHF_UPPERCASE );
 
         m_userName.assign( m_deviceModel );
         m_userName.append( '_' );

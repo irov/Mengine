@@ -246,19 +246,27 @@
 
 - (void)querySubscriptionStatus:(NSString *)productIdentifier {
     uint32_t generation = m_subscriptionGeneration;
+    __weak iOSStoreInAppPurchasePlugin * weakSelf = self;
     [m_subscriptions query:productIdentifier completion:^(NSDictionary * status) {
-        Mengine::Helper::dispatchMainThreadEvent([self, productIdentifier, status, generation]() {
-            if( generation != m_subscriptionGeneration )
+        iOSStoreInAppPurchasePlugin * strongSelf = weakSelf;
+
+        if( strongSelf == nil )
+        {
+            return;
+        }
+
+        Mengine::Helper::dispatchMainThreadEvent([strongSelf, productIdentifier, status, generation]() {
+            if( generation != strongSelf->m_subscriptionGeneration )
             {
                 return;
             }
 
-            if( m_paymentTransactionProvider == nullptr )
+            if( strongSelf->m_paymentTransactionProvider == nullptr )
             {
                 return;
             }
 
-            m_paymentTransactionProvider->onSubscriptionStatus( productIdentifier, status );
+            strongSelf->m_paymentTransactionProvider->onSubscriptionStatus( productIdentifier, status );
         });
     }];
 }
@@ -276,33 +284,57 @@
     }
 
     NSArray<NSString *> * identifiers = productIdentifiers.allObjects;
+    __weak iOSStoreInAppPurchasePlugin * weakSelf = self;
     [m_subscriptions queryEntitlements:identifiers completion:^(NSDictionary<NSString *, NSNumber *> * entitlements) {
-        Mengine::Helper::dispatchMainThreadEvent([self, entitlements, generation, entitlementGeneration]() {
-            for (NSString * productIdentifier in entitlements) {
+        iOSStoreInAppPurchasePlugin * strongSelf = weakSelf;
+
+        if( strongSelf == nil )
+        {
+            return;
+        }
+
+        Mengine::Helper::dispatchMainThreadEvent([strongSelf, identifiers, entitlements, generation, entitlementGeneration]() {
+            for (NSString * productIdentifier in identifiers) {
                 NSNumber * currentGeneration;
 
-                @synchronized (self) {
-                    currentGeneration = m_entitlementGenerations[productIdentifier];
+                @synchronized (strongSelf) {
+                    currentGeneration = strongSelf->m_entitlementGenerations[productIdentifier];
+
+                    if( currentGeneration.unsignedIntValue == entitlementGeneration )
+                    {
+                        [strongSelf->m_entitlementGenerations removeObjectForKey:productIdentifier];
+                    }
                 }
 
-                if (currentGeneration.unsignedIntValue != entitlementGeneration) {
-                    continue;
-                }
-
-                BOOL owned = [entitlements[productIdentifier] boolValue];
-
-                if (owned == YES) {
-                    [[iOSStoreInAppPurchaseEntitlements sharedInstance] add:productIdentifier];
-                } else {
-                    [[iOSStoreInAppPurchaseEntitlements sharedInstance] remove:productIdentifier];
-                }
-
-                if( generation != m_subscriptionGeneration )
+                if( currentGeneration.unsignedIntValue != entitlementGeneration )
                 {
                     continue;
                 }
 
-                Mengine::iOSStoreInAppPurchasePaymentTransactionProviderInterfacePtr provider = m_paymentTransactionProvider;
+                NSNumber * entitlement = entitlements[productIdentifier];
+
+                if( entitlement == nil )
+                {
+                    continue;
+                }
+
+                BOOL owned = entitlement.boolValue;
+
+                if( owned == YES )
+                {
+                    [[iOSStoreInAppPurchaseEntitlements sharedInstance] add:productIdentifier];
+                }
+                else
+                {
+                    [[iOSStoreInAppPurchaseEntitlements sharedInstance] remove:productIdentifier];
+                }
+
+                if( generation != strongSelf->m_subscriptionGeneration )
+                {
+                    continue;
+                }
+
+                Mengine::iOSStoreInAppPurchasePaymentTransactionProviderInterfacePtr provider = strongSelf->m_paymentTransactionProvider;
 
                 if( provider == nullptr )
                 {

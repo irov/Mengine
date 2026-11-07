@@ -7,6 +7,10 @@ public final class MengineStoreSubscriptions: NSObject {
     private var m_generation = 0
     private var m_tasks: [UUID: Task<Void, Never>] = [:]
 
+    deinit {
+        cancel()
+    }
+
     @objc public func cancel() {
         m_lock.lock()
         m_generation += 1
@@ -25,56 +29,53 @@ public final class MengineStoreSubscriptions: NSObject {
 
     @objc(query:completion:)
     public func query(_ productIdentifier: String, completion: @escaping (NSDictionary) -> Void) {
-        if #available(iOS 15.0, *) {
-            m_lock.lock()
-            let generation = m_generation
-            let identity = UUID()
-            m_tasks[identity] = Task { @MainActor [weak self] in
-                let status = await Self.getStatus(productIdentifier)
-                guard let self = self, self.complete(identity, generation: generation),
-                      !Task.isCancelled else { return }
-                completion(status)
-            }
-            m_lock.unlock()
-        } else {
-            completion(["known": false])
+        m_lock.lock()
+        let generation = m_generation
+        let identity = UUID()
+        m_tasks[identity] = Task { @MainActor [weak self] in
+            let status = await Self.getStatus(productIdentifier)
+            guard let self = self else { return }
+            let completed = self.complete(identity, generation: generation)
+            guard completed else { return }
+            guard !Task.isCancelled else { return }
+            completion(status)
         }
+        m_lock.unlock()
     }
 
     @objc(queryEntitlements:completion:)
     public func queryEntitlements(_ productIdentifiers: [String], completion: @escaping (NSDictionary) -> Void) {
-        if #available(iOS 15.0, *) {
-            m_lock.lock()
-            let generation = m_generation
-            let identity = UUID()
-            m_tasks[identity] = Task { @MainActor [weak self] in
-                var entitlements = Dictionary(uniqueKeysWithValues: productIdentifiers.map { ($0, false) })
-                var unverified = Set<String>()
-                for await result in Transaction.currentEntitlements {
-                    switch result {
-                    case .verified(let transaction):
-                        guard entitlements[transaction.productID] != nil,
-                              transaction.productType != .consumable,
-                              transaction.revocationDate == nil else { continue }
-                        entitlements[transaction.productID] = true
-                    case .unverified(let transaction, _):
-                        unverified.insert(transaction.productID)
-                    }
+        m_lock.lock()
+        let generation = m_generation
+        let identity = UUID()
+        m_tasks[identity] = Task { @MainActor [weak self] in
+            let initialEntitlements = productIdentifiers.map { ($0, false) }
+            var entitlements = Dictionary(uniqueKeysWithValues: initialEntitlements)
+            var unverified = Set<String>()
+            for await result in Transaction.currentEntitlements {
+                switch result {
+                case .verified(let transaction):
+                    guard entitlements[transaction.productID] != nil,
+                          transaction.productType != .consumable,
+                          transaction.revocationDate == nil else { continue }
+                    entitlements[transaction.productID] = true
+                case .unverified(let transaction, _):
+                    unverified.insert(transaction.productID)
                 }
-                for identifier in unverified where entitlements[identifier] == false {
-                    entitlements.removeValue(forKey: identifier)
-                }
-                guard let self = self, self.complete(identity, generation: generation),
-                      !Task.isCancelled else { return }
-                completion(entitlements as NSDictionary)
             }
-            m_lock.unlock()
-        } else {
-            completion([:])
+            for identifier in unverified where entitlements[identifier] == false {
+                entitlements.removeValue(forKey: identifier)
+            }
+            guard let self = self else { return }
+            let completed = self.complete(identity, generation: generation)
+            guard completed else { return }
+            guard !Task.isCancelled else { return }
+            let result = entitlements as NSDictionary
+            completion(result)
         }
+        m_lock.unlock()
     }
 
-    @available(iOS 15.0, *)
     private static func getStatus(_ productIdentifier: String) async -> NSDictionary {
         do {
             let products = try await Product.products(for: [productIdentifier])

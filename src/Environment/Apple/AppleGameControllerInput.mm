@@ -7,16 +7,6 @@
 
 #import <GameController/GameController.h>
 
-#ifndef __IPHONE_OS_VERSION_MIN_REQUIRED
-#   define __IPHONE_OS_VERSION_MIN_REQUIRED 0
-#endif
-
-#ifndef __TV_OS_VERSION_MIN_REQUIRED
-#   define __TV_OS_VERSION_MIN_REQUIRED 0
-#endif
-
-#define MENGINE_APPLE_CONTROLLER_HAS_BUTTON_OPTIONS (__IPHONE_OS_VERSION_MIN_REQUIRED >= 130000 || __MAC_OS_X_VERSION_MIN_REQUIRED >= 101500 || __TV_OS_VERSION_MIN_REQUIRED >= 130000)
-#define MENGINE_APPLE_CONTROLLER_HAS_THUMBSTICKS (__IPHONE_OS_VERSION_MIN_REQUIRED >= 120100 || __MAC_OS_X_VERSION_MIN_REQUIRED >= 101401 || __TV_OS_VERSION_MIN_REQUIRED >= 120100)
 //////////////////////////////////////////////////////////////////////////
 
 @interface AppleGameControllerInput ()
@@ -222,12 +212,10 @@
         {
             Mengine::Helper::pushControllerButtonEvent( timestamp, controllerId, Mengine::CB_MENU, changedGamepad.buttonMenu.value, changedGamepad.buttonMenu.isPressed == YES );
         }
-#if MENGINE_APPLE_CONTROLLER_HAS_BUTTON_OPTIONS
         else if( element == changedGamepad.buttonOptions )
         {
             Mengine::Helper::pushControllerButtonEvent( timestamp, controllerId, Mengine::CB_OPTIONS, changedGamepad.buttonOptions.value, changedGamepad.buttonOptions.isPressed == YES );
         }
-#endif
         else if( element == changedGamepad.dpad )
         {
             Mengine::Helper::pushControllerButtonEvent( timestamp, controllerId, Mengine::CB_DPAD_UP, changedGamepad.dpad.up.value, changedGamepad.dpad.up.isPressed == YES );
@@ -245,7 +233,6 @@
             Mengine::Helper::pushControllerAxisEvent( timestamp, controllerId, Mengine::CA_RIGHT_X, changedGamepad.rightThumbstick.xAxis.value );
             Mengine::Helper::pushControllerAxisEvent( timestamp, controllerId, Mengine::CA_RIGHT_Y, changedGamepad.rightThumbstick.yAxis.value );
         }
-#if MENGINE_APPLE_CONTROLLER_HAS_THUMBSTICKS
         else if( element == changedGamepad.leftThumbstickButton )
         {
             Mengine::Helper::pushControllerButtonEvent( timestamp, controllerId, Mengine::CB_LEFT_THUMB, changedGamepad.leftThumbstickButton.value, changedGamepad.leftThumbstickButton.isPressed == YES );
@@ -254,7 +241,6 @@
         {
             Mengine::Helper::pushControllerButtonEvent( timestamp, controllerId, Mengine::CB_RIGHT_THUMB, changedGamepad.rightThumbstickButton.value, changedGamepad.rightThumbstickButton.isPressed == YES );
         }
-#endif
     };
 }
 

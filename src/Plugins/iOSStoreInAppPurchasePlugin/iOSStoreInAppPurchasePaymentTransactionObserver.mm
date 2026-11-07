@@ -59,6 +59,8 @@
 - (void)deactivate {
     @synchronized (self) {
         self.m_inAppPurchase = nil;
+        self.m_consumableIdentifiers = nil;
+        self.m_nonconsumableIdentifiers = nil;
 
         [self.m_cacheSKPaymentTransactions removeAllObjects];
     }

@@ -24,16 +24,14 @@
 + (void)registerAppForAdNetworkAttribution:(NSString *)coarseValue
                          completionHandler:(void (^)(NSError *error))completion {
     if (@available(iOS 16.1, *)) {
+        NSString *coarseConversionValue = [iOSSKAdNetworkDetail getSKAdNetworkCoarseConversionValue:coarseValue];
         [SKAdNetwork updatePostbackConversionValue:0
-                                       coarseValue:[iOSSKAdNetworkDetail getSKAdNetworkCoarseConversionValue:coarseValue]
+                                       coarseValue:coarseConversionValue
                                         lockWindow:NO
                                  completionHandler:completion];
-    } else if (@available(iOS 15.4, *)) {
+    } else {
         [SKAdNetwork updatePostbackConversionValue:0
                                  completionHandler:completion];
-    } else {
-        [SKAdNetwork registerAppForAdNetworkAttribution];
-        completion(nil);
     }
 }
 
@@ -42,24 +40,20 @@
                            lockWindow:(BOOL)lockWindow
                     completionHandler:(void (^)(NSError *error))completion {
     if (@available(iOS 16.1, *)) {
+        NSString *coarseConversionValue = [iOSSKAdNetworkDetail getSKAdNetworkCoarseConversionValue:coarseValue];
         [SKAdNetwork updatePostbackConversionValue:fineValue
-                                       coarseValue:[iOSSKAdNetworkDetail getSKAdNetworkCoarseConversionValue:coarseValue]
+                                       coarseValue:coarseConversionValue
                                         lockWindow:lockWindow
                                  completionHandler:completion];
-    } else if (@available(iOS 15.4, *)) {
+    } else {
         [SKAdNetwork updatePostbackConversionValue:fineValue
                                  completionHandler:completion];
-    } else {
-        [SKAdNetwork updateConversionValue:fineValue];
-        completion(nil);
     }
 }
 
 + (BOOL)isPostbackConversionUnknownError:(NSError *)error {
-    if (@available(iOS 15.4, *)) {
-        if (error.code == SKANErrorUnknown) {
-            return YES;
-        }
+    if (error.code == SKANErrorUnknown) {
+        return YES;
     }
 
     return NO;

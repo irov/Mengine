@@ -15,7 +15,19 @@
 #   import <execinfo.h>
 #endif
 
+@interface iOSFirebaseCrashlyticsANRMonitor ()
+
+@property (atomic, assign) BOOL m_running;
+
+@end
+
 @implementation iOSFirebaseCrashlyticsANRMonitor
+{
+    id m_resignActiveObserver;
+    id m_becomeActiveObserver;
+    dispatch_semaphore_t m_semaphore;
+    CFRunLoopObserverRef m_runLoopObserver;
+}
 
 + (instancetype)sharedInstance {
     static iOSFirebaseCrashlyticsANRMonitor *sharedInstance = nil;
@@ -30,20 +42,39 @@
     self = [super init];
     if (self) {
         self.m_monitoringEnabled = NO;
+        self.m_running = NO;
+
+        m_resignActiveObserver = nil;
+        m_becomeActiveObserver = nil;
+        m_semaphore = nil;
+        m_runLoopObserver = NULL;
     }
     return self;
 }
 
 - (void)runANRMainWatcher {
-    if ([AppleDetail hasOption:@"anr.enable"] == YES) {
-        self.m_monitoringEnabled = YES;
-
-        [AppleDetail addMainQueueOperation:^{
-            pthread_t thread = pthread_self();
-
-            [self runANRWatcher:thread withName:@"Main"];
-        }];
+    if ([AppleDetail hasOption:@"anr.enable"] == NO) {
+        return;
     }
+
+    if (self.m_running == YES) {
+        return;
+    }
+
+    self.m_running = YES;
+    self.m_monitoringEnabled = YES;
+
+    __weak iOSFirebaseCrashlyticsANRMonitor * weakSelf = self;
+
+    [AppleDetail addMainQueueOperation:^{
+        if (weakSelf.m_running == NO) {
+            return;
+        }
+
+        pthread_t thread = pthread_self();
+
+        [weakSelf runANRWatcher:thread withName:@"Main"];
+    }];
 }
 
 static void RunLoopObserverCallback(CFRunLoopObserverRef observer, CFRunLoopActivity activity, void *info) {
@@ -52,38 +83,69 @@ static void RunLoopObserverCallback(CFRunLoopObserverRef observer, CFRunLoopActi
 }
 
 - (void)runANRWatcher:(pthread_t)thread withName:(NSString *)name {
+    if (self.m_running == NO) {
+        return;
+    }
+
+    if (m_semaphore != nil) {
+        return;
+    }
+
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-
-    [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationWillResignActiveNotification
-                                                      object:nil
-                                                       queue:nil
-                                                  usingBlock:^(__unused NSNotification *note) {
-        self.m_monitoringEnabled = NO;
-        dispatch_semaphore_signal(semaphore);
-    }];
-
-    [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidBecomeActiveNotification
-                                                      object:nil
-                                                       queue:nil
-                                                  usingBlock:^(__unused NSNotification *note) {
-        self.m_monitoringEnabled = YES;
-        dispatch_semaphore_signal(semaphore);
-    }];
 
     CFRunLoopObserverContext context = {0, (__bridge void *)semaphore, NULL, NULL, NULL};
     CFRunLoopObserverRef observer = CFRunLoopObserverCreate(kCFAllocatorDefault, kCFRunLoopBeforeSources | kCFRunLoopAfterWaiting, true, 0, &RunLoopObserverCallback, &context);
-    CFRunLoopAddObserver(CFRunLoopGetMain(), observer, kCFRunLoopCommonModes);
-    CFRelease(observer);
+
+    if (observer == NULL) {
+        self.m_running = NO;
+        self.m_monitoringEnabled = NO;
+        return;
+    }
+
+    m_semaphore = semaphore;
+    m_runLoopObserver = observer;
+
+    CFRunLoopAddObserver(CFRunLoopGetMain(), m_runLoopObserver, kCFRunLoopCommonModes);
+
+    __weak iOSFirebaseCrashlyticsANRMonitor * weakSelf = self;
+
+    m_resignActiveObserver = [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationWillResignActiveNotification
+                                                                                object:nil
+                                                                                 queue:nil
+                                                                            usingBlock:^(__unused NSNotification *note) {
+        if (weakSelf.m_running == NO) {
+            return;
+        }
+
+        weakSelf.m_monitoringEnabled = NO;
+        dispatch_semaphore_signal(semaphore);
+    }];
+
+    m_becomeActiveObserver = [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidBecomeActiveNotification
+                                                                                object:nil
+                                                                                 queue:nil
+                                                                            usingBlock:^(__unused NSNotification *note) {
+        if (weakSelf.m_running == NO) {
+            return;
+        }
+
+        weakSelf.m_monitoringEnabled = YES;
+        dispatch_semaphore_signal(semaphore);
+    }];
 
     [AppleDetail addUserInitiatedQueueOperation:^{
-        while (true) {
+        while (weakSelf.m_running == YES) {
             long result = dispatch_semaphore_wait(semaphore, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)));
+
+            if (weakSelf.m_running == NO) {
+                return;
+            }
 
             if (result == 0) {
                 continue;
             }
 
-            if (self.m_monitoringEnabled == NO) {
+            if (weakSelf.m_monitoringEnabled == NO) {
                 dispatch_semaphore_signal(semaphore);
                 continue;
             }
@@ -91,6 +153,34 @@ static void RunLoopObserverCallback(CFRunLoopObserverRef observer, CFRunLoopActi
             [iOSFirebaseCrashlyticsANRMonitor backtraceOfMachPort:thread withName:name];
         }
     }];
+}
+
+- (void)stopANRWatcher {
+    self.m_running = NO;
+    self.m_monitoringEnabled = NO;
+
+    NSNotificationCenter * notificationCenter = [NSNotificationCenter defaultCenter];
+
+    if (m_resignActiveObserver != nil) {
+        [notificationCenter removeObserver:m_resignActiveObserver];
+        m_resignActiveObserver = nil;
+    }
+
+    if (m_becomeActiveObserver != nil) {
+        [notificationCenter removeObserver:m_becomeActiveObserver];
+        m_becomeActiveObserver = nil;
+    }
+
+    if (m_runLoopObserver != NULL) {
+        CFRunLoopRemoveObserver(CFRunLoopGetMain(), m_runLoopObserver, kCFRunLoopCommonModes);
+        CFRelease(m_runLoopObserver);
+        m_runLoopObserver = NULL;
+    }
+
+    if (m_semaphore != nil) {
+        dispatch_semaphore_signal(m_semaphore);
+        m_semaphore = nil;
+    }
 }
 
 #if defined(__aarch64__)

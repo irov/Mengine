@@ -75,6 +75,16 @@
     return YES;
 }
 
+- (void)applicationWillTerminate:(UIApplication *)application {
+    (void)application;
+
+    [[iOSFirebaseCrashlyticsANRMonitor sharedInstance] stopANRWatcher];
+}
+
+- (void)onFinalize {
+    [[iOSFirebaseCrashlyticsANRMonitor sharedInstance] stopANRWatcher];
+}
+
 - (void)onUserId:(iOSUserParam *)user {
     [[FIRCrashlytics crashlytics] setUserID:user.USER_ID];
 }

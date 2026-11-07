@@ -12,6 +12,7 @@
 
 - (void)runANRMainWatcher;
 - (void)runANRWatcher:(pthread_t)thread withName:(NSString *)threadName;
+- (void)stopANRWatcher;
 
 @property(atomic, assign) BOOL m_monitoringEnabled;
 

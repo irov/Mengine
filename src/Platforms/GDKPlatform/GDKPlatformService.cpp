@@ -227,6 +227,8 @@ namespace Mengine
     {
         m_gameControllerInput.finalize();
 
+        this->detachWindow();
+
         m_active = false;
 
         m_platformTags.clear();
@@ -543,6 +545,8 @@ namespace Mengine
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_PLATFORM_STOP );
 
+        this->detachWindow();
+
         MENGINE_PROFILER_END_APPLICATION();
     }
     //////////////////////////////////////////////////////////////////////////
@@ -698,7 +702,27 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool GDKPlatformService::detachWindow()
     {
+        if( m_hWnd == NULL )
+        {
+            return false;
+        }
+
+        ::CloseWindow( m_hWnd );
+        ::DestroyWindow( m_hWnd );
+
         m_hWnd = NULL;
+
+        LPCWSTR lpClassName = m_windowClassName.c_str();
+
+        HINSTANCE hInstance = ::GetModuleHandle( NULL );
+
+        if( ::UnregisterClass( lpClassName, hInstance ) == FALSE )
+        {
+            LOGGER_ERROR( "invalid UnregisterClass [%ls] get error: %ls"
+                , m_windowClassName.c_str()
+                , Helper::Win32GetLastErrorMessageW()
+            );
+        }
 
         return true;
     }

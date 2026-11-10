@@ -5,6 +5,7 @@
 #include "Interface/FileGroupInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
+#include "Interface/TextAlgorithmInterface.h"
 
 #include "TTFDataInterface.h"
 #include "TTFFontTextureGlyphProvider.h"
@@ -20,6 +21,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/ProfilerHelper.h"
 #include "Kernel/NotificationHelper.h"
+#include "Kernel/VocabularyHelper.h"
 
 #include "Config/StdAlgorithm.h"
 
@@ -119,26 +121,31 @@ namespace Mengine
             return memory;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool shapeText( hb_font_t * _font, const U32String & _text, const Char * _language, float _scale, VectorFontShapedGlyphs * const _glyphs )
+        static void getFallbackScriptSegments( const uint32_t * _text, size_t _size, VectorTextScriptSegments * const _segments )
         {
-            hb_buffer_t * buffer = hb_buffer_create();
             hb_unicode_funcs_t * unicode = hb_unicode_funcs_get_default();
-            hb_language_t language = hb_language_from_string( _language, -1 );
-
-            bool successful = true;
             size_t begin = 0;
-            size_t size = _text.size();
 
-            while( begin != size )
+            while( begin != _size )
             {
                 hb_script_t script = HB_SCRIPT_UNKNOWN;
                 size_t end = begin;
 
-                for( ; end != size; ++end )
+                for( ; end != _size; ++end )
                 {
                     hb_script_t next = hb_unicode_script( unicode, _text[end] );
 
-                    if( next == HB_SCRIPT_COMMON || next == HB_SCRIPT_INHERITED || next == HB_SCRIPT_UNKNOWN )
+                    if( next == HB_SCRIPT_COMMON )
+                    {
+                        continue;
+                    }
+
+                    if( next == HB_SCRIPT_INHERITED )
+                    {
+                        continue;
+                    }
+
+                    if( next == HB_SCRIPT_UNKNOWN )
                     {
                         continue;
                     }
@@ -156,27 +163,82 @@ namespace Mengine
                     }
                 }
 
-                MENGINE_ASSERTION_FATAL( hb_script_get_horizontal_direction( script ) != HB_DIRECTION_RTL, "shaping language '%s' got right-to-left text, only left-to-right is supported"
-                    , _language
-                );
+                MENGINE_ASSERTION_FATAL( hb_script_get_horizontal_direction( script ) != HB_DIRECTION_RTL, "right-to-left text requires the text algorithm plugin" );
+
+                TextScriptSegmentDesc segment;
+                segment.offset = begin;
+                segment.length = end - begin;
+                segment.scriptTag = hb_script_to_iso15924_tag( script );
+                _segments->emplace_back( segment );
+                begin = end;
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool shapeText( hb_font_t * _font, const U32String & _text, ETextDirection _direction, const Char * _language, float _scale, VectorFontShapedGlyphs * const _glyphs )
+        {
+            typedef Vector<uint32_t> VectorCodepoints;
+            U32String::const_iterator codepointsBegin = _text.begin();
+            U32String::const_iterator codepointsEnd = _text.end();
+            VectorCodepoints codepoints( codepointsBegin, codepointsEnd );
+            size_t size = codepoints.size();
+            const uint32_t * data = codepoints.data();
+            TextAlgorithmInterfacePtr algorithm = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "TextAlgorithm" ), STRINGIZE_STRING_LOCAL( "Unicode" ) );
+
+            VectorTextScriptSegments segments;
+
+            if( algorithm != nullptr )
+            {
+                if( algorithm->getScriptSegments( data, size, &segments ) == false )
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                Detail::getFallbackScriptSegments( data, size, &segments );
+            }
+
+            if( _direction == ETD_RIGHT_TO_LEFT )
+            {
+                VectorTextScriptSegments::iterator begin = segments.begin();
+                VectorTextScriptSegments::iterator end = segments.end();
+                StdAlgorithm::reverse( begin, end );
+            }
+
+            hb_buffer_t * buffer = hb_buffer_create();
+            hb_language_t language = hb_language_from_string( _language, -1 );
+            hb_direction_t direction = _direction == ETD_RIGHT_TO_LEFT ? HB_DIRECTION_RTL : HB_DIRECTION_LTR;
+            bool successful = true;
+
+            for( const TextScriptSegmentDesc & segment : segments )
+            {
+                hb_script_t script = hb_script_from_iso15924_tag( segment.scriptTag );
+                unsigned int offset = (unsigned int)segment.offset;
+                int length = (int)segment.length;
+                int textLength = (int)size;
 
                 hb_buffer_reset( buffer );
-                hb_buffer_set_direction( buffer, HB_DIRECTION_LTR );
+                hb_buffer_set_direction( buffer, direction );
                 hb_buffer_set_script( buffer, script );
                 hb_buffer_set_language( buffer, language );
                 hb_buffer_set_cluster_level( buffer, HB_BUFFER_CLUSTER_LEVEL_MONOTONE_GRAPHEMES );
+                hb_buffer_add_codepoints( buffer, data, textLength, offset, length );
 
-                for( size_t index = begin; index != end; ++index )
+                if( hb_buffer_allocation_successful( buffer ) == false )
                 {
-                    Char32 code = _text[index];
-                    uint32_t cluster = (uint32_t)index;
+                    successful = false;
 
-                    hb_buffer_add( buffer, code, cluster );
+                    break;
                 }
 
-                hb_buffer_set_content_type( buffer, HB_BUFFER_CONTENT_TYPE_UNICODE );
-
                 if( hb_shape_full( _font, buffer, nullptr, 0, nullptr ) == false )
+                {
+                    successful = false;
+
+                    break;
+                }
+
+                if( hb_buffer_allocation_successful( buffer ) == false )
                 {
                     successful = false;
 
@@ -202,8 +264,6 @@ namespace Mengine
 
                     _glyphs->emplace_back( glyph );
                 }
-
-                begin = end;
             }
 
             hb_buffer_destroy( buffer );
@@ -751,7 +811,7 @@ namespace Mengine
         return m_shapingLanguage.empty() == false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TTFFont::shapeText( const U32String & _text, VectorFontShapedGlyphs * const _glyphs, const DocumentInterfacePtr & _doc )
+    bool TTFFont::shapeText( const U32String & _text, ETextDirection _direction, VectorFontShapedGlyphs * const _glyphs, const DocumentInterfacePtr & _doc )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_hbFont, "ttf font '%s' shape text without shaping font"
             , this->getName().c_str()
@@ -770,7 +830,7 @@ namespace Mengine
         const Char * language = m_shapingLanguage.c_str();
         float sampleInv = this->getSampleInv();
 
-        if( Detail::shapeText( m_hbFont, _text, language, sampleInv, _glyphs ) == false )
+        if( Detail::shapeText( m_hbFont, _text, _direction, language, sampleInv, _glyphs ) == false )
         {
             return false;
         }

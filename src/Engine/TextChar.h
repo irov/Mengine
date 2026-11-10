@@ -12,6 +12,9 @@ namespace Mengine
     {
         U32String value;
         uint32_t fontId;
+        ETextDirection direction = ETD_LEFT_TO_RIGHT;
+        size_t logicalOffset = 0;
+        size_t visualOrder = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     struct CacheFont

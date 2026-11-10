@@ -275,9 +275,10 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FontBase::shapeText( const U32String & _text, VectorFontShapedGlyphs * const _glyphs, const DocumentInterfacePtr & _doc )
+    bool FontBase::shapeText( const U32String & _text, ETextDirection _direction, VectorFontShapedGlyphs * const _glyphs, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _text );
+        MENGINE_UNUSED( _direction );
         MENGINE_UNUSED( _glyphs );
         MENGINE_UNUSED( _doc );
 

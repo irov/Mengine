@@ -151,6 +151,8 @@ Object\\\\TextField
     TextLine.h
     TextChar.cpp
     TextChar.h
+    TextBidirectional.cpp
+    TextBidirectional.h
     TextRenderChunk.h
     TextDebug.cpp
     TextDebug.h

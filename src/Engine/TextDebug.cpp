@@ -7,6 +7,7 @@
 
 #include "TextRenderChunk.h"
 #include "TextLine.h"
+#include "TextBidirectional.h"
 
 #include "Kernel/VectorRenderVertex2D.h"
 #include "Kernel/StringHelper.h"
@@ -53,14 +54,41 @@ namespace Mengine
 
                     if( _font->isTextShaping() == true )
                     {
-                        if( _font->shapeText( text, &glyphs, _doc ) == false )
+                        TextBidirectional bidirectional;
+                        if( bidirectional.initialize( text ) == false )
                         {
                             return;
+                        }
+
+                        size_t textSize = text.size();
+                        VectorTextBidirectionalSegments segments;
+                        if( bidirectional.getVisualSegments( 0, textSize, &segments ) == false )
+                        {
+                            return;
+                        }
+
+                        for( const TextBidirectionalSegmentDesc & segment : segments )
+                        {
+                            U32String segmentText = text.substr( segment.offset, segment.length );
+                            VectorFontShapedGlyphs segmentGlyphs;
+                            if( _font->shapeText( segmentText, segment.direction, &segmentGlyphs, _doc ) == false )
+                            {
+                                return;
+                            }
+
+                            for( FontShapedGlyphDesc & glyph : segmentGlyphs )
+                            {
+                                glyph.cluster += (uint32_t)segment.offset;
+                                glyphs.emplace_back( glyph );
+                            }
                         }
                     }
 
                     TextLine tl( 0, 0.f );
-                    tl.initialize( 0, _font, text, glyphs );
+                    if( tl.initialize( 0, _font, text, glyphs ) == false )
+                    {
+                        return;
+                    }
 
                     uint32_t vertexCount = 0;
 

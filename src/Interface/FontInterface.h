@@ -98,7 +98,7 @@ namespace Mengine
 
     public:
         virtual bool isTextShaping() const = 0;
-        virtual bool shapeText( const U32String & _text, VectorFontShapedGlyphs * const _glyphs, const DocumentInterfacePtr & _doc ) = 0;
+        virtual bool shapeText( const U32String & _text, ETextDirection _direction, VectorFontShapedGlyphs * const _glyphs, const DocumentInterfacePtr & _doc ) = 0;
         virtual bool getShapedGlyph( uint32_t _layout, uint32_t _index, Glyph * const _glyph ) const = 0;
 
     public:

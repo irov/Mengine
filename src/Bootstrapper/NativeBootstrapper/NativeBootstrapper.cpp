@@ -318,6 +318,10 @@ PLUGIN_EXPORT( Movie );
 PLUGIN_EXPORT( Figma );
 #endif
 //////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_PLUGIN_SHEENBIDI_STATIC)
+PLUGIN_EXPORT( SheenBidi );
+#endif
+//////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLUGIN_TTF_STATIC)
 PLUGIN_EXPORT( TTF );
 #endif
@@ -1942,6 +1946,10 @@ namespace Mengine
 
 #if defined(MENGINE_PLUGIN_BITMAPFONT_STATIC)
         MENGINE_ADD_PLUGIN( BitmapFont, "plugin BitmapFont...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#if defined(MENGINE_PLUGIN_SHEENBIDI_STATIC)
+        MENGINE_ADD_PLUGIN( SheenBidi, "plugin SheenBidi...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #if defined(MENGINE_PLUGIN_TTF_STATIC)

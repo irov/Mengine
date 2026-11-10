@@ -3,8 +3,10 @@
 #include "Interface/TextServiceInterface.h"
 #include "Interface/FontServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
+#include "Interface/TextAlgorithmInterface.h"
 
 #include "TextLine.h"
+#include "TextBidirectional.h"
 
 #include "Kernel/StringFormat.h"
 #include "Kernel/StringHelper.h"
@@ -15,6 +17,8 @@
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/DocumentableHelper.h"
 #include "Kernel/VectorHelper.h"
+#include "Kernel/ConstStringHelper.h"
+#include "Kernel/VocabularyHelper.h"
 
 #include "Config/StdIntTypes.h"
 #include "Config/StdIO.h"
@@ -36,86 +40,219 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         typedef Vector<uint32_t> VectorFontIds;
+        typedef Vector<uint8_t> VectorTextBreaks;
         //////////////////////////////////////////////////////////////////////////
-        static void appendTextRange( const U32String & _text, const VectorFontIds & _fontIds, size_t _begin, size_t _end, VectorTextLineChunks * const _chunks )
+        static void getTextVisualValue( const TextLineChunk & _chunk, U32String * const _value )
         {
-            while( _begin != _end )
+            if( _chunk.direction != ETD_RIGHT_TO_LEFT )
             {
-                size_t end = _begin + 1;
-                uint32_t fontId = _fontIds[_begin];
+                *_value = _chunk.value;
 
-                while( end != _end && _fontIds[end] == fontId )
+                return;
+            }
+
+            TextAlgorithmInterfacePtr algorithm = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "TextAlgorithm" ), STRINGIZE_STRING_LOCAL( "Unicode" ) );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( algorithm, "right-to-left text without text algorithm" );
+
+            const U32String & value = _chunk.value;
+            size_t end = value.size();
+
+            _value->clear();
+            _value->reserve( end );
+
+            while( end != 0 )
+            {
+                size_t begin = end - 1;
+
+                while( begin != 0 && algorithm->isCombiningMark( value[begin] ) == true )
                 {
-                    ++end;
+                    --begin;
                 }
 
-                TextLineChunk chunk;
-                chunk.fontId = fontId;
-                chunk.value = _text.substr( _begin, end - _begin );
+                for( size_t index = begin; index != end; ++index )
+                {
+                    Char32 code = value[index];
+                    Char32 mirror = algorithm->getMirroredCodepoint( code );
 
-                _chunks->emplace_back( chunk );
+                    _value->push_back( mirror );
+                }
 
-                _begin = end;
+                end = begin;
             }
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool calcTextRangeLength( const U32String & _text, const VectorFontIds & _fontIds, const VectorCacheFonts & _fonts, size_t _begin, size_t _end, float _charOffset, float * const _length )
+        static bool appendTextRange( const U32String & _text, const VectorFontIds & _fontIds, const TextBidirectional & _bidirectional, size_t _begin, size_t _end, VectorTextLineChunks * const _chunks )
         {
-            float length = 0.f;
-
-            for( size_t index = _begin; index != _end; ++index )
+            VectorTextBidirectionalSegments segments;
+            if( _bidirectional.getVisualSegments( _begin, _end, &segments ) == false )
             {
-                uint32_t fontId = _fontIds[index];
-                const FontInterfacePtr & font = _fonts[fontId].font;
+                return false;
+            }
 
-                if( font->isTextShaping() == true )
+            size_t visualOrder = 0;
+
+            for( const TextBidirectionalSegmentDesc & segment : segments )
+            {
+                VectorTextLineChunks chunks;
+                size_t begin = segment.offset;
+                size_t segmentEnd = begin + segment.length;
+
+                while( begin != segmentEnd )
                 {
-                    size_t end = index + 1;
+                    size_t end = begin + 1;
+                    uint32_t fontId = _fontIds[begin];
 
-                    while( end != _end && _fontIds[end] == fontId )
+                    while( end != segmentEnd && _fontIds[end] == fontId )
                     {
                         ++end;
                     }
 
-                    U32String runText = _text.substr( index, end - index );
+                    TextLineChunk chunk;
+                    chunk.fontId = fontId;
+                    size_t length = end - begin;
+                    chunk.value = _text.substr( begin, length );
+                    chunk.direction = segment.direction;
+                    chunk.logicalOffset = begin;
+                    chunks.emplace_back( chunk );
+                    begin = end;
+                }
 
+                if( segment.direction == ETD_RIGHT_TO_LEFT )
+                {
+                    VectorTextLineChunks::iterator first = chunks.begin();
+                    VectorTextLineChunks::iterator last = chunks.end();
+                    StdAlgorithm::reverse( first, last );
+                }
+
+                for( TextLineChunk & chunk : chunks )
+                {
+                    chunk.visualOrder = visualOrder++;
+                    _chunks->emplace_back( chunk );
+                }
+            }
+
+            VectorTextLineChunks::iterator begin = _chunks->begin();
+            VectorTextLineChunks::iterator end = _chunks->end();
+            StdAlgorithm::sort( begin, end, []( const TextLineChunk & _left, const TextLineChunk & _right )
+            {
+                if( _left.logicalOffset >= _right.logicalOffset )
+                {
+                    return false;
+                }
+
+                return true;
+            } );
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool getTextBreaks( const U32String & _text, const VectorFontIds & _fontIds, const VectorCacheFonts & _fonts, const TextBidirectional & _bidirectional, VectorTextBreaks * const _breaks )
+        {
+            size_t textSize = _text.size();
+            size_t boundaryCount = textSize + 1;
+            _breaks->assign( boundaryCount, 1 );
+
+            VectorTextLineChunks chunks;
+            if( Detail::appendTextRange( _text, _fontIds, _bidirectional, 0, textSize, &chunks ) == false )
+            {
+                return false;
+            }
+
+            for( const TextLineChunk & chunk : chunks )
+            {
+                const FontInterfacePtr & font = _fonts[chunk.fontId].font;
+
+                if( font->isTextShaping() == false )
+                {
+                    continue;
+                }
+
+                VectorFontShapedGlyphs glyphs;
+                if( font->shapeText( chunk.value, chunk.direction, &glyphs, MENGINE_DOCUMENT_FUNCTION ) == false )
+                {
+                    return false;
+                }
+
+                size_t begin = chunk.logicalOffset;
+                size_t end = begin + chunk.value.size();
+
+                for( size_t index = begin; index != end; ++index )
+                {
+                    (*_breaks)[index] = 0;
+                }
+
+                for( const FontShapedGlyphDesc & glyph : glyphs )
+                {
+                    (*_breaks)[begin + glyph.cluster] = 1;
+                }
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool calcTextRangeLength( const U32String & _text, const VectorFontIds & _fontIds, const VectorCacheFonts & _fonts, const TextBidirectional & _bidirectional, size_t _begin, size_t _end, float _charOffset, float * const _length )
+        {
+            VectorTextLineChunks chunks;
+            if( Detail::appendTextRange( _text, _fontIds, _bidirectional, _begin, _end, &chunks ) == false )
+            {
+                return false;
+            }
+
+            float length = 0.f;
+
+            for( const TextLineChunk & chunk : chunks )
+            {
+                const FontInterfacePtr & font = _fonts[chunk.fontId].font;
+
+                if( font->isTextShaping() == true )
+                {
                     VectorFontShapedGlyphs glyphs;
-                    if( font->shapeText( runText, &glyphs, MENGINE_DOCUMENT_FUNCTION ) == false )
+                    if( font->shapeText( chunk.value, chunk.direction, &glyphs, MENGINE_DOCUMENT_FUNCTION ) == false )
                     {
                         return false;
                     }
 
-                    for( size_t glyphIndex = 0; glyphIndex != glyphs.size(); ++glyphIndex )
+                    for( size_t index = 0; index != glyphs.size(); ++index )
                     {
-                        const FontShapedGlyphDesc & glyph = glyphs[glyphIndex];
+                        const FontShapedGlyphDesc & glyph = glyphs[index];
                         length += glyph.advance;
 
-                        if( glyphIndex + 1 == glyphs.size() || glyph.cluster != glyphs[glyphIndex + 1].cluster )
+                        if( index + 1 == glyphs.size() || glyph.cluster != glyphs[index + 1].cluster )
                         {
                             length += _charOffset;
                         }
                     }
 
-                    index = end - 1;
-
                     continue;
                 }
 
-                GlyphCode code = _text[index];
-                GlyphCode next = 0;
+                U32String visualText;
+                Detail::getTextVisualValue( chunk, &visualText );
 
-                if( index + 1 != _end && _fontIds[index + 1] == fontId )
+                if( chunk.direction == ETD_RIGHT_TO_LEFT )
                 {
-                    next = _text[index + 1];
+                    if( font->prepareGlyph( visualText, MENGINE_DOCUMENT_FUNCTION ) == false )
+                    {
+                        return false;
+                    }
                 }
 
-                Glyph glyph;
-                if( font->getGlyph( 0, code, next, &glyph ) == false )
-                {
-                    continue;
-                }
+                size_t size = visualText.size();
 
-                length += glyph.advance + _charOffset;
+                for( size_t index = 0; index != size; ++index )
+                {
+                    GlyphCode code = visualText[index];
+                    GlyphCode next = index + 1 != size ? visualText[index + 1] : 0;
+
+                    Glyph glyph;
+                    if( font->getGlyph( 0, code, next, &glyph ) == false )
+                    {
+                        continue;
+                    }
+
+                    length += glyph.advance + _charOffset;
+                }
             }
 
             if( _begin != _end )
@@ -1094,17 +1231,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TextField::updateTextLinesWrap_( VectorTextLineChunks2 * const _textLines ) const
     {
-        if( m_wrap == false )
-        {
-            return true;
-        }
-
-        float maxLength = this->calcMaxLength();
-
-        if( maxLength < 0.f )
-        {
-            return true;
-        }
+        float maxLength = m_wrap == true ? this->calcMaxLength() : -1.f;
 
         float charOffset = this->calcCharOffset();
         float charScale = this->calcCharScale();
@@ -1139,10 +1266,30 @@ namespace Mengine
                 continue;
             }
 
+            size_t textSize = text.size();
+            TextBidirectional bidirectional;
+            if( bidirectional.initialize( text ) == false )
+            {
+                return false;
+            }
+
+            if( maxLength < 0.f )
+            {
+                VectorTextLineChunks lineChunks;
+                if( Detail::appendTextRange( text, fontIds, bidirectional, 0, textSize, &lineChunks ) == false )
+                {
+                    return false;
+                }
+
+                wrappedLines.emplace_back( lineChunks );
+
+                continue;
+            }
+
             if( shaping == true )
             {
                 float lineLength;
-                if( Detail::calcTextRangeLength( text, fontIds, m_cacheFonts, 0, text.size(), charOffset, &lineLength ) == false )
+                if( Detail::calcTextRangeLength( text, fontIds, m_cacheFonts, bidirectional, 0, textSize, charOffset, &lineLength ) == false )
                 {
                     return false;
                 }
@@ -1150,11 +1297,21 @@ namespace Mengine
                 if( lineLength * charScale <= maxLength )
                 {
                     VectorTextLineChunks lineChunks;
-                    Detail::appendTextRange( text, fontIds, 0, text.size(), &lineChunks );
+                    if( Detail::appendTextRange( text, fontIds, bidirectional, 0, textSize, &lineChunks ) == false )
+                    {
+                        return false;
+                    }
+
                     wrappedLines.emplace_back( lineChunks );
 
                     continue;
                 }
+            }
+
+            Detail::VectorTextBreaks breaks;
+            if( Detail::getTextBreaks( text, fontIds, m_cacheFonts, bidirectional, &breaks ) == false )
+            {
+                return false;
             }
 
             size_t lineBegin = 0;
@@ -1178,7 +1335,7 @@ namespace Mengine
 
                 size_t measureBegin = shaping == true ? lineBegin : tokenBegin;
                 float tokenLength;
-                if( Detail::calcTextRangeLength( text, fontIds, m_cacheFonts, measureBegin, tokenEnd, charOffset, &tokenLength ) == false )
+                if( Detail::calcTextRangeLength( text, fontIds, m_cacheFonts, bidirectional, measureBegin, tokenEnd, charOffset, &tokenLength ) == false )
                 {
                     return false;
                 }
@@ -1211,13 +1368,23 @@ namespace Mengine
 
                 float candidateLength = shaping == true ? tokenLength : length + boundaryLength + tokenLength;
 
-                if( tokenBegin != lineBegin && wordBegin != U32String::npos && candidateLength * charScale > maxLength )
+                bool canBreak = tokenBegin != lineBegin && wordBegin != U32String::npos;
+
+                if( canBreak == true )
+                {
+                    canBreak = breaks[tokenBegin] != 0 && breaks[wordBegin] != 0;
+                }
+
+                if( canBreak == true && candidateLength * charScale > maxLength )
                 {
                     VectorTextLineChunks lineChunks;
-                    Detail::appendTextRange( text, fontIds, lineBegin, tokenBegin, &lineChunks );
+                    if( Detail::appendTextRange( text, fontIds, bidirectional, lineBegin, tokenBegin, &lineChunks ) == false )
+                    {
+                        return false;
+                    }
                     wrappedLines.emplace_back( lineChunks );
 
-                    if( Detail::calcTextRangeLength( text, fontIds, m_cacheFonts, wordBegin, tokenEnd, charOffset, &tokenLength ) == false )
+                    if( Detail::calcTextRangeLength( text, fontIds, m_cacheFonts, bidirectional, wordBegin, tokenEnd, charOffset, &tokenLength ) == false )
                     {
                         return false;
                     }
@@ -1231,8 +1398,11 @@ namespace Mengine
             }
 
             VectorTextLineChunks lineChunks;
-            size_t textSize = text.size();
-            Detail::appendTextRange( text, fontIds, lineBegin, textSize, &lineChunks );
+            if( Detail::appendTextRange( text, fontIds, bidirectional, lineBegin, textSize, &lineChunks ) == false )
+            {
+                return false;
+            }
+
             wrappedLines.emplace_back( lineChunks );
         }
 
@@ -1280,7 +1450,7 @@ namespace Mengine
                 if( font->isTextShaping() == true && count < value_size )
                 {
                     VectorFontShapedGlyphs glyphs;
-                    if( font->shapeText( chunk.value, &glyphs, MENGINE_DOCUMENT_FACTORABLE ) == false )
+                    if( font->shapeText( chunk.value, chunk.direction, &glyphs, MENGINE_DOCUMENT_FACTORABLE ) == false )
                     {
                         return false;
                     }
@@ -1327,7 +1497,20 @@ namespace Mengine
             VectorTextLines2 textLines;
             uint32_t spaceCount = 0;
 
-            for( const TextLineChunk & textChunk : textChunks )
+            VectorTextLineChunks visualChunks = textChunks;
+            VectorTextLineChunks::iterator visualBegin = visualChunks.begin();
+            VectorTextLineChunks::iterator visualEnd = visualChunks.end();
+            StdAlgorithm::sort( visualBegin, visualEnd, []( const TextLineChunk & _left, const TextLineChunk & _right )
+            {
+                if( _left.visualOrder >= _right.visualOrder )
+                {
+                    return false;
+                }
+
+                return true;
+            } );
+
+            for( const TextLineChunk & textChunk : visualChunks )
             {
                 const FontInterfacePtr & font = m_cacheFonts[textChunk.fontId].font;
                 uint32_t layoutCount = font->getLayoutCount();
@@ -1336,7 +1519,7 @@ namespace Mengine
 
                 if( font->isTextShaping() == true )
                 {
-                    if( font->shapeText( textChunk.value, &glyphs, MENGINE_DOCUMENT_FACTORABLE ) == false )
+                    if( font->shapeText( textChunk.value, textChunk.direction, &glyphs, MENGINE_DOCUMENT_FACTORABLE ) == false )
                     {
                         LOGGER_ERROR( "text field '%s' textId '%s' text '%s' invalid shape text for font '%s'"
                             , this->getName().c_str()
@@ -1349,13 +1532,28 @@ namespace Mengine
                     }
                 }
 
+                U32String visualText = textChunk.value;
+
+                if( font->isTextShaping() == false )
+                {
+                    Detail::getTextVisualValue( textChunk, &visualText );
+
+                    if( textChunk.direction == ETD_RIGHT_TO_LEFT )
+                    {
+                        if( font->prepareGlyph( visualText, MENGINE_DOCUMENT_FACTORABLE ) == false )
+                        {
+                            return false;
+                        }
+                    }
+                }
+
                 VectorTextLines layouts;
 
                 for( uint32_t index = 0; index != layoutCount; ++index )
                 {
                     TextLine line( index, charOffset );
 
-                    if( line.initialize( textChunk.fontId, font, textChunk.value, glyphs ) == false )
+                    if( line.initialize( textChunk.fontId, font, visualText, glyphs ) == false )
                     {
                         LOGGER_ERROR( "text field '%s' textId '%s' text '%s' invalid setup line for font '%s'"
                             , this->getName().c_str()

@@ -19,6 +19,7 @@ IF(WIN32)
 endif()
 
 #COMMON
+GIT_CLONE(sheenbidi https://github.com/Tehreer/SheenBidi.git "v3.0.0")
 GIT_CLONE(harfbuzz https://github.com/harfbuzz/harfbuzz.git "15.0.0")
 GIT_CLONE(freetype https://gitlab.freedesktop.org/freetype/freetype.git "VER-2-14-3")
 GIT_CLONE(zlib https://github.com/madler/zlib.git "v1.4")

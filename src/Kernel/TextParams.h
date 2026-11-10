@@ -5,6 +5,12 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    enum ETextDirection : uint32_t
+    {
+        ETD_LEFT_TO_RIGHT = 0,
+        ETD_RIGHT_TO_LEFT = 1
+    };
+    //////////////////////////////////////////////////////////////////////////
     enum ETextHorizontAlign : uint32_t
     {
         ETFHA_LEFT = 0,

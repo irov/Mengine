@@ -1,0 +1,3 @@
+LIBRARY "SheenBidiPlugin"
+EXPORTS
+   dllMengineCreatePlugin @1

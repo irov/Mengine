@@ -39,6 +39,8 @@ Common
     TextArgumentInterface.h
     TextEntryInterface.h
     TextServiceInterface.h
+    TextAlgorithmInterface.h
+    TextBidirectionalInterface.h
     ValidatorInterface.h
     FontServiceInterface.h
     InputStreamInterface.h

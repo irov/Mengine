@@ -11,10 +11,10 @@ namespace Arena3D
 {
     //////////////////////////////////////////////////////////////////////////
     constexpr uint32_t NetworkWireMagic = UINT32_C(0x574E3341);
-    constexpr uint32_t NetworkProtocolVersion = 3;
+    constexpr uint32_t NetworkProtocolVersion = 5;
     constexpr uint32_t NetworkStateFrameTicks = 10;
     constexpr uint32_t NetworkEventHistoryTicks = 100;
-    constexpr size_t NetworkMaximumFrameEvents = MaximumEventsPerTick;
+    constexpr size_t NetworkMaximumFrameEvents = 512;
     //////////////////////////////////////////////////////////////////////////
     enum class NetworkMessage : uint8_t
     {
@@ -24,7 +24,8 @@ namespace Arena3D
         CommandBatch,
         StateFrame,
         SnapshotRequest,
-        Roster
+        Roster,
+        Confirmations
     };
     //////////////////////////////////////////////////////////////////////////
     enum class NetworkClientKind : uint8_t

@@ -95,7 +95,13 @@ ctest --test-dir examples/arena3d/solutions/headless/Debug --output-on-failure
 
 Grenades separate from contacts, damp their bounces, and stop below a speed threshold on floors. Their fuse continues while resting. Railgun fires once on press with a one-second cooldown; a nonzero `charge_ticks` configuration can enable charging. Its blue-white trail stays in world space and fades over 1.5 seconds. The authoritative shot endpoint stops at the first wall and is preserved in network events and replays.
 
-The character steps over ledges up to 18 Quake units (0.5625 at the map's 1:32 scale), including the map's 16-unit stairs. Camera height uses a critically damped response to each rendered rise, preserving smooth upward motion across successive stairs even when several simulation ticks share a frame. Jump and fall movement retain their simulation trajectory. Simulation version 16, replay format 7 and network protocol 3 reject incompatible older recordings and peers.
+Static map brushes are shapes in a kinefix `kf_world_t`. Kinefix builds its BVH
+once per simulation and uses it for movement, crouch clearance, visibility,
+weapon rays and projectile sweeps. Restoring a simulation keeps the map index.
+The character uses `kf_character_move`; snapshots and checksums include its
+integration remainders and support state.
+
+The character steps over ledges up to 18 Quake units (0.5625 at the map's 1:32 scale), including the map's 16-unit stairs. Camera height uses a critically damped response to each rendered rise, preserving smooth upward motion across successive stairs even when several simulation ticks share a frame. Jump and fall movement retain their simulation trajectory. Simulation version 22, replay format 8 and network protocol 5 reject incompatible older recordings and peers.
 
 ## Controls
 
@@ -117,13 +123,111 @@ The character steps over ledges up to 18 Quake units (0.5625 at the map's 1:32 s
 
 Movement uses deterministic Quake-style projected acceleration: air-strafing can build speed beyond the base run cap, holding jump preserves momentum across landings, and weapon knockback is added to the current velocity so consecutive rocket, grenade and plasma jumps accumulate speed.
 
+## Ackord command sessions
+
+[Ackord](https://github.com/irov/ackord) is the standalone C11 dependency in
+`dependencies/ackord`. Both the local session and UDP server use the same
+`CommandServer` adapter, and local/network clients use the same `CommandClient`.
+The standard Mengine downloads target obtains Ackord alongside kinefix; both
+must be present before configuring the standalone headless build.
+
+Ackord owns command IDs, bounded pending queues, sequence reordering, duplicate
+suppression, application confirmations and an exportable in-memory journal.
+Arena3D supplies its codec, trusted peer identity, game clock, batch handler and
+simulation results. Network protocol 5 carries reliable per-command results and
+independent completion masks for gameplay and session controls. Packet ACKs remain
+the responsibility of SocketService.
+The adapter explicitly supplies all Ackord limits and Mengine's allocator;
+the library has no built-in allocator. Compilers may emit runtime memory operations.
+A processed command can have a rejected application result; a future or missing
+command is never covered by a cumulative ACK for a later command.
+
+Client retransmission state is separate from prediction history. A reliable
+confirmation releases the retransmission payload, while prediction history is
+retired only after a validated snapshot includes that command. Pause/Resume and
+Restart use the authoritative session clock and preserve their stream order,
+even when the client clock is ahead. Gameplay and controls have independent
+Ackord sequence windows, so future gameplay commands cannot block Resume or
+Restart. Controls are sent first; each stream retains its own sequence order.
+The streams have no shared sequence: at equal assigned steps, gameplay precedes
+controls for the same player. A new authoritative session discards old work.
+State frames continue on the network clock while gameplay is paused, so a lost
+pause frame is recovered without another command. Confirmations release only
+successfully queued journal entries; transport backpressure retains the unsent
+suffix for the next update. SocketService retains accepted reliable sends when a
+peer's packet window is full and retries them in channel order. Its bounded
+application queue reports saturation explicitly. Shutdown bypasses that queue;
+the client retains refused disconnect requests until accepted. The receiver admits
+the next reliable message on each channel and acknowledges fragments only after
+retaining them. Later messages
+stay with the sender for retry; the final fragment waits for space in the event
+queue. Accepted reliable fragments remain until completion or peer disconnect.
+Transport version 2 keeps a fragment's packet ID across retries and acknowledges
+accepted old packets explicitly when they fall outside the ACK bitmap. Reliable
+and unreliable sends use separate sequence counters on each channel.
+Outside loopback, the transport permits 32,000 bytes per second with a burst large
+enough for a complete 64 KiB message and its fragment headers. Older due reliable
+sends reserve priority over new sends and smaller retries on other channels,
+including while waiting for enough credit. Peer IDs are not reused within a
+SocketService lifetime; exhaustion rejects new connections without disturbing
+established peers.
+
+Resetting an existing command session preserves its queue, sequence numbers and
+ACK progress. A local session may select its initial seed before any input or
+simulation step; resetting a used local session with the same ID is a no-op.
+Ending a network connection clears both client streams and prediction history.
+Queued events from the old peer cannot reconnect the client; a new connection
+starts its sequences at one even if the server reuses a match and player ID.
+Hello, Welcome, snapshot requests, roster updates and rejection replies remain
+pending until the transport accepts them. Accepted reliable messages rely on
+transport retransmission; application retries do not enqueue another copy.
+Local command creation reports failure through `accepted == false`. Local
+`submit` returns false under backpressure, and the next ticks retry commands
+retained by the Ackord client without stopping the simulation.
+Gameplay disconnects permanently retire both of the player's streams. The command
+server reserves pairs of streams for 4096 distinct players per match, independently
+of the 16 simultaneous players; exhausting that budget rejects new joins until a
+fresh match starts.
+Automatic player IDs never wrap to zero or reuse earlier IDs within a match.
+After `UINT32_MAX`, automatic registration reports exhaustion without changing
+the simulation; explicit unused nonzero IDs remain available.
+The adapter orders simulation and replay batches by assigned step, real player
+ID, stream and sequence, independently of registration and player-slot order.
+It maps results back to the original Ackord identities; Ackord journal indices
+describe the commit order of those results. Replay format 8 stores each processing
+batch, including empty batches and repeated paused ticks, so terminal Pause and
+restarted matches replay with the original event boundaries. Simulation version 22
+rejects recordings and peers with the earlier movement behavior. Simulation retains
+every command rejection event for the current match in an accepted batch,
+independently of the transport's 512-event history limit and the separate
+damage-request limit. The checked batch handler contains
+C++ exceptions and publishes no ACK for a failed batch; processing resumes only
+after both the simulation and command session restart.
+
+Headless CTest includes command/session/replay tests and networking integration
+tests with two clients, delayed/lost/reordered messages, pause, restart and
+pending-queue checks. Those networking tests use a simulated SocketService.
+Separate tests exercise the real SocketService queue, packet-window saturation,
+fragmentation, broadcast retries, delayed ACKs, mixed delivery and shutdown.
+Command tests cover full sequence windows, paused control backlogs, player-slot
+reuse across restarts, exhausted player IDs and validation before queue mutation.
+Network tests cover delayed events after disconnect and reused identities on a
+new connection, including temporary refusal of handshake and restart messages.
+Command tests also replay batches with 2048 rejection events. Transport tests
+cover nonloopback message limits, reliable progress under competing traffic and
+peer-ID exhaustion. `run_local_match.py` exercises
+real UDP and independent processes.
+On POSIX systems CTest also checks intact, oversized and empty loopback datagrams
+through the native socket implementation.
+
 ## Runtime architecture
 
+- `ackord` is a pure C11 command-session library shared by local and network play.
 - `kinefix` is a pure C11 library that owns 32-bit Q16.16 values, 64-bit Q32.32 arithmetic intermediates, vectors, `uint16_t` binary angles with lookup-table trigonometry, PCG32, AABB/sphere/capsule collision queries, raycasts, continuous character integration, step handling, and projectile sweeps.
 - `Arena3DSimulation` owns canonical game state and rules: commands, weapons, turrets, pickups, damage, events, snapshots, and checksums. Its small C++ fixed-point facade delegates to `kinefix` so existing presentation-facing types remain stable.
 - `POSIXSocketSystem` and `Win32SocketSystem` own only native BSD socket/Winsock operations. The legacy TCP `SocketInterface` remains available; `DatagramInterface` adds resolved IPv4/IPv6 addresses, UDP, non-blocking operation, waits, buffer controls, truncation and platform result codes.
 - `SocketService` is the platform-neutral reliable-UDP transport. Its network thread owns one endpoint, peer lifecycle, bounded queues, 1200-byte packets, ACK masks, retransmission/backoff, independent channels, fragmentation, keepalive, timeout, bandwidth accounting and statistics. It never invokes application callbacks from its thread.
-- `Arena3DNetworking` owns the game wire protocol, compatibility handshake, roster, command batching, compressed authoritative state frames, snapshots, event delivery and reconciliation. The server derives player/match/tick identity from the connected peer and never trusts those client fields.
+- `Arena3DNetworking` owns the game wire protocol, compatibility handshake, roster, the Ackord command adapter, compressed authoritative state frames, snapshots, event delivery and reconciliation. The server derives player/match/tick identity from the connected peer and never trusts those client fields.
 - `LocalSession` remains available for offline play. Network mode uses the same `NetworkClient` in the Mengine application and in each independent `Arena3DBotClient` process.
 - `Arena3DServer`, `Arena3DBotClient`, and `Arena3DNetProxy` share a minimal headless bootstrap with allocator, basic services, time, threads and sockets; they do not link render or audio systems.
 - `Arena3DFramework` converts only presentation copies to float. It interpolates camera and actors, pools projectile nodes, red actor-hit flashes, floating health-damage numbers and temporary surface decals, maintains view-model/world camera branches, plays generated audio, deduplicates events, and renders per-weapon icon/ammo HUD slots after post-processing.

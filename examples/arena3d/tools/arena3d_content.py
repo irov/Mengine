@@ -773,7 +773,8 @@ def write_collision_header(path: Path, brushes: Sequence[tuple[int, Sequence[flo
         "    struct JumpPadRaw { uint32_t id; kf_fixed_t position[3]; kf_fixed_t halfSize[3]; kf_fixed_t velocity[3]; };",
         "    struct HazardRaw { uint32_t id; uint32_t type; kf_fixed_t position[3]; kf_fixed_t halfSize[3]; int32_t damage; uint32_t intervalTicks; };",
         "",
-        "    inline constexpr kf_collider_t CollisionColliders[] =",
+        "    struct CollisionBrushRaw { uint32_t id; kf_aabb_t bounds; };",
+        "    inline constexpr CollisionBrushRaw CollisionColliders[] =",
         "    {",
     ]
     for brush_id, center, size in brushes:

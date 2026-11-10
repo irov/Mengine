@@ -26,7 +26,7 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         static constexpr uint32_t SocketMagic = 0x53474E4D;
-        static constexpr uint16_t SocketVersion = 1;
+        static constexpr uint16_t SocketVersion = 2;
         static constexpr size_t SocketPacketSize = 1200;
         typedef Mengine::Array<uint8_t, SocketPacketSize> ArraySocketPacket;
         static constexpr size_t SocketHeaderSize = 44;
@@ -42,8 +42,9 @@ namespace Mengine
         static constexpr uint64_t SocketTimeoutMs = 5000;
         static constexpr uint64_t SocketConnectRetryMs = 250;
         static constexpr uint64_t SocketReassemblyTimeoutMs = 2000;
-        static constexpr double SocketBandwidthBytesPerMs = 32.0;
-        static constexpr double SocketBandwidthCapacity = 32768.0;
+        static const double SOCKET_BANDWIDTH_BYTES_PER_MS = 32.0;
+        // Atomic unreliable admission needs a burst that fits one maximum fragmented message.
+        static const double SOCKET_BANDWIDTH_CAPACITY = static_cast<double>(SocketMessageSize + ((SocketMessageSize + SocketPayloadSize - 1) / SocketPayloadSize) * SocketHeaderSize);
         static constexpr double SocketLoopbackBandwidthBytesPerMs = 512.0;
         static constexpr double SocketLoopbackBandwidthCapacity = 512.0 * 1024.0;
 
@@ -89,7 +90,8 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     SocketService::SocketService()
-        : m_nextPeerId( 1 )
+        : m_commandCount( 0 )
+        , m_nextPeerId( 1 )
         , m_nextConnectionId( 1 )
         , m_maximumPeers( 0 )
         , m_server( false )
@@ -109,6 +111,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SocketService::sequenceAcknowledged_( uint32_t _sequence, uint32_t _ack, uint32_t _ackBits )
     {
+        if( _sequence == 0 )
+        {
+            return false;
+        }
         if( _ack == 0 )
         {
             return false;
@@ -168,6 +174,26 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool SocketService::pendingNeedsSend_( const Peer & _peer, const PendingPacket & _pending, uint64_t _now )
+    {
+        if( _pending.packetSequence == 0 )
+        {
+            return true;
+        }
+        uint32_t baseRto = _peer.rttMs == 0 ? 100 : _peer.rttMs * 2;
+        baseRto = Mengine::StdAlgorithm::min<uint32_t>( 1000, baseRto );
+        baseRto = Mengine::StdAlgorithm::max<uint32_t>( 100, baseRto );
+        uint32_t shift = Mengine::StdAlgorithm::min<uint32_t>( _pending.retryCount, 3 );
+        uint32_t rto = baseRto << shift;
+        rto = Mengine::StdAlgorithm::min<uint32_t>( 1000, rto );
+        if( _now - _pending.lastSendMs < rto )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     const ServiceRequiredList & SocketService::requiredServices() const
     {
         static const ServiceRequiredList required = {
@@ -188,7 +214,7 @@ namespace Mengine
             return false;
         }
 
-        m_stopping = false;
+        m_stopping.store( false );
         m_thread = Helper::createThreadIdentity( MENGINE_THREAD_DESCRIPTION( "MNGSocket" ), ETP_ABOVE_NORMAL, [this]( const ThreadIdentityRunnerInterfacePtr & _runner )
         {
             return this->process_( _runner );
@@ -209,6 +235,7 @@ namespace Mengine
         this->closeEndpoint_();
         this->clearPeers_();
         m_commands.clear();
+        m_commandCount = 0;
         m_events.clear();
         m_eventMutex = nullptr;
         m_commandMutex = nullptr;
@@ -233,10 +260,10 @@ namespace Mengine
         {
             return false;
         }
-        SocketPeerId peerId = m_nextPeerId.fetch_add( 1 );
+        SocketPeerId peerId = this->allocatePeerId_();
         if( peerId == InvalidSocketPeerId )
         {
-            peerId = m_nextPeerId.fetch_add( 1 );
+            return false;
         }
 
         Command command;
@@ -315,31 +342,67 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SocketService::stop()
     {
-        if( m_commandMutex == nullptr )
+        m_stopping.store( true );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    SocketPeerId SocketService::allocatePeerId_()
+    {
+        SocketPeerId peerId = m_nextPeerId.load();
+        for( ;; )
         {
-            return;
+            if( peerId == InvalidSocketPeerId )
+            {
+                return InvalidSocketPeerId;
+            }
+            SocketPeerId nextPeerId = peerId == UINT32_MAX ? InvalidSocketPeerId : peerId + 1;
+            if( m_nextPeerId.compare_exchange_weak( peerId, nextPeerId ) == true )
+            {
+                return peerId;
+            }
         }
-        Command command;
-        command.type = ECommandType::Stop;
-        this->enqueueCommand_( Mengine::StdUtility::move( command ) );
     }
     //////////////////////////////////////////////////////////////////////////
     bool SocketService::enqueueCommand_( Command && _command )
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_commandMutex );
-        if( m_commands.size() >= Detail::SocketCommandLimit )
+        if( m_stopping.load() == true )
         {
-            auto unreliable = Mengine::StdAlgorithm::find_if( m_commands.begin(), m_commands.end(), []( const Command & _queued )
+            return false;
+        }
+
+        size_t commandLimit = Detail::SocketCommandLimit;
+        if( _command.type == ECommandType::Send || _command.type == ECommandType::Broadcast )
+        {
+            // Keep capacity for endpoint and disconnect requests during reliable backpressure.
+            --commandLimit;
+        }
+        while( m_commandCount >= commandLimit )
+        {
+            DequeCommand::iterator unreliable = Mengine::StdAlgorithm::find_if( m_commands.begin(), m_commands.end(), []( const Command & _queued )
             {
-                return (_queued.type == ECommandType::Send || _queued.type == ECommandType::Broadcast) && _queued.delivery == ESocketDelivery::UnreliableSequenced;
+                if( _queued.delivery != ESocketDelivery::UnreliableSequenced )
+                {
+                    return false;
+                }
+                if( _queued.type == ECommandType::Send )
+                {
+                    return true;
+                }
+                if( _queued.type == ECommandType::Broadcast )
+                {
+                    return true;
+                }
+                return false;
             } );
             if( unreliable == m_commands.end() )
             {
                 return false;
             }
             m_commands.erase( unreliable );
+            --m_commandCount;
         }
         m_commands.emplace_back( Mengine::StdUtility::move( _command ) );
+        ++m_commandCount;
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -349,10 +412,16 @@ namespace Mengine
         {
             return false;
         }
+        if( m_stopping.load() == true )
+        {
+            this->closeEndpoint_();
+            return false;
+        }
         uint64_t now = static_cast<uint64_t>(TIME_SYSTEM()->getPlatformTimestamp());
         this->processCommands_( now );
-        if( m_stopping == true )
+        if( m_stopping.load() == true )
         {
+            this->closeEndpoint_();
             return false;
         }
         this->receivePackets_( now );
@@ -368,19 +437,42 @@ namespace Mengine
             commands.swap( m_commands );
         }
 
-        while( commands.empty() == false )
+        for( Peer & peer : m_peers )
+        {
+            peer.blockedChannels = 0;
+        }
+
+        size_t completed = 0;
+        size_t commandCount = commands.size();
+        for( size_t index = 0; index != commandCount; ++index )
         {
             Command command = Mengine::StdUtility::move( commands.front() );
             commands.pop_front();
-            this->processCommand_( Mengine::StdUtility::move( command ), _now );
-            if( m_stopping == true )
+            if( this->processCommand_( command, _now ) == false )
+            {
+                commands.emplace_back( Mengine::StdUtility::move( command ) );
+            }
+            else
+            {
+                ++completed;
+            }
+            if( m_stopping.load() == true )
             {
                 break;
             }
         }
+
+        MENGINE_THREAD_MUTEX_SCOPE( m_commandMutex );
+        m_commandCount -= completed;
+        while( m_commands.empty() == false )
+        {
+            commands.emplace_back( Mengine::StdUtility::move( m_commands.front() ) );
+            m_commands.pop_front();
+        }
+        commands.swap( m_commands );
     }
     //////////////////////////////////////////////////////////////////////////
-    void SocketService::processCommand_( Command && _command, uint64_t _now )
+    bool SocketService::processCommand_( Command & _command, uint64_t _now )
     {
         switch( _command.type )
         {
@@ -421,26 +513,64 @@ namespace Mengine
         case ECommandType::Send:
         {
             Peer * peer = this->findPeer_( _command.peerId );
-            if( peer != nullptr && peer->state == EPeerState::Connected )
+            if( peer == nullptr )
             {
-                this->queueMessage_( peer, _command.channel, _command.delivery, _command.payload, _now );
+                break;
+            }
+            if( peer->state == EPeerState::Disconnected )
+            {
+                break;
+            }
+            if( this->queueMessage_( peer, _command.channel, _command.delivery, _command.payload, _now ) == false )
+            {
+                if( _command.delivery == ESocketDelivery::ReliableOrdered )
+                {
+                    return false;
+                }
             }
             break;
         }
         case ECommandType::Broadcast:
-            for( Peer & peer : m_peers )
+            if( _command.recipientsInitialized == false )
             {
-                if( peer.state == EPeerState::Connected )
+                for( const Peer & peer : m_peers )
                 {
-                    this->queueMessage_( &peer, _command.channel, _command.delivery, _command.payload, _now );
+                    if( peer.state != EPeerState::Connected )
+                    {
+                        continue;
+                    }
+                    _command.recipients.emplace_back( peer.id );
                 }
+                _command.recipientsInitialized = true;
+            }
+            for( size_t index = 0; index != _command.recipients.size(); )
+            {
+                Peer * peer = this->findPeer_( _command.recipients[index] );
+                if( peer != nullptr && peer->state != EPeerState::Disconnected )
+                {
+                    if( this->queueMessage_( peer, _command.channel, _command.delivery, _command.payload, _now ) == false )
+                    {
+                        if( _command.delivery == ESocketDelivery::ReliableOrdered )
+                        {
+                            ++index;
+                            continue;
+                        }
+                    }
+                }
+                _command.recipients[index] = _command.recipients.back();
+                _command.recipients.pop_back();
+            }
+            if( _command.recipients.empty() == false )
+            {
+                return false;
             }
             break;
         case ECommandType::Stop:
-            m_stopping = true;
+            m_stopping.store( true );
             this->closeEndpoint_();
             break;
         }
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void SocketService::openEndpoint_( const SocketAddress & _address, bool _server, uint32_t _maximumPeers )
@@ -525,12 +655,14 @@ namespace Mengine
         peer.lastReceiveMs = _now;
         peer.lastSendMs = _now;
         peer.lastConnectSendMs = 0;
+        peer.bandwidthBytesPerMs = Detail::SOCKET_BANDWIDTH_BYTES_PER_MS;
+        peer.bandwidthCapacity = Detail::SOCKET_BANDWIDTH_CAPACITY;
         if( Detail::isLoopbackAddress( _address ) == true )
         {
             peer.bandwidthBytesPerMs = Detail::SocketLoopbackBandwidthBytesPerMs;
             peer.bandwidthCapacity = Detail::SocketLoopbackBandwidthCapacity;
-            peer.bandwidthTokens = peer.bandwidthCapacity;
         }
+        peer.bandwidthTokens = peer.bandwidthCapacity;
         peer.bandwidthTimestampMs = _now;
         m_peers.emplace_back( Mengine::StdUtility::move( peer ) );
         STATISTIC_INC_INTEGER( STATISTIC_SOCKET_PEER_COUNT );
@@ -542,6 +674,8 @@ namespace Mengine
     {
         for( const Peer & peer : m_peers )
         {
+            MENGINE_UNUSED( peer );
+
             STATISTIC_DEC_INTEGER( STATISTIC_SOCKET_PEER_COUNT );
             STATISTIC_DEL_INTEGER( STATISTIC_SOCKET_PENDING_RELIABLE_PACKETS, peer.pending.size() );
             STATISTIC_DEL_INTEGER( STATISTIC_SOCKET_PEER_RTT_MS, peer.rttMs );
@@ -550,13 +684,18 @@ namespace Mengine
         m_peers.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void SocketService::removePeer_( size_t _index, uint32_t _reason, bool _notify )
+    bool SocketService::removePeer_( size_t _index, uint32_t _reason, bool _notify )
     {
-        const Peer & peer = m_peers[_index];
+        Peer & peer = m_peers[_index];
         SocketPeerId peerId = peer.id;
         if( _notify == true )
         {
-            this->pushEvent_( SocketServiceEvent{ESocketServiceEventType::PeerDisconnected, peerId, 0, _reason, {}} );
+            if( this->pushEvent_( SocketServiceEvent{ESocketServiceEventType::PeerDisconnected, peerId, 0, _reason, {}} ) == false )
+            {
+                peer.state = EPeerState::Disconnected;
+                peer.disconnectReason = _reason;
+                return false;
+            }
         }
 
         STATISTIC_DEC_INTEGER( STATISTIC_SOCKET_PEER_COUNT );
@@ -564,6 +703,7 @@ namespace Mengine
         STATISTIC_DEL_INTEGER( STATISTIC_SOCKET_PEER_RTT_MS, peer.rttMs );
 
         m_peers.erase( m_peers.begin() + static_cast<ptrdiff_t>(_index) );
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void SocketService::sendConnect_( Peer * _peer, uint64_t _now )
@@ -585,32 +725,64 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void SocketService::queueMessage_( Peer * _peer, uint8_t _channel, ESocketDelivery _delivery, const Data & _payload, uint64_t _now )
+    bool SocketService::queueMessage_( Peer * _peer, uint8_t _channel, ESocketDelivery _delivery, const Data & _payload, uint64_t _now )
     {
         if( _channel >= 4 || _payload.size() > Detail::SocketMessageSize )
         {
-            return;
+            return false;
+        }
+        uint8_t channelMask = static_cast<uint8_t>(1U << _channel);
+        if( (_peer->blockedChannels & channelMask) != 0 )
+        {
+            return false;
+        }
+        if( _peer->state != EPeerState::Connected )
+        {
+            _peer->blockedChannels |= channelMask;
+            return false;
         }
         size_t fragmentCountValue = Mengine::StdAlgorithm::max<size_t>( 1, (_payload.size() + Detail::SocketPayloadSize - 1) / Detail::SocketPayloadSize );
         if( fragmentCountValue > 64 )
         {
-            return;
+            return false;
         }
         if( _delivery == ESocketDelivery::ReliableOrdered && _peer->pending.size() + fragmentCountValue > Detail::SocketPendingLimit )
         {
-            return;
+            _peer->blockedChannels |= channelMask;
+            return false;
+        }
+        bool sendImmediately = true;
+        for( const PendingPacket & pending : _peer->pending )
+        {
+            if( SocketService::pendingNeedsSend_( *_peer, pending, _now ) == true )
+            {
+                sendImmediately = false;
+                break;
+            }
         }
         const bool reserveUnreliableMessage = _delivery == ESocketDelivery::UnreliableSequenced;
         if( reserveUnreliableMessage == true )
         {
+            if( sendImmediately == false )
+            {
+                return false;
+            }
             const size_t messageBytes = _payload.size() + fragmentCountValue * Detail::SocketHeaderSize;
             if( this->consumeBandwidth_( _peer, messageBytes, false, _now ) == false )
             {
-                return;
+                return false;
             }
         }
         uint32_t messageId = _peer->nextMessageId++;
-        uint32_t channelSequence = _peer->sendChannelSequence[_channel]++;
+        uint32_t channelSequence;
+        if( _delivery == ESocketDelivery::ReliableOrdered )
+        {
+            channelSequence = _peer->sendReliableChannelSequence[_channel]++;
+        }
+        else
+        {
+            channelSequence = _peer->sendUnreliableChannelSequence[_channel]++;
+        }
 
         for( size_t index = 0; index != fragmentCountValue; ++index )
         {
@@ -632,7 +804,10 @@ namespace Mengine
 
             if( _delivery == ESocketDelivery::ReliableOrdered )
             {
-                this->sendPending_( _peer, &pending, Detail::PacketData, _now, false, false );
+                if( sendImmediately == true )
+                {
+                    sendImmediately = this->sendPending_( _peer, &pending, Detail::PacketData, _now, false, false );
+                }
                 _peer->pending.emplace_back( Mengine::StdUtility::move( pending ) );
                 STATISTIC_INC_INTEGER( STATISTIC_SOCKET_PENDING_RELIABLE_PACKETS );
             }
@@ -641,11 +816,12 @@ namespace Mengine
                 this->sendPending_( _peer, &pending, Detail::PacketData, _now, false, true );
             }
         }
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SocketService::sendPending_( Peer * _peer, PendingPacket * _pending, uint16_t _flags, uint64_t _now, bool _retransmit, bool _bandwidthReserved )
     {
-        uint32_t packetSequence = 0;
+        uint32_t packetSequence = _pending->packetSequence;
         if( this->sendPacket_( _peer, _flags, _pending->messageId, _pending->channelSequence, _pending->totalSize, _pending->fragmentIndex, _pending->fragmentCount, _pending->channel, _pending->delivery, _pending->payload.data(),
                                _pending->payload.size(), &packetSequence, _now, _bandwidthReserved ) == false )
         {
@@ -667,7 +843,18 @@ namespace Mengine
         return this->sendPacket_( _peer, _flags, _reason, 0, 0, 0, 0, 0, ESocketDelivery::ReliableOrdered, nullptr, 0, &sequence, _now, false );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SocketService::sendPacket_( Peer * _peer, uint16_t _flags, uint32_t _messageId, uint32_t _channelSequence, uint32_t _totalSize, uint16_t _fragmentIndex, uint16_t _fragmentCount, uint8_t _channel, ESocketDelivery _delivery, const uint8_t * _payload, size_t _payloadSize, uint32_t * const _packetSequence, uint64_t _now, bool _bandwidthReserved )
+    void SocketService::sendAcknowledgement_( Peer * _peer, uint32_t _sequence, uint64_t _now )
+    {
+        uint32_t sequence = 0;
+        this->sendPacket_( _peer, Detail::PacketAckOnly, 0, 0, 0, 0, 0, 0, ESocketDelivery::ReliableOrdered, nullptr, 0, &sequence, _now, false, _sequence );
+        if( _peer->ackPending == false )
+        {
+            return;
+        }
+        this->sendControl_( _peer, Detail::PacketAckOnly, 0, _now );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SocketService::sendPacket_( Peer * _peer, uint16_t _flags, uint32_t _messageId, uint32_t _channelSequence, uint32_t _totalSize, uint16_t _fragmentIndex, uint16_t _fragmentCount, uint8_t _channel, ESocketDelivery _delivery, const uint8_t * _payload, size_t _payloadSize, uint32_t * const _packetSequence, uint64_t _now, bool _bandwidthReserved, uint32_t _ackSequence )
     {
         if( m_socket == nullptr || _payloadSize > Detail::SocketPayloadSize )
         {
@@ -680,18 +867,46 @@ namespace Mengine
         }
 
         Detail::ArraySocketPacket packet{};
-        uint32_t sequence = _peer->nextPacketSequence++;
+        uint32_t sequence = *_packetSequence;
         if( sequence == 0 )
         {
-            sequence = _peer->nextPacketSequence++;
+            for( ;; )
+            {
+                sequence = _peer->nextPacketSequence++;
+                if( sequence == 0 )
+                {
+                    continue;
+                }
+                bool occupied = false;
+                for( const PendingPacket & pending : _peer->pending )
+                {
+                    if( pending.packetSequence != sequence )
+                    {
+                        continue;
+                    }
+                    occupied = true;
+                    break;
+                }
+                if( occupied == false )
+                {
+                    break;
+                }
+            }
         }
         Helper::writeUint32( packet.data(), Detail::SocketMagic );
         Helper::writeUint16( packet.data() + 4, Detail::SocketVersion );
         Helper::writeUint16( packet.data() + 6, _flags );
         Helper::writeUint32( packet.data() + 8, _peer->connectionId );
         Helper::writeUint32( packet.data() + 12, sequence );
-        Helper::writeUint32( packet.data() + 16, _peer->receiveInitialized == true ? _peer->receiveSequence : 0 );
-        Helper::writeUint32( packet.data() + 20, _peer->receiveMask );
+        uint32_t ackSequence = _peer->receiveInitialized == true ? _peer->receiveSequence : 0;
+        uint32_t ackBits = _peer->receiveMask;
+        if( _ackSequence != 0 )
+        {
+            ackSequence = _ackSequence;
+            ackBits = 0;
+        }
+        Helper::writeUint32( packet.data() + 16, ackSequence );
+        Helper::writeUint32( packet.data() + 20, ackBits );
         Helper::writeUint32( packet.data() + 24, _messageId );
         Helper::writeUint32( packet.data() + 28, _channelSequence );
         Helper::writeUint32( packet.data() + 32, _totalSize );
@@ -712,7 +927,10 @@ namespace Mengine
             return false;
         }
         *_packetSequence = sequence;
-        _peer->ackPending = false;
+        if( _ackSequence == 0 )
+        {
+            _peer->ackPending = false;
+        }
         _peer->lastSendMs = _now;
         STATISTIC_ADD_INTEGER( STATISTIC_SOCKET_BYTES_SENT, sent );
         STATISTIC_INC_INTEGER( STATISTIC_SOCKET_PACKETS_SENT );
@@ -813,28 +1031,67 @@ namespace Mengine
             {
                 return;
             }
-            SocketPeerId peerId = m_nextPeerId.fetch_add( 1 );
+            SocketPeerId peerId = this->allocatePeerId_();
             if( peerId == InvalidSocketPeerId )
             {
-                peerId = m_nextPeerId.fetch_add( 1 );
+                return;
             }
             peer = this->createPeer_( peerId, _address, connectionId, EPeerState::Connected, _now );
             if( peer == nullptr )
             {
                 return;
             }
-            this->pushEvent_( SocketServiceEvent{ESocketServiceEventType::PeerConnected, peer->id, 0, 0, {}} );
+            if( this->pushEvent_( SocketServiceEvent{ESocketServiceEventType::PeerConnected, peer->id, 0, 0, {}} ) == false )
+            {
+                size_t index = m_peers.size() - 1;
+                this->removePeer_( index, 0, false );
+                return;
+            }
         }
 
+        if( peer->state == EPeerState::Disconnected )
+        {
+            return;
+        }
         peer->lastReceiveMs = _now;
         STATISTIC_ADD_INTEGER( STATISTIC_SOCKET_BYTES_RECEIVED, _size );
         STATISTIC_INC_INTEGER( STATISTIC_SOCKET_PACKETS_RECEIVED );
         this->acknowledge_( peer, ack, ackBits, _now );
-        bool fresh = this->markReceived_( peer, sequence );
-        if( fresh == true && ( flags & Detail::PacketData ) != 0 )
+        if( flags == Detail::PacketData )
         {
+            if( peer->state != EPeerState::Connected )
+            {
+                return;
+            }
+            bool initialized = peer->receiveInitialized;
+            uint32_t latest = peer->receiveSequence;
+            uint32_t mask = peer->receiveMask;
+            bool fresh = SocketService::sequenceMarkReceived_( sequence, &initialized, &latest, &mask );
+            ESocketDelivery delivery = static_cast<ESocketDelivery>(deliveryValue);
+            if( fresh == false && delivery == ESocketDelivery::UnreliableSequenced )
+            {
+                peer->ackPending = true;
+                return;
+            }
+            if( this->receiveFragment_( peer, messageId, channelSequence, totalSize, fragmentIndex, fragmentCount, channel, delivery, _packet + Detail::SocketHeaderSize, payloadSize, _now ) == false )
+            {
+                if( delivery == ESocketDelivery::ReliableOrdered )
+                {
+                    return;
+                }
+            }
+            if( fresh == false )
+            {
+                this->sendAcknowledgement_( peer, sequence, _now );
+                return;
+            }
+            peer->receiveInitialized = initialized;
+            peer->receiveSequence = latest;
+            peer->receiveMask = mask;
             peer->ackPending = true;
+            return;
         }
+        bool fresh = this->markReceived_( peer, sequence );
 
         if( (flags & Detail::PacketConnectRequest) != 0 )
         {
@@ -854,8 +1111,11 @@ namespace Mengine
         {
             if( peer->state == EPeerState::Connecting )
             {
+                if( this->pushEvent_( SocketServiceEvent{ESocketServiceEventType::PeerConnected, peer->id, 0, 0, {}} ) == false )
+                {
+                    return;
+                }
                 peer->state = EPeerState::Connected;
-                this->pushEvent_( SocketServiceEvent{ESocketServiceEventType::PeerConnected, peer->id, 0, 0, {}} );
             }
             return;
         }
@@ -873,10 +1133,6 @@ namespace Mengine
             return;
         }
 
-        if( (flags & Detail::PacketData) != 0 && peer->state == EPeerState::Connected )
-        {
-            this->receiveFragment_( peer, messageId, channelSequence, totalSize, fragmentIndex, fragmentCount, channel, static_cast<ESocketDelivery>(deliveryValue), _packet + Detail::SocketHeaderSize, payloadSize, _now );
-        }
     }
     //////////////////////////////////////////////////////////////////////////
     void SocketService::acknowledge_( Peer * _peer, uint32_t _ack, uint32_t _ackBits, uint64_t _now )
@@ -893,6 +1149,7 @@ namespace Mengine
             {
                 uint32_t sample = static_cast<uint32_t>(_now - pending.lastSendMs);
                 uint32_t previousRttMs = _peer->rttMs;
+                MENGINE_UNUSED( previousRttMs );
                 _peer->rttMs = _peer->rttMs == 0 ? sample : (_peer->rttMs * 7 + sample) / 8;
                 STATISTIC_DEL_INTEGER( STATISTIC_SOCKET_PEER_RTT_MS, previousRttMs );
                 STATISTIC_ADD_INTEGER( STATISTIC_SOCKET_PEER_RTT_MS, _peer->rttMs );
@@ -907,16 +1164,46 @@ namespace Mengine
         return SocketService::sequenceMarkReceived_( _sequence, &_peer->receiveInitialized, &_peer->receiveSequence, &_peer->receiveMask );
     }
     //////////////////////////////////////////////////////////////////////////
-    void SocketService::receiveFragment_( Peer * _peer, uint32_t _messageId, uint32_t _channelSequence, uint32_t _totalSize, uint16_t _fragmentIndex, uint16_t _fragmentCount, uint8_t _channel, ESocketDelivery _delivery, const uint8_t * _payload, size_t _payloadSize, uint64_t _now )
+    bool SocketService::receiveFragment_( Peer * _peer, uint32_t _messageId, uint32_t _channelSequence, uint32_t _totalSize, uint16_t _fragmentIndex, uint16_t _fragmentCount, uint8_t _channel, ESocketDelivery _delivery, const uint8_t * _payload, size_t _payloadSize, uint64_t _now )
     {
         if( _totalSize > Detail::SocketMessageSize || _fragmentCount == 0 || _fragmentCount > 64 || _fragmentIndex >= _fragmentCount )
         {
             STATISTIC_INC_INTEGER( STATISTIC_SOCKET_PACKETS_REJECTED );
-            return;
+            return false;
+        }
+        size_t expectedFragments = Mengine::StdAlgorithm::max<size_t>( 1, (_totalSize + Detail::SocketPayloadSize - 1) / Detail::SocketPayloadSize );
+        if( _fragmentCount != expectedFragments )
+        {
+            return false;
+        }
+        size_t offset = _fragmentIndex * Detail::SocketPayloadSize;
+        size_t expectedSize = Mengine::StdAlgorithm::min( Detail::SocketPayloadSize, _totalSize - offset );
+        if( _payloadSize != expectedSize )
+        {
+            return false;
+        }
+        if( _delivery == ESocketDelivery::ReliableOrdered )
+        {
+            uint32_t expected = _peer->receiveChannelSequence[_channel];
+            if( SocketService::sequenceNewer_( expected, _channelSequence ) == true )
+            {
+                return true;
+            }
+            if( _channelSequence != expected )
+            {
+                return false;
+            }
         }
         Reassembly * reassembly = nullptr;
         for( Reassembly & item : _peer->reassemblies )
         {
+            if( _delivery == ESocketDelivery::ReliableOrdered && item.delivery == ESocketDelivery::ReliableOrdered && item.channel == _channel )
+            {
+                if( item.messageId != _messageId )
+                {
+                    return false;
+                }
+            }
             if( item.messageId == _messageId && item.channel == _channel )
             {
                 reassembly = &item;
@@ -925,20 +1212,38 @@ namespace Mengine
         }
         if( reassembly == nullptr )
         {
-            if( _peer->reassemblies.size() >= Detail::SocketReassemblyLimit )
-            {
-                STATISTIC_INC_INTEGER( STATISTIC_SOCKET_PACKETS_REJECTED );
-                return;
-            }
             size_t reassemblyBytes = 0;
             for( const Reassembly & item : _peer->reassemblies )
             {
                 reassemblyBytes += item.totalSize;
             }
+            if( _delivery == ESocketDelivery::ReliableOrdered )
+            {
+                for( size_t index = 0; index != _peer->reassemblies.size(); )
+                {
+                    if( _peer->reassemblies.size() < Detail::SocketReassemblyLimit && reassemblyBytes + _totalSize <= Detail::SocketReassemblyByteLimit )
+                    {
+                        break;
+                    }
+                    const Reassembly & item = _peer->reassemblies[index];
+                    if( item.delivery == ESocketDelivery::ReliableOrdered )
+                    {
+                        ++index;
+                        continue;
+                    }
+                    reassemblyBytes -= item.totalSize;
+                    _peer->reassemblies.erase( _peer->reassemblies.begin() + static_cast<ptrdiff_t>(index) );
+                }
+            }
+            if( _peer->reassemblies.size() >= Detail::SocketReassemblyLimit )
+            {
+                STATISTIC_INC_INTEGER( STATISTIC_SOCKET_PACKETS_REJECTED );
+                return false;
+            }
             if( reassemblyBytes + _totalSize > Detail::SocketReassemblyByteLimit )
             {
                 STATISTIC_INC_INTEGER( STATISTIC_SOCKET_PACKETS_REJECTED );
-                return;
+                return false;
             }
             Reassembly item;
             item.messageId = _messageId;
@@ -956,24 +1261,23 @@ namespace Mengine
         if( reassembly->channelSequence != _channelSequence || reassembly->totalSize != _totalSize || reassembly->fragmentCount != _fragmentCount || reassembly->delivery != _delivery )
         {
             STATISTIC_INC_INTEGER( STATISTIC_SOCKET_PACKETS_REJECTED );
-            return;
+            return false;
         }
-        if( reassembly->present[_fragmentIndex] != 0 )
+        if( reassembly->present[_fragmentIndex] == 0 )
         {
-            return;
+            reassembly->fragments[_fragmentIndex].resize( _payloadSize );
+            if( _payloadSize != 0 )
+            {
+                Mengine::StdString::memcpy( reassembly->fragments[_fragmentIndex].data(), _payload, _payloadSize );
+            }
+            reassembly->present[_fragmentIndex] = 1;
         }
-        reassembly->fragments[_fragmentIndex].resize( _payloadSize );
-        if( _payloadSize != 0 )
-        {
-            Mengine::StdString::memcpy( reassembly->fragments[_fragmentIndex].data(), _payload, _payloadSize );
-        }
-        reassembly->present[_fragmentIndex] = 1;
 
         for( uint8_t present : reassembly->present )
         {
             if( present == 0 )
             {
-                return;
+                return true;
             }
         }
         Data payload;
@@ -985,11 +1289,12 @@ namespace Mengine
         if( payload.size() != reassembly->totalSize )
         {
             STATISTIC_INC_INTEGER( STATISTIC_SOCKET_PACKETS_REJECTED );
-            return;
+            return false;
         }
-        uint32_t sequence = reassembly->channelSequence;
-        uint8_t channel = reassembly->channel;
-        ESocketDelivery delivery = reassembly->delivery;
+        if( this->deliverMessage_( _peer, _channel, _delivery, _channelSequence, Mengine::StdUtility::move( payload ) ) == false )
+        {
+            return false;
+        }
         for( size_t index = 0; index != _peer->reassemblies.size(); ++index )
         {
             if( &_peer->reassemblies[index] == reassembly )
@@ -998,50 +1303,38 @@ namespace Mengine
                 break;
             }
         }
-        this->deliverMessage_( _peer, channel, delivery, sequence, Mengine::StdUtility::move( payload ) );
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SocketService::deliverMessage_( Peer * _peer, uint8_t _channel, ESocketDelivery _delivery, uint32_t _channelSequence, Data && _payload )
+    bool SocketService::deliverMessage_( Peer * _peer, uint8_t _channel, ESocketDelivery _delivery, uint32_t _channelSequence, Data && _payload )
     {
         if( _delivery == ESocketDelivery::UnreliableSequenced )
         {
             if( SocketService::sequenceNewer_( _channelSequence, _peer->lastUnreliableSequence[_channel] ) == false )
             {
-                return;
+                return true;
             }
             _peer->lastUnreliableSequence[_channel] = _channelSequence;
             this->pushEvent_( SocketServiceEvent{ESocketServiceEventType::MessageReceived, _peer->id, _channel, 0, Mengine::StdUtility::move( _payload ), _delivery} );
-            return;
+            return true;
         }
 
         uint32_t expected = _peer->receiveChannelSequence[_channel];
         if( SocketService::sequenceNewer_( expected, _channelSequence ) == true )
         {
-            return;
+            return true;
         }
         if( _channelSequence != expected )
         {
-            if( _peer->ordered[_channel].size() < 64 )
-            {
-                _peer->ordered[_channel].emplace( _channelSequence, Mengine::StdUtility::move( _payload ) );
-            }
-            return;
+            return false;
         }
 
-        this->pushEvent_( SocketServiceEvent{ESocketServiceEventType::MessageReceived, _peer->id, _channel, 0, Mengine::StdUtility::move( _payload ), _delivery} );
-        ++_peer->receiveChannelSequence[_channel];
-        for( ;; )
+        if( this->pushEvent_( SocketServiceEvent{ESocketServiceEventType::MessageReceived, _peer->id, _channel, 0, Mengine::StdUtility::move( _payload ), _delivery} ) == false )
         {
-            auto it = _peer->ordered[_channel].find( _peer->receiveChannelSequence[_channel] );
-            if( it == _peer->ordered[_channel].end() )
-            {
-                break;
-            }
-            Data next = Mengine::StdUtility::move( it->second );
-            _peer->ordered[_channel].erase( it );
-            this->pushEvent_( SocketServiceEvent{ESocketServiceEventType::MessageReceived, _peer->id, _channel, 0, Mengine::StdUtility::move( next ), _delivery} );
-            ++_peer->receiveChannelSequence[_channel];
+            return false;
         }
+        ++_peer->receiveChannelSequence[_channel];
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void SocketService::updatePeers_( uint64_t _now )
@@ -1049,9 +1342,21 @@ namespace Mengine
         for( size_t peerIndex = 0; peerIndex < m_peers.size(); )
         {
             Peer & peer = m_peers[peerIndex];
+            if( peer.state == EPeerState::Disconnected )
+            {
+                uint32_t reason = peer.disconnectReason;
+                if( this->removePeer_( peerIndex, reason, true ) == false )
+                {
+                    ++peerIndex;
+                }
+                continue;
+            }
             if( _now - peer.lastReceiveMs >= Detail::SocketTimeoutMs )
             {
-                this->removePeer_( peerIndex, 1, true );
+                if( this->removePeer_( peerIndex, 1, true ) == false )
+                {
+                    ++peerIndex;
+                }
                 continue;
             }
             if( peer.state == EPeerState::Connecting && _now - peer.lastConnectSendMs >= Detail::SocketConnectRetryMs )
@@ -1061,17 +1366,24 @@ namespace Mengine
 
             for( PendingPacket & pending : peer.pending )
             {
-                uint32_t baseRto = peer.rttMs == 0 ? 100 : Mengine::StdAlgorithm::max<uint32_t>( 100, Mengine::StdAlgorithm::min<uint32_t>( 1000, peer.rttMs * 2 ) );
-                uint32_t shift = Mengine::StdAlgorithm::min<uint32_t>( pending.retryCount, 3 );
-                uint32_t rto = Mengine::StdAlgorithm::min<uint32_t>( 1000, baseRto << shift );
-                if( pending.packetSequence == 0 || _now - pending.lastSendMs >= rto )
+                if( SocketService::pendingNeedsSend_( peer, pending, _now ) == false )
                 {
-                    this->sendPending_( &peer, &pending, Detail::PacketData, _now, pending.packetSequence != 0, false );
+                    continue;
+                }
+                bool retransmit = pending.packetSequence != 0;
+                if( this->sendPending_( &peer, &pending, Detail::PacketData, _now, retransmit, false ) == false )
+                {
+                    break;
                 }
             }
 
             for( size_t index = 0; index < peer.reassemblies.size(); )
             {
+                if( peer.reassemblies[index].delivery == ESocketDelivery::ReliableOrdered )
+                {
+                    ++index;
+                    continue;
+                }
                 if( _now - peer.reassemblies[index].createdMs >= Detail::SocketReassemblyTimeoutMs )
                 {
                     peer.reassemblies.erase( peer.reassemblies.begin() + static_cast<ptrdiff_t>(index) );
@@ -1090,22 +1402,23 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void SocketService::pushEvent_( SocketServiceEvent && _event )
+    bool SocketService::pushEvent_( SocketServiceEvent && _event )
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_eventMutex );
         if( m_events.size() >= Detail::SocketEventLimit )
         {
-            auto unreliable = Mengine::StdAlgorithm::find_if( m_events.begin(), m_events.end(), []( const SocketServiceEvent & _queued )
+            DequeSocketServiceEvent::iterator unreliable = Mengine::StdAlgorithm::find_if( m_events.begin(), m_events.end(), []( const SocketServiceEvent & _queued )
             {
                 return _queued.type == ESocketServiceEventType::MessageReceived && _queued.delivery == ESocketDelivery::UnreliableSequenced;
             } );
             if( unreliable == m_events.end() )
             {
-                return;
+                return false;
             }
             m_events.erase( unreliable );
         }
         m_events.emplace_back( Mengine::StdUtility::move( _event ) );
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SocketService::consumeBandwidth_( Peer * _peer, size_t _bytes, bool _control, uint64_t _now )

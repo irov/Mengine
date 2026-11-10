@@ -2,6 +2,8 @@
 
 #include "Arena3DGeneratedCollision.h"
 
+#include "Kernel/ExceptionHelper.h"
+
 #include "Config/StdAlgorithm.h"
 #include "Config/StdAssert.h"
 
@@ -82,7 +84,7 @@ namespace Arena3D
             return ImpactNormal::Unknown;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool lineBlocked( const kf_vec3_t & start, const kf_vec3_t & end )
+        static bool lineBlocked( CollisionWorld * const _world, const kf_vec3_t & start, const kf_vec3_t & end )
         {
             const kf_vec3_t delta = kf_vec3_sub( end, start );
             const kf_fixed_t length = kf_vec3_length( delta );
@@ -91,9 +93,11 @@ namespace Arena3D
                 return false;
             }
             const kf_ray_t ray{start, delta, length};
-            kf_hit_t hit{};
-            if( kf_world_raycast( Arena3DGenerated::CollisionColliders,
-                Arena3DGenerated::CollisionColliderCount, &ray, &hit ) == KF_FALSE ) return false;
+            kf_sweep_hit_t hit{};
+            if( isCollisionHit( kf_world_raycast_first( _world->getWorld(), &ray, nullptr, &hit ) ) == false )
+            {
+                return false;
+            }
             return hit.fraction > kf_fixed_from_ratio( 1, 100 ) && hit.fraction < kf_fixed_from_ratio( 99, 100 );
         }
         //////////////////////////////////////////////////////////////////////////
@@ -213,7 +217,7 @@ namespace Arena3D
         const WeaponConfig & config = m_config.weapons[index];
         const uint64_t shotId = ++player.shotSequence;
         kf_vec3_t direction = this->viewDirection_( player );
-        const kf_vec3_t origin = kf_vec3_add( player.position, {0, player.crouched ? KF_FIXED_SCALE : kf_fixed_from_ratio( 16, 10 ), 0} );
+        const kf_vec3_t origin = kf_vec3_add( player.character.position, {0, player.crouched ? KF_FIXED_SCALE : kf_fixed_from_ratio( 16, 10 ), 0} );
 
         --player.ammo[index];
         player.cooldown[index] = config.cooldownTicks;
@@ -232,7 +236,7 @@ namespace Arena3D
         if( weapon == WeaponType::Nailgun )
         {
             spread = kf_fixed_mul( player.nailHeat, kf_fixed_from_ratio( 8, 100 ) );
-            if( player.grounded == false )
+            if( player.character.grounded == false )
             {
                 spread = kf_fixed_add( spread, kf_fixed_from_ratio( 2, 100 ) );
             }
@@ -292,9 +296,8 @@ namespace Arena3D
         const kf_fixed_t maximumDistance = kf_fixed_from_int( 80 );
         const kf_ray_t ray{_origin, _direction, maximumDistance};
 
-        kf_hit_t worldHit{};
-        const bool hitWorld = kf_world_raycast( Arena3DGenerated::CollisionColliders,
-            Arena3DGenerated::CollisionColliderCount, &ray, &worldHit ) == KF_TRUE;
+        kf_sweep_hit_t worldHit{};
+        const bool hitWorld = isCollisionHit( kf_world_raycast_first( m_collisionWorld.getWorld(), &ray, nullptr, &worldHit ) );
 
         const kf_fixed_t worldDistance = hitWorld == true ? worldHit.distance : maximumDistance;
         kf_vec3_t endPosition = hitWorld == true ? worldHit.position : kf_vec3_add_mul( _origin, _direction, maximumDistance );
@@ -319,9 +322,10 @@ namespace Arena3D
                 continue;
             }
             const kf_fixed_t height = player.crouched ? m_config.crouchedHeight : m_config.standingHeight;
-            const kf_capsule_t target{player.position, m_config.playerRadius, height};
-            kf_hit_t actorHit{};
-            if( kf_raycast_capsule( &ray, &target, player.id, &actorHit ) == KF_FALSE || actorHit.distance >= worldDistance )
+            kf_shape_t target = makeCapsuleShape( m_config.playerRadius, height );
+            kf_pose_t targetPose{player.character.position, {0, 0, 0}};
+            kf_sweep_hit_t actorHit{};
+            if( isCollisionHit( kf_shape_raycast( &ray, &target, targetPose, &actorHit ) ) == false || actorHit.distance >= worldDistance )
             {
                 continue;
             }
@@ -336,9 +340,10 @@ namespace Arena3D
                 {
                     continue;
                 }
-                const kf_capsule_t target{turret.position, kf_fixed_from_ratio( 65, 100 ), kf_fixed_from_ratio( 16, 10 )};
-                kf_hit_t actorHit{};
-                if( kf_raycast_capsule( &ray, &target, turret.id, &actorHit ) == KF_FALSE || actorHit.distance >= worldDistance )
+                kf_shape_t target = makeCapsuleShape( kf_fixed_from_ratio( 65, 100 ), kf_fixed_from_ratio( 16, 10 ) );
+                kf_pose_t targetPose{turret.position, {0, 0, 0}};
+                kf_sweep_hit_t actorHit{};
+                if( isCollisionHit( kf_shape_raycast( &ray, &target, targetPose, &actorHit ) ) == false || actorHit.distance >= worldDistance )
                 {
                     continue;
                 }
@@ -359,7 +364,7 @@ namespace Arena3D
 
         if( hitWorld == true )
         {
-            this->emit_( EventType::Impact, _ownerId, worldHit.object_id, WeaponType::Railgun,
+            this->emit_( EventType::Impact, _ownerId, worldHit.shape_id, WeaponType::Railgun,
                 worldHit.position, static_cast<int32_t>(Detail::impactNormal( worldHit.normal )) );
         }
     }
@@ -390,7 +395,7 @@ namespace Arena3D
                 {
                     continue;
                 }
-                const kf_fixed_t distance = kf_vec3_length( kf_vec3_sub( candidate.position, turret.position ) );
+                const kf_fixed_t distance = kf_vec3_length( kf_vec3_sub( candidate.character.position, turret.position ) );
                 if( targetPlayer == nullptr || distance < targetDistance || (distance == targetDistance && candidate.id < targetPlayer->id) )
                 {
                     targetPlayer = &candidate;
@@ -419,8 +424,8 @@ namespace Arena3D
             if( m_state.tick % losPeriod == turret.id % losPeriod )
             {
                 const kf_vec3_t origin = kf_vec3_add( turret.position, {0, kf_fixed_from_ratio( 8, 10 ), 0} );
-                const kf_vec3_t target = kf_vec3_add( player.position, {0, player.crouched ? kf_fixed_from_ratio( 6, 10 ) : kf_fixed_from_ratio( 9, 10 ), 0} );
-                if( Detail::lineBlocked( origin, target ) == false )
+                const kf_vec3_t target = kf_vec3_add( player.character.position, {0, player.crouched ? kf_fixed_from_ratio( 6, 10 ) : kf_fixed_from_ratio( 9, 10 ), 0} );
+                if( Detail::lineBlocked( &m_collisionWorld, origin, target ) == false )
                 {
                     turret.targetMemoryTicks = 24;
                 }
@@ -460,12 +465,12 @@ namespace Arena3D
     {
         const WeaponConfig & config = m_config.weapons[Detail::weaponIndex( turret->weapon )];
         const kf_vec3_t origin = kf_vec3_add( turret->position, {0, kf_fixed_from_ratio( 8, 10 ), 0} );
-        kf_vec3_t target = kf_vec3_add( targetPlayer.position, {0, kf_fixed_from_ratio( 9, 10 ), 0} );
+        kf_vec3_t target = kf_vec3_add( targetPlayer.character.position, {0, kf_fixed_from_ratio( 9, 10 ), 0} );
         if( config.speed > 0 )
         {
             const kf_fixed_t travelTime = kf_fixed_clamp( kf_fixed_div( kf_vec3_length( kf_vec3_sub( target, origin ) ), config.speed ),
                 0, kf_fixed_from_ratio( 15, 10 ) );
-            target = kf_vec3_add_mul( target, targetPlayer.velocity, travelTime );
+            target = kf_vec3_add_mul( target, targetPlayer.character.velocity, travelTime );
             const kf_fixed_t halfGravity = kf_fixed_mul( config.gravity, kf_fixed_from_ratio( 5, 10 ) );
             target.y = kf_fixed_add_mul( target.y, halfGravity, kf_fixed_mul( travelTime, travelTime ) );
             target.y = kf_fixed_sub_mul( target.y, config.launchUpwardSpeed, travelTime );
@@ -538,12 +543,12 @@ namespace Arena3D
             const kf_vec3_t displacement = kf_vec3_mul( projectile.velocity, tickSeconds );
             const kf_vec3_t desiredPosition = kf_vec3_add_mul( previous, projectile.velocity, tickSeconds );
 
-            const kf_sphere_t movingSphere{previous, projectile.radius};
-            kf_hit_t worldHit{};
-            const bool hitWorld = kf_world_sweep_sphere_hit( Arena3DGenerated::CollisionColliders,
-                Arena3DGenerated::CollisionColliderCount, &movingSphere, displacement, &worldHit ) == KF_TRUE;
+            kf_shape_t movingSphere = makeSphereShape( projectile.radius );
+            kf_pose_t movingPose{previous, {0, 0, 0}};
+            kf_sweep_hit_t worldHit{};
+            const bool hitWorld = isCollisionHit( kf_world_sweep_first( m_collisionWorld.getWorld(), &movingSphere, movingPose, displacement, nullptr, &worldHit ) );
 
-            kf_hit_t actorHit{};
+            kf_sweep_hit_t actorHit{};
             bool hitActor = false;
             uint32_t hitActorId = 0;
             for( const PlayerState & player : m_state.players )
@@ -553,14 +558,15 @@ namespace Arena3D
                     continue;
                 }
                 const kf_fixed_t playerHeight = player.crouched ? m_config.crouchedHeight : m_config.standingHeight;
-                const kf_capsule_t target{player.position, m_config.playerRadius, playerHeight};
-                kf_hit_t candidate{};
-                if( kf_sweep_sphere_capsule( &movingSphere, displacement, &target, player.id, &candidate ) == KF_FALSE )
+                kf_shape_t target = makeCapsuleShape( m_config.playerRadius, playerHeight );
+                kf_pose_t targetPose{player.character.position, {0, 0, 0}};
+                kf_sweep_hit_t candidate{};
+                if( isCollisionHit( kf_shape_sweep( &movingSphere, movingPose, displacement, &target, targetPose, &candidate ) ) == false )
                 {
                     continue;
                 }
-                if( hitActor == false || candidate.fraction < actorHit.fraction ||
-                    (candidate.fraction == actorHit.fraction && candidate.object_id < actorHit.object_id) )
+                if( hitActor == false || candidate.fraction_q32 < actorHit.fraction_q32 ||
+                    (candidate.fraction_q32 == actorHit.fraction_q32 && player.id < hitActorId) )
                 {
                     actorHit = candidate;
                     hitActor = true;
@@ -575,14 +581,15 @@ namespace Arena3D
                     {
                         continue;
                     }
-                    const kf_capsule_t target{turret.position, kf_fixed_from_ratio( 65, 100 ), kf_fixed_from_ratio( 16, 10 )};
-                    kf_hit_t candidate{};
-                    if( kf_sweep_sphere_capsule( &movingSphere, displacement, &target, turret.id, &candidate ) == KF_FALSE )
+                    kf_shape_t target = makeCapsuleShape( kf_fixed_from_ratio( 65, 100 ), kf_fixed_from_ratio( 16, 10 ) );
+                    kf_pose_t targetPose{turret.position, {0, 0, 0}};
+                    kf_sweep_hit_t candidate{};
+                    if( isCollisionHit( kf_shape_sweep( &movingSphere, movingPose, displacement, &target, targetPose, &candidate ) ) == false )
                     {
                         continue;
                     }
-                    if( hitActor == false || candidate.fraction < actorHit.fraction ||
-                        (candidate.fraction == actorHit.fraction && candidate.object_id < actorHit.object_id) )
+                    if( hitActor == false || candidate.fraction_q32 < actorHit.fraction_q32 ||
+                        (candidate.fraction_q32 == actorHit.fraction_q32 && turret.id < hitActorId) )
                     {
                         actorHit = candidate;
                         hitActor = true;
@@ -591,14 +598,14 @@ namespace Arena3D
                 }
             }
 
-            const bool actorIsFirst = hitActor == true && (hitWorld == false || actorHit.fraction < worldHit.fraction);
+            const bool actorIsFirst = hitActor == true && (hitWorld == false || actorHit.fraction_q32 < worldHit.fraction_q32);
             if( actorIsFirst == true )
             {
-                projectile.position = kf_vec3_add_mul( previous, displacement, actorHit.fraction );
+                projectile.position = actorHit.position;
             }
             else if( hitWorld == true )
             {
-                projectile.position = kf_vec3_add_mul( previous, displacement, worldHit.fraction );
+                projectile.position = worldHit.position;
             }
             else
             {
@@ -638,7 +645,7 @@ namespace Arena3D
                     kf_vec3_t contact = kf_vec3_sub_mul( projectile.position, normal, projectile.radius );
                     ImpactNormal impact = Detail::impactNormal( normal );
                     int32_t impactCode = static_cast<int32_t>(impact);
-                    this->emit_( EventType::Impact, projectile.ownerId, worldHit.object_id, projectile.weapon,
+                    this->emit_( EventType::Impact, projectile.ownerId, worldHit.shape_id, projectile.weapon,
                         contact, impactCode );
                 }
 
@@ -669,7 +676,7 @@ namespace Arena3D
             {
                 const kf_vec3_t normal = worldHit.normal;
                 const kf_vec3_t contact = kf_vec3_sub_mul( projectile.position, normal, projectile.radius );
-                this->emit_( EventType::Impact, projectile.ownerId, worldHit.object_id, projectile.weapon,
+                this->emit_( EventType::Impact, projectile.ownerId, worldHit.shape_id, projectile.weapon,
                     contact, static_cast<int32_t>(Detail::impactNormal( worldHit.normal )) );
                 if( Detail::isExplosive( projectile.weapon ) == true )
                 {
@@ -697,9 +704,9 @@ namespace Arena3D
                 continue;
             }
             const kf_fixed_t playerHeight = player.crouched == true ? m_config.crouchedHeight : m_config.standingHeight;
-            const kf_vec3_t playerTarget = kf_vec3_add( player.position, {0, kf_fixed_mul( playerHeight, kf_fixed_from_ratio( 5, 10 ) ), 0} );
+            const kf_vec3_t playerTarget = kf_vec3_add( player.character.position, {0, kf_fixed_mul( playerHeight, kf_fixed_from_ratio( 5, 10 ) ), 0} );
             const kf_fixed_t playerDistance = kf_vec3_length( kf_vec3_sub( playerTarget, projectile.position ) );
-            if( playerDistance > config.splashRadius || Detail::lineBlocked( projectile.position, playerTarget ) == true )
+            if( playerDistance > config.splashRadius || Detail::lineBlocked( &m_collisionWorld, projectile.position, playerTarget ) == true )
             {
                 continue;
             }
@@ -718,7 +725,7 @@ namespace Arena3D
                 continue;
             }
             const kf_fixed_t distance = kf_vec3_length( kf_vec3_sub( turret.position, projectile.position ) );
-            if( distance <= config.splashRadius && Detail::lineBlocked( projectile.position, turret.position ) == false )
+            if( distance <= config.splashRadius && Detail::lineBlocked( &m_collisionWorld, projectile.position, turret.position ) == false )
             {
                 const kf_fixed_t falloff = kf_fixed_sub( KF_FIXED_SCALE, kf_fixed_div( distance, config.splashRadius ) );
                 const int32_t damage = kf_fixed_to_int( kf_fixed_mul( kf_fixed_from_int( projectile.damage ), falloff ) );
@@ -778,7 +785,7 @@ namespace Arena3D
                 player.health -= appliedDamage - absorbed;
 
                 kf_fixed_t knockback = damage.knockback;
-                if( player.grounded == true )
+                if( player.character.grounded == true )
                 {
                     if( Detail::isExplosive( damage.weapon ) == true )
                     {
@@ -792,16 +799,16 @@ namespace Arena3D
                 if( knockback > 0 )
                 {
                     const kf_fixed_t playerHeight = player.crouched == true ? m_config.crouchedHeight : m_config.standingHeight;
-                    kf_vec3_t impulseTarget = kf_vec3_add( player.position, {0, kf_fixed_mul( playerHeight, kf_fixed_from_ratio( 5, 10 ) ), 0} );
+                    kf_vec3_t impulseTarget = kf_vec3_add( player.character.position, {0, kf_fixed_mul( playerHeight, kf_fixed_from_ratio( 5, 10 ) ), 0} );
                     if( Detail::isExplosive( damage.weapon ) == true )
                     {
                         impulseTarget.y = kf_fixed_add( impulseTarget.y, m_config.playerRadius );
                     }
                     const kf_vec3_t direction = kf_vec3_normalize( kf_vec3_sub( impulseTarget, damage.origin ) );
-                    player.velocity = kf_vec3_add_mul( player.velocity, direction, knockback );
+                    player.character.velocity = kf_vec3_add_mul( player.character.velocity, direction, knockback );
                     if( Detail::isExplosive( damage.weapon ) == true && direction.y > 0 )
                     {
-                        player.grounded = false;
+                        player.character.grounded = false;
                     }
                 }
                 if( appliedDamage > 0 )
@@ -821,7 +828,7 @@ namespace Arena3D
                     {
                         ++killer->score;
                     }
-                    this->emit_( EventType::PlayerDeath, damage.sourceId, player.id, damage.weapon, player.position, 0 );
+                    this->emit_( EventType::PlayerDeath, damage.sourceId, player.id, damage.weapon, player.character.position, 0 );
                 }
                 continue;
             }

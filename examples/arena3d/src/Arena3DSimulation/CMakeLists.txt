@@ -1,11 +1,10 @@
 add_library(Arena3DSimulation STATIC
+    Arena3DCollisionWorld.cpp
+    Arena3DCollisionWorld.h
     Arena3DCanonicalReader.cpp
     Arena3DCanonicalReader.h
     Arena3DCanonicalWriter.cpp
     Arena3DCanonicalWriter.h
-    Arena3DCommandTransportInterface.h
-    Arena3DLocalCommandTransport.cpp
-    Arena3DLocalCommandTransport.h
     Arena3DPcg32.cpp
     Arena3DPcg32.h
     Arena3DProtocol.cpp
@@ -14,9 +13,10 @@ add_library(Arena3DSimulation STATIC
     Arena3DSimulationCombat.cpp
     Arena3DSimulation.h
     Arena3DSimulationSerialization.cpp
+    Arena3DCommandSession.cpp
+    Arena3DCommandSession.h
     Arena3DSession.cpp
     Arena3DSession.h
-    Arena3DServerFrame.h
     Arena3DReplay.cpp
     Arena3DReplay.h
 )
@@ -29,11 +29,13 @@ target_compile_definitions(Arena3DSimulation PRIVATE MENGINE_LIBRARY_NAME="Arena
 add_dependencies(Arena3DSimulation Arena3DContent)
 
 if(DEFINED THIRDPARTY_LIB_DIR AND DEFINED MENGINE_LIB_PREFIX)
+    target_include_directories(Arena3DSimulation PUBLIC ${THIRDPARTY_DIR}/ackord/include)
+    target_link_libraries(Arena3DSimulation PUBLIC ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ackord${MENGINE_LIB_SUFFIX})
     target_include_directories(Arena3DSimulation PUBLIC ${THIRDPARTY_DIR}/kinefix/include)
     target_link_libraries(Arena3DSimulation PUBLIC ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}kinefix${MENGINE_LIB_SUFFIX})
 else()
     target_include_directories(Arena3DSimulation PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../../../../dependencies/stdex/include)
-    target_link_libraries(Arena3DSimulation PUBLIC kinefix)
+    target_link_libraries(Arena3DSimulation PUBLIC kinefix ackord::ackord)
 endif()
 
 if(MSVC)

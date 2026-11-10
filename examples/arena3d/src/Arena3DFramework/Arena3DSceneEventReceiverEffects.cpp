@@ -85,7 +85,7 @@ namespace Mengine
         {
             for( size_t index = 0; index != Arena3DGenerated::CollisionColliderCount; ++index )
             {
-                const kf_collider_t & candidate = Arena3DGenerated::CollisionColliders[index];
+                const Arena3DGenerated::CollisionBrushRaw & candidate = Arena3DGenerated::CollisionColliders[index];
                 if( candidate.id != _brushId )
                 {
                     continue;

@@ -3,6 +3,7 @@
 
 #include "Interface/SocketServiceInterface.h"
 
+#include "Kernel/EnumeratorHelper.h"
 #include "Kernel/String.h"
 
 #include "Config/Atomic.h"
@@ -55,15 +56,15 @@ int main( int argc, char ** argv )
     if( engine.resolve( host, port, &address ) == false )
     {
         Mengine::StdIO::fprintf( stderr, "Arena3DBotClient: cannot resolve server\n" );
-        engine.finalize();
         return EXIT_FAILURE;
     }
 
     Arena3D::NetworkClient client( SOCKET_SERVICE() );
+    Mengine::UniqueId clientId = Mengine::Helper::generateUniqueIdentity();
+    client.setUniqueIdentity( clientId );
     if( client.connect( address, name, Arena3D::NetworkClientKind::Bot ) == false )
     {
         Mengine::StdIO::fprintf( stderr, "Arena3DBotClient: connect failed\n" );
-        engine.finalize();
         return EXIT_FAILURE;
     }
 
@@ -103,7 +104,7 @@ int main( int argc, char ** argv )
             Mengine::StdIO::printf( "Arena3DBotClient %s state=%u player=%u\n", name.c_str(), static_cast<unsigned int>(client.state()), client.playerId() );
             previousState = client.state();
         }
-        const uint64_t sourceTime = engine.getTimeMilliseconds() - started;
+        uint64_t sourceTime = client.simulation().state().tick * Arena3D::TickMilliseconds;
 
         if( client.state() == Arena3D::NetworkClientState::Connected )
         {
@@ -118,7 +119,7 @@ int main( int argc, char ** argv )
                     {
                         continue;
                     }
-                    const kf_fixed_t distance = kf_vec3_length_squared( kf_vec3_sub( candidate.position, self->position ) );
+                    const kf_fixed_t distance = kf_vec3_length_squared( kf_vec3_sub( candidate.character.position, self->character.position ) );
                     if( target == nullptr || distance < best || ( distance == best && candidate.id < target->id ) )
                     {
                         target = &candidate;
@@ -189,13 +190,13 @@ int main( int argc, char ** argv )
 
                 if( positionInitialized == true )
                 {
-                    const kf_fixed_t dx = kf_fixed_sub( self->position.x, previousPosition.x );
-                    const kf_fixed_t dz = kf_fixed_sub( self->position.z, previousPosition.z );
+                    const kf_fixed_t dx = kf_fixed_sub( self->character.position.x, previousPosition.x );
+                    const kf_fixed_t dz = kf_fixed_sub( self->character.position.z, previousPosition.z );
                     const kf_fixed_t horizontalMovement = kf_vec3_length_squared( {dx, 0, dz} );
                     traveledDistance += Mengine::StdMath::sqrt( kf_fixed_to_double( horizontalMovement ) );
                     stuckStateFrames = horizontalMovement < kf_fixed_from_float( 0.0025f ) ? stuckStateFrames + 1u : 0u;
                 }
-                previousPosition = self->position;
+                previousPosition = self->character.position;
                 positionInitialized = true;
                 if( stuckStateFrames >= 6u )
                 {
@@ -211,9 +212,9 @@ int main( int argc, char ** argv )
 
             if( self != nullptr && target != nullptr && decisionTick == true )
             {
-                const double dx = kf_fixed_to_double( target->position.x ) - kf_fixed_to_double( self->position.x );
-                const double dy = kf_fixed_to_double( target->position.y ) - kf_fixed_to_double( self->position.y );
-                const double dz = kf_fixed_to_double( target->position.z ) - kf_fixed_to_double( self->position.z );
+                const double dx = kf_fixed_to_double( target->character.position.x ) - kf_fixed_to_double( self->character.position.x );
+                const double dy = kf_fixed_to_double( target->character.position.y ) - kf_fixed_to_double( self->character.position.y );
+                const double dz = kf_fixed_to_double( target->character.position.z ) - kf_fixed_to_double( self->character.position.z );
                 const double horizontal = Mengine::StdMath::sqrt( dx * dx + dz * dz );
                 double targetYawRadians = Mengine::StdMath::atan2( dx, dz );
                 kf_fixed_t targetYawFixed = kf_fixed_from_double( targetYawRadians );
@@ -261,6 +262,5 @@ int main( int argc, char ** argv )
     Mengine::StdIO::printf( "Arena3DBotClient %s summary local_ticks=%llu state_tick=%llu traveled=%.2f respawns=%u weapon_switches=%u pending=%zu\n", name.c_str(),
         static_cast<unsigned long long>(localTick), static_cast<unsigned long long>(client.simulation().state().tick), traveledDistance, observedRespawns, weaponSwitches, client.pendingCommandCount() );
     client.disconnect();
-    engine.finalize();
     return EXIT_SUCCESS;
 }

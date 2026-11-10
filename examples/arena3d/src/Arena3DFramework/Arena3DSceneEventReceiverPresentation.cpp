@@ -85,8 +85,8 @@ namespace Mengine
     void Arena3DSceneEventReceiver::syncCamera_( const Arena3D::PlayerState & _player, float _alpha, float _seconds )
     {
         const Arena3D::PlayerState & previousPlayer = this->localPlayer_( m_previousState );
-        mt::vec3f previousPosition = Helper::kinefixVec3ToVec3f( previousPlayer.position );
-        mt::vec3f currentPosition = Helper::kinefixVec3ToVec3f( _player.position );
+        mt::vec3f previousPosition = Helper::kinefixVec3ToVec3f( previousPlayer.character.position );
+        mt::vec3f currentPosition = Helper::kinefixVec3ToVec3f( _player.character.position );
 
         mt::vec3f positionDelta = currentPosition - previousPosition;
         float distanceSquared = mt::sqrlength_v3( positionDelta );
@@ -105,7 +105,7 @@ namespace Mengine
             m_stepCameraOffset = 0.f;
             m_stepCameraVelocity = 0.f;
         }
-        else if( previousPlayer.velocity.y <= 0 && _player.velocity.y <= 0 && cameraDelta.y > 0.f )
+        else if( previousPlayer.character.velocity.y <= 0 && _player.character.velocity.y <= 0 && cameraDelta.y > 0.f )
         {
             // Stepping can briefly lose ground contact at a rounded capsule edge.
             // A rise without upward velocity is a step, not a jump impulse.
@@ -165,8 +165,8 @@ namespace Mengine
 
             const Arena3D::PlayerState & previous = m_previousState.players[index];
             const mt::vec3f position = previous.active == true && previous.id == player.id
-                ? Detail::interpolate( previous.position, player.position, _alpha )
-                : Helper::kinefixVec3ToVec3f( player.position );
+                ? Detail::interpolate( previous.character.position, player.character.position, _alpha )
+                : Helper::kinefixVec3ToVec3f( player.character.position );
             node->getTransformation()->setLocalPosition( position );
             node->getTransformation()->setLocalOrientationY( Helper::kinefixAngleToRadians( player.yaw ) );
             node->getTransformation()->setLocalScale( player.crouched == true
@@ -190,7 +190,7 @@ namespace Mengine
                 turret.state == Arena3D::TurretState::Firing || turret.state == Arena3D::TurretState::Cooldown;
             if( tracking == true && visible == true )
             {
-                const mt::vec3f delta = Helper::kinefixVec3ToVec3f( kf_vec3_sub( this->localPlayer_( m_currentState ).position, turret.position ) );
+                const mt::vec3f delta = Helper::kinefixVec3ToVec3f( kf_vec3_sub( this->localPlayer_( m_currentState ).character.position, turret.position ) );
                 yaw = StdMath::atan2f( delta.x, delta.z );
                 pitch = -StdMath::atan2f( delta.y, StdMath::sqrtf( delta.x * delta.x + delta.z * delta.z ) );
             }
@@ -317,7 +317,7 @@ namespace Mengine
         lowered = Mengine::StdAlgorithm::max( 0.f, Mengine::StdAlgorithm::min( 1.f, lowered ) );
 
         const Arena3D::PlayerState & player = this->localPlayer_( m_currentState );
-        mt::vec3f velocity = Helper::kinefixVec3ToVec3f( player.velocity );
+        mt::vec3f velocity = Helper::kinefixVec3ToVec3f( player.character.velocity );
         float horizontalSpeedSquared = velocity.x * velocity.x + velocity.z * velocity.z;
         float horizontalSpeed = StdMath::sqrtf( horizontalSpeedSquared );
         float relativeSpeed = horizontalSpeed / Detail::WEAPON_WALK_SPEED;

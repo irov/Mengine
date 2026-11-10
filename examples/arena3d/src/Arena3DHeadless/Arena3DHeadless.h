@@ -11,6 +11,12 @@ namespace Arena3D
     class HeadlessEngine
     {
     public:
+        HeadlessEngine();
+        ~HeadlessEngine();
+
+        HeadlessEngine( const HeadlessEngine & ) = delete;
+        HeadlessEngine & operator=( const HeadlessEngine & ) = delete;
+
         bool initialize();
         void finalize();
 

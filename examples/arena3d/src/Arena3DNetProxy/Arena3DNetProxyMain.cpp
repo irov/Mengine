@@ -62,7 +62,6 @@ int main( int argc, char ** argv )
     if( engine.resolve( listenHost, listenPort, &listenAddress ) == false || engine.resolve( serverHost, serverPort, &serverAddress ) == false || engine.resolve( "0.0.0.0", 0, &ephemeralAddress ) == false )
     {
         Mengine::StdIO::fprintf( stderr, "Arena3DNetProxy: address resolution failed\n" );
-        engine.finalize();
         return EXIT_FAILURE;
     }
 
@@ -74,7 +73,6 @@ int main( int argc, char ** argv )
         front->setBlocking( false ) != Mengine::ESocketResult::Successful || back->setBlocking( false ) != Mengine::ESocketResult::Successful )
     {
         Mengine::StdIO::fprintf( stderr, "Arena3DNetProxy: socket setup failed\n" );
-        engine.finalize();
         return EXIT_FAILURE;
     }
 
@@ -158,6 +156,5 @@ int main( int argc, char ** argv )
     front->close();
     back = nullptr;
     front = nullptr;
-    engine.finalize();
     return EXIT_SUCCESS;
 }

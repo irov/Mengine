@@ -45,7 +45,6 @@ int main( int argc, char ** argv )
     if( engine.resolve( host, port, &address ) == false )
     {
         Mengine::StdIO::fprintf( stderr, "Arena3DServer: cannot resolve %s:%u\n", host, port );
-        engine.finalize();
         return EXIT_FAILURE;
     }
 
@@ -53,7 +52,6 @@ int main( int argc, char ** argv )
     if( server.listen( address, maximumPlayers ) == false )
     {
         Mengine::StdIO::fprintf( stderr, "Arena3DServer: listen failed\n" );
-        engine.finalize();
         return EXIT_FAILURE;
     }
 
@@ -91,6 +89,5 @@ int main( int argc, char ** argv )
         static_cast<unsigned long long>(shots), static_cast<unsigned long long>(damageEvents),
         static_cast<unsigned long long>(deaths), static_cast<unsigned long long>(respawns), server.simulation().checksum().full );
 
-    engine.finalize();
     return EXIT_SUCCESS;
 }

@@ -16,9 +16,9 @@ namespace Arena3D
 {
     //////////////////////////////////////////////////////////////////////////
     constexpr uint32_t CommandFormatVersion = 3;
-    constexpr uint32_t SnapshotFormatVersion = 7;
-    constexpr uint32_t ReplayFormatVersion = 7;
-    constexpr uint32_t SimulationVersion = 16;
+    constexpr uint32_t SnapshotFormatVersion = 8;
+    constexpr uint32_t ReplayFormatVersion = 8;
+    constexpr uint32_t SimulationVersion = 22;
     constexpr uint32_t DeterministicMathVersion = 5;
     constexpr uint32_t ConfigFormatVersion = 3;
     constexpr uint32_t CollisionFormatVersion = 4;
@@ -86,7 +86,15 @@ namespace Arena3D
     };
     //////////////////////////////////////////////////////////////////////////
     typedef Mengine::Vector<CommandEnvelope> VectorCommandEnvelope;
-    typedef Mengine::Vector<const CommandEnvelope *> VectorCommandEnvelopePtr;
+    //////////////////////////////////////////////////////////////////////////
+    struct CommandResultDesc
+    {
+        uint32_t playerId = 0;
+        uint64_t sequence = 0;
+        int32_t status = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef Mengine::Vector<CommandResultDesc> VectorCommandResult;
     //////////////////////////////////////////////////////////////////////////
     uint32_t crc32( const void * bytes, size_t size );
     uint32_t crc32( const Mengine::Data & bytes );

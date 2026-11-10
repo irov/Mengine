@@ -23,6 +23,15 @@ SERVICE_EXTERN( SocketService );
 namespace Arena3D
 {
     //////////////////////////////////////////////////////////////////////////
+    HeadlessEngine::HeadlessEngine()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    HeadlessEngine::~HeadlessEngine()
+    {
+        this->finalize();
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool HeadlessEngine::initialize()
     {
         if( SERVICE_PROVIDER_CREATE( ServiceProvider, &m_serviceProvider ) == false )

@@ -42,28 +42,29 @@ namespace Arena3D
             PlayerState * shooter = simulation.findPlayer( 1 );
             PlayerState * target = simulation.findPlayer( 2 );
             PlayerState * occluded = simulation.findPlayer( 3 );
-            shooter->position = {565248, 589824, 1081344};
+            shooter->character.position = {565248, 589824, 1081344};
             shooter->yaw = 0;
             shooter->pitch = 0;
             shooter->noclip = true;
-            target->position = {565248, 589824, 1310720};
+            target->character.position = {565248, 589824, 1310720};
             target->noclip = true;
-            kf_vec3_t origin = shooter->position;
+            kf_vec3_t origin = shooter->character.position;
             kf_fixed_t eyeHeight = kf_fixed_from_ratio( 16, 10 );
             origin.y = kf_fixed_add( origin.y, eyeHeight );
             kf_vec3_t direction{0, 0, KF_FIXED_SCALE};
             kf_fixed_t range = kf_fixed_from_int( 80 );
             kf_ray_t ray{origin, direction, range};
-            kf_hit_t wall{};
-            if( kf_world_raycast( Arena3DGenerated::CollisionColliders, Arena3DGenerated::CollisionColliderCount, &ray, &wall ) == KF_FALSE )
+            CollisionWorld world;
+            kf_sweep_hit_t wall{};
+            if( kf_world_raycast_first( world.getWorld(), &ray, nullptr, &wall ) != KF_OK )
             {
                 Mengine::StdIO::fprintf( stderr, "Railgun test requires a wall beyond the target\n" );
                 return false;
             }
-            occluded->position = wall.position;
-            occluded->position.y = shooter->position.y;
+            occluded->character.position = wall.position;
+            occluded->character.position.y = shooter->character.position.y;
             kf_fixed_t wallClearance = kf_fixed_from_int( 2 );
-            occluded->position.z = kf_fixed_add( wall.position.z, wallClearance );
+            occluded->character.position.z = kf_fixed_add( wall.position.z, wallClearance );
             occluded->noclip = true;
             uint32_t ammo = shooter->ammo[railIndex];
 
@@ -125,7 +126,7 @@ namespace Arena3D
             Simulation simulation( config );
             simulation.reset( 1, 789 );
             PlayerState * player = simulation.findPlayer( 1 );
-            player->position = {0, 6553600, 0};
+            player->character.position = {0, 6553600, 0};
             player->yaw = 0;
             player->pitch = 0;
             player->noclip = true;
@@ -144,7 +145,10 @@ namespace Arena3D
                 return false;
             }
             VectorCommandEnvelope journal;
-            ReplayRecord replay = makeReplayRecord( simulation, 789, journal, events );
+            uint32_t eventCount = static_cast<uint32_t>(events.size());
+            VectorReplayBatch batches;
+            batches.push_back( {0, eventCount} );
+            ReplayRecord replay = makeReplayRecord( simulation, 789, journal, events, batches );
             if( writeReplay( _path, replay ) == false )
             {
                 return false;

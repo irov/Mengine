@@ -29,7 +29,7 @@ namespace Arena3D
             {
                 return false;
             }
-            if( magic != NetworkWireMagic || version != NetworkProtocolVersion || type < static_cast<uint8_t>(NetworkMessage::Hello) || type > static_cast<uint8_t>(NetworkMessage::Roster) )
+            if( magic != NetworkWireMagic || version != NetworkProtocolVersion || type < static_cast<uint8_t>(NetworkMessage::Hello) || type > static_cast<uint8_t>(NetworkMessage::Confirmations) )
             {
                 return false;
             }
@@ -39,7 +39,15 @@ namespace Arena3D
         //////////////////////////////////////////////////////////////////////////
         static bool sendWire( Mengine::SocketServiceInterface * socketService, Mengine::SocketPeerId peerId, uint8_t channel, Mengine::ESocketDelivery delivery, const CanonicalWriter & writer )
         {
-            return socketService->send( peerId, channel, delivery, writer.data().data(), writer.data().size() );
+            const Mengine::Data & data = writer.data();
+            const void * bytes = data.data();
+            size_t size = data.size();
+            if( socketService->send( peerId, channel, delivery, bytes, size ) == false )
+            {
+                return false;
+            }
+
+            return true;
         }
         //////////////////////////////////////////////////////////////////////////
         static Mengine::Data compressSnapshot( const Mengine::Data & input )
@@ -104,6 +112,7 @@ namespace Arena3D
     NetworkServer::NetworkServer( Mengine::SocketServiceInterface * socketService, SimulationConfig config )
         : m_socketService( socketService )
         , m_simulation( Mengine::StdUtility::move( config ) )
+        , m_commands( &m_simulation )
     {
         const uint32_t defaultPlayer = m_simulation.state().players[0].id;
         m_simulation.removePlayer( defaultPlayer );
@@ -116,6 +125,10 @@ namespace Arena3D
     bool NetworkServer::listen( const Mengine::SocketAddress & address, uint32_t maximumPlayers )
     {
         if( m_socketService == nullptr || maximumPlayers == 0 || maximumPlayers > MaximumPlayers )
+        {
+            return false;
+        }
+        if( m_commands.reset() == false )
         {
             return false;
         }
@@ -144,52 +157,34 @@ namespace Arena3D
                 break;
             }
         }
+        this->sendControlMessages_();
     }
     //////////////////////////////////////////////////////////////////////////
     void NetworkServer::tick()
     {
         this->updateNetwork();
-        Mengine::StdAlgorithm::stable_sort( m_scheduled.begin(), m_scheduled.end(),
-                                            []( const CommandEnvelope & left, const CommandEnvelope & right )
-                                            {
-                                                if( left.appliedTick != right.appliedTick )
-                                                {
-                                                    return left.appliedTick < right.appliedTick;
-                                                }
-                                                if( left.playerId != right.playerId )
-                                                {
-                                                    return left.playerId < right.playerId;
-                                                }
-                                                return left.sequence < right.sequence;
-                                            } );
-
-        VectorCommandEnvelope commands;
-        size_t consumed = 0;
-        while( consumed != m_scheduled.size() && m_scheduled[consumed].appliedTick <= m_simulation.state().tick )
+        uint64_t previousMatchId = m_simulation.state().matchId;
+        bool previouslyPaused = m_simulation.state().paused;
+        if( m_commands.tick() == false )
         {
-            commands.emplace_back( m_scheduled[consumed++] );
+            return;
         }
-        if( consumed != 0 )
-        {
-            m_scheduled.erase( m_scheduled.begin(), m_scheduled.begin() + static_cast<ptrdiff_t>(consumed) );
-        }
-        const uint64_t previousMatchId = m_simulation.state().matchId;
-        m_simulation.step( commands );
-        for( const CommandEnvelope & command : commands )
-        {
-            for( Peer & peer : m_peers )
-            {
-                if( peer.playerId != command.playerId )
-                {
-                    continue;
-                }
-                peer.lastAppliedSequence = Mengine::StdAlgorithm::max( peer.lastAppliedSequence, command.sequence );
-                break;
-            }
-        }
+        this->sendConfirmations_();
         if( m_simulation.state().matchId != previousMatchId )
         {
             m_eventHistory.clear();
+            if( m_commands.reset() == false )
+            {
+                return;
+            }
+            for( Peer & peer : m_peers )
+            {
+                if( peer.handshaken == false )
+                {
+                    continue;
+                }
+                peer.welcomePending = true;
+            }
         }
         const VectorServerEvent & events = m_simulation.events();
         m_eventHistory.insert( m_eventHistory.end(), events.begin(), events.end() );
@@ -202,9 +197,15 @@ namespace Arena3D
         {
             m_eventHistory.erase( m_eventHistory.begin(), m_eventHistory.end() - static_cast<ptrdiff_t>(NetworkMaximumFrameEvents) );
         }
-        if( m_simulation.state().tick % NetworkStateFrameTicks == 0u )
+        bool paused = m_simulation.state().paused;
+        const VectorCommandEnvelope & commands = m_commands.getCommands();
+        bool processed = commands.empty() == false;
+        ++m_stateFrameTicks;
+        bool periodicFrame = m_stateFrameTicks >= NetworkStateFrameTicks;
+        if( periodicFrame == true || paused != previouslyPaused || (paused == true && processed == true) )
         {
             this->sendStateFrames_();
+            m_stateFrameTicks = 0;
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -239,6 +240,7 @@ namespace Arena3D
             }
             if( iterator->playerId != 0 )
             {
+                m_commands.unregisterPlayer( iterator->playerId );
                 m_simulation.removePlayer( iterator->playerId );
                 m_roster.erase( Mengine::StdAlgorithm::remove_if( m_roster.begin(), m_roster.end(),
                                                                   [iterator]( const NetworkRosterEntry & entry )
@@ -248,7 +250,7 @@ namespace Arena3D
                                 m_roster.end() );
             }
             m_peers.erase( iterator );
-            this->sendRoster_();
+            this->queueRoster_();
             return;
         }
     }
@@ -257,6 +259,10 @@ namespace Arena3D
     {
         Peer * peer = this->findPeer_( peerId );
         if( peer == nullptr || payload.empty() == true )
+        {
+            return;
+        }
+        if( peer->rejection.empty() == false )
         {
             return;
         }
@@ -300,14 +306,20 @@ namespace Arena3D
                 this->sendReject_( peerId, 4, "server is full" );
                 return;
             }
+            if( m_commands.registerPlayer( playerId ) == false )
+            {
+                m_simulation.removePlayer( playerId );
+                this->sendReject_( peerId, 4, "command server is full" );
+                return;
+            }
             peer->playerId = playerId;
             peer->kind = static_cast<NetworkClientKind>(kind);
             peer->name = Mengine::StdUtility::move( name );
             peer->handshaken = true;
             m_roster.push_back( {peer->playerId, peer->kind, peer->name} );
             Mengine::StdIO::printf( "Arena3D network join peer=%u player=%u name=%s\n", peer->peerId, peer->playerId, peer->name.c_str() );
-            this->sendWelcome_( peer );
-            this->sendRoster_();
+            peer->welcomePending = true;
+            this->queueRoster_();
             return;
         }
 
@@ -337,54 +349,100 @@ namespace Arena3D
 
             for( CommandEnvelope & command : commands )
             {
-                if( command.sequence <= peer->lastReceivedSequence || command.type == CommandType::JoinPlayer || command.type == CommandType::LeavePlayer )
+                if( command.type == CommandType::JoinPlayer || command.type == CommandType::LeavePlayer )
+                {
+                    this->sendReject_( peerId, 5, "server-owned command" );
+                    return;
+                }
+                if( command.matchId != m_simulation.state().matchId )
                 {
                     continue;
                 }
-                peer->lastReceivedSequence = command.sequence;
-                command.matchId = m_simulation.state().matchId;
                 command.playerId = peer->playerId;
-                command.accepted = true;
-                const uint64_t requestedTick = command.sourceTimeMs / TickMilliseconds + (command.sourceTimeMs % TickMilliseconds != 0u ? 1u : 0u);
-                command.appliedTick = Mengine::StdAlgorithm::max( requestedTick, m_simulation.state().tick );
-                command.tickCorrected = command.appliedTick != requestedTick;
-                m_scheduled.emplace_back( command );
+                ackord_status status = m_commands.submit( command );
+                if( status == ACKORD_CONFLICT || status == ACKORD_INVALID )
+                {
+                    this->sendReject_( peerId, 5, "invalid command identity or payload" );
+                    return;
+                }
+                // FULL/OUT_OF_WINDOW retain the client's pending command for retry.
             }
             return;
         }
 
         if( message == NetworkMessage::SnapshotRequest && channel == 3 && peer->handshaken == true )
         {
-            this->sendWelcome_( peer );
+            peer->welcomePending = true;
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NetworkServer::sendWelcome_( Peer * peer )
+    bool NetworkServer::sendWelcome_( Peer * _peer )
     {
         const Mengine::Data snapshot = m_simulation.snapshot();
         const Mengine::Data compressed = Detail::compressSnapshot( snapshot );
         CanonicalWriter writer;
         Detail::writeHeader( &writer, NetworkMessage::Welcome );
-        writer.writeU32( peer->playerId );
+        writer.writeU32( _peer->playerId );
         writer.writeU64( m_simulation.state().matchId );
         writer.writeU64( m_simulation.state().seed );
         writer.writeU64( m_simulation.state().tick );
+        uint64_t confirmed = m_commands.getConfirmedSequence( _peer->playerId );
+        uint64_t completedMask = m_commands.getCompletedMask( _peer->playerId );
+        writer.writeU64( confirmed );
+        writer.writeU64( completedMask );
+        uint64_t controlConfirmed = m_commands.getConfirmedSequence( _peer->playerId, ECommandStream::Control );
+        uint64_t controlCompletedMask = m_commands.getCompletedMask( _peer->playerId, ECommandStream::Control );
+        writer.writeU64( controlConfirmed );
+        writer.writeU64( controlCompletedMask );
         writer.writeU32( static_cast<uint32_t>(snapshot.size()) );
         writer.writeU32( static_cast<uint32_t>(compressed.size()) );
         writer.writeBytes( compressed.data(), compressed.size() );
-        Detail::sendWire( m_socketService, peer->peerId, 3, Mengine::ESocketDelivery::ReliableOrdered, writer );
+        if( Detail::sendWire( m_socketService, _peer->peerId, 3, Mengine::ESocketDelivery::ReliableOrdered, writer ) == false )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void NetworkServer::sendReject_( Mengine::SocketPeerId peerId, uint32_t reason, const char * message )
     {
+        Peer * peer = this->findPeer_( peerId );
+        if( peer == nullptr )
+        {
+            return;
+        }
+        if( peer->rejection.empty() == false )
+        {
+            return;
+        }
         CanonicalWriter writer;
         Detail::writeHeader( &writer, NetworkMessage::Reject );
         writer.writeU32( reason );
         writer.writeString( message );
-        Detail::sendWire( m_socketService, peerId, 0, Mengine::ESocketDelivery::ReliableOrdered, writer );
+        peer->rejection = writer.take();
+        peer->rejectPending = true;
+        peer->welcomePending = false;
+        peer->rosterPending = false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NetworkServer::sendRoster_()
+    void NetworkServer::queueRoster_()
+    {
+        for( Peer & peer : m_peers )
+        {
+            if( peer.handshaken == false )
+            {
+                continue;
+            }
+            if( peer.rejection.empty() == false )
+            {
+                continue;
+            }
+            peer.rosterPending = true;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool NetworkServer::sendRoster_( Peer * _peer )
     {
         CanonicalWriter writer;
         Detail::writeHeader( &writer, NetworkMessage::Roster );
@@ -395,16 +453,63 @@ namespace Arena3D
             writer.writeU8( static_cast<uint8_t>(entry.kind) );
             writer.writeString( entry.name );
         }
-        m_socketService->broadcast( 0, Mengine::ESocketDelivery::ReliableOrdered, writer.data().data(), writer.data().size() );
+        if( Detail::sendWire( m_socketService, _peer->peerId, 0, Mengine::ESocketDelivery::ReliableOrdered, writer ) == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NetworkServer::sendControlMessages_()
+    {
+        for( Peer & peer : m_peers )
+        {
+            if( peer.rejectPending == true )
+            {
+                const void * bytes = peer.rejection.data();
+                size_t size = peer.rejection.size();
+                if( m_socketService->send( peer.peerId, 0, Mengine::ESocketDelivery::ReliableOrdered, bytes, size ) == false )
+                {
+                    continue;
+                }
+                peer.rejectPending = false;
+            }
+            if( peer.rejection.empty() == false )
+            {
+                continue;
+            }
+            if( peer.welcomePending == true )
+            {
+                if( this->sendWelcome_( &peer ) == false )
+                {
+                    continue;
+                }
+                peer.welcomePending = false;
+            }
+            if( peer.rosterPending == true )
+            {
+                if( this->sendRoster_( &peer ) == false )
+                {
+                    continue;
+                }
+                peer.rosterPending = false;
+            }
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void NetworkServer::sendStateFrames_()
     {
         const Mengine::Data snapshot = m_simulation.snapshot();
         const Mengine::Data compressed = Detail::compressSnapshot( snapshot );
+        uint32_t checksum = m_simulation.checksum().full;
         for( const Peer & peer : m_peers )
         {
             if( peer.handshaken == false )
+            {
+                continue;
+            }
+            if( peer.rejection.empty() == false )
             {
                 continue;
             }
@@ -412,8 +517,15 @@ namespace Arena3D
             Detail::writeHeader( &writer, NetworkMessage::StateFrame );
             writer.writeU64( m_simulation.state().matchId );
             writer.writeU64( m_simulation.state().tick );
-            writer.writeU64( peer.lastAppliedSequence );
-            writer.writeU32( m_simulation.checksum().full );
+            uint64_t confirmed = m_commands.getConfirmedSequence( peer.playerId );
+            uint64_t completedMask = m_commands.getCompletedMask( peer.playerId );
+            writer.writeU64( confirmed );
+            writer.writeU64( completedMask );
+            uint64_t controlConfirmed = m_commands.getConfirmedSequence( peer.playerId, ECommandStream::Control );
+            uint64_t controlCompletedMask = m_commands.getCompletedMask( peer.playerId, ECommandStream::Control );
+            writer.writeU64( controlConfirmed );
+            writer.writeU64( controlCompletedMask );
+            writer.writeU32( checksum );
             writer.writeU32( static_cast<uint32_t>(m_eventHistory.size()) );
             for( const ServerEvent & event : m_eventHistory )
             {
@@ -424,6 +536,45 @@ namespace Arena3D
             writer.writeBytes( compressed.data(), compressed.size() );
             Detail::sendWire( m_socketService, peer.peerId, 2, Mengine::ESocketDelivery::UnreliableSequenced, writer );
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NetworkServer::sendConfirmations_()
+    {
+        ackord_journal_entry entry;
+        uint64_t index = 0;
+        while( m_commands.getNextJournalEntry( index, &entry ) == true )
+        {
+            for( const Peer & peer : m_peers )
+            {
+                if( peer.handshaken == false )
+                {
+                    continue;
+                }
+                if( peer.rejection.empty() == false )
+                {
+                    continue;
+                }
+                if( entry.confirmation.client != peer.playerId )
+                {
+                    continue;
+                }
+                CanonicalWriter writer;
+                Detail::writeHeader( &writer, NetworkMessage::Confirmations );
+                writer.writeU64( entry.confirmation.session );
+                ECommandStream stream = getCommandStream( static_cast<CommandType>(entry.command.type) );
+                writer.writeU8( static_cast<uint8_t>(stream) );
+                writer.writeU64( entry.confirmation.sequence );
+                writer.writeI32( entry.confirmation.status );
+                if( Detail::sendWire( m_socketService, peer.peerId, 1, Mengine::ESocketDelivery::ReliableOrdered, writer ) == false )
+                {
+                    m_commands.trimJournal( index );
+                    return;
+                }
+                break;
+            }
+            index = entry.index;
+        }
+        m_commands.trimJournal( index );
     }
     //////////////////////////////////////////////////////////////////////////
     NetworkServer::Peer * NetworkServer::findPeer_( Mengine::SocketPeerId peerId )

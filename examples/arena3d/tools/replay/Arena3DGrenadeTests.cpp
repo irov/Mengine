@@ -22,8 +22,8 @@ namespace Arena3D
             simulation.reset( 1, 123 );
             uint32_t playerId = 1;
             PlayerState * player = simulation.findPlayer( playerId );
-            player->position = {557056, 589824, 1081344}; // Lower walkway, with feet on the floor.
-            player->velocity = {};
+            player->character.position = {557056, 589824, 1081344}; // Lower walkway, with feet on the floor.
+            player->character.velocity = {};
             player->yaw = _yaw;
             player->pitch = 0;
 

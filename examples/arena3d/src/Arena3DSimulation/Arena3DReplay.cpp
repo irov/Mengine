@@ -14,6 +14,10 @@ namespace Arena3D
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
+        static const size_t COMMAND_RECORD_SIZE = 54;
+        static const size_t EVENT_RECORD_SIZE = 54;
+        static const size_t CHECKPOINT_HEADER_SIZE = 44;
+        //////////////////////////////////////////////////////////////////////////
         static void writeChecksum( CanonicalWriter * writer, const StateChecksum & checksum )
         {
             writer->writeU32( checksum.player );
@@ -102,27 +106,126 @@ namespace Arena3D
                 left.endPosition.x == right.endPosition.x && left.endPosition.y == right.endPosition.y && left.endPosition.z == right.endPosition.z;
         }
         //////////////////////////////////////////////////////////////////////////
+        static bool verifyCheckpoints( const ReplayRecord & _replay, const Simulation & _simulation, uint64_t _batchIndex, size_t * const _checkpointIndex )
+        {
+            while( *_checkpointIndex != _replay.checkpoints.size() )
+            {
+                const ReplayCheckpoint & checkpoint = _replay.checkpoints[*_checkpointIndex];
+                if( checkpoint.batchIndex < _batchIndex )
+                {
+                    return false;
+                }
+                if( checkpoint.batchIndex != _batchIndex )
+                {
+                    break;
+                }
+                if( _simulation.state().tick != checkpoint.tick )
+                {
+                    return false;
+                }
+                if( _simulation.checksum() != checkpoint.checksum )
+                {
+                    return false;
+                }
+                if( checkpoint.snapshot.empty() == false && _simulation.snapshot() != checkpoint.snapshot )
+                {
+                    return false;
+                }
+                ++(*_checkpointIndex);
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool validateBatches( const ReplayRecord & _replay )
+        {
+            size_t commandIndex = 0;
+            size_t eventIndex = 0;
+            for( const ReplayBatchDesc & batch : _replay.batches )
+            {
+                if( batch.commandCount > _replay.commands.size() - commandIndex )
+                {
+                    return false;
+                }
+                if( batch.eventCount > _replay.events.size() - eventIndex )
+                {
+                    return false;
+                }
+                commandIndex += batch.commandCount;
+                eventIndex += batch.eventCount;
+            }
+            if( commandIndex != _replay.commands.size() )
+            {
+                return false;
+            }
+            if( eventIndex != _replay.events.size() )
+            {
+                return false;
+            }
+            uint64_t previousBatch = 0;
+            for( const ReplayCheckpoint & checkpoint : _replay.checkpoints )
+            {
+                if( checkpoint.batchIndex < previousBatch )
+                {
+                    return false;
+                }
+                if( checkpoint.batchIndex > _replay.batches.size() )
+                {
+                    return false;
+                }
+                previousBatch = checkpoint.batchIndex;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
-    ReplayRecord makeReplayRecord( const Simulation & simulation, uint64_t seed, const VectorCommandEnvelope & journal,
-        const VectorServerEvent & events )
+    ReplayRecord makeReplayRecord( const Simulation & _simulation, uint64_t _seed, const VectorCommandEnvelope & _journal, const VectorServerEvent & _events, const VectorReplayBatch & _batches )
     {
         ReplayRecord replay;
-        replay.matchId = simulation.state().matchId;
-        replay.seed = seed;
-        replay.finalTick = simulation.state().tick;
+        replay.matchId = _journal.empty() == true ? _simulation.state().matchId : _journal.front().matchId;
+        replay.seed = _seed;
+        replay.finalTick = _simulation.state().tick;
         replay.levelCrc = Arena3DGenerated::LevelCrc;
         replay.configCrc = Arena3DGenerated::ConfigCrc;
         replay.collisionCrc = Arena3DGenerated::CollisionCrc;
-        replay.finalChecksum = simulation.checksum();
-        replay.commands = journal;
-        replay.events = events;
-        replay.checkpoints.push_back( {replay.finalTick, replay.finalChecksum, simulation.snapshot()} );
+        replay.finalChecksum = _simulation.checksum();
+        replay.commands = _journal;
+        replay.events = _events;
+        replay.batches = _batches;
+        ReplayCheckpoint checkpoint;
+        checkpoint.batchIndex = _batches.size();
+        checkpoint.tick = replay.finalTick;
+        checkpoint.checksum = replay.finalChecksum;
+        checkpoint.snapshot = _simulation.snapshot();
+        replay.checkpoints.emplace_back( Mengine::StdUtility::move( checkpoint ) );
+
         return replay;
     }
     //////////////////////////////////////////////////////////////////////////
     bool writeReplay( const Mengine::String & path, const ReplayRecord & replay )
     {
+        if( replay.commands.size() > UINT32_MAX )
+        {
+            return false;
+        }
+        if( replay.events.size() > UINT32_MAX )
+        {
+            return false;
+        }
+        if( replay.batches.size() > UINT32_MAX )
+        {
+            return false;
+        }
+        if( replay.checkpoints.size() > UINT32_MAX )
+        {
+            return false;
+        }
+        if( Detail::validateBatches( replay ) == false )
+        {
+            return false;
+        }
         CanonicalWriter payload;
         payload.writeU64( replay.matchId );
         payload.writeU64( replay.seed );
@@ -141,13 +244,28 @@ namespace Arena3D
         {
             Detail::writeEvent( &payload, event );
         }
+        payload.writeU32( static_cast<uint32_t>(replay.batches.size()) );
+        for( const ReplayBatchDesc & batch : replay.batches )
+        {
+            payload.writeU32( batch.commandCount );
+            payload.writeU32( batch.eventCount );
+        }
         payload.writeU32( static_cast<uint32_t>(replay.checkpoints.size()) );
         for( const ReplayCheckpoint & checkpoint : replay.checkpoints )
         {
+            if( checkpoint.snapshot.size() > UINT32_MAX )
+            {
+                return false;
+            }
+            payload.writeU64( checkpoint.batchIndex );
             payload.writeU64( checkpoint.tick );
             Detail::writeChecksum( &payload, checkpoint.checksum );
             payload.writeU32( static_cast<uint32_t>(checkpoint.snapshot.size()) );
             payload.writeBytes( checkpoint.snapshot.data(), checkpoint.snapshot.size() );
+        }
+        if( payload.data().size() > UINT32_MAX )
+        {
+            return false;
         }
 
         CanonicalWriter writer;
@@ -228,6 +346,10 @@ namespace Arena3D
         uint32_t commandCount = 0;
         if( data.readU64( &decoded.matchId ) == false || data.readU64( &decoded.seed ) == false || data.readU64( &decoded.finalTick ) == false ||
             Detail::readChecksum( &data, &decoded.finalChecksum ) == false || data.readU32( &commandCount ) == false ) return false;
+        if( commandCount > data.remaining() / Detail::COMMAND_RECORD_SIZE )
+        {
+            return false;
+        }
         decoded.commands.reserve( commandCount );
         for( uint32_t index = 0; index != commandCount; ++index )
         {
@@ -254,10 +376,35 @@ namespace Arena3D
         {
             return false;
         }
+        if( eventCount > data.remaining() / Detail::EVENT_RECORD_SIZE )
+        {
+            return false;
+        }
         decoded.events.resize( eventCount );
         for( ServerEvent & event : decoded.events )
         {
             if( Detail::readEvent( &data, &event ) == false )
+            {
+                return false;
+            }
+        }
+        uint32_t batchCount = 0;
+        if( data.readU32( &batchCount ) == false )
+        {
+            return false;
+        }
+        if( batchCount > data.remaining() / (sizeof(uint32_t) * 2) )
+        {
+            return false;
+        }
+        decoded.batches.resize( batchCount );
+        for( ReplayBatchDesc & batch : decoded.batches )
+        {
+            if( data.readU32( &batch.commandCount ) == false )
+            {
+                return false;
+            }
+            if( data.readU32( &batch.eventCount ) == false )
             {
                 return false;
             }
@@ -267,11 +414,15 @@ namespace Arena3D
         {
             return false;
         }
+        if( checkpointCount > data.remaining() / Detail::CHECKPOINT_HEADER_SIZE )
+        {
+            return false;
+        }
         decoded.checkpoints.resize( checkpointCount );
         for( ReplayCheckpoint & checkpoint : decoded.checkpoints )
         {
             uint32_t snapshotSize = 0;
-            if( data.readU64( &checkpoint.tick ) == false || Detail::readChecksum( &data, &checkpoint.checksum ) == false ||
+            if( data.readU64( &checkpoint.batchIndex ) == false || data.readU64( &checkpoint.tick ) == false || Detail::readChecksum( &data, &checkpoint.checksum ) == false ||
                 data.readU32( &snapshotSize ) == false || snapshotSize > data.remaining() ) return false;
             checkpoint.snapshot.resize( snapshotSize );
             if( data.readBytes( checkpoint.snapshot.data(), checkpoint.snapshot.size() ) == false )
@@ -283,55 +434,90 @@ namespace Arena3D
         {
             return false;
         }
+        if( Detail::validateBatches( decoded ) == false )
+        {
+            return false;
+        }
         *replay = Mengine::StdUtility::move( decoded );
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool runReplay( const ReplayRecord & replay, Simulation * simulation, StateChecksum * finalChecksum )
+    bool runReplay( const ReplayRecord & _replay, Simulation * _simulation, StateChecksum * _finalChecksum )
     {
-        simulation->reset( replay.matchId, replay.seed );
+        if( Detail::validateBatches( _replay ) == false )
+        {
+            return false;
+        }
+        _simulation->reset( _replay.matchId, _replay.seed );
         size_t commandIndex = 0;
         size_t eventIndex = 0;
         size_t checkpointIndex = 0;
-        while( simulation->state().tick < replay.finalTick )
+        uint64_t batchIndex = 0;
+        if( Detail::verifyCheckpoints( _replay, *_simulation, batchIndex, &checkpointIndex ) == false )
         {
-            VectorCommandEnvelope commands;
-            while( commandIndex < replay.commands.size() && replay.commands[commandIndex].appliedTick <= simulation->state().tick )
+            return false;
+        }
+        VectorCommandEnvelope commands;
+        for( const ReplayBatchDesc & batch : _replay.batches )
+        {
+            commands.clear();
+            commands.reserve( batch.commandCount );
+            for( uint32_t index = 0; index != batch.commandCount; ++index )
             {
-                commands.emplace_back( replay.commands[commandIndex++] );
+                const CommandEnvelope & command = _replay.commands[commandIndex++];
+                if( command.appliedTick != _simulation->state().tick )
+                {
+                    return false;
+                }
+                commands.emplace_back( command );
             }
-            simulation->step( commands );
-            for( const ServerEvent & actual : simulation->events() )
+            _simulation->step( commands );
+            const VectorServerEvent & events = _simulation->events();
+            if( events.size() != batch.eventCount )
             {
-                if( eventIndex >= replay.events.size() || Detail::equalEvent( actual, replay.events[eventIndex] ) == false )
+                return false;
+            }
+            for( const ServerEvent & actual : events )
+            {
+                if( Detail::equalEvent( actual, _replay.events[eventIndex] ) == false )
                 {
                     return false;
                 }
                 ++eventIndex;
             }
-            while( checkpointIndex < replay.checkpoints.size() && replay.checkpoints[checkpointIndex].tick == simulation->state().tick )
-            {
-                const ReplayCheckpoint & checkpoint = replay.checkpoints[checkpointIndex++];
-                if( simulation->checksum() != checkpoint.checksum )
-                {
-                    return false;
-                }
-                if( checkpoint.snapshot.empty() == false && simulation->snapshot() != checkpoint.snapshot )
-                {
-                    return false;
-                }
-            }
-            if( simulation->state().paused == true && commands.empty() == true )
+            ++batchIndex;
+            if( Detail::verifyCheckpoints( _replay, *_simulation, batchIndex, &checkpointIndex ) == false )
             {
                 return false;
             }
         }
-        const StateChecksum checksum = simulation->checksum();
-        if( finalChecksum != nullptr )
+        StateChecksum checksum = _simulation->checksum();
+        if( _finalChecksum != nullptr )
         {
-            *finalChecksum = checksum;
+            *_finalChecksum = checksum;
         }
-        return commandIndex == replay.commands.size() && eventIndex == replay.events.size() && checkpointIndex == replay.checkpoints.size() && checksum == replay.finalChecksum;
+        if( commandIndex != _replay.commands.size() )
+        {
+            return false;
+        }
+        if( eventIndex != _replay.events.size() )
+        {
+            return false;
+        }
+        if( checkpointIndex != _replay.checkpoints.size() )
+        {
+            return false;
+        }
+        if( _simulation->state().tick != _replay.finalTick )
+        {
+            return false;
+        }
+        if( checksum != _replay.finalChecksum )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
 }

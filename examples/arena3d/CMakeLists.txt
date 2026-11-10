@@ -40,5 +40,10 @@ add_custom_target(Arena3DContent ALL
     VERBATIM
 )
 
+set(ACKORD_BUILD_TESTS OFF CACHE BOOL "ACKORD_BUILD_TESTS" FORCE)
+set(ACKORD_BUILD_EXAMPLES OFF CACHE BOOL "ACKORD_BUILD_EXAMPLES" FORCE)
+set(ACKORD_INSTALL OFF CACHE BOOL "ACKORD_INSTALL" FORCE)
+add_subdirectory(${ARENA3D_ROOT}/../../dependencies/ackord ${CMAKE_BINARY_DIR}/ackord)
+
 add_subdirectory(src/Arena3DSimulation)
 add_subdirectory(tools/replay)

@@ -17,6 +17,61 @@ namespace Arena3D
             return Mengine::String( buffer );
         }
         //////////////////////////////////////////////////////////////////////////
+        static void writeCharacter( CanonicalWriter * const _writer, const kf_character_state_t & _state )
+        {
+            _writer->writeVector( _state.position );
+            _writer->writeVector( _state.velocity );
+            for( int64_t remainder : _state.position_remainder )
+            {
+                _writer->writeI64( remainder );
+            }
+            _writer->writeI64( _state.gravity_remainder );
+            _writer->writeBool( _state.grounded != KF_FALSE );
+            _writer->writeU32( _state.support.id );
+            _writer->writeU32( _state.support.generation );
+            _writer->writeU32( _state.support_shape_id );
+            _writer->writeU64( _state.support_shape_signature );
+            _writer->writeVector( _state.support_normal );
+            _writer->writeVector( _state.support_velocity );
+            _writer->writeVector( _state.support_pose.position );
+            _writer->writeI32( _state.support_pose.rotation.x );
+            _writer->writeI32( _state.support_pose.rotation.y );
+            _writer->writeI32( _state.support_pose.rotation.z );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool readCharacter( CanonicalReader * const _reader, kf_character_state_t * const _state )
+        {
+            if( _reader->readVector( &_state->position ) == false || _reader->readVector( &_state->velocity ) == false )
+            {
+                return false;
+            }
+            for( int64_t & remainder : _state->position_remainder )
+            {
+                if( _reader->readI64( &remainder ) == false || remainder <= -100 || remainder >= 100 )
+                {
+                    return false;
+                }
+            }
+            bool grounded = false;
+            if( _reader->readI64( &_state->gravity_remainder ) == false || _state->gravity_remainder <= -100 || _state->gravity_remainder >= 100 ||
+                _reader->readBool( &grounded ) == false || _reader->readU32( &_state->support.id ) == false ||
+                _reader->readU32( &_state->support.generation ) == false || _reader->readU32( &_state->support_shape_id ) == false ||
+                _reader->readU64( &_state->support_shape_signature ) == false || _reader->readVector( &_state->support_normal ) == false ||
+                _reader->readVector( &_state->support_velocity ) == false || _reader->readVector( &_state->support_pose.position ) == false ||
+                _reader->readI32( &_state->support_pose.rotation.x ) == false || _reader->readI32( &_state->support_pose.rotation.y ) == false ||
+                _reader->readI32( &_state->support_pose.rotation.z ) == false )
+            {
+                return false;
+            }
+            _state->grounded = grounded ? KF_TRUE : KF_FALSE;
+            if( kf_rotation_valid( _state->support_pose.rotation ) == KF_FALSE )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
         static void writePcg( CanonicalWriter * writer, const Pcg32 & random )
         {
             writer->writeU64( random.state() );
@@ -63,11 +118,9 @@ namespace Arena3D
                 continue;
             }
             writer->writeU32( player.id );
-            writer->writeVector( player.position );
-            writer->writeVector( player.velocity );
+            Detail::writeCharacter( writer, player.character );
             writer->writeU16( player.yaw );
             writer->writeI16( player.pitch );
-            writer->writeBool( player.grounded );
             writer->writeBool( player.crouched );
             writer->writeBool( player.alive );
             writer->writeBool( player.noclip );
@@ -240,8 +293,8 @@ namespace Arena3D
                 continue;
             }
             uint8_t selected = 0;
-            if( reader->readU32( &player.id ) == false || reader->readVector( &player.position ) == false || reader->readVector( &player.velocity ) == false ||
-                reader->readU16( &player.yaw ) == false || reader->readI16( &player.pitch ) == false || reader->readBool( &player.grounded ) == false ||
+            if( reader->readU32( &player.id ) == false || Detail::readCharacter( reader, &player.character ) == false ||
+                reader->readU16( &player.yaw ) == false || reader->readI16( &player.pitch ) == false ||
                 reader->readBool( &player.crouched ) == false || reader->readBool( &player.alive ) == false || reader->readBool( &player.noclip ) == false ||
                 reader->readBool( &player.fireHeld ) == false || reader->readBool( &player.fireConsumed ) == false || reader->readU8( &player.inputMask ) == false ||
                 reader->readI32( &player.health ) == false || reader->readI32( &player.armor ) == false || reader->readI32( &player.score ) == false || reader->readI32( &player.deaths ) == false ||
@@ -391,29 +444,37 @@ namespace Arena3D
             {
                 return prefix + "id";
             }
-            if( left.position.x != right.position.x )
+            if( left.character.position.x != right.character.position.x )
             {
                 return prefix + "position.x";
             }
-            if( left.position.y != right.position.y )
+            if( left.character.position.y != right.character.position.y )
             {
                 return prefix + "position.y";
             }
-            if( left.position.z != right.position.z )
+            if( left.character.position.z != right.character.position.z )
             {
                 return prefix + "position.z";
             }
-            if( left.velocity.x != right.velocity.x )
+            if( left.character.velocity.x != right.character.velocity.x )
             {
                 return prefix + "velocity.x";
             }
-            if( left.velocity.y != right.velocity.y )
+            if( left.character.velocity.y != right.character.velocity.y )
             {
                 return prefix + "velocity.y";
             }
-            if( left.velocity.z != right.velocity.z )
+            if( left.character.velocity.z != right.character.velocity.z )
             {
                 return prefix + "velocity.z";
+            }
+            CanonicalWriter leftCharacter;
+            CanonicalWriter rightCharacter;
+            Detail::writeCharacter( &leftCharacter, left.character );
+            Detail::writeCharacter( &rightCharacter, right.character );
+            if( leftCharacter.data() != rightCharacter.data() )
+            {
+                return prefix + "character";
             }
             if( left.yaw != right.yaw )
             {

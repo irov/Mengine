@@ -246,7 +246,6 @@ namespace Mengine
         VectorInputHandler m_inputHandlers;
 
         double m_accumulatorMs;
-        uint64_t m_sourceTimeMs;
         uint64_t m_lastPresentedEventId;
         uint64_t m_presentedMatchId;
         float m_hitFlash;

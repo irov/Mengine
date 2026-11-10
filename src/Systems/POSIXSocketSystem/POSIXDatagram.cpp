@@ -226,7 +226,8 @@ namespace Mengine
         message.msg_iov = &vector;
         message.msg_iovlen = 1;
 
-        ssize_t result = ::recvmsg( m_socket, &message, MSG_TRUNC );
+        // Inspect truncation in msg_flags; macOS echoes an input MSG_TRUNC flag.
+        ssize_t result = ::recvmsg( m_socket, &message, 0 );
         if( result < 0 )
         {
             return this->errorResult_();

@@ -28,7 +28,7 @@ namespace Arena3D
             {
                 return false;
             }
-            if( magic != NetworkWireMagic || version != NetworkProtocolVersion || type < static_cast<uint8_t>(NetworkMessage::Hello) || type > static_cast<uint8_t>(NetworkMessage::Roster) )
+            if( magic != NetworkWireMagic || version != NetworkProtocolVersion || type < static_cast<uint8_t>(NetworkMessage::Hello) || type > static_cast<uint8_t>(NetworkMessage::Confirmations) )
             {
                 return false;
             }
@@ -38,7 +38,15 @@ namespace Arena3D
         //////////////////////////////////////////////////////////////////////////
         static bool sendWire( Mengine::SocketServiceInterface * socketService, Mengine::SocketPeerId peerId, uint8_t channel, Mengine::ESocketDelivery delivery, const CanonicalWriter & writer )
         {
-            return socketService->send( peerId, channel, delivery, writer.data().data(), writer.data().size() );
+            const Mengine::Data & data = writer.data();
+            const void * bytes = data.data();
+            size_t size = data.size();
+            if( socketService->send( peerId, channel, delivery, bytes, size ) == false )
+            {
+                return false;
+            }
+
+            return true;
         }
         //////////////////////////////////////////////////////////////////////////
         static bool decompressSnapshot( CanonicalReader * reader, uint32_t uncompressedSize, uint32_t compressedSize, Mengine::Data * output )
@@ -148,16 +156,43 @@ namespace Arena3D
     //////////////////////////////////////////////////////////////////////////
     bool NetworkClient::connect( const Mengine::SocketAddress & address, Mengine::String name, NetworkClientKind kind )
     {
-        if( m_socketService == nullptr || m_state != NetworkClientState::Disconnected || name.empty() == true || name.size() > 48 )
+        if( m_socketService == nullptr )
+        {
+            return false;
+        }
+        if( m_state != NetworkClientState::Disconnected && m_state != NetworkClientState::Rejected )
+        {
+            return false;
+        }
+        if( m_disconnectPeerId != Mengine::InvalidSocketPeerId )
+        {
+            return false;
+        }
+        if( name.empty() == true )
+        {
+            return false;
+        }
+        if( name.size() > 48 )
+        {
+            return false;
+        }
+        if( m_commands.isValid() == false )
+        {
+            return false;
+        }
+        Mengine::SocketPeerId peerId = Mengine::InvalidSocketPeerId;
+        if( m_socketService->connect( address, &peerId ) == false )
+        {
+            return false;
+        }
+        if( peerId == Mengine::InvalidSocketPeerId )
         {
             return false;
         }
         m_name = Mengine::StdUtility::move( name );
         m_kind = kind;
-        if( m_socketService->connect( address, &m_peerId ) == false )
-        {
-            return false;
-        }
+        m_rejection.clear();
+        m_peerId = peerId;
         m_state = NetworkClientState::Connecting;
         return true;
     }
@@ -168,27 +203,44 @@ namespace Arena3D
         Mengine::SocketServiceEvent event;
         while( m_socketService->pollEvent( &event ) == true )
         {
+            if( event.peerId == m_disconnectPeerId && (event.type == Mengine::ESocketServiceEventType::PeerDisconnected || event.type == Mengine::ESocketServiceEventType::TransportError) )
+            {
+                m_disconnectPeerId = Mengine::InvalidSocketPeerId;
+            }
+            if( m_peerId == Mengine::InvalidSocketPeerId )
+            {
+                continue;
+            }
             if( event.peerId != m_peerId )
             {
                 continue;
             }
             if( event.type == Mengine::ESocketServiceEventType::PeerConnected )
             {
+                if( m_state != NetworkClientState::Connecting )
+                {
+                    continue;
+                }
                 m_state = NetworkClientState::Handshaking;
-                this->sendHello_();
+                m_helloPending = true;
             }
             else if( event.type == Mengine::ESocketServiceEventType::PeerDisconnected || event.type == Mengine::ESocketServiceEventType::TransportError )
             {
-                m_state = NetworkClientState::Disconnected;
+                this->clearConnection_( NetworkClientState::Disconnected );
             }
             else if( event.type == Mengine::ESocketServiceEventType::MessageReceived )
             {
+                if( m_state != NetworkClientState::Handshaking && m_state != NetworkClientState::Connected )
+                {
+                    continue;
+                }
                 this->onMessage_( event.channel, event.payload );
             }
         }
 
+        this->sendControlMessages_();
         ++m_networkUpdateOrdinal;
-        if( m_state == NetworkClientState::Connected && m_pending.empty() == false && m_networkUpdateOrdinal % 3u == 0u )
+        if( m_state == NetworkClientState::Connected && m_commands.getPendingCount() != 0 && m_networkUpdateOrdinal % 3u == 0u )
         {
             this->sendPendingCommands_();
         }
@@ -205,29 +257,59 @@ namespace Arena3D
     //////////////////////////////////////////////////////////////////////////
     bool NetworkClient::sendCommand( CommandType type, uint64_t sourceTimeMs, const CommandPayload & payload )
     {
-        if( m_state != NetworkClientState::Connected || m_pending.size() >= 256u )
+        if( m_state != NetworkClientState::Connected )
+        {
+            return false;
+        }
+        ECommandStream stream = getCommandStream( type );
+        size_t predictionCount = 0;
+        for( const CommandEnvelope & pending : m_predictionCommands )
+        {
+            if( getCommandStream( pending.type ) == stream )
+            {
+                ++predictionCount;
+            }
+        }
+        size_t limit = stream == ECommandStream::Control ? MAXIMUM_PENDING_CONTROL_COMMANDS : MAXIMUM_PENDING_GAMEPLAY_COMMANDS;
+        if( predictionCount >= limit )
         {
             return false;
         }
         CommandEnvelope command;
-        command.matchId = m_simulation.state().matchId;
-        command.playerId = m_playerId;
-        command.sequence = m_nextSequence++;
-        command.sourceTimeMs = sourceTimeMs;
-        command.appliedTick = m_simulation.state().tick;
-        command.type = type;
-        command.payload = payload;
-        m_pending.emplace_back( command );
-        return this->sendPendingCommands_();
+        uint64_t tick = m_simulation.state().tick;
+        if( m_commands.makeCommand( type, sourceTimeMs, tick, payload, &command ) == false )
+        {
+            return false;
+        }
+        m_predictionCommands.emplace_back( command );
+        this->sendPendingCommands_();
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void NetworkClient::disconnect( uint32_t reason )
     {
-        if( m_peerId != Mengine::InvalidSocketPeerId )
+        Mengine::SocketPeerId peerId = m_peerId;
+        this->clearConnection_( NetworkClientState::Disconnected );
+        if( peerId == Mengine::InvalidSocketPeerId )
         {
-            m_socketService->disconnect( m_peerId, reason );
+            return;
         }
-        m_state = NetworkClientState::Disconnected;
+        this->disconnectPeer_( peerId, reason );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NetworkClient::clearConnection_( NetworkClientState _state )
+    {
+        m_peerId = Mengine::InvalidSocketPeerId;
+        m_state = _state;
+        m_helloPending = false;
+        m_snapshotRequestPending = false;
+        m_playerId = 0;
+        m_commands.clear();
+        m_lastPredictedSequences = {};
+        m_predictionCommands.clear();
+        m_events.clear();
+        m_roster.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     NetworkClientState NetworkClient::state() const
@@ -267,10 +349,12 @@ namespace Arena3D
     //////////////////////////////////////////////////////////////////////////
     size_t NetworkClient::pendingCommandCount() const
     {
-        return m_pending.size();
+        size_t count = m_commands.getPendingCount();
+
+        return count;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NetworkClient::sendHello_()
+    bool NetworkClient::sendHello_()
     {
         CanonicalWriter writer;
         Detail::writeHeader( &writer, NetworkMessage::Hello );
@@ -285,33 +369,95 @@ namespace Arena3D
         writer.writeU32( Arena3DGenerated::CollisionCrc );
         writer.writeU8( static_cast<uint8_t>(m_kind) );
         writer.writeString( m_name );
-        Detail::sendWire( m_socketService, m_peerId, 0, Mengine::ESocketDelivery::ReliableOrdered, writer );
+        if( Detail::sendWire( m_socketService, m_peerId, 0, Mengine::ESocketDelivery::ReliableOrdered, writer ) == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NetworkClient::requestSnapshot_()
+    {
+        m_snapshotRequestPending = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool NetworkClient::sendSnapshotRequest_()
+    {
+        CanonicalWriter request;
+        Detail::writeHeader( &request, NetworkMessage::SnapshotRequest );
+        if( Detail::sendWire( m_socketService, m_peerId, 3, Mengine::ESocketDelivery::ReliableOrdered, request ) == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NetworkClient::sendControlMessages_()
+    {
+        if( m_disconnectPeerId != Mengine::InvalidSocketPeerId )
+        {
+            if( m_socketService->disconnect( m_disconnectPeerId, m_disconnectReason ) == true )
+            {
+                m_disconnectPeerId = Mengine::InvalidSocketPeerId;
+            }
+        }
+        if( m_state == NetworkClientState::Handshaking && m_helloPending == true )
+        {
+            if( this->sendHello_() == true )
+            {
+                m_helloPending = false;
+            }
+        }
+        if( m_state == NetworkClientState::Connected && m_snapshotRequestPending == true )
+        {
+            if( this->sendSnapshotRequest_() == true )
+            {
+                m_snapshotRequestPending = false;
+            }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NetworkClient::disconnectPeer_( Mengine::SocketPeerId _peerId, uint32_t _reason )
+    {
+        m_disconnectPeerId = _peerId;
+        m_disconnectReason = _reason;
+        this->sendControlMessages_();
     }
     //////////////////////////////////////////////////////////////////////////
     bool NetworkClient::sendPendingCommands_()
     {
-        if( m_pending.empty() == true )
+        VectorCommandEnvelope pending = m_commands.getPendingCommands( 64 );
+        if( pending.empty() == true )
         {
             return true;
         }
-        const size_t count = Mengine::StdAlgorithm::min<size_t>( 64, m_pending.size() );
+        size_t count = pending.size();
         CanonicalWriter writer;
         Detail::writeHeader( &writer, NetworkMessage::CommandBatch );
         writer.writeU32( static_cast<uint32_t>(count) );
         for( size_t index = 0; index != count; ++index )
         {
-            serializeCommand( &writer, m_pending[index] );
+            serializeCommand( &writer, pending[index] );
         }
-        return Detail::sendWire( m_socketService, m_peerId, 1, Mengine::ESocketDelivery::UnreliableSequenced, writer );
+        if( Detail::sendWire( m_socketService, m_peerId, 1, Mengine::ESocketDelivery::UnreliableSequenced, writer ) == false )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void NetworkClient::predictTick_()
     {
         const uint64_t tick = m_simulation.state().tick;
         VectorCommandEnvelope commands;
-        for( const CommandEnvelope & pending : m_pending )
+        for( const CommandEnvelope & pending : m_predictionCommands )
         {
-            if( pending.sequence <= m_lastPredictedSequence || pending.appliedTick > tick )
+            ECommandStream stream = getCommandStream( pending.type );
+            uint64_t & lastPredictedSequence = m_lastPredictedSequences[static_cast<size_t>(stream)];
+            if( pending.sequence <= lastPredictedSequence || pending.appliedTick > tick )
             {
                 continue;
             }
@@ -322,7 +468,7 @@ namespace Arena3D
             command.tickCorrected = false;
             command.accepted = true;
             commands.emplace_back( command );
-            m_lastPredictedSequence = command.sequence;
+            lastPredictedSequence = command.sequence;
         }
 
         m_simulation.step( commands );
@@ -330,10 +476,53 @@ namespace Arena3D
     //////////////////////////////////////////////////////////////////////////
     void NetworkClient::predictToTick_( uint64_t tick )
     {
+        uint64_t matchId = m_simulation.state().matchId;
         while( m_simulation.state().tick < tick )
         {
+            uint64_t previousTick = m_simulation.state().tick;
             this->predictTick_();
+            if( m_simulation.state().tick == previousTick )
+            {
+                break;
+            }
+            if( m_simulation.state().matchId != matchId )
+            {
+                break;
+            }
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool NetworkClient::applyProgress_( uint64_t _acknowledged, uint64_t _completedMask, ECommandStream _stream )
+    {
+        if( m_commands.confirmProgress( _acknowledged, _completedMask, _stream ) == false )
+        {
+            return false;
+        }
+        m_predictionCommands.erase( Mengine::StdAlgorithm::remove_if( m_predictionCommands.begin(), m_predictionCommands.end(),
+            [_acknowledged, _completedMask, _stream]( const CommandEnvelope & _command )
+            {
+                if( getCommandStream( _command.type ) != _stream )
+                {
+                    return false;
+                }
+                if( _command.sequence <= _acknowledged )
+                {
+                    return true;
+                }
+                uint64_t distance = _command.sequence - _acknowledged;
+                if( distance > 64 )
+                {
+                    return false;
+                }
+                if( (_completedMask & (UINT64_C(1) << (distance - 1))) == 0 )
+                {
+                    return false;
+                }
+
+                return true;
+            } ), m_predictionCommands.end() );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void NetworkClient::onMessage_( uint8_t channel, const Mengine::Data & payload )
@@ -347,34 +536,181 @@ namespace Arena3D
         if( message == NetworkMessage::Reject && channel == 0 )
         {
             uint32_t reason = 0;
-            if( reader.readU32( &reason ) == true && reader.readString( &m_rejection ) == true )
+            if( reader.readU32( &reason ) == false )
             {
-                m_state = NetworkClientState::Rejected;
-                m_socketService->disconnect( m_peerId, reason );
+                return;
             }
+            Mengine::String rejection;
+            if( reader.readString( &rejection ) == false )
+            {
+                return;
+            }
+            if( reader.remaining() != 0 )
+            {
+                return;
+            }
+            m_rejection = Mengine::StdUtility::move( rejection );
+            Mengine::SocketPeerId peerId = m_peerId;
+            this->clearConnection_( NetworkClientState::Rejected );
+            this->disconnectPeer_( peerId, reason );
             return;
         }
         if( message == NetworkMessage::Welcome && channel == 3 )
         {
-            uint64_t matchId = 0, seed = 0, tick = 0;
-            uint32_t size = 0, compressedSize = 0;
-            if( reader.readU32( &m_playerId ) == false || reader.readU64( &matchId ) == false || reader.readU64( &seed ) == false || reader.readU64( &tick ) == false ||
-                reader.readU32( &size ) == false || reader.readU32( &compressedSize ) == false ) return;
+            uint64_t matchId = 0, seed = 0, tick = 0, acknowledged = 0, completedMask = 0;
+            uint64_t controlAcknowledged = 0, controlCompletedMask = 0;
+            uint32_t playerId = 0, size = 0, compressedSize = 0;
+            if( reader.readU32( &playerId ) == false )
+            {
+                return;
+            }
+            if( reader.readU64( &matchId ) == false )
+            {
+                return;
+            }
+            if( reader.readU64( &seed ) == false )
+            {
+                return;
+            }
+            if( reader.readU64( &tick ) == false )
+            {
+                return;
+            }
+            if( reader.readU64( &acknowledged ) == false )
+            {
+                return;
+            }
+            if( reader.readU64( &completedMask ) == false )
+            {
+                return;
+            }
+            if( reader.readU64( &controlAcknowledged ) == false )
+            {
+                return;
+            }
+            if( reader.readU64( &controlCompletedMask ) == false )
+            {
+                return;
+            }
+            if( reader.readU32( &size ) == false )
+            {
+                return;
+            }
+            if( reader.readU32( &compressedSize ) == false )
+            {
+                return;
+            }
+            bool sameSession = m_state == NetworkClientState::Connected && matchId == m_commands.getMatchId() && playerId == m_playerId;
             Mengine::Data snapshot;
-            if( Detail::decompressSnapshot( &reader, size, compressedSize, &snapshot ) == false || m_simulation.restoreSnapshot( snapshot ) == false ||
-                m_simulation.state().matchId != matchId || m_simulation.state().seed != seed || m_simulation.state().tick != tick ) return;
-            m_pending.clear();
-            m_lastAcknowledgedSequence = 0;
-            m_lastPredictedSequence = 0;
+            if( Detail::decompressSnapshot( &reader, size, compressedSize, &snapshot ) == false )
+            {
+                return;
+            }
+            Simulation authoritative( m_simulation.config() );
+            if( authoritative.restoreSnapshot( snapshot ) == false )
+            {
+                return;
+            }
+            if( authoritative.state().matchId != matchId || authoritative.state().seed != seed || authoritative.state().tick != tick )
+            {
+                return;
+            }
+            if( sameSession == false )
+            {
+                if( acknowledged != 0 )
+                {
+                    return;
+                }
+                if( completedMask != 0 )
+                {
+                    return;
+                }
+                if( controlAcknowledged != 0 )
+                {
+                    return;
+                }
+                if( controlCompletedMask != 0 )
+                {
+                    return;
+                }
+                if( m_commands.reset( matchId, playerId ) == false )
+                {
+                    return;
+                }
+                m_predictionCommands.clear();
+                m_playerId = playerId;
+            }
+            if( m_commands.validateProgress( acknowledged, completedMask, ECommandStream::Gameplay ) == false )
+            {
+                return;
+            }
+            if( m_commands.validateProgress( controlAcknowledged, controlCompletedMask, ECommandStream::Control ) == false )
+            {
+                return;
+            }
+            if( this->applyProgress_( acknowledged, completedMask, ECommandStream::Gameplay ) == false )
+            {
+                return;
+            }
+            if( this->applyProgress_( controlAcknowledged, controlCompletedMask, ECommandStream::Control ) == false )
+            {
+                return;
+            }
+            uint64_t predictedTick = sameSession == true ? m_simulation.state().tick : tick;
+            m_simulation = Mengine::StdUtility::move( authoritative );
+            m_lastPredictedSequences = {};
+            uint64_t targetTick = Mengine::StdAlgorithm::max( predictedTick, tick );
+            this->predictToTick_( targetTick );
+            m_helloPending = false;
+            m_snapshotRequestPending = false;
             m_state = NetworkClientState::Connected;
             return;
         }
         if( message == NetworkMessage::StateFrame && channel == 2 && m_state == NetworkClientState::Connected )
         {
-            uint64_t matchId = 0, tick = 0, acknowledged = 0;
+            uint64_t matchId = 0, tick = 0, acknowledged = 0, completedMask = 0;
+            uint64_t controlAcknowledged = 0, controlCompletedMask = 0;
             uint32_t checksum = 0, eventCount = 0, snapshotSize = 0, compressedSize = 0;
-            if( reader.readU64( &matchId ) == false || reader.readU64( &tick ) == false || reader.readU64( &acknowledged ) == false || reader.readU32( &checksum ) == false ||
-                reader.readU32( &eventCount ) == false || eventCount > NetworkMaximumFrameEvents || matchId != m_simulation.state().matchId ) return;
+            if( reader.readU64( &matchId ) == false )
+            {
+                return;
+            }
+            if( reader.readU64( &tick ) == false )
+            {
+                return;
+            }
+            if( reader.readU64( &acknowledged ) == false )
+            {
+                return;
+            }
+            if( reader.readU64( &completedMask ) == false )
+            {
+                return;
+            }
+            if( reader.readU64( &controlAcknowledged ) == false )
+            {
+                return;
+            }
+            if( reader.readU64( &controlCompletedMask ) == false )
+            {
+                return;
+            }
+            if( reader.readU32( &checksum ) == false )
+            {
+                return;
+            }
+            if( reader.readU32( &eventCount ) == false )
+            {
+                return;
+            }
+            if( eventCount > NetworkMaximumFrameEvents )
+            {
+                return;
+            }
+            if( matchId != m_commands.getMatchId() )
+            {
+                return;
+            }
             VectorServerEvent events;
             events.resize( eventCount );
             for( ServerEvent & event : events )
@@ -393,33 +729,85 @@ namespace Arena3D
             Mengine::Data snapshot;
             if( Detail::decompressSnapshot( &reader, snapshotSize, compressedSize, &snapshot ) == false )
             {
-                CanonicalWriter request;
-                Detail::writeHeader( &request, NetworkMessage::SnapshotRequest );
-                Detail::sendWire( m_socketService, m_peerId, 3, Mengine::ESocketDelivery::ReliableOrdered, request );
+                this->requestSnapshot_();
                 return;
             }
-            m_lastAcknowledgedSequence = acknowledged;
-            m_pending.erase( Mengine::StdAlgorithm::remove_if( m_pending.begin(), m_pending.end(),
-                                                               [acknowledged]( const CommandEnvelope & command )
-                                                               {
-                                                                   return command.sequence <= acknowledged;
-                                                               } ),
-                             m_pending.end() );
+            // Validate the authoritative baseline before releasing pending inputs.
+            Simulation authoritative( m_simulation.config() );
+            if( authoritative.restoreSnapshot( snapshot ) == false )
+            {
+                this->requestSnapshot_();
+                return;
+            }
+            if( authoritative.state().matchId != matchId || authoritative.state().tick != tick || authoritative.checksum().full != checksum )
+            {
+                this->requestSnapshot_();
+                return;
+            }
+            if( m_commands.validateProgress( acknowledged, completedMask, ECommandStream::Gameplay ) == false )
+            {
+                return;
+            }
+            if( m_commands.validateProgress( controlAcknowledged, controlCompletedMask, ECommandStream::Control ) == false )
+            {
+                return;
+            }
+            if( this->applyProgress_( acknowledged, completedMask, ECommandStream::Gameplay ) == false )
+            {
+                return;
+            }
+            if( this->applyProgress_( controlAcknowledged, controlCompletedMask, ECommandStream::Control ) == false )
+            {
+                return;
+            }
             const bool predictionMatches = predictedTick == tick && before.full == checksum;
             if( predictionMatches == false )
             {
-                if( m_simulation.restoreSnapshot( snapshot ) == false || m_simulation.state().matchId != matchId || m_simulation.state().tick != tick || m_simulation.checksum().full != checksum )
-                {
-                    CanonicalWriter request;
-                    Detail::writeHeader( &request, NetworkMessage::SnapshotRequest );
-                    Detail::sendWire( m_socketService, m_peerId, 3, Mengine::ESocketDelivery::ReliableOrdered, request );
-                    return;
-                }
-                m_lastPredictedSequence = acknowledged;
-                this->predictToTick_( Mengine::StdAlgorithm::max( predictedTick, tick ) );
+                m_simulation = Mengine::StdUtility::move( authoritative );
+                m_lastPredictedSequences = {};
+                uint64_t targetTick = Mengine::StdAlgorithm::max( predictedTick, tick );
+                this->predictToTick_( targetTick );
                 ++m_reconciliationCount;
             }
+            m_snapshotRequestPending = false;
             m_events.swap( events );
+            return;
+        }
+        if( message == NetworkMessage::Confirmations && channel == 1 && m_state == NetworkClientState::Connected )
+        {
+            uint64_t matchId = 0, sequence = 0;
+            int32_t status = 0;
+            uint8_t streamValue = 0;
+            if( reader.readU64( &matchId ) == false )
+            {
+                return;
+            }
+            if( reader.readU8( &streamValue ) == false )
+            {
+                return;
+            }
+            if( streamValue > static_cast<uint8_t>(ECommandStream::Control) )
+            {
+                return;
+            }
+            if( reader.readU64( &sequence ) == false )
+            {
+                return;
+            }
+            if( reader.readI32( &status ) == false )
+            {
+                return;
+            }
+            if( reader.remaining() != 0 )
+            {
+                return;
+            }
+            if( matchId != m_commands.getMatchId() )
+            {
+                return;
+            }
+            ECommandStream stream = static_cast<ECommandStream>(streamValue);
+            m_commands.confirm( sequence, status, stream );
             return;
         }
         if( message == NetworkMessage::Roster && channel == 0 )

@@ -1,11 +1,7 @@
 #include "Arena3DSession.h"
 
-#include "Kernel/FactorableUnique.h"
-
-#include "Config/StdAlgorithm.h"
 #include "Config/StdUtility.h"
 
-//////////////////////////////////////////////////////////////////////////
 namespace Arena3D
 {
     //////////////////////////////////////////////////////////////////////////
@@ -13,146 +9,145 @@ namespace Arena3D
         : m_config( Mengine::StdUtility::move( config ) )
         , m_server( m_config )
         , m_client( m_config )
-        , m_transport( Mengine::Helper::makeFactorableUnique<LocalCommandTransport>( Mengine::DocumentInterfacePtr::none() ) )
+        , m_commandServer( &m_server )
     {
-        m_scheduled.reserve( 256 );
-        m_journal.reserve( 4096 );
-        m_eventJournal.reserve( 4096 );
+        const SimulationState & state = m_server.state();
+        uint64_t matchId = state.matchId;
+        uint64_t seed = state.seed;
+        this->reset( matchId, seed );
     }
     //////////////////////////////////////////////////////////////////////////
     void LocalSession::reset( uint64_t matchId, uint64_t seed )
     {
+        // A live session keeps its state and queues under the same ID.
+        if( matchId == m_commandClient.getMatchId() && m_hasActivity == true )
+        {
+            return;
+        }
         m_server.reset( matchId, seed );
         m_client.reset( matchId, seed );
-        m_transport->clear();
-        m_scheduled.clear();
         m_journal.clear();
         m_eventJournal.clear();
-        m_nextSequence = 1;
-        m_lastAcceptedSequence = 0;
+        m_batchJournal.clear();
         m_reconciliationCount = 0;
-        m_synchronized = true;
+        m_hasActivity = false;
+        m_retryPending = false;
+        m_synchronized = m_commandServer.reset();
+        uint32_t playerId = m_server.state().players[0].id;
+        if( m_commandClient.reset( matchId, playerId ) == false )
+        {
+            m_synchronized = false;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     CommandEnvelope LocalSession::makeCommand( CommandType type, uint64_t sourceTimeMs, const CommandPayload & payload )
     {
         CommandEnvelope command;
-        command.matchId = m_server.state().matchId;
-        command.playerId = m_server.state().players[0].id;
-        command.sequence = m_nextSequence++;
-        command.sourceTimeMs = sourceTimeMs;
-        command.type = type;
-        command.payload = payload;
+        uint64_t tick = m_server.state().tick;
+        if( m_commandClient.makeCommand( type, sourceTimeMs, tick, payload, &command ) == false )
+        {
+            command.accepted = false;
+            return command;
+        }
+        m_hasActivity = true;
+
         return command;
     }
     //////////////////////////////////////////////////////////////////////////
-    void LocalSession::submit( const CommandEnvelope & command )
+    bool LocalSession::submit( const CommandEnvelope & _command )
     {
-        m_transport->sendCommand( command );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void LocalSession::receiveCommands_()
-    {
-        VectorCommandEnvelope incoming = m_transport->takeServerCommands();
-        Mengine::StdAlgorithm::stable_sort( incoming.begin(), incoming.end(),
-                                            []( const CommandEnvelope & left, const CommandEnvelope & right )
-                                            {
-                                                if( left.playerId != right.playerId )
-                                                {
-                                                    return left.playerId < right.playerId;
-                                                }
-                                                return left.sequence < right.sequence;
-                                            } );
-        for( CommandEnvelope & command : incoming )
+        if( _command.accepted == false )
         {
-            command.accepted = command.matchId == m_server.state().matchId && m_server.findPlayer( command.playerId ) != nullptr &&
-                command.sequence > m_lastAcceptedSequence;
-            if( command.accepted == true )
-            {
-                m_lastAcceptedSequence = command.sequence;
-            }
+            return false;
+        }
+        m_hasActivity = true;
+        ackord_status status = m_commandServer.submit( _command );
+        if( status == ACKORD_OK || status == ACKORD_DUPLICATE || status == ACKORD_STALE || status == ACKORD_WRONG_SESSION )
+        {
+            return true;
+        }
+        if( status == ACKORD_FULL || status == ACKORD_OUT_OF_WINDOW )
+        {
+            m_retryPending = true;
+            return false;
+        }
+        m_synchronized = false;
 
-            const uint64_t requestedTick = (command.sourceTimeMs + TickMilliseconds - 1u) / TickMilliseconds;
-            const bool immediateAdmin = m_server.state().paused == true &&
-                (command.type == CommandType::Resume || command.type == CommandType::Restart);
-            const uint64_t earliestTick = m_server.state().tick;
-            command.appliedTick = immediateAdmin ? earliestTick : Mengine::StdAlgorithm::max( requestedTick, earliestTick );
-            command.tickCorrected = command.appliedTick != requestedTick;
-            m_scheduled.emplace_back( command );
-        }
-        Mengine::StdAlgorithm::stable_sort( m_scheduled.begin(), m_scheduled.end(),
-                                            []( const CommandEnvelope & left, const CommandEnvelope & right )
-                                            {
-                                                if( left.appliedTick != right.appliedTick )
-                                                {
-                                                    return left.appliedTick < right.appliedTick;
-                                                }
-                                                if( left.playerId != right.playerId )
-                                                {
-                                                    return left.playerId < right.playerId;
-                                                }
-                                                return left.sequence < right.sequence;
-                                            } );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    VectorCommandEnvelope LocalSession::commandsForCurrentTick_()
-    {
-        VectorCommandEnvelope result;
-        const uint64_t tickValue = m_server.state().tick;
-        size_t count = 0;
-        while( count < m_scheduled.size() && m_scheduled[count].appliedTick <= tickValue )
-        {
-            result.emplace_back( m_scheduled[count] );
-            m_journal.emplace_back( m_scheduled[count] );
-            ++count;
-        }
-        if( count != 0 )
-        {
-            m_scheduled.erase( m_scheduled.begin(), m_scheduled.begin() + static_cast<ptrdiff_t>(count) );
-        }
-        return result;
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     bool LocalSession::tick()
     {
-        this->receiveCommands_();
-        VectorCommandEnvelope commands = this->commandsForCurrentTick_();
-        m_server.step( commands );
-
-        ServerFrame frame;
-        frame.tick = m_server.state().tick;
-        frame.acknowledgedSequence = m_lastAcceptedSequence;
-        frame.checksum = m_server.checksum();
-        frame.commands = commands;
-        frame.events = m_server.events();
-        m_eventJournal.insert( m_eventJournal.end(), frame.events.begin(), frame.events.end() );
-        if( frame.tick % 100u == 0u )
+        if( m_synchronized == false )
         {
-            frame.snapshot = m_server.snapshot();
+            return false;
         }
-        m_transport->publishServerFrame( Mengine::StdUtility::move( frame ) );
-        this->consumeClientFrames_();
-        return m_synchronized;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void LocalSession::consumeClientFrames_()
-    {
-        ServerFrame frame;
-        while( m_transport->takeClientFrame( &frame ) == true )
+        m_hasActivity = true;
+        if( m_retryPending == true )
         {
-            m_client.step( frame.commands );
-            if( m_client.checksum() != frame.checksum )
+            m_retryPending = false;
+            VectorCommandEnvelope pending = m_commandClient.getPendingCommands();
+            for( const CommandEnvelope & command : pending )
             {
-                Mengine::Data authoritative = frame.snapshot.empty() == false ? frame.snapshot : m_server.snapshot();
-                if( m_client.restoreSnapshot( authoritative ) == false || m_client.checksum() != frame.checksum )
+                this->submit( command );
+                if( m_synchronized == false )
                 {
-                    m_synchronized = false;
-                    return;
+                    return false;
                 }
-                ++m_reconciliationCount;
             }
         }
-        m_synchronized = m_client.checksum() == m_server.checksum();
+        uint64_t previousMatch = m_server.state().matchId;
+        if( m_commandServer.tick() == false )
+        {
+            return false;
+        }
+        const VectorCommandEnvelope & commands = m_commandServer.getCommands();
+        m_journal.insert( m_journal.end(), commands.begin(), commands.end() );
+        const VectorServerEvent & events = m_server.events();
+        m_eventJournal.insert( m_eventJournal.end(), events.begin(), events.end() );
+        uint32_t commandCount = static_cast<uint32_t>(commands.size());
+        uint32_t eventCount = static_cast<uint32_t>(events.size());
+        m_batchJournal.push_back( {commandCount, eventCount} );
+        m_client.step( commands );
+        StateChecksum checksum = m_server.checksum();
+        StateChecksum clientChecksum = m_client.checksum();
+        if( clientChecksum != checksum )
+        {
+            Mengine::Data snapshot = m_server.snapshot();
+            if( m_client.restoreSnapshot( snapshot ) == false )
+            {
+                m_synchronized = false;
+                return false;
+            }
+            ++m_reconciliationCount;
+            clientChecksum = m_client.checksum();
+        }
+        ackord_journal_entry entry;
+        uint64_t index = 0;
+        while( m_commandServer.getNextJournalEntry( index, &entry ) == true )
+        {
+            ECommandStream stream = getCommandStream( static_cast<CommandType>(entry.command.type) );
+            m_commandClient.confirm( entry.confirmation.sequence, entry.confirmation.status, stream );
+            index = entry.index;
+        }
+        m_commandServer.trimJournal( index );
+        if( m_server.state().matchId != previousMatch )
+        {
+            m_retryPending = false;
+            if( m_commandServer.reset() == false )
+            {
+                return false;
+            }
+            uint64_t matchId = m_server.state().matchId;
+            uint32_t playerId = m_server.state().players[0].id;
+            if( m_commandClient.reset( matchId, playerId ) == false )
+            {
+                return false;
+            }
+        }
+        m_synchronized = clientChecksum == checksum;
+
+        return m_synchronized;
     }
     //////////////////////////////////////////////////////////////////////////
     const Simulation & LocalSession::server() const
@@ -173,6 +168,11 @@ namespace Arena3D
     const VectorServerEvent & LocalSession::eventJournal() const
     {
         return m_eventJournal;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const VectorReplayBatch & LocalSession::batchJournal() const
+    {
+        return m_batchJournal;
     }
     //////////////////////////////////////////////////////////////////////////
     uint64_t LocalSession::reconciliationCount() const

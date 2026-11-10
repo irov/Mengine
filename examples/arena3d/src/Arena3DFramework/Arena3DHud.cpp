@@ -207,7 +207,7 @@ namespace Mengine
     {
         const float health = Mengine::StdAlgorithm::max( 0.f, Mengine::StdAlgorithm::min( 1.f, static_cast<float>(_player.health) / 100.f ) );
         const float armor = Mengine::StdAlgorithm::max( 0.f, Mengine::StdAlgorithm::min( 1.f, static_cast<float>(_player.armor) / 100.f ) );
-        const kf_fixed_t horizontalSpeed = kf_vec3_length( {_player.velocity.x, 0, _player.velocity.z} );
+        const kf_fixed_t horizontalSpeed = kf_vec3_length( {_player.character.velocity.x, 0, _player.character.velocity.z} );
         const float speed = Mengine::StdAlgorithm::max( 0.f, Mengine::StdAlgorithm::min( 1.f, kf_fixed_to_float( horizontalSpeed ) / 12.f ) );
         m_healthFillSurface->setSolidSize( {240.f * health, 14.f} );
         m_armorFillSurface->setSolidSize( {160.f * armor, 8.f} );
@@ -273,7 +273,7 @@ namespace Mengine
                 continue;
             }
             damageNumber.amount = Mengine::StdAlgorithm::min<uint32_t>( 999u, damageNumber.amount + static_cast<uint32_t>(_event.amount) );
-            damageNumber.position = kf_vec3_add( _target.position, {0, kf_fixed_from_float( 2.2f ), 0} );
+            damageNumber.position = kf_vec3_add( _target.character.position, {0, kf_fixed_from_float( 2.2f ), 0} );
             damageNumber.age = 0.f;
             return;
         }
@@ -296,7 +296,7 @@ namespace Mengine
             return;
         }
 
-        selected->position = kf_vec3_add( _target.position, {0, kf_fixed_from_float( 2.2f ), 0} );
+        selected->position = kf_vec3_add( _target.character.position, {0, kf_fixed_from_float( 2.2f ), 0} );
         selected->targetId = _event.targetId;
         selected->amount = static_cast<uint32_t>(_event.amount);
         selected->age = 0.f;

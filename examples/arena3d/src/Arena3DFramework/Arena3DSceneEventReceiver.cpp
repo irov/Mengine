@@ -104,7 +104,6 @@ namespace Mengine
     Arena3DSceneEventReceiver::Arena3DSceneEventReceiver()
         : m_scene( nullptr )
         , m_accumulatorMs( 0.0 )
-        , m_sourceTimeMs( 0 )
         , m_lastPresentedEventId( 0 )
         , m_presentedMatchId( 0 )
         , m_hitFlash( 0.f )
@@ -138,7 +137,7 @@ namespace Mengine
         m_currentState = m_previousState;
 
         const Arena3D::PlayerState & player = this->localPlayer_( m_currentState );
-        m_cameraFootHeight = kf_fixed_to_float( player.position.y );
+        m_cameraFootHeight = kf_fixed_to_float( player.character.position.y );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Arena3DSceneEventReceiver::onEntityCreate( const EntityBehaviorInterfacePtr & _behavior, Entity * _entity )
@@ -1235,12 +1234,15 @@ namespace Mengine
         {
             if( m_networkClient != nullptr )
             {
-                m_networkClient->sendCommand( _type, m_sourceTimeMs, _payload );
+                uint64_t sourceTime = m_networkClient->simulation().state().tick * Arena3D::TickMilliseconds;
+                m_networkClient->sendCommand( _type, sourceTime, _payload );
             }
             return;
         }
 
-        m_session.submit( m_session.makeCommand( _type, m_sourceTimeMs, _payload ) );
+        uint64_t sourceTime = m_session.server().state().tick * Arena3D::TickMilliseconds;
+        Arena3D::CommandEnvelope command = m_session.makeCommand( _type, sourceTime, _payload );
+        m_session.submit( command );
     }
     //////////////////////////////////////////////////////////////////////////
     void Arena3DSceneEventReceiver::initializeNetwork_()
@@ -1365,7 +1367,6 @@ namespace Mengine
     {
         double elapsed = Mengine::StdAlgorithm::max( 0.0, Mengine::StdAlgorithm::min( 250.0, static_cast<double>(_context->time) ) );
         this->advancePresentationAnimations_( static_cast<float>(elapsed) * 0.001f );
-        m_sourceTimeMs += static_cast<uint64_t>(elapsed);
         m_accumulatorMs += elapsed;
 
         if( m_networkMode == true )
@@ -1514,7 +1515,7 @@ namespace Mengine
             m_stepCameraVelocity = 0.f;
 
             const Arena3D::PlayerState & player = this->localPlayer_( m_currentState );
-            m_cameraFootHeight = kf_fixed_to_float( player.position.y );
+            m_cameraFootHeight = kf_fixed_to_float( player.character.position.y );
 
             m_weaponKick = 0.f;
             m_muzzleTime = 0.f;
@@ -1621,7 +1622,7 @@ namespace Mengine
             if( event.type == Arena3D::EventType::Damage && event.targetId == localPlayer.id )
             {
                 m_hitFlash = 0.65f;
-                const mt::vec3f delta = Helper::kinefixVec3ToVec3f( kf_vec3_sub( event.position, localPlayer.position ) );
+                const mt::vec3f delta = Helper::kinefixVec3ToVec3f( kf_vec3_sub( event.position, localPlayer.character.position ) );
                 const float relative = Detail::wrapRadians( StdMath::atan2f( delta.x, delta.z ) - Helper::kinefixAngleToRadians( localPlayer.yaw ) );
                 m_hud->showDamageDirection( relative );
             }
@@ -1640,7 +1641,7 @@ namespace Mengine
         const uint64_t reconciliations = m_networkMode == true ? m_networkClient->reconciliationCount() : m_session.reconciliationCount();
         LOGGER_MESSAGE( "Arena3D mode=%s tick=%llu crc=%08X hp=%d speed=%.3f draws=%u chunks=%u projectiles=%u pools=%u reconciliations=%llu",
             m_networkMode == true ? "network" : "local", static_cast<unsigned long long>(simulation.state().tick), checksum.full,
-            player.health, kf_fixed_to_float( kf_vec3_length( player.velocity ) ),
+            player.health, kf_fixed_to_float( kf_vec3_length( player.character.velocity ) ),
             m_drawCalls, m_visibleChunks, m_visibleProjectiles,
             static_cast<uint32_t>(m_projectilePools[0].size() + m_projectilePools[1].size() + m_projectilePools[2].size() +
                 m_projectilePools[3].size() + m_projectilePools[4].size() + m_projectilePools[5].size()),

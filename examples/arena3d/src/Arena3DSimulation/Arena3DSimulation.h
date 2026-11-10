@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Arena3DCollisionWorld.h"
+
 #include "Arena3DProtocol.h"
 
 #include "Kernel/Array.h"
@@ -16,7 +18,7 @@ namespace Arena3D
     constexpr size_t MaximumProjectiles = 256;
     constexpr size_t MaximumTurrets = 10;
     constexpr size_t MaximumPickups = 12;
-    constexpr size_t MaximumEventsPerTick = 512;
+    constexpr size_t MaximumDamageRequestsPerTick = 512;
     //////////////////////////////////////////////////////////////////////////
     enum class EventType : uint8_t
     {
@@ -126,11 +128,9 @@ namespace Arena3D
     {
         bool active = false;
         uint32_t id = 0;
-        kf_vec3_t position;
-        kf_vec3_t velocity;
+        kf_character_state_t character{};
         kf_angle16_t yaw = 0;
         kf_sangle16_t pitch = 0;
-        bool grounded = true;
         bool crouched = false;
         bool alive = true;
         bool noclip = false;
@@ -239,7 +239,7 @@ namespace Arena3D
         bool removePlayer( uint32_t playerId );
         PlayerState * findPlayer( uint32_t playerId );
         const PlayerState * findPlayer( uint32_t playerId ) const;
-        void step( const VectorCommandEnvelope & commands );
+        void step( const VectorCommandEnvelope & commands, VectorCommandResult * const _results = nullptr );
 
         const SimulationState & state() const;
         const VectorServerEvent & events() const;
@@ -262,12 +262,13 @@ namespace Arena3D
             kf_fixed_t knockback;
         };
         //////////////////////////////////////////////////////////////////////////
-        typedef Mengine::Array<DamageRequest, MaximumEventsPerTick> ArrayDamageRequest;
+        typedef Mengine::Array<DamageRequest, MaximumDamageRequestsPerTick> ArrayDamageRequest;
 
         void initializeTurrets_();
         void initializePickups_();
         void spawnPlayer_( PlayerState * player );
-        void applyCommands_( const VectorCommandEnvelope & commands );
+        void applyCommands_( const VectorCommandEnvelope & commands, VectorCommandResult * const _results );
+        bool applyCommand_( const CommandEnvelope & _command );
         void updatePlayer_( PlayerState * player );
         void updateWeapons_();
         void updateTurrets_();
@@ -295,6 +296,7 @@ namespace Arena3D
 
     private:
         SimulationConfig m_config;
+        CollisionWorld m_collisionWorld;
         SimulationState m_state;
         VectorServerEvent m_events;
         ArrayDamageRequest m_damage;

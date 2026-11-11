@@ -36,7 +36,9 @@ jobs:
         run: |
           $ErrorActionPreference = "Stop"
           cmake -S cmake/Downloads -B solutions/downloads -DMENGINE_DOWNLOADS_SILENT=ON
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           cmake --build solutions/downloads --parallel 4
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Use latest TinyPy compiler source
         shell: bash
@@ -56,9 +58,12 @@ jobs:
             -DCMAKE_CONFIGURATION_TYPES:STRING=Release `
             -DCMAKE_BUILD_TYPE:STRING=Release `
             -DMENGINE_DEPENDENCE_PILOT:BOOL=OFF `
+            -DMENGINE_DEPENDENCE_KINEFIX:BOOL=OFF `
             -DMENGINE_DEPENDENCE_TINYPY:BOOL=ON `
             -DMENGINE_DEPENDENCE_PYBIND:BOOL=OFF
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           cmake --build solutions/release-deps-windows --config Release --parallel 8
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
           $install = Join-Path $PWD "artifacts/windows"
           cmake -S cmake/Tools_Win64 -B solutions/release-tools-windows `
@@ -68,7 +73,9 @@ jobs:
             -DCMAKE_BUILD_TYPE:STRING=Release `
             -DMENGINE_DEPENDENCIES_PROJECT:STRING=Depends_WIN64 `
             -DMENGINE_INSTALL_PATH:PATH="$install"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           cmake --build solutions/release-tools-windows --config Release --parallel 8
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Audit and package Windows bundle
         shell: pwsh
@@ -205,6 +212,7 @@ jobs:
             -DCMAKE_BUILD_TYPE:STRING=Release \
             -DCMAKE_OSX_ARCHITECTURES:STRING=arm64 \
             -DMENGINE_DEPENDENCE_PILOT:BOOL=OFF \
+            -DMENGINE_DEPENDENCE_KINEFIX:BOOL=OFF \
             -DMENGINE_DEPENDENCE_TINYPY:BOOL=ON \
             -DMENGINE_DEPENDENCE_PYBIND:BOOL=OFF
           cmake --build solutions/release-deps-macos --config Release --parallel 8

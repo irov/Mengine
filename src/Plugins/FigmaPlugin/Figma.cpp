@@ -37,7 +37,8 @@
 
 #if !defined(MENGINE_PLATFORM_WINDOWS)
 #   include <dirent.h>
-#   include <sys/stat.h>
+#   include <fcntl.h>
+#   include <unistd.h>
 #endif
 
 namespace Mengine
@@ -156,16 +157,28 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
 #if !defined(MENGINE_PLATFORM_WINDOWS)
-        static bool isDirectoryPath( const String & _path )
+        static bool isDirectoryEntry( const String & _path, const struct dirent * _entry )
         {
-            struct stat st;
+            if( _entry->d_type == DT_DIR )
+            {
+                return true;
+            }
 
-            if( ::lstat( _path.c_str(), &st ) != 0 )
+            if( _entry->d_type != DT_UNKNOWN )
             {
                 return false;
             }
 
-            return S_ISDIR( st.st_mode ) != 0;
+            int fd = ::open( _path.c_str(), O_RDONLY | O_DIRECTORY | O_NOFOLLOW );
+
+            if( fd == -1 )
+            {
+                return false;
+            }
+
+            ::close( fd );
+
+            return true;
         }
         //////////////////////////////////////////////////////////////////////////
 #endif
@@ -1000,7 +1013,7 @@ namespace Mengine
                     String fullPath = _directory;
                     fullPath += name;
 
-                    if( Detail::isDirectoryPath( fullPath ) == true )
+                    if( Detail::isDirectoryEntry( fullPath, entry ) == true )
                     {
                         fullPath += '/';
 

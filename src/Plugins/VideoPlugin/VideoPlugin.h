@@ -25,6 +25,9 @@ namespace Mengine
     protected:
         bool _initializePlugin() override;
         void _finalizePlugin() override;
+
+    protected:
+        bool m_mockupVideo;
     };
 }
 

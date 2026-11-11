@@ -36,6 +36,9 @@ namespace Mengine
         void _release() override;
 
     protected:
+        void releaseResourceTexturepackers_( uint32_t _count );
+
+    protected:
         VectorResources m_resourceTexturepackers;
 
         bool m_needStripFrameNameExtension;

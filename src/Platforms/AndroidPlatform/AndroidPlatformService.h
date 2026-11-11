@@ -246,6 +246,7 @@ namespace Mengine
 
     protected:
         void setActive_( float _x, float _y, bool _active );
+        void unregisterProxyLogger_();
 
     protected:
         AndroidNativeRunnable * getNativeRunnable_( JNIEnv * _jenv, jobject _buffer ) const;

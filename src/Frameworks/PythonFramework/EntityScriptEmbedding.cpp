@@ -98,12 +98,15 @@ namespace Mengine
 
                 generator->setGenerator( _generator );
 
+                if( PROTOTYPE_SERVICE()
+                    ->addPrototype( _category, _prototype, generator ) == false )
+                {
+                    return false;
+                }
+
                 m_entityPrototypeGenerators.emplace_back( generator );
 
-                bool successful = PROTOTYPE_SERVICE()
-                    ->addPrototype( _category, _prototype, generator );
-
-                return successful;
+                return true;
             }
             //////////////////////////////////////////////////////////////////////////
             bool s_addEntityPrototypeFinder( const ConstString & _prototype, const pybind::object & _module )

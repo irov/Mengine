@@ -33,6 +33,9 @@ namespace Mengine
         void _release() override;
 
     protected:
+        void releaseResourceImages_( uint32_t _count );
+
+    protected:
         struct ImageDesc
         {
             ConstString name;

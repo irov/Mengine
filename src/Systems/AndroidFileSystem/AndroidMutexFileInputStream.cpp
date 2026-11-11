@@ -42,6 +42,10 @@ namespace Mengine
         MENGINE_UNUSED( _streaming );
         MENGINE_UNUSED( _share );
 
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+        Helper::addDebugFilePath( this, _relationPath, _folderPath, _filePath, MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
         size_t size = m_stream->size();
 
         if( _size != MENGINE_UNKNOWN_SIZE )
@@ -75,15 +79,16 @@ namespace Mengine
         m_capacity = 0;
         m_reading = 0;
 
-#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
-        Helper::addDebugFilePath( this, _relationPath, _folderPath, _filePath, MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidMutexFileInputStream::close()
     {
+        if( m_stream == nullptr )
+        {
+            return;
+        }
+
         m_stream = nullptr;
         m_mutex = nullptr;
 

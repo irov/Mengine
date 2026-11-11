@@ -603,6 +603,17 @@ namespace Mengine
             return true;
         }
 
+        DWORD dwStyle = this->getWindowStyle_( _fullscreen );
+        dwStyle &= ~WS_VISIBLE;
+
+        RECT rc;
+        if( this->calcWindowsRect_( m_windowResolution, _fullscreen, &rc ) == false )
+        {
+            return false;
+        }
+
+        DWORD dwExStyle = this->getWindowExStyle_( _fullscreen );
+
         HINSTANCE hInstance = ::GetModuleHandle( NULL );
 
         WNDCLASSEX wc;
@@ -631,17 +642,6 @@ namespace Mengine
             return false;
         }
 
-        DWORD dwStyle = this->getWindowStyle_( _fullscreen );
-        dwStyle &= ~WS_VISIBLE;
-
-        RECT rc;
-        if( this->calcWindowsRect_( m_windowResolution, _fullscreen, &rc ) == false )
-        {
-            return false;
-        }
-
-        DWORD dwExStyle = this->getWindowExStyle_( _fullscreen );
-
         HWND hWnd = ::CreateWindowEx( dwExStyle, m_windowClassName.c_str(), m_projectTitle.c_str()
             , dwStyle
             , rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top
@@ -655,6 +655,10 @@ namespace Mengine
             LOGGER_ERROR( "can't create window %ls"
                 , Helper::Win32GetLastErrorMessageW()
             );
+
+            LPCWSTR lpClassName = m_windowClassName.c_str();
+
+            ::UnregisterClass( lpClassName, hInstance );
 
             return false;
         }
@@ -1302,7 +1306,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool GDKPlatformService::setClipboardText( const Char * _value ) const
     {
-        if( ::OpenClipboard( NULL ) == FALSE )
+        if( ::OpenClipboard( m_hWnd ) == FALSE )
         {
             return false;
         }
@@ -1331,7 +1335,19 @@ namespace Mengine
         StdString::wcscpy( pMem, unicode_value );
         ::GlobalUnlock( hMem );
 
-        ::SetClipboardData( CF_UNICODETEXT, hMem );
+        if( ::SetClipboardData( CF_UNICODETEXT, hMem ) == NULL )
+        {
+            LOGGER_ERROR( "failed SetClipboardData %ls"
+                , Helper::Win32GetLastErrorMessageW()
+            );
+
+            ::CloseClipboard();
+
+            ::GlobalFree( hMem );
+
+            return false;
+        }
+
         ::CloseClipboard();
 
         return true;
@@ -1339,7 +1355,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool GDKPlatformService::getClipboardText( Char * _value, size_t _capacity ) const
     {
-        if( ::OpenClipboard( NULL ) == FALSE )
+        if( ::OpenClipboard( m_hWnd ) == FALSE )
         {
             return false;
         }

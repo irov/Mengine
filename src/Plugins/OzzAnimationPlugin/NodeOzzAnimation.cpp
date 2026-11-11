@@ -195,11 +195,16 @@ namespace Mengine
 
         if( m_resourceSkeleton->compile() == false )
         {
+            m_resourceImage->release();
+
             return false;
         }
 
         if( m_resourceMesh->compile() == false )
         {
+            m_resourceSkeleton->release();
+            m_resourceImage->release();
+
             return false;
         }
 
@@ -235,6 +240,8 @@ namespace Mengine
             LOGGER_ERROR( "node ozz animation '%s' compile error the provided mesh doesn't match skeleton (joint count mismatch)."
                 , this->getName().c_str()
             );
+
+            NodeOzzAnimation::_release();
 
             return false;
         }
@@ -307,12 +314,16 @@ namespace Mengine
         {
             if( sampler->compile() == false )
             {
+                NodeOzzAnimation::_release();
+
                 return false;
             }
         }
 
         if( this->updateAnimation_() == false )
         {
+            NodeOzzAnimation::_release();
+
             return false;
         }
 
@@ -334,8 +345,6 @@ namespace Mengine
         {
             sampler->release();
         }
-
-        m_samplers.clear();
 
         m_resourceImage->release();
         m_resourceSkeleton->release();

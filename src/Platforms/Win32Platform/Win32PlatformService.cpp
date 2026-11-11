@@ -2328,6 +2328,17 @@ namespace Mengine
             return true;
         }
 
+        DWORD dwStyle = this->getWindowStyle_( _fullscreen );
+        dwStyle &= ~WS_VISIBLE;
+
+        RECT rc;
+        if( this->calcWindowsRect_( m_windowResolution, _fullscreen, &rc ) == false )
+        {
+            return false;
+        }
+
+        DWORD dwExStyle = this->getWindowExStyle_( _fullscreen );
+
         HINSTANCE hInstance = ::GetModuleHandle( NULL );
 
         WNDCLASSEX wc;
@@ -2358,17 +2369,6 @@ namespace Mengine
             return false;
         }
 
-        DWORD dwStyle = this->getWindowStyle_( _fullscreen );
-        dwStyle &= ~WS_VISIBLE;
-
-        RECT rc;
-        if( this->calcWindowsRect_( m_windowResolution, _fullscreen, &rc ) == false )
-        {
-            return false;
-        }
-
-        DWORD dwExStyle = this->getWindowExStyle_( _fullscreen );
-
         HWND hWnd = ::CreateWindowEx( dwExStyle, m_windowClassName.c_str(), m_projectTitle.c_str()
             , dwStyle
             , rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top
@@ -2382,6 +2382,10 @@ namespace Mengine
             LOGGER_ERROR( "can't create window %ls"
                 , Helper::Win32GetLastErrorMessageW()
             );
+
+            LPCWSTR lpClassName = m_windowClassName.c_str();
+
+            ::UnregisterClass( lpClassName, hInstance );
 
             return false;
         }
@@ -2493,6 +2497,8 @@ namespace Mengine
                         , Helper::Win32GetErrorMessageW( hr )
                     );
 
+                    ::FreeLibrary( shcoreModule );
+
                     return false;
                 }
 
@@ -2577,6 +2583,22 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( _className != nullptr && _className[0] != '\0', "invalid createExtraWindow className is empty" );
         MENGINE_ASSERTION_FATAL( _wndProc != nullptr, "invalid createExtraWindow wndProc is empty" );
 
+        DWORD dwStyle = this->getWindowStyle_( false );
+        dwStyle &= ~WS_VISIBLE;
+
+        RECT rc;
+        if( this->calcWindowsRect_( _resolution, false, &rc ) == false )
+        {
+            LOGGER_ERROR( "can't calc extra window '%s' title '%s' rect"
+                , _className
+                , _title
+            );
+
+            return NULL;
+        }
+
+        DWORD dwExStyle = this->getWindowExStyle_( false );
+
         HINSTANCE hInstance = ::GetModuleHandle( NULL );
 
         StaticWString<MENGINE_MAX_PATH> windowClassNameExtra;
@@ -2620,22 +2642,6 @@ namespace Mengine
         WChar titleW[MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME] = {L'\0'};
         Helper::utf8ToUnicode( _title, titleW, MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME, nullptr );
 
-        DWORD dwStyle = this->getWindowStyle_( false );
-        dwStyle &= ~WS_VISIBLE;
-
-        RECT rc;
-        if( this->calcWindowsRect_( _resolution, false, &rc ) == false )
-        {
-            LOGGER_ERROR( "can't calc extra window '%s' title '%s' rect"
-                , _className
-                , _title
-            );
-
-            return NULL;
-        }
-
-        DWORD dwExStyle = this->getWindowExStyle_( false );
-
         HWND hWnd = ::CreateWindowEx( dwExStyle, windowClassNameExtra.c_str(), titleW
             , dwStyle
             , rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top
@@ -2651,6 +2657,10 @@ namespace Mengine
                 , _title
                 , Helper::Win32GetLastErrorMessageW()
             );
+
+            LPCWSTR lpClassName = windowClassNameExtra.c_str();
+
+            ::UnregisterClass( lpClassName, hInstance );
 
             return NULL;
         }
@@ -2909,7 +2919,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     HCURSOR Win32PlatformService::getCursorICO_( const ConstString & _name, const FilePath & _filePath, const MemoryInterfacePtr & _buffer )
     {
-        MapCursors::iterator it_found = m_cursors.find( _filePath );
+        MapCursors::iterator it_found = m_cursors.find( _name );
 
         if( it_found != m_cursors.end() )
         {
@@ -2922,6 +2932,8 @@ namespace Mengine
 
         HCURSOR cursor = this->loadCursorICO_( _filePath, _buffer );
 
+        bool shared = false;
+
         if( cursor == NULL )
         {
             LOGGER_ERROR( "invalid load cursor ICO [%s]"
@@ -2929,11 +2941,13 @@ namespace Mengine
             );
 
             cursor = ::LoadCursor( NULL, IDC_ARROW );
+
+            shared = true;
         }
 
         CursorDesc desc;
         desc.cursor = cursor;
-        desc.shared = false;
+        desc.shared = shared;
 
         m_cursors.emplace( _name, desc );
 
@@ -3543,6 +3557,8 @@ namespace Mengine
                 , Helper::Win32GetLastErrorMessageW()
             );
 
+            ::CoTaskMemFree( itemIDList );
+
             return 0;
         }
 
@@ -4090,7 +4106,18 @@ namespace Mengine
 
         ::EmptyClipboard();
 
-        ::SetClipboardData( CF_TEXT, hGlb );
+        if( ::SetClipboardData( CF_TEXT, hGlb ) == NULL )
+        {
+            LOGGER_ERROR( "failed SetClipboardData %ls"
+                , Helper::Win32GetLastErrorMessageW()
+            );
+
+            ::CloseClipboard();
+
+            ::GlobalFree( hGlb );
+
+            return false;
+        }
 
         ::CloseClipboard();
 

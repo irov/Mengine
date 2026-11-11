@@ -100,6 +100,8 @@ namespace Mengine
                 , m_resourceImageAlpha->getName().c_str()
             );
 
+            m_resourceImageRGB->release();
+
             return false;
         }
 

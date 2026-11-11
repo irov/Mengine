@@ -22,15 +22,15 @@ namespace Mengine
     {
         for( uint32_t index = 0; index != ResourceWindow_Count; ++index )
         {
-            WindowElement & element = m_elements[index];
+            if( index == ResourceWindow_Background )
+            {
+                continue;
+            }
+
+            const WindowElement & element = m_elements[index];
 
             if( element.resourceImage == nullptr )
             {
-                if( index == ResourceWindow_Background )
-                {
-                    continue;
-                }
-
                 const Char * element_names[] = {"background", "left top", "top", "right top", "right", "right bottom", "bottom", "left bottom", "left"};
 
                 LOGGER_ERROR( "resource window '%s' not set element [%s]"
@@ -40,6 +40,16 @@ namespace Mengine
 
                 return false;
             }
+        }
+
+        for( uint32_t index = 0; index != ResourceWindow_Count; ++index )
+        {
+            const WindowElement & element = m_elements[index];
+
+            if( element.resourceImage == nullptr )
+            {
+                continue;
+            }
 
             if( element.resourceImage->compile() == false )
             {
@@ -47,6 +57,8 @@ namespace Mengine
                     , this->getName().c_str()
                     , element.resourceImage->getName().c_str()
                 );
+
+                this->releaseElements_( index );
 
                 return false;
             }
@@ -57,15 +69,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceWindow::_release()
     {
-        for( uint32_t i = 0; i != ResourceWindow_Count; ++i )
-        {
-            WindowElement & element = m_elements[i];
-
-            if( element.resourceImage != nullptr )
-            {
-                element.resourceImage->release();
-            }
-        }
+        this->releaseElements_( ResourceWindow_Count );
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceWindow::setElementResourceImage( uint32_t _type, const ResourceImagePtr & _resourceImage )
@@ -118,6 +122,19 @@ namespace Mengine
         const mt::vec2f & offset = element.offset;
 
         return offset;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceWindow::releaseElements_( uint32_t _count )
+    {
+        for( uint32_t i = 0; i != _count; ++i )
+        {
+            const WindowElement & element = m_elements[i];
+
+            if( element.resourceImage != nullptr )
+            {
+                element.resourceImage->release();
+            }
+        }
     }
     //////////////////////////////////////////////////////////////////////////
 }

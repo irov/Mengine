@@ -42,6 +42,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     SteamService::SteamService()
         : m_client( nullptr )
+        , m_hSteamPipe( 0 )
+        , m_hSteamUser( 0 )
         , m_user( nullptr )
         , m_userStats( nullptr )
         , m_friends( nullptr )
@@ -84,8 +86,6 @@ namespace Mengine
 #endif
         }
 
-        m_steamInitialize = true;
-
         m_iso639_1["brazilian"] = STRINGIZE_STRING_LOCAL( "pt-br" );
         m_iso639_1["bulgarian"] = STRINGIZE_STRING_LOCAL( "bg" );
         m_iso639_1["czech"] = STRINGIZE_STRING_LOCAL( "cs" );
@@ -113,8 +113,6 @@ namespace Mengine
         m_iso639_1["turkish"] = STRINGIZE_STRING_LOCAL( "tr" );
         m_iso639_1["ukrainian"] = STRINGIZE_STRING_LOCAL( "ua" );
 
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_PACKAGES_LOAD, &SteamService::notifyPackagesLoad_, MENGINE_DOCUMENT_FACTORABLE );
-
         ISteamClient * client = SteamClient();
 
         LOGGER_INFO( "steam", "Steam client API version: %s"
@@ -125,6 +123,8 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid SteamClient" );
 
+            SteamAPI_Shutdown();
+
             return false;
         }
 
@@ -132,15 +132,13 @@ namespace Mengine
 
         m_client->SetWarningMessageHook( &Detail::SteamAPIWarningMessageHook );
 
-        HSteamPipe hSteamPipe = m_client->CreateSteamPipe();
-
-        HSteamUser hSteamUser = m_client->ConnectToGlobalUser( hSteamPipe );
-
         ISteamUser * user = SteamUser();
 
         if( user == nullptr )
         {
             LOGGER_ERROR( "invalid SteamUser" );
+
+            SteamAPI_Shutdown();
 
             return false;
         }
@@ -152,6 +150,8 @@ namespace Mengine
         if( user->BLoggedOn() == false )
         {
             LOGGER_ERROR( "user is not logged in" );
+
+            SteamAPI_Shutdown();
 
             return false;
         }
@@ -168,14 +168,26 @@ namespace Mengine
         //	return false;
         //}
 
+        HSteamPipe hSteamPipe = m_client->CreateSteamPipe();
+
+        HSteamUser hSteamUser = m_client->ConnectToGlobalUser( hSteamPipe );
+
         ISteamUserStats * userStats = m_client->GetISteamUserStats( hSteamUser, hSteamPipe, STEAMUSERSTATS_INTERFACE_VERSION );
 
         if( userStats == nullptr )
         {
             LOGGER_ERROR( "[steam] invalid get UserStats" );
 
+            m_client->ReleaseUser( hSteamPipe, hSteamUser );
+            m_client->BReleaseSteamPipe( hSteamPipe );
+
+            SteamAPI_Shutdown();
+
             return false;
         }
+
+        m_hSteamPipe = hSteamPipe;
+        m_hSteamUser = hSteamUser;
 
         LOGGER_INFO( "steam", "Steam user stats API version: %s"
             , STEAMUSERSTATS_INTERFACE_VERSION
@@ -210,6 +222,10 @@ namespace Mengine
         //		, thisfriend_name
         //		);
         //}
+
+        m_steamInitialize = true;
+
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_PACKAGES_LOAD, &SteamService::notifyPackagesLoad_, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

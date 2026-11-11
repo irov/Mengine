@@ -40,6 +40,10 @@ namespace Mengine
         FT_Library getFTLibrary() const;
 
     public:
+        void setGlyph( const FontGlyphInterfacePtr & _glyph ) override;
+        void setHeight( uint32_t _height ) override;
+
+    public:
         void setEffect( const FontEffectInterfacePtr & _effect ) override;
         const FontEffectInterfacePtr & getEffect() const override;
 
@@ -94,6 +98,7 @@ namespace Mengine
         void notifyRenderDeviceLostPrepare();
 
     protected:
+        void releaseGlyphs_();
         void clearGlyphs_();
 
     protected:
@@ -125,6 +130,7 @@ namespace Mengine
 
             mt::uv4f uv;
             RenderTextureInterfacePtr texture;
+            uint32_t slot;
         };
 
         struct TTFGlyph

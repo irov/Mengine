@@ -11,3 +11,6 @@ include(./../../../../cmake/download_template.cmake)
 
 DOWNLOAD_FILE(fonts https://github.com/googlefonts/roboto-2/raw/main/src/hinted/Roboto-Bold.ttf Roboto-Bold.ttf)
 DOWNLOAD_FILE(fonts https://github.com/googlefonts/roboto-2/raw/main/LICENSE Roboto_license.txt)
+
+DOWNLOAD_FILE(fonts https://raw.githubusercontent.com/google/fonts/5bb28733cec313b63fbd415b574b5ae35c8aa8b8/ofl/notosansarabic/NotoSansArabic%5Bwdth%2Cwght%5D.ttf NotoSansArabic.ttf)
+DOWNLOAD_FILE(fonts https://raw.githubusercontent.com/google/fonts/5bb28733cec313b63fbd415b574b5ae35c8aa8b8/ofl/notosansarabic/OFL.txt NotoSansArabic_OFL.txt)

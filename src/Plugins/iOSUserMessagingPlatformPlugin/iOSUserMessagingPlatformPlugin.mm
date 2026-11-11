@@ -142,6 +142,10 @@
 #endif
 }
 
+- (void)onFinalize {
+    [self.m_completionHandlers removeAllObjects];
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [self requestConsentInfoUpdate];
 

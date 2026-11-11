@@ -38,6 +38,13 @@ jobs:
           cmake -S cmake/Downloads -B solutions/downloads -DMENGINE_DOWNLOADS_SILENT=ON
           cmake --build solutions/downloads --parallel 4
 
+      - name: Use latest TinyPy compiler source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git -C dependencies/tinypy fetch origin HEAD
+          git -C dependencies/tinypy checkout --detach FETCH_HEAD
+
       - name: Build Release dependencies and tools
         shell: pwsh
         run: |
@@ -49,7 +56,7 @@ jobs:
             -DCMAKE_CONFIGURATION_TYPES:STRING=Release `
             -DCMAKE_BUILD_TYPE:STRING=Release `
             -DMENGINE_DEPENDENCE_PILOT:BOOL=OFF `
-            -DMENGINE_DEPENDENCE_TINYPY:BOOL=OFF `
+            -DMENGINE_DEPENDENCE_TINYPY:BOOL=ON `
             -DMENGINE_DEPENDENCE_PYBIND:BOOL=OFF
           cmake --build solutions/release-deps-windows --config Release --parallel 8
 
@@ -70,7 +77,7 @@ jobs:
           $toolNames = @(
             "AlphaPremultiplier", "AlphaSpreading",
             "ExtractorDXT1", "ExtractorETC1",
-            "ImagePolygonize", "ImageTrimmer", "MengineConverter", "Metawrite",
+            "ImagePolygonize", "ImageTrimmer", "MengineConverter", "Metawrite", "PythonCompiler",
             "MovieResource", "NodeDebugger", "Ravinggen",
             "TexturePacker"
           )
@@ -85,6 +92,9 @@ jobs:
             if (-not (Test-Path $source -PathType Leaf)) { throw "Missing tool: $source" }
             Copy-Item $source $stage
           }
+          $licenses = Join-Path $stage "LICENSES/tinypy"
+          New-Item -ItemType Directory -Path $licenses -Force | Out-Null
+          Copy-Item dependencies/tinypy/LICENSES/* $licenses
           $dumpbin = Get-ChildItem "${env:ProgramFiles}/Microsoft Visual Studio/2022" `
             -Filter dumpbin.exe -Recurse | Sort-Object FullName -Descending | Select-Object -First 1
           if ($null -eq $dumpbin) { throw "dumpbin.exe was not found" }
@@ -131,6 +141,9 @@ jobs:
           $provenance = [ordered]@{
             platform = "windows-x64"
             commit = $env:GITHUB_SHA
+            tinypy_commit = (git -C dependencies/tinypy rev-parse HEAD)
+            tools = @($toolNames)
+            licenses = @(Get-ChildItem $licenses -File | Sort-Object Name | ForEach-Object { "LICENSES/tinypy/$($_.Name)" })
             runner = "windows-2022"
             generator = "Visual Studio 17 2022"
             configuration = "Release"
@@ -173,6 +186,13 @@ jobs:
           cmake -S cmake/Downloads -B solutions/downloads -DMENGINE_DOWNLOADS_SILENT=ON
           cmake --build solutions/downloads --parallel 4
 
+      - name: Use latest TinyPy compiler source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git -C dependencies/tinypy fetch origin HEAD
+          git -C dependencies/tinypy checkout --detach FETCH_HEAD
+
       - name: Build Release dependencies and tools
         shell: bash
         run: |
@@ -185,7 +205,7 @@ jobs:
             -DCMAKE_BUILD_TYPE:STRING=Release \
             -DCMAKE_OSX_ARCHITECTURES:STRING=arm64 \
             -DMENGINE_DEPENDENCE_PILOT:BOOL=OFF \
-            -DMENGINE_DEPENDENCE_TINYPY:BOOL=OFF \
+            -DMENGINE_DEPENDENCE_TINYPY:BOOL=ON \
             -DMENGINE_DEPENDENCE_PYBIND:BOOL=OFF
           cmake --build solutions/release-deps-macos --config Release --parallel 8
 
@@ -206,7 +226,7 @@ jobs:
           tools=(
             AlphaPremultiplier AlphaSpreading
             ExtractorDXT1 ExtractorETC1 ImagePolygonize ImageTrimmer
-            MengineConverter Metawrite MovieResource NodeDebugger
+            MengineConverter Metawrite PythonCompiler MovieResource NodeDebugger
             Ravinggen TexturePacker
           )
           converter=$(find artifacts/macos -type f -name MengineConverter -perm -111 -print -quit)
@@ -219,6 +239,8 @@ jobs:
             test -f "${output}/${name}"
             cp "${output}/${name}" "${stage}/"
           done
+          mkdir -p "${stage}/LICENSES/tinypy"
+          cp dependencies/tinypy/LICENSES/* "${stage}/LICENSES/tinypy/"
           for executable in "${tools[@]}"; do
             path="${stage}/${executable}"
             lipo "${path}" -verify_arch arm64
@@ -261,14 +283,21 @@ jobs:
           "${stage}/MengineConverter" --converter png2hit \
             --in gradle/ci/res/mipmap/ic_launcher.png --out "${hit}" --params-json '{}'
           test "$(head -c 4 "${hit}")" = "HIT1"
-          python3 - <<'PY'
+          MENGINE_TOOLS="${tools[*]}" MENGINE_TOOLS_STAGE="${stage}" python3 - <<'PY'
           import json
           import os
+          import subprocess
           from pathlib import Path
+
+          stage = Path(os.environ["MENGINE_TOOLS_STAGE"])
+          licenses = sorted(path.relative_to(stage).as_posix() for path in (stage / "LICENSES" / "tinypy").iterdir() if path.is_file())
 
           provenance = {
               "platform": "macos-arm64",
               "commit": os.environ["GITHUB_SHA"],
+              "tinypy_commit": subprocess.check_output(["git", "-C", "dependencies/tinypy", "rev-parse", "HEAD"], text=True).strip(),
+              "tools": os.environ["MENGINE_TOOLS"].split(),
+              "licenses": licenses,
               "runner": "macos-15",
               "generator": "Xcode",
               "configuration": "Release",
@@ -340,17 +369,27 @@ jobs:
           fragment = {
               "schema_version": 1,
               "package": "mengine-tools",
+              "tools": {
+                  "PythonCompiler": {
+                      "windows-x64": {"kind": "managed", "package": "mengine-tools", "path": "PythonCompiler.exe"},
+                      "macos-arm64": {"kind": "managed", "package": "mengine-tools", "path": "PythonCompiler"},
+                  },
+              },
               "version": os.environ["RELEASE_TAG"],
               "platforms": {
                   "windows-x64": {
                       "url": base + "/mengine-tools-windows-x64.zip",
                       "sha256": sha256("mengine-tools-windows-x64.zip"),
                       "archive": "zip",
+                      "files": [name + ".exe" for name in windows["tools"]] + windows["licenses"],
+                      "executables": [],
                   },
                   "macos-arm64": {
                       "url": base + "/mengine-tools-macos-arm64.tar.gz",
                       "sha256": sha256("mengine-tools-macos-arm64.tar.gz"),
                       "archive": "tar.gz",
+                      "files": macos["tools"] + macos["licenses"],
+                      "executables": macos["tools"],
                   },
               },
           }

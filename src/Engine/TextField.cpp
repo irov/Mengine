@@ -2448,19 +2448,11 @@ namespace Mengine
         m_totalTextEntry = nullptr;
 
         m_font = nullptr;
-        m_totalFont = nullptr;
 
         m_layouts.clear();
         m_chunks.clear();
 
-        for( const CacheFont & cache : m_cacheFonts )
-        {
-            const FontInterfacePtr & font = cache.font;
-
-            font->releaseFont();
-        }
-
-        m_cacheFonts.clear();
+        this->releaseFonts_();
 
         Node::_dispose();
     }

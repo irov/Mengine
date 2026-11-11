@@ -133,6 +133,10 @@ namespace Mengine
         Char m_glyphPathInput[MENGINE_MAX_PATH];
         Char m_textInput[1024];
 
+        String m_shapingLanguage;
+        float m_maxTextLength;
+        uint32_t m_maxTextCharCount;
+
         int m_height;
         int m_sampleIndex;
         float m_fontColor[4];

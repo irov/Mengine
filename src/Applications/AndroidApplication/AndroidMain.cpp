@@ -90,6 +90,8 @@ extern "C"
         {
             __android_log_print( ANDROID_LOG_ERROR, "Mengine", "[ERROR] Android bootstrap application failed" );
 
+            application->finalize();
+
             delete application;
 
             return nullptr;
@@ -102,6 +104,8 @@ extern "C"
         if ( jobject_application == nullptr)
         {
             __android_log_print( ANDROID_LOG_ERROR, "Mengine", "[ERROR] Android bootstrap failed to create direct buffer" );
+
+            application->finalize();
 
             delete application;
 
@@ -131,6 +135,8 @@ extern "C"
         if( application->initialize() == false )
         {
             __android_log_print( ANDROID_LOG_ERROR, "Mengine", "[ERROR] Android main initialize failed" );
+
+            application->finalize();
 
             return false;
         }

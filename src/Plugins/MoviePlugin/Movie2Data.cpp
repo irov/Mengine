@@ -44,11 +44,34 @@ namespace Mengine
             return AE_TRUE;
         }
         //////////////////////////////////////////////////////////////////////////
+        static void aeMovieResourceImageRelease( const aeMovieResourceImage * _resourceImage )
+        {
+            const aeMovieResource * resource = reinterpret_cast<const aeMovieResource *>(_resourceImage);
+
+            ae_userdata_t resourceUserdata = ae_get_movie_resource_userdata( resource );
+
+            Movie2Data::ImageDesc * imageDesc = reinterpret_cast<Movie2Data::ImageDesc *>(resourceUserdata);
+
+            ResourceImage * resourceImage = imageDesc->resourceImage;
+
+            resourceImage->release();
+
+            if( --imageDesc->refCount == 0 )
+            {
+                imageDesc->materials[EMB_NORMAL] = nullptr;
+                imageDesc->materials[EMB_ADD] = nullptr;
+                imageDesc->materials[EMB_SCREEN] = nullptr;
+                imageDesc->materials[EMB_MULTIPLY] = nullptr;
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
         static ae_bool_t aeMovieLayerDataVisitorAcquire( const aeMovieCompositionData * _compositionData, const aeMovieLayerData * _layer, ae_userdata_t _userdata )
         {
             AE_UNUSED( _compositionData );
 
-            const Movie2Data * data = reinterpret_cast<const Movie2Data *>(_userdata);
+            Movie2Data::LayerDataAcquireDesc * desc = reinterpret_cast<Movie2Data::LayerDataAcquireDesc *>(_userdata);
+
+            const Movie2Data * data = desc->data;
 
             aeMovieResourceTypeEnum resourceType = ae_get_movie_layer_data_resource_type( _layer );
 
@@ -66,6 +89,15 @@ namespace Mengine
 
                         if( Detail::aeMovieResourceImageAcquire( data, _layer, movieResourceImage ) == AE_FALSE )
                         {
+                            for( ae_uint32_t releaseIndex = 0; releaseIndex != index; ++releaseIndex )
+                            {
+                                const aeMovieResourceImage * releaseMovieResourceImage = movieResourceSequence->images[releaseIndex];
+
+                                Detail::aeMovieResourceImageRelease( releaseMovieResourceImage );
+                            }
+
+                            desc->failedLayer = _layer;
+
                             return AE_FALSE;
                         }
                     }
@@ -80,6 +112,8 @@ namespace Mengine
 
                     if( Detail::aeMovieResourceImageAcquire( data, _layer, movieResourceImage ) == AE_FALSE )
                     {
+                        desc->failedLayer = _layer;
+
                         return AE_FALSE;
                     }
 
@@ -100,6 +134,8 @@ namespace Mengine
 
                     if( resource->compile() == false )
                     {
+                        desc->failedLayer = _layer;
+
                         return AE_FALSE;
                     }
 
@@ -110,27 +146,6 @@ namespace Mengine
             }
 
             return AE_TRUE;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static void aeMovieResourceImageRelease( const aeMovieResourceImage * _resourceImage )
-        {
-            const aeMovieResource * resource = reinterpret_cast<const aeMovieResource *>(_resourceImage);
-
-            ae_userdata_t resourceUserdata = ae_get_movie_resource_userdata( resource );
-
-            Movie2Data::ImageDesc * imageDesc = reinterpret_cast<Movie2Data::ImageDesc *>(resourceUserdata);
-
-            ResourceImage * resourceImage = imageDesc->resourceImage;
-
-            resourceImage->release();
-
-            if( --imageDesc->refCount == 0 )
-            {
-                imageDesc->materials[EMB_NORMAL] = nullptr;
-                imageDesc->materials[EMB_ADD] = nullptr;
-                imageDesc->materials[EMB_SCREEN] = nullptr;
-                imageDesc->materials[EMB_MULTIPLY] = nullptr;
-            }
         }
         //////////////////////////////////////////////////////////////////////////
         static ae_bool_t aeMovieLayerDataVisitorRelease( const aeMovieCompositionData * _compositionData, const aeMovieLayerData * _layer, ae_userdata_t _userdata )
@@ -186,6 +201,23 @@ namespace Mengine
                 }break;
             default:
                 break;
+            }
+
+            return AE_TRUE;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static ae_bool_t aeMovieLayerDataVisitorRollback( const aeMovieCompositionData * _compositionData, const aeMovieLayerData * _layer, ae_userdata_t _userdata )
+        {
+            const aeMovieLayerData * failedLayer = reinterpret_cast<const aeMovieLayerData *>(_userdata);
+
+            if( _layer == failedLayer )
+            {
+                return AE_FALSE;
+            }
+
+            if( Detail::aeMovieLayerDataVisitorRelease( _compositionData, _layer, AE_USERDATA_NULL ) == AE_FALSE )
+            {
+                return AE_FALSE;
             }
 
             return AE_TRUE;
@@ -314,8 +346,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2Data::acquireCompositionData( const aeMovieCompositionData * _compositionData )
     {
-        if( ae_visit_composition_layer_data( _compositionData, &Detail::aeMovieLayerDataVisitorAcquire, this ) == AE_FALSE )
+        LayerDataAcquireDesc desc;
+        desc.data = this;
+        desc.failedLayer = nullptr;
+
+        if( ae_visit_composition_layer_data( _compositionData, &Detail::aeMovieLayerDataVisitorAcquire, &desc ) == AE_FALSE )
         {
+            ae_userdata_t failedLayer = const_cast<aeMovieLayerData *>(desc.failedLayer);
+
+            ae_visit_composition_layer_data( _compositionData, &Detail::aeMovieLayerDataVisitorRollback, failedLayer );
+
             return false;
         }
 

@@ -47,6 +47,11 @@ namespace Mengine
         {
             if( this->createRenderTarget_() == false )
             {
+                if( m_hasViewport == true )
+                {
+                    this->clearViewport_();
+                }
+
                 return false;
             }
         }
@@ -71,6 +76,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Layer2D::_dispose()
     {
+        m_renderCamera = nullptr;
+        m_renderViewport = nullptr;
+
         m_resourceImageMask = nullptr;
 
         Layer::_dispose();
@@ -168,9 +176,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Layer2D::clearViewport_()
     {
-        m_renderViewport = nullptr;
-        m_renderCamera = nullptr;
-
         RenderInterface * render = this->getRender();
 
         render->setRenderCamera( nullptr );
@@ -251,10 +256,6 @@ namespace Mengine
             , height
         );
 
-        RenderInterface * render = this->getRender();
-
-        render->setRenderTarget( renderTarget );
-
         RenderImageInterfacePtr renderTargetImage = RENDER_SYSTEM()
             ->createRenderImageTarget( renderTarget, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -279,6 +280,10 @@ namespace Mengine
         }
 
         const RenderTextureInterfacePtr & renderTargetTextureMask = m_resourceImageMask->getTexture( 0 );
+
+        RenderInterface * render = this->getRender();
+
+        render->setRenderTarget( renderTarget );
 
         RenderTextureInterfacePtr texures[2];
         texures[0] = renderTargetTexture;

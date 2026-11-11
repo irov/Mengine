@@ -132,10 +132,12 @@ namespace Mengine
         if( err_code_select_charmap != FT_Err_Ok )
         {
             LOGGER_ERROR( "FT_Select_Charmap font error: %s [%d] (doc: %s)"
-                , Detail::FT_error_message( err_code_memory_face )
-                , err_code_memory_face
+                , Detail::FT_error_message( err_code_select_charmap )
+                , err_code_select_charmap
                 , MENGINE_DOCUMENT_STR( _doc )
             );
+
+            FT_Done_Face( face );
 
             return false;
         }

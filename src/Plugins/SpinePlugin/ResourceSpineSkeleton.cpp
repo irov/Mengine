@@ -68,8 +68,6 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( skeletonJson, "invalid create skeleton json" );
 
         spSkeletonData * skeletonData = spSkeletonJson_readSkeletonData( skeletonJson, skeleton_memory_buffer );
-        
-        MENGINE_ASSERTION_MEMORY_PANIC( skeletonData, "invalid read skeleton data" );
 
         skeleton_memory = nullptr;
 
@@ -81,6 +79,8 @@ namespace Mengine
                 , this->getName().c_str()
                 , Helper::getContentFullPath( content ).c_str()
             );
+
+            m_resourceSpineAtlas->release();
 
             return false;
         }

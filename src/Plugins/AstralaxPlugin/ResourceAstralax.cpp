@@ -56,22 +56,13 @@ namespace Mengine
             , m_resourceImages.size()
         );
 
-        uint32_t iterator = MENGINE_UINT32_C(0);
+        uint32_t resourceImageCount = this->getResourceImageCount();
 
-        for( const ResourceImagePtr & resourceImage : m_resourceImages )
+        for( uint32_t index = 0; index != resourceImageCount; ++index )
         {
-            if( resourceImage->compile() == false )
-            {
-                LOGGER_ERROR( "resource astralax '%s' file '%s' can't invalid compile resource image '%s'"
-                    , this->getName().c_str()
-                    , Helper::getContentFullPath( this->getContent() ).c_str()
-                    , resourceImage->getName().c_str()
-                );
+            const ResourceImagePtr & resourceImage = m_resourceImages[index];
 
-                return false;
-            }
-
-            if( container->setAtlasResourceImage( iterator, resourceImage ) == false )
+            if( container->setAtlasResourceImage( index, resourceImage ) == false )
             {
                 LOGGER_ERROR( "resource astralax '%s' file '%s' invalid set atlas resource image '%s'"
                     , this->getName().c_str()
@@ -81,8 +72,24 @@ namespace Mengine
 
                 return false;
             }
+        }
 
-            ++iterator;
+        for( uint32_t index = 0; index != resourceImageCount; ++index )
+        {
+            const ResourceImagePtr & resourceImage = m_resourceImages[index];
+
+            if( resourceImage->compile() == false )
+            {
+                LOGGER_ERROR( "resource astralax '%s' file '%s' can't invalid compile resource image '%s'"
+                    , this->getName().c_str()
+                    , Helper::getContentFullPath( this->getContent() ).c_str()
+                    , resourceImage->getName().c_str()
+                );
+
+                this->releaseResourceImages_( index );
+
+                return false;
+            }
         }
 
         m_container = container;
@@ -92,12 +99,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceAstralax::_release()
     {
-        for( const ResourceImagePtr & resourceImage : m_resourceImages )
-        {
-            resourceImage->release();
-        }
+        uint32_t resourceImageCount = this->getResourceImageCount();
+
+        this->releaseResourceImages_( resourceImageCount );
 
         m_container = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceAstralax::releaseResourceImages_( uint32_t _count )
+    {
+        for( uint32_t index = 0; index != _count; ++index )
+        {
+            const ResourceImagePtr & resourceImage = m_resourceImages[index];
+
+            resourceImage->release();
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     AstralaxEmitterInterfacePtr ResourceAstralax::createEmitter( const DocumentInterfacePtr & _doc )

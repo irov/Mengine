@@ -161,9 +161,6 @@ namespace Mengine
         void _release() override;
 
     protected:
-        void clearData_();
-
-    protected:
         VectorTiledMapTilesets m_tilesets;
         VectorTiledMapTileLayers m_tileLayers;
         VectorTiledMapLayers m_objectLayers;

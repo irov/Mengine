@@ -31,5 +31,7 @@ namespace Mengine
 
     protected:
         LoggerInterfacePtr m_sentryLogger;
+
+        bool m_sentryInitialize;
     };
 }

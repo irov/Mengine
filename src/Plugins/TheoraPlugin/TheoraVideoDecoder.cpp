@@ -152,15 +152,28 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "theora video decoder error during ogg_stream_pagein" );
 
+                    ogg_stream_clear( &oggStreamStateTest );
+
                     return false;
                 }
 
                 ogg_packet packet;
-                if( ogg_stream_packetout( &oggStreamStateTest, &packet ) == -1 )
+                int32_t result = ogg_stream_packetout( &oggStreamStateTest, &packet );
+
+                if( result < 0 )
                 {
                     LOGGER_ERROR( "theora video decoder error during ogg_stream_packetout" );
 
+                    ogg_stream_clear( &oggStreamStateTest );
+
                     return false;
+                }
+
+                if( result == 0 )
+                {
+                    ogg_stream_clear( &oggStreamStateTest );
+
+                    continue;
                 }
 
                 if( theoraHeader == true || theora_decode_header( &m_theoraInfo, &m_theoraComment, &packet ) < 0 )

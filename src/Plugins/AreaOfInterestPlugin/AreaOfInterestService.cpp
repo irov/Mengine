@@ -41,16 +41,21 @@ namespace Mengine
 
         m_factoryAreaOfInterestZones = Helper::makeFactoryPool<AreaOfInterestZone, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
+        TimepipeInterfacePtr timepipe = TimepipeInterfacePtr::from( this );
         TIMEPIPE_SERVICE()
-            ->addTimepipe( TimepipeInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
+            ->addTimepipe( timepipe, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AreaOfInterestService::_finalizeService()
     {
+        TimepipeInterfacePtr timepipe = TimepipeInterfacePtr::from( this );
+        TIMEPIPE_SERVICE()
+            ->removeTimepipe( timepipe );
+
         Helper::removeNodePrototype<NodeAreaOfInterestTrigger>();
-        Helper::removeNodePrototype<NodeAreaOfInterestTrigger>();
+        Helper::removeNodePrototype<NodeAreaOfInterestActor>();
 
         m_zones.clear();
 

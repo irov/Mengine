@@ -335,6 +335,8 @@ namespace Mengine
 
         if( this->compilePatterns_() == false )
         {
+            FontEffectBase::_release();
+
             return false;
         }
 

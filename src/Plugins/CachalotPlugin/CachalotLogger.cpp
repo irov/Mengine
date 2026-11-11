@@ -168,6 +168,8 @@ namespace Mengine
         js_element_t * jrecords;
         if( js_object_add_field_array( j, j, JS_CONST_STRING( "records" ), &jrecords ) == JS_FAILURE )
         {
+            Helper::destroyJSON2( j );
+
             return;
         }
 
@@ -179,6 +181,8 @@ namespace Mengine
             js_element_t * jrecord;
             if( js_array_push_object( j, jrecords, &jrecord ) == JS_FAILURE )
             {
+                Helper::destroyJSON2( j );
+
                 return;
             }
 
@@ -245,6 +249,8 @@ namespace Mengine
             js_element_t * jattributes;
             if( js_object_add_field_object( j, jrecord, JS_CONST_STRING( "attributes" ), &jattributes ) == JS_FAILURE )
             {
+                Helper::destroyJSON2( j );
+
                 return;
             }
 
@@ -259,6 +265,8 @@ namespace Mengine
 
         if( Helper::writeJSON2DataCompact( j, &m_dataAux ) == false )
         {
+            Helper::destroyJSON2( j );
+
             return;
         }
 

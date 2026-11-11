@@ -139,7 +139,9 @@ namespace Mengine
         {
             Movie2 * movie2 = Helper::reinterpretNodeCast<Movie2 *>( _data );
 
-            ConstString cName = Helper::stringizeString( _callbackData->name );
+            const Movie2::Camera * camera = reinterpret_cast<const Movie2::Camera *>(_callbackData->camera_userdata);
+
+            ConstString cName = camera->projection->getName();
 
             movie2->removeCamera_( cName );
         }
@@ -1243,7 +1245,7 @@ namespace Mengine
             , _name.c_str()
         );
 
-        TransformationInterface * t = _transformation.acquire();
+        TransformationInterface * t = _transformation.get();
 
         if( _onlyPosition == true )
         {
@@ -1253,6 +1255,8 @@ namespace Mengine
         {
             ae_set_movie_composition_node_extra_transformation( m_composition, _name.c_str(), &Detail::movieTransformation, t );
         }
+
+        m_extraTransformations[_name] = _transformation;
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::removeExtraTransformation( const ConstString & _name )
@@ -1267,14 +1271,16 @@ namespace Mengine
             , _name.c_str()
         );
 
-        TransformationInterface * t = (TransformationInterface *)ae_remove_movie_composition_node_extra_transformation( m_composition, _name.c_str() );
+        ae_userdata_t t = ae_remove_movie_composition_node_extra_transformation( m_composition, _name.c_str() );
+
+        MENGINE_UNUSED( t );
 
         MENGINE_ASSERTION_MEMORY_PANIC( t, "movie2 '%s' invalid remove '%s' transformation not set"
             , this->getName().c_str()
             , _name.c_str()
         );
 
-        TransformationInterfacePtr::release( t );
+        m_extraTransformations.erase( _name );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::getWorldBoundingBox( mt::box2f * const _bb ) const
@@ -2056,6 +2062,8 @@ namespace Mengine
                 , m_resourceMovie2->getName().c_str()
             );
 
+            m_resourceMovie2->release();
+
             return false;
         }
 
@@ -2136,6 +2144,8 @@ namespace Mengine
 
             if( subComposition->initialize( m_composition ) == false )
             {
+                Movie2::_release();
+
                 return false;
             }
         }
@@ -2195,6 +2205,7 @@ namespace Mengine
         m_composition = nullptr;
 
         m_cameras.clear();
+        m_extraTransformations.clear();
 
         for( const HashtableSubCompositions::value_type & value : m_subCompositions )
         {

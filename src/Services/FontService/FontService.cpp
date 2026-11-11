@@ -212,6 +212,11 @@ namespace Mengine
             , _fontName.c_str()
         );
 
+        if( m_defaultFont == font )
+        {
+            m_defaultFont = nullptr;
+        }
+
         font->finalize();
 
         return true;
@@ -514,6 +519,11 @@ namespace Mengine
             MENGINE_ASSERTION_MEMORY_PANIC( font, "not found font '%s'"
                 , fontName.c_str()
             );
+
+            if( m_defaultFont == font )
+            {
+                m_defaultFont = nullptr;
+            }
 
             font->unfetch();
 

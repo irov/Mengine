@@ -46,6 +46,9 @@ namespace Mengine
         void setActivateCallback( const UIActionCallbackInterfacePtr & _callback );
         const UIActionCallbackInterfacePtr & getActivateCallback() const;
 
+    public:
+        void finalize();
+
     private:
         NodePtr m_node;
         IntrusivePtr<UIFocusable> m_neighbors[__UI_FOCUS_DIRECTION_MAX];

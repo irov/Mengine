@@ -32,6 +32,13 @@
 - (void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response {
     (void)request;
 
+    Mengine::iOSStoreInAppPurchaseProductsResponseInterfacePtr cb_copy = self.m_cb;
+    Mengine::iOSStoreInAppPurchaseProductsRequestInterfacePtr request_copy = self.m_request;
+
+    if( cb_copy == nullptr ) {
+        return;
+    }
+
     IOS_LOGGER_MESSAGE( @"[SKProductsRequestDelegate] productsRequest didReceiveResponse products: %@ invalids: %@"
         , response.products
         , response.invalidProductIdentifiers
@@ -56,9 +63,6 @@
         products.emplace_back( product );
     }
 
-    Mengine::iOSStoreInAppPurchaseProductsResponseInterfacePtr cb_copy = self.m_cb;
-    Mengine::iOSStoreInAppPurchaseProductsRequestInterfacePtr request_copy = self.m_request;
-
     Mengine::Helper::dispatchMainThreadEvent([cb_copy, request_copy, products]() {
         cb_copy->onProductResponse( request_copy, products );
     });
@@ -71,6 +75,10 @@
 
     Mengine::iOSStoreInAppPurchaseProductsResponseInterfacePtr cb_copy = self.m_cb;
     Mengine::iOSStoreInAppPurchaseProductsRequestInterfacePtr request_copy = self.m_request;
+
+    if( cb_copy == nullptr ) {
+        return;
+    }
 
     self.m_request = nullptr;
     self.m_cb = nullptr;
@@ -89,6 +97,10 @@
 
     Mengine::iOSStoreInAppPurchaseProductsResponseInterfacePtr cb_copy = self.m_cb;
     Mengine::iOSStoreInAppPurchaseProductsRequestInterfacePtr request_copy = self.m_request;
+
+    if( cb_copy == nullptr ) {
+        return;
+    }
 
     self.m_request = nullptr;
     self.m_cb = nullptr;

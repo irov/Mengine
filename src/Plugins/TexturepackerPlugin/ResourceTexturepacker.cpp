@@ -147,28 +147,61 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceTexturepacker::_compile()
     {
-        m_resourceImage->compile();
-
-        for( const FrameDesc & desc : m_frames )
+        if( m_resourceImage->compile() == false )
         {
+            LOGGER_ERROR( "texturepacker '%s' invalid compile image '%s'"
+                , this->getName().c_str()
+                , m_resourceImage->getName().c_str()
+            );
+
+            return false;
+        }
+
+        uint32_t frameCount = (uint32_t)m_frames.size();
+
+        for( uint32_t index = 0; index != frameCount; ++index )
+        {
+            const FrameDesc & desc = m_frames[index];
+
             const ResourceImagePtr & resourceImage = desc.resourceImage;
 
-            resourceImage->compile();
+            if( resourceImage->compile() == false )
+            {
+                LOGGER_ERROR( "texturepacker '%s' invalid compile frame '%s'"
+                    , this->getName().c_str()
+                    , resourceImage->getName().c_str()
+                );
+
+                this->releaseFrames_( index );
+
+                m_resourceImage->release();
+
+                return false;
+            }
         }
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceTexturepacker::_release()
-    {     
-        for( const FrameDesc & desc : m_frames )
+    {
+        uint32_t frameCount = (uint32_t)m_frames.size();
+
+        this->releaseFrames_( frameCount );
+
+        m_resourceImage->release();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceTexturepacker::releaseFrames_( uint32_t _count )
+    {
+        for( uint32_t index = 0; index != _count; ++index )
         {
+            const FrameDesc & desc = m_frames[index];
+
             const ResourceImagePtr & resourceImage = desc.resourceImage;
 
             resourceImage->release();
         }
-
-        m_resourceImage->release();
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceTexturepacker::_initialize()

@@ -292,6 +292,8 @@ namespace Mengine
                     , sampler->getName().c_str()
                 );
 
+                Spine::_release();
+
                 return false;
             }
 
@@ -316,8 +318,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Spine::_release()
     {
-        Node::_release();
-
         for( const SamplerSpineAnimationPtr & sampler : m_samplers )
         {
             sampler->release();

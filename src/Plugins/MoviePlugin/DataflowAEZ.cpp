@@ -324,6 +324,8 @@ namespace Mengine
                 , minorVersion
             );
 
+            ae_delete_movie_data( movieData );
+
             return false;
         }
 

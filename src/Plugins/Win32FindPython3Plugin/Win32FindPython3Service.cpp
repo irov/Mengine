@@ -52,8 +52,8 @@ namespace Mengine
         HKEY hBases[] = {HKEY_CURRENT_USER, HKEY_LOCAL_MACHINE};
 
         BOOL bPythonFound = FALSE;
-        HKEY hInstallPathKeyFound = NULL;
-        HKEY hPythonPathKeyFound = NULL;
+        HKEY hBaseFound = NULL;
+        WPath subKeyNameFound = {L'\0'};
 
         for( HKEY hBase : hBases )
         {
@@ -85,7 +85,16 @@ namespace Mengine
                 DWORD SysArchitectureType;
                 WPath SysArchitecture = {L'\0'};
                 DWORD SysArchitectureSize = MENGINE_MAX_PATH;
-                if( ::RegQueryValueExW( hKeySysVersion, L"SysArchitecture", NULL, &SysArchitectureType, (LPBYTE)SysArchitecture, &SysArchitectureSize ) != ERROR_SUCCESS )
+                LSTATUS nSysArchitectureError = ::RegQueryValueExW( hKeySysVersion, L"SysArchitecture", NULL, &SysArchitectureType, (LPBYTE)SysArchitecture, &SysArchitectureSize );
+
+                DWORD SysVersionType;
+                WPath SysVersion = {L'\0'};
+                DWORD SysVersionSize = MENGINE_MAX_PATH;
+                LSTATUS nSysVersionError = ::RegQueryValueExW( hKeySysVersion, L"SysVersion", NULL, &SysVersionType, (LPBYTE)SysVersion, &SysVersionSize );
+
+                ::RegCloseKey( hKeySysVersion );
+
+                if( nSysArchitectureError != ERROR_SUCCESS )
                 {
                     continue;
                 }
@@ -95,10 +104,7 @@ namespace Mengine
                     continue;
                 }
 
-                DWORD SysVersionType;
-                WPath SysVersion = {L'\0'};
-                DWORD SysVersionSize = MENGINE_MAX_PATH;
-                if( ::RegQueryValueExW( hKeySysVersion, L"SysVersion", NULL, &SysVersionType, (LPBYTE)SysVersion, &SysVersionSize ) != ERROR_SUCCESS )
+                if( nSysVersionError != ERROR_SUCCESS )
                 {
                     continue;
                 }
@@ -110,49 +116,39 @@ namespace Mengine
                     , &minor
                 );
 
-                if( Detail::isVersionGreater( major, minor, majorVersion, minorVersion ) == true )
+                if( Detail::isVersionGreater( major, minor, majorVersion, minorVersion ) == false )
                 {
-                    WPath subKeyPython3InstallPath = {L'\0'};
-                    MENGINE_SWPRINTF( subKeyPython3InstallPath, MENGINE_MAX_PATH, L"SOFTWARE\\Python\\PythonCore\\%s\\InstallPath", subKeyName );
-
-                    HKEY hInstallPathKey;
-                    if( ::RegOpenKeyExW( hBase, subKeyPython3InstallPath, 0, KEY_READ | KEY_WOW64_64KEY, &hInstallPathKey ) != ERROR_SUCCESS )
-                    {
-                        LOGGER_ERROR( "invalid open registry key '%ls' error: %ls"
-                            , subKeyPython3InstallPath
-                            , Helper::Win32GetLastErrorMessageW()
-                        );
-
-                        return false;
-                    }
-
-                    WPath subKeyPython3PythonPath = {L'\0'};
-                    MENGINE_SWPRINTF( subKeyPython3PythonPath, MENGINE_MAX_PATH, L"SOFTWARE\\Python\\PythonCore\\%s\\PythonPath", subKeyName );
-
-                    HKEY hPythonPathKey;
-                    if( ::RegOpenKeyExW( hBase, subKeyPython3PythonPath, 0, KEY_READ | KEY_WOW64_64KEY, &hPythonPathKey ) != ERROR_SUCCESS )
-                    {
-                        LOGGER_ERROR( "invalid open registry key '%ls' error: %ls"
-                            , subKeyPython3PythonPath
-                            , Helper::Win32GetLastErrorMessageW()
-                        );
-
-                        return false;
-                    }
-
-                    majorVersion = major;
-                    minorVersion = minor;
-
-                    hInstallPathKeyFound = hInstallPathKey;
-                    hPythonPathKeyFound = hPythonPathKey;
-                    bPythonFound = TRUE;
+                    continue;
                 }
+
+                majorVersion = major;
+                minorVersion = minor;
+
+                hBaseFound = hBase;
+                StdString::wcscpy_safe( subKeyNameFound, subKeyName, MENGINE_MAX_PATH );
+                bPythonFound = TRUE;
             }
+
+            ::RegCloseKey( hKey );
         }
 
         if( bPythonFound == FALSE )
         {
             LOGGER_ERROR( "not found python version" );
+
+            return false;
+        }
+
+        WPath subKeyPython3InstallPath = {L'\0'};
+        MENGINE_SWPRINTF( subKeyPython3InstallPath, MENGINE_MAX_PATH, L"SOFTWARE\\Python\\PythonCore\\%s\\InstallPath", subKeyNameFound );
+
+        HKEY hInstallPathKeyFound;
+        if( ::RegOpenKeyExW( hBaseFound, subKeyPython3InstallPath, 0, KEY_READ | KEY_WOW64_64KEY, &hInstallPathKeyFound ) != ERROR_SUCCESS )
+        {
+            LOGGER_ERROR( "invalid open registry key '%ls' error: %ls"
+                , subKeyPython3InstallPath
+                , Helper::Win32GetLastErrorMessageW()
+            );
 
             return false;
         }
@@ -173,6 +169,20 @@ namespace Mengine
         }
 
         StdString::wcscpy_safe( Python3PathW, Python3PathInstallPathValue, MENGINE_MAX_PATH );
+
+        WPath subKeyPython3PythonPath = {L'\0'};
+        MENGINE_SWPRINTF( subKeyPython3PythonPath, MENGINE_MAX_PATH, L"SOFTWARE\\Python\\PythonCore\\%s\\PythonPath", subKeyNameFound );
+
+        HKEY hPythonPathKeyFound;
+        if( ::RegOpenKeyExW( hBaseFound, subKeyPython3PythonPath, 0, KEY_READ | KEY_WOW64_64KEY, &hPythonPathKeyFound ) != ERROR_SUCCESS )
+        {
+            LOGGER_ERROR( "invalid open registry key '%ls' error: %ls"
+                , subKeyPython3PythonPath
+                , Helper::Win32GetLastErrorMessageW()
+            );
+
+            return false;
+        }
 
         WPath Python3PathPythonPathValue = {L'\0'};
         DWORD Python3PathPythonPathLen = MENGINE_MAX_PATH;

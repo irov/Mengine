@@ -405,6 +405,10 @@
 #endif
 }
 
+- (void)onFinalize {
+    [[GKLocalPlayer localPlayer] setAuthenticateHandler:nil];
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     //ToDo
 

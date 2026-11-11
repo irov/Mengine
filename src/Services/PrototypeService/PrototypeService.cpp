@@ -36,7 +36,7 @@ namespace Mengine
             const PrototypeGeneratorInterfacePtr & generator = value.element;
 
             const ConstString & category = value.key1;
-            const ConstString & prototype = value.key1;
+            const ConstString & prototype = value.key2;
 
             LOGGER_ASSERTION( "forgot remove '%s' generator '%s'"
                 , category.c_str()

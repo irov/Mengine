@@ -88,9 +88,6 @@ namespace Mengine
         m_mutexTabs = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
         m_mutexCommands = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_RUN_COMPLETE, &DevToDebugService::notifyBootstrapperRunComplete_, MENGINE_DOCUMENT_FACTORABLE );
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_FINALIZE_GAME, &DevToDebugService::notifyBootstrapperFinalizeGame_, MENGINE_DOCUMENT_FACTORABLE );
-
         if( Helper::addObjectPrototype<DevToDebugTab, 16>( STRINGIZE_STRING_LOCAL( "DevToDebug" ), MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
@@ -160,6 +157,9 @@ namespace Mengine
         {
             return false;
         }
+
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_RUN_COMPLETE, &DevToDebugService::notifyBootstrapperRunComplete_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_FINALIZE_GAME, &DevToDebugService::notifyBootstrapperFinalizeGame_, MENGINE_DOCUMENT_FACTORABLE );
 
         Helper::fingerprintSHA1( m_fingerprint, EHF_UPPERCASE );
 

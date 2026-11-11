@@ -43,6 +43,9 @@ namespace Mengine
         void _release() override;
 
     protected:
+        void releaseElements_( uint32_t _count );
+
+    protected:
         struct WindowElement
         {
             ResourceImagePtr resourceImage;

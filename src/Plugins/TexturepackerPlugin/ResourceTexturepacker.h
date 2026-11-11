@@ -60,6 +60,7 @@ namespace Mengine
 
     protected:
         bool initializeFrames_();
+        void releaseFrames_( uint32_t _count );
 
     protected:
         uint32_t m_atlasWidth;

@@ -29,14 +29,22 @@ namespace Mengine
             return false;
         }
 
-        for( const FrameImageSequence & sequence : m_sequence )
+        uint32_t sequenceCount = this->getSequenceCount();
+
+        for( uint32_t index = 0; index != sequenceCount; ++index )
         {
+            const FrameImageSequence & sequence = m_sequence[index];
+
             if( sequence.resourceImage->compile() == false )
             {
                 LOGGER_ERROR( "resource image sequence '%s' not compile image resource '%s'"
                     , this->getName().c_str()
                     , sequence.resourceImage->getName().c_str()
                 );
+
+                this->releaseSequence_( index );
+
+                return false;
             }
         }
 
@@ -45,8 +53,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceImageSequence::_release()
     {
-        for( const FrameImageSequence & sequence : m_sequence )
+        uint32_t sequenceCount = this->getSequenceCount();
+
+        this->releaseSequence_( sequenceCount );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceImageSequence::releaseSequence_( uint32_t _count )
+    {
+        for( uint32_t index = 0; index != _count; ++index )
         {
+            const FrameImageSequence & sequence = m_sequence[index];
+
             sequence.resourceImage->release();
         }
     }

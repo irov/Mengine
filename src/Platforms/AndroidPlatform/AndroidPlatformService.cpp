@@ -991,16 +991,6 @@ namespace Mengine
             , m_desktop
         );
 
-        m_analyticsEventProvider = Helper::makeFactorableUnique<AndroidAnalyticsEventProvider>( MENGINE_DOCUMENT_FACTORABLE );
-
-        ANALYTICS_SERVICE()
-            ->addEventProvider( m_analyticsEventProvider );
-
-        m_attributionProvider = Helper::makeFactorableUnique<AndroidAttributionProvider>( MENGINE_DOCUMENT_FACTORABLE );
-
-        ATTRIBUTION_SERVICE()
-            ->addProvider( m_attributionProvider );
-
         AndroidProxyLoggerPtr proxyLogger = Helper::makeFactorableUnique<AndroidProxyLogger>( MENGINE_DOCUMENT_FACTORABLE );
 
         if( LOGGER_SERVICE()
@@ -1017,6 +1007,8 @@ namespace Mengine
                 , ::eglGetError()
             );
 
+            this->unregisterProxyLogger_();
+
             return false;
         }
 
@@ -1028,10 +1020,22 @@ namespace Mengine
                 , ::eglGetError()
             );
 
+            this->unregisterProxyLogger_();
+
             return false;
         }
 
         m_eglDisplay = eglDisplay;
+
+        m_analyticsEventProvider = Helper::makeFactorableUnique<AndroidAnalyticsEventProvider>( MENGINE_DOCUMENT_FACTORABLE );
+
+        ANALYTICS_SERVICE()
+            ->addEventProvider( m_analyticsEventProvider );
+
+        m_attributionProvider = Helper::makeFactorableUnique<AndroidAttributionProvider>( MENGINE_DOCUMENT_FACTORABLE );
+
+        ATTRIBUTION_SERVICE()
+            ->addProvider( m_attributionProvider );
 
         m_factoryDynamicLibraries = Helper::makeFactoryPool<AndroidDynamicLibrary, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -1062,13 +1066,7 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_BASE_SERVICES );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION );
 
-        if( m_proxyLogger != nullptr )
-        {
-            LOGGER_SERVICE()
-                ->unregisterLogger( m_proxyLogger );
-
-            m_proxyLogger = nullptr;
-        }
+        this->unregisterProxyLogger_();
 
         if( m_analyticsEventProvider != nullptr )
         {
@@ -2126,6 +2124,19 @@ namespace Mengine
             APPLICATION_SERVICE()
                 ->turnSound( true );
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::unregisterProxyLogger_()
+    {
+        if( m_proxyLogger == nullptr )
+        {
+            return;
+        }
+
+        LOGGER_SERVICE()
+            ->unregisterLogger( m_proxyLogger );
+
+        m_proxyLogger = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidPlatformService::initializeFileService()

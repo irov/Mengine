@@ -47,6 +47,9 @@ namespace Mengine
         void _release() override;
 
     protected:
+        void releaseSequence_( uint32_t _count );
+
+    protected:
         VectorFrameImageSequence m_sequence;
 
         float m_duration;

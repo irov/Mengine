@@ -30,6 +30,7 @@
     Mengine::FactoryInterfacePtr m_factoryPaymentTransaction;
     Mengine::FactoryInterfacePtr m_factoryProduct;
     Mengine::FactoryInterfacePtr m_factoryProductsRequest;
+    NSHashTable<iOSStoreInAppPurchaseProductsRequestDelegate *> * m_productsRequestDelegates;
     MengineStoreSubscriptions * m_subscriptions;
     uint32_t m_subscriptionGeneration;
     uint32_t m_entitlementGeneration;
@@ -42,6 +43,7 @@
     if( self != nil )
     {
         m_paymentTransactionProvider = nullptr;
+        m_productsRequestDelegates = [NSHashTable weakObjectsHashTable];
         m_subscriptions = [[MengineStoreSubscriptions alloc] init];
         m_subscriptionGeneration = 0;
         m_entitlementGeneration = 0;
@@ -59,6 +61,27 @@
     });
 
     return sharedInstance;
+}
+
+- (void)cancelProductsRequests {
+    NSArray<iOSStoreInAppPurchaseProductsRequestDelegate *> * delegates = [m_productsRequestDelegates allObjects];
+
+    [m_productsRequestDelegates removeAllObjects];
+
+    for( iOSStoreInAppPurchaseProductsRequestDelegate * delegate in delegates )
+    {
+        Mengine::iOSStoreInAppPurchaseProductsRequestInterfacePtr request = delegate.m_request;
+
+        if( request == nullptr )
+        {
+            continue;
+        }
+
+        request->cancel();
+
+        delegate.m_request = nullptr;
+        delegate.m_cb = nullptr;
+    }
 }
 
 #pragma mark - iOSPluginInterface
@@ -96,6 +119,7 @@
 
 - (void)onStopEnd {
     [self setPaymentTransactionProvider:nullptr];
+    [self cancelProductsRequests];
     Mengine::Helper::removeScriptEmbedding<Mengine::iOSStoreInAppPurchaseScriptEmbedding>();
 }
 #endif
@@ -109,6 +133,7 @@
     [paymentTransactionObserver deactivate];
 
     [self setPaymentTransactionProvider:nullptr];
+    [self cancelProductsRequests];
     [m_subscriptions cancel];
     m_subscriptions = nil;
 
@@ -198,12 +223,14 @@
 
     SKProductsRequest * skRequest = [[SKProductsRequest alloc] initWithProductIdentifiers:productIdentifiers];
 
-    id<SKProductsRequestDelegate> delegate = [[iOSStoreInAppPurchaseProductsRequestDelegate alloc] initWithInAppPurchase:self
-                                                                                                                   request:request
-                                                                                                                        cb:cb];
+    iOSStoreInAppPurchaseProductsRequestDelegate * delegate = [[iOSStoreInAppPurchaseProductsRequestDelegate alloc] initWithInAppPurchase:self
+                                                                                                                                  request:request
+                                                                                                                                       cb:cb];
     skRequest.delegate = delegate;
 
     request->setSKProductsRequest( skRequest, delegate );
+
+    [m_productsRequestDelegates addObject:delegate];
 
     [skRequest start];
 

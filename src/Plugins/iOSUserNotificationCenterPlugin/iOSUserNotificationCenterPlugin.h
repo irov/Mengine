@@ -11,7 +11,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)sharedInstance;
 
 - (void)requestAuthorization:(void (^ _Nonnull)(BOOL granted))completion;
-- (void)scheduleNotification:(NSNumber *)badge withTitle:(NSString *)title withBody:(NSString *)body withDelay:(NSTimeInterval)delay relevanceScore:(double)relevanceScore;
+- (void)setNotificationDelay:(NSString *)identifier delay:(NSTimeInterval)delay;
 
 @property (nonatomic, assign) BOOL m_notificationPermissionGranted;
 

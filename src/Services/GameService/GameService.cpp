@@ -72,6 +72,8 @@ namespace Mengine
         SOUND_SERVICE()
             ->addSoundVolumeProvider( soundVolumeProvider );
 
+        m_soundVolumeProvider = soundVolumeProvider;
+
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_TIME_FACTOR_CHANGE, &GameService::notifyTimeFactorChange_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_SETTING_CHANGE, &GameService::notifySettingChange_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_CHANGE_SAFE_AREA_VIEWPORT, &GameService::notifySafeAreaViewportChange_, MENGINE_DOCUMENT_FACTORABLE );
@@ -90,6 +92,14 @@ namespace Mengine
 
         ANALYTICS_SERVICE()
             ->removeEventProvider( AnalyticsEventProviderInterfacePtr::from( this ) );
+
+        SOUND_SERVICE()
+            ->removeSoundVolumeProvider( m_soundVolumeProvider );
+
+        m_soundVolumeProvider = nullptr;
+
+        ACCOUNT_SERVICE()
+            ->setAccountProvider( nullptr );
 
         m_iconPath.clear();
         m_currentPackName.clear();

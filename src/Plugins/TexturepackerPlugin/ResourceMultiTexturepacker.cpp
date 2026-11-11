@@ -92,14 +92,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceMultiTexturepacker::_compile()
     {
-        for( const ResourcePtr & resourceTexturepacker : m_resourceTexturepackers )
+        uint32_t resourceTexturepackerCount = (uint32_t)m_resourceTexturepackers.size();
+
+        for( uint32_t index = 0; index != resourceTexturepackerCount; ++index )
         {
+            const ResourcePtr & resourceTexturepacker = m_resourceTexturepackers[index];
+
             UnknownResourceTexturepackerInterface * unknownResourceTexturepacker = resourceTexturepacker->getUnknown();
 
             unknownResourceTexturepacker->setStripFrameNameExtension( m_needStripFrameNameExtension );
 
             if( resourceTexturepacker->compile() == false )
             {
+                this->releaseResourceTexturepackers_( index );
+
                 return false;
             }
         }
@@ -109,8 +115,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceMultiTexturepacker::_release()
     {
-        for( const ResourcePtr & resourceTexturepacker : m_resourceTexturepackers )
+        uint32_t resourceTexturepackerCount = (uint32_t)m_resourceTexturepackers.size();
+
+        this->releaseResourceTexturepackers_( resourceTexturepackerCount );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceMultiTexturepacker::releaseResourceTexturepackers_( uint32_t _count )
+    {
+        for( uint32_t index = 0; index != _count; ++index )
         {
+            const ResourcePtr & resourceTexturepacker = m_resourceTexturepackers[index];
+
             resourceTexturepacker->release();
         }
     }

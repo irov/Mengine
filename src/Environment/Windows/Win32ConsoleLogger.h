@@ -33,9 +33,6 @@ namespace Mengine
 
         HANDLE m_originalStdOut;
         HANDLE m_originalStdErr;
-
-        FILE * m_CONOUT;
-        FILE * m_CONERR;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Win32ConsoleLogger, LoggerInterface> Win32ConsoleLoggerPtr;

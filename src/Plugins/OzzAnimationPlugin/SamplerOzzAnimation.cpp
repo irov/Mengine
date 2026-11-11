@@ -101,6 +101,8 @@ namespace Mengine
                 , m_resourceOzzSkeleton->getName().c_str()
             );
 
+            m_resourceOzzAnimation->release();
+
             return false;
         }
 
@@ -117,6 +119,8 @@ namespace Mengine
             LOGGER_ERROR( "sampler ozz animation '%s' invalid update animation"
                 , this->getName().c_str()
             );
+
+            SamplerOzzAnimation::_release();
 
             return false;
         }

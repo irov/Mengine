@@ -102,6 +102,8 @@ namespace Mengine
                     , Helper::Win32GetLastErrorMessageW()
                 );
 
+                ::LocalFree( szArglist );
+
                 return false;
             }
 

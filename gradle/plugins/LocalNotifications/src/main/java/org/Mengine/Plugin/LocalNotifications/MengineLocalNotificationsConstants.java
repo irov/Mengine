@@ -4,4 +4,8 @@ final class MengineLocalNotificationsConstants {
     static final String KEY_TITLE = "title";
     static final String KEY_CONTENT = "content";
     static final String KEY_ID = "id";
+    static final String KEY_MONTH = "month";
+    static final String KEY_DAY = "day";
+    static final String KEY_HOUR = "hour";
+    static final String KEY_MINUTE = "minute";
 }

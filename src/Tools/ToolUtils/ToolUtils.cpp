@@ -10,6 +10,11 @@
 #include <cwchar>
 #include <filesystem>
 #include <stdexcept>
+#include <sys/stat.h>
+
+#if defined(_WIN32)
+#   include <io.h>
+#endif
 
 #if defined(__APPLE__)
 #   include <crt_externs.h>
@@ -635,6 +640,27 @@ bool SelectFile( LPCTSTR _wildcard, Files & _files )
 #endif
 }
 //////////////////////////////////////////////////////////////////////////
+bool file_paths_equivalent( const wchar_t * _left, const wchar_t * _right )
+{
+#if defined(_WIN32)
+    const std::filesystem::path leftPath( _left );
+    const std::filesystem::path rightPath( _right );
+#else
+    const std::string left = wide_to_utf8( _left );
+    const std::string right = wide_to_utf8( _right );
+    const std::filesystem::path leftPath( left );
+    const std::filesystem::path rightPath( right );
+#endif
+    std::error_code error;
+
+    if( std::filesystem::equivalent( leftPath, rightPath, error ) == false )
+    {
+        return false;
+    }
+
+    return true;
+}
+//////////////////////////////////////////////////////////////////////////
 bool read_file_to_memory( const wchar_t * _path, uint8_t * _buffer, size_t _capacity, size_t * const _size )
 {
     FILE * file = open_wide_file( _path, L"rb" );
@@ -656,7 +682,7 @@ bool read_file_to_memory( const wchar_t * _path, uint8_t * _buffer, size_t _capa
     return read == read_size;
 }
 //////////////////////////////////////////////////////////////////////////
-bool read_file_memory( const wchar_t * _path, uint8_t ** _buffer, size_t * const _size )
+bool read_file_memory( const wchar_t * _path, uint8_t ** _buffer, size_t * const _size, uint32_t * const _timestamp )
 {
     FILE * file = open_wide_file( _path, L"rb" );
 
@@ -665,29 +691,81 @@ bool read_file_memory( const wchar_t * _path, uint8_t ** _buffer, size_t * const
         return false;
     }
 
-    ::fseek( file, 0, SEEK_END );
-    const long file_size = ::ftell( file );
-    ::rewind( file );
+    if( _timestamp != nullptr )
+    {
+#if defined(_WIN32)
+        struct _stat64 status;
+        int descriptor = ::_fileno( file );
+        int result = ::_fstat64( descriptor, &status );
+#else
+        struct stat status;
+        int descriptor = ::fileno( file );
+        int result = ::fstat( descriptor, &status );
+#endif
 
-    uint8_t * buffer = static_cast<uint8_t *>( ::malloc( static_cast<size_t>( file_size ) ) );
+        if( result != 0 )
+        {
+            ::fclose( file );
+
+            return false;
+        }
+
+        *_timestamp = static_cast<uint32_t>(status.st_mtime);
+    }
+
+    if( ::fseek( file, 0, SEEK_END ) != 0 )
+    {
+        ::fclose( file );
+
+        return false;
+    }
+
+    long fileSize = ::ftell( file );
+
+    if( fileSize < 0 )
+    {
+        ::fclose( file );
+
+        return false;
+    }
+
+    if( ::fseek( file, 0, SEEK_SET ) != 0 )
+    {
+        ::fclose( file );
+
+        return false;
+    }
+
+    size_t capacity = fileSize == 0 ? 1 : static_cast<size_t>(fileSize);
+    uint8_t * buffer = static_cast<uint8_t *>(::malloc( capacity ));
 
     if( buffer == nullptr )
     {
         ::fclose( file );
+
         return false;
     }
 
-    const size_t read = ::fread( buffer, 1, static_cast<size_t>( file_size ), file );
-    ::fclose( file );
+    size_t read = ::fread( buffer, 1, static_cast<size_t>(fileSize), file );
+    int closed = ::fclose( file );
 
-    if( read != static_cast<size_t>( file_size ) )
+    if( read != static_cast<size_t>(fileSize) )
     {
         ::free( buffer );
+
+        return false;
+    }
+
+    if( closed != 0 )
+    {
+        ::free( buffer );
+
         return false;
     }
 
     *_buffer = buffer;
     *_size = read;
+
     return true;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -700,9 +778,24 @@ bool write_file_memory( const wchar_t * _path, const uint8_t * _buffer, size_t _
         return false;
     }
 
-    const size_t write_size = ::fwrite( _buffer, 1, _size, file );
-    ::fclose( file );
-    return write_size == _size;
+    size_t writeSize = ::fwrite( _buffer, 1, _size, file );
+    int closed = ::fclose( file );
+
+    if( writeSize != _size )
+    {
+        ::_wremove( _path );
+
+        return false;
+    }
+
+    if( closed != 0 )
+    {
+        ::_wremove( _path );
+
+        return false;
+    }
+
+    return true;
 }
 //////////////////////////////////////////////////////////////////////////
 bool move_file_memory( const wchar_t * _path, const uint8_t * _buffer, size_t _size )

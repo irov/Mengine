@@ -20,6 +20,11 @@ namespace Mengine
             }];
         }
         //////////////////////////////////////////////////////////////////////////
+        static void iOSUserNotificationCenter_setNotificationDelay( NSString * _identifier, double _delay )
+        {
+            [[iOSUserNotificationCenterPlugin sharedInstance] setNotificationDelay:_identifier delay:_delay];
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     iOSUserNotificationCenterScriptEmbedding::iOSUserNotificationCenterScriptEmbedding()
@@ -33,6 +38,7 @@ namespace Mengine
     bool iOSUserNotificationCenterScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
         pybind::def_function_args( _kernel, "iOSUserNotificationCenterRequestAuthorization", &Detail::iOSUserNotificationCenter_requestAuthorization );
+        pybind::def_function( _kernel, "iOSUserNotificationCenterSetNotificationDelay", &Detail::iOSUserNotificationCenter_setNotificationDelay );
 
         return true;
     }
@@ -40,6 +46,7 @@ namespace Mengine
     void iOSUserNotificationCenterScriptEmbedding::eject( pybind::kernel_interface * _kernel )
     {
         _kernel->remove_from_module( "iOSUserNotificationCenterRequestAuthorization", nullptr );
+        _kernel->remove_from_module( "iOSUserNotificationCenterSetNotificationDelay", nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
 }

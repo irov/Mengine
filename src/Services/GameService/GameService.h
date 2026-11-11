@@ -5,6 +5,7 @@
 #include "Interface/ApplicationInterface.h"
 #include "Interface/AccountInterface.h"
 #include "Interface/SoundSystemInterface.h"
+#include "Interface/SoundVolumeProviderInterface.h"
 #include "Interface/AnalyticsEventProviderInterface.h"
 
 #include "Kernel/ServiceBase.h"
@@ -111,6 +112,8 @@ namespace Mengine
         void onAnalyticsFlush() override;
 
     protected:
+        SoundVolumeProviderInterfacePtr m_soundVolumeProvider;
+
         ConstString m_currentPackName;
         String m_currentResourcePath;
 

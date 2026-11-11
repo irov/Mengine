@@ -304,6 +304,11 @@ namespace Mengine
                     _desc.cb->onSceneChange( m_currentScene, false, false, true );
                 }
 
+                for( const ResourcePtr & resource : cacheResources )
+                {
+                    resource->release();
+                }
+
                 return;
             }
         }

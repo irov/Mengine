@@ -51,7 +51,7 @@ namespace Mengine
         this->clearAtlasess_();
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr TTFAtlasService::makeTextureGlyph( uint32_t _width, uint32_t _height, uint32_t _border, uint32_t _channel, const TTFTextureGlyphProviderInterface * _provider, mt::uv4f * const _uv, const DocumentInterfacePtr & _doc )
+    RenderTextureInterfacePtr TTFAtlasService::makeTextureGlyph( uint32_t _width, uint32_t _height, uint32_t _border, uint32_t _channel, const TTFTextureGlyphProviderInterface * _provider, mt::uv4f * const _uv, uint32_t * const _slot, const DocumentInterfacePtr & _doc )
     {
         if( _width == 0 || _height == 0 )
         {
@@ -96,6 +96,8 @@ namespace Mengine
 
         if( successful == false )
         {
+            atlas->indices.emplace_back( index );
+
             return nullptr;
         }
 
@@ -107,7 +109,36 @@ namespace Mengine
         _uv->p2 = mt::vec2f( float( rect.right - _border ) * atlas_width_inv, float( rect.bottom - _border ) * atlas_height_inv );
         _uv->p3 = mt::vec2f( float( rect.left + _border ) * atlas_width_inv, float( rect.bottom - _border ) * atlas_height_inv );
 
+        *_slot = index;
+
         return texture;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TTFAtlasService::releaseTextureGlyph( const RenderTextureInterfacePtr & _texture, uint32_t _slot )
+    {
+        for( MapAtlasess & atlasess : m_atlasess )
+        {
+            for( MapAtlasess::value_type & value : atlasess )
+            {
+                VectorAtlases & atlases = value.second;
+
+                for( TTFAtlas & atlas : atlases )
+                {
+                    if( atlas.texture != _texture )
+                    {
+                        continue;
+                    }
+
+                    atlas.indices.emplace_back( _slot );
+
+                    return;
+                }
+            }
+        }
+
+        MENGINE_ASSERTION_FATAL( false, "texture glyph slot %u not found in atlases"
+            , _slot
+        );
     }
     //////////////////////////////////////////////////////////////////////////
     void TTFAtlasService::clearAtlasess_()

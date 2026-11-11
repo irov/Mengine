@@ -51,6 +51,12 @@ namespace Mengine
             RenderMaterialInterfacePtr materials[4];
         };
 
+        struct LayerDataAcquireDesc
+        {
+            const Movie2Data * data;
+            const aeMovieLayerData * failedLayer;
+        };
+
     public:
         ImageDesc * makeImageDesc( const ResourcePtr & _resource );
         void removeImageDesc( ImageDesc * _desc );

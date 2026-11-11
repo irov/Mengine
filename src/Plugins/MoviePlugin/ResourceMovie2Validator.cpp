@@ -470,6 +470,8 @@ namespace Mengine
 
         if( movieStream == nullptr )
         {
+            ae_delete_movie_data( movieData );
+
             return false;
         }
 
@@ -491,6 +493,9 @@ namespace Mengine
                 , majorVersion
                 , minorVersion
             );
+
+            ae_delete_movie_data( movieData );
+            ae_delete_movie_stream( movieStream );
 
             return false;
         }

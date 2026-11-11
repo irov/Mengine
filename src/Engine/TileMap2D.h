@@ -82,7 +82,6 @@ namespace Mengine
         uint32_t getTileIndex_( uint32_t _column, uint32_t _row ) const;
         bool compileTile_( TileMap2DTile * const _tile );
         void releaseTile_( TileMap2DTile * const _tile );
-        void releaseCompiledData_();
 
     protected:
         VectorTileMap2DTiles m_tiles;

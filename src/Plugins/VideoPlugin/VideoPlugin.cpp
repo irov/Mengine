@@ -33,6 +33,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     VideoPlugin::VideoPlugin()
+        : m_mockupVideo( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -71,6 +72,8 @@ namespace Mengine
         {
             if( Helper::addSurfacePrototype<SurfaceVideo, 128>( MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
+                Helper::removeResourcePrototype<ResourceVideo>();
+
                 return false;
             }
         }
@@ -78,8 +81,12 @@ namespace Mengine
         {
             if( Helper::addSurfacePrototype<SurfaceMockupVideo, 128>( MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
+                Helper::removeResourcePrototype<ResourceVideo>();
+
                 return false;
             }
+
+            m_mockupVideo = true;
         }
 
         VOCABULARY_SET( ValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), ResourceVideo::getFactorableType(), Helper::makeFactorableUnique<ResourceVideoValidator>( MENGINE_DOCUMENT_FACTORABLE ), MENGINE_DOCUMENT_FACTORABLE );
@@ -92,7 +99,15 @@ namespace Mengine
     void VideoPlugin::_finalizePlugin()
     {
         Helper::removeResourcePrototype<ResourceVideo>();
-        Helper::removeSurfacePrototype<SurfaceVideo>();
+
+        if( m_mockupVideo == false )
+        {
+            Helper::removeSurfacePrototype<SurfaceVideo>();
+        }
+        else
+        {
+            Helper::removeSurfacePrototype<SurfaceMockupVideo>();
+        }
 
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), ResourceVideo::getFactorableType() );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "MetabufLoader" ), ResourceVideo::getFactorableType() );

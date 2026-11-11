@@ -110,6 +110,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     Win32SentryService::Win32SentryService()
+        : m_sentryInitialize( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -312,6 +313,14 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid initialize sentry plugin" );
 
+            if( m_sentryLogger != nullptr )
+            {
+                LOGGER_SERVICE()
+                    ->unregisterLogger( m_sentryLogger );
+
+                m_sentryLogger = nullptr;
+            }
+
             return false;
         }
 
@@ -328,18 +337,17 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ASSERTION, &Win32SentryService::notifyAssertion_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_ERROR, &Win32SentryService::notifyError_, MENGINE_DOCUMENT_FACTORABLE );
 
+        m_sentryInitialize = true;
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32SentryService::_finalizeService()
     {
-#if defined(MENGINE_DEBUG)
-        if( PLATFORM_SERVICE()
-            ->isDebuggerPresent() == true && HAS_OPTION( "sentrydebug" ) == false )
+        if( m_sentryInitialize == false )
         {
             return;
         }
-#endif
 
         if( m_sentryLogger != nullptr )
         {

@@ -69,6 +69,10 @@ namespace Mengine
 
         m_file = file;
 
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+        Helper::addDebugFilePath( this, _relationPath, _folderPath, _filePath, MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
         int32_t result = ::fseeko( m_file, 0, SEEK_END );
 
         if( result < 0 )
@@ -141,10 +145,6 @@ namespace Mengine
         {
             NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_OPEN_FILE, _folderPath, _filePath, true, m_streaming );
         }
-#endif
-
-#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
-        Helper::addDebugFilePath( this, _relationPath, _folderPath, _filePath, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
         return true;

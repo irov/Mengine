@@ -39,82 +39,88 @@ namespace Mengine
     {
         MENGINE_THREAD_GUARD_SCOPE( AppleFileInputStream, this );
 
-        m_streaming = _streaming;
-        m_share = _share;
+        @autoreleasepool {
+            m_streaming = _streaming;
+            m_share = _share;
 
-        Path fullPath = {'\0'};
-        if( this->openFile_( _relationPath, _folderPath, _filePath, fullPath ) == false )
-        {
-            return false;
-        }
-
-        NSError * error = nil;
-        NSDictionary * attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:@(fullPath) error:&error];
-
-        if( attributes == nil )
-        {
-            LOGGER_ERROR( "invalid file '%s' size [error: %s]"
-                , fullPath
-                , [[AppleDetail getMessageFromNSError:error] UTF8String]
-            );
-
-            this->close();
-
-            return false;
-        }
-
-        NSNumber * attribute_filesize = attributes[NSFileSize];
-
-        size_t size = attribute_filesize.unsignedLongLongValue;
-
-        if( _size != MENGINE_UNKNOWN_SIZE )
-        {
-            if( _offset + _size > (size_t)size )
+            Path fullPath = {'\0'};
+            if( this->openFile_( _relationPath, _folderPath, _filePath, fullPath ) == false )
             {
-                LOGGER_ERROR( "invalid file '%s' range %zu:%zu size %zu"
-                    , fullPath
-                    , _offset
-                    , _size
-                    , (size_t)size
-                );
-
                 return false;
             }
 
-            m_size = _size;
-        }
-        else
-        {
-            m_size = (size_t)size;
-        }
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+            Helper::addDebugFilePath( this, _relationPath, _folderPath, _filePath, MENGINE_DOCUMENT_FACTORABLE );
+#endif
 
-        m_offset = _offset;
-
-        m_carriage = 0;
-        m_capacity = 0;
-        m_reading = 0;
-
-        if( m_offset != 0 )
-        {
             NSError * error = nil;
-            if( [m_fileHandle seekToOffset:m_offset error:&error] == NO )
+            NSDictionary * attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:@(fullPath) error:&error];
+
+            if( attributes == nil )
             {
-                LOGGER_ERROR( "file '%s' seek offset %zu size %zu get [error: %s]"
+                LOGGER_ERROR( "invalid file '%s' size [error: %s]"
                     , fullPath
-                    , m_offset
-                    , m_size
                     , [[AppleDetail getMessageFromNSError:error] UTF8String]
                 );
 
+                this->close();
+
                 return false;
             }
+
+            NSNumber * attribute_filesize = attributes[NSFileSize];
+
+            size_t size = attribute_filesize.unsignedLongLongValue;
+
+            if( _size != MENGINE_UNKNOWN_SIZE )
+            {
+                if( _offset + _size > (size_t)size )
+                {
+                    LOGGER_ERROR( "invalid file '%s' range %zu:%zu size %zu"
+                        , fullPath
+                        , _offset
+                        , _size
+                        , (size_t)size
+                    );
+
+                    this->close();
+
+                    return false;
+                }
+
+                m_size = _size;
+            }
+            else
+            {
+                m_size = (size_t)size;
+            }
+
+            m_offset = _offset;
+
+            m_carriage = 0;
+            m_capacity = 0;
+            m_reading = 0;
+
+            if( m_offset != 0 )
+            {
+                NSError * error = nil;
+                if( [m_fileHandle seekToOffset:m_offset error:&error] == NO )
+                {
+                    LOGGER_ERROR( "file '%s' seek offset %zu size %zu get [error: %s]"
+                        , fullPath
+                        , m_offset
+                        , m_size
+                        , [[AppleDetail getMessageFromNSError:error] UTF8String]
+                    );
+
+                    this->close();
+
+                    return false;
+                }
+            }
+
+            return true;
         }
-
-#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
-        Helper::addDebugFilePath( this, _relationPath, _folderPath, _filePath, MENGINE_DOCUMENT_FACTORABLE );
-#endif
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AppleFileInputStream::openFile_( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, Char * const _fullPath )

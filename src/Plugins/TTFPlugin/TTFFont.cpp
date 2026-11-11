@@ -302,6 +302,38 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////
+    void TTFFont::setGlyph( const FontGlyphInterfacePtr & _glyph )
+    {
+        if( m_glyph == _glyph )
+        {
+            return;
+        }
+
+        MENGINE_ASSERTION_FATAL( this->isCompile() == false, "font '%s' set glyph while compiled"
+            , this->getName().c_str()
+        );
+
+        this->releaseGlyphs_();
+
+        FontBase::setGlyph( _glyph );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TTFFont::setHeight( uint32_t _height )
+    {
+        if( m_height == _height )
+        {
+            return;
+        }
+
+        MENGINE_ASSERTION_FATAL( this->isCompile() == false, "font '%s' set height while compiled"
+            , this->getName().c_str()
+        );
+
+        this->releaseGlyphs_();
+
+        FontBase::setHeight( _height );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void TTFFont::setEffect( const FontEffectInterfacePtr & _effect )
     {
         if( m_effect == _effect )
@@ -315,7 +347,7 @@ namespace Mengine
 
         m_effect = _effect;
 
-        this->clearGlyphs_();
+        this->releaseGlyphs_();
     }
     //////////////////////////////////////////////////////////////////////////
     const FontEffectInterfacePtr & TTFFont::getEffect() const
@@ -340,21 +372,13 @@ namespace Mengine
 
         m_glyph = nullptr;
 
-        this->clearGlyphs_();
+        this->releaseGlyphs_();
 
         m_effect = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool TTFFont::_compile()
     {
-        if( m_effect != nullptr )
-        {
-            if( m_effect->compile() == false )
-            {
-                return false;
-            }
-        }
-
         if( m_glyph == nullptr )
         {
             LOGGER_ERROR( "ttf font '%s' not setup glyph"
@@ -364,16 +388,36 @@ namespace Mengine
             return false;
         }
 
+        if( m_effect != nullptr )
+        {
+            if( m_effect->compile() == false )
+            {
+                return false;
+            }
+        }
+
         TTFFontGlyph * glyph = m_glyph.getT<TTFFontGlyph *>();
 
         if( glyph->compile() == false )
         {
+            if( m_effect != nullptr )
+            {
+                m_effect->release();
+            }
+
             return false;
         }
 
         FT_Face face;
         if( this->loadFaceGlyph_( MENGINE_TTF_METRICS_SYMBOL, &face ) == false )
         {
+            glyph->release();
+
+            if( m_effect != nullptr )
+            {
+                m_effect->release();
+            }
+
             return false;
         }
 
@@ -611,8 +655,9 @@ namespace Mengine
                 TTFFontTextureGlyphProvider provider( _width, _height, _buffer, _pitch, _bytespp );
 
                 mt::uv4f uv;
+                uint32_t slot;
                 RenderTextureInterfacePtr texture = TTFATLAS_SERVICE()
-                    ->makeTextureGlyph( _width, _height, texture_border, _bytespp, &provider, &uv, _doc );
+                    ->makeTextureGlyph( _width, _height, texture_border, _bytespp, &provider, &uv, &slot, _doc );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( texture, "invalid make texture glyph" );
 
@@ -624,6 +669,7 @@ namespace Mengine
                 quad.size.y = (float)_height * sampleInv;
                 quad.uv = uv;
                 quad.texture = texture;
+                quad.slot = slot;
             } );
         }
         else
@@ -631,8 +677,9 @@ namespace Mengine
             TTFFontTextureGlyphProvider provider( glyph_bitmap.width, glyph_bitmap.rows, bitmapBuffer, bitmapPitch, bitmap_channel );
 
             mt::uv4f uv;
+            uint32_t slot;
             RenderTextureInterfacePtr texture = TTFATLAS_SERVICE()
-                ->makeTextureGlyph( glyph_bitmap.width, glyph_bitmap.rows, texture_border, bitmap_channel, &provider, &uv, _doc );
+                ->makeTextureGlyph( glyph_bitmap.width, glyph_bitmap.rows, texture_border, bitmap_channel, &provider, &uv, &slot, _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( texture, "invalid make texture glyph" );
 
@@ -644,6 +691,7 @@ namespace Mengine
             quad.size.y = (float)glyph_bitmap.rows * sampleInv;
             quad.uv = uv;
             quad.texture = texture;
+            quad.slot = slot;
         }
 
         glyphs.emplace_back( ttf_glyph );
@@ -798,6 +846,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TTFFont::setShapingLanguage( const ConstString & _language )
     {
+        if( m_shapingLanguage == _language )
+        {
+            return;
+        }
+
+        MENGINE_ASSERTION_FATAL( this->isCompile() == false, "font '%s' set shaping language while compiled"
+            , this->getName().c_str()
+        );
+
         m_shapingLanguage = _language;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1014,6 +1071,30 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TTFFont::notifyRenderDeviceLostPrepare()
     {
+        this->clearGlyphs_();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TTFFont::releaseGlyphs_()
+    {
+        for( uint32_t index = 0; index != MENGINE_TTF_FONT_GLYPH_HASH_SIZE; ++index )
+        {
+            const VectorTTFGlyphs & glyphs = m_glyphsHash[index];
+
+            for( const TTFGlyph & glyph : glyphs )
+            {
+                for( const TTFGlyphQuad & quad : glyph.quads )
+                {
+                    if( quad.texture == nullptr )
+                    {
+                        continue;
+                    }
+
+                    TTFATLAS_SERVICE()
+                        ->releaseTextureGlyph( quad.texture, quad.slot );
+                }
+            }
+        }
+
         this->clearGlyphs_();
     }
     //////////////////////////////////////////////////////////////////////////

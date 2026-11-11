@@ -268,6 +268,9 @@ namespace Mengine
         typedef Map<ConstString, Camera> MapCameras;
         MapCameras m_cameras;
 
+        typedef Map<ConstString, TransformationInterfacePtr> MapExtraTransformations;
+        MapExtraTransformations m_extraTransformations;
+
         typedef Hashtable<ConstString, Movie2SubCompositionPtr> HashtableSubCompositions;
         HashtableSubCompositions m_subCompositions;
 

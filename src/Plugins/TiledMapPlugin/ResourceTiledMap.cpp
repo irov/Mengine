@@ -1487,8 +1487,6 @@ namespace Mengine
 
         if( reader.read() == false )
         {
-            this->clearData_();
-
             return false;
         }
 
@@ -1509,11 +1507,6 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceTiledMap::_release()
-    {
-        this->clearData_();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ResourceTiledMap::clearData_()
     {
         m_tilesets.clear();
         m_tileLayers.clear();

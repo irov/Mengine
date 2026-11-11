@@ -1,11 +1,17 @@
 {
     "GAME_GLYPHS": {
-        "Glyph": [ "RobotoBold" ]
+        "Glyph": [ "RobotoBold", "NotoSansArabic" ]
     },
 
     "RobotoBold": {
         "Type": "TTF",
         "Path": ".downloads/fonts/Roboto-Bold.ttf",
         "License": ".downloads/fonts/Roboto_license.txt"
+    },
+
+    "NotoSansArabic": {
+        "Type": "TTF",
+        "Path": ".downloads/fonts/NotoSansArabic.ttf",
+        "License": ".downloads/fonts/NotoSansArabic_OFL.txt"
     }
 }

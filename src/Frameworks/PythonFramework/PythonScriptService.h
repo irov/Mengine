@@ -103,6 +103,8 @@ namespace Mengine
 
             PyObject * py_value = pybind::ptr( kernel, _value );
             this->addGlobalModule( _name, py_value );
+
+            kernel->decref( py_value );
         }
 
     protected:

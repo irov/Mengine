@@ -120,6 +120,8 @@ namespace Mengine
 
         if( m_vertexBuffer->resize( Detail::BLOB_SHADOW3D_VERTEX_COUNT ) == false )
         {
+            BlobShadow3D::_release();
+
             return false;
         }
 
@@ -130,12 +132,16 @@ namespace Mengine
 
         if( m_indexBuffer->resize( Detail::BLOB_SHADOW3D_INDEX_COUNT ) == false )
         {
+            BlobShadow3D::_release();
+
             return false;
         }
 
         if( m_indexBuffer->draw( Detail::BLOB_SHADOW3D_INDICES, 0, Detail::BLOB_SHADOW3D_INDEX_COUNT ) == false )
         {
             LOGGER_ERROR( "blob shadow 3d failed to upload index buffer" );
+
+            BlobShadow3D::_release();
 
             return false;
         }

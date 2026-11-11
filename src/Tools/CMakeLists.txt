@@ -21,6 +21,7 @@ endmacro()
 
 ADD_SUBDIRECTORY(MengineConverter)
 ADD_SUBDIRECTORY(Metawrite)
+ADD_SUBDIRECTORY(PythonCompiler)
 ADD_SUBDIRECTORY(ExtractorDXT1)
 ADD_SUBDIRECTORY(ExtractorETC1)
 ADD_SUBDIRECTORY(NodeDebugger)

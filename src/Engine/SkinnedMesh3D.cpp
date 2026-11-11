@@ -101,6 +101,8 @@ namespace Mengine
 
         if( m_resourceImage->compile() == false )
         {
+            m_resource->release();
+
             return false;
         }
 
@@ -117,6 +119,8 @@ namespace Mengine
                 , m_indexCount
             );
 
+            SkinnedMesh3D::_release();
+
             return false;
         }
 
@@ -127,12 +131,16 @@ namespace Mengine
 
         if( m_vertexBuffer->resize( m_vertexCount ) == false )
         {
+            SkinnedMesh3D::_release();
+
             return false;
         }
 
         if( m_vertexBuffer->draw( vertices.data(), 0, m_vertexCount ) == false )
         {
             LOGGER_ERROR( "skinned mesh3d failed to upload vertex buffer" );
+
+            SkinnedMesh3D::_release();
 
             return false;
         }
@@ -144,12 +152,16 @@ namespace Mengine
 
         if( m_indexBuffer->resize( m_indexCount ) == false )
         {
+            SkinnedMesh3D::_release();
+
             return false;
         }
 
         if( m_indexBuffer->draw( indices.data(), 0, m_indexCount ) == false )
         {
             LOGGER_ERROR( "skinned mesh3d failed to upload index buffer" );
+
+            SkinnedMesh3D::_release();
 
             return false;
         }
@@ -200,7 +212,6 @@ namespace Mengine
         m_vertexCount = 0;
         m_indexCount = 0;
 
-        m_boneMatrices.clear();
         m_paletteUpload.clear();
 
         if( m_resource != nullptr )
@@ -212,6 +223,8 @@ namespace Mengine
         {
             m_resourceImage->release();
         }
+
+        m_boneMatrices.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     void SkinnedMesh3D::uploadBonePalette_() const

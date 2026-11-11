@@ -85,12 +85,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceSpineAtlasDefault::_compile()
     {
-        for( ImageDesc & desc : m_images )
+        uint32_t imageCount = (uint32_t)m_images.size();
+
+        for( uint32_t index = 0; index != imageCount; ++index )
         {
+            const ImageDesc & desc = m_images[index];
+
             const ResourceImagePtr & resourceImage = desc.resourceImage;
 
             if( resourceImage->compile() == false )
             {
+                this->releaseResourceImages_( index );
+
                 return false;
             }
         }
@@ -124,17 +130,26 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceSpineAtlasDefault::_release()
     {
-        for( ImageDesc & desc : m_images )
-        {
-            const ResourceImagePtr & resourceImage = desc.resourceImage;
+        uint32_t imageCount = (uint32_t)m_images.size();
 
-            resourceImage->release();
-        }
+        this->releaseResourceImages_( imageCount );
 
         if( m_atlas != nullptr )
         {
             spAtlas_dispose( m_atlas );
             m_atlas = nullptr;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceSpineAtlasDefault::releaseResourceImages_( uint32_t _count )
+    {
+        for( uint32_t index = 0; index != _count; ++index )
+        {
+            const ImageDesc & desc = m_images[index];
+
+            const ResourceImagePtr & resourceImage = desc.resourceImage;
+
+            resourceImage->release();
         }
     }
     //////////////////////////////////////////////////////////////////////////

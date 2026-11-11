@@ -4406,6 +4406,8 @@ namespace Mengine
                 const FontInterfacePtr & defaultResourceFont = FONT_SERVICE()
                     ->getDefaultFont();
 
+                MENGINE_ASSERTION_MEMORY_PANIC( defaultResourceFont, "default font is not set" );
+
                 const ConstString & defaultResourceFontName = defaultResourceFont->getName();
 
                 return defaultResourceFontName;

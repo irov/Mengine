@@ -68,8 +68,6 @@ namespace Mengine
         : m_createConsole( false )
         , m_originalStdOut( INVALID_HANDLE_VALUE )
         , m_originalStdErr( INVALID_HANDLE_VALUE )
-        , m_CONOUT( nullptr )
-        , m_CONERR( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -113,8 +111,8 @@ namespace Mengine
 
         m_createConsole = true;
 
-        m_CONOUT = ::freopen( "CONOUT$", "w", stdout );
-        m_CONERR = ::freopen( "CONOUT$", "w", stderr );
+        (void)::freopen( "CONOUT$", "w", stdout );
+        (void)::freopen( "CONOUT$", "w", stderr );
 
         uint32_t OPTION_consolex = GET_OPTION_VALUE_UINT32( "consolex", MENGINE_UNKNOWN_COUNT );
         uint32_t OPTION_consoley = GET_OPTION_VALUE_UINT32( "consoley", MENGINE_UNKNOWN_COUNT );
@@ -156,18 +154,6 @@ namespace Mengine
         std::wcerr.clear();
         std::cerr.clear();
 
-        if( m_CONOUT != nullptr )
-        {
-            ::fclose( m_CONOUT );
-            m_CONOUT = nullptr;
-        }
-
-        if( m_CONERR != nullptr )
-        {
-            ::fclose( m_CONERR );
-            m_CONERR = nullptr;
-        }
-
         if( m_originalStdOut != INVALID_HANDLE_VALUE )
         {
             ::SetStdHandle( STD_OUTPUT_HANDLE, m_originalStdOut );
@@ -179,6 +165,8 @@ namespace Mengine
             ::SetStdHandle( STD_ERROR_HANDLE, m_originalStdErr );
             m_originalStdErr = INVALID_HANDLE_VALUE;
         }
+
+        ::SetConsoleCtrlHandler( &Detail::ConsoleHandlerRoutine, FALSE );
 
         if( ::FreeConsole() == FALSE )
         {

@@ -36,9 +36,17 @@ import android.os.Bundle;
 import android.service.notification.StatusBarNotification;
 
 import java.io.IOException;
+import java.time.DateTimeException;
+import java.time.Instant;
+import java.time.LocalTime;
+import java.time.MonthDay;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -52,23 +60,56 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
     static final String NOTIFICATION_TAG = "mengine_local_notification";
     private static final String PREFERENCES_NAME = "mengine.local_notifications";
     private static final String PREFERENCES_SCHEDULED_ALARM_IDS = "scheduled_alarm_ids";
-    private static final int JOB_ID_PREFIX = 0x4D000000;
+    private static final String PREFERENCES_LAUNCH_COUNT = "launch_count";
+    private static final String RESOURCE_REQUEST_LAUNCH = "mengine_local_notifications_request_launch";
+    private static final long DEBUG_NOTIFICATION_INTERVAL_MILLIS = 5000;
 
     static class LocalNotificationDesc {
         public int id;
+        public String name;
         public String title;
         public String content;
         public long delay;
+        public int month;
+        public int day;
+        public int hour;
+        public int minute;
+        public boolean script;
+        public boolean yearly;
+        public Set<String> languages;
+    }
+
+    private static class ScheduledNotification {
+        public final LocalNotificationDesc notification;
+        public final long delay;
+
+        ScheduledNotification(LocalNotificationDesc notification, long delay) {
+            this.notification = notification;
+            this.delay = delay;
+        }
     }
 
     private List<LocalNotificationDesc> m_internalLocalNotifications = new ArrayList<>();
     private final Set<Integer> m_scheduledAlarmNotificationIds = new HashSet<>();
+    private final Map<String, Long> m_scriptNotificationTimes = new HashMap<>();
 
     private boolean m_notificationPermissionGranted = false;
     private boolean m_notificationPermissionRequested = false;
+    private int m_launchCount = 0;
 
     @Override
     public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) {
+        SharedPreferences preferences = activity.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
+        m_launchCount = preferences.getInt(PREFERENCES_LAUNCH_COUNT, 0);
+
+        if (savedInstanceState == null) {
+            m_launchCount += 1;
+
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putInt(PREFERENCES_LAUNCH_COUNT, m_launchCount);
+            editor.apply();
+        }
+
         if (MengineLocalNotificationsPlugin.hasPostNotificationsPermission(activity) == false) {
             return;
         }
@@ -121,6 +162,23 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
             return;
         }
 
+        int requestLaunch = MengineLocalNotificationsPlugin.getRequestPermissionLaunch(activity);
+
+        if (requestLaunch <= 0) {
+            this.logInfo("notification permission is not requested on launch");
+
+            return;
+        }
+
+        if (m_launchCount < requestLaunch) {
+            this.logInfo("notification permission is requested from launch %d, current launch %d"
+                , requestLaunch
+                , m_launchCount
+            );
+
+            return;
+        }
+
         m_notificationPermissionRequested = true;
 
         activity.checkPermissionPostNotifications(() -> {
@@ -128,6 +186,20 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
             }
             , () -> {}
         );
+    }
+
+    private static int getRequestPermissionLaunch(@NonNull Context context) {
+        Resources resources = context.getResources();
+        String packageName = context.getPackageName();
+        int id = resources.getIdentifier(RESOURCE_REQUEST_LAUNCH, "integer", packageName);
+
+        if (id == 0) {
+            return 1;
+        }
+
+        int requestLaunch = resources.getInteger(id);
+
+        return requestLaunch;
     }
 
     private static boolean hasPostNotificationsPermission(@NonNull Context context) {
@@ -161,9 +233,190 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
             return;
         }
 
+        Locale locale = Locale.getDefault();
+        String language = locale.getLanguage();
+        long now = System.currentTimeMillis();
+        List<ScheduledNotification> notifications = new ArrayList<>();
+
         for (LocalNotificationDesc desc : m_internalLocalNotifications) {
-            this.scheduleJobServiceNotification(desc.id, desc.title, desc.content, desc.delay);
+            if (desc.languages != null) {
+                if (desc.languages.contains(language) == false) {
+                    continue;
+                }
+            }
+
+            long delay = this.calculateNotificationDelay(desc, now);
+
+            if (delay <= 0) {
+                continue;
+            }
+
+            ScheduledNotification notification = new ScheduledNotification(desc, delay);
+            notifications.add(notification);
         }
+
+        notifications.sort((left, right) -> {
+            int order = Long.compare(left.delay, right.delay);
+
+            if (order != 0) {
+                return order;
+            }
+
+            int identifierOrder = Integer.compare(left.notification.id, right.notification.id);
+
+            return identifierOrder;
+        });
+
+        long debugIndex = 0;
+
+        for (ScheduledNotification notification : notifications) {
+            LocalNotificationDesc desc = notification.notification;
+            long delay = notification.delay;
+            PersistableBundle bundle = MengineLocalNotificationsJobService.notificationBundle(desc.id, desc.title, desc.content);
+
+            if (BuildConfig.DEBUG == true) {
+                ++debugIndex;
+                delay = debugIndex * DEBUG_NOTIFICATION_INTERVAL_MILLIS;
+            } else if (desc.yearly == true) {
+                bundle.putInt(MengineLocalNotificationsConstants.KEY_MONTH, desc.month);
+                bundle.putInt(MengineLocalNotificationsConstants.KEY_DAY, desc.day);
+                bundle.putInt(MengineLocalNotificationsConstants.KEY_HOUR, desc.hour);
+                bundle.putInt(MengineLocalNotificationsConstants.KEY_MINUTE, desc.minute);
+            }
+
+            this.scheduleJobNotification(delay, bundle);
+        }
+    }
+
+    private static boolean isValidNotificationDate(int month, int day, int hour, int minute) {
+        try {
+            MonthDay.of(month, day);
+            LocalTime.of(hour, minute);
+        } catch (final DateTimeException e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private long calculateNotificationDelay(@NonNull LocalNotificationDesc desc, long now) {
+        Long scriptTime = null;
+
+        if (desc.script == true) {
+            synchronized (m_scriptNotificationTimes) {
+                scriptTime = m_scriptNotificationTimes.get(desc.name);
+            }
+
+            if (scriptTime == null) {
+                return 0;
+            }
+        }
+
+        if (scriptTime != null) {
+            return scriptTime - now;
+        }
+
+        if (desc.month > 0) {
+            long delay = MengineLocalNotificationsPlugin.calculateCalendarDelay(desc.month, desc.day, desc.hour, desc.minute, now);
+
+            return delay;
+        }
+
+        return desc.delay;
+    }
+
+    static long calculateCalendarDelay(int month, int day, int hour, int minute, long now) {
+        MonthDay monthDay = MonthDay.of(month, day);
+        ZoneId zone = ZoneId.systemDefault();
+        Instant nowInstant = Instant.ofEpochMilli(now);
+        ZonedDateTime nowDate = nowInstant.atZone(zone);
+        int year = nowDate.getYear();
+
+        for (;; ++year) {
+            if (monthDay.isValidYear(year) == false) {
+                continue;
+            }
+
+            ZonedDateTime triggerDate = ZonedDateTime.of(year, month, day, hour, minute, 0, 0, zone);
+            triggerDate = triggerDate.withLaterOffsetAtOverlap();
+
+            Instant triggerInstant = triggerDate.toInstant();
+            long triggerTime = triggerInstant.toEpochMilli();
+
+            if (triggerTime <= now) {
+                continue;
+            }
+
+            long delay = triggerTime - now;
+
+            return delay;
+        }
+    }
+
+    public void setNotificationDelay(String name, int delaySeconds) {
+        this.logInfo("setNotificationDelay name: %s delay: %d"
+            , name
+            , delaySeconds
+        );
+
+        long delayMillis = delaySeconds * 1000L;
+
+        this.setNotificationDelayMillis(name, delayMillis);
+    }
+
+    public void setNotificationDelay(String name, float delaySeconds) {
+        this.logInfo("setNotificationDelay name: %s delay: %f"
+            , name
+            , delaySeconds
+        );
+
+        long delayMillis = (long)(delaySeconds * 1000.0);
+
+        this.setNotificationDelayMillis(name, delayMillis);
+    }
+
+    private void setNotificationDelayMillis(String name, long delayMillis) {
+        synchronized (m_scriptNotificationTimes) {
+            if (delayMillis <= 0) {
+                m_scriptNotificationTimes.remove(name);
+
+                return;
+            }
+
+            long time = System.currentTimeMillis() + delayMillis;
+
+            m_scriptNotificationTimes.put(name, time);
+        }
+    }
+
+    public void requestPermission() {
+        this.logInfo("requestPermission");
+
+        MengineUtils.performOnMainThread(() -> {
+            MengineActivity activity = this.getMengineActivity();
+
+            if (activity == null) {
+                this.logWarning("requestPermission invalid activity");
+
+                this.nativeCall("onLocalNotificationsPermission", false);
+
+                return;
+            }
+
+            m_notificationPermissionRequested = true;
+
+            activity.checkPermissionPostNotifications(() -> {
+                    if (m_notificationPermissionGranted == false) {
+                        this.startLocalNotifications(activity);
+                    }
+
+                    this.nativeCall("onLocalNotificationsPermission", true);
+                }
+                , () -> {
+                    this.nativeCall("onLocalNotificationsPermission", false);
+                }
+            );
+        });
     }
 
     @Override
@@ -313,7 +566,9 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
         if (notificationManager != null) {
             StatusBarNotification[] notifications = notificationManager.getActiveNotifications();
             for (StatusBarNotification notification : notifications) {
-                if (Objects.equals(notification.getTag(), NOTIFICATION_TAG) == false) {
+                String notificationTag = notification.getTag();
+
+                if (Objects.equals(notificationTag, NOTIFICATION_TAG) == false) {
                     continue;
                 }
 
@@ -344,7 +599,9 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
 
             List<JobInfo> jobs = jobScheduler.getAllPendingJobs();
             for (JobInfo job : jobs) {
-                if (Objects.equals(job.getService(), localNotificationsJobService) == false) {
+                ComponentName jobService = job.getService();
+
+                if (Objects.equals(jobService, localNotificationsJobService) == false) {
                     continue;
                 }
 
@@ -384,6 +641,7 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
 
         String packageName = activity.getPackageName();
         Resources resources = activity.getResources();
+        Set<Integer> notificationIds = new HashSet<>();
 
         try {
             XmlResourceParser parser = resources.getXml(R.xml.local_notifications);
@@ -402,75 +660,231 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
                 int attributeCount = parser.getAttributeCount();
 
                 int id = 0;
+                String notificationName = null;
                 long delay = 0;
+                String repeat = "once";
+                int month = 0;
+                int day = 0;
+                int hour = 0;
+                int minute = 0;
+                boolean script = false;
+                Set<String> languages = null;
                 String title = null;
                 String content = null;
 
-                for (int index = 0; index != attributeCount; index++) {
-                    String attributeName = parser.getAttributeName(index);
-                    String attributeValue = parser.getAttributeValue(index);
+                try {
+                    for (int index = 0; index != attributeCount; index++) {
+                        String attributeName = parser.getAttributeName(index);
+                        String attributeValue = parser.getAttributeValue(index);
 
-                    switch (attributeName) {
-                        case "id":
-                            id = Integer.parseInt(attributeValue);
-                            break;
-                        case "delay":
-                            delay = Long.parseLong(attributeValue);
-                            break;
-                        case "title":
-                            title = attributeValue;
-                            break;
-                        case "content":
-                            content = attributeValue;
-                            break;
+                        switch (attributeName) {
+                            case "id":
+                                id = Integer.parseInt(attributeValue);
+                                break;
+                            case "name":
+                                notificationName = attributeValue;
+                                break;
+                            case "delay":
+                                delay = Long.parseLong(attributeValue);
+                                break;
+                            case "repeat":
+                                repeat = attributeValue;
+                                break;
+                            case "month":
+                                month = Integer.parseInt(attributeValue);
+                                break;
+                            case "day":
+                                day = Integer.parseInt(attributeValue);
+                                break;
+                            case "hour":
+                                hour = Integer.parseInt(attributeValue);
+                                break;
+                            case "minute":
+                                minute = Integer.parseInt(attributeValue);
+                                break;
+                            case "script":
+                                script = Boolean.parseBoolean(attributeValue);
+                                break;
+                            case "languages":
+                                languages = new HashSet<>();
+                                String[] values = attributeValue.split(",");
+
+                                for (String language : values) {
+                                    String trimmedLanguage = language.trim();
+                                    languages.add(trimmedLanguage);
+                                }
+                                break;
+                            case "title":
+                                title = attributeValue;
+                                break;
+                            case "content":
+                                content = attributeValue;
+                                break;
+                        }
                     }
+                } catch (final NumberFormatException e) {
+                    this.logWarning("local notification invalid numeric attribute: %s"
+                        , e.getMessage()
+                    );
+
+                    continue;
                 }
 
                 if (id <= 0) {
-                    this.logWarning("[LOCAL_NOTIFICATIOINS] invalid id: %d"
+                    this.logWarning("local notification invalid id: %d"
                         , id
                     );
 
                     continue;
                 }
 
-                if (delay <= 0) {
-                    this.logWarning("[LOCAL_NOTIFICATIOINS] invalid delay: %d"
+                if (notificationIds.contains(id) == true) {
+                    this.logWarning("local notification duplicate id: %d"
+                        , id
+                    );
+
+                    continue;
+                }
+
+                if (delay < 0) {
+                    this.logWarning("local notification %d invalid delay: %d"
+                        , id
                         , delay
                     );
 
                     continue;
                 }
 
+                if (delay > Long.MAX_VALUE / 1000) {
+                    this.logWarning("local notification %d delay too large: %d"
+                        , id
+                        , delay
+                    );
+
+                    continue;
+                }
+
+                if (Objects.equals(repeat, "once") == false) {
+                    if (Objects.equals(repeat, "yearly") == false) {
+                        this.logWarning("local notification %d invalid repeat: %s"
+                            , id
+                            , repeat
+                        );
+
+                        continue;
+                    }
+                }
+
+                boolean yearly = Objects.equals(repeat, "yearly");
+
+                if (yearly == true) {
+                    if (month <= 0) {
+                        this.logWarning("local notification %d yearly repeat requires month/day"
+                            , id
+                        );
+
+                        continue;
+                    }
+                }
+
+                int triggers = (delay > 0 ? 1 : 0) + (month > 0 ? 1 : 0) + (script == true ? 1 : 0);
+
+                if (triggers != 1) {
+                    this.logWarning("local notification %d needs exactly one of delay, month/day or script"
+                        , id
+                    );
+
+                    continue;
+                }
+
+                if (month > 0) {
+                    if (MengineLocalNotificationsPlugin.isValidNotificationDate(month, day, hour, minute) == false) {
+                        this.logWarning("local notification %d invalid date/time: %d/%d %d:%d"
+                            , id
+                            , day
+                            , month
+                            , hour
+                            , minute
+                        );
+
+                        continue;
+                    }
+                }
+
+                if (script == true) {
+                    if (notificationName == null) {
+                        this.logWarning("local notification %d script has no name"
+                            , id
+                        );
+
+                        continue;
+                    }
+
+                    if (notificationName.isEmpty() == true) {
+                        this.logWarning("local notification %d script has empty name"
+                            , id
+                        );
+
+                        continue;
+                    }
+                }
+
                 if (title == null) {
-                    this.logWarning("[LOCAL_NOTIFICATIOINS] invalid title");
+                    this.logWarning("local notification %d has no title"
+                        , id
+                    );
 
                     continue;
                 }
 
                 if (content == null) {
-                    this.logWarning("[LOCAL_NOTIFICATIOINS] invalid content");
+                    this.logWarning("local notification %d has no content"
+                        , id
+                    );
 
                     continue;
                 }
 
-                if (BuildConfig.DEBUG == true) {
-                    delay /= 1000;
-                }
-
                 int title_id = resources.getIdentifier(title, "string", packageName);
                 int content_id = resources.getIdentifier(content, "string", packageName);
+
+                if (title_id == 0) {
+                    this.logWarning("local notification %d title resource not found: %s"
+                        , id
+                        , title
+                    );
+
+                    continue;
+                }
+
+                if (content_id == 0) {
+                    this.logWarning("local notification %d content resource not found: %s"
+                        , id
+                        , content
+                    );
+
+                    continue;
+                }
 
                 String title_text = resources.getString(title_id);
                 String content_text = resources.getString(content_id);
 
                 LocalNotificationDesc desc = new LocalNotificationDesc();
                 desc.id = id;
+                desc.name = notificationName;
                 desc.title = title_text;
                 desc.content = content_text;
                 desc.delay = delay * 1000;
+                desc.month = month;
+                desc.day = day;
+                desc.hour = hour;
+                desc.minute = minute;
+                desc.script = script;
+                desc.yearly = yearly;
+                desc.languages = languages;
 
                 m_internalLocalNotifications.add(desc);
+                notificationIds.add(id);
             }
 
             parser.close();
@@ -545,43 +959,10 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
             return;
         }
 
-        int notificationId = bundle.getInt(MengineLocalNotificationsConstants.KEY_ID);
-
-        if (notificationId <= 0) {
-            this.logWarning("scheduleJobNotification invalid id: %d"
-                , notificationId
+        if (MengineLocalNotificationsJobService.scheduleNotification(activity, delayMillis, bundle) == false) {
+            this.logWarning("scheduleJobNotification failed for id: %d"
+                , bundle.getInt(MengineLocalNotificationsConstants.KEY_ID)
             );
-
-            return;
         }
-
-        int jobId = JOB_ID_PREFIX ^ notificationId;
-
-        ComponentName jobService = new ComponentName(activity, MengineLocalNotificationsJobService.class);
-
-        JobInfo.Builder builder = new JobInfo.Builder(jobId, jobService);
-        JobInfo jobInfo = builder
-            .setMinimumLatency(delayMillis)
-            .setOverrideDeadline(delayMillis + 10000)
-            .setExtras(bundle)
-            .build();
-
-        JobScheduler jobScheduler = activity.getSystemService(JobScheduler.class);
-
-        if (jobScheduler == null) {
-            return;
-        }
-
-        JobInfo pendingJob = jobScheduler.getPendingJob(jobId);
-
-        if (pendingJob != null && Objects.equals(pendingJob.getService(), jobService) == false) {
-            this.logWarning("scheduleJobNotification job id collision: %d"
-                , jobId
-            );
-
-            return;
-        }
-
-        jobScheduler.schedule(jobInfo);
     }
 }

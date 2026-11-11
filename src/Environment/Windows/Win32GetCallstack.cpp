@@ -481,6 +481,8 @@ namespace Mengine
 
             if( hThread == NULL )
             {
+                (*pSymCleanup)(hProcess);
+
                 ::FreeLibrary( hDbgHelp );
 
                 return false;

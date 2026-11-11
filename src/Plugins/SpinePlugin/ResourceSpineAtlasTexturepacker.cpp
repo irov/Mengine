@@ -35,6 +35,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceSpineAtlasTexturepacker::_compile()
     {
+        uint32_t texturepackerCount = (uint32_t)m_texturepackers.size();
+
+        for( uint32_t index = 0; index != texturepackerCount; ++index )
+        {
+            const TexturepackerDesc & desc = m_texturepackers[index];
+
+            if( desc.resourceTexturepacker->compile() == false )
+            {
+                this->releaseResourceTexturepackers_( index );
+
+                return false;
+            }
+        }
+
         spAtlas * atlas = NEW( spAtlas );
 
         MENGINE_ASSERTION_MEMORY_PANIC( atlas, "invalid create atlas" );
@@ -44,10 +58,7 @@ namespace Mengine
 
         for( const TexturepackerDesc & desc : m_texturepackers )
         {
-            char * page_name = MALLOC( char, 1 );
-            page_name[0] = '\0';
-
-            spAtlasPage * page = spAtlasPage_create( atlas, page_name );
+            spAtlasPage * page = spAtlasPage_create( atlas, "" );
 
             if( lastPage != nullptr )
             {
@@ -59,11 +70,6 @@ namespace Mengine
             }
 
             lastPage = page;
-
-            if( desc.resourceTexturepacker->compile() == false )
-            {
-                return false;
-            }
 
             UnknownResourceTexturepackerInterface * unknownResourceTexturepacker = desc.resourceTexturepacker->getUnknown();
 
@@ -163,15 +169,24 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceSpineAtlasTexturepacker::_release()
     {
-        for( TexturepackerDesc & desc : m_texturepackers )
-        {
-            desc.resourceTexturepacker->release();
-        }
+        uint32_t texturepackerCount = (uint32_t)m_texturepackers.size();
+
+        this->releaseResourceTexturepackers_( texturepackerCount );
 
         if( m_atlas != nullptr )
         {
             spAtlas_dispose( m_atlas );
             m_atlas = nullptr;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceSpineAtlasTexturepacker::releaseResourceTexturepackers_( uint32_t _count )
+    {
+        for( uint32_t index = 0; index != _count; ++index )
+        {
+            const TexturepackerDesc & desc = m_texturepackers[index];
+
+            desc.resourceTexturepacker->release();
         }
     }
     //////////////////////////////////////////////////////////////////////////

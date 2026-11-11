@@ -101,42 +101,36 @@ namespace Mengine
 
         // Create a DirectX graphics interface factory.
         // DirectX 11 (for 11.1 or 11.2 need to use other factory)
-        IDXGIFactory1 * factory;
-        result = CreateDXGIFactory1( __uuidof(IDXGIFactory1), (void **)&factory );
+        IDXGIFactory1 * factoryRaw = nullptr;
+        result = CreateDXGIFactory1( __uuidof(IDXGIFactory1), (void **)&factoryRaw );
 
         if( FAILED( result ) )
         {
             return false;
         }
 
+        IDXGIFactory1Ptr factory;
+        factory.Attach( factoryRaw );
+
         // Use the factory to create an adapter for the primary graphics interface (video card).
-        IDXGIAdapter * adapter;
-        MENGINE_IF_DX11_CALL( factory, EnumAdapters, (m_adapterToUse, &adapter) )
+        IDXGIAdapter * adapterRaw = nullptr;
+        MENGINE_IF_DX11_CALL( factory, EnumAdapters, (m_adapterToUse, &adapterRaw) )
         {
             return false;
         }
 
-        m_factoryRenderDevice = Helper::makeFactoryPoolWithListener<DX11RenderDevice, 2>( this, &DX11RenderSystem::onDestroyRenderDevice_, MENGINE_DOCUMENT_FACTORABLE );
+        IDXGIAdapterPtr adapter;
+        adapter.Attach( adapterRaw );
 
-        DX11RenderDevicePtr renderDevice = m_factoryRenderDevice->createObject( MENGINE_DOCUMENT_FACTORABLE );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( renderDevice, "invalid create render device" );
-
-        if( renderDevice->initialize( adapter ) == false )
-        {
-            return false;
-        }
-
-        m_renderDevice = renderDevice;
-        m_pD3DDevice = renderDevice->getDirect3D11Device();
-        m_pD3DDeviceContext = renderDevice->getDirect3D11DeviceContext();
-
-        IDXGIOutput * adapterOutput;
+        IDXGIOutput * adapterOutputRaw = nullptr;
         // Enumerate the primary adapter output (monitor).
-        MENGINE_IF_DX11_CALL( adapter, EnumOutputs, (0, &adapterOutput) )
+        MENGINE_IF_DX11_CALL( adapter, EnumOutputs, (0, &adapterOutputRaw) )
         {
             return false;
         }
+
+        IDXGIOutputPtr adapterOutput;
+        adapterOutput.Attach( adapterOutputRaw );
 
         // Get the number of modes that fit the DXGI_FORMAT_B8G8R8A8_UNORM display format for the adapter output (monitor).
         UINT DisplayModeListNum;
@@ -153,7 +147,20 @@ namespace Mengine
             return false;
         }
 
-        MENGINE_DX11_RELEASE( adapterOutput );
+        m_factoryRenderDevice = Helper::makeFactoryPoolWithListener<DX11RenderDevice, 2>( this, &DX11RenderSystem::onDestroyRenderDevice_, MENGINE_DOCUMENT_FACTORABLE );
+
+        DX11RenderDevicePtr renderDevice = m_factoryRenderDevice->createObject( MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( renderDevice, "invalid create render device" );
+
+        if( renderDevice->initialize( adapter.Get() ) == false )
+        {
+            return false;
+        }
+
+        m_renderDevice = renderDevice;
+        m_pD3DDevice = renderDevice->getDirect3D11Device();
+        m_pD3DDeviceContext = renderDevice->getDirect3D11DeviceContext();
 
         DXGI_ADAPTER_DESC AdapterDesc;
         adapter->GetDesc( &AdapterDesc );
@@ -190,7 +197,7 @@ namespace Mengine
         m_factoryRenderVertexShader = Helper::makeFactoryPoolWithListener<DX11RenderVertexShader, 16>( this, &DX11RenderSystem::onDestroyVertexShader_, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderFragmentShader = Helper::makeFactoryPoolWithListener<DX11RenderFragmentShader, 16>( this, &DX11RenderSystem::onDestroyFragmentShader_, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryRenderProgram = Helper::makeFactoryPoolWithListener<DX11RenderProgram, 16>( this, &DX11RenderSystem::onDestroyProgram_, MENGINE_DOCUMENT_FACTORABLE );
-        m_factoryRenderProgramVariable = Helper::makeFactoryPool<DX11RenderProgramVariable, 64>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRenderProgramVariable = Helper::makeFactoryPoolWithListener<DX11RenderProgramVariable, 64>( this, &DX11RenderSystem::onDestroyRenderProgramVariable_, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryVertexBuffer = Helper::makeFactoryPoolWithListener<DX11RenderVertexBuffer, 8>( this, &DX11RenderSystem::onDestroyVertexBuffer_, MENGINE_DOCUMENT_FACTORABLE );
         m_factoryIndexBuffer = Helper::makeFactoryPoolWithListener<DX11RenderIndexBuffer, 8>( this, &DX11RenderSystem::onDestroyIndexBuffer_, MENGINE_DOCUMENT_FACTORABLE );
 
@@ -1394,6 +1401,11 @@ namespace Mengine
         }
 
         _program->finalize();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DX11RenderSystem::onDestroyRenderProgramVariable_( DX11RenderProgramVariable * _variable )
+    {
+        _variable->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
     void DX11RenderSystem::onDestroyVertexBuffer_( DX11RenderVertexBuffer * _buffer )

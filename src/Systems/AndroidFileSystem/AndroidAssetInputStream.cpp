@@ -69,6 +69,10 @@ namespace Mengine
 
         m_asset = asset;
 
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+        Helper::addDebugFilePath( this, _relationPath, _folderPath, _filePath, MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
         int64_t size = ANDROID_ASSET_SERVICE()
             ->size( m_asset );
 
@@ -121,10 +125,6 @@ namespace Mengine
         {
             NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_OPEN_FILE, _folderPath, _filePath, true, m_streaming );
         }
-#endif
-
-#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
-        Helper::addDebugFilePath( this, _relationPath, _folderPath, _filePath, MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
         return true;

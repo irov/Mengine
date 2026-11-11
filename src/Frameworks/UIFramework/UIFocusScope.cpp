@@ -75,6 +75,19 @@ namespace Mengine
         return m_activateCallback;
     }
     //////////////////////////////////////////////////////////////////////////
+    void UIFocusable::finalize()
+    {
+        m_node = nullptr;
+
+        for( UIFocusablePtr & neighbor : m_neighbors )
+        {
+            neighbor = nullptr;
+        }
+
+        m_focusCallback = nullptr;
+        m_activateCallback = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     UIFocusScope::UIFocusScope()
     {
     }
@@ -107,14 +120,18 @@ namespace Mengine
             return false;
         }
 
-        bool focused = m_focus == _focusable;
+        UIFocusablePtr focusable = *it_found;
+
+        bool focused = m_focus == focusable;
+
+        m_focusables.erase( it_found );
 
         if( focused == true )
         {
             this->clearFocus();
         }
 
-        m_focusables.erase( it_found );
+        focusable->finalize();
 
         if( focused == true )
         {
@@ -126,8 +143,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void UIFocusScope::clearFocusables()
     {
+        Vector<UIFocusablePtr> focusables;
+        focusables.swap( m_focusables );
+
         this->clearFocus();
-        m_focusables.clear();
+
+        for( const UIFocusablePtr & focusable : focusables )
+        {
+            focusable->finalize();
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t UIFocusScope::getFocusableCount() const
@@ -152,19 +176,30 @@ namespace Mengine
             return true;
         }
 
+        UIFocusablePtr focusable = _focusable;
+
+        this->clearFocus();
+
         if( m_focus != nullptr )
         {
-            const UIBoolValueCallbackInterfacePtr & oldCallback = m_focus->getFocusCallback();
+            bool focused = m_focus == focusable;
 
-            if( oldCallback != nullptr )
-            {
-                oldCallback->onUIBoolValue( false );
-            }
+            return focused;
         }
 
-        m_focus = _focusable;
+        if( this->isFocusableAvailable_( focusable ) == false )
+        {
+            return false;
+        }
 
-        const UIBoolValueCallbackInterfacePtr & callback = m_focus->getFocusCallback();
+        if( this->findFocusableIndex_( focusable ) < 0 )
+        {
+            return false;
+        }
+
+        m_focus = focusable;
+
+        UIBoolValueCallbackInterfacePtr callback = m_focus->getFocusCallback();
 
         if( callback != nullptr )
         {
@@ -186,14 +221,15 @@ namespace Mengine
             return;
         }
 
-        const UIBoolValueCallbackInterfacePtr & callback = m_focus->getFocusCallback();
+        UIFocusablePtr focusable = m_focus;
+        m_focus = nullptr;
+
+        UIBoolValueCallbackInterfacePtr callback = focusable->getFocusCallback();
 
         if( callback != nullptr )
         {
             callback->onUIBoolValue( false );
         }
-
-        m_focus = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool UIFocusScope::moveFocus( EUIFocusDirection _direction )
@@ -278,7 +314,7 @@ namespace Mengine
             return false;
         }
 
-        const UIActionCallbackInterfacePtr & callback = m_focus->getActivateCallback();
+        UIActionCallbackInterfacePtr callback = m_focus->getActivateCallback();
 
         if( callback == nullptr )
         {
@@ -292,12 +328,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool UIFocusScope::back()
     {
-        if( m_backCallback == nullptr )
+        UIActionCallbackInterfacePtr callback = m_backCallback;
+
+        if( callback == nullptr )
         {
             return false;
         }
 
-        m_backCallback->onUIAction();
+        callback->onUIAction();
 
         return true;
     }

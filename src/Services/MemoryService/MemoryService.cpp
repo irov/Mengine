@@ -52,6 +52,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MemoryService::_finalizeService()
     {
+        this->clearCacheBuffers();
+
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryMemoryBuffer );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryMemoryProxy );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryMemoryCacheBuffer );

@@ -168,8 +168,9 @@ int ForceRemoveDirectory( LPCTSTR dir );
 typedef std::vector<std::wstring> Files;
 bool SelectFile( LPCTSTR dir, Files & _files );
 //////////////////////////////////////////////////////////////////////////
+bool file_paths_equivalent( const wchar_t * _left, const wchar_t * _right );
 bool read_file_to_memory( const wchar_t * _path, uint8_t * _buffer, size_t _capacity, size_t * const _size );
-bool read_file_memory( const wchar_t * _path, uint8_t ** _buffer, size_t * const _size );
+bool read_file_memory( const wchar_t * _path, uint8_t ** _buffer, size_t * const _size, uint32_t * const _timestamp = nullptr );
 bool write_file_memory( const wchar_t * _path, const uint8_t * _buffer, size_t _size );
 bool move_file_memory( const wchar_t * _path, const uint8_t * _buffer, size_t _size );
 bool write_file_magic_memory( const wchar_t * _path, const char * _magic, const uint8_t * _buffer, size_t _size, size_t * const _write );

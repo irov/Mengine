@@ -51,6 +51,9 @@ namespace Mengine
         void _dispose() override;
 
     protected:
+        void releaseSurfaces_( uint32_t _count );
+
+    protected:
         bool _activate() override;
         void _deactivate() override;
 

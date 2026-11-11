@@ -39,11 +39,15 @@ namespace Mengine
 
         jobject jobject_AssetManagerGlobalRef = Mengine_JNI_NewGlobalRef( jenv, jAssetManager );
 
+        Mengine_JNI_DeleteLocalRef( jenv, jAssetManager );
+
         AAssetManager * assetManager = Mengine_JNI_GetAssetManagerFromJava( jenv, jobject_AssetManagerGlobalRef );
 
         if( assetManager == nullptr )
         {
             LOGGER_ERROR( "invalid get asset manager" );
+
+            Mengine_JNI_DeleteGlobalRef( jenv, jobject_AssetManagerGlobalRef );
 
             return false;
         }

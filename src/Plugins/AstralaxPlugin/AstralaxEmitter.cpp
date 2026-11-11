@@ -75,86 +75,11 @@ namespace Mengine
             , m_resourceAstralax->getName().c_str()
         );
 
-        if( m_emitterTranslateWithParticleSetup == true )
+        if( this->setupEmitter_( emitter ) == false )
         {
-            emitter->setEmitterTranslateWithParticle( m_emitterTranslateWithParticle );
-        }
+            m_resourceAstralax->release();
 
-        if( m_emitterResourceImage != nullptr )
-        {
-            if( this->compileEmitterImage_( emitter ) == false )
-            {
-                return false;
-            }
-        }
-
-        emitter->setRandomMode( m_randomMode );
-
-        bool loop = this->calcTotalLoop();
-        emitter->setLoop( loop );
-
-        Polygon::size_type polygon_count = m_polygon.size();
-
-        if( polygon_count != 0 )
-        {
-            if( this->compilePolygon_( emitter ) == false )
-            {
-                return false;
-            }
-        }
-
-        if( m_emitterPositionRelative == true )
-        {
-            if( emitter->setPositionProvider( AstralaxPositionProviderInterfacePtr::from( this ) ) == false )
-            {
-                LOGGER_ERROR( "astralax emitter '%s' group '%s' resource '%s' invalid setup position provider"
-                    , this->getName().c_str()
-                    , m_resourceAstralax->getGroupName().c_str()
-                    , m_resourceAstralax->getName().c_str()
-                );
-
-                return false;
-            }
-        }
-        else
-        {
-            if( emitter->setPositionProvider( nullptr ) == false )
-            {
-                LOGGER_ERROR( "astralax emitter '%s' group '%s' resource '%s' invalid setup position provider"
-                    , this->getName().c_str()
-                    , m_resourceAstralax->getGroupName().c_str()
-                    , m_resourceAstralax->getName().c_str()
-                );
-
-                return false;
-            }
-        }
-
-        if( m_emitterCameraRelative == true )
-        {
-            if( emitter->setCameraProvider( AstralaxCameraProviderInterfacePtr::from( this ) ) == false )
-            {
-                LOGGER_ERROR( "astralax emitter '%s' group '%s' resource '%s' invalid setup position provider"
-                    , this->getName().c_str()
-                    , m_resourceAstralax->getGroupName().c_str()
-                    , m_resourceAstralax->getName().c_str()
-                );
-
-                return false;
-            }
-        }
-        else
-        {
-            if( emitter->setCameraProvider( nullptr ) == false )
-            {
-                LOGGER_ERROR( "astralax emitter '%s' group '%s' resource '%s' invalid setup position provider"
-                    , this->getName().c_str()
-                    , m_resourceAstralax->getGroupName().c_str()
-                    , m_resourceAstralax->getName().c_str()
-                );
-
-                return false;
-            }
+            return false;
         }
 
         m_emitter = emitter;
@@ -545,7 +470,7 @@ namespace Mengine
         {
             if( m_emitter->setCameraProvider( AstralaxCameraProviderInterfacePtr( this ) ) == false )
             {
-                LOGGER_ERROR( "astralax emitter '%s' group '%s' resource '%s' invalid setup position provider"
+                LOGGER_ERROR( "astralax emitter '%s' group '%s' resource '%s' invalid setup camera provider"
                     , this->getName().c_str()
                     , m_resourceAstralax->getGroupName().c_str()
                     , m_resourceAstralax->getName().c_str()
@@ -558,7 +483,7 @@ namespace Mengine
         {
             if( m_emitter->setCameraProvider( nullptr ) == false )
             {
-                LOGGER_ERROR( "astralax emitter '%s' group '%s' resource '%s' invalid setup position provider"
+                LOGGER_ERROR( "astralax emitter '%s' group '%s' resource '%s' invalid setup camera provider"
                     , this->getName().c_str()
                     , m_resourceAstralax->getGroupName().c_str()
                     , m_resourceAstralax->getName().c_str()
@@ -601,6 +526,95 @@ namespace Mengine
         }
 
         m_emitter->changeEmitterImage( 0, 0, nullptr, 1 );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AstralaxEmitter::setupEmitter_( const AstralaxEmitterInterfacePtr & _emitter )
+    {
+        if( m_emitterTranslateWithParticleSetup == true )
+        {
+            _emitter->setEmitterTranslateWithParticle( m_emitterTranslateWithParticle );
+        }
+
+        if( m_emitterResourceImage != nullptr )
+        {
+            if( this->compileEmitterImage_( _emitter ) == false )
+            {
+                return false;
+            }
+        }
+
+        _emitter->setRandomMode( m_randomMode );
+
+        bool loop = this->calcTotalLoop();
+        _emitter->setLoop( loop );
+
+        Polygon::size_type polygonCount = m_polygon.size();
+
+        if( polygonCount != 0 )
+        {
+            if( this->compilePolygon_( _emitter ) == false )
+            {
+                return false;
+            }
+        }
+
+        if( m_emitterPositionRelative == true )
+        {
+            AstralaxPositionProviderInterfacePtr positionProvider = AstralaxPositionProviderInterfacePtr::from( this );
+            if( _emitter->setPositionProvider( positionProvider ) == false )
+            {
+                LOGGER_ERROR( "astralax emitter '%s' group '%s' resource '%s' invalid setup position provider"
+                    , this->getName().c_str()
+                    , m_resourceAstralax->getGroupName().c_str()
+                    , m_resourceAstralax->getName().c_str()
+                );
+
+                return false;
+            }
+        }
+        else
+        {
+            if( _emitter->setPositionProvider( nullptr ) == false )
+            {
+                LOGGER_ERROR( "astralax emitter '%s' group '%s' resource '%s' invalid setup position provider"
+                    , this->getName().c_str()
+                    , m_resourceAstralax->getGroupName().c_str()
+                    , m_resourceAstralax->getName().c_str()
+                );
+
+                return false;
+            }
+        }
+
+        if( m_emitterCameraRelative == true )
+        {
+            AstralaxCameraProviderInterfacePtr cameraProvider = AstralaxCameraProviderInterfacePtr::from( this );
+            if( _emitter->setCameraProvider( cameraProvider ) == false )
+            {
+                LOGGER_ERROR( "astralax emitter '%s' group '%s' resource '%s' invalid setup camera provider"
+                    , this->getName().c_str()
+                    , m_resourceAstralax->getGroupName().c_str()
+                    , m_resourceAstralax->getName().c_str()
+                );
+
+                return false;
+            }
+        }
+        else
+        {
+            if( _emitter->setCameraProvider( nullptr ) == false )
+            {
+                LOGGER_ERROR( "astralax emitter '%s' group '%s' resource '%s' invalid setup camera provider"
+                    , this->getName().c_str()
+                    , m_resourceAstralax->getGroupName().c_str()
+                    , m_resourceAstralax->getName().c_str()
+                );
+
+                return false;
+            }
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxEmitter::compileEmitterImage_( const AstralaxEmitterInterfacePtr & _emitter )

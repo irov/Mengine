@@ -88,6 +88,8 @@ namespace Mengine
                 , Helper::getContentFullPath( this->getContent() ).c_str()
             );
 
+            ResourceImageData::_release();
+
             return false;
         }
 

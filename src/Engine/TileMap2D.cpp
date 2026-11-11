@@ -384,7 +384,7 @@ namespace Mengine
                 , m_vertexCount
             );
 
-            this->releaseCompiledData_();
+            TileMap2D::_release();
 
             return false;
         }
@@ -406,7 +406,7 @@ namespace Mengine
                 , m_indexCount
             );
 
-            this->releaseCompiledData_();
+            TileMap2D::_release();
 
             return false;
         }
@@ -422,7 +422,7 @@ namespace Mengine
 
             if( this->compileTile_( &tile ) == false )
             {
-                this->releaseCompiledData_();
+                TileMap2D::_release();
 
                 return false;
             }
@@ -433,7 +433,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TileMap2D::_release()
     {
-        this->releaseCompiledData_();
+        for( TileMap2DTile & tile : m_tiles )
+        {
+            this->releaseTile_( &tile );
+        }
+
+        m_vertexBuffer = nullptr;
+        m_indexBuffer = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void TileMap2D::_dispose()
@@ -544,17 +550,6 @@ namespace Mengine
         _tile->material = nullptr;
         _tile->resource->release();
         _tile->resident = false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void TileMap2D::releaseCompiledData_()
-    {
-        for( TileMap2DTile & tile : m_tiles )
-        {
-            this->releaseTile_( &tile );
-        }
-
-        m_vertexBuffer = nullptr;
-        m_indexBuffer = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
 }

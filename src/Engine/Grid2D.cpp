@@ -378,6 +378,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Grid2D::_compile()
     {
+        MENGINE_ASSERTION_FATAL( m_countX >= 2, "grid2d '%s' count X not setup %u"
+            , this->getName().c_str()
+            , m_countX
+        );
+
+        MENGINE_ASSERTION_FATAL( m_countY >= 2, "grid2d '%s' count Y not setup %u"
+            , this->getName().c_str()
+            , m_countY
+        );
+
         if( m_resourceImage != nullptr )
         {
             if( m_resourceImage->compile() == false )
@@ -389,17 +399,6 @@ namespace Mengine
 
                 return false;
             }
-        }
-
-        if( m_countX < 2 || m_countY < 2 )
-        {
-            LOGGER_ERROR( "grid2d '%s' count X|Y not setup %u:%u"
-                , this->getName().c_str()
-                , m_countX
-                , m_countY
-            );
-
-            return false;
         }
 
         m_vertices.resize( m_countX * m_countY );

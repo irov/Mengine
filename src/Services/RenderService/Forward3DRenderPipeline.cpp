@@ -78,29 +78,7 @@ namespace Mengine
 
         for( const RenderPass & renderPass : m_renderPasses )
         {
-            const RenderVertexBufferInterfacePtr & vertexBuffer = renderPass.vertexBuffer;
-            const RenderIndexBufferInterfacePtr & indexBuffer = renderPass.indexBuffer;
-            const RenderProgramVariableInterfacePtr & programVariable = renderPass.programVariable;
-
-            const RenderContext * context = &renderPass.context;
-
-            if( m_renderService->beginRenderPass( vertexBuffer, indexBuffer, programVariable, context ) == false )
-            {
-                continue;
-            }
-
-            const RenderDrawPrimitiveInterfacePtr & drawPrimitive = renderPass.drawPrimitive;
-
-            if( drawPrimitive == nullptr )
-            {
-                m_renderService->drawPrimitives( renderPrimitives + renderPass.beginRenderObject, renderPass.countRenderObject );
-            }
-            else
-            {
-                drawPrimitive->onRenderDrawPrimitives( renderPrimitives + renderPass.beginRenderObject, renderPass.countRenderObject );
-            }
-
-            m_renderService->endRenderPass( context );
+            this->renderPass_( renderPass, renderPrimitives );
         }
 
         m_renderPrimitives.clear();

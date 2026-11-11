@@ -741,6 +741,22 @@ namespace Mengine
 
         if( m_renderService->beginRenderPass( vertexBuffer, indexBuffer, programVariable, context ) == false )
         {
+            for( uint32_t index = 0; index != _renderPass.countRenderObject; ++index )
+            {
+                const RenderPrimitive * renderPrimitive = _renderPrimitives + _renderPass.beginRenderObject + index;
+
+                RenderMaterialInterface * material = renderPrimitive->material;
+
+                if( material == nullptr )
+                {
+                    continue;
+                }
+
+                MENGINE_ASSERTION_FATAL( IntrusivePtrBase::intrusive_ptr_get_ref( material ) > 1, "not-cached material" );
+
+                IntrusivePtrBase::intrusive_ptr_dec_ref( material );
+            }
+
             return;
         }
 

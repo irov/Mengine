@@ -54,6 +54,9 @@ namespace Mengine
 #if defined(MENGINE_PLATFORM_IOS)
     public:
         void handleAudioInterruption_( bool _began );
+
+    protected:
+        void deactivateAudioSession_();
 #endif
 
     protected:

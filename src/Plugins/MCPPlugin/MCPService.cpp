@@ -157,7 +157,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MCPService::_initializeService()
     {
-        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_FINALIZE_GAME, &MCPService::notifyBootstrapperFinalizeGame_, MENGINE_DOCUMENT_FACTORABLE );
         m_incomingMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
         m_outgoingMutex = Helper::createThreadMutex( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -451,6 +450,8 @@ namespace Mengine
         }
 
         m_runtimeLogger = runtimeLogger;
+
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_FINALIZE_GAME, &MCPService::notifyBootstrapperFinalizeGame_, MENGINE_DOCUMENT_FACTORABLE );
 
 #if defined(MENGINE_PLATFORM_ANDROID)
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_INTENT_START, &MCPService::notifyApplicationIntent_, MENGINE_DOCUMENT_FACTORABLE );

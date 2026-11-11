@@ -112,17 +112,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32FileMapped::close()
     {
+        if( m_hFile == INVALID_HANDLE_VALUE )
+        {
+            return;
+        }
+
         if( m_hMapping != INVALID_HANDLE_VALUE )
         {
             ::CloseHandle( m_hMapping );
             m_hMapping = INVALID_HANDLE_VALUE;
         }
 
-        if( m_hFile != INVALID_HANDLE_VALUE )
-        {
-            ::CloseHandle( m_hFile );
-            m_hFile = INVALID_HANDLE_VALUE;
-        }
+        ::CloseHandle( m_hFile );
+        m_hFile = INVALID_HANDLE_VALUE;
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryFileMappedInputStream );
 

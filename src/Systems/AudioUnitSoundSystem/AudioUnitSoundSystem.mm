@@ -123,6 +123,24 @@ namespace Mengine
             {
                 m_outputSampleRate = sampleRate;
             }
+        }
+#endif
+
+        if( this->createAudioMixer_() == false )
+        {
+            LOGGER_ASSERTION( "failed to create apple audio mixer" );
+
+#if defined(MENGINE_PLATFORM_IOS)
+            this->deactivateAudioSession_();
+#endif
+
+            return false;
+        }
+
+#if defined(MENGINE_PLATFORM_IOS)
+        @autoreleasepool
+        {
+            AVAudioSession * session = [AVAudioSession sharedInstance];
 
             AudioUnitSoundSystem * soundSystem = this;
 
@@ -148,13 +166,6 @@ namespace Mengine
             ];
         }
 #endif
-
-        if( this->createAudioMixer_() == false )
-        {
-            LOGGER_ASSERTION( "failed to create apple audio mixer" );
-
-            return false;
-        }
 
         LOGGER_MESSAGE( "AudioUnitSoundSystem initialized with shared AudioUnit mixer backend" );
 
@@ -182,17 +193,7 @@ namespace Mengine
         this->destroyAudioMixer_();
 
 #if defined(MENGINE_PLATFORM_IOS)
-        @autoreleasepool
-        {
-            AVAudioSession * session = [AVAudioSession sharedInstance];
-            NSError * error = nil;
-            if( [session setActive:NO withOptions:AVAudioSessionSetActiveOptionNotifyOthersOnDeactivation error:&error] == NO )
-            {
-                IOS_LOGGER_WARNING( @"failed to deactivate AVAudioSession [%@]"
-                    , error.localizedDescription
-                );
-            }
-        }
+        this->deactivateAudioSession_();
 #endif
 
         m_factoryAudioUnitSoundBuffer = nullptr;
@@ -783,6 +784,20 @@ namespace Mengine
             IOS_LOGGER_WARNING( @"failed to restart output unit after interruption [%d]"
                 , status
             );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AudioUnitSoundSystem::deactivateAudioSession_()
+    {
+        @autoreleasepool
+        {
+            NSError * error = nil;
+            if( [[AVAudioSession sharedInstance] setActive:NO withOptions:AVAudioSessionSetActiveOptionNotifyOthersOnDeactivation error:&error] == NO )
+            {
+                IOS_LOGGER_WARNING( @"failed to deactivate AVAudioSession [%@]"
+                    , error.localizedDescription
+                );
+            }
         }
     }
 #endif

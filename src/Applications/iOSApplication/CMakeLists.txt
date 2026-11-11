@@ -175,6 +175,32 @@ if(MENGINE_APPLICATION_DEPLOY_STORYBOARD)
     endforeach()
 endif()
 
+if(MENGINE_APPLICATION_DEPLOY_LOCALIZATION)
+    set(MENGINE_DEPLOY_LOCALIZATION "${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_LOCALIZATION}")
+
+    MESSAGE("Add deploy localization: ${MENGINE_DEPLOY_LOCALIZATION}")
+
+    if(NOT EXISTS "${MENGINE_DEPLOY_LOCALIZATION}")
+        MESSAGE(FATAL_ERROR "Deploy localization path setup invalid path '${MENGINE_DEPLOY_LOCALIZATION}'")
+    endif()
+
+    file(GLOB FILES "${MENGINE_DEPLOY_LOCALIZATION}/*.lproj/*.strings")
+
+    if(NOT FILES)
+        MESSAGE(FATAL_ERROR "Deploy localization '${MENGINE_DEPLOY_LOCALIZATION}' has no <lang>.lproj/*.strings files")
+    endif()
+
+    foreach(FILE ${FILES})
+        file(RELATIVE_PATH RES ${MENGINE_DEPLOY_LOCALIZATION} ${FILE})
+        get_filename_component(RES_LOC ${RES} PATH)
+
+        set_source_files_properties(${FILE} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+        source_group("deploy_localization\\${RES_LOC}" FILES ${FILE})
+    endforeach()
+
+    set(MENGINE_APPLE_RESOURCES ${MENGINE_APPLE_RESOURCES} ${FILES})
+endif()
+
 if(MENGINE_APPLICATION_DEPLOY_DATA)
     if(NOT EXISTS "${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_DATA}")
         MESSAGE(FATAL_ERROR "Deploy data path setup invalid path '${MENGINE_DEPLOY_PATH}/${MENGINE_APPLICATION_DEPLOY_DATA}'")

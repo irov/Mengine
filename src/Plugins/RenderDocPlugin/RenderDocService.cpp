@@ -60,6 +60,8 @@ namespace Mengine
                 , Helper::Win32GetLastErrorMessageW()
             );
 
+            ::FreeLibrary( renderDocModule );
+
             return false;
         }
          
@@ -69,6 +71,8 @@ namespace Mengine
             LOGGER_ERROR( "invalid module '%ls' RENDERDOC_GetAPI failed [eRENDERDOC_API_Version_1_6_0]"
                 , MENGINE_RENDERDOC_DLLNAME
             );
+
+            ::FreeLibrary( renderDocModule );
 
             return false;
         }

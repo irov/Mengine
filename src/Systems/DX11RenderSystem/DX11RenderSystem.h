@@ -23,6 +23,7 @@ namespace Mengine
     typedef IntrusivePtr<class DX11RenderVertexAttribute, class RenderVertexAttributeInterface> DX11RenderVertexAttributePtr;
     typedef IntrusivePtr<class DX11RenderProgram, class RenderProgramInterface> DX11RenderProgramPtr;
     //////////////////////////////////////////////////////////////////////////
+    class DX11RenderProgramVariable;
     class DX11RenderVertexBuffer;
     class DX11RenderIndexBuffer;
     class DX11RenderImageTarget;
@@ -182,6 +183,7 @@ namespace Mengine
         void onDestroyVertexShader_( DX11RenderVertexShader * _shader );
         void onDestroyFragmentShader_( DX11RenderFragmentShader * _shader );
         void onDestroyProgram_( DX11RenderProgram * _program );
+        void onDestroyRenderProgramVariable_( DX11RenderProgramVariable * _variable );
         void onDestroyVertexBuffer_( DX11RenderVertexBuffer * _buffer );
         void onDestroyIndexBuffer_( DX11RenderIndexBuffer * _buffer );
         void onDestroyRenderImage_( DX11RenderImage * _image );

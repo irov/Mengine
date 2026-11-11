@@ -176,6 +176,8 @@ namespace Mengine
                 , m_resourceTrackMatteImage->getName().c_str()
             );
 
+            m_resourceImage->release();
+
             return false;
         }
 

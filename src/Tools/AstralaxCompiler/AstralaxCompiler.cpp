@@ -4,7 +4,6 @@
 
 #include "Kernel/Magic.h"
 #include "Kernel/Logger.h"
-#include "ToolUtils/ToolUtils.h"
 
 #include "magic.h"
 
@@ -41,30 +40,25 @@ extern "C"
     //////////////////////////////////////////////////////////////////////////
 }
 //////////////////////////////////////////////////////////////////////////
-namespace Detail
+static void * EXP_DECL Astralax_Allocate(size_t _size, void * _userdata)
 {
-    //////////////////////////////////////////////////////////////////////////
-    static void * EXP_DECL Astralax_Allocate(size_t _size, void * _userdata)
-    {
-        (void)_userdata;
+    (void)_userdata;
 
-        return ::malloc( _size );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void * EXP_DECL Astralax_Reallocate(void * _memory, size_t _size, void * _userdata)
-    {
-        (void)_userdata;
+    return ::malloc( _size );
+}
+//////////////////////////////////////////////////////////////////////////
+static void * EXP_DECL Astralax_Reallocate(void * _memory, size_t _size, void * _userdata)
+{
+    (void)_userdata;
 
-        return ::realloc( _memory, _size );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void EXP_DECL Astralax_Free(void * _memory, void * _userdata)
-    {
-        (void)_userdata;
+    return ::realloc( _memory, _size );
+}
+//////////////////////////////////////////////////////////////////////////
+static void EXP_DECL Astralax_Free(void * _memory, void * _userdata)
+{
+    (void)_userdata;
 
-        ::free( _memory );
-    }
-    //////////////////////////////////////////////////////////////////////////
+    ::free( _memory );
 }
 //////////////////////////////////////////////////////////////////////////
 int main( int argc, char * argv[] )
@@ -282,9 +276,9 @@ int main( int argc, char * argv[] )
     fclose( f );
 
     MAGIC_ALLOCATOR allocator;
-    allocator.alloc = &Detail::Astralax_Allocate;
-    allocator.realloc = &Detail::Astralax_Reallocate;
-    allocator.free = &Detail::Astralax_Free;
+    allocator.alloc = &Astralax_Allocate;
+    allocator.realloc = &Astralax_Reallocate;
+    allocator.free = &Astralax_Free;
     allocator.userdata = nullptr;
 
     if( Magic_Initialize( &allocator ) != MAGIC_SUCCESS )

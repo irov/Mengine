@@ -744,6 +744,10 @@ namespace Mengine
 
             zip_memory->setMemoryInputStream( memory );
 
+            const FilePath & relationPath = this->getRelationPath();
+
+            zip_memory->open( relationPath, fi.zip->folderPath, _filePath );
+
             return zip_memory;
         }
 
@@ -837,10 +841,6 @@ namespace Mengine
                     fi.zip->stream->seek( file_offset );
                     fi.zip->stream->read( buffer, fi.file_size );
                     fi.zip->mutex->unlock();
-
-                    const FilePath & relationPath = this->getRelationPath();
-
-                    zip_memory->open( relationPath, fi.zip->folderPath, _filePath );
                 }
                 else
                 {
@@ -893,10 +893,6 @@ namespace Mengine
 
                     return false;
                 }
-
-                const FilePath & relationPath = this->getRelationPath();
-
-                zip_memory->open( relationPath, fi.zip->folderPath, _filePath );
             }
         }
 

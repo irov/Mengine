@@ -84,6 +84,10 @@ namespace Mengine
 
         m_hFile = hFile;
 
+#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
+        Helper::addDebugFilePath( this, _relationPath, _folderPath, _filePath, MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
         LARGE_INTEGER lpFileSize;
         if( ::GetFileSizeEx( m_hFile, &lpFileSize ) == FALSE )
         {
@@ -157,10 +161,6 @@ namespace Mengine
 #endif
 
         STATISTIC_INC_INTEGER( STATISTIC_FILE_OPEN_COUNT );
-
-#if defined(MENGINE_DEBUG_FILE_PATH_ENABLE)
-        Helper::addDebugFilePath( this, _relationPath, _folderPath, _filePath, MENGINE_DOCUMENT_FACTORABLE );
-#endif
 
         return true;
     }

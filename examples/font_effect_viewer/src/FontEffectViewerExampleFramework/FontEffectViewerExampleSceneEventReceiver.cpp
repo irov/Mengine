@@ -155,6 +155,8 @@ namespace Mengine
         , m_loadedGlyphCounter( 0 )
         , m_presetIndex( -1 )
         , m_glyphIndex( -1 )
+        , m_maxTextLength( -1.f )
+        , m_maxTextCharCount( MENGINE_UNKNOWN_COUNT )
         , m_height( 64 )
         , m_sampleIndex( 1 )
         , m_noEffect( false )
@@ -208,12 +210,12 @@ namespace Mengine
         APPLICATION_SERVICE()
             ->setFixedViewportResolution( false );
 
-        this->loadSettings_();
-
         if( this->loadBundledFonts_() == false )
         {
             m_status = "Failed to load bundled Glyphs.json/Fonts.json (run build/downloads/downloads.sh)";
         }
+
+        this->loadSettings_();
 
         if( this->loadBundledEffects_() == false )
         {
@@ -369,6 +371,24 @@ namespace Mengine
         _result->set( "pan_y", m_previewPan.y );
         _result->set( "sample", Detail::SAMPLE_VALUES[m_sampleIndex] );
         _result->set( "text", m_textInput );
+        const Char * shapingLanguage = m_shapingLanguage.c_str();
+        _result->set( "shaping_language", shapingLanguage );
+        _result->set( "max_length", m_maxTextLength );
+        _result->set( "max_char_count", m_maxTextCharCount );
+
+        if( m_textField != nullptr && m_font != nullptr && m_font->isCompileFont() == true )
+        {
+            const mt::vec2f & textSize = m_textField->getTextSize();
+            _result->set( "text_width", textSize.x );
+            _result->set( "text_height", textSize.y );
+            uint32_t charCount = m_textField->getCharCount();
+            _result->set( "char_count", charCount );
+
+            Viewport viewport;
+            bool hasText = m_textField->calcTotalTextViewport( &viewport );
+            _result->set( "has_text", hasText );
+        }
+
         _result->set( "dirty", m_dirty );
         _result->set( "status", m_status.c_str() );
         _result->set( "font_compiled", m_font != nullptr && m_font->isCompileFont() == true );
@@ -421,7 +441,9 @@ namespace Mengine
 
                 m_glyphIndex = index;
 
-                this->selectGlyph_( Helper::stringizeString( glyph ) );
+                ConstString glyphName = Helper::stringizeString( glyph );
+                this->selectGlyph_( glyphName );
+                m_glyphPathInput[0] = '\0';
             }
 
             jpp::object j_glyphFile;
@@ -536,6 +558,28 @@ namespace Mengine
                         m_dirty = true;
                     }
                 }
+            }
+
+            jpp::object j_maxLength;
+            if( _arguments.exist( "max_length", &j_maxLength ) == true )
+            {
+                m_maxTextLength = j_maxLength;
+                m_dirty = true;
+            }
+
+            jpp::object j_maxCharCount;
+            if( _arguments.exist( "max_char_count", &j_maxCharCount ) == true )
+            {
+                m_maxTextCharCount = j_maxCharCount;
+                m_dirty = true;
+            }
+
+            jpp::object j_language;
+            if( _arguments.exist( "shaping_language", &j_language ) == true )
+            {
+                const Char * language = j_language;
+                m_shapingLanguage = language;
+                m_dirty = true;
             }
 
             jpp::object j_text;
@@ -707,8 +751,13 @@ namespace Mengine
         StdString::strcpy_safe( m_presetNameInput, settings.get( "preset", "" ), sizeof( m_presetNameInput ) );
         StdString::strcpy_safe( m_textInput, settings.get( "text", m_textInput ), sizeof( m_textInput ) );
 
+        const Char * shapingLanguage = settings.get( "shaping_language", "" );
+        m_shapingLanguage = shapingLanguage;
+
         m_height = settings.get( "height", m_height );
         m_sampleIndex = settings.get( "sample_index", m_sampleIndex );
+        const Char * glyphName = settings.get( "glyph", "" );
+        m_glyphIndex = Detail::findString( m_glyphNames, glyphName );
         m_previewScale = settings.get( "preview_scale", m_previewScale );
         m_showGlyphPreview = settings.get( "show_glyph_preview", m_showGlyphPreview );
         m_noEffect = settings.get( "no_effect", m_noEffect );
@@ -744,8 +793,18 @@ namespace Mengine
         settings.set( "glyph_file", m_glyphPathInput );
         settings.set( "preset", m_presetNameInput );
         settings.set( "text", m_textInput );
+        const Char * shapingLanguage = m_shapingLanguage.c_str();
+        settings.set( "shaping_language", shapingLanguage );
         settings.set( "height", m_height );
         settings.set( "sample_index", m_sampleIndex );
+
+        if( m_glyph != nullptr )
+        {
+            const ConstString & glyphName = m_glyph->getName();
+            const Char * name = glyphName.c_str();
+            settings.set( "glyph", name );
+        }
+
         settings.set( "preview_scale", m_previewScale );
         settings.set( "show_glyph_preview", m_showGlyphPreview );
         settings.set( "no_effect", m_noEffect );
@@ -1164,6 +1223,10 @@ namespace Mengine
             }
         }
 
+        TTFFontPtr ttfFont = TTFFontPtr::from( m_font );
+        ConstString shapingLanguage = Helper::stringizeString( m_shapingLanguage );
+        ttfFont->setShapingLanguage( shapingLanguage );
+
         m_font->setGlyph( m_glyph );
 
         m_font->setHeight( (uint32_t)m_height );
@@ -1195,6 +1258,13 @@ namespace Mengine
 
         textField->setName( STRINGIZE_STRING_LOCAL( "FontEffectViewerText" ) );
         textField->setFont( m_font );
+
+        if( m_maxTextLength > 0.f )
+        {
+            textField->setMaxLength( m_maxTextLength );
+        }
+
+        textField->setMaxCharCount( m_maxTextCharCount );
         textField->setText( String( m_textInput ) );
         textField->setHorizontAlign( ETFHA_CENTER );
         textField->setVerticalAlign( ETFVA_CENTER );
@@ -1743,7 +1813,10 @@ namespace Mengine
                             {
                                 m_glyphIndex = (int)index;
 
-                                this->selectGlyph_( Helper::stringizeString( m_glyphNames[index].c_str() ) );
+                                const Char * name = m_glyphNames[index].c_str();
+                                ConstString glyphName = Helper::stringizeString( name );
+                                this->selectGlyph_( glyphName );
+                                m_glyphPathInput[0] = '\0';
                             }
                         }
 

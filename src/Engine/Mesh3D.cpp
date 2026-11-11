@@ -73,6 +73,8 @@ namespace Mengine
 
         if( m_resourceImage->compile() == false )
         {
+            m_resourceMesh->release();
+
             return false;
         }
 
@@ -89,6 +91,8 @@ namespace Mengine
                 , m_indexCount
             );
 
+            Mesh3D::_release();
+
             return false;
         }
 
@@ -99,12 +103,16 @@ namespace Mengine
 
         if( m_vertexBuffer->resize( m_vertexCount ) == false )
         {
+            Mesh3D::_release();
+
             return false;
         }
 
         if( m_vertexBuffer->draw( vertices.data(), 0, m_vertexCount ) == false )
         {
             LOGGER_ERROR( "mesh3d failed to upload vertex buffer" );
+
+            Mesh3D::_release();
 
             return false;
         }
@@ -116,12 +124,16 @@ namespace Mengine
 
         if( m_indexBuffer->resize( m_indexCount ) == false )
         {
+            Mesh3D::_release();
+
             return false;
         }
 
         if( m_indexBuffer->draw( indices.data(), 0, m_indexCount ) == false )
         {
             LOGGER_ERROR( "mesh3d failed to upload index buffer" );
+
+            Mesh3D::_release();
 
             return false;
         }

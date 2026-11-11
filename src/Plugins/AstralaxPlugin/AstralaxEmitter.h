@@ -105,6 +105,7 @@ namespace Mengine
         void _updateBoundingBox( mt::box2f * const _boundingBox, mt::box2f ** const _boundingBoxCurrent ) const override;
 
     protected:
+        bool setupEmitter_( const AstralaxEmitterInterfacePtr & _emitter );
         bool compileEmitterImage_( const AstralaxEmitterInterfacePtr & _emitter );
         bool compilePolygon_( const AstralaxEmitterInterfacePtr & _emitter );
 

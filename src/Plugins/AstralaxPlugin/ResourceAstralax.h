@@ -36,6 +36,9 @@ namespace Mengine
         void _release() override;
 
     protected:
+        void releaseResourceImages_( uint32_t _count );
+
+    protected:
         VectorResourceImages m_resourceImages;
 
         AstralaxEmitterContainerInterfacePtr m_container;

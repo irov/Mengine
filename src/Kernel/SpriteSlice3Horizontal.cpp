@@ -227,6 +227,8 @@ namespace Mengine
                     , index
                 );
 
+                this->releaseSurfaces_( index );
+
                 return false;
             }
 
@@ -252,14 +254,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SpriteSlice3Horizontal::_release()
     {
-        for( uint32_t index = 0; index != 3; ++index )
+        this->releaseSurfaces_( 3 );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SpriteSlice3Horizontal::releaseSurfaces_( uint32_t _count )
+    {
+        for( uint32_t index = 0; index != _count; ++index )
         {
-            if( m_surfaces[index] == nullptr )
+            const SurfacePtr & surface = m_surfaces[index];
+
+            if( surface == nullptr )
             {
                 continue;
             }
 
-            m_surfaces[index]->release();
+            surface->release();
         }
     }
     //////////////////////////////////////////////////////////////////////////

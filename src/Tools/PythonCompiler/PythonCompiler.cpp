@@ -99,7 +99,7 @@ static bool compileSource( tinypy_vm_t * _vm, const tinypy_build_profile_t * _pr
     tinypy_compile_options_init( &options, TINYPY_COMPILE_EXEC );
     options.flags = TINYPY_COMPILE_FLAG_STRING_SOURCE;
     options.dont_inherit = TINYPY_TRUE;
-    options.optimize_level = PYTHON_COMPILER_OPTIMIZE_LEVEL;
+    options.optimize_level = tinypy_build_profile_optimize_level( _profile );
     options.feature_flags = TINYPY_COMPILE_FEATURE_PREPROCESSOR | TINYPY_COMPILE_FEATURE_META;
     options.build_profile = _profile;
 
@@ -128,7 +128,12 @@ static bool compileSource( tinypy_vm_t * _vm, const tinypy_build_profile_t * _pr
         return false;
     }
 
-    bool successful = writeCode( code, _output, _timestamp );
+    bool successful = true;
+
+    if( _output != nullptr )
+    {
+        successful = writeCode( code, _output, _timestamp );
+    }
 
     tinypy_release( code );
 
@@ -142,6 +147,8 @@ static bool compileSource( tinypy_vm_t * _vm, const tinypy_build_profile_t * _pr
 //////////////////////////////////////////////////////////////////////////
 static bool compileFile( const uint8_t * _source, size_t _sourceSize, const std::string & _filename, const wchar_t * _output, uint32_t _timestamp )
 {
+    int32_t optimizeLevel = _output == nullptr ? 0 : PYTHON_COMPILER_OPTIMIZE_LEVEL;
+
     tinypy_allocator_t allocator{};
     allocator.abi_version = TINYPY_ABI_VERSION;
     allocator.struct_size = sizeof( allocator );
@@ -153,7 +160,7 @@ static bool compileFile( const uint8_t * _source, size_t _sourceSize, const std:
     config.abi_version = TINYPY_ABI_VERSION;
     config.struct_size = sizeof( config );
     config.allocator = &allocator;
-    config.optimize_level = PYTHON_COMPILER_OPTIMIZE_LEVEL;
+    config.optimize_level = optimizeLevel;
 
     tinypy_vm_t * vm = tinypy_vm_create( &config );
 
@@ -172,11 +179,11 @@ static bool compileFile( const uint8_t * _source, size_t _sourceSize, const std:
     tinypy_build_value_init( &debugFlag.value, TINYPY_BUILD_VALUE_DEBUG_FLAG );
 
     tinypy_build_profile_t * profile = nullptr;
-    tinypy_build_profile_result_e result = tinypy_build_profile_create( &allocator, PYTHON_COMPILER_OPTIMIZE_LEVEL, &debugFlag, 1, nullptr, &profile, nullptr );
+    tinypy_build_profile_result_e result = tinypy_build_profile_create( &allocator, optimizeLevel, &debugFlag, 1, nullptr, &profile, nullptr );
 
     if( result != TINYPY_BUILD_PROFILE_OK )
     {
-        message_error( "PythonCompiler: cannot create release build profile" );
+        message_error( "PythonCompiler: cannot create build profile" );
 
         tinypy_vm_destroy( vm );
 
@@ -202,30 +209,48 @@ int main( int argc, char * argv[] )
     (void)argv;
 
     std::wstring input = parse_kwds( L"--in", std::wstring() );
-    std::wstring output = parse_kwds( L"--out", std::wstring() );
+    bool validate = has_args( L"--validate" );
 
     if( input.empty() == true )
     {
-        message_error( "Usage: PythonCompiler --in <script.py> --out <script.pyo>" );
+        message_error( "Usage: PythonCompiler --in <script.py> --out <script.pyo> | --in <script.py> --validate (Debug profile)" );
 
         return EXIT_FAILURE;
     }
 
-    if( output.empty() == true )
-    {
-        message_error( "Usage: PythonCompiler --in <script.py> --out <script.pyo>" );
-
-        return EXIT_FAILURE;
-    }
+    std::wstring output;
 
     const wchar_t * inputPath = input.c_str();
-    const wchar_t * outputPath = output.c_str();
+    const wchar_t * outputPath = nullptr;
 
-    if( file_paths_equivalent( inputPath, outputPath ) == true )
+    if( validate == true )
     {
-        message_error( "PythonCompiler: input and output must differ" );
+        if( has_args( L"--out" ) == true )
+        {
+            message_error( "PythonCompiler: --validate does not accept --out" );
 
-        return EXIT_FAILURE;
+            return EXIT_FAILURE;
+        }
+    }
+    else
+    {
+        output = parse_kwds( L"--out", std::wstring() );
+
+        if( output.empty() == true )
+        {
+            message_error( "Usage: PythonCompiler --in <script.py> --out <script.pyo> | --in <script.py> --validate (Debug profile)" );
+
+            return EXIT_FAILURE;
+        }
+
+        outputPath = output.c_str();
+
+        if( file_paths_equivalent( inputPath, outputPath ) == true )
+        {
+            message_error( "PythonCompiler: input and output must differ" );
+
+            return EXIT_FAILURE;
+        }
     }
 
     std::string filename = unicode_to_utf8( input );

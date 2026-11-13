@@ -9,9 +9,10 @@ PythonCompiler --in script.py --out script.pyo \
 
 `-D NAME=literal` is also accepted. Definitions use TinyPy's shared build-profile
 parser. Values are explicit Python 2.7 literals: `None`, bool, integer/long,
-float, quoted byte/Unicode strings and nested tuples. Keep literal quotes when
-passing strings through the shell. Duplicate names and non-literal expressions
-are errors; no Python code executes while definitions are parsed.
+float and quoted byte/Unicode strings. Keep literal quotes when passing strings
+through the shell. All containers, including empty or nested tuples, duplicate
+names and non-literal expressions are errors; no Python code executes while
+definitions are parsed.
 
 Definitions are independent of the tool's optimization level. Matching bare
 names become typed constants throughout the script, including outside `if`.

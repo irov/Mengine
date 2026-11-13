@@ -131,9 +131,11 @@ namespace Mengine
         config.optimize_level = MENGINE_DEBUG_VALUE( 0, 1 );
         config.enable_meta = true;
 
-        const Char * const debugFlagNames[] = {"_DEVELOPMENT"};
-        config.debug_flag_names = debugFlagNames;
-        config.debug_flag_count = MENGINE_ARRAY_SIZE( debugFlagNames );
+#if !defined(MENGINE_DEBUG)
+        const Char * const buildDefinitions[] = {"_DEVELOPMENT=False"};
+        config.build_definitions = buildDefinitions;
+        config.build_definition_count = MENGINE_ARRAY_SIZE( buildDefinitions );
+#endif
 
         bool OPTION_pythoncyclediag = HAS_OPTION( "pythoncyclediag" );
 

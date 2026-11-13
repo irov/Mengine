@@ -9,6 +9,7 @@
 #import "iOSViewController.h"
 
 #import "Environment/Apple/AppleUserDefaults.h"
+#import "Environment/Apple/AppleBundle.h"
 #import "Environment/Apple/AppleDetail.h"
 #import "Environment/Apple/AppleLog.h"
 #import "Environment/Apple/AppleString.h"
@@ -47,6 +48,7 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
 
 @property (nonatomic, strong) NSMutableArray<iOSDidBecomeActiveOperationBlock> * m_didBecomeActiveOperations;
 @property (nonatomic, assign) BOOL m_isProcessingDidBecomeActiveOperation;
+@property (nonatomic, assign) BOOL m_isIdleTimerDisabled;
 @property (nonatomic, assign) BOOL m_isApplicationForeground;
 @property (nonatomic, assign) BOOL m_isApplicationTerminating;
 @property (nonatomic, strong) AppleGameControllerInput * m_gameControllerInput;
@@ -84,6 +86,9 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
         self.m_isProcessingDidBecomeActiveOperation = NO;
         self.m_isApplicationForeground = NO;
         self.m_isApplicationTerminating = NO;
+
+        NSNumber * idleTimerDisabled = [AppleBundle getApplicationConfigValue:@"IdleTimerDisabled"];
+        self.m_isIdleTimerDisabled = idleTimerDisabled.boolValue;
 
         NSArray * proxysClassed = [iOSApplicationDelegates getApplicationDelegates];
 
@@ -497,6 +502,10 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
     [AppleLog withFormat:@"Mengine application applicationDidBecomeActive"];
 
     if (self.m_isApplicationTerminating == NO) {
+        if (self.m_isIdleTimerDisabled == YES) {
+            application.idleTimerDisabled = YES;
+        }
+
         [self processNextOperation];
     }
 
@@ -581,6 +590,10 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
 - (void)handleApplicationWillResignActive:(UIApplication *)application {
     [AppleLog withFormat:@"Mengine application applicationWillResignActive"];
 
+    if (self.m_isIdleTimerDisabled == YES) {
+        application.idleTimerDisabled = NO;
+    }
+
     @autoreleasepool {
         for (id plugin in self.m_plugins) {
             if ([plugin respondsToSelector:@selector(applicationWillResignActive:)] == NO) {
@@ -610,6 +623,10 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
     self.m_isApplicationForeground = NO;
 
     [AppleLog withFormat:@"Mengine application applicationWillTerminate"];
+
+    if (self.m_isIdleTimerDisabled == YES) {
+        application.idleTimerDisabled = NO;
+    }
 
     @autoreleasepool {
         for (id plugin in self.m_plugins) {

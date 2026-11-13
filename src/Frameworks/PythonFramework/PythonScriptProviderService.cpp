@@ -131,12 +131,6 @@ namespace Mengine
         config.optimize_level = MENGINE_DEBUG_VALUE( 0, 1 );
         config.enable_meta = true;
 
-#if !defined(MENGINE_DEBUG)
-        const Char * const buildDefinitions[] = {"_DEVELOPMENT=False"};
-        config.build_definitions = buildDefinitions;
-        config.build_definition_count = MENGINE_ARRAY_SIZE( buildDefinitions );
-#endif
-
         bool OPTION_pythoncyclediag = HAS_OPTION( "pythoncyclediag" );
 
         config.cycle_diagnostics = OPTION_pythoncyclediag;
@@ -150,6 +144,18 @@ namespace Mengine
 #endif
 
         MENGINE_ASSERTION_MEMORY_PANIC( kernel, "invalid initialize pybind" );
+
+#if !defined(MENGINE_DEBUG)
+        if( kernel->set_compile_constant( "_DEVELOPMENT", kernel->get_false() ) == false )
+        {
+            LOGGER_ERROR( "invalid setup TinyPy compile constant '_DEVELOPMENT'" );
+
+            kernel->destroy();
+            Helper::deleteT( static_cast<Detail::PybindAllocator *>(allocator) );
+
+            return false;
+        }
+#endif
 
         m_kernel = kernel;
 

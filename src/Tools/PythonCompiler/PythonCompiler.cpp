@@ -8,10 +8,10 @@
 
 //////////////////////////////////////////////////////////////////////////
 static const int32_t PYTHON_COMPILER_OPTIMIZE_LEVEL = 1;
-static const char PYTHON_COMPILER_DEBUG_FLAG[] = "_DEVELOPMENT";
 static const size_t PYTHON_COMPILER_HEADER_SIZE = sizeof( uint32_t ) * 2;
 //////////////////////////////////////////////////////////////////////////
 typedef std::vector<uint8_t> VectorBytes;
+typedef std::vector<std::string> VectorDefinitions;
 //////////////////////////////////////////////////////////////////////////
 static void * allocate( void * _userData, size_t _size, size_t _alignment )
 {
@@ -93,13 +93,13 @@ static bool writeCode( const tinypy_value_t * _code, const wchar_t * _output, ui
     return true;
 }
 //////////////////////////////////////////////////////////////////////////
-static bool compileSource( tinypy_vm_t * _vm, const tinypy_build_profile_t * _profile, const uint8_t * _source, size_t _sourceSize, const std::string & _filename, const wchar_t * _output, uint32_t _timestamp )
+static bool compileSource( tinypy_vm_t * _vm, int32_t _optimizeLevel, const tinypy_build_profile_t * _profile, const uint8_t * _source, size_t _sourceSize, const std::string & _filename, const wchar_t * _output, uint32_t _timestamp )
 {
     tinypy_compile_options_t options;
     tinypy_compile_options_init( &options, TINYPY_COMPILE_EXEC );
     options.flags = TINYPY_COMPILE_FLAG_STRING_SOURCE;
     options.dont_inherit = TINYPY_TRUE;
-    options.optimize_level = tinypy_build_profile_optimize_level( _profile );
+    options.optimize_level = _optimizeLevel;
     options.feature_flags = TINYPY_COMPILE_FEATURE_PREPROCESSOR | TINYPY_COMPILE_FEATURE_META;
     options.build_profile = _profile;
 
@@ -145,7 +145,7 @@ static bool compileSource( tinypy_vm_t * _vm, const tinypy_build_profile_t * _pr
     return true;
 }
 //////////////////////////////////////////////////////////////////////////
-static bool compileFile( const uint8_t * _source, size_t _sourceSize, const std::string & _filename, const wchar_t * _output, uint32_t _timestamp )
+static bool compileFile( const uint8_t * _source, size_t _sourceSize, const std::string & _filename, const wchar_t * _output, uint32_t _timestamp, const VectorDefinitions & _definitions )
 {
     int32_t optimizeLevel = _output == nullptr ? 0 : PYTHON_COMPILER_OPTIMIZE_LEVEL;
 
@@ -171,26 +171,33 @@ static bool compileFile( const uint8_t * _source, size_t _sourceSize, const std:
         return false;
     }
 
-    tinypy_build_constant_t debugFlag{};
-    debugFlag.abi_version = TINYPY_COMPILER_ABI_VERSION;
-    debugFlag.struct_size = sizeof( debugFlag );
-    debugFlag.name = PYTHON_COMPILER_DEBUG_FLAG;
-    debugFlag.name_size = sizeof( PYTHON_COMPILER_DEBUG_FLAG ) - 1;
-    tinypy_build_value_init( &debugFlag.value, TINYPY_BUILD_VALUE_DEBUG_FLAG );
+    std::vector<const char *> definitions;
+
+    for( const std::string & definition : _definitions )
+    {
+        definitions.emplace_back( definition.c_str() );
+    }
 
     tinypy_build_profile_t * profile = nullptr;
-    tinypy_build_profile_result_e result = tinypy_build_profile_create( &allocator, optimizeLevel, &debugFlag, 1, nullptr, &profile, nullptr );
+    tinypy_build_profile_error_t profileError;
 
-    if( result != TINYPY_BUILD_PROFILE_OK )
+    if( tinypy_build_profile_parse( vm, &allocator, definitions.data(), definitions.size(), nullptr, &profile, &profileError ) != TINYPY_BUILD_PROFILE_OK )
     {
-        message_error( "PythonCompiler: cannot create build profile" );
+        if( profileError.constant_index < definitions.size() )
+        {
+            message_error( "PythonCompiler: invalid constant definition '%s': %.*s", definitions[profileError.constant_index], static_cast<int>(profileError.message_size), profileError.message );
+        }
+        else
+        {
+            message_error( "PythonCompiler: invalid constant definitions: %.*s", static_cast<int>(profileError.message_size), profileError.message );
+        }
 
         tinypy_vm_destroy( vm );
 
         return false;
     }
 
-    bool successful = compileSource( vm, profile, _source, _sourceSize, _filename, _output, _timestamp );
+    bool successful = compileSource( vm, optimizeLevel, profile, _source, _sourceSize, _filename, _output, _timestamp );
 
     tinypy_build_profile_destroy( profile );
     tinypy_vm_destroy( vm );
@@ -210,10 +217,54 @@ int main( int argc, char * argv[] )
 
     std::wstring input = parse_kwds( L"--in", std::wstring() );
     bool validate = has_args( L"--validate" );
+    VectorDefinitions definitions;
+    const std::vector<std::wstring> & arguments = get_command_line_arguments();
+
+    for( size_t index = 1; index < arguments.size(); ++index )
+    {
+        const std::wstring & argument = arguments[index];
+
+        if( argument == L"--in" || argument == L"--out" )
+        {
+            ++index;
+
+            continue;
+        }
+
+        if( argument == L"--validate" )
+        {
+            continue;
+        }
+
+        if( argument.compare( 0, 2, L"-D" ) != 0 )
+        {
+            message_error( "PythonCompiler: unknown argument '%s'", unicode_to_utf8( argument ).c_str() );
+
+            return EXIT_FAILURE;
+        }
+
+        std::wstring definition = argument.substr( 2 );
+
+        if( definition.empty() == true )
+        {
+            ++index;
+
+            if( index == arguments.size() )
+            {
+                message_error( "PythonCompiler: -D requires NAME=literal" );
+
+                return EXIT_FAILURE;
+            }
+
+            definition = arguments[index];
+        }
+
+        definitions.emplace_back( unicode_to_utf8( definition ) );
+    }
 
     if( input.empty() == true )
     {
-        message_error( "Usage: PythonCompiler --in <script.py> --out <script.pyo> | --in <script.py> --validate (Debug profile)" );
+        message_error( "Usage: PythonCompiler --in <script.py> (--out <script.pyo> | --validate) [-DNAME=literal ...]" );
 
         return EXIT_FAILURE;
     }
@@ -238,7 +289,7 @@ int main( int argc, char * argv[] )
 
         if( output.empty() == true )
         {
-            message_error( "Usage: PythonCompiler --in <script.py> --out <script.pyo> | --in <script.py> --validate (Debug profile)" );
+            message_error( "Usage: PythonCompiler --in <script.py> (--out <script.pyo> | --validate) [-DNAME=literal ...]" );
 
             return EXIT_FAILURE;
         }
@@ -265,7 +316,7 @@ int main( int argc, char * argv[] )
         return EXIT_FAILURE;
     }
 
-    bool successful = compileFile( source, sourceSize, filename, outputPath, timestamp );
+    bool successful = compileFile( source, sourceSize, filename, outputPath, timestamp, definitions );
 
     std::free( source );
 

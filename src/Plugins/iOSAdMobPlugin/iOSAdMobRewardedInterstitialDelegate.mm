@@ -22,7 +22,6 @@
 
 - (void)dealloc {
     self.m_ad.fullScreenContentDelegate = nil;
-    self.m_ad.paidEventHandler = nil;
 }
 
 - (void)eventRewardedInterstitial:(NSString *)name params:(NSDictionary *)params {
@@ -36,7 +35,6 @@
             if (NSProcessInfo.processInfo.systemUptime - self.m_loadedTimestamp >= 3600.0) {
                 [self log:@"rewardedInterstitial.expired"];
                 self.m_ad.fullScreenContentDelegate = nil;
-                self.m_ad.paidEventHandler = nil;
                 self.m_ad = nil;
 
                 [self loadAd];
@@ -171,22 +169,6 @@
         ad.fullScreenContentDelegate = strongSelf;
 
         GADResponseInfo * responseInfo = ad.responseInfo;
-        ad.paidEventHandler = ^(GADAdValue * value) {
-            iOSAdMobRewardedInterstitialDelegate * paidSelf = weakSelf;
-
-            if (paidSelf == nil) {
-                return;
-            }
-
-            if (paidSelf.m_showing == NO) {
-                return;
-            }
-
-            [paidSelf eventRevenue:value responseInfo:responseInfo placement:paidSelf.m_placement format:@"ADFORMAT_REWARDED_INTERSTITIAL"];
-            id<iOSAdvertisementCallbackInterface> callback = [paidSelf.m_advertisement getRewardedCallback];
-            [callback oniOSAdvertisementRevenuePaid:paidSelf.m_placement withRevenue:value.value.doubleValue];
-        };
-
         NSDictionary * responseParams = [strongSelf getGADResponseInfoParams:responseInfo];
         [strongSelf log:@"rewardedInterstitial.loaded" withParams:responseParams];
         [strongSelf eventRewardedInterstitial:@"loaded" params:@{}];
@@ -199,7 +181,6 @@
     [self setAdFreeze:NO];
 
     self.m_ad.fullScreenContentDelegate = nil;
-    self.m_ad.paidEventHandler = nil;
     self.m_ad = nil;
     self.m_placement = nil;
     self.m_showing = NO;
@@ -216,6 +197,20 @@
 }
 
 #pragma mark - GADFullScreenContentDelegate
+
+- (void)ad:(id<GADFullScreenPresentingAd>)ad didRecordPaidEventWithAdValue:(GADAdValue *)adValue {
+    if (self.m_showing == NO) {
+        return;
+    }
+
+    GADRewardedInterstitialAd * rewardedInterstitialAd = (GADRewardedInterstitialAd *)ad;
+    GADResponseInfo * responseInfo = rewardedInterstitialAd.responseInfo;
+    [self eventRevenue:adValue responseInfo:responseInfo placement:self.m_placement format:@"ADFORMAT_REWARDED_INTERSTITIAL"];
+
+    id<iOSAdvertisementCallbackInterface> callback = [self.m_advertisement getRewardedCallback];
+    double revenue = adValue.value.doubleValue;
+    [callback oniOSAdvertisementRevenuePaid:self.m_placement withRevenue:revenue];
+}
 
 - (void)adWillPresentFullScreenContent:(id<GADFullScreenPresentingAd>)ad {
     [self log:@"rewardedInterstitial.willPresent"];

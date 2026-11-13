@@ -98,28 +98,6 @@
 
     self.m_bannerView = bannerView;
 
-    __weak iOSAdMobBannerDelegate * weakSelf = self;
-    bannerView.paidEventHandler = ^(GADAdValue * _Nonnull adValue) {
-        iOSAdMobBannerDelegate * strongSelf = weakSelf;
-
-        if (strongSelf == nil) {
-            return;
-        }
-
-        [strongSelf log:@"paidEventHandler" withParams:@{
-            @"value": adValue.value,
-            @"currencyCode": adValue.currencyCode
-        }];
-
-        [strongSelf eventRevenue:adValue responseInfo:strongSelf.m_bannerView.responseInfo placement:strongSelf.m_placement format:@"ADFORMAT_BANNER"];
-
-        id<iOSAdvertisementCallbackInterface> callback = [[iOSAdMobPlugin sharedInstance] getAdvertisementBannerCallback];
-
-        if (callback != nil) {
-            [callback oniOSAdvertisementRevenuePaid:strongSelf.m_placement withRevenue:adValue.value.doubleValue];
-        }
-    };
-
     [self loadAd];
 
     return self;
@@ -246,6 +224,23 @@
     );
 
     [self retryLoadAd];
+}
+
+- (void)bannerView:(GADBannerView *)bannerView didRecordPaidEventWithAdValue:(GADAdValue *)adValue {
+    [self log:@"bannerView:didRecordPaidEventWithAdValue" withParams:@{
+        @"value": adValue.value,
+        @"currencyCode": adValue.currencyCode
+    }];
+
+    GADResponseInfo * responseInfo = bannerView.responseInfo;
+    [self eventRevenue:adValue responseInfo:responseInfo placement:self.m_placement format:@"ADFORMAT_BANNER"];
+
+    id<iOSAdvertisementCallbackInterface> callback = [[iOSAdMobPlugin sharedInstance] getAdvertisementBannerCallback];
+
+    if (callback != nil) {
+        double revenue = adValue.value.doubleValue;
+        [callback oniOSAdvertisementRevenuePaid:self.m_placement withRevenue:revenue];
+    }
 }
 
 - (void)bannerViewDidRecordImpression:(GADBannerView *)bannerView {

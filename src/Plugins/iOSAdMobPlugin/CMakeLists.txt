@@ -30,7 +30,7 @@ src
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_IOS_ADMOB)
 
-ADD_MENGINE_SWIFT_PACKAGE("GoogleMobileAds" "https://github.com/googleads/swift-package-manager-google-mobile-ads.git" "13.11.0")
+ADD_MENGINE_SWIFT_PACKAGE("GoogleMobileAds" "https://github.com/googleads/swift-package-manager-google-mobile-ads.git" "13.12.0")
 
 ADD_MENGINE_APPLE_APPLICATION_DELEGATE("iOSAdMobPlugin")
 

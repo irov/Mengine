@@ -131,30 +131,6 @@
             return;
         }
 
-        __weak iOSAdMobInterstitialDelegate * weakSelf2 = strongSelf;
-        interstitialAd.paidEventHandler = ^(GADAdValue * _Nonnull adValue) {
-            iOSAdMobInterstitialDelegate * strongSelf2 = weakSelf2;
-
-            if (strongSelf2 == nil) {
-                return;
-            }
-
-            GADResponseInfo * responseInfo = strongSelf2.m_interstitialAd.responseInfo;
-
-            [strongSelf2 log:@"paidEventHandler" withParams:@{
-                @"value": adValue.value,
-                @"currencyCode": adValue.currencyCode
-            }];
-
-            [strongSelf2 eventRevenue:adValue responseInfo:responseInfo placement:strongSelf2.m_placement format:@"ADFORMAT_INTERSTITIAL"];
-
-            id<iOSAdvertisementCallbackInterface> callback = [[iOSAdMobPlugin sharedInstance] getAdvertisementInterstitialCallback];
-
-            if (callback != nil) {
-                [callback oniOSAdvertisementRevenuePaid:strongSelf2.m_placement withRevenue:adValue.value.doubleValue];
-            }
-        };
-
         interstitialAd.fullScreenContentDelegate = strongSelf;
         strongSelf.m_interstitialAd = interstitialAd;
 
@@ -169,6 +145,25 @@
 }
 
 #pragma mark - GADFullScreenContentDelegate
+
+- (void)ad:(id<GADFullScreenPresentingAd>)ad didRecordPaidEventWithAdValue:(GADAdValue *)adValue {
+    GADInterstitialAd * interstitialAd = (GADInterstitialAd *)ad;
+    GADResponseInfo * responseInfo = interstitialAd.responseInfo;
+
+    [self log:@"ad:didRecordPaidEventWithAdValue" withParams:@{
+        @"value": adValue.value,
+        @"currencyCode": adValue.currencyCode
+    }];
+
+    [self eventRevenue:adValue responseInfo:responseInfo placement:self.m_placement format:@"ADFORMAT_INTERSTITIAL"];
+
+    id<iOSAdvertisementCallbackInterface> callback = [[iOSAdMobPlugin sharedInstance] getAdvertisementInterstitialCallback];
+
+    if (callback != nil) {
+        double revenue = adValue.value.doubleValue;
+        [callback oniOSAdvertisementRevenuePaid:self.m_placement withRevenue:revenue];
+    }
+}
 
 - (void)adWillPresentFullScreenContent:(id<GADFullScreenPresentingAd>)ad {
     [self log:@"adWillPresentFullScreenContent"];

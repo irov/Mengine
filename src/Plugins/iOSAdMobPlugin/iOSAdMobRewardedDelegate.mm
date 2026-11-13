@@ -187,30 +187,6 @@
             return;
         }
 
-        __weak iOSAdMobRewardedDelegate * weakSelf2 = strongSelf;
-        rewardedAd.paidEventHandler = ^(GADAdValue * _Nonnull adValue) {
-            iOSAdMobRewardedDelegate * strongSelf2 = weakSelf2;
-
-            if (strongSelf2 == nil) {
-                return;
-            }
-
-            GADResponseInfo * responseInfo = strongSelf2.m_rewardedAd.responseInfo;
-
-            [strongSelf2 log:@"paidEventHandler" withParams:@{
-                @"value": adValue.value,
-                @"currencyCode": adValue.currencyCode
-            }];
-
-            [strongSelf2 eventRevenue:adValue responseInfo:responseInfo placement:strongSelf2.m_placement format:@"ADFORMAT_REWARDED"];
-
-            id<iOSAdvertisementCallbackInterface> callback = [[iOSAdMobPlugin sharedInstance] getAdvertisementRewardedCallback];
-
-            if (callback != nil) {
-                [callback oniOSAdvertisementRevenuePaid:strongSelf2.m_placement withRevenue:adValue.value.doubleValue];
-            }
-        };
-
         rewardedAd.fullScreenContentDelegate = strongSelf;
         strongSelf.m_rewardedAd = rewardedAd;
 
@@ -225,6 +201,25 @@
 }
 
 #pragma mark - GADFullScreenContentDelegate
+
+- (void)ad:(id<GADFullScreenPresentingAd>)ad didRecordPaidEventWithAdValue:(GADAdValue *)adValue {
+    GADRewardedAd * rewardedAd = (GADRewardedAd *)ad;
+    GADResponseInfo * responseInfo = rewardedAd.responseInfo;
+
+    [self log:@"ad:didRecordPaidEventWithAdValue" withParams:@{
+        @"value": adValue.value,
+        @"currencyCode": adValue.currencyCode
+    }];
+
+    [self eventRevenue:adValue responseInfo:responseInfo placement:self.m_placement format:@"ADFORMAT_REWARDED"];
+
+    id<iOSAdvertisementCallbackInterface> callback = [[iOSAdMobPlugin sharedInstance] getAdvertisementRewardedCallback];
+
+    if (callback != nil) {
+        double revenue = adValue.value.doubleValue;
+        [callback oniOSAdvertisementRevenuePaid:self.m_placement withRevenue:revenue];
+    }
+}
 
 - (void)adWillPresentFullScreenContent:(id<GADFullScreenPresentingAd>)ad {
     [self log:@"adWillPresentFullScreenContent"];

@@ -235,7 +235,7 @@ namespace Mengine
 
         m_sessionTimestamp = Helper::getSystemTimestamp();
         DATETIME_SYSTEM()
-            ->getDateTimeFromMilliseconds( m_sessionTimestamp, &m_sessionDate );
+            ->getSystemDateTimeFromMilliseconds( m_sessionTimestamp, &m_sessionDate );
         
         Char * sessionIdData = m_sessionId.data();
         size_t sessionIdCapacity = m_sessionId.capacity();

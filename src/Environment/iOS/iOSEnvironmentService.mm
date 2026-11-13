@@ -97,7 +97,7 @@ namespace Mengine
         m_sessionGap = (int64_t)sessionGap;
 
         DATETIME_SYSTEM()
-            ->getDateTimeFromMilliseconds( m_sessionTimestamp, &m_sessionDate );
+            ->getSystemDateTimeFromMilliseconds( m_sessionTimestamp, &m_sessionDate );
 
         return true;
     }

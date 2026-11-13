@@ -198,18 +198,26 @@
 
 #pragma mark - GADFullScreenContentDelegate
 
-- (void)ad:(id<GADFullScreenPresentingAd>)ad didRecordPaidEventWithAdValue:(GADAdValue *)adValue {
+- (void)ad:(id<GADFullScreenPresentingAd>)_ad didRecordPaidEventWithAdValue:(GADAdValue *)_adValue {
     if (self.m_showing == NO) {
         return;
     }
 
-    GADRewardedInterstitialAd * rewardedInterstitialAd = (GADRewardedInterstitialAd *)ad;
+    GADRewardedInterstitialAd * rewardedInterstitialAd = (GADRewardedInterstitialAd *)_ad;
     GADResponseInfo * responseInfo = rewardedInterstitialAd.responseInfo;
-    [self eventRevenue:adValue responseInfo:responseInfo placement:self.m_placement format:@"ADFORMAT_REWARDED_INTERSTITIAL"];
+    NSString * placement = self.m_placement;
+    [self eventRevenue:_adValue responseInfo:responseInfo placement:placement format:@"ADFORMAT_REWARDED_INTERSTITIAL"];
 
-    id<iOSAdvertisementCallbackInterface> callback = [self.m_advertisement getRewardedCallback];
-    double revenue = adValue.value.doubleValue;
-    [callback oniOSAdvertisementRevenuePaid:self.m_placement withRevenue:revenue];
+    id<iOSAdvertisementInterface> advertisement = self.m_advertisement;
+    id<iOSAdvertisementCallbackInterface> callback = [advertisement getRewardedCallback];
+
+    if (callback == nil) {
+        return;
+    }
+
+    NSDecimalNumber * value = _adValue.value;
+    double revenue = value.doubleValue;
+    [callback oniOSAdvertisementRevenuePaid:placement withRevenue:revenue];
 }
 
 - (void)adWillPresentFullScreenContent:(id<GADFullScreenPresentingAd>)ad {

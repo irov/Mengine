@@ -134,14 +134,26 @@ namespace Mengine
         Detail::convertTMToDateTime( sTime, milliseconds, _dateTime );
     }
     //////////////////////////////////////////////////////////////////////////
-    void POSIXDateTimeSystem::getDateTimeFromMilliseconds( Timestamp _time, PlatformDateTime * const _dateTime ) const
+    void POSIXDateTimeSystem::getSystemDateTimeFromMilliseconds( Timestamp _time, PlatformDateTime * const _dateTime ) const
     {
-        time_t ctTime = _time / 1000;
+        time_t ctTime = (time_t)(_time / TIMESTAMP_MILLISECONDS_SECOND64);
 
-        tm sTime = {0};
+        tm sTime = {};
         Detail::gmTime( ctTime, &sTime );
 
-        uint32_t milliseconds = (uint32_t)(_time % 1000);
+        uint32_t milliseconds = (uint32_t)(_time % TIMESTAMP_MILLISECONDS_SECOND64);
+
+        Detail::convertTMToDateTime( sTime, milliseconds, _dateTime );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void POSIXDateTimeSystem::getLocalDateTimeFromMilliseconds( Timestamp _time, PlatformDateTime * const _dateTime ) const
+    {
+        time_t ctTime = (time_t)(_time / TIMESTAMP_MILLISECONDS_SECOND64);
+
+        tm sTime = {};
+        Detail::localTime( ctTime, &sTime );
+
+        uint32_t milliseconds = (uint32_t)(_time % TIMESTAMP_MILLISECONDS_SECOND64);
 
         Detail::convertTMToDateTime( sTime, milliseconds, _dateTime );
     }

@@ -1312,7 +1312,7 @@ namespace Mengine
             _kernel->get_traceback_top( filename, MENGINE_MAX_PATH, function, MENGINE_CODE_MAX_FUNCTION_NAME, &lineno );
 
             LoggerMessage msg;
-            msg.timestamp = Helper::getLocalTimestamp();
+            msg.timestamp = Helper::getSystemTimestamp();
             msg.category = "python";
             msg.thread = Helper::getCurrentThreadName();
             msg.level = _level;
@@ -1708,7 +1708,7 @@ namespace Mengine
         {
             PlatformDateTime dateTime;
             DATETIME_SYSTEM()
-                ->getDateTimeFromMilliseconds( _time, &dateTime );
+                ->getSystemDateTimeFromMilliseconds( _time, &dateTime );
 
             return dateTime;
         }
@@ -1723,7 +1723,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static String s_getLoggerTimestamp( const Char * _format )
         {
-            Timestamp timestamp = Helper::getLocalTimestamp();
+            Timestamp timestamp = Helper::getSystemTimestamp();
 
             Char shortDate[1024 + 1] = {'\0'};
             Helper::makeLoggerShortDate( timestamp, _format, shortDate, 0, 1024 );

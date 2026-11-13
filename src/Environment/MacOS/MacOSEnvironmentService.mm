@@ -86,7 +86,7 @@ namespace Mengine
         NSInteger sessionTimestamp = [MacOSApplication.sharedInstance getSessionTimestamp];
         m_sessionTimestamp = (Timestamp)sessionTimestamp;
         DATETIME_SYSTEM()
-            ->getDateTimeFromMilliseconds( m_sessionTimestamp, &m_sessionDate );
+            ->getSystemDateTimeFromMilliseconds( m_sessionTimestamp, &m_sessionDate );
 
         NSInteger sessionIndex = [MacOSApplication.sharedInstance getSessionIndex];
         m_sessionIndex = (int64_t)sessionIndex;

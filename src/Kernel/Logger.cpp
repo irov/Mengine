@@ -121,7 +121,7 @@ namespace Mengine
     void LoggerOperator::logMessage( uint32_t _color, const Char * _data, size_t _size ) const
     {
         LoggerMessage msg;
-        msg.timestamp = Helper::getLocalTimestamp();
+        msg.timestamp = Helper::getSystemTimestamp();
         msg.category = m_category;
         msg.thread = Helper::getCurrentThreadName();
         msg.level = m_level;

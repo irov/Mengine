@@ -226,21 +226,25 @@
     [self retryLoadAd];
 }
 
-- (void)bannerView:(GADBannerView *)bannerView didRecordPaidEventWithAdValue:(GADAdValue *)adValue {
+- (void)bannerView:(GADBannerView *)_bannerView didRecordPaidEventWithAdValue:(GADAdValue *)_adValue {
     [self log:@"bannerView:didRecordPaidEventWithAdValue" withParams:@{
-        @"value": adValue.value,
-        @"currencyCode": adValue.currencyCode
+        @"value": _adValue.value,
+        @"currencyCode": _adValue.currencyCode
     }];
 
-    GADResponseInfo * responseInfo = bannerView.responseInfo;
-    [self eventRevenue:adValue responseInfo:responseInfo placement:self.m_placement format:@"ADFORMAT_BANNER"];
+    GADResponseInfo * responseInfo = _bannerView.responseInfo;
+    NSString * placement = self.m_placement;
+    [self eventRevenue:_adValue responseInfo:responseInfo placement:placement format:@"ADFORMAT_BANNER"];
 
     id<iOSAdvertisementCallbackInterface> callback = [[iOSAdMobPlugin sharedInstance] getAdvertisementBannerCallback];
 
-    if (callback != nil) {
-        double revenue = adValue.value.doubleValue;
-        [callback oniOSAdvertisementRevenuePaid:self.m_placement withRevenue:revenue];
+    if (callback == nil) {
+        return;
     }
+
+    NSDecimalNumber * value = _adValue.value;
+    double revenue = value.doubleValue;
+    [callback oniOSAdvertisementRevenuePaid:placement withRevenue:revenue];
 }
 
 - (void)bannerViewDidRecordImpression:(GADBannerView *)bannerView {

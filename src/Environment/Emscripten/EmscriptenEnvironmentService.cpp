@@ -78,7 +78,7 @@ namespace Mengine
 
         m_sessionTimestamp = Helper::getSystemTimestamp();
         DATETIME_SYSTEM()
-            ->getDateTimeFromMilliseconds( m_sessionTimestamp, &m_sessionDate );
+            ->getSystemDateTimeFromMilliseconds( m_sessionTimestamp, &m_sessionDate );
 
         uint64_t randomSeed = 0;
         if( Helper::generateRandomSeed( &randomSeed ) == true )

@@ -15,6 +15,8 @@
 
 #import <UserMessagingPlatform/UserMessagingPlatform.h>
 
+static const NSInteger MENGINE_UMP_MAX_CONSENT_RETRY_ATTEMPTS = 6;
+
 @implementation iOSUserMessagingPlatformPlugin
 
 + (instancetype)sharedInstance {
@@ -41,19 +43,34 @@
 
 #pragma mark - Details
 
-- (void)completedConsent:(BOOL)successful {
+- (void)completedConsent:(NSError * _Nullable)_error {
+    BOOL successful = _error == nil;
+    BOOL canRequestAds = UMPConsentInformation.sharedInstance.canRequestAds;
+
     self.m_completed = YES;
     self.m_consentState = successful == YES ? iOSUserMessagingPlatformConsentStateCompleted : iOSUserMessagingPlatformConsentStateFailed;
 
-    if (successful == YES) {
-        iOSTransparencyConsentParam * consent = [[iOSTransparencyConsentParam alloc] initFromUserDefaults];
-        consent.TRANSPARENCYCONSENT_CANREQUESTADS = UMPConsentInformation.sharedInstance.canRequestAds;
+    BOOL notifyConsent = successful;
 
-        self.m_retryAttempt = 0;
+    if (canRequestAds == YES) {
+        notifyConsent = YES;
+    }
+
+    if (notifyConsent == YES) {
+        iOSTransparencyConsentParam * consent = [[iOSTransparencyConsentParam alloc] initFromUserDefaults];
+        consent.TRANSPARENCYCONSENT_CANREQUESTADS = canRequestAds;
+
+        if (successful == NO) {
+            IOS_LOGGER_MESSAGE(@"[UMP] using consent from a previous session: canRequestAds=YES");
+        }
 
         [iOSDetail transparencyConsent:consent];
+    }
+
+    if (successful == YES) {
+        self.m_retryAttempt = 0;
     } else {
-        [self scheduleRetryConsent];
+        [self scheduleRetryConsent:_error];
     }
 
     NSArray<void (^)(void)> * completionHandlers = [self.m_completionHandlers copy];
@@ -66,13 +83,45 @@
     }];
 }
 
-- (void)scheduleRetryConsent {
-    self.m_retryAttempt += 1;
+- (void)scheduleRetryConsent:(NSError *)_error {
+    NSString * errorDomain = _error.domain;
 
-    NSTimeInterval delaySec = pow(2, MIN(6, self.m_retryAttempt));
+    if ([errorDomain isEqualToString:UMPErrorDomain] == NO) {
+        IOS_LOGGER_WARNING(@"[UMP] consent error is not retryable: domain=%@ code=%ld", errorDomain, (long)_error.code);
+
+        return;
+    }
+
+    NSInteger errorCode = _error.code;
+
+    switch (errorCode) {
+        case UMPRequestErrorCodeInternal:
+        case UMPRequestErrorCodeNetwork:
+        case UMPFormErrorCodeInternal:
+        case UMPFormErrorCodeUnavailable:
+        case UMPFormErrorCodeTimeout:
+            break;
+        default:
+            IOS_LOGGER_WARNING(@"[UMP] consent error is not retryable: domain=%@ code=%ld", errorDomain, (long)errorCode);
+
+            return;
+    }
+
+    NSInteger retryAttempt = self.m_retryAttempt;
+
+    if (retryAttempt >= MENGINE_UMP_MAX_CONSENT_RETRY_ATTEMPTS) {
+        IOS_LOGGER_WARNING(@"[UMP] consent retry limit reached after %ld attempts", (long)retryAttempt);
+
+        return;
+    }
+
+    retryAttempt += 1;
+    self.m_retryAttempt = retryAttempt;
+
+    NSTimeInterval delaySec = pow(2.0, retryAttempt);
 
     IOS_LOGGER_MESSAGE(@"[UMP] schedule consent retry attempt %ld after %.0f seconds"
-        , (long)self.m_retryAttempt
+        , (long)retryAttempt
         , delaySec
     );
 
@@ -177,9 +226,9 @@
         }
 
         if (error != nil) {
-            IOS_LOGGER_MESSAGE(@"[UMP] requestConsentInfoUpdate error: %@", error);
+            IOS_LOGGER_WARNING(@"[UMP] requestConsentInfoUpdate error: %@", error);
 
-            [strongSelf completedConsent:NO];
+            [strongSelf completedConsent:error];
 
             return;
         }
@@ -207,9 +256,9 @@
 
             [UMPConsentForm loadAndPresentIfRequiredFromViewController:rootVC completionHandler:^(NSError * _Nullable loadError) {
                 if (loadError != nil) {
-                    IOS_LOGGER_MESSAGE(@"[UMP] loadAndPresentIfRequiredFromViewController error: %@", loadError);
+                    IOS_LOGGER_WARNING(@"[UMP] loadAndPresentIfRequiredFromViewController error: %@", loadError);
 
-                    [strongSelf2 completedConsent:NO];
+                    [strongSelf2 completedConsent:loadError];
                     completion();
 
                     return;
@@ -218,7 +267,7 @@
                 IOS_LOGGER_MESSAGE(@"[UMP] loadAndPresentIfRequiredFromViewController completed");
 
                 // After form dismissal, UMP writes IABTCF_* to NSUserDefaults. Broadcast updated consent.
-                [strongSelf2 completedConsent:YES];
+                [strongSelf2 completedConsent:nil];
                 completion();
             }];
         }];

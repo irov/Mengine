@@ -14,6 +14,21 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
+        static void convertTimestampToSystemTime( Timestamp _time, SYSTEMTIME * const _systemTime )
+        {
+            ULONGLONG unixEpochOffsetMilliseconds = 11644473600000ULL;
+            ULONGLONG fileTimeTicksPerMillisecond = 10000ULL;
+
+            ULARGE_INTEGER ull;
+            ull.QuadPart = (static_cast<ULONGLONG>(_time) + unixEpochOffsetMilliseconds) * fileTimeTicksPerMillisecond;
+
+            FILETIME fileTime;
+            fileTime.dwLowDateTime = ull.LowPart;
+            fileTime.dwHighDateTime = ull.HighPart;
+
+            ::FileTimeToSystemTime( &fileTime, _systemTime );
+        }
+        //////////////////////////////////////////////////////////////////////////
         static void convertSystemTimeToDateTime( const SYSTEMTIME & _systemTime, PlatformDateTime * const _dateTime )
         {
             _dateTime->year = _systemTime.wYear;
@@ -88,19 +103,23 @@ namespace Mengine
         Detail::convertSystemTimeToDateTime( localTime, _dateTime );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32DateTimeSystem::getDateTimeFromMilliseconds( Timestamp _time, PlatformDateTime * const _dateTime ) const
+    void Win32DateTimeSystem::getSystemDateTimeFromMilliseconds( Timestamp _time, PlatformDateTime * const _dateTime ) const
     {
-        ULARGE_INTEGER ull;
-        ull.QuadPart = (static_cast<ULONGLONG>(_time) + 11644473600000ULL) * 10000ULL;
-
-        FILETIME fileTime;
-        fileTime.dwLowDateTime = ull.LowPart;
-        fileTime.dwHighDateTime = ull.HighPart;
-
         SYSTEMTIME systemTime = {0};
-        ::FileTimeToSystemTime( &fileTime, &systemTime );
+        Detail::convertTimestampToSystemTime( _time, &systemTime );
 
         Detail::convertSystemTimeToDateTime( systemTime, _dateTime );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32DateTimeSystem::getLocalDateTimeFromMilliseconds( Timestamp _time, PlatformDateTime * const _dateTime ) const
+    {
+        SYSTEMTIME systemTime = {};
+        Detail::convertTimestampToSystemTime( _time, &systemTime );
+
+        SYSTEMTIME localTime = {};
+        ::SystemTimeToTzSpecificLocalTime( nullptr, &systemTime, &localTime );
+
+        Detail::convertSystemTimeToDateTime( localTime, _dateTime );
     }
     //////////////////////////////////////////////////////////////////////////
     int64_t Win32DateTimeSystem::getTimeZoneOffsetMilliseconds() const

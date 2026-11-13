@@ -162,7 +162,7 @@ namespace Mengine
 
             [scope setExtraValue:@(BUILD_USERNAME) forKey:@"Build Username"];
 
-            Timestamp timestamp = Helper::getLocalTimestamp();
+            Timestamp timestamp = Helper::getSystemTimestamp();
 
             Char LOG_DATE[256 + 1] = {'\0'};
             Helper::makeLoggerShortDate( timestamp, "%02u:%02u:%02u:%04u", LOG_DATE, 0, 256 );

@@ -146,23 +146,27 @@
 
 #pragma mark - GADFullScreenContentDelegate
 
-- (void)ad:(id<GADFullScreenPresentingAd>)ad didRecordPaidEventWithAdValue:(GADAdValue *)adValue {
-    GADInterstitialAd * interstitialAd = (GADInterstitialAd *)ad;
+- (void)ad:(id<GADFullScreenPresentingAd>)_ad didRecordPaidEventWithAdValue:(GADAdValue *)_adValue {
+    GADInterstitialAd * interstitialAd = (GADInterstitialAd *)_ad;
     GADResponseInfo * responseInfo = interstitialAd.responseInfo;
 
     [self log:@"ad:didRecordPaidEventWithAdValue" withParams:@{
-        @"value": adValue.value,
-        @"currencyCode": adValue.currencyCode
+        @"value": _adValue.value,
+        @"currencyCode": _adValue.currencyCode
     }];
 
-    [self eventRevenue:adValue responseInfo:responseInfo placement:self.m_placement format:@"ADFORMAT_INTERSTITIAL"];
+    NSString * placement = self.m_placement;
+    [self eventRevenue:_adValue responseInfo:responseInfo placement:placement format:@"ADFORMAT_INTERSTITIAL"];
 
     id<iOSAdvertisementCallbackInterface> callback = [[iOSAdMobPlugin sharedInstance] getAdvertisementInterstitialCallback];
 
-    if (callback != nil) {
-        double revenue = adValue.value.doubleValue;
-        [callback oniOSAdvertisementRevenuePaid:self.m_placement withRevenue:revenue];
+    if (callback == nil) {
+        return;
     }
+
+    NSDecimalNumber * value = _adValue.value;
+    double revenue = value.doubleValue;
+    [callback oniOSAdvertisementRevenuePaid:placement withRevenue:revenue];
 }
 
 - (void)adWillPresentFullScreenContent:(id<GADFullScreenPresentingAd>)ad {

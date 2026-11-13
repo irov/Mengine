@@ -100,7 +100,7 @@ namespace Mengine
         Detail::getAndroidInfo( jenv, "getSessionGap", &m_sessionGap );
 
         DATETIME_SYSTEM()
-            ->getDateTimeFromMilliseconds( m_sessionTimestamp, &m_sessionDate );
+            ->getSystemDateTimeFromMilliseconds( m_sessionTimestamp, &m_sessionDate );
 
         m_osFamily.assign( "Android" );
 

@@ -519,7 +519,7 @@ namespace Mengine
 
         sentry_set_extra( "Build Username", sentry_value_new_string( BUILD_USERNAME ) );
 
-        Timestamp timestamp = Helper::getLocalTimestamp();
+        Timestamp timestamp = Helper::getSystemTimestamp();
 
         Char INIT_DATE[256 + 1] = {'\0'};
         Helper::makeLoggerFullDate( timestamp, "%04u.%02u.%02u %02u:%02u:%02u:%04u", INIT_DATE, 0, 256 );

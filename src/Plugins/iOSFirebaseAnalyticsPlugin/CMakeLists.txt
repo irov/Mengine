@@ -16,6 +16,6 @@ ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_IOS_FIREBASE_ANALYTICS)
 
 ADD_MENGINE_APPLE_APPLICATION_DELEGATE("iOSFirebaseAnalyticsPlugin")
 
-ADD_MENGINE_SWIFT_PACKAGE("FirebaseAnalytics" "https://github.com/firebase/firebase-ios-sdk.git" "13.1.1")
+ADD_MENGINE_SWIFT_PACKAGE("FirebaseAnalytics" "https://github.com/firebase/firebase-ios-sdk.git" "13.2.0")
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} iOSFirebasePlugin)

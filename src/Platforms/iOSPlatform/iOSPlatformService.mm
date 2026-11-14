@@ -103,6 +103,7 @@ namespace Mengine
         , m_iOSInput( nullptr )
         , m_prevTime( 0.0 )
         , m_active( false )
+        , m_quitRequested( false )
         , m_desktop( false )
         , m_touchpad( false )
         , m_metalDevice( nil )
@@ -1296,7 +1297,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::closeWindow()
     {
-        this->pushQuitEvent_();
+        m_quitRequested = true;
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::minimizeWindow()
@@ -1806,11 +1807,18 @@ namespace Mengine
         //iOS manages its own event loop via UIApplication/UIKit run loop
         //Touch events are forwarded through iOSInput from the view controller
 
-        return false;
+        return m_quitRequested;
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSPlatformService::pushQuitEvent_()
     {
+        if( m_quitRequested == true )
+        {
+            return;
+        }
+
+        m_quitRequested = true;
+
         APPLICATION_SERVICE()
             ->quit();
     }

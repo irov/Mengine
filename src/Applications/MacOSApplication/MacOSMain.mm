@@ -34,6 +34,8 @@ int main( int argc, char * argv[] )
         Mengine::Configuration configuration;
         bool CLI = hasCLILaunchArgument( argc, argv );
         configuration.silentDialog = CLI;
+        configuration.nopause = CLI;
+        configuration.noAlreadyRunning = CLI;
         configuration.muteSound = CLI;
 
         [NSApplication sharedApplication];

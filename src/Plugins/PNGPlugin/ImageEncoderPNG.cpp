@@ -10,6 +10,10 @@
 
 namespace Mengine
 {
+#if defined(PNG_WRITE_CUSTOMIZE_COMPRESSION_SUPPORTED)
+    //////////////////////////////////////////////////////////////////////////
+    static const int32_t PNG_DEFAULT_COMPRESSION_LEVEL = 9;
+#endif
     //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
@@ -91,10 +95,6 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( png_ptr, "PNG encoder error: Can't create write structure" );
 
-#if defined(PNG_WRITE_CUSTOMIZE_COMPRESSION_SUPPORTED)
-        png_set_compression_level( png_ptr, 9 );
-#endif
-
         // init the IO
         png_set_write_fn( png_ptr, m_stream.get(), &Detail::png_write_proc_ptr, &Detail::png_flush_proc_ptr );
 
@@ -139,6 +139,18 @@ namespace Mengine
 #endif
 
         const ImageCodecDataInfo * dataInfo = static_cast<const ImageCodecDataInfo *>(_dataInfo);
+
+#if defined(PNG_WRITE_CUSTOMIZE_COMPRESSION_SUPPORTED)
+        int32_t codecDefaultCompressionLevel = -1;
+        int32_t compressionLevel = dataInfo->compressionLevel;
+
+        if( compressionLevel == codecDefaultCompressionLevel )
+        {
+            compressionLevel = PNG_DEFAULT_COMPRESSION_LEVEL;
+        }
+
+        png_set_compression_level( m_png_ptr, compressionLevel );
+#endif
 
         uint32_t channels = Helper::getPixelFormatChannels( dataInfo->format );
 

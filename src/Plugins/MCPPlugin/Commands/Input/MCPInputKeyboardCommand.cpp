@@ -52,6 +52,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MCPInputKeyboardCommand::text_( const jpp::object & _params, MCPCommandResponse * const _response )
     {
+        VectorMCPKeyCodes modifiers;
+        String error;
+        if( m_context->getModifierKeys( _params, &modifiers, &error ) == false )
+        {
+            _response->errorMessage = error;
+
+            return false;
+        }
+
+        if( modifiers.empty() == false )
+        {
+            _response->errorMessage = "modifiers are not supported for text input";
+
+            return false;
+        }
+
         const Char * text = _params.get( "text", "" );
         WString unicode;
         bool converted = Helper::utf8ToUnicode( text, &unicode );
@@ -59,6 +75,13 @@ namespace Mengine
         if( converted == false )
         {
             _response->errorMessage = "text is not valid UTF-8";
+
+            return false;
+        }
+
+        if( unicode.empty() == true )
+        {
+            _response->errorMessage = "text input must not be empty";
 
             return false;
         }
@@ -75,30 +98,37 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MCPInputKeyboardCommand::down_( const jpp::object & _params, MCPCommandResponse * const _response )
     {
-        bool successful = this->pushKey_( _params, true, _response );
-
-        return successful;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool MCPInputKeyboardCommand::up_( const jpp::object & _params, MCPCommandResponse * const _response )
-    {
-        bool successful = this->pushKey_( _params, false, _response );
-
-        return successful;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool MCPInputKeyboardCommand::press_( const jpp::object & _params, MCPCommandResponse * const _response )
-    {
-        bool pressed = this->pushKey_( _params, true, _response );
-
-        if( pressed == false )
+        if( this->pushKey_( _params, true, _response ) == false )
         {
             return false;
         }
 
-        bool released = this->pushKey_( _params, false, _response );
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool MCPInputKeyboardCommand::up_( const jpp::object & _params, MCPCommandResponse * const _response )
+    {
+        if( this->pushKey_( _params, false, _response ) == false )
+        {
+            return false;
+        }
 
-        return released;
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool MCPInputKeyboardCommand::press_( const jpp::object & _params, MCPCommandResponse * const _response )
+    {
+        if( this->pushKey_( _params, true, _response ) == false )
+        {
+            return false;
+        }
+
+        if( this->pushKey_( _params, false, _response ) == false )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool MCPInputKeyboardCommand::pushKey_( const jpp::object & _params, bool _down, MCPCommandResponse * const _response )
@@ -113,10 +143,34 @@ namespace Mengine
             return false;
         }
 
+        VectorMCPKeyCodes modifiers;
+        String error;
+        if( m_context->getModifierKeys( _params, &modifiers, &error ) == false )
+        {
+            _response->errorMessage = error;
+
+            return false;
+        }
+
+        if( _down == true )
+        {
+            m_context->pushModifierKeys( modifiers, true );
+        }
+
         Timestamp timestamp = Helper::getSystemTimestamp();
         float cursorX = m_context->getCursorX();
         float cursorY = m_context->getCursorY();
-        Helper::pushKeyEvent( timestamp, cursorX, cursorY, 0.f, code, _down, false );
+
+        InputSpecialData special;
+        m_context->getSpecial( modifiers, &special );
+
+        Helper::pushKeyEvent( timestamp, cursorX, cursorY, 0.f, code, _down, false, special );
+
+        if( _down == false )
+        {
+            m_context->pushModifierKeys( modifiers, false );
+        }
+
         _response->result.set( "key", key );
 
         return true;

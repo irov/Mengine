@@ -1,18 +1,23 @@
 #include "MCPRuntimeControlCommand.h"
 
-#include "../../Contexts/MCPRuntimeContext.h"
-
 #include "Interface/ApplicationInterface.h"
 #include "Interface/TimelineServiceInterface.h"
 
+#include "../../Contexts/MCPRuntimeContext.h"
+#include "MCPAdvanceFramesOperation.h"
+
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/FactorableUnique.h"
+
+#include "Config/StdMath.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    MCPRuntimeControlCommand::MCPRuntimeControlCommand( MCPCommandHostInterface * _host, MCPRuntimeContext * _context )
-        : m_host( _host )
-        , m_context( _context )
+    const int64_t MCP_ADVANCE_MAX_FRAMES = 10000;
+    //////////////////////////////////////////////////////////////////////////
+    MCPRuntimeControlCommand::MCPRuntimeControlCommand( MCPRuntimeContext * _context )
+        : m_context( _context )
     {
         ConstString pause = STRINGIZE_STRING_LOCAL( "pause" );
         ConstString resume = STRINGIZE_STRING_LOCAL( "resume" );
@@ -27,13 +32,35 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     EMCPCommandStatus MCPRuntimeControlCommand::execute( const MCPCommandRequest & _request, MCPCommandResponse * const _response )
     {
-        const Char * actionValue = _request.params.get( "action", "" );
+        jpp::object actionObject;
+        if( _request.params.exist( "action", &actionObject ) == false )
+        {
+            _response->errorMessage = "runtime control action is required";
+
+            return EMCPCommandStatus::FAILURE;
+        }
+
+        if( actionObject.is_type_string() == false )
+        {
+            _response->errorMessage = "runtime control action must be a string";
+
+            return EMCPCommandStatus::FAILURE;
+        }
+
+        const Char * actionValue = actionObject;
         ConstString actionName = Helper::stringizeString( actionValue );
         MapActions::const_iterator it = m_actions.find( actionName );
 
         if( it == m_actions.end() )
         {
             _response->errorMessage = "runtime control action is not supported";
+
+            return EMCPCommandStatus::FAILURE;
+        }
+
+        if( m_context->isAdvancing() == true )
+        {
+            _response->errorMessage = "a frame advance is running";
 
             return EMCPCommandStatus::FAILURE;
         }
@@ -48,17 +75,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _request );
 
-        if( m_context->isPaused() == false )
-        {
-            float timeFactorBase = TIMELINE_SERVICE()->getTimeFactorBase();
-            int32_t timeFactorCount = TIMELINE_SERVICE()->getTimeFactorCount();
-
-            m_context->setPreviousTimeFactorBase( timeFactorBase );
-            m_context->setPreviousTimeFactorCount( timeFactorCount );
-            TIMELINE_SERVICE()->setTimeFactorCount( 0 );
-            TIMELINE_SERVICE()->setTimeFactorBase( 0.f );
-            m_context->setPaused( true );
-        }
+        m_context->setPaused( true );
 
         this->writeState_( "pause", _response );
 
@@ -69,7 +86,8 @@ namespace Mengine
     {
         MENGINE_UNUSED( _request );
 
-        m_context->restoreRuntime();
+        m_context->setPaused( false );
+
         this->writeState_( "resume", _response );
 
         return EMCPCommandStatus::SUCCESS;
@@ -77,7 +95,29 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     EMCPCommandStatus MCPRuntimeControlCommand::timeScale_( const MCPCommandRequest & _request, MCPCommandResponse * const _response )
     {
+        jpp::object valueObject;
+        if( _request.params.exist( "value", &valueObject ) == false )
+        {
+            _response->errorMessage = "time_scale requires a non-negative value";
+
+            return EMCPCommandStatus::FAILURE;
+        }
+
+        if( valueObject.is_type_integer() == false && valueObject.is_type_real() == false )
+        {
+            _response->errorMessage = "time_scale value must be a number";
+
+            return EMCPCommandStatus::FAILURE;
+        }
+
         float value = _request.params.get( "value", -1.f );
+
+        if( StdMath::isfinite( value ) == false )
+        {
+            _response->errorMessage = "time_scale requires a finite value";
+
+            return EMCPCommandStatus::FAILURE;
+        }
 
         if( value < 0.f )
         {
@@ -86,16 +126,7 @@ namespace Mengine
             return EMCPCommandStatus::FAILURE;
         }
 
-        if( m_context->isPaused() == true )
-        {
-            m_context->setPreviousTimeFactorBase( value );
-            m_context->setPreviousTimeFactorCount( 0 );
-        }
-        else
-        {
-            TIMELINE_SERVICE()->setTimeFactorCount( 0 );
-            TIMELINE_SERVICE()->setTimeFactorBase( value );
-        }
+        m_context->setTimeScale( value );
 
         this->writeState_( "time_scale", _response );
 
@@ -104,23 +135,63 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     EMCPCommandStatus MCPRuntimeControlCommand::advanceFrames_( const MCPCommandRequest & _request, MCPCommandResponse * const _response )
     {
-        if( m_pendingAdvance.requestId != 0 )
-        {
-            _response->errorMessage = "another frame advance is already running";
-
-            return EMCPCommandStatus::FAILURE;
-        }
-
-        uint32_t frames = _request.params.get( "frames", MENGINE_UINT32_C(0) );
-
-        if( frames == 0 || frames > 10000 )
+        jpp::object framesObject;
+        if( _request.params.exist( "frames", &framesObject ) == false )
         {
             _response->errorMessage = "advance_frames requires 1..10000 frames";
 
             return EMCPCommandStatus::FAILURE;
         }
 
+        if( framesObject.is_type_integer() == false )
+        {
+            _response->errorMessage = "advance_frames frames must be an integer";
+
+            return EMCPCommandStatus::FAILURE;
+        }
+
+        int64_t frameCount = framesObject;
+
+        if( frameCount <= 0 )
+        {
+            _response->errorMessage = "advance_frames requires 1..10000 frames";
+
+            return EMCPCommandStatus::FAILURE;
+        }
+
+        if( frameCount > MCP_ADVANCE_MAX_FRAMES )
+        {
+            _response->errorMessage = "advance_frames requires 1..10000 frames";
+
+            return EMCPCommandStatus::FAILURE;
+        }
+
+        if( _request.params.exist( "frameTime", nullptr ) == true )
+        {
+            _response->errorMessage = "advance_frames uses value as a time factor, not frameTime";
+
+            return EMCPCommandStatus::FAILURE;
+        }
+
+        jpp::object valueObject;
+        if( _request.params.exist( "value", &valueObject ) == true )
+        {
+            if( valueObject.is_type_integer() == false && valueObject.is_type_real() == false )
+            {
+                _response->errorMessage = "advance_frames value must be a number";
+
+                return EMCPCommandStatus::FAILURE;
+            }
+        }
+
         float timeFactor = _request.params.get( "value", 1.f );
+
+        if( StdMath::isfinite( timeFactor ) == false )
+        {
+            _response->errorMessage = "advance frame time factor must be finite";
+
+            return EMCPCommandStatus::FAILURE;
+        }
 
         if( timeFactor < 0.f )
         {
@@ -129,80 +200,30 @@ namespace Mengine
             return EMCPCommandStatus::FAILURE;
         }
 
-        m_pendingAdvance.requestId = _request.requestId;
-        m_pendingAdvance.startGeneration = m_host->getMCPUpdateGeneration();
-        m_pendingAdvance.frames = frames;
-        m_pendingAdvance.restoreTimeFactorBase = TIMELINE_SERVICE()->getTimeFactorBase();
-        m_pendingAdvance.restoreTimeFactorCount = TIMELINE_SERVICE()->getTimeFactorCount();
+        uint32_t frames = (uint32_t)frameCount;
+        MCPAdvanceFramesOperationPtr operation = Helper::makeFactorableUnique<MCPAdvanceFramesOperation>( MENGINE_DOCUMENT_FACTORABLE, m_context, frames, timeFactor );
 
-        TIMELINE_SERVICE()->setTimeFactorCount( 0 );
-        TIMELINE_SERVICE()->setTimeFactorBase( timeFactor );
+        operation->begin();
+
+        _response->operation = operation;
 
         return EMCPCommandStatus::DEFERRED;
     }
     //////////////////////////////////////////////////////////////////////////
     void MCPRuntimeControlCommand::writeState_( const Char * _action, MCPCommandResponse * const _response ) const
     {
-        bool updateFrozen = APPLICATION_SERVICE()->isUpdateFrozen();
+        bool updateFrozen = APPLICATION_SERVICE()
+            ->isUpdateFrozen();
+
         bool runtimePaused = m_context->isPaused();
-        float timeScale = TIMELINE_SERVICE()->calcTimeFactor();
+
+        float timeScale = TIMELINE_SERVICE()
+            ->calcTimeFactor();
 
         _response->result.set( "action", _action );
         _response->result.set( "updateFrozen", updateFrozen );
         _response->result.set( "runtimePaused", runtimePaused );
         _response->result.set( "timeScale", timeScale );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MCPRuntimeControlCommand::update()
-    {
-        if( m_pendingAdvance.requestId == 0 )
-        {
-            return;
-        }
-
-        uint64_t generation = m_host->getMCPUpdateGeneration();
-
-        if( generation - m_pendingAdvance.startGeneration < m_pendingAdvance.frames )
-        {
-            return;
-        }
-
-        jpp::object result = jpp::make_object();
-        result.set( "action", "advance_frames" );
-        result.set( "frames", m_pendingAdvance.frames );
-        result.set( "completed", true );
-
-        uint32_t requestId = m_pendingAdvance.requestId;
-        this->restoreAdvance_();
-        m_host->sendMCPCommandResponse( requestId, result );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MCPRuntimeControlCommand::cancel( uint32_t _requestId )
-    {
-        if( m_pendingAdvance.requestId != _requestId )
-        {
-            return;
-        }
-
-        this->restoreAdvance_();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MCPRuntimeControlCommand::disconnect()
-    {
-        this->restoreAdvance_();
-        m_context->restoreRuntime();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MCPRuntimeControlCommand::restoreAdvance_()
-    {
-        if( m_pendingAdvance.requestId == 0 )
-        {
-            return;
-        }
-
-        TIMELINE_SERVICE()->setTimeFactorBase( m_pendingAdvance.restoreTimeFactorBase );
-        TIMELINE_SERVICE()->setTimeFactorCount( m_pendingAdvance.restoreTimeFactorCount );
-        m_pendingAdvance = PendingAdvance();
     }
     //////////////////////////////////////////////////////////////////////////
 }

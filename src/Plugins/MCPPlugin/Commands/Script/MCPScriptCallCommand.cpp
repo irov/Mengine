@@ -1,11 +1,11 @@
 #include "MCPScriptCallCommand.h"
 
+#include "Interface/ScriptProviderServiceInterface.h"
+
 #include "../../Contexts/MCPHandlerRegistry.h"
 #include "../../Contexts/MCPScriptContext.h"
 
 #include "Kernel/ConstStringHelper.h"
-
-#include "Interface/ScriptProviderServiceInterface.h"
 
 #include "pybind/exception.hpp"
 #include "pybind/kernel_interface.hpp"
@@ -63,7 +63,7 @@ namespace Mengine
 
             try
             {
-                jpp::object result;
+                jpp::object result = jpp::make_object();
                 bool successful = handler->onMCPCall( argumentsObject, &result );
 
                 if( successful == false )

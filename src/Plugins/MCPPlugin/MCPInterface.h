@@ -1,8 +1,8 @@
 #pragma once
 
-#include "MCPHandlerInterface.h"
-
 #include "Interface/ServiceInterface.h"
+
+#include "MCPHandlerInterface.h"
 
 #include "Kernel/ConstString.h"
 #include "Kernel/String.h"
@@ -16,7 +16,7 @@ namespace Mengine
         SERVICE_DECLARE( "MCPService" )
 
     public:
-        virtual bool run( const String & _host, const String & _port, const String & _token, const String & _mode ) = 0;
+        virtual bool run( const String & _host, const String & _port, const String & _token, const String & _mode, bool _listen ) = 0;
         virtual void stop() = 0;
 
     public:

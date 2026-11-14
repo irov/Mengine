@@ -1,9 +1,9 @@
 #include "MCPPlugin.h"
 
-#include "MCPService.h"
-
 #include "Interface/SocketSystemInterface.h"
 #include "Interface/ThreadSystemInterface.h"
+
+#include "MCPService.h"
 
 #include "Kernel/BuildMode.h"
 #include "Kernel/OptionHelper.h"
@@ -32,14 +32,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MCPPlugin::_unimportantPlugin() const
     {
-#if defined(MENGINE_PLATFORM_WINDOWS) || defined(MENGINE_PLATFORM_MACOS) || defined(MENGINE_PLATFORM_LINUX) || defined(MENGINE_PLATFORM_IOS)
-        if( HAS_OPTION( "mcp" ) == false )
-        {
-            return false;
-        }
-#endif
-
+#if defined(MENGINE_PLATFORM_ANDROID)
         return true;
+#else
+        return false;
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     const ServiceRequiredList & MCPPlugin::requiredServices() const
@@ -61,7 +58,10 @@ namespace Mengine
 
         if( Helper::isDebugMode() == false )
         {
-            return false;
+            if( Helper::isMasterRelease() == true )
+            {
+                return false;
+            }
         }
 
         if( HAS_OPTION( "nomcp" ) == true )
@@ -69,7 +69,14 @@ namespace Mengine
             return false;
         }
 
-#if defined(MENGINE_PLATFORM_ANDROID) || defined(MENGINE_PLATFORM_WINDOWS) || defined(MENGINE_PLATFORM_MACOS) || defined(MENGINE_PLATFORM_LINUX) || defined(MENGINE_PLATFORM_IOS)
+#if defined(MENGINE_PLATFORM_ANDROID)
+        return true;
+#elif defined(MENGINE_PLATFORM_WINDOWS) || defined(MENGINE_PLATFORM_MACOS) || defined(MENGINE_PLATFORM_LINUX) || defined(MENGINE_PLATFORM_IOS)
+        if( HAS_OPTION( "mcp" ) == false )
+        {
+            return false;
+        }
+
         return true;
 #else
         return false;

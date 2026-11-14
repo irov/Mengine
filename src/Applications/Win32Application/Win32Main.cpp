@@ -100,11 +100,6 @@ int APIENTRY WinMain( _In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _I
         // can also be enabled independently of CLI.
         configuration.silentDialog = true;
 
-        // CLI mode also implies a hidden main window: the engine still
-        // initializes (services, scripts, audio) but no visible window is
-        // ever shown. Can also be enabled independently of CLI.
-        configuration.hideWindow = true;
-
         // CLI mode also implies the engine update loop must keep running
         // even when the (hidden) main window has no focus: an automated
         // agent driving the process via automation / DnD probes

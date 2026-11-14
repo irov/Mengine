@@ -4,6 +4,7 @@
 
 #include "Kernel/ConstString.h"
 #include "Kernel/Map.h"
+#include "Kernel/VectorConstString.h"
 
 namespace Mengine
 {
@@ -14,6 +15,7 @@ namespace Mengine
         bool addHandler( const ConstString & _name, const MCPHandlerInterfacePtr & _handler );
         void removeHandler( const MCPHandlerInterfacePtr & _handler );
         MCPHandlerInterfacePtr findHandler( const ConstString & _name ) const;
+        void getHandlerNames( VectorConstString * const _names ) const;
         void clear();
 
     protected:

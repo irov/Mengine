@@ -9,8 +9,9 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    MCPInputTouchCommand::MCPInputTouchCommand( MCPInputContext * _context )
+    MCPInputTouchCommand::MCPInputTouchCommand( MCPInputContext * _context, MCPSceneContext * _sceneContext )
         : m_context( _context )
+        , m_sceneContext( _sceneContext )
     {
         ConstString move = STRINGIZE_STRING_LOCAL( "move" );
         ConstString start = STRINGIZE_STRING_LOCAL( "start" );
@@ -62,12 +63,9 @@ namespace Mengine
                 return EMCPCommandStatus::FAILURE;
             }
 
-            float x = touch.get( "x", 0.f );
-            float y = touch.get( "y", 0.f );
+            mt::vec2f point;
             String error;
-            bool normalized = m_context->normalizeCoordinates( coordinateSpace, &x, &y, &error );
-
-            if( normalized == false )
+            if( m_context->resolvePoint( m_sceneContext, touch, coordinateSpace, &point, &error ) == false )
             {
                 _response->errorMessage = error;
 
@@ -77,8 +75,8 @@ namespace Mengine
             TouchEvent event;
             event.timestamp = timestamp;
             event.touchId = (ETouchCode)id;
-            event.x = x;
-            event.y = y;
+            event.x = point.x;
+            event.y = point.y;
             event.pressure = touch.get( "pressure", 1.f );
             (this->*action)( event );
             ++eventCount;

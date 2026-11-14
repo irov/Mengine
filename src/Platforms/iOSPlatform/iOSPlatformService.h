@@ -263,6 +263,7 @@ namespace Mengine
         double m_prevTime;
 
         bool m_active;
+        bool m_quitRequested;
 
         bool m_desktop;
         bool m_touchpad;

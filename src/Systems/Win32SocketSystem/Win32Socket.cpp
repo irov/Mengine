@@ -113,8 +113,17 @@ namespace Mengine
             }
             return -1;
         }
+        u_long blocking = m_blocking == true ? 0UL : 1UL;
+        if( ::ioctlsocket( accepted, FIONBIO, &blocking ) == SOCKET_ERROR )
+        {
+            ::closesocket( accepted );
+
+            return -1;
+        }
+
         ::closesocket( m_socket );
         m_socket = accepted;
+
         return 1;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -141,7 +150,19 @@ namespace Mengine
         int32_t result = ::send( m_socket, reinterpret_cast<const char *>(_data), static_cast<int32_t>(_size), 0 );
         if( result == SOCKET_ERROR )
         {
-            return false;
+            if( m_blocking == true )
+            {
+                return false;
+            }
+
+            if( ::WSAGetLastError() != WSAEWOULDBLOCK )
+            {
+                return false;
+            }
+
+            *_sent = 0;
+
+            return true;
         }
         *_sent = static_cast<size_t>(result);
         return true;

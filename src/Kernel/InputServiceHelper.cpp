@@ -68,6 +68,15 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void pushMouseMoveEvent( Timestamp _timestamp, ETouchCode _touchId, float _x, float _y, float _dx, float _dy, float _pressure, float _dpressure )
         {
+            InputSpecialData special;
+            INPUT_SERVICE()
+                ->getSpecial( &special );
+
+            Helper::pushMouseMoveEvent( _timestamp, _touchId, _x, _y, _dx, _dy, _pressure, _dpressure, special );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void pushMouseMoveEvent( Timestamp _timestamp, ETouchCode _touchId, float _x, float _y, float _dx, float _dy, float _pressure, float _dpressure, const InputSpecialData & _special )
+        {
             float vx;
             float vy;
             if( INPUT_SERVICE()
@@ -79,8 +88,7 @@ namespace Mengine
             InputMouseMoveEvent ev;
             ev.base.timestamp = _timestamp;
 
-            INPUT_SERVICE()
-                ->getSpecial( &ev.special );
+            ev.special = _special;
 
             ev.touchId = _touchId;
 
@@ -98,6 +106,15 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void pushMouseButtonEvent( Timestamp _timestamp, ETouchCode _touchId, float _x, float _y, EMouseButtonCode _button, float _pressure, bool _isDown )
         {
+            InputSpecialData special;
+            INPUT_SERVICE()
+                ->getSpecial( &special );
+
+            Helper::pushMouseButtonEvent( _timestamp, _touchId, _x, _y, _button, _pressure, _isDown, special );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void pushMouseButtonEvent( Timestamp _timestamp, ETouchCode _touchId, float _x, float _y, EMouseButtonCode _button, float _pressure, bool _isDown, const InputSpecialData & _special )
+        {
             float vx;
             float vy;
             INPUT_SERVICE()
@@ -106,8 +123,7 @@ namespace Mengine
             InputMouseButtonEvent ev;
             ev.base.timestamp = _timestamp;
 
-            INPUT_SERVICE()
-                ->getSpecial( &ev.special );
+            ev.special = _special;
 
             ev.touchId = _touchId;
 
@@ -125,6 +141,15 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void pushKeyEvent( Timestamp _timestamp, float _x, float _y, float _pressure, EKeyCode _code, bool _isDown, bool _repeating )
         {
+            InputSpecialData special;
+            INPUT_SERVICE()
+                ->getSpecial( &special );
+
+            Helper::pushKeyEvent( _timestamp, _x, _y, _pressure, _code, _isDown, _repeating, special );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void pushKeyEvent( Timestamp _timestamp, float _x, float _y, float _pressure, EKeyCode _code, bool _isDown, bool _repeating, const InputSpecialData & _special )
+        {
             float vx;
             float vy;
             INPUT_SERVICE()
@@ -133,8 +158,7 @@ namespace Mengine
             InputKeyEvent ev;
             ev.base.timestamp = _timestamp;
 
-            INPUT_SERVICE()
-                ->getSpecial( &ev.special );
+            ev.special = _special;
 
             bool isAlreadyDown = INPUT_SERVICE()
                 ->isKeyDown( _code );
@@ -226,6 +250,15 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void pushMouseWheelEvent( Timestamp _timestamp, float _x, float _y, float _pressure, EWheelCode _wheel, int32_t _scroll )
         {
+            InputSpecialData special;
+            INPUT_SERVICE()
+                ->getSpecial( &special );
+
+            Helper::pushMouseWheelEvent( _timestamp, _x, _y, _pressure, _wheel, _scroll, special );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void pushMouseWheelEvent( Timestamp _timestamp, float _x, float _y, float _pressure, EWheelCode _wheel, int32_t _scroll, const InputSpecialData & _special )
+        {
             float vx;
             float vy;
             INPUT_SERVICE()
@@ -234,8 +267,7 @@ namespace Mengine
             InputMouseWheelEvent ev;
             ev.base.timestamp = _timestamp;
 
-            INPUT_SERVICE()
-                ->getSpecial( &ev.special );
+            ev.special = _special;
 
             ev.position.screen = mt::vec2f( vx, vy );
             ev.position.world = mt::vec2f( 0.f, 0.f );

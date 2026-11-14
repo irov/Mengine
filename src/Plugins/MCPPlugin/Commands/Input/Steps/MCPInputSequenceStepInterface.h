@@ -12,8 +12,8 @@ namespace Mengine
     struct MCPInputSequenceStepRequest
     {
         const jpp::object & step;
-        uint64_t startGeneration;
-        uint64_t currentGeneration;
+        uint64_t startFrame;
+        uint64_t currentFrame;
     };
     //////////////////////////////////////////////////////////////////////////
     struct MCPInputSequenceStepResponse
@@ -21,7 +21,7 @@ namespace Mengine
         MCPInputSequenceStepResponse();
 
         bool completed;
-        uint64_t resumeGeneration;
+        uint64_t resumeFrame;
         Timestamp resumeTimestamp;
         String errorCode;
         String errorMessage;

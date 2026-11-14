@@ -14,8 +14,8 @@ namespace Mengine
     struct MCPWaitConditionRequest
     {
         const jpp::object & condition;
-        uint64_t startGeneration;
-        uint64_t currentGeneration;
+        uint64_t startFrame;
+        uint64_t currentFrame;
     };
     //////////////////////////////////////////////////////////////////////////
     struct MCPWaitConditionResponse

@@ -3,6 +3,7 @@
 #include "MCPCommandInterface.h"
 
 #include "Kernel/Map.h"
+#include "Kernel/VectorConstString.h"
 
 namespace Mengine
 {
@@ -13,10 +14,7 @@ namespace Mengine
         bool addCommand( const ConstString & _name, const MCPCommandInterfacePtr & _command );
         void removeCommand( const MCPCommandInterfacePtr & _command );
         MCPCommandInterfacePtr findCommand( const ConstString & _name ) const;
-
-        void update();
-        void cancel( uint32_t _requestId );
-        void disconnect();
+        void getCommandNames( VectorConstString * const _names ) const;
         void clear();
 
     protected:

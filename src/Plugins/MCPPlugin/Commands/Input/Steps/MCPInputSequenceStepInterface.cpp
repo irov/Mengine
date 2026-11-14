@@ -5,7 +5,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     MCPInputSequenceStepResponse::MCPInputSequenceStepResponse()
         : completed( false )
-        , resumeGeneration( 0 )
+        , resumeFrame( 0 )
         , resumeTimestamp( 0 )
     {
     }

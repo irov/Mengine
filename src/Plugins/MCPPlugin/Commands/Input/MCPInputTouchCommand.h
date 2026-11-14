@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../MCPCommandInterface.h"
-
 #include "Interface/InputHandlerInterface.h"
+
+#include "../MCPCommandInterface.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/Map.h"
@@ -12,6 +12,7 @@
 namespace Mengine
 {
     class MCPInputContext;
+    class MCPSceneContext;
 
     //////////////////////////////////////////////////////////////////////////
     class MCPInputTouchCommand
@@ -19,7 +20,7 @@ namespace Mengine
         , public Factorable
     {
     public:
-        explicit MCPInputTouchCommand( MCPInputContext * _context );
+        MCPInputTouchCommand( MCPInputContext * _context, MCPSceneContext * _sceneContext );
 
         EMCPCommandStatus execute( const MCPCommandRequest & _request, MCPCommandResponse * const _response ) override;
 
@@ -42,6 +43,7 @@ namespace Mengine
 
     protected:
         MCPInputContext * m_context;
+        MCPSceneContext * m_sceneContext;
         MapActions m_actions;
     };
     //////////////////////////////////////////////////////////////////////////

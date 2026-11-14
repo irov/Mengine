@@ -36,18 +36,24 @@ namespace Mengine
         const ThreadMutexInterfacePtr & getLogMutex() const;
         const DequeRuntimeLogs & getLogs() const;
 
-        bool isPaused() const;
         void setPaused( bool _paused );
-        float getPreviousTimeFactorBase() const;
-        void setPreviousTimeFactorBase( float _value );
-        int32_t getPreviousTimeFactorCount() const;
-        void setPreviousTimeFactorCount( int32_t _value );
+        bool isPaused() const;
+        void setTimeScale( float _timeScale );
+        void beginAdvance();
+        void endAdvance();
+        bool isAdvancing() const;
+
+    protected:
+        void updateFreeze_();
 
     protected:
         ThreadMutexInterfacePtr m_logMutex;
         DequeRuntimeLogs m_logs;
         uint64_t m_nextLogSequence;
         bool m_paused;
+        bool m_advancing;
+        bool m_frozen;
+        bool m_timeScaled;
         float m_previousTimeFactorBase;
         int32_t m_previousTimeFactorCount;
     };

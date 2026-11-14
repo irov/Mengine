@@ -1,24 +1,24 @@
 #pragma once
 
-#include "MCPInterface.h"
-#include "MCPProtocol.h"
-
-#include "Commands/MCPCommandInterface.h"
-#include "Commands/MCPCommandRegistry.h"
-#include "Commands/Wait/MCPWaitConditionInterface.h"
-#include "Commands/Input/Steps/MCPInputSequenceStepInterface.h"
-#include "Contexts/MCPRuntimeContext.h"
-#include "Contexts/MCPSceneContext.h"
-#include "Contexts/MCPInputContext.h"
-#include "Contexts/MCPHandlerRegistry.h"
-#include "Contexts/MCPResourceContext.h"
-#include "Contexts/MCPScriptContext.h"
-#include "Contexts/MCPDebuggerContext.h"
-
 #include "Interface/LoggerInterface.h"
+#include "Interface/RenderPipelineInterface.h"
 #include "Interface/SocketInterface.h"
 #include "Interface/ThreadIdentityInterface.h"
 #include "Interface/ThreadMutexInterface.h"
+
+#include "Commands/Input/Steps/MCPInputSequenceStepInterface.h"
+#include "Commands/MCPCommandInterface.h"
+#include "Commands/MCPCommandRegistry.h"
+#include "Commands/Wait/MCPWaitConditionInterface.h"
+#include "Contexts/MCPDebuggerContext.h"
+#include "Contexts/MCPHandlerRegistry.h"
+#include "Contexts/MCPInputContext.h"
+#include "Contexts/MCPResourceContext.h"
+#include "Contexts/MCPRuntimeContext.h"
+#include "Contexts/MCPSceneContext.h"
+#include "Contexts/MCPScriptContext.h"
+#include "MCPInterface.h"
+#include "MCPProtocol.h"
 
 #include "Kernel/Deque.h"
 #include "Kernel/LoggerMessage.h"
@@ -27,6 +27,7 @@
 #include "Kernel/Set.h"
 
 #include "Config/Atomic.h"
+#include "Config/Timestamp.h"
 
 #if defined(MENGINE_PLATFORM_ANDROID)
 #   include "Kernel/Params.h"
@@ -49,7 +50,7 @@ namespace Mengine
         ~MCPService() override;
 
     public:
-        bool run( const String & _host, const String & _port, const String & _token, const String & _mode ) override;
+        bool run( const String & _host, const String & _port, const String & _token, const String & _mode, bool _listen ) override;
         void stop() override;
 
     public:
@@ -70,19 +71,32 @@ namespace Mengine
 
     public:
         const String & getMCPMode() const override;
-        uint64_t getMCPUpdateGeneration() const override;
+        uint64_t getMCPUpdateFrame() const override;
+        uint64_t getMCPRenderFrame() const override;
         bool isMCPConnected() const override;
         bool isMCPDebuggerPaused() const override;
         void setMCPDebuggerPaused( bool _paused ) override;
         void processMCPDebuggerRequests() override;
-        void sendMCPCommandResponse( uint32_t _requestId, const jpp::object & _result ) override;
-        void sendMCPCommandError( uint32_t _requestId, const Char * _code, const Char * _message ) override;
-        void sendMCPCommandBinary( uint32_t _requestId, const Data & _data ) override;
 
     protected:
-        void _update() override;
-        void processRequests_();
+        void _preUpdate() override;
 
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+    protected:
+        bool initializeDebuggerCommands_();
+#endif
+
+    protected:
+        void processConnection_();
+        void processRequests_();
+        void dispatchRequests_();
+        void cancelOperations_();
+        void updateOperations_();
+        void releaseOperations_();
+        void releaseSession_();
+
+        void notifyApplicationBeginUpdate_();
+        void notifyRenderSceneEnd_( const RenderPipelineInterfacePtr & _pipeline );
         void notifyBootstrapperFinalizeGame_();
 
 #if defined(MENGINE_PLATFORM_ANDROID)
@@ -109,15 +123,20 @@ namespace Mengine
         typedef Deque<IncomingRequest> DequeIncomingRequests;
         typedef Deque<Data> DequeOutgoingFrames;
         typedef Map<uint32_t, IncomingAssembly> MapIncomingAssemblies;
+        typedef Map<uint32_t, MCPOperationInterfacePtr> MapOperations;
 
     protected:
         bool processSocket_( const ThreadIdentityRunnerInterfacePtr & _runner );
+        bool openSocket_();
         bool connectSocket_();
+        bool acceptSocket_();
         bool flushOutgoing_();
         bool receiveIncoming_();
         bool processFrame_( MCPFrame & _frame );
+        bool processHandshake_( const MCPFrame & _frame );
         void disconnectSocket_();
 
+        void makeCapabilities_( jpp::array * const _capabilities ) const;
         void queueHandshake_();
         void queueResponse_( uint32_t _requestId, const jpp::object & _response );
         void queueError_( uint32_t _requestId, const Char * _code, const Char * _message );
@@ -125,6 +144,7 @@ namespace Mengine
         void queueBinary_( uint32_t _requestId, const Data & _data );
 
         void processRequest_( IncomingRequest & _request );
+        void sendCommandResult_( uint32_t _requestId, EMCPCommandStatus _status, const MCPCommandResponse & _response );
 
     protected:
         ThreadMutexInterfacePtr m_incomingMutex;
@@ -135,21 +155,27 @@ namespace Mengine
 
         DequeIncomingRequests m_incomingRequests;
         DequeOutgoingFrames m_outgoingFrames;
+        Data m_outgoingFrame;
+        size_t m_outgoingOffset;
         Set<uint32_t> m_cancelledRequests;
         MapIncomingAssemblies m_incomingAssemblies;
+        MapOperations m_operations;
 
         AtomicBool m_socketConnected;
         AtomicBool m_connected;
         AtomicBool m_debuggerPaused;
-        AtomicBool m_revertOverlays;
-        AtomicBool m_disconnectCommands;
+        AtomicBool m_sessionEnded;
 
         bool m_running;
+        bool m_listen;
+        bool m_operationsUpdating;
         String m_host;
         String m_port;
         String m_token;
         String m_mode;
-        uint64_t m_updateGeneration;
+        Timestamp m_connectDeadline;
+        uint64_t m_updateFrame;
+        uint64_t m_renderFrame;
 
         MCPCommandRegistry m_commandRegistry;
         MCPWaitConditionRegistry m_waitConditionRegistry;

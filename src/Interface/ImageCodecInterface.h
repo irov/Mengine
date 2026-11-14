@@ -16,6 +16,7 @@ namespace Mengine
         uint32_t height = 0;
 
         int32_t quality = 100;
+        int32_t compressionLevel = -1; // -1 selects the codec default.
 
         EPixelFormat format = PF_UNKNOWN;
     };

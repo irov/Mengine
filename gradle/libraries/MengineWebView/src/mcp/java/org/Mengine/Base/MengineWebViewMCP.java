@@ -13,6 +13,11 @@ import androidx.annotation.NonNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 public final class MengineWebViewMCP extends MengineService implements MengineListenerApplication, MengineListenerActivity, MengineWebViewMCPTransport.HandlerInterface {
     public static final String SERVICE_NAME = "WebViewMCP";
     public static final boolean SERVICE_EMBEDDING = false;
@@ -79,6 +84,12 @@ public final class MengineWebViewMCP extends MengineService implements MengineLi
             return;
         }
 
+        if (MengineWebViewMCP.isMCPPermitted() == false) {
+            this.logError("WebView MCP intent ignored: allow it with 'adb shell setprop debug.mengine.mcp 1'");
+
+            return;
+        }
+
         int portNumber;
         try {
             portNumber = Integer.parseInt(port);
@@ -99,6 +110,37 @@ public final class MengineWebViewMCP extends MengineService implements MengineLi
         MengineWebViewMCPTransport transport = new MengineWebViewMCPTransport(this);
         transport.start(host, portNumber, token);
         m_mcp = transport;
+    }
+
+    private static boolean isMCPPermitted() {
+        Process process;
+        try {
+            Runtime runtime = Runtime.getRuntime();
+            String[] command = {"getprop", "debug.mengine.mcp"};
+            process = runtime.exec(command);
+        } catch (IOException error) {
+            return false;
+        }
+
+        String value;
+        try {
+            InputStream stream = process.getInputStream();
+            InputStreamReader streamReader = new InputStreamReader(stream);
+
+            try (BufferedReader reader = new BufferedReader(streamReader)) {
+                value = reader.readLine();
+            }
+        } catch (IOException error) {
+            return false;
+        } finally {
+            process.destroy();
+        }
+
+        if ("1".equals(value) == false) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override

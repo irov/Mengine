@@ -12,6 +12,9 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    struct InputSpecialData;
+    //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
         bool isSpecialDown();
@@ -25,12 +28,16 @@ namespace Mengine
         bool isMouseButtonDown( EMouseButtonCode _button );
 
         void pushMouseMoveEvent( Timestamp _timestamp, ETouchCode _touchId, float _x, float _y, float _dx, float _dy, float _pressure, float _dpressure );
+        void pushMouseMoveEvent( Timestamp _timestamp, ETouchCode _touchId, float _x, float _y, float _dx, float _dy, float _pressure, float _dpressure, const InputSpecialData & _special );
         void pushMouseButtonEvent( Timestamp _timestamp, ETouchCode _touchId, float _x, float _y, EMouseButtonCode _button, float _pressure, bool _isDown );
+        void pushMouseButtonEvent( Timestamp _timestamp, ETouchCode _touchId, float _x, float _y, EMouseButtonCode _button, float _pressure, bool _isDown, const InputSpecialData & _special );
         void pushKeyEvent( Timestamp _timestamp, float _x, float _y, float _pressure, EKeyCode _code, bool _isDown, bool _repeating );
+        void pushKeyEvent( Timestamp _timestamp, float _x, float _y, float _pressure, EKeyCode _code, bool _isDown, bool _repeating, const InputSpecialData & _special );
         void pushTextEvent( Timestamp _timestamp, float _x, float _y, float _pressure, const WChar * _text );
         void pushMouseLeaveEvent( Timestamp _timestamp, ETouchCode _touchId, float _x, float _y, float _pressure );
         void pushMouseEnterEvent( Timestamp _timestamp, ETouchCode _touchId, float _x, float _y, float _pressure );
         void pushMouseWheelEvent( Timestamp _timestamp, float _x, float _y, float _pressure, EWheelCode _wheel, int32_t _scroll );
+        void pushMouseWheelEvent( Timestamp _timestamp, float _x, float _y, float _pressure, EWheelCode _wheel, int32_t _scroll, const InputSpecialData & _special );
         void pushAccelerometerEvent( Timestamp _timestamp, Timestamp _timestampSensor, float _dx, float _dy, float _dz );
         void pushControllerConnectEvent( Timestamp _timestamp, ControllerId _controllerId, bool _connected );
         void pushControllerButtonEvent( Timestamp _timestamp, ControllerId _controllerId, EControllerButton _button, float _value, bool _isDown );

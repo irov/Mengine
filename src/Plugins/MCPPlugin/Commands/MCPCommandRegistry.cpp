@@ -57,27 +57,13 @@ namespace Mengine
         return command;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MCPCommandRegistry::update()
+    void MCPCommandRegistry::getCommandNames( VectorConstString * const _names ) const
     {
         for( const MapCommands::value_type & value : m_commands )
         {
-            value.second->update();
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MCPCommandRegistry::cancel( uint32_t _requestId )
-    {
-        for( const MapCommands::value_type & value : m_commands )
-        {
-            value.second->cancel( _requestId );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MCPCommandRegistry::disconnect()
-    {
-        for( const MapCommands::value_type & value : m_commands )
-        {
-            value.second->disconnect();
+            const ConstString & name = value.first;
+
+            _names->emplace_back( name );
         }
     }
     //////////////////////////////////////////////////////////////////////////

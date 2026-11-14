@@ -132,8 +132,25 @@ namespace Mengine
             return -1;
         }
 
+        int flags = ::fcntl( accepted, F_GETFL, 0 );
+        if( flags < 0 )
+        {
+            ::close( accepted );
+
+            return -1;
+        }
+
+        int acceptedFlags = m_blocking == true ? (flags & ~O_NONBLOCK) : (flags | O_NONBLOCK);
+        if( ::fcntl( accepted, F_SETFL, acceptedFlags ) < 0 )
+        {
+            ::close( accepted );
+
+            return -1;
+        }
+
         ::close( m_socket );
         m_socket = accepted;
+
         return 1;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -163,7 +180,19 @@ namespace Mengine
         ssize_t result = ::send( m_socket, _data, _size, 0 );
         if( result < 0 )
         {
-            return false;
+            if( m_blocking == true )
+            {
+                return false;
+            }
+
+            if( errno != EAGAIN && errno != EWOULDBLOCK )
+            {
+                return false;
+            }
+
+            *_sent = 0;
+
+            return true;
         }
 
         *_sent = static_cast<size_t>(result);

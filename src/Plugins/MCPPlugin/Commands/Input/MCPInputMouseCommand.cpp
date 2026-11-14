@@ -9,8 +9,9 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    MCPInputMouseCommand::MCPInputMouseCommand( MCPInputContext * _context )
+    MCPInputMouseCommand::MCPInputMouseCommand( MCPInputContext * _context, MCPSceneContext * _sceneContext )
         : m_context( _context )
+        , m_sceneContext( _sceneContext )
     {
         ConstString move = STRINGIZE_STRING_LOCAL( "move" );
         ConstString down = STRINGIZE_STRING_LOCAL( "down" );
@@ -40,15 +41,11 @@ namespace Mengine
             return EMCPCommandStatus::FAILURE;
         }
 
-        float previousX = m_context->getCursorX();
-        float previousY = m_context->getCursorY();
-        float x = _request.params.get( "x", previousX );
-        float y = _request.params.get( "y", previousY );
         const Char * coordinateSpace = _request.params.get( "coordinateSpace", "normalized" );
-        String error;
-        bool normalized = m_context->normalizeCoordinates( coordinateSpace, &x, &y, &error );
 
-        if( normalized == false )
+        mt::vec2f point;
+        String error;
+        if( m_context->resolvePoint( m_sceneContext, _request.params, coordinateSpace, &point, &error ) == false )
         {
             _response->errorMessage = error;
 
@@ -56,56 +53,89 @@ namespace Mengine
         }
 
         const Char * buttonValue = _request.params.get( "button", "left" );
-        MouseEvent event;
+
+        EMouseButtonCode button;
+        if( m_context->getMouseButton( buttonValue, &button ) == false )
+        {
+            _response->errorMessage = "unknown mouse button, expected left, middle, right, x1 or x2";
+
+            return EMCPCommandStatus::FAILURE;
+        }
+
+        VectorMCPKeyCodes modifiers;
+        if( m_context->getModifierKeys( _request.params, &modifiers, &error ) == false )
+        {
+            _response->errorMessage = error;
+
+            return EMCPCommandStatus::FAILURE;
+        }
+
+        float previousX = m_context->getCursorX();
+        float previousY = m_context->getCursorY();
+
+        MouseEventDesc event;
+        m_context->getSpecial( modifiers, &event.special );
+
         event.timestamp = Helper::getSystemTimestamp();
-        event.x = x;
-        event.y = y;
-        event.dx = x - previousX;
-        event.dy = y - previousY;
-        event.button = m_context->getMouseButton( buttonValue );
+        event.x = point.x;
+        event.y = point.y;
+        event.dx = point.x - previousX;
+        event.dy = point.y - previousY;
+        event.button = button;
         event.wheel = _request.params.get( "wheel", 0 );
-        m_context->setCursor( x, y );
+        m_context->setCursor( point.x, point.y );
 
         Action action = it->second;
+
+        if( action != &MCPInputMouseCommand::up_ )
+        {
+            m_context->pushModifierKeys( modifiers, true );
+        }
+
         (this->*action)( event );
 
+        if( action != &MCPInputMouseCommand::down_ )
+        {
+            m_context->pushModifierKeys( modifiers, false );
+        }
+
         _response->result.set( "action", actionValue );
-        _response->result.set( "x", x );
-        _response->result.set( "y", y );
+        _response->result.set( "x", point.x );
+        _response->result.set( "y", point.y );
 
         return EMCPCommandStatus::SUCCESS;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MCPInputMouseCommand::move_( const MouseEvent & _event )
+    void MCPInputMouseCommand::move_( const MouseEventDesc & _event )
     {
-        Helper::pushMouseMoveEvent( _event.timestamp, TC_TOUCH0, _event.x, _event.y, _event.dx, _event.dy, 0.f, 0.f );
+        Helper::pushMouseMoveEvent( _event.timestamp, TC_TOUCH0, _event.x, _event.y, _event.dx, _event.dy, 0.f, 0.f, _event.special );
     }
     //////////////////////////////////////////////////////////////////////////
-    void MCPInputMouseCommand::down_( const MouseEvent & _event )
+    void MCPInputMouseCommand::down_( const MouseEventDesc & _event )
     {
-        Helper::pushMouseButtonEvent( _event.timestamp, TC_TOUCH0, _event.x, _event.y, _event.button, 1.f, true );
+        Helper::pushMouseButtonEvent( _event.timestamp, TC_TOUCH0, _event.x, _event.y, _event.button, 1.f, true, _event.special );
     }
     //////////////////////////////////////////////////////////////////////////
-    void MCPInputMouseCommand::up_( const MouseEvent & _event )
+    void MCPInputMouseCommand::up_( const MouseEventDesc & _event )
     {
-        Helper::pushMouseButtonEvent( _event.timestamp, TC_TOUCH0, _event.x, _event.y, _event.button, 0.f, false );
+        Helper::pushMouseButtonEvent( _event.timestamp, TC_TOUCH0, _event.x, _event.y, _event.button, 0.f, false, _event.special );
     }
     //////////////////////////////////////////////////////////////////////////
-    void MCPInputMouseCommand::click_( const MouseEvent & _event )
+    void MCPInputMouseCommand::click_( const MouseEventDesc & _event )
     {
         this->down_( _event );
         this->up_( _event );
     }
     //////////////////////////////////////////////////////////////////////////
-    void MCPInputMouseCommand::doubleClick_( const MouseEvent & _event )
+    void MCPInputMouseCommand::doubleClick_( const MouseEventDesc & _event )
     {
         this->click_( _event );
         this->click_( _event );
     }
     //////////////////////////////////////////////////////////////////////////
-    void MCPInputMouseCommand::wheel_( const MouseEvent & _event )
+    void MCPInputMouseCommand::wheel_( const MouseEventDesc & _event )
     {
-        Helper::pushMouseWheelEvent( _event.timestamp, _event.x, _event.y, 0.f, WC_CENTRAL, _event.wheel );
+        Helper::pushMouseWheelEvent( _event.timestamp, _event.x, _event.y, 0.f, WC_CENTRAL, _event.wheel, _event.special );
     }
     //////////////////////////////////////////////////////////////////////////
 }

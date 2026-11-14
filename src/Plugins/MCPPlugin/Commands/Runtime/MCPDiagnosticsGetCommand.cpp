@@ -1,15 +1,15 @@
 #include "MCPDiagnosticsGetCommand.h"
 
+#include "Interface/ApplicationInterface.h"
+#include "Interface/MetricServiceInterface.h"
+#include "Interface/PlatformServiceInterface.h"
+#include "Interface/RenderSystemInterface.h"
+#include "Interface/TimelineServiceInterface.h"
+
 #include "../../Contexts/MCPResourceContext.h"
 #include "../../Contexts/MCPRuntimeContext.h"
 #include "../../Contexts/MCPSceneContext.h"
 #include "../../Contexts/MCPScriptContext.h"
-
-#include "Interface/ApplicationInterface.h"
-#include "Interface/PlatformServiceInterface.h"
-#include "Interface/RenderSystemInterface.h"
-#include "Interface/TimelineServiceInterface.h"
-#include "Interface/MetricServiceInterface.h"
 
 namespace Mengine
 {
@@ -65,8 +65,10 @@ namespace Mengine
         bool connected = m_host->isMCPConnected();
         bool debuggerPaused = m_host->isMCPDebuggerPaused();
         uint32_t sceneGeneration = m_sceneContext->getGeneration();
-        uint64_t updateGenerationValue = m_host->getMCPUpdateGeneration();
-        int64_t updateGeneration = (int64_t)updateGenerationValue;
+        uint64_t updateFrameValue = m_host->getMCPUpdateFrame();
+        int64_t updateFrame = (int64_t)updateFrameValue;
+        uint64_t renderFrameValue = m_host->getMCPRenderFrame();
+        int64_t renderFrame = (int64_t)renderFrameValue;
         bool updateFrozen = APPLICATION_SERVICE()->isUpdateFrozen();
         bool renderFrozen = APPLICATION_SERVICE()->isRenderFrozen();
         bool runtimePaused = m_runtimeContext->isPaused();
@@ -89,7 +91,9 @@ namespace Mengine
         _response->result.set( "connected", connected );
         _response->result.set( "debuggerPaused", debuggerPaused );
         _response->result.set( "sceneGeneration", sceneGeneration );
-        _response->result.set( "updateGeneration", updateGeneration );
+        _response->result.set( "updateGeneration", updateFrame );
+        _response->result.set( "updateFrame", updateFrame );
+        _response->result.set( "renderFrame", renderFrame );
         _response->result.set( "updateFrozen", updateFrozen );
         _response->result.set( "renderFrozen", renderFrozen );
         _response->result.set( "runtimePaused", runtimePaused );

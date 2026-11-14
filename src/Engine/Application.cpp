@@ -1320,14 +1320,16 @@ namespace Mengine
         LIFECYCLE_SERVICE()
             ->preUpdate();
 
-        bool updateFrozen = this->isUpdateFrozen();
-
-        if( m_nopause == false )
+        if( this->isUpdateFrozen() == true )
         {
-            if( m_updateGraceful == false && (m_focus == false || updateFrozen == true) )
-            {
-                return false;
-            }
+            return false;
+        }
+
+        bool updatePaused = m_nopause == false && m_focus == false;
+
+        if( updatePaused == true && m_updateGraceful == false )
+        {
+            return false;
         }
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_APPLICATION_BEGIN_UPDATE );
@@ -1337,14 +1339,7 @@ namespace Mengine
 
         if( m_nopause == false )
         {
-            if( (m_focus == false || updateFrozen == true) && m_updateGraceful == true )
-            {
-                m_updateGraceful = false;
-            }
-            else if( (m_focus == true && updateFrozen == false) && m_updateGraceful == false )
-            {
-                m_updateGraceful = true;
-            }
+            m_updateGraceful = m_focus;
         }
 
         return true;

@@ -46,6 +46,16 @@ namespace Mengine
         return handler;
     }
     //////////////////////////////////////////////////////////////////////////
+    void MCPHandlerRegistry::getHandlerNames( VectorConstString * const _names ) const
+    {
+        for( const MapHandlers::value_type & value : m_handlers )
+        {
+            const ConstString & name = value.first;
+
+            _names->emplace_back( name );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     void MCPHandlerRegistry::clear()
     {
         m_handlers.clear();

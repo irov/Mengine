@@ -1,5 +1,7 @@
 #pragma once
 
+#include "MCPOperationInterface.h"
+
 #include "Kernel/ConstString.h"
 #include "Kernel/Data.h"
 #include "Kernel/Mixin.h"
@@ -9,13 +11,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    enum class EMCPCommandStatus
-    {
-        SUCCESS,
-        FAILURE,
-        DEFERRED
-    };
     //////////////////////////////////////////////////////////////////////////
     struct MCPCommandRequest
     {
@@ -29,6 +24,8 @@ namespace Mengine
         MCPCommandResponse();
 
         jpp::object result;
+        Data attachment;
+        MCPOperationInterfacePtr operation;
         String errorCode;
         String errorMessage;
     };
@@ -36,19 +33,16 @@ namespace Mengine
     class MCPCommandHostInterface
     {
     public:
-        virtual ~MCPCommandHostInterface() = default;
+        virtual ~MCPCommandHostInterface();
 
     public:
         virtual const String & getMCPMode() const = 0;
-        virtual uint64_t getMCPUpdateGeneration() const = 0;
+        virtual uint64_t getMCPUpdateFrame() const = 0;
+        virtual uint64_t getMCPRenderFrame() const = 0;
         virtual bool isMCPConnected() const = 0;
         virtual bool isMCPDebuggerPaused() const = 0;
         virtual void setMCPDebuggerPaused( bool _paused ) = 0;
         virtual void processMCPDebuggerRequests() = 0;
-
-        virtual void sendMCPCommandResponse( uint32_t _requestId, const jpp::object & _result ) = 0;
-        virtual void sendMCPCommandError( uint32_t _requestId, const Char * _code, const Char * _message ) = 0;
-        virtual void sendMCPCommandBinary( uint32_t _requestId, const Data & _data ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     class MCPCommandInterface
@@ -61,9 +55,6 @@ namespace Mengine
 
         virtual EMCPCommandStatus execute( const MCPCommandRequest & _request, MCPCommandResponse * const _response ) = 0;
         virtual bool availableWhilePaused( const jpp::object & _params ) const;
-        virtual void update();
-        virtual void cancel( uint32_t _requestId );
-        virtual void disconnect();
 
     protected:
         bool setName_( const ConstString & _name );

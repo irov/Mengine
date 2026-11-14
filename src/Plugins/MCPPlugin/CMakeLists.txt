@@ -21,6 +21,7 @@ src
 
 ADD_FILTER(
 commands
+    Commands/MCPOperationInterface.h
     Commands/MCPCommandInterface.h
     Commands/MCPCommandInterface.cpp
     Commands/MCPCommandRegistry.h
@@ -39,10 +40,16 @@ commands_runtime
     Commands/Runtime/MCPLogsReadCommand.cpp
     Commands/Runtime/MCPRuntimeControlCommand.h
     Commands/Runtime/MCPRuntimeControlCommand.cpp
+    Commands/Runtime/MCPAdvanceFramesOperation.h
+    Commands/Runtime/MCPAdvanceFramesOperation.cpp
     Commands/Runtime/MCPFrameCaptureCommand.h
     Commands/Runtime/MCPFrameCaptureCommand.cpp
+    Commands/Runtime/MCPFrameCaptureOperation.h
+    Commands/Runtime/MCPFrameCaptureOperation.cpp
     Commands/Runtime/MCPWaitForCommand.h
     Commands/Runtime/MCPWaitForCommand.cpp
+    Commands/Runtime/MCPWaitForOperation.h
+    Commands/Runtime/MCPWaitForOperation.cpp
     Commands/Runtime/MCPDiagnosticsGetCommand.h
     Commands/Runtime/MCPDiagnosticsGetCommand.cpp
 )
@@ -87,6 +94,8 @@ commands_input
     Commands/Input/MCPInputAccelerometerCommand.cpp
     Commands/Input/MCPInputSequenceCommand.h
     Commands/Input/MCPInputSequenceCommand.cpp
+    Commands/Input/MCPInputSequenceOperation.h
+    Commands/Input/MCPInputSequenceOperation.cpp
     Commands/Input/Steps/MCPInputSequenceStepInterface.h
     Commands/Input/Steps/MCPInputSequenceStepInterface.cpp
     Commands/Input/Steps/MCPDelayInputSequenceStep.h
@@ -156,6 +165,8 @@ if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
         Commands/Script/MCPScriptSetCommand.cpp
         Commands/Script/MCPScriptCallCommand.h
         Commands/Script/MCPScriptCallCommand.cpp
+        Commands/Script/MCPScriptHandlersCommand.h
+        Commands/Script/MCPScriptHandlersCommand.cpp
         Commands/Script/MCPScriptReleaseCommand.h
         Commands/Script/MCPScriptReleaseCommand.cpp
         Commands/Script/MCPScriptEvalCommand.h

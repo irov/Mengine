@@ -1,96 +1,111 @@
 #include "MCPService.h"
-#include "MCPLogger.h"
-#include "Kernel/NotificationHelper.h"
-
-#include "Commands/MCPCommandRegistry.h"
-#include "Commands/Application/MCPAppStopCommand.h"
-#include "Commands/Runtime/MCPLogsReadCommand.h"
-#include "Commands/Runtime/MCPRuntimeControlCommand.h"
-#include "Commands/Runtime/MCPFrameCaptureCommand.h"
-#include "Commands/Runtime/MCPWaitForCommand.h"
-#include "Commands/Runtime/MCPDiagnosticsGetCommand.h"
-#include "Commands/Scene/MCPSceneSnapshotCommand.h"
-#include "Commands/Scene/MCPSceneFindCommand.h"
-#include "Commands/Scene/MCPSceneGetCommand.h"
-#include "Commands/Scene/MCPSceneSetCommand.h"
-#include "Commands/Input/MCPInputMouseCommand.h"
-#include "Commands/Input/MCPInputKeyboardCommand.h"
-#include "Commands/Input/MCPInputTouchCommand.h"
-#include "Commands/Input/MCPInputAccelerometerCommand.h"
-#include "Commands/Input/MCPInputSequenceCommand.h"
-#include "Commands/Input/Steps/MCPDelayInputSequenceStep.h"
-#include "Commands/Input/Steps/MCPFramesInputSequenceStep.h"
-#include "Commands/Input/Steps/MCPMouseInputSequenceStep.h"
-#include "Commands/Input/Steps/MCPKeyboardInputSequenceStep.h"
-#include "Commands/Input/Steps/MCPTouchInputSequenceStep.h"
-#include "Commands/Input/Steps/MCPAccelerometerInputSequenceStep.h"
-#include "Commands/Input/Steps/MCPWaitInputSequenceStep.h"
-#include "Commands/Resource/MCPResourceReloadCommand.h"
-#include "Commands/Resource/MCPResourceRevertCommand.h"
-#include "Commands/Wait/Conditions/MCPFramesWaitCondition.h"
-#include "Commands/Wait/Conditions/MCPRuntimeWaitCondition.h"
-#include "Commands/Wait/Conditions/MCPSceneWaitCondition.h"
-#include "Commands/Wait/Conditions/MCPNodeWaitCondition.h"
-#include "Commands/Wait/Conditions/MCPLogWaitCondition.h"
-
-#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-#   include "Commands/Wait/Conditions/MCPDebuggerWaitCondition.h"
-#   include "Commands/Wait/Conditions/MCPScriptWaitCondition.h"
-#   include "Commands/Script/MCPScriptReloadModuleCommand.h"
-#   include "Commands/Script/MCPScriptModulesCommand.h"
-#   include "Commands/Script/MCPScriptSourceCommand.h"
-#   include "Commands/Script/MCPScriptInspectCommand.h"
-#   include "Commands/Script/MCPScriptGetCommand.h"
-#   include "Commands/Script/MCPScriptSetCommand.h"
-#   include "Commands/Script/MCPScriptCallCommand.h"
-#   include "Commands/Script/MCPScriptReleaseCommand.h"
-#   include "Commands/Script/MCPScriptEvalCommand.h"
-#   include "Commands/Script/MCPScriptExecCommand.h"
-#   include "Commands/Debugger/MCPDebugSetBreakpointsCommand.h"
-#   include "Commands/Debugger/MCPDebugSetExceptionPolicyCommand.h"
-#   include "Commands/Debugger/MCPDebugPauseCommand.h"
-#   include "Commands/Debugger/MCPDebugContinueCommand.h"
-#   include "Commands/Debugger/MCPDebugStepCommand.h"
-#   include "Commands/Debugger/MCPDebugStackCommand.h"
-#   include "Commands/Debugger/MCPDebugScopesCommand.h"
-#   include "Commands/Debugger/MCPDebugVariablesCommand.h"
-#   include "Commands/Debugger/MCPDebugEvaluateCommand.h"
-#   include "Commands/Debugger/MCPDebugSetVariableCommand.h"
-#endif
 
 #include "Interface/ApplicationInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
-#include "Interface/MemoryServiceInterface.h"
-#include "Interface/LoggerServiceInterface.h"
 #include "Interface/LifecycleServiceInterface.h"
-#include "Interface/PlayerServiceInterface.h"
+#include "Interface/LoggerServiceInterface.h"
+#include "Interface/MemoryServiceInterface.h"
 #include "Interface/PlatformServiceInterface.h"
+#include "Interface/PlayerServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/SceneServiceInterface.h"
 #include "Interface/SocketSystemInterface.h"
 #include "Interface/ThreadSystemInterface.h"
 #include "Interface/TimelineServiceInterface.h"
-#include "Kernel/ConstStringHelper.h"
-#include "Kernel/FactorableUnique.h"
-#include "Kernel/JSONHelper.h"
-#include "Kernel/Logger.h"
-#include "Kernel/OptionHelper.h"
-#include "Kernel/ThreadHelper.h"
-#include "Kernel/ThreadMutexHelper.h"
-#include "Kernel/ThreadMutexScope.h"
-
-#include "Config/StdUtility.h"
-
-#if defined(MENGINE_PLATFORM_ANDROID)
-#   include "Interface/NotificationServiceInterface.h"
-#   include "Kernel/ParamsHelper.h"
-#endif
 
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
 #   include "Interface/ScriptProviderServiceInterface.h"
 #   include "Interface/ScriptServiceInterface.h"
+#endif
+
+#if defined(MENGINE_PLATFORM_ANDROID)
+#   include "Interface/NotificationServiceInterface.h"
+#endif
+
+#include "Commands/Application/MCPAppStopCommand.h"
+#include "Commands/Input/MCPInputAccelerometerCommand.h"
+#include "Commands/Input/MCPInputKeyboardCommand.h"
+#include "Commands/Input/MCPInputMouseCommand.h"
+#include "Commands/Input/MCPInputSequenceCommand.h"
+#include "Commands/Input/MCPInputTouchCommand.h"
+#include "Commands/Input/Steps/MCPAccelerometerInputSequenceStep.h"
+#include "Commands/Input/Steps/MCPDelayInputSequenceStep.h"
+#include "Commands/Input/Steps/MCPFramesInputSequenceStep.h"
+#include "Commands/Input/Steps/MCPKeyboardInputSequenceStep.h"
+#include "Commands/Input/Steps/MCPMouseInputSequenceStep.h"
+#include "Commands/Input/Steps/MCPTouchInputSequenceStep.h"
+#include "Commands/Input/Steps/MCPWaitInputSequenceStep.h"
+#include "Commands/MCPCommandRegistry.h"
+#include "Commands/Resource/MCPResourceReloadCommand.h"
+#include "Commands/Resource/MCPResourceRevertCommand.h"
+#include "Commands/Runtime/MCPDiagnosticsGetCommand.h"
+#include "Commands/Runtime/MCPFrameCaptureCommand.h"
+#include "Commands/Runtime/MCPLogsReadCommand.h"
+#include "Commands/Runtime/MCPRuntimeControlCommand.h"
+#include "Commands/Runtime/MCPWaitForCommand.h"
+#include "Commands/Scene/MCPSceneFindCommand.h"
+#include "Commands/Scene/MCPSceneGetCommand.h"
+#include "Commands/Scene/MCPSceneSetCommand.h"
+#include "Commands/Scene/MCPSceneSnapshotCommand.h"
+#include "Commands/Wait/Conditions/MCPFramesWaitCondition.h"
+#include "Commands/Wait/Conditions/MCPLogWaitCondition.h"
+#include "Commands/Wait/Conditions/MCPNodeWaitCondition.h"
+#include "Commands/Wait/Conditions/MCPRuntimeWaitCondition.h"
+#include "Commands/Wait/Conditions/MCPSceneWaitCondition.h"
+#include "MCPLogger.h"
+
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+#   include "Commands/Debugger/MCPDebugContinueCommand.h"
+#   include "Commands/Debugger/MCPDebugEvaluateCommand.h"
+#   include "Commands/Debugger/MCPDebugPauseCommand.h"
+#   include "Commands/Debugger/MCPDebugScopesCommand.h"
+#   include "Commands/Debugger/MCPDebugSetBreakpointsCommand.h"
+#   include "Commands/Debugger/MCPDebugSetExceptionPolicyCommand.h"
+#   include "Commands/Debugger/MCPDebugSetVariableCommand.h"
+#   include "Commands/Debugger/MCPDebugStackCommand.h"
+#   include "Commands/Debugger/MCPDebugStepCommand.h"
+#   include "Commands/Debugger/MCPDebugVariablesCommand.h"
+#   include "Commands/Script/MCPScriptCallCommand.h"
+#   include "Commands/Script/MCPScriptEvalCommand.h"
+#   include "Commands/Script/MCPScriptExecCommand.h"
+#   include "Commands/Script/MCPScriptGetCommand.h"
+#   include "Commands/Script/MCPScriptHandlersCommand.h"
+#   include "Commands/Script/MCPScriptInspectCommand.h"
+#   include "Commands/Script/MCPScriptModulesCommand.h"
+#   include "Commands/Script/MCPScriptReleaseCommand.h"
+#   include "Commands/Script/MCPScriptReloadModuleCommand.h"
+#   include "Commands/Script/MCPScriptSetCommand.h"
+#   include "Commands/Script/MCPScriptSourceCommand.h"
+#   include "Commands/Wait/Conditions/MCPDebuggerWaitCondition.h"
+#   include "Commands/Wait/Conditions/MCPScriptWaitCondition.h"
+#endif
+
+#include "Kernel/Assertion.h"
+#include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/BuildMode.h"
+#include "Kernel/ConstStringHelper.h"
+#include "Kernel/FactorableUnique.h"
+#include "Kernel/JSONHelper.h"
+#include "Kernel/Logger.h"
+#include "Kernel/NotificationHelper.h"
+#include "Kernel/OptionHelper.h"
+#include "Kernel/ThreadHelper.h"
+#include "Kernel/ThreadMutexHelper.h"
+#include "Kernel/ThreadMutexScope.h"
+#include "Kernel/TimestampHelper.h"
+#include "Kernel/VectorConstString.h"
+
+#if defined(MENGINE_PLATFORM_ANDROID)
+#   include "Kernel/ParamsHelper.h"
+#endif
+
+#include "Config/StdString.h"
+#include "Config/StdUtility.h"
+
+#if defined(MENGINE_PLATFORM_ANDROID)
+#   include <sys/system_properties.h>
 #endif
 
 //////////////////////////////////////////////////////////////////////////
@@ -106,14 +121,23 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
+    const Timestamp MCP_CONNECT_RETRY_TIMEOUT = 30000;
+    const uint32_t MCP_CONNECT_RETRY_DELAY = 100;
+    const uint32_t MCP_ACCEPT_POLL_DELAY = 50;
+    const size_t MCP_BINARY_CHUNK_SIZE = 1024 * 1024;
+    //////////////////////////////////////////////////////////////////////////
     MCPService::MCPService()
-        : m_socketConnected( false )
+        : m_outgoingOffset( 0 )
+        , m_socketConnected( false )
         , m_connected( false )
         , m_debuggerPaused( false )
-        , m_revertOverlays( false )
-        , m_disconnectCommands( false )
+        , m_sessionEnded( false )
         , m_running( false )
-        , m_updateGeneration( 0 )
+        , m_listen( false )
+        , m_operationsUpdating( false )
+        , m_connectDeadline( 0 )
+        , m_updateFrame( 0 )
+        , m_renderFrame( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -172,270 +196,302 @@ namespace Mengine
 
         m_debuggerContext.initialize( this );
 
-        if( m_waitConditionRegistry.addCondition( STRINGIZE_STRING_LOCAL( "frames" ), Helper::makeFactorableUnique<MCPFramesWaitCondition>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        MCPFramesWaitConditionPtr framesWaitCondition = Helper::makeFactorableUnique<MCPFramesWaitCondition>( MENGINE_DOCUMENT_FACTORABLE );
+
+        if( m_waitConditionRegistry.addCondition( STRINGIZE_STRING_LOCAL( "frames" ), framesWaitCondition ) == false )
         {
             return false;
         }
 
-        if( m_waitConditionRegistry.addCondition( STRINGIZE_STRING_LOCAL( "runtime" ), Helper::makeFactorableUnique<MCPRuntimeWaitCondition>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        MCPRuntimeWaitConditionPtr runtimeWaitCondition = Helper::makeFactorableUnique<MCPRuntimeWaitCondition>( MENGINE_DOCUMENT_FACTORABLE );
+
+        if( m_waitConditionRegistry.addCondition( STRINGIZE_STRING_LOCAL( "runtime" ), runtimeWaitCondition ) == false )
         {
             return false;
         }
 
-        if( m_waitConditionRegistry.addCondition( STRINGIZE_STRING_LOCAL( "scene" ), Helper::makeFactorableUnique<MCPSceneWaitCondition>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        MCPSceneWaitConditionPtr sceneWaitCondition = Helper::makeFactorableUnique<MCPSceneWaitCondition>( MENGINE_DOCUMENT_FACTORABLE );
+
+        if( m_waitConditionRegistry.addCondition( STRINGIZE_STRING_LOCAL( "scene" ), sceneWaitCondition ) == false )
         {
             return false;
         }
 
-        if( m_waitConditionRegistry.addCondition( STRINGIZE_STRING_LOCAL( "node" ), Helper::makeFactorableUnique<MCPNodeWaitCondition>( MENGINE_DOCUMENT_FACTORABLE, &m_sceneContext ) ) == false )
+        MCPNodeWaitConditionPtr nodeWaitCondition = Helper::makeFactorableUnique<MCPNodeWaitCondition>( MENGINE_DOCUMENT_FACTORABLE, &m_sceneContext );
+
+        if( m_waitConditionRegistry.addCondition( STRINGIZE_STRING_LOCAL( "node" ), nodeWaitCondition ) == false )
         {
             return false;
         }
 
-        if( m_waitConditionRegistry.addCondition( STRINGIZE_STRING_LOCAL( "log" ), Helper::makeFactorableUnique<MCPLogWaitCondition>( MENGINE_DOCUMENT_FACTORABLE, &m_runtimeContext ) ) == false )
+        MCPLogWaitConditionPtr logWaitCondition = Helper::makeFactorableUnique<MCPLogWaitCondition>( MENGINE_DOCUMENT_FACTORABLE, &m_runtimeContext );
+
+        if( m_waitConditionRegistry.addCondition( STRINGIZE_STRING_LOCAL( "log" ), logWaitCondition ) == false )
         {
             return false;
         }
 
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-        if( m_waitConditionRegistry.addCondition( STRINGIZE_STRING_LOCAL( "debugger" ), Helper::makeFactorableUnique<MCPDebuggerWaitCondition>( MENGINE_DOCUMENT_FACTORABLE, this ) ) == false )
-        {
-            return false;
-        }
+        MCPScriptWaitConditionPtr scriptWaitCondition = Helper::makeFactorableUnique<MCPScriptWaitCondition>( MENGINE_DOCUMENT_FACTORABLE, &m_scriptContext );
 
-        if( m_waitConditionRegistry.addCondition( STRINGIZE_STRING_LOCAL( "script" ), Helper::makeFactorableUnique<MCPScriptWaitCondition>( MENGINE_DOCUMENT_FACTORABLE, &m_scriptContext ) ) == false )
+        if( m_waitConditionRegistry.addCondition( STRINGIZE_STRING_LOCAL( "script" ), scriptWaitCondition ) == false )
         {
             return false;
         }
 #endif
 
-        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "app_stop" ), Helper::makeFactorableUnique<MCPAppStopCommand>( MENGINE_DOCUMENT_FACTORABLE, this ) ) == false )
+        MCPAppStopCommandPtr appStopCommand = Helper::makeFactorableUnique<MCPAppStopCommand>( MENGINE_DOCUMENT_FACTORABLE, this );
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "app_stop" ), appStopCommand ) == false )
         {
             return false;
         }
 
-        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "logs_read" ), Helper::makeFactorableUnique<MCPLogsReadCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_runtimeContext ) ) == false )
+        MCPLogsReadCommandPtr logsReadCommand = Helper::makeFactorableUnique<MCPLogsReadCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_runtimeContext );
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "logs_read" ), logsReadCommand ) == false )
         {
             return false;
         }
 
-        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "runtime_control" ), Helper::makeFactorableUnique<MCPRuntimeControlCommand>( MENGINE_DOCUMENT_FACTORABLE, this, &m_runtimeContext ) ) == false )
+        MCPRuntimeControlCommandPtr runtimeControlCommand = Helper::makeFactorableUnique<MCPRuntimeControlCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_runtimeContext );
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "runtime_control" ), runtimeControlCommand ) == false )
         {
             return false;
         }
 
-        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "frame_capture" ), Helper::makeFactorableUnique<MCPFrameCaptureCommand>( MENGINE_DOCUMENT_FACTORABLE, this ) ) == false )
+        MCPFrameCaptureCommandPtr frameCaptureCommand = Helper::makeFactorableUnique<MCPFrameCaptureCommand>( MENGINE_DOCUMENT_FACTORABLE, this );
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "frame_capture" ), frameCaptureCommand ) == false )
         {
             return false;
         }
 
-        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "wait_for" ), Helper::makeFactorableUnique<MCPWaitForCommand>( MENGINE_DOCUMENT_FACTORABLE, this, &m_waitConditionRegistry ) ) == false )
+        MCPWaitForCommandPtr waitForCommand = Helper::makeFactorableUnique<MCPWaitForCommand>( MENGINE_DOCUMENT_FACTORABLE, this, &m_waitConditionRegistry );
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "wait_for" ), waitForCommand ) == false )
         {
             return false;
         }
 
-        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "diagnostics_get" ), Helper::makeFactorableUnique<MCPDiagnosticsGetCommand>( MENGINE_DOCUMENT_FACTORABLE, this, &m_runtimeContext, &m_sceneContext, &m_resourceContext, &m_scriptContext ) ) == false )
+        MCPDiagnosticsGetCommandPtr diagnosticsGetCommand = Helper::makeFactorableUnique<MCPDiagnosticsGetCommand>( MENGINE_DOCUMENT_FACTORABLE, this, &m_runtimeContext, &m_sceneContext, &m_resourceContext, &m_scriptContext );
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "diagnostics_get" ), diagnosticsGetCommand ) == false )
         {
             return false;
         }
 
-        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "scene_snapshot" ), Helper::makeFactorableUnique<MCPSceneSnapshotCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_sceneContext ) ) == false )
+        MCPSceneSnapshotCommandPtr sceneSnapshotCommand = Helper::makeFactorableUnique<MCPSceneSnapshotCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_sceneContext );
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "scene_snapshot" ), sceneSnapshotCommand ) == false )
         {
             return false;
         }
 
-        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "scene_find" ), Helper::makeFactorableUnique<MCPSceneFindCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_sceneContext ) ) == false )
+        MCPSceneFindCommandPtr sceneFindCommand = Helper::makeFactorableUnique<MCPSceneFindCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_sceneContext );
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "scene_find" ), sceneFindCommand ) == false )
         {
             return false;
         }
 
-        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "scene_get" ), Helper::makeFactorableUnique<MCPSceneGetCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_sceneContext ) ) == false )
+        MCPSceneGetCommandPtr sceneGetCommand = Helper::makeFactorableUnique<MCPSceneGetCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_sceneContext );
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "scene_get" ), sceneGetCommand ) == false )
         {
             return false;
         }
 
-        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "scene_set" ), Helper::makeFactorableUnique<MCPSceneSetCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_sceneContext ) ) == false )
+        MCPSceneSetCommandPtr sceneSetCommand = Helper::makeFactorableUnique<MCPSceneSetCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_sceneContext );
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "scene_set" ), sceneSetCommand ) == false )
         {
             return false;
         }
 
-        MCPInputMouseCommandPtr inputMouseCommand;
+        MCPInputMouseCommandPtr inputMouseCommand = Helper::makeFactorableUnique<MCPInputMouseCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_inputContext, &m_sceneContext );
 
-        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "input_mouse" ), inputMouseCommand = Helper::makeFactorableUnique<MCPInputMouseCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_inputContext ) ) == false )
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "input_mouse" ), inputMouseCommand ) == false )
         {
             return false;
         }
 
-        MCPInputKeyboardCommandPtr inputKeyboardCommand;
+        MCPInputKeyboardCommandPtr inputKeyboardCommand = Helper::makeFactorableUnique<MCPInputKeyboardCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_inputContext );
 
-        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "input_keyboard" ), inputKeyboardCommand = Helper::makeFactorableUnique<MCPInputKeyboardCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_inputContext ) ) == false )
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "input_keyboard" ), inputKeyboardCommand ) == false )
         {
             return false;
         }
 
-        MCPInputTouchCommandPtr inputTouchCommand;
+        MCPInputTouchCommandPtr inputTouchCommand = Helper::makeFactorableUnique<MCPInputTouchCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_inputContext, &m_sceneContext );
 
-        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "input_touch" ), inputTouchCommand = Helper::makeFactorableUnique<MCPInputTouchCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_inputContext ) ) == false )
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "input_touch" ), inputTouchCommand ) == false )
         {
             return false;
         }
 
-        MCPInputAccelerometerCommandPtr inputAccelerometerCommand;
+        MCPInputAccelerometerCommandPtr inputAccelerometerCommand = Helper::makeFactorableUnique<MCPInputAccelerometerCommand>( MENGINE_DOCUMENT_FACTORABLE );
 
-        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "input_accelerometer" ), inputAccelerometerCommand = Helper::makeFactorableUnique<MCPInputAccelerometerCommand>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "input_accelerometer" ), inputAccelerometerCommand ) == false )
         {
             return false;
         }
 
-        if( m_inputSequenceStepRegistry.addStep( STRINGIZE_STRING_LOCAL( "delay" ), Helper::makeFactorableUnique<MCPDelayInputSequenceStep>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        MCPDelayInputSequenceStepPtr delayInputSequenceStep = Helper::makeFactorableUnique<MCPDelayInputSequenceStep>( MENGINE_DOCUMENT_FACTORABLE );
+
+        if( m_inputSequenceStepRegistry.addStep( STRINGIZE_STRING_LOCAL( "delay" ), delayInputSequenceStep ) == false )
         {
             return false;
         }
 
-        if( m_inputSequenceStepRegistry.addStep( STRINGIZE_STRING_LOCAL( "frames" ), Helper::makeFactorableUnique<MCPFramesInputSequenceStep>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        MCPFramesInputSequenceStepPtr framesInputSequenceStep = Helper::makeFactorableUnique<MCPFramesInputSequenceStep>( MENGINE_DOCUMENT_FACTORABLE );
+
+        if( m_inputSequenceStepRegistry.addStep( STRINGIZE_STRING_LOCAL( "frames" ), framesInputSequenceStep ) == false )
         {
             return false;
         }
 
-        if( m_inputSequenceStepRegistry.addStep( STRINGIZE_STRING_LOCAL( "mouse" ), Helper::makeFactorableUnique<MCPMouseInputSequenceStep>( MENGINE_DOCUMENT_FACTORABLE, inputMouseCommand ) ) == false )
+        MCPMouseInputSequenceStepPtr mouseInputSequenceStep = Helper::makeFactorableUnique<MCPMouseInputSequenceStep>( MENGINE_DOCUMENT_FACTORABLE, inputMouseCommand );
+
+        if( m_inputSequenceStepRegistry.addStep( STRINGIZE_STRING_LOCAL( "mouse" ), mouseInputSequenceStep ) == false )
         {
             return false;
         }
 
-        if( m_inputSequenceStepRegistry.addStep( STRINGIZE_STRING_LOCAL( "keyboard" ), Helper::makeFactorableUnique<MCPKeyboardInputSequenceStep>( MENGINE_DOCUMENT_FACTORABLE, inputKeyboardCommand ) ) == false )
+        MCPKeyboardInputSequenceStepPtr keyboardInputSequenceStep = Helper::makeFactorableUnique<MCPKeyboardInputSequenceStep>( MENGINE_DOCUMENT_FACTORABLE, inputKeyboardCommand );
+
+        if( m_inputSequenceStepRegistry.addStep( STRINGIZE_STRING_LOCAL( "keyboard" ), keyboardInputSequenceStep ) == false )
         {
             return false;
         }
 
-        if( m_inputSequenceStepRegistry.addStep( STRINGIZE_STRING_LOCAL( "touch" ), Helper::makeFactorableUnique<MCPTouchInputSequenceStep>( MENGINE_DOCUMENT_FACTORABLE, inputTouchCommand ) ) == false )
+        MCPTouchInputSequenceStepPtr touchInputSequenceStep = Helper::makeFactorableUnique<MCPTouchInputSequenceStep>( MENGINE_DOCUMENT_FACTORABLE, inputTouchCommand );
+
+        if( m_inputSequenceStepRegistry.addStep( STRINGIZE_STRING_LOCAL( "touch" ), touchInputSequenceStep ) == false )
         {
             return false;
         }
 
-        if( m_inputSequenceStepRegistry.addStep( STRINGIZE_STRING_LOCAL( "accelerometer" ), Helper::makeFactorableUnique<MCPAccelerometerInputSequenceStep>( MENGINE_DOCUMENT_FACTORABLE, inputAccelerometerCommand ) ) == false )
+        MCPAccelerometerInputSequenceStepPtr accelerometerInputSequenceStep = Helper::makeFactorableUnique<MCPAccelerometerInputSequenceStep>( MENGINE_DOCUMENT_FACTORABLE, inputAccelerometerCommand );
+
+        if( m_inputSequenceStepRegistry.addStep( STRINGIZE_STRING_LOCAL( "accelerometer" ), accelerometerInputSequenceStep ) == false )
         {
             return false;
         }
 
-        if( m_inputSequenceStepRegistry.addStep( STRINGIZE_STRING_LOCAL( "wait" ), Helper::makeFactorableUnique<MCPWaitInputSequenceStep>( MENGINE_DOCUMENT_FACTORABLE, &m_waitConditionRegistry ) ) == false )
+        MCPWaitInputSequenceStepPtr waitInputSequenceStep = Helper::makeFactorableUnique<MCPWaitInputSequenceStep>( MENGINE_DOCUMENT_FACTORABLE, &m_waitConditionRegistry );
+
+        if( m_inputSequenceStepRegistry.addStep( STRINGIZE_STRING_LOCAL( "wait" ), waitInputSequenceStep ) == false )
         {
             return false;
         }
 
-        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "input_sequence" ), Helper::makeFactorableUnique<MCPInputSequenceCommand>( MENGINE_DOCUMENT_FACTORABLE, this, &m_inputSequenceStepRegistry ) ) == false )
+        MCPInputSequenceCommandPtr inputSequenceCommand = Helper::makeFactorableUnique<MCPInputSequenceCommand>( MENGINE_DOCUMENT_FACTORABLE, this, &m_inputSequenceStepRegistry );
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "input_sequence" ), inputSequenceCommand ) == false )
         {
             return false;
         }
 
-        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "resource_reload" ), Helper::makeFactorableUnique<MCPResourceReloadCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_resourceContext ) ) == false )
+        MCPResourceReloadCommandPtr resourceReloadCommand = Helper::makeFactorableUnique<MCPResourceReloadCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_resourceContext );
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "resource_reload" ), resourceReloadCommand ) == false )
         {
             return false;
         }
 
-        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "resource_revert" ), Helper::makeFactorableUnique<MCPResourceRevertCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_resourceContext ) ) == false )
+        MCPResourceRevertCommandPtr resourceRevertCommand = Helper::makeFactorableUnique<MCPResourceRevertCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_resourceContext );
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "resource_revert" ), resourceRevertCommand ) == false )
         {
             return false;
         }
 
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "script_reload_module" ), Helper::makeFactorableUnique<MCPScriptReloadModuleCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_scriptContext, &m_debuggerContext ) ) == false )
+        MCPScriptReloadModuleCommandPtr scriptReloadModuleCommand = Helper::makeFactorableUnique<MCPScriptReloadModuleCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_scriptContext, &m_debuggerContext );
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "script_reload_module" ), scriptReloadModuleCommand ) == false )
         {
             return false;
         }
 
-        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "script_modules" ), Helper::makeFactorableUnique<MCPScriptModulesCommand>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        MCPScriptModulesCommandPtr scriptModulesCommand = Helper::makeFactorableUnique<MCPScriptModulesCommand>( MENGINE_DOCUMENT_FACTORABLE );
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "script_modules" ), scriptModulesCommand ) == false )
         {
             return false;
         }
 
-        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "script_source" ), Helper::makeFactorableUnique<MCPScriptSourceCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_scriptContext ) ) == false )
+        MCPScriptSourceCommandPtr scriptSourceCommand = Helper::makeFactorableUnique<MCPScriptSourceCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_scriptContext );
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "script_source" ), scriptSourceCommand ) == false )
         {
             return false;
         }
 
-        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "script_inspect" ), Helper::makeFactorableUnique<MCPScriptInspectCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_scriptContext ) ) == false )
+        MCPScriptInspectCommandPtr scriptInspectCommand = Helper::makeFactorableUnique<MCPScriptInspectCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_scriptContext );
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "script_inspect" ), scriptInspectCommand ) == false )
         {
             return false;
         }
 
-        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "script_get" ), Helper::makeFactorableUnique<MCPScriptGetCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_scriptContext ) ) == false )
+        MCPScriptGetCommandPtr scriptGetCommand = Helper::makeFactorableUnique<MCPScriptGetCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_scriptContext );
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "script_get" ), scriptGetCommand ) == false )
         {
             return false;
         }
 
-        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "script_set" ), Helper::makeFactorableUnique<MCPScriptSetCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_scriptContext ) ) == false )
+        MCPScriptSetCommandPtr scriptSetCommand = Helper::makeFactorableUnique<MCPScriptSetCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_scriptContext );
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "script_set" ), scriptSetCommand ) == false )
         {
             return false;
         }
 
-        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "script_call" ), Helper::makeFactorableUnique<MCPScriptCallCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_handlerRegistry, &m_scriptContext ) ) == false )
+        MCPScriptCallCommandPtr scriptCallCommand = Helper::makeFactorableUnique<MCPScriptCallCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_handlerRegistry, &m_scriptContext );
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "script_call" ), scriptCallCommand ) == false )
         {
             return false;
         }
 
-        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "script_release" ), Helper::makeFactorableUnique<MCPScriptReleaseCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_scriptContext ) ) == false )
+        MCPScriptHandlersCommandPtr scriptHandlersCommand = Helper::makeFactorableUnique<MCPScriptHandlersCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_handlerRegistry );
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "script_handlers" ), scriptHandlersCommand ) == false )
         {
             return false;
         }
 
-        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "script_eval" ), Helper::makeFactorableUnique<MCPScriptEvalCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_scriptContext, &m_debuggerContext ) ) == false )
+        MCPScriptReleaseCommandPtr scriptReleaseCommand = Helper::makeFactorableUnique<MCPScriptReleaseCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_scriptContext );
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "script_release" ), scriptReleaseCommand ) == false )
         {
             return false;
         }
 
-        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "script_exec" ), Helper::makeFactorableUnique<MCPScriptExecCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_scriptContext, &m_debuggerContext ) ) == false )
+        MCPScriptEvalCommandPtr scriptEvalCommand = Helper::makeFactorableUnique<MCPScriptEvalCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_scriptContext, &m_debuggerContext );
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "script_eval" ), scriptEvalCommand ) == false )
         {
             return false;
         }
 
-        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "debug_set_breakpoints" ), Helper::makeFactorableUnique<MCPDebugSetBreakpointsCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_debuggerContext ) ) == false )
+        MCPScriptExecCommandPtr scriptExecCommand = Helper::makeFactorableUnique<MCPScriptExecCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_scriptContext, &m_debuggerContext );
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "script_exec" ), scriptExecCommand ) == false )
         {
             return false;
         }
 
-        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "debug_set_exception_policy" ), Helper::makeFactorableUnique<MCPDebugSetExceptionPolicyCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_debuggerContext ) ) == false )
+        if( Helper::isDebugMode() == true )
         {
-            return false;
-        }
-
-        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "debug_pause" ), Helper::makeFactorableUnique<MCPDebugPauseCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_debuggerContext ) ) == false )
-        {
-            return false;
-        }
-
-        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "debug_continue" ), Helper::makeFactorableUnique<MCPDebugContinueCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_debuggerContext ) ) == false )
-        {
-            return false;
-        }
-
-        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "debug_step" ), Helper::makeFactorableUnique<MCPDebugStepCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_debuggerContext ) ) == false )
-        {
-            return false;
-        }
-
-        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "debug_stack" ), Helper::makeFactorableUnique<MCPDebugStackCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_debuggerContext ) ) == false )
-        {
-            return false;
-        }
-
-        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "debug_scopes" ), Helper::makeFactorableUnique<MCPDebugScopesCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_debuggerContext, &m_scriptContext ) ) == false )
-        {
-            return false;
-        }
-
-        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "debug_variables" ), Helper::makeFactorableUnique<MCPDebugVariablesCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_scriptContext ) ) == false )
-        {
-            return false;
-        }
-
-        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "debug_evaluate" ), Helper::makeFactorableUnique<MCPDebugEvaluateCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_debuggerContext, &m_scriptContext ) ) == false )
-        {
-            return false;
-        }
-
-        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "debug_set_variable" ), Helper::makeFactorableUnique<MCPDebugSetVariableCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_debuggerContext, &m_scriptContext ) ) == false )
-        {
-            return false;
+            if( this->initializeDebuggerCommands_() == false )
+            {
+                return false;
+            }
         }
 #endif
 
@@ -444,13 +500,16 @@ namespace Mengine
         runtimeLogger->setWriteHistory( true );
         runtimeLogger->setVerboseLevel( LM_VERBOSE );
 
-        if( LOGGER_SERVICE()->registerLogger( runtimeLogger ) == false )
+        if( LOGGER_SERVICE()
+            ->registerLogger( runtimeLogger ) == false )
         {
             return false;
         }
 
         m_runtimeLogger = runtimeLogger;
 
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_APPLICATION_BEGIN_UPDATE, &MCPService::notifyApplicationBeginUpdate_, MENGINE_DOCUMENT_FACTORABLE );
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_RENDER_SCENE_END, &MCPService::notifyRenderSceneEnd_, MENGINE_DOCUMENT_FACTORABLE );
         NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_BOOTSTRAPPER_FINALIZE_GAME, &MCPService::notifyBootstrapperFinalizeGame_, MENGINE_DOCUMENT_FACTORABLE );
 
 #if defined(MENGINE_PLATFORM_ANDROID)
@@ -460,62 +519,144 @@ namespace Mengine
 
         return true;
     }
+#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
+    //////////////////////////////////////////////////////////////////////////
+    bool MCPService::initializeDebuggerCommands_()
+    {
+        MCPDebuggerWaitConditionPtr debuggerWaitCondition = Helper::makeFactorableUnique<MCPDebuggerWaitCondition>( MENGINE_DOCUMENT_FACTORABLE, this );
+
+        if( m_waitConditionRegistry.addCondition( STRINGIZE_STRING_LOCAL( "debugger" ), debuggerWaitCondition ) == false )
+        {
+            return false;
+        }
+
+        MCPDebugSetBreakpointsCommandPtr debugSetBreakpointsCommand = Helper::makeFactorableUnique<MCPDebugSetBreakpointsCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_debuggerContext );
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "debug_set_breakpoints" ), debugSetBreakpointsCommand ) == false )
+        {
+            return false;
+        }
+
+        MCPDebugSetExceptionPolicyCommandPtr debugSetExceptionPolicyCommand = Helper::makeFactorableUnique<MCPDebugSetExceptionPolicyCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_debuggerContext );
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "debug_set_exception_policy" ), debugSetExceptionPolicyCommand ) == false )
+        {
+            return false;
+        }
+
+        MCPDebugPauseCommandPtr debugPauseCommand = Helper::makeFactorableUnique<MCPDebugPauseCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_debuggerContext );
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "debug_pause" ), debugPauseCommand ) == false )
+        {
+            return false;
+        }
+
+        MCPDebugContinueCommandPtr debugContinueCommand = Helper::makeFactorableUnique<MCPDebugContinueCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_debuggerContext );
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "debug_continue" ), debugContinueCommand ) == false )
+        {
+            return false;
+        }
+
+        MCPDebugStepCommandPtr debugStepCommand = Helper::makeFactorableUnique<MCPDebugStepCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_debuggerContext );
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "debug_step" ), debugStepCommand ) == false )
+        {
+            return false;
+        }
+
+        MCPDebugStackCommandPtr debugStackCommand = Helper::makeFactorableUnique<MCPDebugStackCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_debuggerContext );
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "debug_stack" ), debugStackCommand ) == false )
+        {
+            return false;
+        }
+
+        MCPDebugScopesCommandPtr debugScopesCommand = Helper::makeFactorableUnique<MCPDebugScopesCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_debuggerContext, &m_scriptContext );
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "debug_scopes" ), debugScopesCommand ) == false )
+        {
+            return false;
+        }
+
+        MCPDebugVariablesCommandPtr debugVariablesCommand = Helper::makeFactorableUnique<MCPDebugVariablesCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_scriptContext );
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "debug_variables" ), debugVariablesCommand ) == false )
+        {
+            return false;
+        }
+
+        MCPDebugEvaluateCommandPtr debugEvaluateCommand = Helper::makeFactorableUnique<MCPDebugEvaluateCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_debuggerContext, &m_scriptContext );
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "debug_evaluate" ), debugEvaluateCommand ) == false )
+        {
+            return false;
+        }
+
+        MCPDebugSetVariableCommandPtr debugSetVariableCommand = Helper::makeFactorableUnique<MCPDebugSetVariableCommand>( MENGINE_DOCUMENT_FACTORABLE, &m_debuggerContext, &m_scriptContext );
+
+        if( m_commandRegistry.addCommand( STRINGIZE_STRING_LOCAL( "debug_set_variable" ), debugSetVariableCommand ) == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
+#endif
     //////////////////////////////////////////////////////////////////////////
     bool MCPService::_runService()
     {
-#if defined(MENGINE_PLATFORM_WINDOWS) || defined(MENGINE_PLATFORM_MACOS) || defined(MENGINE_PLATFORM_LINUX) || defined(MENGINE_PLATFORM_IOS)
-        if( HAS_OPTION( "mcp" ) == false )
-        {
-            return true;
-        }
-
+#if defined(MENGINE_PLATFORM_ANDROID)
+        return true;
+#else
         const String host = GET_OPTION_VALUE( "mcp-host", "127.0.0.1" );
         const String port = GET_OPTION_VALUE( "mcp-port", "" );
         const String token = GET_OPTION_VALUE( "mcp-token", "" );
         const String mode = GET_OPTION_VALUE( "mcp-mode", "visible" );
+        bool listen = HAS_OPTION( "mcp-listen" );
 
-        if( this->run( host, port, token, mode ) == false )
+        if( this->run( host, port, token, mode, listen ) == false )
         {
             LOGGER_ERROR( "MCP activation failed" );
 
             return false;
         }
-#endif
 
         return true;
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MCPService::run( const String & _host, const String & _port, const String & _token, const String & _mode )
+    bool MCPService::run( const String & _host, const String & _port, const String & _token, const String & _mode, bool _listen )
     {
-        m_host = _host;
-        m_port = _port;
-        m_token = _token;
-        m_mode = _mode;
-
-        if( m_token.size() != 64 )
+        if( _token.size() != 64 )
         {
             LOGGER_ERROR( "MCP requires a 256-bit hexadecimal session token" );
-
-            m_host.clear();
-            m_port.clear();
-            m_token.clear();
-            m_mode.clear();
 
             return false;
         }
 
+        m_host = _host;
+        m_port = _port;
+        m_token = _token;
+        m_mode = _mode;
+        m_listen = _listen;
+
         m_socketConnected = false;
         m_connected = false;
         m_debuggerPaused = false;
-        m_revertOverlays = false;
-        m_disconnectCommands = false;
-        m_updateGeneration = 0;
+        m_sessionEnded = false;
+
+        Timestamp timestamp = Helper::getSystemTimestamp();
+        m_connectDeadline = timestamp + MCP_CONNECT_RETRY_TIMEOUT;
 
         m_thread = Helper::createThreadIdentity( MENGINE_THREAD_DESCRIPTION( "MNGMCP" ), ETP_ABOVE_NORMAL, [this]( const ThreadIdentityRunnerInterfacePtr & _runner )
         {
-            bool successful = this->processSocket_( _runner );
+            if( this->processSocket_( _runner ) == false )
+            {
+                return false;
+            }
 
-            return successful;
+            return true;
         }, 1, MENGINE_DOCUMENT_FACTORABLE );
 
         if( m_thread == nullptr )
@@ -530,16 +671,26 @@ namespace Mengine
 
         m_running = true;
 
-        const Char * host = m_host.c_str();
-        const Char * port = m_port.c_str();
-        const Char * mode = m_mode.c_str();
-        LOGGER_INFO( "mcp", "connecting MNCP v1 to '%s:%s' in '%s' mode"
-            , host
-            , port
-            , mode
+        LOGGER_INFO( "mcp", "%s MNCP v1 '%s:%s' in '%s' mode"
+            , m_listen == true ? "listening on" : "connecting to"
+            , m_host.c_str()
+            , m_port.c_str()
+            , m_mode.c_str()
         );
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MCPService::notifyApplicationBeginUpdate_()
+    {
+        ++m_updateFrame;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MCPService::notifyRenderSceneEnd_( const RenderPipelineInterfacePtr & _pipeline )
+    {
+        MENGINE_UNUSED( _pipeline );
+
+        ++m_renderFrame;
     }
     //////////////////////////////////////////////////////////////////////////
     void MCPService::notifyBootstrapperFinalizeGame_()
@@ -564,23 +715,17 @@ namespace Mengine
 
         this->disconnectSocket_();
 
-        m_commandRegistry.disconnect();
-        m_debuggerContext.disconnect();
-        m_runtimeContext.restoreRuntime();
-        m_resourceContext.revertAllOverlays();
+        m_sessionEnded = false;
+
+        this->releaseSession_();
+
         m_scriptContext.finalize();
         m_sceneContext.finalize();
-
-        ConstString freezeName = STRINGIZE_STRING_LOCAL( "MCP" );
-        APPLICATION_SERVICE()->setUpdateFreeze( freezeName, false );
 
         m_incomingRequests.clear();
         m_outgoingFrames.clear();
         m_cancelledRequests.clear();
         m_incomingAssemblies.clear();
-
-        m_revertOverlays = false;
-        m_disconnectCommands = false;
 
         m_host.clear();
         m_port.clear();
@@ -590,7 +735,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MCPService::_finalizeService()
     {
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_BEGIN_UPDATE );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_RENDER_SCENE_END );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_FINALIZE_GAME );
+
 #if defined(MENGINE_PLATFORM_ANDROID)
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_INTENT_START );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_APPLICATION_INTENT_NEW );
@@ -607,7 +755,10 @@ namespace Mengine
             LoggerInterface * loggerInterface = m_runtimeLogger.get();
             MCPLogger * logger = static_cast<MCPLogger *>(loggerInterface);
             logger->setService( nullptr );
-            LOGGER_SERVICE()->unregisterLogger( m_runtimeLogger );
+
+            LOGGER_SERVICE()
+                ->unregisterLogger( m_runtimeLogger );
+
             m_runtimeLogger = nullptr;
         }
 
@@ -638,9 +789,19 @@ namespace Mengine
             return;
         }
 
+        Char permission[PROP_VALUE_MAX] = {'\0'};
+        ::__system_property_get( "debug.mengine.mcp", permission );
+
+        if( StdString::strcmp( permission, "1" ) != 0 )
+        {
+            LOGGER_ERROR( "MCP intent ignored: allow it with 'adb shell setprop debug.mengine.mcp 1'" );
+
+            return;
+        }
+
         this->stop();
 
-        if( this->run( host, port, token, mode ) == false )
+        if( this->run( host, port, token, mode, false ) == false )
         {
             LOGGER_ERROR( "MCP Android intent activation failed" );
         }
@@ -649,9 +810,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MCPService::addHandler( const ConstString & _name, const MCPHandlerInterfacePtr & _handler )
     {
-        bool successful = m_handlerRegistry.addHandler( _name, _handler );
+        if( m_handlerRegistry.addHandler( _name, _handler ) == false )
+        {
+            return false;
+        }
 
-        return successful;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void MCPService::removeHandler( const MCPHandlerInterfacePtr & _handler )
@@ -675,16 +839,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const String & MCPService::getMCPMode() const
     {
-        const String & mode = m_mode;
-
-        return mode;
+        return m_mode;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint64_t MCPService::getMCPUpdateGeneration() const
+    uint64_t MCPService::getMCPUpdateFrame() const
     {
-        uint64_t generation = m_updateGeneration;
-
-        return generation;
+        return m_updateFrame;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint64_t MCPService::getMCPRenderFrame() const
+    {
+        return m_renderFrame;
     }
     //////////////////////////////////////////////////////////////////////////
     bool MCPService::isMCPConnected() const
@@ -711,92 +876,178 @@ namespace Mengine
         this->processRequests_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void MCPService::sendMCPCommandResponse( uint32_t _requestId, const jpp::object & _result )
-    {
-        jpp::object response = jpp::make_object();
-        response.set( "result", _result );
-        this->queueResponse_( _requestId, response );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MCPService::sendMCPCommandError( uint32_t _requestId, const Char * _code, const Char * _message )
-    {
-        this->queueError_( _requestId, _code, _message );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MCPService::sendMCPCommandBinary( uint32_t _requestId, const Data & _data )
-    {
-        this->queueBinary_( _requestId, _data );
-    }
-    //////////////////////////////////////////////////////////////////////////
     void MCPService::captureRuntimeLog( const LoggerMessage & _message )
     {
         m_runtimeContext.captureLog( _message );
     }
     //////////////////////////////////////////////////////////////////////////
-    void MCPService::_update()
+    void MCPService::_preUpdate()
     {
         if( m_running == false )
         {
             return;
         }
 
+        this->processConnection_();
         this->processRequests_();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MCPService::processConnection_()
+    {
+        if( m_sessionEnded.load() == false )
+        {
+            return;
+        }
+
+        this->releaseSession_();
+
+        m_sessionEnded = false;
+
+        if( m_listen == true )
+        {
+            return;
+        }
+
+        if( m_mode == "visible" )
+        {
+            return;
+        }
+
+        LOGGER_MESSAGE( "MCP controller is unavailable, quit '%s' application"
+            , m_mode.c_str()
+        );
+
+        APPLICATION_SERVICE()
+            ->quit();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MCPService::releaseSession_()
+    {
+        this->releaseOperations_();
+
+        m_debuggerContext.disconnect();
+        m_runtimeContext.restoreRuntime();
+        m_resourceContext.revertAllOverlays();
     }
     //////////////////////////////////////////////////////////////////////////
     void MCPService::processRequests_()
     {
-        ++m_updateGeneration;
-
-        if( m_disconnectCommands.exchange( false ) == true )
+        if( m_connected.load() == false )
         {
-            m_commandRegistry.disconnect();
-            m_debuggerContext.disconnect();
+            return;
         }
 
-        if( m_revertOverlays.exchange( false ) == true )
+        this->dispatchRequests_();
+
+        if( m_connected.load() == false )
         {
-            m_resourceContext.revertAllOverlays();
+            return;
         }
 
-        Set<uint32_t> cancelled;
+        if( m_operationsUpdating == true )
+        {
+            return;
+        }
+
+        m_operationsUpdating = true;
+
+        this->cancelOperations_();
+        this->updateOperations_();
+
+        m_operationsUpdating = false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MCPService::dispatchRequests_()
+    {
         for( ;; )
         {
-            DequeIncomingRequests requests;
-            Set<uint32_t> newlyCancelled;
-
-            {
-                MENGINE_THREAD_MUTEX_SCOPE( m_incomingMutex );
-                newlyCancelled.swap( m_cancelledRequests );
-
-                if( m_incomingRequests.empty() == false )
-                {
-                    requests.resize( 1 );
-                    requests.front() = StdUtility::move( m_incomingRequests.front() );
-                    m_incomingRequests.pop_front();
-                }
-            }
-
-            cancelled.insert( newlyCancelled.begin(), newlyCancelled.end() );
-
-            for( uint32_t requestId : newlyCancelled )
-            {
-                m_commandRegistry.cancel( requestId );
-            }
-
-            m_commandRegistry.update();
-
-            if( requests.empty() == true )
+            if( m_connected.load() == false )
             {
                 break;
             }
 
-            IncomingRequest & request = requests.front();
-            if( cancelled.find( request.requestId ) != cancelled.end() )
+            IncomingRequest request;
+
+            {
+                MENGINE_THREAD_MUTEX_SCOPE( m_incomingMutex );
+
+                if( m_incomingRequests.empty() == true )
+                {
+                    break;
+                }
+
+                request = StdUtility::move( m_incomingRequests.front() );
+                m_incomingRequests.pop_front();
+
+                if( m_cancelledRequests.erase( request.requestId ) != 0 )
+                {
+                    continue;
+                }
+            }
+
+            this->processRequest_( request );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MCPService::cancelOperations_()
+    {
+        Set<uint32_t> cancelled;
+
+        {
+            MENGINE_THREAD_MUTEX_SCOPE( m_incomingMutex );
+
+            cancelled.swap( m_cancelledRequests );
+        }
+
+        for( uint32_t requestId : cancelled )
+        {
+            MapOperations::iterator it = m_operations.find( requestId );
+
+            if( it == m_operations.end() )
             {
                 continue;
             }
 
-            this->processRequest_( request );
+            MCPOperationInterfacePtr operation = it->second;
+            m_operations.erase( it );
+
+            operation->cancel();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MCPService::updateOperations_()
+    {
+        for( MapOperations::iterator it = m_operations.begin(); it != m_operations.end(); )
+        {
+            uint32_t requestId = it->first;
+            MCPOperationInterfacePtr operation = it->second;
+
+            MCPCommandResponse response;
+            EMCPCommandStatus status = operation->update( &response );
+
+            if( status == EMCPCommandStatus::DEFERRED )
+            {
+                ++it;
+
+                continue;
+            }
+
+            it = m_operations.erase( it );
+
+            this->sendCommandResult_( requestId, status, response );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MCPService::releaseOperations_()
+    {
+        MapOperations operations;
+        operations.swap( m_operations );
+
+        for( const MapOperations::value_type & value : operations )
+        {
+            const MCPOperationInterfacePtr & operation = value.second;
+
+            operation->cancel();
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -807,24 +1058,52 @@ namespace Mengine
             return false;
         }
 
+        if( m_sessionEnded.load() == true )
+        {
+            return true;
+        }
+
         if( m_socketConnected.load() == false )
         {
-            bool successful = this->connectSocket_();
+            if( this->openSocket_() == false )
+            {
+                return false;
+            }
 
-            return successful;
+            return true;
         }
 
         if( this->flushOutgoing_() == false )
         {
             this->disconnectSocket_();
 
-            return false;
+            return m_listen;
         }
 
         if( this->receiveIncoming_() == false )
         {
             this->disconnectSocket_();
 
+            return m_listen;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool MCPService::openSocket_()
+    {
+        if( m_listen == true )
+        {
+            if( this->acceptSocket_() == false )
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        if( this->connectSocket_() == false )
+        {
             return false;
         }
 
@@ -844,55 +1123,137 @@ namespace Mengine
         const Char * host = m_host.c_str();
         const Char * port = m_port.c_str();
         SocketConnectInfo connectInfo = {host, port};
+
         if( socket->connect( connectInfo ) == false )
         {
-            LOGGER_ERROR( "MCP failed to connect to '%s:%s'"
-                , host
-                , port
-            );
+            Timestamp timestamp = Helper::getSystemTimestamp();
 
-            return false;
+            if( timestamp >= m_connectDeadline )
+            {
+                LOGGER_ERROR( "MCP failed to connect to '%s:%s'"
+                    , host
+                    , port
+                );
+
+                m_sessionEnded = true;
+
+                return false;
+            }
+
+            THREAD_SYSTEM()
+                ->sleep( MCP_CONNECT_RETRY_DELAY );
+
+            return true;
         }
 
         m_socket = socket;
         m_socketConnected = true;
+
         this->queueHandshake_();
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool MCPService::acceptSocket_()
+    {
+        if( m_socket == nullptr )
+        {
+            SocketInterfacePtr socket = SOCKET_SYSTEM()
+                ->createSocket( MENGINE_DOCUMENT_FACTORABLE );
+
+            if( socket == nullptr )
+            {
+                return false;
+            }
+
+            const Char * host = m_host.c_str();
+            const Char * port = m_port.c_str();
+            SocketConnectInfo bindInfo = {host, port};
+
+            if( socket->bind( bindInfo, false ) == false )
+            {
+                LOGGER_ERROR( "MCP failed to listen on '%s:%s'"
+                    , host
+                    , port
+                );
+
+                return false;
+            }
+
+            m_socket = socket;
+        }
+
+        int32_t accepted = m_socket->checkForClientConnection();
+
+        if( accepted < 0 )
+        {
+            LOGGER_ERROR( "MCP failed to accept a client on '%s:%s'"
+                , m_host.c_str()
+                , m_port.c_str()
+            );
+
+            m_socket = nullptr;
+
+            return false;
+        }
+
+        if( accepted == 0 )
+        {
+            THREAD_SYSTEM()
+                ->sleep( MCP_ACCEPT_POLL_DELAY );
+
+            return true;
+        }
+
+        m_socketConnected = true;
+
+        LOGGER_INFO( "mcp", "MNCP client connected, waiting for the handshake" );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool MCPService::flushOutgoing_()
     {
-        DequeOutgoingFrames frames;
-
+        for( ;; )
         {
-            MENGINE_THREAD_MUTEX_SCOPE( m_outgoingMutex );
-            frames.swap( m_outgoingFrames );
-        }
+            if( m_outgoingFrame.empty() == true )
+            {
+                MENGINE_THREAD_MUTEX_SCOPE( m_outgoingMutex );
 
-        for( const Data & frame : frames )
-        {
-            size_t offset = 0;
-            size_t frameSize = frame.size();
-            const uint8_t * frameData = frame.data();
+                if( m_outgoingFrames.empty() == true )
+                {
+                    return true;
+                }
 
-            while( offset != frameSize )
+                m_outgoingFrame = StdUtility::move( m_outgoingFrames.front() );
+                m_outgoingFrames.pop_front();
+                m_outgoingOffset = 0;
+            }
+
+            size_t frameSize = m_outgoingFrame.size();
+            const uint8_t * frameData = m_outgoingFrame.data();
+
+            while( m_outgoingOffset != frameSize )
             {
                 size_t sent = 0;
-                const uint8_t * sendData = frameData + offset;
-                size_t sendSize = frameSize - offset;
-                bool successful = m_socket->send( sendData, sendSize, &sent );
+                const uint8_t * sendData = frameData + m_outgoingOffset;
+                size_t sendSize = frameSize - m_outgoingOffset;
 
-                if( successful == false || sent == 0 )
+                if( m_socket->send( sendData, sendSize, &sent ) == false )
                 {
                     return false;
                 }
 
-                offset += sent;
-            }
-        }
+                if( sent == 0 )
+                {
+                    return true;
+                }
 
-        return true;
+                m_outgoingOffset += sent;
+            }
+
+            m_outgoingFrame.clear();
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool MCPService::receiveIncoming_()
@@ -902,10 +1263,16 @@ namespace Mengine
             return true;
         }
 
-        uint8_t buffer[64 * 1024];
+        constexpr size_t bufferSize = 64 * 1024;
+        uint8_t buffer[bufferSize];
         size_t received = 0;
 
-        if( m_socket->receive( buffer, sizeof( buffer ), &received ) == false || received == 0 )
+        if( m_socket->receive( buffer, sizeof( buffer ), &received ) == false )
+        {
+            return false;
+        }
+
+        if( received == 0 )
         {
             return false;
         }
@@ -932,18 +1299,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MCPService::processFrame_( MCPFrame & _frame )
     {
-        if( _frame.type == EMCPFrameType::Response && _frame.requestId == Detail::MCP_HANDSHAKE_REQUEST_ID )
+        if( m_connected.load() == false )
         {
-            const uint8_t * payloadBuffer = _frame.payload.data();
-            size_t payloadSize = _frame.payload.size();
-            jpp::object response = Helper::loadJSONBuffer( payloadBuffer, payloadSize, MENGINE_DOCUMENT_FACTORABLE );
-            if( response.invalid() == true || response.exist( "error", nullptr ) == true )
+            if( this->processHandshake_( _frame ) == false )
             {
                 return false;
             }
-
-            m_connected = true;
-            LOGGER_INFO( "mcp", "MNCP session authenticated" );
 
             return true;
         }
@@ -951,6 +1312,7 @@ namespace Mengine
         if( _frame.type == EMCPFrameType::Cancel )
         {
             MENGINE_THREAD_MUTEX_SCOPE( m_incomingMutex );
+
             m_cancelledRequests.emplace( _frame.requestId );
             m_incomingAssemblies.erase( _frame.requestId );
 
@@ -967,7 +1329,13 @@ namespace Mengine
             const uint8_t * payloadBuffer = _frame.payload.data();
             size_t payloadSize = _frame.payload.size();
             jpp::object request = Helper::loadJSONBuffer( payloadBuffer, payloadSize, MENGINE_DOCUMENT_FACTORABLE );
+
             if( request.invalid() == true )
+            {
+                return false;
+            }
+
+            if( request.is_type_object() == false )
             {
                 return false;
             }
@@ -991,6 +1359,7 @@ namespace Mengine
                 incoming.payload = StdUtility::move( _frame.payload );
 
                 MENGINE_THREAD_MUTEX_SCOPE( m_incomingMutex );
+
                 m_incomingRequests.emplace_back();
                 m_incomingRequests.back() = StdUtility::move( incoming );
 
@@ -1009,12 +1378,14 @@ namespace Mengine
         if( _frame.type == EMCPFrameType::Binary )
         {
             MapIncomingAssemblies::iterator it = m_incomingAssemblies.find( _frame.requestId );
+
             if( it == m_incomingAssemblies.end() )
             {
                 return false;
             }
 
             IncomingAssembly & assembly = it->second;
+
             if( assembly.chunkCount == 0 )
             {
                 assembly.chunkCount = _frame.chunkCount;
@@ -1048,6 +1419,7 @@ namespace Mengine
             m_incomingAssemblies.erase( it );
 
             MENGINE_THREAD_MUTEX_SCOPE( m_incomingMutex );
+
             m_incomingRequests.emplace_back();
             m_incomingRequests.back() = StdUtility::move( incoming );
 
@@ -1057,13 +1429,126 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool MCPService::processHandshake_( const MCPFrame & _frame )
+    {
+        const uint8_t * payloadBuffer = _frame.payload.data();
+        size_t payloadSize = _frame.payload.size();
+        jpp::object payload = Helper::loadJSONBuffer( payloadBuffer, payloadSize, MENGINE_DOCUMENT_FACTORABLE );
+
+        if( payload.invalid() == true )
+        {
+            return false;
+        }
+
+        if( payload.is_type_object() == false )
+        {
+            return false;
+        }
+
+        if( m_listen == false )
+        {
+            if( _frame.type != EMCPFrameType::Response )
+            {
+                return false;
+            }
+
+            if( _frame.requestId != Detail::MCP_HANDSHAKE_REQUEST_ID )
+            {
+                return false;
+            }
+
+            if( payload.exist( "error", nullptr ) == true )
+            {
+                return false;
+            }
+
+            m_connected = true;
+
+            LOGGER_INFO( "mcp", "MNCP session authenticated" );
+
+            return true;
+        }
+
+        if( _frame.type != EMCPFrameType::Request )
+        {
+            return false;
+        }
+
+        jpp::object methodObject;
+        if( payload.exist( "method", &methodObject ) == false )
+        {
+            return false;
+        }
+
+        if( methodObject.is_type_string() == false )
+        {
+            return false;
+        }
+
+        const Char * method = methodObject;
+
+        if( StdString::strcmp( method, "handshake" ) != 0 )
+        {
+            return false;
+        }
+
+        jpp::object params;
+        if( payload.exist( "params", &params ) == false )
+        {
+            return false;
+        }
+
+        if( params.is_type_object() == false )
+        {
+            return false;
+        }
+
+        jpp::object tokenObject;
+        if( params.exist( "token", &tokenObject ) == false )
+        {
+            return false;
+        }
+
+        if( tokenObject.is_type_string() == false )
+        {
+            return false;
+        }
+
+        const Char * token = tokenObject;
+
+        if( m_token != token )
+        {
+            LOGGER_ERROR( "MCP client rejected: invalid session token" );
+
+            return false;
+        }
+
+        jpp::array capabilities = jpp::make_array();
+        this->makeCapabilities_( &capabilities );
+
+        jpp::object result = jpp::make_object();
+        result.set( "protocol", MCP_PROTOCOL_VERSION );
+        result.set( "authenticated", true );
+        result.set( "capabilities", capabilities );
+        result.set( "mode", m_mode );
+
+        jpp::object response = jpp::make_object();
+        response.set( "result", result );
+
+        this->queueResponse_( _frame.requestId, response );
+
+        m_connected = true;
+
+        LOGGER_INFO( "mcp", "MNCP client authenticated" );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void MCPService::disconnectSocket_()
     {
         m_connected = false;
         m_socketConnected = false;
         m_debuggerPaused = false;
-        m_revertOverlays = true;
-        m_disconnectCommands = true;
 
         if( m_socket != nullptr )
         {
@@ -1073,21 +1558,42 @@ namespace Mengine
 
         m_decoder.reset();
         m_incomingAssemblies.clear();
+        m_outgoingFrame.clear();
+        m_outgoingOffset = 0;
+
+        {
+            MENGINE_THREAD_MUTEX_SCOPE( m_incomingMutex );
+
+            m_incomingRequests.clear();
+            m_cancelledRequests.clear();
+        }
+
+        {
+            MENGINE_THREAD_MUTEX_SCOPE( m_outgoingMutex );
+
+            m_outgoingFrames.clear();
+        }
+
+        m_sessionEnded = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MCPService::makeCapabilities_( jpp::array * const _capabilities ) const
+    {
+        VectorConstString names;
+        m_commandRegistry.getCommandNames( &names );
+
+        for( const ConstString & name : names )
+        {
+            const Char * nameString = name.c_str();
+
+            _capabilities->push_back( nameString );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void MCPService::queueHandshake_()
     {
         jpp::array capabilities = jpp::make_array();
-        capabilities.push_back( "scene" );
-        capabilities.push_back( "virtual_input" );
-        capabilities.push_back( "game_extensions" );
-        capabilities.push_back( "diagnostics" );
-        capabilities.push_back( "frame_capture" );
-        capabilities.push_back( "explicit_reload" );
-#if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-        capabilities.push_back( "script" );
-        capabilities.push_back( "debugger" );
-#endif
+        this->makeCapabilities_( &capabilities );
 
         jpp::object params = jpp::make_object();
         params.set( "token", m_token );
@@ -1130,6 +1636,17 @@ namespace Mengine
     void MCPService::queueFrame_( Data & _frame )
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_outgoingMutex );
+
+        if( m_socketConnected.load() == false )
+        {
+            return;
+        }
+
+        if( m_sessionEnded.load() == true )
+        {
+            return;
+        }
+
         m_outgoingFrames.emplace_back();
         m_outgoingFrames.back() = StdUtility::move( _frame );
     }
@@ -1139,6 +1656,7 @@ namespace Mengine
         const uint8_t * payloadBuffer = _request.payload.data();
         size_t payloadSize = _request.payload.size();
         jpp::object request = Helper::loadJSONBuffer( payloadBuffer, payloadSize, MENGINE_DOCUMENT_FACTORABLE );
+
         if( request.invalid() == true )
         {
             this->queueError_( _request.requestId, "execution_error", "invalid JSON request" );
@@ -1146,12 +1664,41 @@ namespace Mengine
             return;
         }
 
-        const Char * method = request.get( "method", "" );
+        if( request.is_type_object() == false )
+        {
+            this->queueError_( _request.requestId, "execution_error", "request must be a JSON object" );
+
+            return;
+        }
+
+        jpp::object methodObject;
+        if( request.exist( "method", &methodObject ) == false )
+        {
+            this->queueError_( _request.requestId, "execution_error", "request method is required" );
+
+            return;
+        }
+
+        if( methodObject.is_type_string() == false )
+        {
+            this->queueError_( _request.requestId, "execution_error", "request method must be a string" );
+
+            return;
+        }
+
+        const Char * method = methodObject;
         ConstString methodName = Helper::stringizeString( method );
         jpp::object params;
-        if( request.exist( "params", &params ) == false || params.is_type_object() == false )
+        if( request.exist( "params", &params ) == false )
         {
             params = jpp::make_object();
+        }
+
+        if( params.is_type_object() == false )
+        {
+            this->queueError_( _request.requestId, "execution_error", "request params must be an object" );
+
+            return;
         }
 
         MCPCommandInterfacePtr command = m_commandRegistry.findCommand( methodName );
@@ -1177,44 +1724,78 @@ namespace Mengine
         MCPCommandResponse commandResponse;
         EMCPCommandStatus status = command->execute( commandRequest, &commandResponse );
 
-        switch( status )
+        if( status == EMCPCommandStatus::DEFERRED )
         {
-        case EMCPCommandStatus::SUCCESS:
+            MENGINE_ASSERTION_MEMORY_PANIC( commandResponse.operation, "command '%s' deferred without an operation"
+                , method
+            );
+
+            bool inserted = m_operations.emplace( _request.requestId, commandResponse.operation ).second;
+
+            if( inserted == false )
             {
-                this->sendMCPCommandResponse( _request.requestId, commandResponse.result );
+                commandResponse.operation->cancel();
 
-                return;
-            }break;
-        case EMCPCommandStatus::FAILURE:
-            {
-                const Char * errorCode = "execution_error";
+                this->queueError_( _request.requestId, "execution_error", "request id is already pending" );
+            }
 
-                if( commandResponse.errorCode.empty() == false )
-                {
-                    errorCode = commandResponse.errorCode.c_str();
-                }
-
-                const Char * errorMessage = commandResponse.errorMessage.c_str();
-                this->queueError_( _request.requestId, errorCode, errorMessage );
-
-                return;
-            }break;
-        case EMCPCommandStatus::DEFERRED:
-            {
-                return;
-            }break;
+            return;
         }
+
+        this->sendCommandResult_( _request.requestId, status, commandResponse );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MCPService::sendCommandResult_( uint32_t _requestId, EMCPCommandStatus _status, const MCPCommandResponse & _response )
+    {
+        MENGINE_ASSERTION_FATAL( _status != EMCPCommandStatus::DEFERRED, "deferred status has no result" );
+
+        if( _status == EMCPCommandStatus::FAILURE )
+        {
+            const Char * errorCode = "execution_error";
+
+            if( _response.errorCode.empty() == false )
+            {
+                errorCode = _response.errorCode.c_str();
+            }
+
+            const Char * errorMessage = _response.errorMessage.c_str();
+            this->queueError_( _requestId, errorCode, errorMessage );
+
+            return;
+        }
+
+        jpp::object result = _response.result;
+
+        if( _response.attachment.empty() == false )
+        {
+            size_t attachmentSize = _response.attachment.size();
+
+            jpp::object attachment = jpp::make_object();
+            attachment.set( "size", (uint32_t)attachmentSize );
+            result.set( "attachment", attachment );
+        }
+
+        jpp::object response = jpp::make_object();
+        response.set( "result", result );
+        this->queueResponse_( _requestId, response );
+
+        if( _response.attachment.empty() == true )
+        {
+            return;
+        }
+
+        this->queueBinary_( _requestId, _response.attachment );
     }
     //////////////////////////////////////////////////////////////////////////
     void MCPService::queueBinary_( uint32_t _requestId, const Data & _data )
     {
-        static const size_t MCP_BINARY_CHUNK_SIZE = 1024 * 1024;
-
         uint32_t chunkCount = (uint32_t)((_data.size() + MCP_BINARY_CHUNK_SIZE - 1) / MCP_BINARY_CHUNK_SIZE);
+
         for( uint32_t chunkIndex = 0; chunkIndex != chunkCount; ++chunkIndex )
         {
             size_t offset = (size_t)chunkIndex * MCP_BINARY_CHUNK_SIZE;
             size_t size = _data.size() - offset;
+
             if( size > MCP_BINARY_CHUNK_SIZE )
             {
                 size = MCP_BINARY_CHUNK_SIZE;

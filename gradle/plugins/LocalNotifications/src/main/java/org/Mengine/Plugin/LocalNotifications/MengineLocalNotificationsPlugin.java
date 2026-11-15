@@ -50,6 +50,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 public class MengineLocalNotificationsPlugin extends MengineService implements MengineListenerActivity, MengineListenerEngine {
     public static final String SERVICE_NAME = "LNotifications";
@@ -62,7 +63,6 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
     private static final String PREFERENCES_SCHEDULED_ALARM_IDS = "scheduled_alarm_ids";
     private static final String PREFERENCES_LAUNCH_COUNT = "launch_count";
     private static final String RESOURCE_REQUEST_LAUNCH = "mengine_local_notifications_request_launch";
-    private static final long DEBUG_NOTIFICATION_INTERVAL_MILLIS = 5000;
 
     static class LocalNotificationDesc {
         public int id;
@@ -91,7 +91,7 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
 
     private List<LocalNotificationDesc> m_internalLocalNotifications = new ArrayList<>();
     private final Set<Integer> m_scheduledAlarmNotificationIds = new HashSet<>();
-    private final Map<String, Long> m_scriptNotificationTimes = new HashMap<>();
+    private final Map<String, Long> m_notificationTimes = new HashMap<>();
 
     private boolean m_notificationPermissionGranted = false;
     private boolean m_notificationPermissionRequested = false;
@@ -233,6 +233,10 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
             return;
         }
 
+        this.scheduleNotifications();
+    }
+
+    private List<ScheduledNotification> makeScheduledNotifications() {
         Locale locale = Locale.getDefault();
         String language = locale.getLanguage();
         long now = System.currentTimeMillis();
@@ -267,21 +271,52 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
             return identifierOrder;
         });
 
-        long debugIndex = 0;
+        return notifications;
+    }
+
+    public void queueNotifications(int intervalSeconds) {
+        if (intervalSeconds <= 0) {
+            return;
+        }
+
+        List<ScheduledNotification> notifications = this.makeScheduledNotifications();
+        long intervalMillis = TimeUnit.SECONDS.toMillis(intervalSeconds);
+        long index = 0;
+
+        for (ScheduledNotification notification : notifications) {
+            ++index;
+            long delayMillis = index * intervalMillis;
+            String name = notification.notification.name;
+            this.setNotificationDelayMillis(name, delayMillis);
+        }
+
+        this.scheduleNotifications();
+    }
+
+    private void scheduleNotifications() {
+        if (m_notificationPermissionGranted == false) {
+            return;
+        }
+
+        List<ScheduledNotification> notifications = this.makeScheduledNotifications();
 
         for (ScheduledNotification notification : notifications) {
             LocalNotificationDesc desc = notification.notification;
             long delay = notification.delay;
             PersistableBundle bundle = MengineLocalNotificationsJobService.notificationBundle(desc.id, desc.title, desc.content);
 
-            if (BuildConfig.DEBUG == true) {
-                ++debugIndex;
-                delay = debugIndex * DEBUG_NOTIFICATION_INTERVAL_MILLIS;
-            } else if (desc.yearly == true) {
-                bundle.putInt(MengineLocalNotificationsConstants.KEY_MONTH, desc.month);
-                bundle.putInt(MengineLocalNotificationsConstants.KEY_DAY, desc.day);
-                bundle.putInt(MengineLocalNotificationsConstants.KEY_HOUR, desc.hour);
-                bundle.putInt(MengineLocalNotificationsConstants.KEY_MINUTE, desc.minute);
+            boolean overridden;
+            synchronized (m_notificationTimes) {
+                overridden = m_notificationTimes.containsKey(desc.name);
+            }
+
+            if (desc.yearly == true) {
+                if (overridden == false) {
+                    bundle.putInt(MengineLocalNotificationsConstants.KEY_MONTH, desc.month);
+                    bundle.putInt(MengineLocalNotificationsConstants.KEY_DAY, desc.day);
+                    bundle.putInt(MengineLocalNotificationsConstants.KEY_HOUR, desc.hour);
+                    bundle.putInt(MengineLocalNotificationsConstants.KEY_MINUTE, desc.minute);
+                }
             }
 
             this.scheduleJobNotification(delay, bundle);
@@ -300,20 +335,22 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
     }
 
     private long calculateNotificationDelay(@NonNull LocalNotificationDesc desc, long now) {
-        Long scriptTime = null;
+        synchronized (m_notificationTimes) {
+            Long notificationTime = m_notificationTimes.get(desc.name);
 
-        if (desc.script == true) {
-            synchronized (m_scriptNotificationTimes) {
-                scriptTime = m_scriptNotificationTimes.get(desc.name);
-            }
+            if (notificationTime != null) {
+                long delay = notificationTime - now;
 
-            if (scriptTime == null) {
-                return 0;
+                if (delay > 0) {
+                    return delay;
+                }
+
+                m_notificationTimes.remove(desc.name);
             }
         }
 
-        if (scriptTime != null) {
-            return scriptTime - now;
+        if (desc.script == true) {
+            return 0;
         }
 
         if (desc.month > 0) {
@@ -376,16 +413,16 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
     }
 
     private void setNotificationDelayMillis(String name, long delayMillis) {
-        synchronized (m_scriptNotificationTimes) {
+        synchronized (m_notificationTimes) {
             if (delayMillis <= 0) {
-                m_scriptNotificationTimes.remove(name);
+                m_notificationTimes.remove(name);
 
                 return;
             }
 
             long time = System.currentTimeMillis() + delayMillis;
 
-            m_scriptNotificationTimes.put(name, time);
+            m_notificationTimes.put(name, time);
         }
     }
 

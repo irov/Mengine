@@ -1,0 +1,3 @@
+LIBRARY "Win32NativePythonPlugin"
+EXPORTS
+    dllMengineCreatePlugin @1

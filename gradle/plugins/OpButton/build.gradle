@@ -1,0 +1,9 @@
+apply from: rootProject.projectDir.getAbsolutePath() + '/plugins/plugin.gradle'
+
+android {
+    namespace = "org.Mengine.Plugin.OpButton"
+}
+
+dependencies {
+    api 'com.github.opbutton-org:opbutton-sdk-java:1.0.35'
+}

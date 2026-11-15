@@ -406,8 +406,8 @@ PLUGIN_EXPORT( GOAP );
 PLUGIN_EXPORT( DevToDebug );
 #endif
 //////////////////////////////////////////////////////////////////////////
-#if defined(MENGINE_PLUGIN_WIN32_PILOT_STATIC)
-PLUGIN_EXPORT( Win32Pilot );
+#if defined(MENGINE_PLUGIN_WIN32_OPBUTTON_STATIC)
+PLUGIN_EXPORT( Win32OpButton );
 #endif
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLUGIN_CACHALOT_STATIC)
@@ -432,6 +432,10 @@ PLUGIN_EXPORT( Optick );
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLUGIN_WIN32_ANTIFREEZEMONITOR_STATIC)
 PLUGIN_EXPORT( Win32AntifreezeMonitor );
+#endif
+//////////////////////////////////////////////////////////////////////////
+#if defined(MENGINE_PLUGIN_WIN32_NATIVE_PYTHON_STATIC)
+PLUGIN_EXPORT( Win32NativePython );
 #endif
 //////////////////////////////////////////////////////////////////////////
 #if defined(MENGINE_PLUGIN_ANDROID_NATIVE_PYTHON_STATIC)
@@ -1976,8 +1980,8 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( DevToDebug, "plugin DevToDebug...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
-#if defined(MENGINE_PLUGIN_WIN32_PILOT_STATIC)
-        MENGINE_ADD_PLUGIN( Win32Pilot, "plugin Win32Pilot...", MENGINE_DOCUMENT_FACTORABLE );
+#if defined(MENGINE_PLUGIN_WIN32_OPBUTTON_STATIC)
+        MENGINE_ADD_PLUGIN( Win32OpButton, "plugin Win32OpButton...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #if defined(MENGINE_PLUGIN_CACHALOT_STATIC)
@@ -1999,6 +2003,10 @@ namespace Mengine
 
 #if defined(MENGINE_PLUGIN_WIN32_ANTIFREEZEMONITOR_STATIC)
         MENGINE_ADD_PLUGIN( Win32AntifreezeMonitor, "plugin Win32AntifreezeMonitor...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#if defined(MENGINE_PLUGIN_WIN32_NATIVE_PYTHON_STATIC)
+        MENGINE_ADD_PLUGIN( Win32NativePython, "plugin Win32NativePython...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #if defined(MENGINE_PLUGIN_ANDROID_NATIVE_PYTHON_STATIC)

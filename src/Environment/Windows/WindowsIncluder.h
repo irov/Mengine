@@ -76,7 +76,9 @@
 #define NOMINMAX
 #endif
 
-#pragma warning(push, 0) 
+#if defined(MENGINE_TOOLCHAIN_MSVC)
+#   pragma warning(push, 0)
+#endif
 #include <Windows.h>
 #include <WinUser.h>
 #include <WinBase.h>
@@ -96,4 +98,6 @@
 #include <wininet.h>
 #include <process.h>
 #include <shellscalingapi.h>
-#pragma warning(pop) 
+#if defined(MENGINE_TOOLCHAIN_MSVC)
+#   pragma warning(pop)
+#endif

@@ -1,0 +1,4 @@
+-keep class org.Mengine.Plugin.OpButton.** { *; }
+-keep class org.opbutton.sdk.** { *; }
+-dontwarn okhttp3.**
+-dontwarn okio.**

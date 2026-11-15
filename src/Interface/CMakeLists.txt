@@ -121,6 +121,7 @@ Common
     RenderDeviceLifecycleInterface.h
     LifecycleInterface.h
     ServantInterface.h
+    SemaphoreListenerInterface.h
     EnumeratorServiceInterface.h
     SceneServiceInterface.h
     SceneChangeCallbackInterface.h

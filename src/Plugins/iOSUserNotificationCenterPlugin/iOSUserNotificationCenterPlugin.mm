@@ -22,9 +22,6 @@
 
 static NSString * const MENGINE_LOCAL_NOTIFICATION_PREFIX = @"mengine.local.";
 static NSString * const MENGINE_LOCAL_NOTIFICATION_LAUNCH_COUNT = @"mengine.usernotificationcenter.launch_count";
-#if defined(MENGINE_DEBUG)
-static NSTimeInterval const MENGINE_LOCAL_NOTIFICATION_DEBUG_INTERVAL = 5.0;
-#endif
 
 @implementation iOSUserNotificationCenterPlugin
 {
@@ -451,21 +448,18 @@ static NSTimeInterval const MENGINE_LOCAL_NOTIFICATION_DEBUG_INTERVAL = 5.0;
 
     UNNotificationTrigger * trigger = nil;
 
-    if ([desc[@"script"] boolValue] == YES) {
-        NSString * name = desc[@"name"];
-        NSDate * date = delayDates[name];
+    NSString * name = desc[@"name"];
+    NSDate * date = delayDates[name];
+    NSTimeInterval interval = 0.0;
 
-        if (date == nil) {
-            return nil;
-        }
+    if (date != nil) {
+        interval = [date timeIntervalSinceDate:now];
+    }
 
-        NSTimeInterval interval = [date timeIntervalSinceDate:now];
-
-        if (interval <= 0.0) {
-            return nil;
-        }
-
+    if (interval > 0.0) {
         trigger = [UNTimeIntervalNotificationTrigger triggerWithTimeInterval:interval repeats:NO];
+    } else if ([desc[@"script"] boolValue] == YES) {
+        return nil;
     } else if ([desc[@"month"] integerValue] > 0) {
         NSCalendar * calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
 
@@ -522,12 +516,58 @@ static NSTimeInterval const MENGINE_LOCAL_NOTIFICATION_DEBUG_INTERVAL = 5.0;
     return request;
 }
 
+- (NSArray<NSString *> *)getNotificationNames_ {
+    NSDictionary<NSString *, NSDate *> * delayDates = nil;
+
+    @synchronized (m_delayDates) {
+        delayDates = [m_delayDates copy];
+    }
+
+    NSString * language = [iOSUserNotificationCenterPlugin notificationLanguage_];
+    NSDate * now = [NSDate date];
+    NSArray<UNNotificationRequest *> * requests = [iOSUserNotificationCenterPlugin makeRequests_:m_notifications language:language delayDates:delayDates now:now];
+    NSMutableDictionary<NSString *, NSString *> * names = [NSMutableDictionary dictionary];
+
+    for (NSDictionary * desc in m_notifications) {
+        NSString * identifier = [iOSUserNotificationCenterPlugin requestIdentifier_:desc];
+        names[identifier] = desc[@"name"];
+    }
+
+    NSMutableArray<NSString *> * result = [NSMutableArray array];
+
+    for (UNNotificationRequest * request in requests) {
+        NSString * name = names[request.identifier];
+        [result addObject:name];
+    }
+
+    return result;
+}
+
+- (void)queueNotificationsWithInterval:(NSTimeInterval)interval {
+    if (Mengine::StdMath::isfinite(interval) == false) {
+        return;
+    }
+
+    if (interval <= 0.0) {
+        return;
+    }
+
+    NSArray<NSString *> * names = [self getNotificationNames_];
+    NSUInteger index = 0;
+
+    for (NSString * name in names) {
+        ++index;
+        NSTimeInterval delay = index * interval;
+        [self setNotificationDelay:name delay:delay];
+    }
+
+    UIApplication * application = [UIApplication sharedApplication];
+    [self scheduleNotifications_:application];
+}
+
 + (NSArray<UNNotificationRequest *> *)makeRequests_:(NSArray<NSDictionary *> *)notifications language:(NSString *)language delayDates:(NSDictionary<NSString *, NSDate *> *)delayDates now:(NSDate *)now {
     NSMutableArray<UNNotificationRequest *> * requests = [NSMutableArray array];
-
-#if defined(MENGINE_DEBUG)
     NSMutableDictionary<NSString *, NSDate *> * fireDates = [NSMutableDictionary dictionary];
-#endif
 
     for (NSDictionary * desc in notifications) {
         UNNotificationRequest * request = [iOSUserNotificationCenterPlugin makeRequest_:desc language:language delayDates:delayDates now:now];
@@ -538,29 +578,22 @@ static NSTimeInterval const MENGINE_LOCAL_NOTIFICATION_DEBUG_INTERVAL = 5.0;
 
         NSDate * fireDate = nil;
 
-        if ([desc[@"script"] boolValue] == YES) {
-            NSString * name = desc[@"name"];
-            fireDate = delayDates[name];
-        } else if ([desc[@"month"] integerValue] > 0) {
+        if ([request.trigger isKindOfClass:UNCalendarNotificationTrigger.class] == YES) {
             UNCalendarNotificationTrigger * trigger = (UNCalendarNotificationTrigger *)request.trigger;
             fireDate = trigger.nextTriggerDate;
         } else {
-            NSTimeInterval delay = [desc[@"delay"] doubleValue];
-            fireDate = [now dateByAddingTimeInterval:delay];
+            UNTimeIntervalNotificationTrigger * trigger = (UNTimeIntervalNotificationTrigger *)request.trigger;
+            fireDate = [now dateByAddingTimeInterval:trigger.timeInterval];
         }
 
         if (fireDate == nil) {
             continue;
         }
 
-#if defined(MENGINE_DEBUG)
         fireDates[request.identifier] = fireDate;
-#endif
-
         [requests addObject:request];
     }
 
-#if defined(MENGINE_DEBUG)
     [requests sortUsingComparator:^NSComparisonResult(UNNotificationRequest * left, UNNotificationRequest * right) {
         NSDate * leftDate = fireDates[left.identifier];
         NSDate * rightDate = fireDates[right.identifier];
@@ -574,15 +607,6 @@ static NSTimeInterval const MENGINE_LOCAL_NOTIFICATION_DEBUG_INTERVAL = 5.0;
 
         return identifierOrder;
     }];
-
-    for (NSUInteger index = 0; index != requests.count; ++index) {
-        UNNotificationRequest * request = requests[index];
-        NSTimeInterval delay = (index + 1) * MENGINE_LOCAL_NOTIFICATION_DEBUG_INTERVAL;
-        UNNotificationTrigger * trigger = [UNTimeIntervalNotificationTrigger triggerWithTimeInterval:delay repeats:NO];
-        UNNotificationRequest * debugRequest = [UNNotificationRequest requestWithIdentifier:request.identifier content:request.content trigger:trigger];
-        requests[index] = debugRequest;
-    }
-#endif
 
     return requests;
 }

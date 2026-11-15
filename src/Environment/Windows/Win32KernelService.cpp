@@ -1,5 +1,9 @@
 #include "Win32KernelService.h"
 
+#include "Interface/ThreadSystemInterface.h"
+
+#include "Kernel/ThreadMutexScope.h"
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Win32KernelService, Mengine::Win32KernelService );
 //////////////////////////////////////////////////////////////////////////
@@ -60,7 +64,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     Win32KernelService::Win32KernelService()
-        : m_WINAPI_SetThreadDescription( NULL )
+        : m_WINAPI_SetThreadDescription( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -70,18 +74,31 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32KernelService::_initializeService()
     {
-        HMODULE hModuleKernel32 = ::GetModuleHandleW( L"kernel32.dll" );
+        m_semaphoresMutex = THREAD_SYSTEM()
+            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-        if( hModuleKernel32 != NULL )
+        if( m_semaphoresMutex == nullptr )
         {
-            m_WINAPI_SetThreadDescription = (FWINAPI_SetThreadDescription)::GetProcAddress( hModuleKernel32, "SetThreadDescription" );
+            return false;
         }
+
+        HMODULE kernel32Module = ::GetModuleHandleW( L"kernel32.dll" );
+
+        if( kernel32Module == nullptr )
+        {
+            return true;
+        }
+
+        m_WINAPI_SetThreadDescription = (FWINAPI_SetThreadDescription)::GetProcAddress( kernel32Module, "SetThreadDescription" );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32KernelService::_finalizeService()
     {
+        this->clearSemaphores();
+
+        m_semaphoresMutex = nullptr;
         m_WINAPI_SetThreadDescription = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -99,6 +116,86 @@ namespace Mengine
 
                 Detail::Win32SetThreadName( threadId, _description.nameA );
             }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32KernelService::activateSemaphore( const ConstString & _name, const ParamVariant & _value )
+    {
+        VectorSemaphoreListeners listeners;
+        ParamVariant value = _value;
+
+        {
+            MENGINE_THREAD_MUTEX_SCOPE( m_semaphoresMutex );
+
+            SemaphoreDesc & semaphore = m_semaphores[_name];
+
+            if( semaphore.activated == true )
+            {
+                return;
+            }
+
+            semaphore.activated = true;
+            semaphore.value = value;
+            listeners.swap( semaphore.listeners );
+        }
+
+        for( const SemaphoreListenerInterfacePtr & listener : listeners )
+        {
+            listener->invoke( value );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32KernelService::deactivateSemaphore( const ConstString & _name )
+    {
+        VectorSemaphoreListeners listeners;
+        ParamVariant value;
+
+        {
+            MENGINE_THREAD_MUTEX_SCOPE( m_semaphoresMutex );
+
+            MapSemaphores::iterator itSemaphore = m_semaphores.find( _name );
+
+            if( itSemaphore == m_semaphores.end() )
+            {
+                return;
+            }
+
+            listeners.swap( itSemaphore->second.listeners );
+            value = itSemaphore->second.value;
+            m_semaphores.erase( itSemaphore );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32KernelService::waitSemaphore( const ConstString & _name, const SemaphoreListenerInterfacePtr & _listener )
+    {
+        ParamVariant value;
+
+        {
+            MENGINE_THREAD_MUTEX_SCOPE( m_semaphoresMutex );
+
+            SemaphoreDesc & semaphore = m_semaphores[_name];
+
+            if( semaphore.activated == false )
+            {
+                semaphore.listeners.emplace_back( _listener );
+
+                return;
+            }
+
+            value = semaphore.value;
+        }
+
+        _listener->invoke( value );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32KernelService::clearSemaphores()
+    {
+        MapSemaphores semaphores;
+
+        {
+            MENGINE_THREAD_MUTEX_SCOPE( m_semaphoresMutex );
+
+            semaphores.swap( m_semaphores );
         }
     }
     //////////////////////////////////////////////////////////////////////////

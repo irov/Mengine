@@ -11,6 +11,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)sharedInstance;
 
 - (void)requestAuthorization:(void (^ _Nonnull)(BOOL granted))completion;
+- (void)queueNotificationsWithInterval:(NSTimeInterval)interval;
 - (void)setNotificationDelay:(NSString *)identifier delay:(NSTimeInterval)delay;
 
 @property (nonatomic, assign) BOOL m_notificationPermissionGranted;

@@ -62,7 +62,7 @@ final Boolean MENGINE_APP_PLUGIN_LEANPLUM = Utils.existAppPlugin("MENGINE_APP_PL
 final Boolean MENGINE_APP_PLUGIN_DATADOG = Utils.existAppPlugin("MENGINE_APP_PLUGIN_DATADOG")
 final Boolean MENGINE_APP_PLUGIN_VIBRATOR = Utils.existAppPlugin("MENGINE_APP_PLUGIN_VIBRATOR")
 final Boolean MENGINE_APP_PLUGIN_AMPLITUDE = Utils.existAppPlugin("MENGINE_APP_PLUGIN_AMPLITUDE")
-final Boolean MENGINE_APP_PLUGIN_PILOT = Utils.existAppPlugin("MENGINE_APP_PLUGIN_PILOT")
+final Boolean MENGINE_APP_PLUGIN_OPBUTTON = Utils.existAppPlugin("MENGINE_APP_PLUGIN_OPBUTTON")
 
 Utils.logString("ANDROID_APP_DELIVERY_PACKAGES", ANDROID_APP_DELIVERY_PACKAGES)
 Utils.logAvailable("ANDROID_APP_BUILD_PUBLISH", ANDROID_APP_BUILD_PUBLISH)
@@ -562,13 +562,17 @@ if (MENGINE_APP_PLUGIN_DATADOG == true) {
     }
 }
 
-Utils.logAvailable("MENGINE_APP_PLUGIN_PILOT", MENGINE_APP_PLUGIN_PILOT)
+Utils.logAvailable("MENGINE_APP_PLUGIN_OPBUTTON", MENGINE_APP_PLUGIN_OPBUTTON)
 
-if (MENGINE_APP_PLUGIN_PILOT == true) {
-    android.ext.plugins += 'org.Mengine.Plugin.Pilot.MenginePilotPlugin'
+if (MENGINE_APP_PLUGIN_OPBUTTON == true) {
+    android.ext.plugins += 'org.Mengine.Plugin.OpButton.MengineOpButtonPlugin'
 
     dependencies {
-        implementation project(':plugins:Pilot')
+        implementation project(':plugins:OpButton')
+
+        if (Utils.existAppPlugin("MENGINE_APP_PLUGIN_LOCAL_NOTIFICATIONS") == true) {
+            implementation project(':plugins:LocalNotifications:LocalNotificationsOpButton')
+        }
     }
 }
 

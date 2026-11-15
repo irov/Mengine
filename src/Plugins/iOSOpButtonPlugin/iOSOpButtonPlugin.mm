@@ -141,25 +141,30 @@ static int64_t const MENGINE_OPBUTTON_METRIC_SAMPLE_INTERVAL_MILLISECONDS = 200;
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
     Mengine::Helper::addScriptEmbedding<Mengine::iOSOpButtonScriptEmbedding>( MENGINE_DOCUMENT_FUNCTION );
 #endif
+}
 
+- (void)onRunEnd {
     BOOL initialized = [OpButtonBridge isInitialized];
 
-#if defined(MENGINE_PLUGIN_IOS_USERNOTIFICATIONCENTER)
-    if (initialized == YES) {
-        NSTimeInterval interval = [AppleBundle getPluginConfigDouble:@PLUGIN_BUNDLE_NAME withKey:@"NotificationIntervalSeconds" withDefault:0.0];
+    if (initialized == NO) {
+        [AppleSemaphoreService.sharedInstance activateSemaphore:@"OpButtonReady" withValue:@(NO)];
 
-        if (interval > 0.0) {
-            m_notificationsTab = [OpButtonBridge createCommandTab:@"Notifications" title:@"Notifications"];
-            NSString * title = [NSString stringWithFormat:@"Queue notifications every %g seconds", interval];
-            [m_notificationsTab addButton:@"notification_queue" title:title onClick:^{
-                [[iOSUserNotificationCenterPlugin sharedInstance] queueNotificationsWithInterval:interval];
-            }];
-        }
+        return;
+    }
+
+#if defined(MENGINE_PLUGIN_IOS_USERNOTIFICATIONCENTER)
+    NSTimeInterval interval = [AppleBundle getPluginConfigDouble:@PLUGIN_BUNDLE_NAME withKey:@"NotificationIntervalSeconds" withDefault:0.0];
+
+    if (interval > 0.0) {
+        m_notificationsTab = [OpButtonBridge createCommandTab:@"Notifications" title:@"Notifications"];
+        NSString * title = [NSString stringWithFormat:@"Queue notifications every %g seconds", interval];
+        [m_notificationsTab addButton:@"notification_queue" title:title onClick:^{
+            [[iOSUserNotificationCenterPlugin sharedInstance] queueNotificationsWithInterval:interval];
+        }];
     }
 #endif
 
-    NSNumber * successful = @(initialized);
-    [AppleSemaphoreService.sharedInstance activateSemaphore:@"OpButtonReady" withValue:successful];
+    [AppleSemaphoreService.sharedInstance activateSemaphore:@"OpButtonReady" withValue:@(YES)];
 }
 
 - (void)onStopEnd {

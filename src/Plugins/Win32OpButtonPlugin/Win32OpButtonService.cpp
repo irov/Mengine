@@ -7,6 +7,7 @@
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/PlatformServiceInterface.h"
+#include "Interface/Win32KernelServiceInterface.h"
 
 #include "Win32OpButtonAnalyticsEventProvider.h"
 #include "Win32OpButtonLogger.h"
@@ -137,6 +138,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32OpButtonService::_initializeService()
     {
+        NOTIFICATION_ADDOBSERVERMETHOD_THIS( NOTIFICATOR_PLATFORM_RUN, &Win32OpButtonService::notifyPlatformRun_, MENGINE_DOCUMENT_FACTORABLE );
+
         URLString apiUrl = CONFIG_VALUE_URLSTRING( "Win32OpButtonPlugin", "ApiUrl", "" );
         URLString apiToken = CONFIG_VALUE_URLSTRING( "Win32OpButtonPlugin", "ApiToken", "" );
 
@@ -260,6 +263,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32OpButtonService::_finalizeService()
     {
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_PLATFORM_RUN );
+
         if( m_sdkInitialized == false )
         {
             return;
@@ -292,6 +297,14 @@ namespace Mengine
 
         OpButton::OpButtonSdk::shutdown();
         m_sdkInitialized = false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32OpButtonService::notifyPlatformRun_()
+    {
+        const ConstString & semaphoreName = STRINGIZE_STRING_LOCAL( "OpButtonReady" );
+
+        WIN32_KERNEL_SERVICE()
+            ->activateSemaphore( semaphoreName, m_sdkInitialized );
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32OpButtonService::notifyPlatformUpdate_()

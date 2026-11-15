@@ -9,9 +9,11 @@ import androidx.annotation.StringRes;
 import org.Mengine.Base.MengineAdFormat;
 import org.Mengine.Base.MengineAdMediation;
 import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineFragmentEngine;
 import org.Mengine.Base.MengineListenerAdRevenue;
 import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineListenerAnalytics;
+import org.Mengine.Base.MengineListenerEngine;
 import org.Mengine.Base.MengineListenerInAppPurchase;
 import org.Mengine.Base.MengineListenerLogger;
 import org.Mengine.Base.MengineLog;
@@ -53,7 +55,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class MengineOpButtonPlugin extends MengineService implements MengineListenerApplication, MengineListenerLogger, MengineListenerAnalytics, MengineListenerAdRevenue, MengineListenerInAppPurchase, OpButtonSessionListener, OpButtonActionListener, OpButtonLoggerListener {
+public class MengineOpButtonPlugin extends MengineService implements MengineListenerApplication, MengineListenerEngine, MengineListenerLogger, MengineListenerAnalytics, MengineListenerAdRevenue, MengineListenerInAppPurchase, OpButtonSessionListener, OpButtonActionListener, OpButtonLoggerListener {
     public static final String SERVICE_NAME = "OpButton";
     public static final boolean SERVICE_EMBEDDING = true;
 
@@ -135,14 +137,6 @@ public class MengineOpButtonPlugin extends MengineService implements MengineList
     }
 
     @Override
-    public void onAppPost(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
-        MenginePluginExtensionManager.createExtensions("OpButton", application);
-
-        boolean initialized = OpButton.isInitialized();
-        this.activateSemaphore("OpButtonReady", initialized);
-    }
-
-    @Override
     public void onAppFinalize(@NonNull MengineApplication application) {
         MenginePluginExtensionManager.finalizeExtensions("OpButton", application);
 
@@ -156,6 +150,38 @@ public class MengineOpButtonPlugin extends MengineService implements MengineList
         this.deactivateSemaphore("OpButtonReady");
         OpButton.shutdown();
         super.onAppFinalize(application);
+    }
+
+    @Override
+    public void onMenginePlatformRun(@NonNull MengineApplication application) {
+        if (OpButton.isInitialized() == false) {
+            this.activateSemaphore("OpButtonReady", false);
+
+            return;
+        }
+
+        MengineUtils.performOnMainThread(() -> this.setupTabsOnMainThread(application));
+    }
+
+    @Override
+    public void onMenginePlatformStop(@NonNull MengineApplication application) {
+        MengineUtils.performOnMainThread(() -> this.deactivateSemaphore("OpButtonReady"));
+    }
+
+    private void setupTabsOnMainThread(@NonNull MengineApplication application) {
+        if (MengineFragmentEngine.INSTANCE.isMenginePlatformRun() == false) {
+            return;
+        }
+
+        if (OpButton.isInitialized() == false) {
+            this.activateSemaphore("OpButtonReady", false);
+
+            return;
+        }
+
+        MenginePluginExtensionManager.createExtensions("OpButton", application);
+
+        this.activateSemaphore("OpButtonReady", true);
     }
 
     public boolean isInitialized() {

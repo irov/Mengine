@@ -24,11 +24,12 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool opButtonAddButton( const ConstString & _tab, const ConstString & _identifier, const ConstString & _title, const pybind::object & _cb )
+        static bool opButtonAddButton( const ConstString & _tab, const ConstString & _identifier, const ConstString & _title, const pybind::object & _cb, const pybind::args & _args )
         {
             pybind::object callback = _cb;
-            Lambda<void()> handler = [callback]() {
-                callback.call();
+            pybind::args args = _args;
+            Lambda<void()> handler = [callback, args]() {
+                callback.call_args( args );
             };
 
             if( WIN32_OPBUTTON_SERVICE()
@@ -59,7 +60,7 @@ namespace Mengine
     bool Win32OpButtonScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
         pybind::def_function( _kernel, "opButtonIsInitialized", &Detail::opButtonIsInitialized );
-        pybind::def_function( _kernel, "opButtonAddButton", &Detail::opButtonAddButton );
+        pybind::def_function_args( _kernel, "opButtonAddButton", &Detail::opButtonAddButton );
         pybind::def_function( _kernel, "opButtonRemoveTab", &Detail::opButtonRemoveTab );
 
         return true;

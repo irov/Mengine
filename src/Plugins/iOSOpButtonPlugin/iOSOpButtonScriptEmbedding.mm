@@ -22,11 +22,12 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool opButtonAddButton( NSString * _tab, NSString * _identifier, NSString * _title, const pybind::object & _cb )
+        static bool opButtonAddButton( NSString * _tab, NSString * _identifier, NSString * _title, const pybind::object & _cb, const pybind::args & _args )
         {
             pybind::object callback = _cb;
+            pybind::args args = _args;
             void (^handler)(void) = ^{
-                callback.call();
+                callback.call_args( args );
             };
 
             if( [[iOSOpButtonPlugin sharedInstance] addCommandButton:_tab identifier:_identifier title:_title handler:handler] == NO )
@@ -55,7 +56,7 @@ namespace Mengine
     bool iOSOpButtonScriptEmbedding::embed( pybind::kernel_interface * _kernel )
     {
         pybind::def_function( _kernel, "opButtonIsInitialized", &Detail::opButtonIsInitialized );
-        pybind::def_function( _kernel, "opButtonAddButton", &Detail::opButtonAddButton );
+        pybind::def_function_args( _kernel, "opButtonAddButton", &Detail::opButtonAddButton );
         pybind::def_function( _kernel, "opButtonRemoveTab", &Detail::opButtonRemoveTab );
 
         return true;

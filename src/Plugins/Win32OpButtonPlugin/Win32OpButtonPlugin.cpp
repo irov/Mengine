@@ -7,8 +7,6 @@
 #include "Kernel/OptionHelper.h"
 #include "Kernel/PluginHelper.h"
 
-#include "OpButton/OpButtonSdk.h"
-
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( Win32OpButtonService );
 //////////////////////////////////////////////////////////////////////////
@@ -58,12 +56,6 @@ namespace Mengine
         {
             return false;
         }
-
-        bool initialized = OpButton::OpButtonSdk::isInitialized();
-        const ConstString & semaphoreName = STRINGIZE_STRING_LOCAL( "OpButtonReady" );
-
-        WIN32_KERNEL_SERVICE()
-            ->activateSemaphore( semaphoreName, initialized );
 
         return true;
     }

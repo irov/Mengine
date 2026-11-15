@@ -36,6 +36,7 @@ namespace Mengine
 
     protected:
         void notifyBootstrapperCreateApplication_();
+        void notifyPlatformRun_();
         void notifyPlatformUpdate_();
 
     protected:

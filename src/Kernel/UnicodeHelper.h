@@ -17,7 +17,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool utf8NextCode( const Utf8 ** _utf8, const Utf8 * _utf8End, uint32_t * const _utf8Code );
         bool utf8Validate( const Utf8 * _utf8, const Utf8 * _utf8End, const Utf8 ** const _utf8Invalid );
-        const Utf8 * utf8ReplaceInvalid( const Utf8 * _utf8, const Utf8 * _utf8End, Utf8 * const _utf8Out );
+        const Utf8 * utf8ReplaceInvalid( const Utf8 * _utf8, const Utf8 * _utf8End, Utf8 * const _utf8Out, size_t _utf8Capacity );
+        bool utf8ReplaceInvalid( const Utf8 * _utf8, const Utf8 * _utf8End, String * const _utf8Out );
         bool utf32ToUtf8( Utf32 _utf32, Utf8 _utf8[5] );
         //////////////////////////////////////////////////////////////////////////
         bool unicodeToUtf8( const WChar * _unicode, String * const _utf8 );

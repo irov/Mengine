@@ -40,11 +40,37 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        const Utf8 * utf8ReplaceInvalid( const Utf8 * _utf8, const Utf8 * _utf8End, Utf8 * const _utf8Out )
+        const Utf8 * utf8ReplaceInvalid( const Utf8 * _utf8, const Utf8 * _utf8End, Utf8 * const _utf8Out, size_t _utf8Capacity )
         {
-            const Utf8 * utf8End = utf8_replace_invalid( _utf8, _utf8End, _utf8Out );
+            const Utf8 * utf8End = utf8_replace_invalid( _utf8, _utf8End, _utf8Out, _utf8Capacity );
 
             return utf8End;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool utf8ReplaceInvalid( const Utf8 * _utf8, const Utf8 * _utf8End, String * const _utf8Out )
+        {
+            size_t utf8Size = utf8_replace_invalid_size( _utf8, _utf8End );
+
+            if( utf8Size == UTF8_UNKNOWN )
+            {
+                _utf8Out->clear();
+
+                return false;
+            }
+
+            _utf8Out->resize( utf8Size );
+
+            Utf8 * utf8Data = _utf8Out->data();
+            const Utf8 * utf8End = utf8_replace_invalid( _utf8, _utf8End, utf8Data, utf8Size );
+
+            if( utf8End == nullptr )
+            {
+                _utf8Out->clear();
+
+                return false;
+            }
+
+            return true;
         }
         //////////////////////////////////////////////////////////////////////////
         bool utf32ToUtf8( Utf32 _utf32, Utf8 _utf8[5] )

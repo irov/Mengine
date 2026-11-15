@@ -18,7 +18,6 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Stringalized.h"
 #include "Kernel/String.h"
-#include "Kernel/StaticString.h"
 #include "Kernel/BuildMode.h"
 #include "Kernel/FileGroupHelper.h"
 #include "Kernel/ContentHelper.h"
@@ -134,8 +133,8 @@ namespace Mengine
                 return;
             }
 
-            StaticString<4096> text_str_value;
-            size_t text_str_size = 0;
+            String repairedText;
+            size_t textSize = 0;
 
             ConstString textKey;
             ConstString fontName;
@@ -172,24 +171,32 @@ namespace Mengine
                             , str_value_invalid_utf8
                         );
 
-                        Char * text_str_value_char = text_str_value.data();
+                        if( Helper::utf8ReplaceInvalid( str_value, str_value_end, &repairedText ) == false )
+                        {
+                            LOGGER_ERROR( "text file '%s' invalid replacement size for text '%s'"
+                                , Helper::getContentFullPath( m_content ).c_str()
+                                , textKey.c_str()
+                            );
 
-                        const Char * text_str_end = Helper::utf8ReplaceInvalid( str_value + 0, str_value + str_value_size, text_str_value_char );
+                            this->setError();
 
-                        text_str_size = text_str_end - text_str_value.c_str();
+                            return;
+                        }
 
                         LOGGER_ASSERTION( "replace to |%s|"
-                            , text_str_value.c_str()
+                            , repairedText.c_str()
                         );
+
+                        textSize = repairedText.size();
+                        desc.text = repairedText.c_str();
                     }
                     else
                     {
-                        text_str_value.assign( str_value );
-                        text_str_size = str_value_size;
+                        textSize = str_value_size;
+                        desc.text = str_value;
                     }
 
-                    desc.text = text_str_value.c_str();
-                    desc.size = text_str_size;
+                    desc.size = textSize;
                 }
                 else if( StdString::strcmp( str_key, "Font" ) == 0 )
                 {
@@ -450,7 +457,7 @@ namespace Mengine
                 }
             }
 
-            if( text_str_size == 0 && isEmpty == false )
+            if( textSize == 0 && isEmpty == false )
             {
                 LOGGER_ERROR( "text file '%s' invalid text key '%s' value is empty"
                     , Helper::getContentFullPath( m_content ).c_str()

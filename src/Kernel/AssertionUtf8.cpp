@@ -4,7 +4,6 @@
 #   include "Kernel/Assertion.h"
 #   include "Kernel/UnicodeHelper.h"
 
-#   include "Config/StdIO.h"
 #   include "Config/StdString.h"
 
 namespace Mengine
@@ -18,20 +17,17 @@ namespace Mengine
                 _len = StdString::strlen( _value );
             }
 
-            if( Helper::utf8Validate( _value, _value + _len, nullptr ) == false )
+            if( Helper::utf8Validate( _value, _value + _len, nullptr ) == true )
             {
-                Char replace_msg[MENGINE_ASSERTION_MAX_MESSAGE + 1] = {'\0'};
-                const Char * replace_msg_end = Helper::utf8ReplaceInvalid( _value, _value + _len, replace_msg);
-                size_t replace_msg_len = replace_msg_end - replace_msg;
-
-                Char msg[MENGINE_ASSERTION_MAX_MESSAGE + 1] = {'\0'};
-                MENGINE_SNPRINTF( msg, MENGINE_ASSERTION_MAX_MESSAGE, "original string '%.*s' has invalid utf8"
-                    , (int32_t)replace_msg_len
-                    , replace_msg_end
-                );
-
-                Mengine::Helper::Assertion( _category, ASSERTION_LEVEL_ERROR, msg, _file, _line, _function, "Assertion Validate UTF8" );
+                return;
             }
+
+            Char replaceMessage[MENGINE_ASSERTION_MAX_MESSAGE + 1] = {'\0'};
+            const Char * replaceEnd = Helper::utf8ReplaceInvalid( _value, _value + _len, replaceMessage, MENGINE_ASSERTION_MAX_MESSAGE );
+
+            Helper::Assertion( _category, ASSERTION_LEVEL_ERROR, "Assertion Validate UTF8", _file, _line, _function, "original string '%s' has invalid utf8"
+                , replaceEnd != nullptr ? replaceMessage : "<invalid utf8>"
+            );
         }
     }
 }

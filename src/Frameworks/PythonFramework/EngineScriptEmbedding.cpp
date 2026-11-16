@@ -1834,7 +1834,7 @@ namespace Mengine
                 Timestamp timestamp = PLATFORM_SERVICE()
                     ->getInputTimestamp();
 
-                Helper::pushMouseMoveEvent( timestamp, _touchId, cursorPosition.x, cursorPosition.y, mp.x, mp.y, 0.f, 0.f );
+                Helper::pushMouseMoveEvent( timestamp, _touchId, screenPosition.x, screenPosition.y, mp.x, mp.y, 0.f, 0.f );
             }
             //////////////////////////////////////////////////////////////////////////
             void s_pushMouseButtonEvent( ETouchCode _touchId, const mt::vec2f & _pos, EMouseButtonCode _button, bool _isDown )

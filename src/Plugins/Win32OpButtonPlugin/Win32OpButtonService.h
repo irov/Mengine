@@ -6,11 +6,8 @@
 #include "Win32OpButtonInterface.h"
 #include "Win32OpButtonLoggerListener.h"
 
-#include "Kernel/Map.h"
+#include "Kernel/Set.h"
 #include "Kernel/ServiceBase.h"
-#include "Kernel/Vector.h"
-
-#include "OpButton/OpButtonLayout.h"
 
 namespace Mengine
 {
@@ -28,6 +25,7 @@ namespace Mengine
 
     public:
         bool addCommandButton( const ConstString & _tab, const ConstString & _identifier, const ConstString & _title, const Lambda<void()> & _callback ) override;
+        bool setCommandTab( const ConstString & _tab, const String & _layout, const Lambda<void( const String &, const ParamVariant & )> & _callback ) override;
         void removeCommandTab( const ConstString & _tab ) override;
 
     protected:
@@ -40,16 +38,8 @@ namespace Mengine
         void notifyPlatformUpdate_();
 
     protected:
-        typedef Vector<OpButton::OpButtonButton *> VectorCommandButtons;
-
-        struct CommandTabDesc
-        {
-            OpButton::OpButtonLayout * layout = nullptr;
-            VectorCommandButtons buttons;
-        };
-
-        typedef Map<ConstString, CommandTabDesc> MapCommandTabs;
-        MapCommandTabs m_commandTabs;
+        typedef Set<ConstString> SetCommandTabs;
+        SetCommandTabs m_commandTabs;
 
         LoggerInterfacePtr m_opbuttonLogger;
         AnalyticsEventProviderInterfacePtr m_analyticsEventProvider;

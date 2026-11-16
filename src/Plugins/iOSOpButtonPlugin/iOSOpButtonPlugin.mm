@@ -60,6 +60,33 @@ static int64_t const MENGINE_OPBUTTON_METRIC_SAMPLE_INTERVAL_MILLISECONDS = 200;
     return YES;
 }
 
+- (BOOL)setCommandTab:(NSString *)tabName layout:(NSString *)layout handler:(void (^)(NSString *, id))handler {
+    if ([OpButtonBridge isInitialized] == NO) {
+        return NO;
+    }
+
+    OpButtonCommandTab * tab = m_commandTabs[tabName];
+
+    BOOL created = tab == nil;
+
+    if (tab == nil) {
+        tab = [OpButtonBridge createCommandTab:tabName title:tabName];
+        m_commandTabs[tabName] = tab;
+    }
+
+    NSError * error = nil;
+
+    if ([tab setJson:layout error:&error onAction:handler] == NO) {
+        if (created == YES) {
+            [self removeCommandTab:tabName];
+        }
+
+        return NO;
+    }
+
+    return YES;
+}
+
 - (void)removeCommandTab:(NSString *)tabName {
     OpButtonCommandTab * tab = m_commandTabs[tabName];
     [m_commandTabs removeObjectForKey:tabName];

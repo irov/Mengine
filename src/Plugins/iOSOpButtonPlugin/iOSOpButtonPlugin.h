@@ -10,6 +10,7 @@
 + (instancetype)sharedInstance;
 
 - (BOOL)addCommandButton:(NSString *)tabName identifier:(NSString *)identifier title:(NSString *)title handler:(void (^)(void))handler;
+- (BOOL)setCommandTab:(NSString *)tabName layout:(NSString *)layout handler:(void (^)(NSString *, id))handler;
 - (void)removeCommandTab:(NSString *)tabName;
 
 @end

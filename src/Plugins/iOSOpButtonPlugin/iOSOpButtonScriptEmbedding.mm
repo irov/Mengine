@@ -2,6 +2,8 @@
 
 #import "iOSOpButtonPlugin.h"
 
+#include "Plugins/iOSNativePythonPlugin/iOSNativePythonTypeCast.h"
+
 #include "Environment/Python/PythonIncluder.h"
 
 @import OpButtonSDK;
@@ -43,6 +45,21 @@ namespace Mengine
             [[iOSOpButtonPlugin sharedInstance] removeCommandTab:_tab];
         }
         //////////////////////////////////////////////////////////////////////////
+        static bool opButtonSetTab( NSString * _tab, NSString * _layout, const pybind::object & _cb, const pybind::args & _args )
+        {
+            pybind::object callback = _cb;
+            pybind::args args = _args;
+
+            if( [iOSOpButtonPlugin.sharedInstance setCommandTab:_tab layout:_layout handler:^(NSString * identifier, id value) {
+                callback.call_args( identifier, value, args );
+            }] == NO )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     iOSOpButtonScriptEmbedding::iOSOpButtonScriptEmbedding()
@@ -57,6 +74,7 @@ namespace Mengine
     {
         pybind::def_function( _kernel, "opButtonIsInitialized", &Detail::opButtonIsInitialized );
         pybind::def_function_args( _kernel, "opButtonAddButton", &Detail::opButtonAddButton );
+        pybind::def_function_args( _kernel, "opButtonSetTab", &Detail::opButtonSetTab );
         pybind::def_function( _kernel, "opButtonRemoveTab", &Detail::opButtonRemoveTab );
 
         return true;
@@ -66,6 +84,7 @@ namespace Mengine
     {
         _kernel->remove_from_module( "opButtonIsInitialized", nullptr );
         _kernel->remove_from_module( "opButtonAddButton", nullptr );
+        _kernel->remove_from_module( "opButtonSetTab", nullptr );
         _kernel->remove_from_module( "opButtonRemoveTab", nullptr );
     }
     //////////////////////////////////////////////////////////////////////////

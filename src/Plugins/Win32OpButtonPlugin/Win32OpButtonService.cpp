@@ -21,6 +21,8 @@
 #include "Kernel/OptionHelper.h"
 #include "Kernel/Stringalized.h"
 
+#include "Config/StdException.h"
+
 #include "OpButton/OpButtonAllocator.h"
 #include "OpButton/OpButtonButton.h"
 #include "OpButton/OpButtonConfig.h"
@@ -84,52 +86,102 @@ namespace Mengine
             return false;
         }
 
-        CommandTabDesc & desc = m_commandTabs[_tab];
+        OpButton::OpButtonUI & ui = OpButton::OpButtonSdk::getUI();
+        const Char * identifierTab = _tab.c_str();
+        OpButton::OpButtonTab & tab = ui.getOrCreateTab( identifierTab );
+        OpButton::OpButtonLayout * layout = tab.getLayout();
 
-        if( desc.layout == nullptr )
+        if( layout == nullptr )
         {
-            OpButton::OpButtonUI & ui = OpButton::OpButtonSdk::getUI();
-            const Char * name = _tab.c_str();
-            OpButton::OpButtonTab & tab = ui.addTab( name );
-            tab.setId( name );
-            desc.layout = &tab.horizontal();
+            layout = &tab.horizontal();
         }
 
+        m_commandTabs.insert( _tab );
+
         const Char * title = _title.c_str();
-        OpButton::OpButtonButton & button = desc.layout->addButton( title );
+        OpButton::OpButtonButton & button = layout->addButton( title );
         const Char * identifier = _identifier.c_str();
         button.setId( identifier );
 
-        OpButton::OpButtonWidgetCallbackFunc handler = [callback = _callback]( const OpButton::OpButtonAction & _action ) {
+        OpButton::OpButtonWidgetCallbackFunc handler = [_callback]( const OpButton::OpButtonAction & _action ) {
             MENGINE_UNUSED( _action );
 
-            callback();
+            _callback();
         };
 
         button.onClick( handler );
-        desc.buttons.emplace_back( &button );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32OpButtonService::setCommandTab( const ConstString & _tab, const String & _layout, const Lambda<void( const String &, const ParamVariant & )> & _callback )
+    {
+        if( m_sdkInitialized == false )
+        {
+            return false;
+        }
+
+        OpButton::OpButtonJson description = OpButton::OpButtonJson::parse( _layout.c_str() );
+        OpButton::OpButtonUI & ui = OpButton::OpButtonSdk::getUI();
+        const Char * identifierTab = _tab.c_str();
+        bool created = ui.getTab( identifierTab ) == nullptr;
+        OpButton::OpButtonTab & tab = ui.getOrCreateTab( identifierTab );
+
+        try
+        {
+            tab.setJson( description, [_callback]( const OpButton::OpButtonString & _identifier, const OpButton::OpButtonAction & _action ) {
+                OpButton::OpButtonJson payload = _action.payload().get( "value" );
+                ParamVariant value = nullptr;
+
+                if( payload.type() == OpButton::OpButtonJson::TYPE_STRING )
+                {
+                    OpButton::OpButtonString text = payload.asString();
+                    value = String( text.c_str(), text.size() );
+                }
+                else if( payload.type() == OpButton::OpButtonJson::TYPE_BOOL )
+                {
+                    value = payload.asBool();
+                }
+                else if( payload.type() == OpButton::OpButtonJson::TYPE_DOUBLE )
+                {
+                    value = payload.asDouble();
+                }
+                else if( payload.type() == OpButton::OpButtonJson::TYPE_INT )
+                {
+                    value = payload.asInt64();
+                }
+
+                String identifier( _identifier.c_str(), _identifier.size() );
+                _callback( identifier, value );
+            } );
+        }
+        catch( const StdException::invalid_argument & exception )
+        {
+            if( created == true )
+            {
+                ui.removeTab( identifierTab );
+            }
+
+            LOGGER_ERROR( "invalid OpButton JSON layout: %s", exception.what() );
+
+            return false;
+        }
+
+        m_commandTabs.insert( _tab );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32OpButtonService::removeCommandTab( const ConstString & _tab )
     {
-        MapCommandTabs::iterator itTab = m_commandTabs.find( _tab );
+        SetCommandTabs::iterator itTab = m_commandTabs.find( _tab );
 
         if( itTab == m_commandTabs.end() )
         {
             return;
         }
 
-        VectorCommandButtons buttons;
-        buttons.swap( itTab->second.buttons );
         m_commandTabs.erase( itTab );
-
-        for( OpButton::OpButtonButton * button : buttons )
-        {
-            OpButton::OpButtonWidgetCallbackFunc callback;
-            button->onClick( callback );
-        }
 
         OpButton::OpButtonUI & ui = OpButton::OpButtonSdk::getUI();
         const Char * name = _tab.c_str();
@@ -273,11 +325,17 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_PLATFORM_UPDATE );
 
-        while( m_commandTabs.empty() == false )
+        SetCommandTabs commandTabs;
+        commandTabs.swap( m_commandTabs );
+
+        OpButton::OpButtonUI & ui = OpButton::OpButtonSdk::getUI();
+
+        for( const ConstString & tab : commandTabs )
         {
-            ConstString tab = m_commandTabs.begin()->first;
-            this->removeCommandTab( tab );
+            ui.removeTab( tab.c_str() );
         }
+
+        m_commandTabs.clear();
 
         if( m_analyticsEventProvider != nullptr )
         {

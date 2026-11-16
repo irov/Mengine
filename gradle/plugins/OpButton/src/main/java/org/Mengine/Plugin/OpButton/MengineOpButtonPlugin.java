@@ -29,6 +29,7 @@ import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineTag;
 import org.Mengine.Base.MengineUtils;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import org.opbutton.sdk.OpButton;
@@ -51,6 +52,7 @@ import org.opbutton.sdk.OpButtonUI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -64,7 +66,7 @@ public class MengineOpButtonPlugin extends MengineService implements MengineList
 
     private static final long METRIC_SAMPLE_INTERVAL_MILLIS = 200;
 
-    private final Map<String, List<OpButtonButton>> m_commandButtons = new LinkedHashMap<>();
+    private final Set<String> m_commandTabs = new LinkedHashSet<>();
 
     @Override
     public void onAppCreate(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
@@ -140,8 +142,7 @@ public class MengineOpButtonPlugin extends MengineService implements MengineList
     public void onAppFinalize(@NonNull MengineApplication application) {
         MenginePluginExtensionManager.finalizeExtensions("OpButton", application);
 
-        Set<String> commandTabs = m_commandButtons.keySet();
-        List<String> tabs = new ArrayList<>(commandTabs);
+        List<String> tabs = new ArrayList<>(m_commandTabs);
 
         for (String tab : tabs) {
             this.removeCommandTabOnMainThread(tab);
@@ -202,12 +203,7 @@ public class MengineOpButtonPlugin extends MengineService implements MengineList
         }
 
         OpButtonUI ui = OpButton.getUI();
-        OpButtonTab tab = ui.getTab(tabName);
-
-        if (tab == null) {
-            tab = ui.addTab(tabName);
-            tab.setId(tabName);
-        }
+        OpButtonTab tab = ui.getOrCreateTab(tabName);
 
         OpButtonLayout layout = tab.getLayout();
 
@@ -218,8 +214,50 @@ public class MengineOpButtonPlugin extends MengineService implements MengineList
         OpButtonButton button = layout.addButton(title);
         button.setId(identifier);
         button.onClick(action -> this.nativeCall("onOpButtonCommand", tabName, identifier));
-        List<OpButtonButton> buttons = m_commandButtons.computeIfAbsent(tabName, key -> new ArrayList<>());
-        buttons.add(button);
+        m_commandTabs.add(tabName);
+    }
+
+    public void setCommandTab(@NonNull String tabName, @NonNull String description) {
+        JSONObject layout;
+
+        try {
+            layout = new JSONObject(description);
+        } catch (JSONException exception) {
+            throw new IllegalArgumentException("Invalid OpButton layout", exception);
+        }
+
+        MengineUtils.performOnMainThread(() -> this.setCommandTabOnMainThread(tabName, layout));
+    }
+
+    private void setCommandTabOnMainThread(@NonNull String tabName, @NonNull JSONObject description) {
+        if (OpButton.isInitialized() == false) {
+            return;
+        }
+
+        OpButtonUI ui = OpButton.getUI();
+        boolean created = ui.getTab(tabName) == null;
+        OpButtonTab tab = ui.getOrCreateTab(tabName);
+
+        try {
+            tab.setJson(description, (identifier, action) -> {
+                JSONObject payload = action.getPayload();
+                Object value = payload == null ? null : payload.opt("value");
+
+                if (value == JSONObject.NULL) {
+                    value = null;
+                }
+
+                this.nativeCall("onOpButtonPanelCommand", tabName, identifier, value);
+            });
+        } catch (IllegalArgumentException exception) {
+            if (created == true) {
+                ui.removeTab(tabName);
+            }
+
+            throw exception;
+        }
+
+        m_commandTabs.add(tabName);
     }
 
     public void removeCommandTab(@NonNull String tabName) {
@@ -227,14 +265,8 @@ public class MengineOpButtonPlugin extends MengineService implements MengineList
     }
 
     private void removeCommandTabOnMainThread(@NonNull String tabName) {
-        List<OpButtonButton> buttons = m_commandButtons.remove(tabName);
-
-        if (buttons == null) {
+        if (m_commandTabs.remove(tabName) == false) {
             return;
-        }
-
-        for (OpButtonButton button : buttons) {
-            button.onClick(null);
         }
 
         if (OpButton.isInitialized() == false) {

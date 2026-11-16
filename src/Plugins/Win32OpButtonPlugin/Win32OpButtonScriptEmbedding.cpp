@@ -47,6 +47,23 @@ namespace Mengine
                 ->removeCommandTab( _tab );
         }
         //////////////////////////////////////////////////////////////////////////
+        static bool opButtonSetTab( const ConstString & _tab, const String & _layout, const pybind::object & _cb, const pybind::args & _args )
+        {
+            pybind::object callback = _cb;
+            pybind::args args = _args;
+            Lambda<void( const String &, const ParamVariant & )> handler = [callback, args]( const String & _identifier, const ParamVariant & _value ) {
+                callback.call_args( _identifier, _value, args );
+            };
+
+            if( WIN32_OPBUTTON_SERVICE()
+                ->setCommandTab( _tab, _layout, handler ) == false )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     Win32OpButtonScriptEmbedding::Win32OpButtonScriptEmbedding()
@@ -61,6 +78,7 @@ namespace Mengine
     {
         pybind::def_function( _kernel, "opButtonIsInitialized", &Detail::opButtonIsInitialized );
         pybind::def_function_args( _kernel, "opButtonAddButton", &Detail::opButtonAddButton );
+        pybind::def_function_args( _kernel, "opButtonSetTab", &Detail::opButtonSetTab );
         pybind::def_function( _kernel, "opButtonRemoveTab", &Detail::opButtonRemoveTab );
 
         return true;
@@ -70,6 +88,7 @@ namespace Mengine
     {
         _kernel->remove_from_module( "opButtonIsInitialized", nullptr );
         _kernel->remove_from_module( "opButtonAddButton", nullptr );
+        _kernel->remove_from_module( "opButtonSetTab", nullptr );
         _kernel->remove_from_module( "opButtonRemoveTab", nullptr );
     }
     //////////////////////////////////////////////////////////////////////////

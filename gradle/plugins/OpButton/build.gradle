@@ -5,5 +5,5 @@ android {
 }
 
 dependencies {
-    api 'com.github.opbutton-org:opbutton-sdk-java:1.0.35'
+    api 'com.github.opbutton-org:opbutton-sdk-java:1.0.38'
 }

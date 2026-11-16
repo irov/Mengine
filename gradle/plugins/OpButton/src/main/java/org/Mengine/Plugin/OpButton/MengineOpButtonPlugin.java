@@ -212,7 +212,7 @@ public class MengineOpButtonPlugin extends MengineService implements MengineList
         OpButtonLayout layout = tab.getLayout();
 
         if (layout == null) {
-            layout = tab.vertical();
+            layout = tab.horizontal();
         }
 
         OpButtonButton button = layout.addButton(title);

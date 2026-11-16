@@ -92,7 +92,7 @@ namespace Mengine
             const Char * name = _tab.c_str();
             OpButton::OpButtonTab & tab = ui.addTab( name );
             tab.setId( name );
-            desc.layout = &tab.vertical();
+            desc.layout = &tab.horizontal();
         }
 
         const Char * title = _title.c_str();

@@ -11,6 +11,8 @@ import androidx.activity.result.IntentSenderRequest;
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.games.AchievementsClient;
 import com.google.android.gms.games.AuthenticationResult;
@@ -218,7 +220,9 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
 
             this.nativeCallServerAuthCodeSuccess(requestId, serverAuthCode);
         }).addOnFailureListener(e -> {
-            this.logException(e, Map.of());
+            this.logTaskException(e, Map.of(
+                "method", "requestServerAuthCode"
+            ));
 
             this.nativeCallServerAuthCodeError(requestId, e);
         }).addOnCanceledListener(() -> {
@@ -238,6 +242,37 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
 
     private void nativeCallServerAuthCodeCanceled(int requestId) {
         this.nativeCall("onGoogleGameSocialRequestServerAuthCodeCanceled", requestId);
+    }
+
+    private static boolean isConnectionStatusCode(int statusCode) {
+        switch (statusCode) {
+            case CommonStatusCodes.NETWORK_ERROR:
+            case CommonStatusCodes.API_NOT_CONNECTED:
+            case CommonStatusCodes.CONNECTION_SUSPENDED_DURING_CALL:
+            case CommonStatusCodes.RECONNECTION_TIMED_OUT_DURING_UPDATE:
+            case CommonStatusCodes.RECONNECTION_TIMED_OUT:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private void logTaskException(@NonNull Exception e, @NonNull Map<String, Object> attributes) {
+        if (e instanceof ApiException apiException) {
+            int statusCode = apiException.getStatusCode();
+
+            if (MengineGoogleGameSocialPlugin.isConnectionStatusCode(statusCode) == true) {
+                this.logWarning("[WARNING] google game social lost the Google Play services connection status: %d attributes: %s message: %s"
+                    , statusCode
+                    , attributes
+                    , e.getMessage()
+                );
+
+                return;
+            }
+        }
+
+        this.logException(e, attributes);
     }
 
     private void finishSignInIntent() {
@@ -266,7 +301,9 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                 Exception e = isAuthenticatedTask.getException();
 
                 if (e != null) {
-                    this.logException(e, Map.of());
+                    this.logTaskException(e, Map.of(
+                        "method", "signInSilently"
+                    ));
                 } else {
                     this.logError("[ERROR] google game social isAuthenticated failed: null exception");
                 }
@@ -336,7 +373,9 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                             this.finishSignInIntent();
                         }
                     } catch (Exception ex) {
-                        this.logException(ex, Map.of());
+                        this.logException(ex, Map.of(
+                            "method", "signInIntent"
+                        ));
 
                         this.finishSignInIntent();
                     }
@@ -345,7 +384,9 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                 }
 
                 if (e != null) {
-                    this.logException(e, Map.of());
+                    this.logTaskException(e, Map.of(
+                        "method", "signInIntent"
+                    ));
                 } else {
                     this.logError("[ERROR] signInIntent failed: null exception");
                 }
@@ -436,18 +477,24 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
 
                     this.nativeCall("onGoogleGameSocialRequestAchievementsStateSuccessful", achievementsJSON);
                 } catch (JSONException exception) {
-                    this.logException(exception, Map.of());
+                    this.logException(exception, Map.of(
+                        "method", "requestAchievementsState"
+                    ));
 
                     this.nativeCall("onGoogleGameSocialRequestAchievementsStateError", exception);
                 } catch (RuntimeException exception) {
-                    this.logException(exception, Map.of());
+                    this.logException(exception, Map.of(
+                        "method", "requestAchievementsState"
+                    ));
 
                     this.nativeCall("onGoogleGameSocialRequestAchievementsStateError", exception);
                 } finally {
                     achievementBuffer.release();
                 }
             }).addOnFailureListener(e -> {
-                this.logException(e, Map.of());
+                this.logTaskException(e, Map.of(
+                    "method", "requestAchievementsState"
+                ));
 
                 this.nativeCall("onGoogleGameSocialRequestAchievementsStateError", e);
             }).addOnCanceledListener(() -> {
@@ -494,7 +541,9 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                     this.logError("[ERROR] showAchievements achievementLauncher not available");
                 }
             }).addOnFailureListener(e -> {
-                this.logException(e, Map.of());
+                this.logTaskException(e, Map.of(
+                    "method", "showAchievements"
+                ));
 
                 this.nativeCall("onGoogleGameSocialShowAchievementError", e);
             }).addOnCanceledListener(() -> {
@@ -647,7 +696,8 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                     this.logError("[ERROR] showLeaderboard leaderboardLauncher not available");
                 }
             }).addOnFailureListener(e -> {
-                this.logException(e, Map.of(
+                this.logTaskException(e, Map.of(
+                    "method", "showLeaderboard",
                     "leaderboardId", leaderboardId
                 ));
 

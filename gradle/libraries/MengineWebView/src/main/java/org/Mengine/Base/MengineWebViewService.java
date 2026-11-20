@@ -97,7 +97,12 @@ public class MengineWebViewService extends MengineService implements MengineList
             names.put(name);
         }
 
-        String json = names.toString();
+        String json = MengineUtils.jsonStringFromJSONArray(names);
+
+        if (json == null) {
+            json = "[]";
+        }
+
         byte[] bytes = json.getBytes(StandardCharsets.UTF_8);
 
         return bytes;

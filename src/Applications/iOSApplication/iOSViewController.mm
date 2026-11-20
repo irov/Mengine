@@ -138,15 +138,13 @@
     return YES;
 }
 
-- (void)touchesBegan:(NSSet<UITouch *> *)_touches withEvent:(UIEvent *)_event
-{
+- (void)touchesBegan:(NSSet<UITouch *> *)_touches withEvent:(UIEvent *)_event {
     MENGINE_UNUSED( _event );
 
     Mengine::iOSRenderPlatformServiceExtensionInterface * extension = PLATFORM_SERVICE()
         ->getDynamicUnknown();
 
-    if( extension == nullptr )
-    {
+    if (extension == nullptr) {
         return;
     }
 
@@ -154,15 +152,13 @@
     extension->handleTouchBegan( _touches, view );
 }
 
-- (void)touchesMoved:(NSSet<UITouch *> *)_touches withEvent:(UIEvent *)_event
-{
+- (void)touchesMoved:(NSSet<UITouch *> *)_touches withEvent:(UIEvent *)_event {
     MENGINE_UNUSED( _event );
 
     Mengine::iOSRenderPlatformServiceExtensionInterface * extension = PLATFORM_SERVICE()
         ->getDynamicUnknown();
 
-    if( extension == nullptr )
-    {
+    if (extension == nullptr) {
         return;
     }
 
@@ -170,15 +166,13 @@
     extension->handleTouchMoved( _touches, view );
 }
 
-- (void)touchesEnded:(NSSet<UITouch *> *)_touches withEvent:(UIEvent *)_event
-{
+- (void)touchesEnded:(NSSet<UITouch *> *)_touches withEvent:(UIEvent *)_event {
     MENGINE_UNUSED( _event );
 
     Mengine::iOSRenderPlatformServiceExtensionInterface * extension = PLATFORM_SERVICE()
         ->getDynamicUnknown();
 
-    if( extension == nullptr )
-    {
+    if (extension == nullptr) {
         return;
     }
 
@@ -186,15 +180,13 @@
     extension->handleTouchEnded( _touches, view );
 }
 
-- (void)touchesCancelled:(NSSet<UITouch *> *)_touches withEvent:(UIEvent *)_event
-{
+- (void)touchesCancelled:(NSSet<UITouch *> *)_touches withEvent:(UIEvent *)_event {
     MENGINE_UNUSED( _event );
 
     Mengine::iOSRenderPlatformServiceExtensionInterface * extension = PLATFORM_SERVICE()
         ->getDynamicUnknown();
 
-    if( extension == nullptr )
-    {
+    if (extension == nullptr) {
         return;
     }
 

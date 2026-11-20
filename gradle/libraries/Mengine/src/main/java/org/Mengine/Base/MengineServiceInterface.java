@@ -1,7 +1,5 @@
 package org.Mengine.Base;
 
-import android.os.Bundle;
-
 import androidx.annotation.AnyRes;
 import androidx.annotation.BoolRes;
 import androidx.annotation.IntegerRes;
@@ -29,11 +27,11 @@ public interface MengineServiceInterface {
     MengineApplication getMengineApplication();
     MengineActivity getMengineActivity();
 
-    default void onLoad(@NonNull MengineApplication application, @NonNull Bundle bundle) {
+    default void onLoad(@NonNull MengineApplication application, @NonNull MengineBundle bundle) {
         //Override
     }
 
-    default Bundle onSave(@NonNull MengineApplication application) {
+    default MengineBundle onSave(@NonNull MengineApplication application) {
         return null;
     }
 

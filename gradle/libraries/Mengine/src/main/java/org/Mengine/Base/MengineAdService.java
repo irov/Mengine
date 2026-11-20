@@ -22,6 +22,9 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
 
     public static final String INAPPURCHASE_DISABLE_ADS = "disable_ads";
 
+    private static final String COOLDOWN_GROUP_PREFIX = "mengine.ad.cooldown.group.";
+    private static final String COOLDOWN_INTERSTITIAL_PREFIX = "mengine.ad.cooldown.interstitial.";
+
     private final Map<String, MengineAdPointInterstitial> m_adInterstitialPoints = new HashMap<>();
     private final Map<String, MengineAdPointRewarded> m_adRewardedPoints = new HashMap<>();
     private final Map<String, MengineAdPointAppOpen> m_adAppOpenPoints = new HashMap<>();
@@ -100,22 +103,30 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
 
     private void setupAdBasePointCooldown(MengineAdPointBase adPoint) {
         String cooldownGroupName = adPoint.getCooldownGroupName();
+        String cooldownKey = null;
 
-        if (cooldownGroupName == null) {
-            MengineAdCooldown newCooldown = new MengineAdCooldown();
-
-            adPoint.setCooldown(newCooldown);
-        } else {
-            if (m_adCooldowns.containsKey(cooldownGroupName) == false) {
-                MengineAdCooldown newCooldown = new MengineAdCooldown();
-
-                m_adCooldowns.put(cooldownGroupName, newCooldown);
-            }
-
-            MengineAdCooldown cooldown = m_adCooldowns.get(cooldownGroupName);
-
-            adPoint.setCooldown(cooldown);
+        if (cooldownGroupName != null) {
+            cooldownKey = COOLDOWN_GROUP_PREFIX + cooldownGroupName;
+        } else if (adPoint instanceof MengineAdPointInterstitial) {
+            cooldownKey = COOLDOWN_INTERSTITIAL_PREFIX + adPoint.getName();
         }
+
+        if (cooldownKey == null) {
+            MengineAdCooldown cooldown = new MengineAdCooldown();
+            adPoint.setCooldown(cooldown);
+
+            return;
+        }
+
+        MengineAdCooldown cooldown = m_adCooldowns.get(cooldownKey);
+
+        if (cooldown == null) {
+            cooldown = new MengineAdCooldown();
+
+            m_adCooldowns.put(cooldownKey, cooldown);
+        }
+
+        adPoint.setCooldown(cooldown);
     }
 
     public MengineAdPointInterstitial getAdInterstitialPoint(String adPointName) {
@@ -225,7 +236,6 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
             m_adInterstitialPoints.clear();
             m_adRewardedPoints.clear();
             m_adAppOpenPoints.clear();
-            m_adCooldowns.clear();
 
             String ad_interstitial_prefix = "ad_interstitial_";
             String ad_rewarded_prefix = "ad_rewarded_";
@@ -253,99 +263,99 @@ public class MengineAdService extends MengineService implements DefaultLifecycle
     }
 
     @Override
-    public Bundle onSave(@NonNull MengineApplication application) {
-        Bundle bundle = new Bundle();
+    public MengineBundle onSave(@NonNull MengineApplication application) {
+        MengineBundle bundle = new MengineBundle();
 
         bundle.putInt("version", SAVE_VERSION);
 
-        Bundle attemptsBundle = new Bundle();
-
-        for (Map.Entry<String, MengineAdAttempts> entry : m_adAttempts.entrySet()) {
-            String attemptsPointName = entry.getKey();
-            MengineAdAttempts attempts = entry.getValue();
-
-            Bundle attemptsPointBundle = attempts.onSave(application);
-
-            attemptsBundle.putBundle(attemptsPointName, attemptsPointBundle);
-        }
-
-        bundle.putBundle("attempts", attemptsBundle);
-
-        Bundle cooldownsBundle = new Bundle();
-
-        for (Map.Entry<String, MengineAdCooldown> entry : m_adCooldowns.entrySet()) {
-            String cooldownGroupName = entry.getKey();
-            MengineAdCooldown cooldown = entry.getValue();
-
-            Bundle cooldownBundle = cooldown.onSave(application);
-
-            cooldownsBundle.putBundle(cooldownGroupName, cooldownBundle);
-        }
-
-        bundle.putBundle("cooldowns", cooldownsBundle);
-
-        Bundle rewardedFrequenciesBundle = new Bundle();
-
         synchronized (m_syncronizationAdPoints) {
+            MengineBundle attemptsBundle = new MengineBundle();
+
+            for (Map.Entry<String, MengineAdAttempts> entry : m_adAttempts.entrySet()) {
+                String attemptsPointName = entry.getKey();
+                MengineAdAttempts attempts = entry.getValue();
+
+                MengineBundle attemptsPointBundle = attempts.onSave(application);
+
+                attemptsBundle.putBundle(attemptsPointName, attemptsPointBundle);
+            }
+
+            bundle.putBundle("attempts", attemptsBundle);
+
+            MengineBundle cooldownsBundle = new MengineBundle();
+
+            for (Map.Entry<String, MengineAdCooldown> entry : m_adCooldowns.entrySet()) {
+                String key = entry.getKey();
+                MengineAdCooldown cooldown = entry.getValue();
+                MengineBundle cooldownBundle = cooldown.onSave(application);
+
+                cooldownsBundle.putBundle(key, cooldownBundle);
+            }
+
+            bundle.putBundle("cooldowns", cooldownsBundle);
+
+            MengineBundle rewardedFrequenciesBundle = new MengineBundle();
+
             for (Map.Entry<String, MengineAdFrequency> entry : m_adRewardedFrequencies.entrySet()) {
                 String adPointName = entry.getKey();
                 MengineAdFrequency frequency = entry.getValue();
 
-                Bundle frequencyBundle = frequency.onSave(application);
+                MengineBundle frequencyBundle = frequency.onSave(application);
 
                 rewardedFrequenciesBundle.putBundle(adPointName, frequencyBundle);
             }
-        }
 
-        bundle.putBundle("rewarded_frequencies", rewardedFrequenciesBundle);
+            bundle.putBundle("rewarded_frequencies", rewardedFrequenciesBundle);
+        }
 
         return bundle;
     }
 
     @Override
-    public void onLoad(@NonNull MengineApplication application, @NonNull Bundle bundle) {
+    public void onLoad(@NonNull MengineApplication application, @NonNull MengineBundle bundle) {
         int version = bundle.getInt("version", 0);
 
-        Bundle attemptsBundle = bundle.getBundle("attempts");
+        synchronized (m_syncronizationAdPoints) {
+            MengineBundle attemptsBundle = bundle.getBundle("attempts");
 
-        if (attemptsBundle != null) {
-            for (String key : attemptsBundle.keySet()) {
-                MengineAdAttempts attempts = new MengineAdAttempts();
+            if (attemptsBundle != null) {
+                for (String key : attemptsBundle.keys()) {
+                    MengineAdAttempts attempts = new MengineAdAttempts();
 
-                Bundle attemptsPointBundle = attemptsBundle.getBundle(key);
+                    MengineBundle attemptsPointBundle = attemptsBundle.getBundle(key);
 
-                if (attemptsPointBundle != null) {
-                    attempts.onLoad(application, attemptsPointBundle);
+                    if (attemptsPointBundle != null) {
+                        attempts.onLoad(application, attemptsPointBundle);
+                    }
+
+                    m_adAttempts.put(key, attempts);
                 }
-
-                m_adAttempts.put(key, attempts);
             }
-        }
 
-        Bundle cooldownsBundle = bundle.getBundle("cooldowns");
+            MengineBundle cooldownsBundle = bundle.getBundle("cooldowns");
 
-        if (cooldownsBundle != null) {
-            for (String key : cooldownsBundle.keySet()) {
-                MengineAdCooldown cooldown = new MengineAdCooldown();
+            if (cooldownsBundle != null) {
+                for (String key : cooldownsBundle.keys()) {
+                    MengineBundle cooldownBundle = cooldownsBundle.getBundle(key);
 
-                Bundle cooldownBundle = cooldownsBundle.getBundle(key);
+                    if (cooldownBundle == null) {
+                        continue;
+                    }
 
-                if (cooldownBundle != null) {
+                    MengineAdCooldown cooldown = new MengineAdCooldown();
                     cooldown.onLoad(application, cooldownBundle);
+
+                    m_adCooldowns.put(key, cooldown);
                 }
-
-                m_adCooldowns.put(key, cooldown);
             }
-        }
 
-        Bundle rewardedFrequenciesBundle = bundle.getBundle("rewarded_frequencies");
+            MengineBundle rewardedFrequenciesBundle = bundle.getBundle("rewarded_frequencies");
 
-        if (rewardedFrequenciesBundle != null) {
-            synchronized (m_syncronizationAdPoints) {
-                for (String key : rewardedFrequenciesBundle.keySet()) {
+            if (rewardedFrequenciesBundle != null) {
+                for (String key : rewardedFrequenciesBundle.keys()) {
                     MengineAdFrequency frequency = new MengineAdFrequency();
 
-                    Bundle frequencyBundle = rewardedFrequenciesBundle.getBundle(key);
+                    MengineBundle frequencyBundle = rewardedFrequenciesBundle.getBundle(key);
 
                     if (frequencyBundle != null) {
                         frequency.onLoad(application, frequencyBundle);

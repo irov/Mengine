@@ -161,7 +161,12 @@ public final class MengineWebViewMCP extends MengineService implements MengineLi
                         if (report == null) {
                             status = new JSONObject();
                         } else {
-                            String json = report.toString();
+                            String json = MengineUtils.jsonStringFromJSONObject(report);
+
+                            if (json == null) {
+                                throw new JSONException("Cannot serialize WebView status report");
+                            }
+
                             status = new JSONObject(json);
                         }
 

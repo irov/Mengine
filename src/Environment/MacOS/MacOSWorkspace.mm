@@ -12,6 +12,10 @@
 - (instancetype)init {
     self = [super init];
 
+    if (self == nil) {
+        return nil;
+    }
+
     [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self
                                                            selector:@selector(workspaceActiveSpaceDidChangeNotification:)
                                                                name:NSWorkspaceActiveSpaceDidChangeNotification object:nil];
@@ -26,8 +30,7 @@
 - (void)changeDesktopWallpaper:(const char *) _path {
     NSString* urlString = [NSString stringWithUTF8String:_path];
 
-    if( urlString == nil )
-    {
+    if (urlString == nil) {
         return;
     }
 
@@ -39,31 +42,27 @@
 - (void)workspaceActiveSpaceDidChangeNotification:(NSNotification*) notification {
     LOGGER_INFO("platform", "workspaceActiveSpaceDidChangeNotification");
 
-    if( m_urlWallpaper != nil )
-    {
+    if (m_urlWallpaper != nil) {
         NSURL * url = m_urlWallpaper;
         m_urlWallpaper = nil;
 
         NSScreen * mainScreen = [NSScreen mainScreen];
 
-        if( mainScreen == nil )
-        {
+        if (mainScreen == nil) {
             return;
         }
 
         NSDictionary * screenOptions = [[NSWorkspace sharedWorkspace] desktopImageOptionsForScreen:mainScreen];
 
-        if( screenOptions == nil )
-        {
+        if (screenOptions == nil) {
             return;
         }
 
         NSError *error = nil;
-        if( [[NSWorkspace sharedWorkspace] setDesktopImageURL:url
+        if ([[NSWorkspace sharedWorkspace] setDesktopImageURL:url
                                                     forScreen:mainScreen
                                                       options:screenOptions
-                                                        error:&error] == FALSE )
-        {
+                                                        error:&error] == FALSE) {
             [AppleLog withFormat:@"invalid set desktop image url '%@' error '%@'"
                 , url.absoluteString
                 , [AppleDetail getMessageFromNSError:error]

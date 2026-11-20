@@ -8,14 +8,16 @@
 - (instancetype)initWithAdUnitIdentifier:(NSString *)adUnitId advertisement:(id<iOSAdvertisementInterface>)advertisement {
     self = [super initWithAdUnitIdentifier:adUnitId adFormat:@"rewarded_interstitial" advertisement:advertisement];
 
-    if (self != nil) {
-        self.m_loading = NO;
-        self.m_showing = NO;
-        self.m_rewarded = NO;
-        self.m_loadedTimestamp = 0.0;
-
-        [self loadAd];
+    if (self == nil) {
+        return nil;
     }
+
+    self.m_loading = NO;
+    self.m_showing = NO;
+    self.m_rewarded = NO;
+    self.m_loadedTimestamp = 0.0;
+
+    [self loadAd];
 
     return self;
 }

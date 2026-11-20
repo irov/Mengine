@@ -20,9 +20,13 @@ DECLARE_IOS_ADFORMAT(ADFORMAT_APPOPEN)
 
 - (instancetype)initWithName:(NSString *)name {
     self = [super init];
-    if (self) {
-        _name = [name copy];
+
+    if (self == nil) {
+        return nil;
     }
+
+    _name = [name copy];
+
     return self;
 }
 

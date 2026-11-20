@@ -65,79 +65,83 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
 @implementation iOSUIApplicationDelegate
 
 - (instancetype)init {
-    if (self = [super init]) {
-        self.m_application = nullptr;
-        self.m_displayLink = nil;
-        self.m_prevTimestamp = 0.0;
-        self.m_hasRenderedFirstFrame = NO;
-        self.m_hasDismissedLaunchScreen = NO;
-        self.m_pluginDelegates = [NSMutableArray<id> array];
-        self.m_plugins = [NSMutableArray<iOSPluginInterface> array];
-        self.m_pluginLoggerDelegates = [NSMutableArray<iOSPluginLoggerDelegateInterface> array];
-        self.m_pluginConfigDelegates = [NSMutableArray<iOSPluginConfigDelegateInterface> array];
-        self.m_pluginAnalyticDelegates = [NSMutableArray<iOSPluginAnalyticDelegateInterface> array];
-        self.m_pluginAttributionDelegates = [NSMutableArray<iOSPluginAttributionDelegateInterface> array];
-        self.m_pluginUserIdDelegates = [NSMutableArray<iOSPluginUserIdDelegateInterface> array];
-        self.m_pluginAdRevenueDelegates = [NSMutableArray<iOSPluginAdRevenueDelegateInterface> array];
-        self.m_pluginAppTrackingTransparencyDelegates = [NSMutableArray<iOSPluginAppTrackingTransparencyDelegateInterface> array];
-        self.m_pluginTransparencyConsentDelegates = [NSMutableArray<iOSPluginTransparencyConsentDelegateInterface> array];
+    self = [super init];
 
-        self.m_didBecomeActiveOperations = [NSMutableArray<iOSDidBecomeActiveOperationBlock> array];
-        self.m_isProcessingDidBecomeActiveOperation = NO;
-        self.m_isApplicationForeground = NO;
-        self.m_isApplicationTerminating = NO;
+    if (self == nil) {
+        return nil;
+    }
 
-        NSNumber * idleTimerDisabled = [AppleBundle getApplicationConfigValue:@"IdleTimerDisabled"];
-        self.m_isIdleTimerDisabled = idleTimerDisabled.boolValue;
+    self.m_application = nullptr;
+    self.m_displayLink = nil;
+    self.m_prevTimestamp = 0.0;
+    self.m_hasRenderedFirstFrame = NO;
+    self.m_hasDismissedLaunchScreen = NO;
+    self.m_pluginDelegates = [NSMutableArray<id> array];
+    self.m_plugins = [NSMutableArray<iOSPluginInterface> array];
+    self.m_pluginLoggerDelegates = [NSMutableArray<iOSPluginLoggerDelegateInterface> array];
+    self.m_pluginConfigDelegates = [NSMutableArray<iOSPluginConfigDelegateInterface> array];
+    self.m_pluginAnalyticDelegates = [NSMutableArray<iOSPluginAnalyticDelegateInterface> array];
+    self.m_pluginAttributionDelegates = [NSMutableArray<iOSPluginAttributionDelegateInterface> array];
+    self.m_pluginUserIdDelegates = [NSMutableArray<iOSPluginUserIdDelegateInterface> array];
+    self.m_pluginAdRevenueDelegates = [NSMutableArray<iOSPluginAdRevenueDelegateInterface> array];
+    self.m_pluginAppTrackingTransparencyDelegates = [NSMutableArray<iOSPluginAppTrackingTransparencyDelegateInterface> array];
+    self.m_pluginTransparencyConsentDelegates = [NSMutableArray<iOSPluginTransparencyConsentDelegateInterface> array];
 
-        NSArray * proxysClassed = [iOSApplicationDelegates getApplicationDelegates];
+    self.m_didBecomeActiveOperations = [NSMutableArray<iOSDidBecomeActiveOperationBlock> array];
+    self.m_isProcessingDidBecomeActiveOperation = NO;
+    self.m_isApplicationForeground = NO;
+    self.m_isApplicationTerminating = NO;
 
-        for (id className in proxysClassed) {
-            id c = NSClassFromString(className);
+    NSNumber * idleTimerDisabled = [AppleBundle getApplicationConfigValue:@"IdleTimerDisabled"];
+    self.m_isIdleTimerDisabled = idleTimerDisabled.boolValue;
 
-            if (c == nil) {
-                continue;
-            }
+    NSArray * proxysClassed = [iOSApplicationDelegates getApplicationDelegates];
 
-            id delegate = [[c alloc] init];
+    for (id className in proxysClassed) {
+        id c = NSClassFromString(className);
 
-            [self.m_pluginDelegates addObject:delegate];
+        if (c == nil) {
+            continue;
+        }
 
-            if ([delegate conformsToProtocol:@protocol(iOSPluginInterface)] == YES) {
-                [self.m_plugins addObject:delegate];
-            }
+        id delegate = [[c alloc] init];
 
-            if ([delegate conformsToProtocol:@protocol(iOSPluginLoggerDelegateInterface)] == YES) {
-                [self.m_pluginLoggerDelegates addObject:delegate];
-            }
+        [self.m_pluginDelegates addObject:delegate];
 
-            if ([delegate conformsToProtocol:@protocol(iOSPluginConfigDelegateInterface)] == YES) {
-                [self.m_pluginConfigDelegates addObject:delegate];
-            }
+        if ([delegate conformsToProtocol:@protocol(iOSPluginInterface)] == YES) {
+            [self.m_plugins addObject:delegate];
+        }
 
-            if ([delegate conformsToProtocol:@protocol(iOSPluginAnalyticDelegateInterface)] == YES) {
-                [self.m_pluginAnalyticDelegates addObject:delegate];
-            }
+        if ([delegate conformsToProtocol:@protocol(iOSPluginLoggerDelegateInterface)] == YES) {
+            [self.m_pluginLoggerDelegates addObject:delegate];
+        }
 
-            if ([delegate conformsToProtocol:@protocol(iOSPluginAttributionDelegateInterface)] == YES) {
-                [self.m_pluginAttributionDelegates addObject:delegate];
-            }
+        if ([delegate conformsToProtocol:@protocol(iOSPluginConfigDelegateInterface)] == YES) {
+            [self.m_pluginConfigDelegates addObject:delegate];
+        }
 
-            if ([delegate conformsToProtocol:@protocol(iOSPluginUserIdDelegateInterface)] == YES) {
-                [self.m_pluginUserIdDelegates addObject:delegate];
-            }
+        if ([delegate conformsToProtocol:@protocol(iOSPluginAnalyticDelegateInterface)] == YES) {
+            [self.m_pluginAnalyticDelegates addObject:delegate];
+        }
 
-            if ([delegate conformsToProtocol:@protocol(iOSPluginAdRevenueDelegateInterface)] == YES) {
-                [self.m_pluginAdRevenueDelegates addObject:delegate];
-            }
+        if ([delegate conformsToProtocol:@protocol(iOSPluginAttributionDelegateInterface)] == YES) {
+            [self.m_pluginAttributionDelegates addObject:delegate];
+        }
 
-            if ([delegate conformsToProtocol:@protocol(iOSPluginAppTrackingTransparencyDelegateInterface)] == YES) {
-                [self.m_pluginAppTrackingTransparencyDelegates addObject:delegate];
-            }
+        if ([delegate conformsToProtocol:@protocol(iOSPluginUserIdDelegateInterface)] == YES) {
+            [self.m_pluginUserIdDelegates addObject:delegate];
+        }
 
-            if ([delegate conformsToProtocol:@protocol(iOSPluginTransparencyConsentDelegateInterface)] == YES) {
-                [self.m_pluginTransparencyConsentDelegates addObject:delegate];
-            }
+        if ([delegate conformsToProtocol:@protocol(iOSPluginAdRevenueDelegateInterface)] == YES) {
+            [self.m_pluginAdRevenueDelegates addObject:delegate];
+        }
+
+        if ([delegate conformsToProtocol:@protocol(iOSPluginAppTrackingTransparencyDelegateInterface)] == YES) {
+            [self.m_pluginAppTrackingTransparencyDelegates addObject:delegate];
+        }
+
+        if ([delegate conformsToProtocol:@protocol(iOSPluginTransparencyConsentDelegateInterface)] == YES) {
+            [self.m_pluginTransparencyConsentDelegates addObject:delegate];
         }
     }
 
@@ -295,7 +299,7 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
 }
 
 - (void)addDidBecomeActiveOperationWithCompletion:(iOSDidBecomeActiveOperationBlock)block {
-    @synchronized(self.m_didBecomeActiveOperations) {
+    @synchronized (self.m_didBecomeActiveOperations) {
         [self.m_didBecomeActiveOperations addObject:block];
     }
 
@@ -312,7 +316,7 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
 
         iOSDidBecomeActiveOperationBlock operation = nil;
 
-        @synchronized(self.m_didBecomeActiveOperations) {
+        @synchronized (self.m_didBecomeActiveOperations) {
             if (self.m_isProcessingDidBecomeActiveOperation == YES) {
                 return;
             }
@@ -336,7 +340,7 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
 - (void)processOperation:(iOSDidBecomeActiveOperationBlock)block {
     [AppleDetail addMainQueueOperation:^{
         block(^{
-            @synchronized(self.m_didBecomeActiveOperations) {
+            @synchronized (self.m_didBecomeActiveOperations) {
                 self.m_isProcessingDidBecomeActiveOperation = NO;
             }
 
@@ -377,7 +381,7 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
     [[iOSNetwork sharedInstance] startMonitoring];
 
     @autoreleasepool {
-        if( [iOSApplication.sharedInstance didFinishLaunchingWithOptions:launchOptions] == NO) {
+        if ([iOSApplication.sharedInstance didFinishLaunchingWithOptions:launchOptions] == NO) {
             [self reportFatalLaunchFailure:@"Mengine engine failed to start. The application cannot continue."];
 
             return YES;
@@ -519,11 +523,11 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
         }
     }
 
-    if( SERVICE_PROVIDER_EXIST() == true && SERVICE_IS_INITIALIZE( Mengine::PlatformServiceInterface ) == true ) {
+    if (SERVICE_PROVIDER_EXIST() == true && SERVICE_IS_INITIALIZE( Mengine::PlatformServiceInterface ) == true) {
         Mengine::iOSPlatformServiceExtensionInterface * extension = PLATFORM_SERVICE()
             ->getDynamicUnknown();
 
-        if( extension != nullptr ) {
+        if (extension != nullptr) {
             extension->handleApplicationDidBecomeActive();
         }
     }
@@ -548,11 +552,11 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
         }
     }
 
-    if( SERVICE_PROVIDER_EXIST() == true && SERVICE_IS_INITIALIZE( Mengine::PlatformServiceInterface ) == true ) {
+    if (SERVICE_PROVIDER_EXIST() == true && SERVICE_IS_INITIALIZE( Mengine::PlatformServiceInterface ) == true) {
         Mengine::iOSPlatformServiceExtensionInterface * extension = PLATFORM_SERVICE()
             ->getDynamicUnknown();
 
-        if( extension != nullptr ) {
+        if (extension != nullptr) {
             extension->handleApplicationWillEnterForeground();
         }
     }
@@ -577,11 +581,11 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
         }
     }
 
-    if( SERVICE_PROVIDER_EXIST() == true && SERVICE_IS_INITIALIZE( Mengine::PlatformServiceInterface ) == true ) {
+    if (SERVICE_PROVIDER_EXIST() == true && SERVICE_IS_INITIALIZE( Mengine::PlatformServiceInterface ) == true) {
         Mengine::iOSPlatformServiceExtensionInterface * extension = PLATFORM_SERVICE()
             ->getDynamicUnknown();
 
-        if( extension != nullptr ) {
+        if (extension != nullptr) {
             extension->handleApplicationDidEnterBackground();
         }
     }
@@ -604,11 +608,11 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
         }
     }
 
-    if( SERVICE_PROVIDER_EXIST() == true && SERVICE_IS_INITIALIZE( Mengine::PlatformServiceInterface ) == true ) {
+    if (SERVICE_PROVIDER_EXIST() == true && SERVICE_IS_INITIALIZE( Mengine::PlatformServiceInterface ) == true) {
         Mengine::iOSPlatformServiceExtensionInterface * extension = PLATFORM_SERVICE()
             ->getDynamicUnknown();
 
-        if( extension != nullptr ) {
+        if (extension != nullptr) {
             extension->handleApplicationWillResignActive();
         }
     }
@@ -638,11 +642,11 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
         }
     }
 
-    if( SERVICE_PROVIDER_EXIST() == true && SERVICE_IS_INITIALIZE( Mengine::PlatformServiceInterface ) == true ) {
+    if (SERVICE_PROVIDER_EXIST() == true && SERVICE_IS_INITIALIZE( Mengine::PlatformServiceInterface ) == true) {
         Mengine::iOSPlatformServiceExtensionInterface * extension = PLATFORM_SERVICE()
             ->getDynamicUnknown();
 
-        if( extension != nullptr ) {
+        if (extension != nullptr) {
             extension->handleApplicationWillTerminate();
         }
     }
@@ -746,9 +750,8 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
 
     NOTIFICATION_NOTIFY( Mengine::NOTIFICATOR_PLATFORM_UPDATE );
 
-    if( PLATFORM_SERVICE()
-        ->updatePlatform() == false )
-    {
+    if (PLATFORM_SERVICE()
+        ->updatePlatform() == false) {
         [self finishApplication];
 
         return;
@@ -859,7 +862,7 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
         }
     }
 
-    if( application->bootstrap( arguments ) == false ) {
+    if (application->bootstrap( arguments ) == false) {
         [AppleLog withFormat:@"🔴 [ERROR] Mengine application bootstrap [Failed]"];
 
         application->finalize();
@@ -877,10 +880,10 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
         return;
     }
 
-    if( SERVICE_IS_INITIALIZE( Mengine::PluginServiceInterface ) == true ) {
+    if (SERVICE_IS_INITIALIZE( Mengine::PluginServiceInterface ) == true) {
         NSArray<NSString *> * delegates = [iOSApplicationDelegates getApplicationDelegates];
 
-        for( NSString * pluginNameString in delegates ) {
+        for (NSString * pluginNameString in delegates) {
             Mengine::ConstString pluginName = [AppleString NSStringToConstString:pluginNameString];
 
             PLUGIN_SERVICE()
@@ -908,7 +911,7 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
         }
     }
 
-    if( application->run() == false ) {
+    if (application->run() == false) {
         [AppleLog withFormat:@"🔴 [ERROR] Mengine application run [Failed]"];
 
         application->finalize();

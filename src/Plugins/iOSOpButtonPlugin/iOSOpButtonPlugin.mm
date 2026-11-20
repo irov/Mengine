@@ -28,8 +28,7 @@ static int64_t const MENGINE_OPBUTTON_METRIC_SAMPLE_INTERVAL_MILLISECONDS = 200;
 @interface iOSOpButtonPlugin () <OpButtonObjCSessionDelegate, OpButtonObjCActionDelegate, OpButtonObjCLoggerDelegate>
 @end
 
-@implementation iOSOpButtonPlugin
-{
+@implementation iOSOpButtonPlugin {
     NSMutableDictionary<NSString *, OpButtonCommandTab *> * m_commandTabs;
     OpButtonCommandTab * m_notificationsTab;
 }

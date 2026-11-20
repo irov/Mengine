@@ -6,6 +6,10 @@
                             args:(const pybind::args &)args {
     self = [super init];
 
+    if (self == nil) {
+        return nil;
+    }
+
     m_cb = cb;
     m_args = args;
 

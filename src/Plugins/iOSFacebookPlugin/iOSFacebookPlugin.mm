@@ -21,12 +21,14 @@
 - (instancetype)init {
     self = [super init];
 
-    if( self != nil ) {
-        self.m_provider = nil;
-        self.m_loginManager = [[FBSDKLoginManager alloc] init];
-        self.m_shareDelegate = [[iOSFacebookShareDelegate alloc] initWithFacebook:self];
-        self.m_userId = nil;
+    if (self == nil) {
+        return nil;
     }
+
+    self.m_provider = nil;
+    self.m_loginManager = [[FBSDKLoginManager alloc] init];
+    self.m_shareDelegate = [[iOSFacebookShareDelegate alloc] initWithFacebook:self];
+    self.m_userId = nil;
 
     return self;
 }
@@ -100,21 +102,18 @@
     [self.m_loginManager logInFromViewController:viewController configuration:configuration completion:^(FBSDKLoginManagerLoginResult * _Nullable result, NSError * _Nullable error) {
         iOSFacebookPlugin * strongSelf = weakSelf;
 
-        if( strongSelf == nil )
-        {
+        if (strongSelf == nil) {
             return;
         }
 
         id<iOSFacebookProviderInterface> provider = strongSelf.m_provider;
 
-        if( error != nil )
-        {
+        if (error != nil) {
             NSString * errorMessage = [AppleDetail getMessageFromNSError:error];
 
             IOS_LOGGER_ERROR( @"Facebook login error: %@", errorMessage );
 
-            if( provider != nil )
-            {
+            if (provider != nil) {
                 [AppleDetail addMainQueueOperation:^{
                     [provider onFacebookError:-2 message:errorMessage];
                 }];
@@ -123,12 +122,10 @@
             return;
         }
 
-        if( result.isCancelled == YES )
-        {
+        if (result.isCancelled == YES) {
             IOS_LOGGER_MESSAGE( @"Facebook login cancel" );
 
-            if( provider != nil )
-            {
+            if (provider != nil) {
                 [AppleDetail addMainQueueOperation:^{
                     [provider onFacebookLoginCancel];
                 }];
@@ -139,27 +136,22 @@
 
         IOS_LOGGER_MESSAGE( @"Facebook login successful" );
 
-        if( provider != nil )
-        {
+        if (provider != nil) {
             NSMutableDictionary<NSString *, NSString *> * params = [NSMutableDictionary dictionary];
 
             FBSDKProfile * profile = [FBSDKProfile currentProfile];
 
-            if( profile != nil )
-            {
-                if( profile.userID != nil )
-                {
+            if (profile != nil) {
+                if (profile.userID != nil) {
                     strongSelf.m_userId = profile.userID;
 
                     [params setObject:profile.userID forKey:@"profile.userID"];
                 }
 
-                if( profile.imageURL != nil )
-                {
+                if (profile.imageURL != nil) {
                     NSURL * imageURL = profile.imageURL.absoluteURL;
 
-                    if( imageURL != nil && imageURL.absoluteString != nil )
-                    {
+                    if (imageURL != nil && imageURL.absoluteString != nil) {
                         [params setObject:imageURL.absoluteString forKey:@"profile.imageURL"];
                     }
                 }
@@ -167,8 +159,7 @@
 
             FBSDKAuthenticationToken * authenticationToken = [FBSDKAuthenticationToken currentAuthenticationToken];
 
-            if( authenticationToken != nil && authenticationToken.tokenString != nil )
-            {
+            if (authenticationToken != nil && authenticationToken.tokenString != nil) {
                 [params setObject:authenticationToken.tokenString forKey:@"authentication.token"];
             }
 
@@ -199,8 +190,7 @@
 - (NSString *)getAccessToken {
     FBSDKAuthenticationToken * authenticationToken = [FBSDKAuthenticationToken currentAuthenticationToken];
 
-    if( authenticationToken == nil )
-    {
+    if (authenticationToken == nil) {
         return nil;
     }
 
@@ -210,14 +200,12 @@
 - (NSString *)getUserId {
     FBSDKProfile * profile = [FBSDKProfile currentProfile];
 
-    if( profile != nil && profile.userID != nil )
-    {
+    if (profile != nil && profile.userID != nil) {
         self.m_userId = profile.userID;
         return profile.userID;
     }
 
-    if( self.m_userId != nil )
-    {
+    if (self.m_userId != nil) {
         return self.m_userId;
     }
 
@@ -227,36 +215,30 @@
 - (NSDictionary<NSString *, NSString *> *)getUser {
     FBSDKProfile * profile = [FBSDKProfile currentProfile];
 
-    if( profile == nil )
-    {
+    if (profile == nil) {
         return nil;
     }
 
     NSMutableDictionary<NSString *, NSString *> * user = [NSMutableDictionary dictionary];
 
-    if( profile.userID != nil )
-    {
+    if (profile.userID != nil) {
         self.m_userId = profile.userID;
 
         [user setObject:profile.userID forKey:@"id"];
     }
 
-    if( profile.name != nil )
-    {
+    if (profile.name != nil) {
         [user setObject:profile.name forKey:@"name"];
     }
 
-    if( profile.email != nil )
-    {
+    if (profile.email != nil) {
         [user setObject:profile.email forKey:@"email"];
     }
 
-    if( profile.imageURL != nil )
-    {
+    if (profile.imageURL != nil) {
         NSURL * imageURL = profile.imageURL.absoluteURL;
 
-        if( imageURL != nil && imageURL.absoluteString != nil )
-        {
+        if (imageURL != nil && imageURL.absoluteString != nil) {
             [user setObject:imageURL.absoluteString forKey:@"pictureURL"];
         }
     }
@@ -270,12 +252,10 @@
     NSString * strPicture = picture != nil ? picture : @"";
     NSString * strLink = link != nil ? link : @"";
 
-    if( strLink.length <= 0 && strPicture.length <= 0 )
-    {
+    if (strLink.length <= 0 && strPicture.length <= 0) {
         IOS_LOGGER_ERROR( @"Facebook link and picture is empty" );
 
-        if( provider != nil )
-        {
+        if (provider != nil) {
             [AppleDetail addMainQueueOperation:^{
                 [provider onFacebookShareError:-1 message:@"empty data"];
             }];
@@ -284,12 +264,10 @@
         return;
     }
 
-    if( self.m_shareDelegate == nil )
-    {
+    if (self.m_shareDelegate == nil) {
         IOS_LOGGER_ERROR( @"Facebook share delegate is nil" );
 
-        if( provider != nil )
-        {
+        if (provider != nil) {
             [AppleDetail addMainQueueOperation:^{
                 [provider onFacebookShareError:-2 message:@"share delegate nil"];
             }];
@@ -298,15 +276,13 @@
         return;
     }
 
-    if( strPicture.length <= 0 )
-    {
+    if (strPicture.length <= 0) {
         dispatch_async( dispatch_get_main_queue(), ^{
             FBSDKShareLinkContent * content = [[FBSDKShareLinkContent alloc] init];
 
             NSURL * linkURL = [NSURL URLWithString:strLink];
 
-            if( linkURL != nil )
-            {
+            if (linkURL != nil) {
                 content.contentURL = linkURL;
             }
 
@@ -324,12 +300,10 @@
 
     NSURL * url = [NSURL URLWithString:strPicture];
 
-    if( url == nil )
-    {
+    if (url == nil) {
         IOS_LOGGER_ERROR( @"Facebook picture not convert to NSURL" );
 
-        if( provider != nil )
-        {
+        if (provider != nil) {
             [AppleDetail addMainQueueOperation:^{
                 [provider onFacebookShareError:-3 message:@"error picture to NSURL"];
             }];
@@ -342,12 +316,10 @@
                                                                completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         (void)response;
 
-        if( error != nil || data == nil )
-        {
+        if (error != nil || data == nil) {
             IOS_LOGGER_ERROR( @"Facebook picture not convert to NSData" );
 
-            if( provider != nil )
-            {
+            if (provider != nil) {
                 [AppleDetail addMainQueueOperation:^{
                     [provider onFacebookShareError:-4 message:@"empty NSURL to NSData"];
                 }];
@@ -358,12 +330,10 @@
 
         UIImage * img = [UIImage imageWithData:data];
 
-        if( img == nil )
-        {
+        if (img == nil) {
             IOS_LOGGER_ERROR( @"Facebook picture not convert to UIImage" );
 
-            if( provider != nil )
-            {
+            if (provider != nil) {
                 [AppleDetail addMainQueueOperation:^{
                     [provider onFacebookShareError:-5 message:@"empty NSData to UIImage"];
                 }];
@@ -379,8 +349,7 @@
 
             NSURL * linkURL = [NSURL URLWithString:strLink];
 
-            if( linkURL != nil )
-            {
+            if (linkURL != nil) {
                 content.contentURL = linkURL;
             }
 
@@ -402,30 +371,25 @@
 - (void)getProfilePictureLink {
     id<iOSFacebookProviderInterface> provider = self.m_provider;
 
-    if( provider == nil )
-    {
+    if (provider == nil) {
         return;
     }
 
     FBSDKProfile * profile = [FBSDKProfile currentProfile];
 
-    if( profile != nil )
-    {
+    if (profile != nil) {
         NSString * userId = profile.userID != nil ? profile.userID : @"";
 
-        if( userId.length > 0 )
-        {
+        if (userId.length > 0) {
             self.m_userId = userId;
         }
 
         NSString * imageURL = @"";
 
-        if( profile.imageURL != nil )
-        {
+        if (profile.imageURL != nil) {
             NSURL * absoluteURL = profile.imageURL.absoluteURL;
 
-            if( absoluteURL != nil && absoluteURL.absoluteString != nil )
-            {
+            if (absoluteURL != nil && absoluteURL.absoluteString != nil) {
                 imageURL = absoluteURL.absoluteString;
             }
         }
@@ -438,8 +402,7 @@
     }
 
     [FBSDKProfile loadCurrentProfileWithCompletion:^(FBSDKProfile * _Nullable loadedProfile, NSError * _Nullable error) {
-        if( error != nil )
-        {
+        if (error != nil) {
             IOS_LOGGER_ERROR( @"Facebook get picture error: %@", [AppleDetail getMessageFromNSError:error] );
 
             [AppleDetail addMainQueueOperation:^{
@@ -449,8 +412,7 @@
             return;
         }
 
-        if( loadedProfile == nil )
-        {
+        if (loadedProfile == nil) {
             IOS_LOGGER_ERROR( @"Facebook profile is nil" );
 
             [AppleDetail addMainQueueOperation:^{
@@ -460,8 +422,7 @@
             return;
         }
 
-        if( loadedProfile.imageURL == nil )
-        {
+        if (loadedProfile.imageURL == nil) {
             IOS_LOGGER_ERROR( @"Facebook profile image URL is nil" );
 
             [AppleDetail addMainQueueOperation:^{
@@ -471,8 +432,7 @@
             return;
         }
 
-        if( loadedProfile.imageURL.absoluteURL == nil )
-        {
+        if (loadedProfile.imageURL.absoluteURL == nil) {
             IOS_LOGGER_ERROR( @"Facebook profile image URL absolute is nil" );
 
             [AppleDetail addMainQueueOperation:^{
@@ -484,8 +444,7 @@
 
         NSString * userId = loadedProfile.userID != nil ? loadedProfile.userID : @"";
 
-        if( userId.length > 0 )
-        {
+        if (userId.length > 0) {
             self.m_userId = userId;
         }
 

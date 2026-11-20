@@ -25,12 +25,14 @@
 - (instancetype)init {
     self = [super init];
 
-    if (self != nil) {
-        self.m_enableDebugMessage = MENGINE_RELEASE_VALUE(NO, YES);
-        self.m_enableInfoMessage = NO;
-
-        self.m_logger = nil;
+    if (self == nil) {
+        return nil;
     }
+
+    self.m_enableDebugMessage = MENGINE_RELEASE_VALUE(NO, YES);
+    self.m_enableInfoMessage = NO;
+
+    self.m_logger = nil;
 
     return self;
 }
@@ -205,12 +207,10 @@
     switch (record.LOG_LEVEL) {
         case Mengine::LM_SILENT:
         case Mengine::LM_VERBOSE:
-        case Mengine::LM_DEBUG:
-        {
+        case Mengine::LM_DEBUG: {
             //Empty
         }break;
-        case Mengine::LM_INFO:
-        {
+        case Mengine::LM_INFO: {
             if (self.m_enableInfoMessage == NO) {
                 return;
             }
@@ -218,24 +218,20 @@
             [self.m_logger info:record.LOG_DATA attributes:attributes];
         }break;
         case Mengine::LM_MESSAGE:
-        case Mengine::LM_MESSAGE_RELEASE:
-        {
+        case Mengine::LM_MESSAGE_RELEASE: {
             if (self.m_enableDebugMessage == NO) {
                 return;
             }
 
             [self.m_logger info:record.LOG_DATA attributes:attributes];
         }break;
-        case Mengine::LM_WARNING:
-        {
+        case Mengine::LM_WARNING: {
             [self.m_logger warn:record.LOG_DATA attributes:attributes];
         }break;
-        case Mengine::LM_ERROR:
-        {
+        case Mengine::LM_ERROR: {
             [self.m_logger error:record.LOG_DATA attributes:attributes];
         }break;
-        case Mengine::LM_FATAL:
-        {
+        case Mengine::LM_FATAL: {
             [self.m_logger critical:record.LOG_DATA attributes:attributes];
         }break;
     }

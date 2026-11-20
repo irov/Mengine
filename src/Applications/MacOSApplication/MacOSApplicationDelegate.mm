@@ -17,20 +17,17 @@
 
 @implementation MacOSApplicationDelegate
 
-- (void)applicationDidFinishLaunching:(NSNotification *)notification
-{
+- (void)applicationDidFinishLaunching:(NSNotification *)notification {
     MENGINE_UNUSED( notification );
 
     self.m_gameControllerInput = [[AppleGameControllerInput alloc] init];
     [self.m_gameControllerInput start];
 }
 
-- (void)applicationDidBecomeActive:(NSNotification *)notification
-{
+- (void)applicationDidBecomeActive:(NSNotification *)notification {
     MENGINE_UNUSED( notification );
 
-    if( SERVICE_PROVIDER_EXIST() == false || SERVICE_IS_INITIALIZE( Mengine::PlatformServiceInterface ) == false )
-    {
+    if (SERVICE_PROVIDER_EXIST() == false || SERVICE_IS_INITIALIZE( Mengine::PlatformServiceInterface ) == false) {
         return;
     }
 
@@ -40,12 +37,10 @@
     extension->handleApplicationDidBecomeActive();
 }
 
-- (void)applicationWillResignActive:(NSNotification *)notification
-{
+- (void)applicationWillResignActive:(NSNotification *)notification {
     MENGINE_UNUSED( notification );
 
-    if( SERVICE_PROVIDER_EXIST() == false || SERVICE_IS_INITIALIZE( Mengine::PlatformServiceInterface ) == false )
-    {
+    if (SERVICE_PROVIDER_EXIST() == false || SERVICE_IS_INITIALIZE( Mengine::PlatformServiceInterface ) == false) {
         return;
     }
 
@@ -55,12 +50,10 @@
     extension->handleApplicationWillResignActive();
 }
 
-- (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender
-{
+- (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender {
     MENGINE_UNUSED( sender );
 
-    if( SERVICE_PROVIDER_EXIST() == true && SERVICE_IS_INITIALIZE( Mengine::ApplicationInterface ) == true )
-    {
+    if (SERVICE_PROVIDER_EXIST() == true && SERVICE_IS_INITIALIZE( Mengine::ApplicationInterface ) == true) {
         APPLICATION_SERVICE()
             ->quit();
     }
@@ -68,15 +61,13 @@
     return NSTerminateNow;
 }
 
-- (void)applicationWillTerminate:(NSNotification *)notification
-{
+- (void)applicationWillTerminate:(NSNotification *)notification {
     MENGINE_UNUSED( notification );
 
     [self.m_gameControllerInput stop];
     self.m_gameControllerInput = nil;
 
-    if( SERVICE_PROVIDER_EXIST() == false || SERVICE_IS_INITIALIZE( Mengine::PlatformServiceInterface ) == false )
-    {
+    if (SERVICE_PROVIDER_EXIST() == false || SERVICE_IS_INITIALIZE( Mengine::PlatformServiceInterface ) == false) {
         return;
     }
 
@@ -86,29 +77,25 @@
     extension->handleApplicationWillTerminate();
 }
 
-- (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender
-{
+- (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender {
     MENGINE_UNUSED( sender );
 
     return YES;
 }
 
-- (BOOL)applicationSupportsSecureRestorableState:(NSApplication *)application
-{
+- (BOOL)applicationSupportsSecureRestorableState:(NSApplication *)application {
     MENGINE_UNUSED( application );
 
     return YES;
 }
 
-- (BOOL)applicationShouldSaveApplicationState:(NSApplication *)application
-{
+- (BOOL)applicationShouldSaveApplicationState:(NSApplication *)application {
     MENGINE_UNUSED( application );
 
     return NO;
 }
 
-- (BOOL)applicationShouldRestoreApplicationState:(NSApplication *)application
-{
+- (BOOL)applicationShouldRestoreApplicationState:(NSApplication *)application {
     MENGINE_UNUSED( application );
 
     return NO;

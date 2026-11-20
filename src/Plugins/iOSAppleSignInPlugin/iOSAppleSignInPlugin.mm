@@ -13,10 +13,8 @@
 
 static NSString * const kMengineAppleSignInUserIdKey = @"mengine.apple.signin.user-id";
 
-static NSString * iOSAppleSignInStringFromData( NSData * data )
-{
-    if( data == nil )
-    {
+static NSString * iOSAppleSignInStringFromData(NSData * data) {
+    if (data == nil) {
         return nil;
     }
 
@@ -28,13 +26,14 @@ static NSString * iOSAppleSignInStringFromData( NSData * data )
 - (instancetype)init {
     self = [super init];
 
-    if( self != nil )
-    {
-        self.m_provider = nil;
-        self.m_authorizationController = nil;
-        self.m_authorizationButton = nil;
-        self.m_observingCredentialRevocation = NO;
+    if (self == nil) {
+        return nil;
     }
+
+    self.m_provider = nil;
+    self.m_authorizationController = nil;
+    self.m_authorizationButton = nil;
+    self.m_observingCredentialRevocation = NO;
 
     return self;
 }
@@ -87,15 +86,13 @@ static NSString * iOSAppleSignInStringFromData( NSData * data )
 - (void)setProvider:(id<iOSAppleSignInProviderInterface>)provider {
     self.m_provider = provider;
 
-    if( provider == nil )
-    {
+    if (provider == nil) {
         return;
     }
 
     NSString * userId = [self getStoredUserId];
 
-    if( userId.length != 0 )
-    {
+    if (userId.length != 0) {
         [self checkCredentialState:userId];
     }
 }
@@ -108,15 +105,13 @@ static NSString * iOSAppleSignInStringFromData( NSData * data )
               fullName:(BOOL)requestFullName
                  state:(NSString *)state
                  nonce:(NSString *)nonce {
-    if( [NSThread isMainThread] == NO )
-    {
+    if ([NSThread isMainThread] == NO) {
         IOS_LOGGER_ERROR( @"Apple Sign In login must be called on the main thread" );
 
         return NO;
     }
 
-    if( self.m_authorizationController != nil )
-    {
+    if (self.m_authorizationController != nil) {
         IOS_LOGGER_ERROR( @"Apple Sign In authorization is already in progress" );
 
         return NO;
@@ -126,13 +121,11 @@ static NSString * iOSAppleSignInStringFromData( NSData * data )
     ASAuthorizationAppleIDRequest * request = [appleIDProvider createRequest];
     NSMutableArray<ASAuthorizationScope> * requestedScopes = [NSMutableArray arrayWithCapacity:2];
 
-    if( requestEmail == YES )
-    {
+    if (requestEmail == YES) {
         [requestedScopes addObject:ASAuthorizationScopeEmail];
     }
 
-    if( requestFullName == YES )
-    {
+    if (requestFullName == YES) {
         [requestedScopes addObject:ASAuthorizationScopeFullName];
     }
 
@@ -140,18 +133,15 @@ static NSString * iOSAppleSignInStringFromData( NSData * data )
 
     NSString * storedUserId = [self getStoredUserId];
 
-    if( storedUserId.length != 0 )
-    {
+    if (storedUserId.length != 0) {
         request.user = storedUserId;
     }
 
-    if( state.length != 0 )
-    {
+    if (state.length != 0) {
         request.state = state;
     }
 
-    if( nonce.length != 0 )
-    {
+    if (nonce.length != 0) {
         request.nonce = nonce;
     }
 
@@ -177,13 +167,11 @@ static NSString * iOSAppleSignInStringFromData( NSData * data )
 - (BOOL)checkCredentialState:(NSString *)userId {
     NSString * resolvedUserId = userId;
 
-    if( resolvedUserId.length == 0 )
-    {
+    if (resolvedUserId.length == 0) {
         resolvedUserId = [self getStoredUserId];
     }
 
-    if( resolvedUserId.length == 0 )
-    {
+    if (resolvedUserId.length == 0) {
         IOS_LOGGER_ERROR( @"Apple Sign In credential state requires a user id" );
 
         return NO;
@@ -196,59 +184,48 @@ static NSString * iOSAppleSignInStringFromData( NSData * data )
         [AppleDetail addMainQueueOperation:^{
             iOSAppleSignInPlugin * strongSelf = weakSelf;
 
-            if( strongSelf == nil )
-            {
+            if (strongSelf == nil) {
                 return;
             }
 
             id<iOSAppleSignInProviderInterface> provider = strongSelf.m_provider;
 
-            if( error != nil && credentialState != ASAuthorizationAppleIDProviderCredentialNotFound )
-            {
+            if (error != nil && credentialState != ASAuthorizationAppleIDProviderCredentialNotFound) {
                 NSString * errorMessage = [AppleDetail getMessageFromNSError:error];
 
                 IOS_LOGGER_ERROR( @"Apple Sign In credential state error: %@", errorMessage );
 
-                if( provider != nil )
-                {
+                if (provider != nil) {
                     [provider onAppleSignInCredentialStateError:resolvedUserId code:error.code message:errorMessage];
                 }
 
                 return;
             }
 
-            if( error != nil )
-            {
+            if (error != nil) {
                 IOS_LOGGER_WARNING( @"Apple Sign In credential was not found: %@", [AppleDetail getMessageFromNSError:error] );
             }
 
             iOSAppleSignInCredentialState state = (iOSAppleSignInCredentialState)credentialState;
 
-            if( provider != nil )
-            {
+            if (provider != nil) {
                 [provider onAppleSignInCredentialState:resolvedUserId state:state];
             }
 
-            if( credentialState == ASAuthorizationAppleIDProviderCredentialRevoked )
-            {
+            if (credentialState == ASAuthorizationAppleIDProviderCredentialRevoked) {
                 NSString * storedUserId = [strongSelf getStoredUserId];
 
-                if( [storedUserId isEqualToString:resolvedUserId] == YES )
-                {
+                if ([storedUserId isEqualToString:resolvedUserId] == YES) {
                     [strongSelf clearStoredCredential];
                 }
 
-                if( provider != nil )
-                {
+                if (provider != nil) {
                     [provider onAppleSignInCredentialRevoked:resolvedUserId];
                 }
-            }
-            else if( credentialState == ASAuthorizationAppleIDProviderCredentialNotFound )
-            {
+            } else if (credentialState == ASAuthorizationAppleIDProviderCredentialNotFound) {
                 NSString * storedUserId = [strongSelf getStoredUserId];
 
-                if( [storedUserId isEqualToString:resolvedUserId] == YES )
-                {
+                if ([storedUserId isEqualToString:resolvedUserId] == YES) {
                     [strongSelf clearStoredCredential];
                 }
             }
@@ -265,15 +242,13 @@ static NSString * iOSAppleSignInStringFromData( NSData * data )
                       width:(CGFloat)width
                      height:(CGFloat)height
                cornerRadius:(CGFloat)cornerRadius {
-    if( [NSThread isMainThread] == NO )
-    {
+    if ([NSThread isMainThread] == NO) {
         IOS_LOGGER_ERROR( @"Apple Sign In button must be shown on the main thread" );
 
         return NO;
     }
 
-    if( width <= 0.0 || height <= 0.0 )
-    {
+    if (width <= 0.0 || height <= 0.0) {
         IOS_LOGGER_ERROR( @"Apple Sign In button has invalid size: [%lf, %lf]", (double)width, (double)height );
 
         return NO;
@@ -281,8 +256,7 @@ static NSString * iOSAppleSignInStringFromData( NSData * data )
 
     ASAuthorizationAppleIDButtonType authorizationButtonType;
 
-    switch( type )
-    {
+    switch (type) {
     case iOSAppleSignInButtonTypeSignIn:
         authorizationButtonType = ASAuthorizationAppleIDButtonTypeSignIn;
         break;
@@ -299,8 +273,7 @@ static NSString * iOSAppleSignInStringFromData( NSData * data )
 
     ASAuthorizationAppleIDButtonStyle authorizationButtonStyle;
 
-    switch( style )
-    {
+    switch (style) {
     case iOSAppleSignInButtonStyleWhite:
         authorizationButtonStyle = ASAuthorizationAppleIDButtonStyleWhite;
         break;
@@ -317,8 +290,7 @@ static NSString * iOSAppleSignInStringFromData( NSData * data )
 
     UIViewController * rootViewController = [iOSDetail getRootViewController];
 
-    if( rootViewController == nil )
-    {
+    if (rootViewController == nil) {
         IOS_LOGGER_ERROR( @"Apple Sign In button root view controller is unavailable" );
 
         return NO;
@@ -340,8 +312,7 @@ static NSString * iOSAppleSignInStringFromData( NSData * data )
 }
 
 - (void)hideButton {
-    if( self.m_authorizationButton == nil )
-    {
+    if (self.m_authorizationButton == nil) {
         return;
     }
 
@@ -357,13 +328,11 @@ static NSString * iOSAppleSignInStringFromData( NSData * data )
 #pragma mark - ASAuthorizationControllerDelegate
 
 - (void)authorizationController:(ASAuthorizationController *)controller didCompleteWithAuthorization:(ASAuthorization *)authorization {
-    if( controller == self.m_authorizationController )
-    {
+    if (controller == self.m_authorizationController) {
         self.m_authorizationController = nil;
     }
 
-    if( [authorization.credential isKindOfClass:[ASAuthorizationAppleIDCredential class]] == NO )
-    {
+    if ([authorization.credential isKindOfClass:[ASAuthorizationAppleIDCredential class]] == NO) {
         [self notifyAuthorizationError:ASAuthorizationErrorInvalidResponse message:@"Apple Sign In returned an unexpected credential type"];
 
         return;
@@ -372,8 +341,7 @@ static NSString * iOSAppleSignInStringFromData( NSData * data )
     ASAuthorizationAppleIDCredential * credential = (ASAuthorizationAppleIDCredential *)authorization.credential;
     NSString * identityToken = iOSAppleSignInStringFromData( credential.identityToken );
 
-    if( identityToken.length == 0 )
-    {
+    if (identityToken.length == 0) {
         [self notifyAuthorizationError:ASAuthorizationErrorInvalidResponse message:@"Apple Sign In returned an empty identity token"];
 
         return;
@@ -388,55 +356,45 @@ static NSString * iOSAppleSignInStringFromData( NSData * data )
 
     NSString * authorizationCode = iOSAppleSignInStringFromData( credential.authorizationCode );
 
-    if( authorizationCode.length != 0 )
-    {
+    if (authorizationCode.length != 0) {
         params[@"authorizationCode"] = authorizationCode;
     }
 
-    if( credential.state.length != 0 )
-    {
+    if (credential.state.length != 0) {
         params[@"state"] = credential.state;
     }
 
-    if( credential.email.length != 0 )
-    {
+    if (credential.email.length != 0) {
         params[@"email"] = credential.email;
     }
 
     NSPersonNameComponents * fullName = credential.fullName;
 
-    if( fullName.namePrefix.length != 0 )
-    {
+    if (fullName.namePrefix.length != 0) {
         params[@"namePrefix"] = fullName.namePrefix;
     }
 
-    if( fullName.givenName.length != 0 )
-    {
+    if (fullName.givenName.length != 0) {
         params[@"givenName"] = fullName.givenName;
     }
 
-    if( fullName.middleName.length != 0 )
-    {
+    if (fullName.middleName.length != 0) {
         params[@"middleName"] = fullName.middleName;
     }
 
-    if( fullName.familyName.length != 0 )
-    {
+    if (fullName.familyName.length != 0) {
         params[@"familyName"] = fullName.familyName;
     }
 
-    if( fullName.nameSuffix.length != 0 )
-    {
+    if (fullName.nameSuffix.length != 0) {
         params[@"nameSuffix"] = fullName.nameSuffix;
     }
 
-    if( fullName.nickname.length != 0 )
-    {
+    if (fullName.nickname.length != 0) {
         params[@"nickname"] = fullName.nickname;
     }
 
-    if( [AppleKeyChain setStringForKey:kMengineAppleSignInUserIdKey value:credential.user] == NO )
-    {
+    if ([AppleKeyChain setStringForKey:kMengineAppleSignInUserIdKey value:credential.user] == NO) {
         IOS_LOGGER_ERROR( @"Apple Sign In failed to persist the user id" );
     }
 
@@ -444,8 +402,7 @@ static NSString * iOSAppleSignInStringFromData( NSData * data )
 
     id<iOSAppleSignInProviderInterface> provider = self.m_provider;
 
-    if( provider != nil )
-    {
+    if (provider != nil) {
         [AppleDetail addMainQueueOperation:^{
             [provider onAppleSignInSuccess:params];
         }];
@@ -453,19 +410,16 @@ static NSString * iOSAppleSignInStringFromData( NSData * data )
 }
 
 - (void)authorizationController:(ASAuthorizationController *)controller didCompleteWithError:(NSError *)error {
-    if( controller == self.m_authorizationController )
-    {
+    if (controller == self.m_authorizationController) {
         self.m_authorizationController = nil;
     }
 
     id<iOSAppleSignInProviderInterface> provider = self.m_provider;
 
-    if( [error.domain isEqualToString:ASAuthorizationErrorDomain] == YES && error.code == ASAuthorizationErrorCanceled )
-    {
+    if ([error.domain isEqualToString:ASAuthorizationErrorDomain] == YES && error.code == ASAuthorizationErrorCanceled) {
         IOS_LOGGER_MESSAGE( @"Apple Sign In authorization canceled" );
 
-        if( provider != nil )
-        {
+        if (provider != nil) {
             [AppleDetail addMainQueueOperation:^{
                 [provider onAppleSignInCancel];
             }];
@@ -478,8 +432,7 @@ static NSString * iOSAppleSignInStringFromData( NSData * data )
 
     IOS_LOGGER_ERROR( @"Apple Sign In authorization error: %@", errorMessage );
 
-    if( provider != nil )
-    {
+    if (provider != nil) {
         [AppleDetail addMainQueueOperation:^{
             [provider onAppleSignInError:error.code message:errorMessage];
         }];
@@ -501,8 +454,7 @@ static NSString * iOSAppleSignInStringFromData( NSData * data )
 
     id<iOSAppleSignInProviderInterface> provider = self.m_provider;
 
-    if( provider != nil )
-    {
+    if (provider != nil) {
         [AppleDetail addMainQueueOperation:^{
             [provider onAppleSignInError:code message:message];
         }];
@@ -510,8 +462,7 @@ static NSString * iOSAppleSignInStringFromData( NSData * data )
 }
 
 - (void)startObservingCredentialRevocation {
-    if( self.m_observingCredentialRevocation == YES )
-    {
+    if (self.m_observingCredentialRevocation == YES) {
         return;
     }
 
@@ -524,8 +475,7 @@ static NSString * iOSAppleSignInStringFromData( NSData * data )
 }
 
 - (void)stopObservingCredentialRevocation {
-    if( self.m_observingCredentialRevocation == NO )
-    {
+    if (self.m_observingCredentialRevocation == NO) {
         return;
     }
 
@@ -541,8 +491,7 @@ static NSString * iOSAppleSignInStringFromData( NSData * data )
 
     NSString * userId = [self getStoredUserId];
 
-    if( userId.length == 0 )
-    {
+    if (userId.length == 0) {
         IOS_LOGGER_WARNING( @"Apple Sign In credential revocation received without a stored user id" );
 
         return;

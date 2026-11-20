@@ -26,17 +26,19 @@
 - (instancetype)init {
     self = [super init];
 
-    if (self) {
-        self.m_bannerAd = nil;
-        self.m_topperAd = nil;
-        self.m_interstitialAd = nil;
-        self.m_rewardedAd = nil;
-        self.m_rewardedInterstitialAd = nil;
-        self.m_initializationAttempted = NO;
-        self.m_consentCompleted = NO;
-        self.m_canRequestAds = NO;
-        self.m_appTrackingCompleted = NO;
+    if (self == nil) {
+        return nil;
     }
+
+    self.m_bannerAd = nil;
+    self.m_topperAd = nil;
+    self.m_interstitialAd = nil;
+    self.m_rewardedAd = nil;
+    self.m_rewardedInterstitialAd = nil;
+    self.m_initializationAttempted = NO;
+    self.m_consentCompleted = NO;
+    self.m_canRequestAds = NO;
+    self.m_appTrackingCompleted = NO;
 
     return self;
 }

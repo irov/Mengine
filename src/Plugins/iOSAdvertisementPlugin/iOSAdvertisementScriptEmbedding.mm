@@ -36,8 +36,7 @@
 
     pybind::object py_cb = [self getMethod:@"oniOSAdvertisementRevenuePaid"];
 
-    if( py_cb.is_callable() == false )
-    {
+    if (py_cb.is_callable() == false) {
         return;
     }
 
@@ -62,8 +61,7 @@
 
     pybind::object py_cb = [self getMethod:@"oniOSAdvertisementShowSuccess"];
 
-    if( py_cb.is_callable() == false )
-    {
+    if (py_cb.is_callable() == false) {
         return;
     }
 
@@ -78,8 +76,7 @@
 
     pybind::object py_cb = [self getMethod:@"oniOSAdvertisementShowFailed"];
 
-    if( py_cb.is_callable() == false )
-    {
+    if (py_cb.is_callable() == false) {
         return;
     }
 
@@ -94,8 +91,7 @@
 
     pybind::object py_cb = [self getMethod:@"oniOSAdvertisementRevenuePaid"];
 
-    if( py_cb.is_callable() == false )
-    {
+    if (py_cb.is_callable() == false) {
         return;
     }
 
@@ -120,8 +116,7 @@
 
     pybind::object py_cb = [self getMethod:@"oniOSAdvertisementShowSuccess"];
 
-    if( py_cb.is_callable() == false )
-    {
+    if (py_cb.is_callable() == false) {
         return;
     }
 
@@ -136,8 +131,7 @@
 
     pybind::object py_cb = [self getMethod:@"oniOSAdvertisementShowFailed"];
 
-    if( py_cb.is_callable() == false )
-    {
+    if (py_cb.is_callable() == false) {
         return;
     }
 
@@ -152,8 +146,7 @@
 
     pybind::object py_cb = [self getMethod:@"oniOSAdvertisementRevenuePaid"];
 
-    if( py_cb.is_callable() == false )
-    {
+    if (py_cb.is_callable() == false) {
         return;
     }
 
@@ -169,8 +162,7 @@
 
     pybind::object py_cb = [self getMethod:@"oniOSAdvertisementUserRewarded"];
 
-    if( py_cb.is_callable() == false )
-    {
+    if (py_cb.is_callable() == false) {
         return;
     }
 

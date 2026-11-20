@@ -148,16 +148,13 @@ public class MenginePlatformEventQueue {
         MenginePlatformEventQueue.pushEvent(new ChangeLocaleEvent(locale));
     }
 
-    private static boolean meaningfulIntent(@NonNull Intent intent) {
-        Bundle bundle = intent.getExtras();
+    private static boolean meaningfulIntent(@NonNull Intent intent, @NonNull Map<String, Object> extras) {
         String action = intent.getAction();
         String data = intent.getDataString();
         String type = intent.getType();
 
-        if (bundle != null) {
-            if (bundle.isEmpty() == false) {
-                return true;
-            }
+        if (extras.isEmpty() == false) {
+            return true;
         }
 
         if (data != null) {
@@ -178,18 +175,17 @@ public class MenginePlatformEventQueue {
     }
 
     public static void pushIntentStartEvent(@NonNull Intent intent) {
-        boolean meaningfulIntentStart = MenginePlatformEventQueue.meaningfulIntent(intent);
+        Bundle bundle = intent.getExtras();
+        Map<String, Object> extras = MengineUtils.bundleToMap(bundle);
+        boolean meaningfulIntentStart = MenginePlatformEventQueue.meaningfulIntent(intent, extras);
 
         if (meaningfulIntentStart == false) {
             return;
         }
 
-        Bundle bundle = intent.getExtras();
         String action = intent.getAction();
         String data = intent.getDataString();
         String type = intent.getType();
-
-        Map<String, Object> extras = MengineUtils.bundleToMap(bundle);
 
         if (action == null) {
             action = "";
@@ -209,18 +205,17 @@ public class MenginePlatformEventQueue {
     }
 
     public static void pushIntentNewEvent(@NonNull Intent intent) {
-        boolean meaningfulIntentNew = MenginePlatformEventQueue.meaningfulIntent(intent);
+        Bundle bundle = intent.getExtras();
+        Map<String, Object> extras = MengineUtils.bundleToMap(bundle);
+        boolean meaningfulIntentNew = MenginePlatformEventQueue.meaningfulIntent(intent, extras);
 
         if (meaningfulIntentNew == false) {
             return;
         }
 
-        Bundle bundle = intent.getExtras();
         String action = intent.getAction();
         String data = intent.getDataString();
         String type = intent.getType();
-
-        Map<String, Object> extras = MengineUtils.bundleToMap(bundle);
 
         if (action == null) {
             action = "";
@@ -266,6 +261,17 @@ public class MenginePlatformEventQueue {
         MenginePlatformEventQueue.pushEvent(new WindowInsetsEvent(safeArea, displayCutout));
     }
 
+    private static void releaseSurface(@NonNull SurfaceDestroyEvent event) {
+        CountDownLatch released = event.released();
+
+        if (released.getCount() == 0) {
+            return;
+        }
+
+        MengineNative.AndroidPlatform_surfaceDestroyedEvent();
+        released.countDown();
+    }
+
     public static boolean processEvents(@NonNull MengineApplication application) {
         synchronized (m_syncEvents) {
             m_eventsAux.addAll(m_events);
@@ -285,6 +291,17 @@ public class MenginePlatformEventQueue {
 
             Class<? extends PlatformEvent> eventClass = event.getClass();
             String eventName = eventClass.getSimpleName();
+
+            if (event instanceof SurfaceDestroyEvent surfaceDestroyEvent) {
+                // SurfaceHolder waits on the UI thread. Release the window before notifying listeners.
+                MenginePlatformEventQueue.releaseSurface(surfaceDestroyEvent);
+            } else if (event instanceof QuitEvent) {
+                for (PlatformEvent pendingEvent : m_eventsAux) {
+                    if (pendingEvent instanceof SurfaceDestroyEvent surfaceDestroyEvent) {
+                        MenginePlatformEventQueue.releaseSurface(surfaceDestroyEvent);
+                    }
+                }
+            }
 
             application.setState("event.call", eventName);
 
@@ -362,11 +379,8 @@ public class MenginePlatformEventQueue {
                 }
 
                 MengineNative.AndroidPlatform_surfaceCreatedEvent(surfaceCreated);
-            } else if (event instanceof SurfaceDestroyEvent surfaceDestroyEvent) {
-                MengineNative.AndroidPlatform_surfaceDestroyedEvent();
-
-                CountDownLatch released = surfaceDestroyEvent.released();
-                released.countDown();
+            } else if (event instanceof SurfaceDestroyEvent) {
+                continue;
             } else if (event instanceof SurfaceChangedEvent surfaceChangedEvent) {
                 Surface surfaceChanged = surfaceChangedEvent.surface();
 

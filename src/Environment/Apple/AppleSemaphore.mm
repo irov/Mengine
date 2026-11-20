@@ -4,11 +4,15 @@
 
 - (instancetype)initWithActivated:(BOOL)activated value:(id)value {
     self = [super init];
-    if (self) {
-        self.m_activated = activated;
-        self.m_value = value;
-        self.m_listeners = [NSMutableArray array];
+
+    if (self == nil) {
+        return nil;
     }
+
+    self.m_activated = activated;
+    self.m_value = value;
+    self.m_listeners = [NSMutableArray array];
+
     return self;
 }
 

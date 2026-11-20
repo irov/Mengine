@@ -2,8 +2,7 @@
 
 #import "Environment/Apple/AppleIncluder.h"
 
-typedef NS_ENUM( NSInteger, EiOSAppTrackingAuthorization )
-{
+typedef NS_ENUM( NSInteger, EiOSAppTrackingAuthorization ) {
     EAATA_AUTHORIZED,
     EAATA_DENIED,
     EAATA_RESTRICTED,

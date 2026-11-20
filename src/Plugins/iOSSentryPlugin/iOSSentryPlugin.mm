@@ -10,21 +10,18 @@
 
 @import Sentry;
 
-@implementation iOSSentryPlugin
-{
+@implementation iOSSentryPlugin {
     Mengine::iOSSentryNotificationObserverPtr m_notificationObserver;
 }
 
 #pragma mark - iOSPluginInterface
 
 static BOOL iOSSentry_isAvailable() {
-    if( HAS_OPTION( "sentry" ) == true )
-    {
+    if (HAS_OPTION( "sentry" ) == true) {
         return YES;
     }
 
-    if( HAS_OPTION( "nosentry" ) == true )
-    {
+    if (HAS_OPTION( "nosentry" ) == true) {
         return NO;
     }
 
@@ -36,6 +33,10 @@ static BOOL iOSSentry_isAvailable() {
 - (instancetype _Nonnull)init {
     self = [super init];
 
+    if (self == nil) {
+        return nil;
+    }
+
     self.m_sendAllow = NO;
     m_notificationObserver = nullptr;
 
@@ -43,10 +44,10 @@ static BOOL iOSSentry_isAvailable() {
 }
 
 - (void)event:(NSString *)name args:(NSArray *)args {
-    if( [name isEqualToString:@"NOTIFICATION_GDPR_PASS"] == true ) {
+    if ([name isEqualToString:@"NOTIFICATION_GDPR_PASS"] == true) {
         BOOL passGDPR = [args[0] boolValue];
 
-        if( passGDPR == YES ) {
+        if (passGDPR == YES) {
             self.m_sendAllow = YES;
         } else {
             self.m_sendAllow = NO;
@@ -58,20 +59,19 @@ static BOOL iOSSentry_isAvailable() {
     (void)application;
     (void)launchOptions;
 
-    if( iOSSentry_isAvailable() == NO )
-    {
+    if (iOSSentry_isAvailable() == NO) {
         return YES;
     }
 
     NSString * iOSSentryPlugin_DSN = [AppleBundle getPluginConfigString:@("MengineiOSSentryPlugin") withKey:@("DSN") withDefault:nil];
 
-    if( iOSSentryPlugin_DSN == nil ) {
+    if (iOSSentryPlugin_DSN == nil) {
         return YES;
     }
 
     BOOL passGDPR = [AppleUserDefaults getBooleanForKey:@("mengine.gdpr.pass") defaultValue:NO];
 
-    if( passGDPR == YES ) {
+    if (passGDPR == YES) {
         self.m_sendAllow = YES;
     } else {
         self.m_sendAllow = NO;
@@ -94,7 +94,7 @@ static BOOL iOSSentry_isAvailable() {
         options.environment = @(ENVIRONMENT);
 
         options.beforeSend = ^SentryEvent * _Nullable(SentryEvent * _Nonnull event) {
-            if( self.m_sendAllow == NO ) {
+            if (self.m_sendAllow == NO) {
                 return nil;
             }
 
@@ -102,7 +102,7 @@ static BOOL iOSSentry_isAvailable() {
         };
 
         options.beforeBreadcrumb = ^SentryBreadcrumb * _Nullable(SentryBreadcrumb * _Nonnull breadcrumb) {
-            if( self.m_sendAllow == NO ) {
+            if (self.m_sendAllow == NO) {
                 return nil;
             }
 
@@ -110,8 +110,7 @@ static BOOL iOSSentry_isAvailable() {
         };
     }];
 
-    if( m_notificationObserver == nullptr )
-    {
+    if (m_notificationObserver == nullptr) {
         m_notificationObserver = Mengine::Helper::makeFactorableUnique<Mengine::iOSSentryNotificationObserver>( MENGINE_DOCUMENT_FUNCTION );
         m_notificationObserver->initialize();
         m_notificationObserver->setupApplicationScope();
@@ -121,8 +120,7 @@ static BOOL iOSSentry_isAvailable() {
 }
 
 - (void)onFinalize {
-    if( m_notificationObserver == nullptr )
-    {
+    if (m_notificationObserver == nullptr) {
         return;
     }
 

@@ -62,7 +62,12 @@ final class MengineWebViewMCPTransport {
                 params.put("token", token);
                 params.put("capabilities", capabilities);
                 handshake.put("params", params);
-                String handshakeJson = handshake.toString();
+                String handshakeJson = MengineUtils.jsonStringFromJSONObject(handshake);
+
+                if (handshakeJson == null) {
+                    throw new JSONException("Cannot serialize MCP handshake");
+                }
+
                 byte[] handshakeBytes = handshakeJson.getBytes(StandardCharsets.UTF_8);
                 this.send(1, 0, handshakeBytes);
                 InputStream stream = socket.getInputStream();
@@ -201,7 +206,7 @@ final class MengineWebViewMCPTransport {
     }
 
     private void sendJSON(int id, JSONObject value) {
-        String json = value.toString();
+        String json = MengineUtils.jsonStringFromJSONObject(value);
 
         if (json == null) {
             this.error(id, "Cannot serialize MCP response");

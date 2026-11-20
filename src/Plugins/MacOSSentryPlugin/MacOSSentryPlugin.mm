@@ -9,21 +9,18 @@
 
 @import Sentry;
 
-@implementation MacOSSentryPlugin
-{
+@implementation MacOSSentryPlugin {
     Mengine::MacOSSentryNotificationObserverPtr m_notificationObserver;
 }
 
 #pragma mark - MacOSProxyApplicationDelegateInterface
 
 static BOOL MacOSSentry_isAvailable() {
-    if( HAS_OPTION( "sentry" ) == true )
-    {
+    if (HAS_OPTION( "sentry" ) == true) {
         return YES;
     }
 
-    if( HAS_OPTION( "nosentry" ) == true )
-    {
+    if (HAS_OPTION( "nosentry" ) == true) {
         return NO;
     }
 
@@ -35,28 +32,30 @@ static BOOL MacOSSentry_isAvailable() {
 - (instancetype _Nonnull)init {
     self = [super init];
 
+    if (self == nil) {
+        return nil;
+    }
+
     m_notificationObserver = nullptr;
 
     return self;
 }
 
 - (void)dealloc {
-    if( m_notificationObserver != nullptr )
-    {
+    if (m_notificationObserver != nullptr) {
         m_notificationObserver->finalize();
         m_notificationObserver = nullptr;
     }
 }
 
 - (BOOL)application {
-    if( MacOSSentry_isAvailable() == NO )
-    {
+    if (MacOSSentry_isAvailable() == NO) {
         return YES;
     }
 
     NSString * MengineMacOSSentryPlugin_DSN = [AppleBundle getPluginConfigString:@("MengineMacOSSentryPlugin") withKey:@("DSN") withDefault:nil];
 
-    if( MengineMacOSSentryPlugin_DSN == nil ) {
+    if (MengineMacOSSentryPlugin_DSN == nil) {
         return YES;
     }
 
@@ -77,8 +76,7 @@ static BOOL MacOSSentry_isAvailable() {
         options.environment = @(ENVIRONMENT);
     }];
 
-    if( m_notificationObserver == nullptr )
-    {
+    if (m_notificationObserver == nullptr) {
         m_notificationObserver = Mengine::Helper::makeFactorableUnique<Mengine::MacOSSentryNotificationObserver>( MENGINE_DOCUMENT_FUNCTION );
         m_notificationObserver->initialize();
         m_notificationObserver->setupApplicationScope();

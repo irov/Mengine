@@ -88,6 +88,8 @@ namespace Mengine
             return false;
         }
 
+        // JSONPlugin initializes before PythonFramework, so the ResourceJSON prototype
+        // has no cached script wrapper at registration time.
         if( Helper::addResourcePrototype<ResourceJSON, 64>( MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;

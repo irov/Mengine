@@ -83,8 +83,7 @@ namespace Mengine
                                              withHandler:^(CMAccelerometerData * data, NSError * error) {
             MENGINE_UNUSED( error );
 
-            if( data == nil )
-            {
+            if (data == nil) {
                 return;
             }
 

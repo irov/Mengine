@@ -37,8 +37,7 @@ SERVICE_EXTERN( WebViewPlatformService );
 
 #pragma mark - Application
 
-- (BOOL)initializeApplication
-{
+- (BOOL)initializeApplication {
     NSString * resourcePath = NSBundle.mainBundle.resourcePath;
     NSString * content = [resourcePath stringByAppendingPathComponent:@"WebView"];
     const Mengine::Char * contentPath = content.fileSystemRepresentation;
@@ -48,20 +47,17 @@ SERVICE_EXTERN( WebViewPlatformService );
     configuration.silentDialog = configuration.nopause;
     Mengine::StdString::strcpy_safe( configuration.dataDirectory, contentPath, MENGINE_MAX_PATH );
 
-    if( API_MengineCreate( &configuration ) == nullptr )
-    {
+    if (API_MengineCreate( &configuration ) == nullptr) {
         return NO;
     }
 
-    if( API_MengineBootstrap() == false )
-    {
+    if (API_MengineBootstrap() == false) {
         API_MengineFinalize();
 
         return NO;
     }
 
-    if( [self initializeLogger] == NO )
-    {
+    if ([self initializeLogger] == NO) {
         [self finalizeApplication];
 
         return NO;
@@ -69,9 +65,8 @@ SERVICE_EXTERN( WebViewPlatformService );
 
     Mengine::FilePath temporary = [AppleDetail getTemporaryDirectoryFilePath];
 
-    if( FILE_SERVICE()
-        ->mountFileGroup( STRINGIZE_STRING_LOCAL( "temporary" ), nullptr, nullptr, temporary, STRINGIZE_STRING_LOCAL( "global" ), nullptr, true, nullptr ) == false )
-    {
+    if (FILE_SERVICE()
+        ->mountFileGroup( STRINGIZE_STRING_LOCAL( "temporary" ), nullptr, nullptr, temporary, STRINGIZE_STRING_LOCAL( "global" ), nullptr, true, nullptr ) == false) {
         [self finalizeApplication];
 
         return NO;
@@ -79,23 +74,20 @@ SERVICE_EXTERN( WebViewPlatformService );
 
     const Mengine::FilePath & rootPath = Mengine::FilePath::none();
 
-    if( FILE_SERVICE()
-        ->mountFileGroup( STRINGIZE_STRING_LOCAL( "webview" ), nullptr, nullptr, rootPath, STRINGIZE_STRING_LOCAL( "dir" ), nullptr, false, nullptr ) == false )
-    {
+    if (FILE_SERVICE()
+        ->mountFileGroup( STRINGIZE_STRING_LOCAL( "webview" ), nullptr, nullptr, rootPath, STRINGIZE_STRING_LOCAL( "dir" ), nullptr, false, nullptr ) == false) {
         [self finalizeApplication];
 
         return NO;
     }
 
-    if( SERVICE_CREATE_SAFE( WebViewPlatformService, nullptr ) == false )
-    {
+    if (SERVICE_CREATE_SAFE( WebViewPlatformService, nullptr ) == false) {
         [self finalizeApplication];
 
         return NO;
     }
 
-    if( API_MengineRun() == false )
-    {
+    if (API_MengineRun() == false) {
         [self finalizeApplication];
 
         return NO;
@@ -104,49 +96,41 @@ SERVICE_EXTERN( WebViewPlatformService );
     return YES;
 }
 
-- (void)finalizeApplication
-{
+- (void)finalizeApplication {
     [m_mcp stop];
     m_mcp = nil;
 
     [self pauseRuntime];
 
-    if( SERVICE_PROVIDER_EXIST() == false )
-    {
+    if (SERVICE_PROVIDER_EXIST() == false) {
         return;
     }
 
-    if( SERVICE_IS_EXIST( Mengine::WebViewPlatformServiceInterface ) == true )
-    {
+    if (SERVICE_IS_EXIST( Mengine::WebViewPlatformServiceInterface ) == true) {
         SERVICE_FINALIZE( WebViewPlatformService );
         SERVICE_DESTROY( WebViewPlatformService );
     }
 
-    if( SERVICE_IS_INITIALIZE( Mengine::WebViewBootstrapperInterface ) == true )
-    {
+    if (SERVICE_IS_INITIALIZE( Mengine::WebViewBootstrapperInterface ) == true) {
         WEBVIEW_BOOTSTRAPPER_SERVICE()
             ->stop();
     }
 
-    if( SERVICE_IS_INITIALIZE( Mengine::FileServiceInterface ) == true )
-    {
-        if( FILE_SERVICE()
-            ->hasFileGroup( STRINGIZE_STRING_LOCAL( "webview" ), nullptr ) == true )
-        {
+    if (SERVICE_IS_INITIALIZE( Mengine::FileServiceInterface ) == true) {
+        if (FILE_SERVICE()
+            ->hasFileGroup( STRINGIZE_STRING_LOCAL( "webview" ), nullptr ) == true) {
             FILE_SERVICE()
                 ->unmountFileGroup( STRINGIZE_STRING_LOCAL( "webview" ) );
         }
 
-        if( FILE_SERVICE()
-            ->hasFileGroup( STRINGIZE_STRING_LOCAL( "temporary" ), nullptr ) == true )
-        {
+        if (FILE_SERVICE()
+            ->hasFileGroup( STRINGIZE_STRING_LOCAL( "temporary" ), nullptr ) == true) {
             FILE_SERVICE()
                 ->unmountFileGroup( STRINGIZE_STRING_LOCAL( "temporary" ) );
         }
     }
 
-    if( m_logCollector != nullptr )
-    {
+    if (m_logCollector != nullptr) {
         LOGGER_SERVICE()
             ->unregisterLogger( m_logCollector );
 
@@ -155,8 +139,7 @@ SERVICE_EXTERN( WebViewPlatformService );
 
     m_records = nil;
 
-    if( m_logger != nullptr )
-    {
+    if (m_logger != nullptr) {
         LOGGER_SERVICE()
             ->unregisterLogger( m_logger );
 
@@ -166,25 +149,21 @@ SERVICE_EXTERN( WebViewPlatformService );
     API_MengineFinalize();
 }
 
-- (void)stopApplication
-{
+- (void)stopApplication {
     [self finalizeApplication];
 }
 
 #pragma mark - Scene
 
-- (BOOL)connectScene:(UIWindowScene *)_scene
-{
-    if( SERVICE_PROVIDER_EXIST() == false )
-    {
+- (BOOL)connectScene:(UIWindowScene *)_scene {
+    if (SERVICE_PROVIDER_EXIST() == false) {
         return NO;
     }
 
     Mengine::iOSWebViewPlatformServiceExtensionInterface * platform = WEBVIEW_PLATFORM_SERVICE()
         ->getUnknown();
 
-    if( platform->attachScene( _scene ) == false )
-    {
+    if (platform->attachScene( _scene ) == false) {
         return NO;
     }
 
@@ -195,8 +174,7 @@ SERVICE_EXTERN( WebViewPlatformService );
     const Mengine::FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
         ->getFileGroup( STRINGIZE_STRING_LOCAL( "webview" ) );
 
-    if( platform->openContent( fileGroup, entryPath ) == false )
-    {
+    if (platform->openContent( fileGroup, entryPath ) == false) {
         platform->close();
 
         return NO;
@@ -204,8 +182,7 @@ SERVICE_EXTERN( WebViewPlatformService );
 
     [self resumeRuntime];
 
-    if( m_mcp == nil )
-    {
+    if (m_mcp == nil) {
         Class mcpClass = NSClassFromString( @"AppleWebViewMCP" );
         m_mcp = [[mcpClass alloc] init];
         [m_mcp startWithDelegate:self];
@@ -214,12 +191,10 @@ SERVICE_EXTERN( WebViewPlatformService );
     return YES;
 }
 
-- (void)disconnectScene
-{
+- (void)disconnectScene {
     [self pauseRuntime];
 
-    if( SERVICE_PROVIDER_EXIST() == false )
-    {
+    if (SERVICE_PROVIDER_EXIST() == false) {
         return;
     }
 
@@ -230,17 +205,14 @@ SERVICE_EXTERN( WebViewPlatformService );
 
 #pragma mark - Runtime
 
-- (void)resumeRuntime
-{
+- (void)resumeRuntime {
     NSTimer * runtimeTimer = self.m_runtimeTimer;
 
-    if( runtimeTimer != nil )
-    {
+    if (runtimeTimer != nil) {
         return;
     }
 
-    if( SERVICE_PROVIDER_EXIST() == false )
-    {
+    if (SERVICE_PROVIDER_EXIST() == false) {
         return;
     }
 
@@ -248,19 +220,16 @@ SERVICE_EXTERN( WebViewPlatformService );
 
     __weak iOSWebViewApplicationDelegate * weakSelf = self;
     NSTimeInterval runtimeInterval = 0.01;
-    NSTimer * timer = [NSTimer timerWithTimeInterval:runtimeInterval repeats:YES block:^(NSTimer * _timer)
-    {
+    NSTimer * timer = [NSTimer timerWithTimeInterval:runtimeInterval repeats:YES block:^(NSTimer * _timer) {
         MENGINE_UNUSED( _timer );
 
         iOSWebViewApplicationDelegate * delegate = weakSelf;
 
-        if( delegate == nil )
-        {
+        if (delegate == nil) {
             return;
         }
 
-        if( SERVICE_PROVIDER_EXIST() == false )
-        {
+        if (SERVICE_PROVIDER_EXIST() == false) {
             return;
         }
 
@@ -276,8 +245,7 @@ SERVICE_EXTERN( WebViewPlatformService );
     self.m_runtimeTimer = timer;
 }
 
-- (void)pauseRuntime
-{
+- (void)pauseRuntime {
     NSTimer * timer = self.m_runtimeTimer;
     [timer invalidate];
     self.m_runtimeTimer = nil;
@@ -285,10 +253,8 @@ SERVICE_EXTERN( WebViewPlatformService );
 
 #pragma mark - WebView
 
-- (WKWebView *)browser
-{
-    if( SERVICE_PROVIDER_EXIST() == false )
-    {
+- (WKWebView *)browser {
+    if (SERVICE_PROVIDER_EXIST() == false) {
         return nil;
     }
 
@@ -299,8 +265,7 @@ SERVICE_EXTERN( WebViewPlatformService );
     return browser;
 }
 
-- (NSDictionary *)webViewStatus
-{
+- (NSDictionary *)webViewStatus {
     bool documentReady = WEBVIEW_BRIDGE_SERVICE()
         ->isDocumentReady();
     bool appReady = WEBVIEW_BRIDGE_SERVICE()
@@ -324,16 +289,14 @@ SERVICE_EXTERN( WebViewPlatformService );
     return status;
 }
 
-- (void)reloadWebView
-{
+- (void)reloadWebView {
     Mengine::WebViewPlatformExtensionInterface * browser = WEBVIEW_PLATFORM_SERVICE()
         ->getUnknown();
 
     browser->reload();
 }
 
-- (void)captureWebView:(void (^)(NSData *, uint32_t, uint32_t))_completion
-{
+- (void)captureWebView:(void (^)(NSData *, uint32_t, uint32_t))_completion {
     Mengine::WebViewPlatformExtensionInterface * browser = WEBVIEW_PLATFORM_SERVICE()
         ->getUnknown();
 
@@ -348,22 +311,19 @@ SERVICE_EXTERN( WebViewPlatformService );
     } );
 }
 
-- (void)evaluateWebView:(NSString *)_script completion:(void (^)(id, NSError *))_completion
-{
+- (void)evaluateWebView:(NSString *)_script completion:(void (^)(id, NSError *))_completion {
     WKWebView * browser = [self browser];
     [browser evaluateJavaScript:_script completionHandler:_completion];
 }
 
 #pragma mark - Logging
 
-- (BOOL)initializeLogger
-{
+- (BOOL)initializeLogger {
     Mengine::LoggerInterfacePtr logger = Mengine::Helper::makeFactorableUnique<Mengine::StdioLogger>( nullptr );
     logger->setWriteHistory( true );
 
-    if( LOGGER_SERVICE()
-        ->registerLogger( logger ) == false )
-    {
+    if (LOGGER_SERVICE()
+        ->registerLogger( logger ) == false) {
         return NO;
     }
 
@@ -371,8 +331,7 @@ SERVICE_EXTERN( WebViewPlatformService );
 
     Class mcpClass = NSClassFromString( @"AppleWebViewMCP" );
 
-    if( mcpClass == nil )
-    {
+    if (mcpClass == nil) {
         return YES;
     }
 
@@ -387,8 +346,7 @@ SERVICE_EXTERN( WebViewPlatformService );
         size_t categorySize = Mengine::StdString::strlen( categoryValue );
         NSString * category = [AppleString NSStringFromString:categoryValue withSize:categorySize] ?: @"";
         NSString * text = [AppleString NSStringFromString:message.data withSize:message.size] ?: @"";
-        @synchronized( records )
-        {
+        @synchronized (records) {
             NSDictionary * previous = records.lastObject;
             NSNumber * previousSequence = previous[@"sequence"];
             uint64_t sequence = previousSequence.unsignedLongLongValue + 1;
@@ -400,8 +358,7 @@ SERVICE_EXTERN( WebViewPlatformService );
                 @"message": text
             };
 
-            if( records.count >= 5000 )
-            {
+            if (records.count >= 5000) {
                 [records removeObjectAtIndex:0];
             }
 
@@ -410,9 +367,8 @@ SERVICE_EXTERN( WebViewPlatformService );
     } );
     collector->setWriteHistory( true );
 
-    if( LOGGER_SERVICE()
-        ->registerLogger( collector ) == false )
-    {
+    if (LOGGER_SERVICE()
+        ->registerLogger( collector ) == false) {
         return NO;
     }
 
@@ -422,32 +378,26 @@ SERVICE_EXTERN( WebViewPlatformService );
     return YES;
 }
 
-- (NSArray *)readLogs
-{
+- (NSArray *)readLogs {
     NSMutableArray * records = m_records;
 
-    if( records == nil )
-    {
+    if (records == nil) {
         return @[];
     }
 
-    @synchronized( records )
-    {
+    @synchronized (records) {
         NSArray * result = [records copy];
 
         return result;
     }
 }
 
-- (void)eventLog:(AppleLogRecordParam *)_record
-{
-    if( SERVICE_PROVIDER_EXIST() == false )
-    {
+- (void)eventLog:(AppleLogRecordParam *)_record {
+    if (SERVICE_PROVIDER_EXIST() == false) {
         return;
     }
 
-    if( SERVICE_IS_INITIALIZE( Mengine::LoggerServiceInterface ) == false )
-    {
+    if (SERVICE_IS_INITIALIZE( Mengine::LoggerServiceInterface ) == false) {
         return;
     }
 
@@ -474,13 +424,11 @@ SERVICE_EXTERN( WebViewPlatformService );
 
 #pragma mark - UIApplicationDelegate
 
-- (BOOL)application:(UIApplication *)_application didFinishLaunchingWithOptions:(NSDictionary *)_options
-{
+- (BOOL)application:(UIApplication *)_application didFinishLaunchingWithOptions:(NSDictionary *)_options {
     MENGINE_UNUSED( _application );
     MENGINE_UNUSED( _options );
 
-    if( [self initializeApplication] == NO )
-    {
+    if ([self initializeApplication] == NO) {
         [self finalizeApplication];
 
         return NO;
@@ -489,8 +437,7 @@ SERVICE_EXTERN( WebViewPlatformService );
     return YES;
 }
 
-- (UISceneConfiguration *)application:(UIApplication *)_application configurationForConnectingSceneSession:(UISceneSession *)_session options:(UISceneConnectionOptions *)_options
-{
+- (UISceneConfiguration *)application:(UIApplication *)_application configurationForConnectingSceneSession:(UISceneSession *)_session options:(UISceneConnectionOptions *)_options {
     MENGINE_UNUSED( _application );
     MENGINE_UNUSED( _options );
 
@@ -501,12 +448,10 @@ SERVICE_EXTERN( WebViewPlatformService );
     return configuration;
 }
 
-- (void)applicationWillTerminate:(UIApplication *)_application
-{
+- (void)applicationWillTerminate:(UIApplication *)_application {
     MENGINE_UNUSED( _application );
 
-    if( SERVICE_PROVIDER_EXIST() == false )
-    {
+    if (SERVICE_PROVIDER_EXIST() == false) {
         [self finalizeApplication];
 
         return;
@@ -518,12 +463,10 @@ SERVICE_EXTERN( WebViewPlatformService );
     [self finalizeApplication];
 }
 
-- (void)applicationDidReceiveMemoryWarning:(UIApplication *)_application
-{
+- (void)applicationDidReceiveMemoryWarning:(UIApplication *)_application {
     MENGINE_UNUSED( _application );
 
-    if( SERVICE_PROVIDER_EXIST() == false )
-    {
+    if (SERVICE_PROVIDER_EXIST() == false) {
         return;
     }
 

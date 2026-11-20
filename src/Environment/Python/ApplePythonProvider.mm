@@ -4,7 +4,11 @@
 
 - (instancetype)initWithCbs:(const pybind::dict &)cbs args:(const pybind::args &)args {
     self = [super init];
-    
+
+    if (self == nil) {
+        return nil;
+    }
+
     self.m_cbs = cbs;
     self.m_args = args;
     

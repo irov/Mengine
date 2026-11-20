@@ -12,8 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 @class WKWebView;
 @class AppleLogRecordParam;
 
-@interface MacOSWebViewApplicationDelegate : NSObject<NSApplicationDelegate, NSWindowDelegate, AppleWebViewMCPApplicationInterface>
-{
+@interface MacOSWebViewApplicationDelegate : NSObject<NSApplicationDelegate, NSWindowDelegate, AppleWebViewMCPApplicationInterface> {
 @private
     Mengine::LoggerInterfacePtr m_logger;
     Mengine::LoggerInterfacePtr m_logCollector;

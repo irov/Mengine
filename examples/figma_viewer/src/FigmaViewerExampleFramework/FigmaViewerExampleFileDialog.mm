@@ -78,8 +78,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FigmaViewerExampleSelectFilePath( const Char * _title, const Char * _currentPath, Char * const _path, size_t _capacity )
     {
-        @autoreleasepool
-        {
+        @autoreleasepool {
             NSOpenPanel * panel = [NSOpenPanel openPanel];
             panel.title = s_makeNSString( _title, @"Open File" );
             panel.prompt = @"Open";
@@ -90,8 +89,7 @@ namespace Mengine
 
             s_setupPanelDirectory( panel, _currentPath, NO );
 
-            if( [panel runModal] != NSModalResponseOK )
-            {
+            if ([panel runModal] != NSModalResponseOK) {
                 return false;
             }
 
@@ -101,8 +99,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FigmaViewerExampleSelectFolderPath( const Char * _title, const Char * _currentPath, Char * const _path, size_t _capacity )
     {
-        @autoreleasepool
-        {
+        @autoreleasepool {
             NSOpenPanel * panel = [NSOpenPanel openPanel];
             panel.title = s_makeNSString( _title, @"Choose Folder" );
             panel.prompt = @"Use Folder";
@@ -113,8 +110,7 @@ namespace Mengine
 
             s_setupPanelDirectory( panel, _currentPath, YES );
 
-            if( [panel runModal] != NSModalResponseOK )
-            {
+            if ([panel runModal] != NSModalResponseOK) {
                 return false;
             }
 

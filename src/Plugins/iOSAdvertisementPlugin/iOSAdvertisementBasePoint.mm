@@ -9,16 +9,18 @@
 - (instancetype)initWithName:(NSString *)name withJson:(NSDictionary *)json {
     self = [super init];
 
-    if (self != nil) {
-        self.m_name = name;
-
-        self.m_id = [self parseAdPointInteger:json key:@"id" required:NO defaultValue:1 minValue:nil maxValue:nil];
-        self.m_enabled = [self parseAdPointBoolean:json key:@"enable" required:YES defaultValue:NO];
-
-        self.m_cooldownGroupName = [self parseAdPointString:json key:@"trigger_cooldown_group" required:NO defaultValue:nil];
-
-        self.m_lastShowTime = 0;
+    if (self == nil) {
+        return nil;
     }
+
+    self.m_name = name;
+
+    self.m_id = [self parseAdPointInteger:json key:@"id" required:NO defaultValue:1 minValue:nil maxValue:nil];
+    self.m_enabled = [self parseAdPointBoolean:json key:@"enable" required:YES defaultValue:NO];
+
+    self.m_cooldownGroupName = [self parseAdPointString:json key:@"trigger_cooldown_group" required:NO defaultValue:nil];
+
+    self.m_lastShowTime = 0;
 
     return self;
 }

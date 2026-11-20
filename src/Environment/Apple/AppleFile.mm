@@ -4,14 +4,11 @@
 
 @implementation AppleFile
 
-+ (NSData *)getNSDataFromFileGroup:(const Mengine::FileGroupInterfacePtr &)_fileGroup filePath:(const Mengine::FilePath &)_filePath error:(NSError **)_error
-{
++ (NSData *)getNSDataFromFileGroup:(const Mengine::FileGroupInterfacePtr &)_fileGroup filePath:(const Mengine::FilePath &)_filePath error:(NSError **)_error {
     Mengine::InputStreamInterfacePtr stream = Mengine::Helper::openInputStreamFile( _fileGroup, _filePath, false, false, nullptr );
 
-    if( stream == nullptr )
-    {
-        if( _error != nullptr )
-        {
+    if (stream == nullptr) {
+        if (_error != nullptr) {
             *_error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorCannotOpenFile userInfo:nil];
         }
 
@@ -24,10 +21,8 @@
     size_t read = stream->read( buffer, size );
     Mengine::Helper::closeInputStreamFile( _fileGroup, stream );
 
-    if( read != size )
-    {
-        if( _error != nullptr )
-        {
+    if (read != size) {
+        if (_error != nullptr) {
             *_error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorCannotDecodeContentData userInfo:nil];
         }
 

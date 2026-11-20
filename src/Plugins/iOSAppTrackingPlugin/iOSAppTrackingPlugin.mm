@@ -21,6 +21,10 @@
 - (instancetype)init {
     self = [super init];
 
+    if (self == nil) {
+        return nil;
+    }
+
     self.m_status = EAATA_NOT_DETERMINED;
     self.m_authorizationState = iOSAppTrackingAuthorizationStatePending;
     self.m_requestInProgress = NO;
@@ -30,7 +34,7 @@
 }
 
 - (void)updateTrackingStatus:(ATTrackingManagerAuthorizationStatus)status {
-    switch(status) {
+    switch (status) {
         case ATTrackingManagerAuthorizationStatusAuthorized: {
             self.m_status = EAATA_AUTHORIZED;
 
@@ -154,7 +158,7 @@
 }
 
 - (BOOL)isTrackingAllowed {
-    switch( ATTrackingManager.trackingAuthorizationStatus ) {
+    switch (ATTrackingManager.trackingAuthorizationStatus) {
         case ATTrackingManagerAuthorizationStatusAuthorized: {
             return YES;
         }break;

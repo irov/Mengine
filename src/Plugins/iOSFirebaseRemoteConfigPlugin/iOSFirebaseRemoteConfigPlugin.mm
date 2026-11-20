@@ -21,11 +21,13 @@
 - (instancetype)init {
     self = [super init];
 
-    if (self) {
-        self.m_configs = nil;
-        self.m_ids = nil;
-        self.m_signals = nil;
+    if (self == nil) {
+        return nil;
     }
+
+    self.m_configs = nil;
+    self.m_ids = nil;
+    self.m_signals = nil;
 
     return self;
 }
@@ -176,7 +178,7 @@
     NSMutableDictionary * configs = [NSMutableDictionary dictionary];
     NSMutableDictionary * ids = [NSMutableDictionary dictionary];
 
-    for( NSString * key in remoteKeys ) {
+    for (NSString * key in remoteKeys) {
         FIRRemoteConfigValue * value = [remoteConfig configValueForKey:key];
 
         if (value == nil) {

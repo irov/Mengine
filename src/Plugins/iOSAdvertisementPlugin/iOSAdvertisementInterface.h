@@ -5,8 +5,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef NS_ENUM( NSInteger, EiOSAdvertisementBannerAnchor )
-{
+typedef NS_ENUM( NSInteger, EiOSAdvertisementBannerAnchor ) {
     IOS_ADVERTISEMENT_BANNER_ANCHOR_BOTTOM,
     IOS_ADVERTISEMENT_BANNER_ANCHOR_TOP
 };

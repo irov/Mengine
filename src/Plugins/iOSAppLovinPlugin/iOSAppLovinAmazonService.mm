@@ -29,13 +29,13 @@
 
     bool AppLovinPlugin_AmazonLogLevelAll = CONFIG_VALUE( "AppLovinPlugin", "AmazonLogLevelAll", false );
 
-    if( AppLovinPlugin_AmazonLogLevelAll == true ) {
+    if (AppLovinPlugin_AmazonLogLevelAll == true) {
         [[DTBAds sharedInstance] setLogLevel:DTBLogLevelAll];
     }
 
     bool AppLovinPlugin_AmazonTestMode = CONFIG_VALUE( "AppLovinPlugin", "AmazonTestMode", false );
 
-    if( AppLovinPlugin_AmazonTestMode == true ) {
+    if (AppLovinPlugin_AmazonTestMode == true) {
         [DTBAds sharedInstance].testMode = TRUE;
     }
 
@@ -45,7 +45,7 @@
 - (NSString * _Nullable) getAmazonBannerSlotId {
     const Mengine::Char * AppLovinPlugin_AmazonBannerSlotId = CONFIG_VALUE( "AppLovinPlugin", "AmazonBannerSlotId", "" );
 
-    if( MENGINE_STRCMP( AppLovinPlugin_AmazonBannerSlotId, "" ) == 0 ) {
+    if (MENGINE_STRCMP( AppLovinPlugin_AmazonBannerSlotId, "" ) == 0) {
         return nil;
     }
 
@@ -61,7 +61,7 @@
 - (NSString * _Nullable) getAmazonInterstitialSlotId {
     const Mengine::Char * AppLovinPlugin_AmazonInterstitialSlotId = CONFIG_VALUE( "AppLovinPlugin", "AmazonInterstitialSlotId", "" );
 
-    if( MENGINE_STRCMP( AppLovinPlugin_AmazonInterstitialSlotId, "" ) == 0 ) {
+    if (MENGINE_STRCMP( AppLovinPlugin_AmazonInterstitialSlotId, "" ) == 0) {
         return nil;
     }
 
@@ -77,7 +77,7 @@
 - (NSString * _Nullable) getAmazonRewardedSlotId {
     const Mengine::Char * AppLovinPlugin_AmazonRewardedSlotId = CONFIG_VALUE( "AppLovinPlugin", "AmazonRewardedSlotId", "" );
 
-    if( MENGINE_STRCMP( AppLovinPlugin_AmazonRewardedSlotId, "" ) == 0 ) {
+    if (MENGINE_STRCMP( AppLovinPlugin_AmazonRewardedSlotId, "" ) == 0) {
         return nil;
     }
 

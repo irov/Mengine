@@ -25,12 +25,10 @@
 
 @implementation AppleGameControllerInput
 
-- (instancetype)init
-{
+- (instancetype)init {
     self = [super init];
 
-    if( self == nil )
-    {
+    if (self == nil) {
         return nil;
     }
 
@@ -41,15 +39,12 @@
     return self;
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
     [self stop];
 }
 
-- (void)start
-{
-    if( self.m_started == YES )
-    {
+- (void)start {
+    if (self.m_started == YES) {
         return;
     }
 
@@ -72,16 +67,13 @@
         [weakSelf disconnectController:(GCController *)notification.object];
     }];
 
-    for( GCController * controller in [GCController controllers] )
-    {
+    for (GCController * controller in [GCController controllers]) {
         [self connectController:controller];
     }
 }
 
-- (void)stop
-{
-    if( self.m_started == NO )
-    {
+- (void)stop {
+    if (self.m_started == NO) {
         return;
     }
 
@@ -89,27 +81,23 @@
 
     NSNotificationCenter * notificationCenter = [NSNotificationCenter defaultCenter];
 
-    if( self.m_connectObserver != nil )
-    {
+    if (self.m_connectObserver != nil) {
         [notificationCenter removeObserver:self.m_connectObserver];
         self.m_connectObserver = nil;
     }
 
-    if( self.m_disconnectObserver != nil )
-    {
+    if (self.m_disconnectObserver != nil) {
         [notificationCenter removeObserver:self.m_disconnectObserver];
         self.m_disconnectObserver = nil;
     }
 
-    for( GCController * controller in self.m_controllerIds )
-    {
+    for (GCController * controller in self.m_controllerIds) {
         NSNumber * number = [self.m_controllerIds objectForKey:controller];
         Mengine::ControllerId controllerId = (Mengine::ControllerId)number.unsignedIntValue;
 
         controller.extendedGamepad.valueChangedHandler = nil;
 
-        if( SERVICE_IS_INITIALIZE( Mengine::InputServiceInterface ) == true )
-        {
+        if (SERVICE_IS_INITIALIZE( Mengine::InputServiceInterface ) == true) {
             Mengine::Helper::pushControllerConnectEvent( Mengine::Helper::getSystemTimestamp(), controllerId, false );
         }
     }
@@ -117,10 +105,8 @@
     [self.m_controllerIds removeAllObjects];
 }
 
-- (void)connectController:(GCController *)controller
-{
-    if( controller == nil || [self.m_controllerIds objectForKey:controller] != nil )
-    {
+- (void)connectController:(GCController *)controller {
+    if (controller == nil || [self.m_controllerIds objectForKey:controller] != nil) {
         return;
     }
 
@@ -129,18 +115,15 @@
 
     [self configureController:controller controllerId:controllerId];
 
-    if( SERVICE_IS_INITIALIZE( Mengine::InputServiceInterface ) == true )
-    {
+    if (SERVICE_IS_INITIALIZE( Mengine::InputServiceInterface ) == true) {
         Mengine::Helper::pushControllerConnectEvent( Mengine::Helper::getSystemTimestamp(), controllerId, true );
     }
 }
 
-- (void)disconnectController:(GCController *)controller
-{
+- (void)disconnectController:(GCController *)controller {
     NSNumber * number = [self.m_controllerIds objectForKey:controller];
 
-    if( number == nil )
-    {
+    if (number == nil) {
         return;
     }
 
@@ -149,96 +132,63 @@
     controller.extendedGamepad.valueChangedHandler = nil;
     [self.m_controllerIds removeObjectForKey:controller];
 
-    if( SERVICE_IS_INITIALIZE( Mengine::InputServiceInterface ) == true )
-    {
+    if (SERVICE_IS_INITIALIZE( Mengine::InputServiceInterface ) == true) {
         Mengine::Helper::pushControllerConnectEvent( Mengine::Helper::getSystemTimestamp(), controllerId, false );
     }
 }
 
-- (void)configureController:(GCController *)controller controllerId:(Mengine::ControllerId)controllerId
-{
+- (void)configureController:(GCController *)controller controllerId:(Mengine::ControllerId)controllerId {
     controller.handlerQueue = dispatch_get_main_queue();
 
     GCExtendedGamepad * gamepad = controller.extendedGamepad;
 
-    if( gamepad == nil )
-    {
+    if (gamepad == nil) {
         return;
     }
 
     gamepad.valueChangedHandler = ^(GCExtendedGamepad * changedGamepad, GCControllerElement * element) {
-        if( SERVICE_IS_INITIALIZE( Mengine::InputServiceInterface ) == false )
-        {
+        if (SERVICE_IS_INITIALIZE( Mengine::InputServiceInterface ) == false) {
             return;
         }
 
         const Mengine::Timestamp timestamp = Mengine::Helper::getSystemTimestamp();
 
-        if( element == changedGamepad.buttonA )
-        {
+        if (element == changedGamepad.buttonA) {
             Mengine::Helper::pushControllerButtonEvent( timestamp, controllerId, Mengine::CB_A, changedGamepad.buttonA.value, changedGamepad.buttonA.isPressed == YES );
-        }
-        else if( element == changedGamepad.buttonB )
-        {
+        } else if (element == changedGamepad.buttonB) {
             Mengine::Helper::pushControllerButtonEvent( timestamp, controllerId, Mengine::CB_B, changedGamepad.buttonB.value, changedGamepad.buttonB.isPressed == YES );
-        }
-        else if( element == changedGamepad.buttonX )
-        {
+        } else if (element == changedGamepad.buttonX) {
             Mengine::Helper::pushControllerButtonEvent( timestamp, controllerId, Mengine::CB_X, changedGamepad.buttonX.value, changedGamepad.buttonX.isPressed == YES );
-        }
-        else if( element == changedGamepad.buttonY )
-        {
+        } else if (element == changedGamepad.buttonY) {
             Mengine::Helper::pushControllerButtonEvent( timestamp, controllerId, Mengine::CB_Y, changedGamepad.buttonY.value, changedGamepad.buttonY.isPressed == YES );
-        }
-        else if( element == changedGamepad.leftShoulder )
-        {
+        } else if (element == changedGamepad.leftShoulder) {
             Mengine::Helper::pushControllerButtonEvent( timestamp, controllerId, Mengine::CB_LEFT_SHOULDER, changedGamepad.leftShoulder.value, changedGamepad.leftShoulder.isPressed == YES );
-        }
-        else if( element == changedGamepad.rightShoulder )
-        {
+        } else if (element == changedGamepad.rightShoulder) {
             Mengine::Helper::pushControllerButtonEvent( timestamp, controllerId, Mengine::CB_RIGHT_SHOULDER, changedGamepad.rightShoulder.value, changedGamepad.rightShoulder.isPressed == YES );
-        }
-        else if( element == changedGamepad.leftTrigger )
-        {
+        } else if (element == changedGamepad.leftTrigger) {
             Mengine::Helper::pushControllerButtonEvent( timestamp, controllerId, Mengine::CB_LEFT_TRIGGER, changedGamepad.leftTrigger.value, changedGamepad.leftTrigger.isPressed == YES );
             Mengine::Helper::pushControllerAxisEvent( timestamp, controllerId, Mengine::CA_LEFT_TRIGGER, changedGamepad.leftTrigger.value );
-        }
-        else if( element == changedGamepad.rightTrigger )
-        {
+        } else if (element == changedGamepad.rightTrigger) {
             Mengine::Helper::pushControllerButtonEvent( timestamp, controllerId, Mengine::CB_RIGHT_TRIGGER, changedGamepad.rightTrigger.value, changedGamepad.rightTrigger.isPressed == YES );
             Mengine::Helper::pushControllerAxisEvent( timestamp, controllerId, Mengine::CA_RIGHT_TRIGGER, changedGamepad.rightTrigger.value );
-        }
-        else if( element == changedGamepad.buttonMenu )
-        {
+        } else if (element == changedGamepad.buttonMenu) {
             Mengine::Helper::pushControllerButtonEvent( timestamp, controllerId, Mengine::CB_MENU, changedGamepad.buttonMenu.value, changedGamepad.buttonMenu.isPressed == YES );
-        }
-        else if( element == changedGamepad.buttonOptions )
-        {
+        } else if (element == changedGamepad.buttonOptions) {
             Mengine::Helper::pushControllerButtonEvent( timestamp, controllerId, Mengine::CB_OPTIONS, changedGamepad.buttonOptions.value, changedGamepad.buttonOptions.isPressed == YES );
-        }
-        else if( element == changedGamepad.dpad )
-        {
+        } else if (element == changedGamepad.dpad) {
             Mengine::Helper::pushControllerButtonEvent( timestamp, controllerId, Mengine::CB_DPAD_UP, changedGamepad.dpad.up.value, changedGamepad.dpad.up.isPressed == YES );
             Mengine::Helper::pushControllerButtonEvent( timestamp, controllerId, Mengine::CB_DPAD_DOWN, changedGamepad.dpad.down.value, changedGamepad.dpad.down.isPressed == YES );
             Mengine::Helper::pushControllerButtonEvent( timestamp, controllerId, Mengine::CB_DPAD_LEFT, changedGamepad.dpad.left.value, changedGamepad.dpad.left.isPressed == YES );
             Mengine::Helper::pushControllerButtonEvent( timestamp, controllerId, Mengine::CB_DPAD_RIGHT, changedGamepad.dpad.right.value, changedGamepad.dpad.right.isPressed == YES );
-        }
-        else if( element == changedGamepad.leftThumbstick )
-        {
+        } else if (element == changedGamepad.leftThumbstick) {
             Mengine::Helper::pushControllerAxisEvent( timestamp, controllerId, Mengine::CA_LEFT_X, changedGamepad.leftThumbstick.xAxis.value );
             Mengine::Helper::pushControllerAxisEvent( timestamp, controllerId, Mengine::CA_LEFT_Y, changedGamepad.leftThumbstick.yAxis.value );
-        }
-        else if( element == changedGamepad.rightThumbstick )
-        {
+        } else if (element == changedGamepad.rightThumbstick) {
             Mengine::Helper::pushControllerAxisEvent( timestamp, controllerId, Mengine::CA_RIGHT_X, changedGamepad.rightThumbstick.xAxis.value );
             Mengine::Helper::pushControllerAxisEvent( timestamp, controllerId, Mengine::CA_RIGHT_Y, changedGamepad.rightThumbstick.yAxis.value );
-        }
-        else if( element == changedGamepad.leftThumbstickButton )
-        {
+        } else if (element == changedGamepad.leftThumbstickButton) {
             Mengine::Helper::pushControllerButtonEvent( timestamp, controllerId, Mengine::CB_LEFT_THUMB, changedGamepad.leftThumbstickButton.value, changedGamepad.leftThumbstickButton.isPressed == YES );
-        }
-        else if( element == changedGamepad.rightThumbstickButton )
-        {
+        } else if (element == changedGamepad.rightThumbstickButton) {
             Mengine::Helper::pushControllerButtonEvent( timestamp, controllerId, Mengine::CB_RIGHT_THUMB, changedGamepad.rightThumbstickButton.value, changedGamepad.rightThumbstickButton.isPressed == YES );
         }
     };

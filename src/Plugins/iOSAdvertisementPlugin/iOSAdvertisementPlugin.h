@@ -31,6 +31,7 @@
 
 @property (nonatomic, strong) NSMutableDictionary<NSString *, iOSAdvertisementAttempts *> * m_attempts;
 @property (nonatomic, strong) NSMutableDictionary<NSString *, iOSAdvertisementCooldown *> * m_cooldowns;
+@property (nonatomic, strong) NSMutableDictionary<NSString *, iOSAdvertisementFrequency *> * m_rewardedFrequencies;
 
 @property (nonatomic, strong) NSDictionary<NSString *, iOSAdvertisementInterstitialPoint *> * m_interstitialPoints;
 @property (nonatomic, strong) NSDictionary<NSString *, iOSAdvertisementRewardedPoint *> * m_rewardedPoints;

@@ -21,8 +21,7 @@
 - (void)onFacebookLoginSuccess:(NSDictionary<NSString *,NSString *> *)params {
     pybind::object py_cb = [self getMethod:@"oniOSFacebookLoginSuccess"];
 
-    if( py_cb.is_callable() == false )
-    {
+    if (py_cb.is_callable() == false) {
         return;
     }
 
@@ -32,8 +31,7 @@
 - (void)onFacebookLoginCancel {
     pybind::object py_cb = [self getMethod:@"oniOSFacebookLoginCancel"];
 
-    if( py_cb.is_callable() == false )
-    {
+    if (py_cb.is_callable() == false) {
         return;
     }
 
@@ -43,8 +41,7 @@
 - (void)onFacebookError:(NSInteger)code message:(NSString *)errorMessage {
     pybind::object py_cb = [self getMethod:@"oniOSFacebookError"];
 
-    if( py_cb.is_callable() == false )
-    {
+    if (py_cb.is_callable() == false) {
         return;
     }
 
@@ -54,8 +51,7 @@
 - (void)onFacebookShareSuccess:(NSString *)postId {
     pybind::object py_cb = [self getMethod:@"oniOSFacebookShareSuccess"];
 
-    if( py_cb.is_callable() == false )
-    {
+    if (py_cb.is_callable() == false) {
         return;
     }
 
@@ -65,8 +61,7 @@
 - (void)onFacebookShareCancel {
     pybind::object py_cb = [self getMethod:@"oniOSFacebookShareCancel"];
 
-    if( py_cb.is_callable() == false )
-    {
+    if (py_cb.is_callable() == false) {
         return;
     }
 
@@ -76,8 +71,7 @@
 - (void)onFacebookShareError:(NSInteger)code message:(NSString *)errorMessage {
     pybind::object py_cb = [self getMethod:@"oniOSFacebookShareError"];
 
-    if( py_cb.is_callable() == false )
-    {
+    if (py_cb.is_callable() == false) {
         return;
     }
 
@@ -87,8 +81,7 @@
 - (void)onFacebookProfilePictureLinkGetSuccess:(NSString *)userId pictureURL:(NSString *)pictureURL {
     pybind::object py_cb = [self getMethod:@"oniOSFacebookProfilePictureLinkGetSuccess"];
 
-    if( py_cb.is_callable() == false )
-    {
+    if (py_cb.is_callable() == false) {
         return;
     }
 
@@ -98,8 +91,7 @@
 - (void)onFacebookProfilePictureLinkGetError:(NSInteger)code message:(NSString *)errorMessage {
     pybind::object py_cb = [self getMethod:@"oniOSFacebookProfilePictureLinkGetError"];
 
-    if( py_cb.is_callable() == false )
-    {
+    if (py_cb.is_callable() == false) {
         return;
     }
 

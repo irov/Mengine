@@ -44,8 +44,7 @@ namespace Mengine
             m_share = _share;
 
             Path fullPath = {'\0'};
-            if( this->openFile_( _relationPath, _folderPath, _filePath, fullPath ) == false )
-            {
+            if (this->openFile_( _relationPath, _folderPath, _filePath, fullPath ) == false) {
                 return false;
             }
 
@@ -56,8 +55,7 @@ namespace Mengine
             NSError * error = nil;
             NSDictionary * attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:@(fullPath) error:&error];
 
-            if( attributes == nil )
-            {
+            if (attributes == nil) {
                 LOGGER_ERROR( "invalid file '%s' size [error: %s]"
                     , fullPath
                     , [[AppleDetail getMessageFromNSError:error] UTF8String]
@@ -72,10 +70,8 @@ namespace Mengine
 
             size_t size = attribute_filesize.unsignedLongLongValue;
 
-            if( _size != MENGINE_UNKNOWN_SIZE )
-            {
-                if( _offset + _size > (size_t)size )
-                {
+            if (_size != MENGINE_UNKNOWN_SIZE) {
+                if (_offset + _size > (size_t)size) {
                     LOGGER_ERROR( "invalid file '%s' range %zu:%zu size %zu"
                         , fullPath
                         , _offset
@@ -89,9 +85,7 @@ namespace Mengine
                 }
 
                 m_size = _size;
-            }
-            else
-            {
+            } else {
                 m_size = (size_t)size;
             }
 
@@ -101,11 +95,9 @@ namespace Mengine
             m_capacity = 0;
             m_reading = 0;
 
-            if( m_offset != 0 )
-            {
+            if (m_offset != 0) {
                 NSError * error = nil;
-                if( [m_fileHandle seekToOffset:m_offset error:&error] == NO )
-                {
+                if ([m_fileHandle seekToOffset:m_offset error:&error] == NO) {
                     LOGGER_ERROR( "file '%s' seek offset %zu size %zu get [error: %s]"
                         , fullPath
                         , m_offset
@@ -266,8 +258,7 @@ namespace Mengine
     bool AppleFileInputStream::read_( void * const _buf, size_t _offset, size_t _size, size_t * const _read )
     {
         @autoreleasepool {
-            if( _size == 0 )
-            {
+            if (_size == 0) {
                 *_read = 0;
 
                 return true;
@@ -278,8 +269,7 @@ namespace Mengine
             NSError * error = nil;
             NSData * data = [m_fileHandle readDataUpToLength:_size error:&error];
 
-            if( data == nil )
-            {
+            if (data == nil) {
                 LOGGER_ERROR( "read file '%s' offset %zu size %zu:%zu get error %s"
                     , Helper::getDebugFullPath( this ).c_str()
                     , _offset
@@ -291,8 +281,7 @@ namespace Mengine
                 return false;
             }
 
-            if( data.length == 0 )
-            {
+            if (data.length == 0) {
                 *_read = 0;
 
                 return true;

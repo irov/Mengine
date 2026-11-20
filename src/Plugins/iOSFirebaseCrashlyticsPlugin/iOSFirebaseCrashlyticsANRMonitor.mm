@@ -21,8 +21,7 @@
 
 @end
 
-@implementation iOSFirebaseCrashlyticsANRMonitor
-{
+@implementation iOSFirebaseCrashlyticsANRMonitor {
     id m_resignActiveObserver;
     id m_becomeActiveObserver;
     dispatch_semaphore_t m_semaphore;
@@ -40,15 +39,19 @@
 
 - (instancetype)init {
     self = [super init];
-    if (self) {
-        self.m_monitoringEnabled = NO;
-        self.m_running = NO;
 
-        m_resignActiveObserver = nil;
-        m_becomeActiveObserver = nil;
-        m_semaphore = nil;
-        m_runLoopObserver = NULL;
+    if (self == nil) {
+        return nil;
     }
+
+    self.m_monitoringEnabled = NO;
+    self.m_running = NO;
+
+    m_resignActiveObserver = nil;
+    m_becomeActiveObserver = nil;
+    m_semaphore = nil;
+    m_runLoopObserver = NULL;
+
     return self;
 }
 
@@ -184,21 +187,18 @@ static void RunLoopObserverCallback(CFRunLoopObserverRef observer, CFRunLoopActi
 }
 
 #if defined(__aarch64__)
-static BOOL is_valid_frame_pointer( void ** _frame, uintptr_t _stackLow, uintptr_t _stackHigh ) {
-    if( _frame == NULL )
-    {
+static BOOL is_valid_frame_pointer(void ** _frame, uintptr_t _stackLow, uintptr_t _stackHigh) {
+    if (_frame == NULL) {
         return NO;
     }
 
     uintptr_t frameValue = (uintptr_t)_frame;
 
-    if( frameValue < _stackLow || frameValue > _stackHigh )
-    {
+    if (frameValue < _stackLow || frameValue > _stackHigh) {
         return NO;
     }
 
-    if( (frameValue & 0xF) != 0 )
-    {
+    if ((frameValue & 0xF) != 0) {
         return NO;
     }
 
@@ -261,13 +261,10 @@ static size_t my_backtrace_from_fp( _STRUCT_ARM_THREAD_STATE64 _state, void ** _
     void * stackAddr = pthread_get_stackaddr_np(thread);
     size_t stackSize = pthread_get_stacksize_np(thread);
 
-    if( stackAddr != NULL && stackSize > 0 )
-    {
+    if (stackAddr != NULL && stackSize > 0) {
         stackHigh = (uintptr_t)stackAddr;
         stackLow = stackHigh - (uintptr_t)stackSize;
-    }
-    else
-    {
+    } else {
         // Fallback: use heuristic address range for user-space stack
         // Typical user-space stack addresses on 64-bit iOS
         stackLow = 0x100000000ULL;

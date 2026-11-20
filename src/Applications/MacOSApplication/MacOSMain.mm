@@ -27,10 +27,8 @@ static bool hasCLILaunchArgument( int _argc, char * _argv[] )
     return false;
 }
 //////////////////////////////////////////////////////////////////////////
-int main( int argc, char * argv[] )
-{
-    @autoreleasepool
-    {
+int main(int argc, char * argv[]) {
+    @autoreleasepool {
         Mengine::Configuration configuration;
         bool CLI = hasCLILaunchArgument( argc, argv );
         configuration.silentDialog = CLI;
@@ -46,10 +44,8 @@ int main( int argc, char * argv[] )
 
         Mengine::MacOSApplication application;
 
-        if( application.bootstrap( argc, argv, configuration ) == false )
-        {
-            if( configuration.silentDialog == false )
-            {
+        if (application.bootstrap( argc, argv, configuration ) == false) {
+            if (configuration.silentDialog == false) {
                 Mengine::Helper::MacOSShowFatalAlert( "Mengine initialize", "Mengine invalid bootstrap" );
             }
 
@@ -61,19 +57,16 @@ int main( int argc, char * argv[] )
         NSMutableArray * proxyDelegates = [NSMutableArray array];
         NSArray * proxysClassed = [MacOSApplicationDelegates getApplicationDelegates];
 
-        for( NSString * className in proxysClassed )
-        {
+        for (NSString * className in proxysClassed) {
             Class clazz = NSClassFromString( className );
 
-            if( clazz == nil )
-            {
+            if (clazz == nil) {
                 NSLog( @"[ERROR] Invalid found application delegate: %@"
                     , className
                 );
 
                 NSString * message = [NSString stringWithFormat:@"Invalid found application delegate: %@", className];
-                if( configuration.silentDialog == false )
-                {
+                if (configuration.silentDialog == false) {
                     Mengine::Helper::MacOSShowFatalAlert( "Mengine initialize", [message UTF8String] );
                 }
 
@@ -85,15 +78,13 @@ int main( int argc, char * argv[] )
 
             id<MacOSProxyApplicationDelegateInterface> delegate = [[clazz alloc] init];
 
-            if( delegate == nil || [delegate application] == NO )
-            {
+            if (delegate == nil || [delegate application] == NO) {
                 NSLog( @"[ERROR] Invalid initialize application delegate: %@"
                     , className
                 );
 
                 NSString * message = [NSString stringWithFormat:@"Invalid initialize application delegate: %@", className];
-                if( configuration.silentDialog == false )
-                {
+                if (configuration.silentDialog == false) {
                     Mengine::Helper::MacOSShowFatalAlert( "Mengine initialize", [message UTF8String] );
                 }
 
@@ -107,10 +98,8 @@ int main( int argc, char * argv[] )
             [proxyDelegates addObject:delegate];
         }
 
-        if( application.initialize() == false )
-        {
-            if( configuration.silentDialog == false )
-            {
+        if (application.initialize() == false) {
+            if (configuration.silentDialog == false) {
                 Mengine::Helper::MacOSShowFatalAlert( "Mengine initialize", "Mengine invalid initialize" );
             }
 

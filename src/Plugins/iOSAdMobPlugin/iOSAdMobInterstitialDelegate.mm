@@ -19,6 +19,10 @@
 - (instancetype _Nullable) initWithAdUnitIdentifier:(NSString * _Nonnull)adUnitId advertisement:(id<iOSAdvertisementInterface> _Nonnull)advertisement {
     self = [super initWithAdUnitIdentifier:adUnitId adFormat:@"interstitial" advertisement:advertisement];
 
+    if (self == nil) {
+        return nil;
+    }
+
     self.m_interstitialAd = nil;
 
     self.m_showing = NO;

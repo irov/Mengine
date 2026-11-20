@@ -10,11 +10,10 @@
 #import <WebKit/WebKit.h>
 
 #if defined(MENGINE_PLATFORM_MACOS)
-@interface AppleWebViewController : NSViewController<WKURLSchemeHandler, WKScriptMessageHandler, WKNavigationDelegate>
+@interface AppleWebViewController : NSViewController<WKURLSchemeHandler, WKScriptMessageHandler, WKNavigationDelegate> {
 #else
-@interface AppleWebViewController : UIViewController<WKURLSchemeHandler, WKScriptMessageHandler, WKNavigationDelegate>
+@interface AppleWebViewController : UIViewController<WKURLSchemeHandler, WKScriptMessageHandler, WKNavigationDelegate> {
 #endif
-{
 @private
     Mengine::FileGroupInterfacePtr m_fileGroup;
 

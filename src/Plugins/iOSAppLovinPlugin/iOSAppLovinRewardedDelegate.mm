@@ -19,6 +19,10 @@
 - (instancetype _Nullable) initWithAdUnitIdentifier:(NSString * _Nonnull)adUnitId advertisement:(id<iOSAdvertisementInterface> _Nonnull)advertisement {
     self = [super initWithAdUnitIdentifier:adUnitId adFormat:MAAdFormat.rewarded advertisement:advertisement];
 
+    if (self == nil) {
+        return nil;
+    }
+
     MARewardedAd * rewardedAd;
 
     @try {
@@ -101,7 +105,7 @@
 
     [self log:@"canYouShow" withParams:@{@"placement":placement, @"ready":@(ready)}];
 
-    if( ready == NO ) {
+    if (ready == NO) {
         [self eventRewarded:@"show" params:@{
             @"placement": placement,
             @"ready": @(NO)

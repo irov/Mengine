@@ -83,8 +83,7 @@
     return randomHexStringTrim;
 }
 
-+ (CGSize)CGSizeFromResolution:(const Mengine::Resolution &)_resolution
-{
++ (CGSize)CGSizeFromResolution:(const Mengine::Resolution &)_resolution {
     CGFloat width = _resolution.getWidth();
     CGFloat height = _resolution.getHeight();
     CGSize size = CGSizeMake( width, height );
@@ -92,12 +91,10 @@
     return size;
 }
 
-+ (size_t)getTemporaryDirectoryPath:(Mengine::Char * const)_temporaryPath
-{
++ (size_t)getTemporaryDirectoryPath:(Mengine::Char * const)_temporaryPath {
     NSString * temporaryPath = NSTemporaryDirectory();
 
-    if( temporaryPath == nil )
-    {
+    if (temporaryPath == nil) {
         _temporaryPath[0] = '\0';
 
         return 0;
@@ -114,8 +111,7 @@
     return length;
 }
 
-+ (Mengine::FilePath)getTemporaryDirectoryFilePath
-{
++ (Mengine::FilePath)getTemporaryDirectoryFilePath {
     Mengine::Path path = {'\0'};
     size_t length = [AppleDetail getTemporaryDirectoryPath:path];
     Mengine::FilePath filePath = Mengine::Helper::stringizeFilePathSize( path, length );
@@ -312,7 +308,7 @@ static volatile BOOL OPERATION_QUEUES_WORKING = YES;
     NSError * error = nil;
     id jsonObject = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
     
-    if( error != nil ) {
+    if (error != nil) {
         return NO;
     }
     
@@ -469,7 +465,7 @@ static volatile BOOL OPERATION_QUEUES_WORKING = YES;
 + (NSDictionary *)getNSDictionaryFromParams:(const Mengine::Params &)_params {
     NSMutableDictionary * dictionary = [NSMutableDictionary dictionary];
 
-    for( const Mengine::Params::value_type & entry : _params ) {
+    for (const Mengine::Params::value_type & entry : _params) {
         NSString * key = [AppleString NSStringFromConstString:entry.first];
         id value = [AppleDetail getNSObjectFromParamVariant:entry.second];
 

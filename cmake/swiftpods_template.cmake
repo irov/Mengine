@@ -64,8 +64,8 @@ MACRO(MENGINE_GENERATE_SWIFTPODS)
             OUTPUT_VARIABLE MENGINE_SWIFTPODS_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE
             COMMAND_ERROR_IS_FATAL ANY)
 
-        if(MENGINE_SWIFTPODS_VERSION VERSION_LESS "0.3.14")
-            message(FATAL_ERROR "SwiftPods 0.3.14 or later is required for generated Xcode projects; found ${MENGINE_SWIFTPODS_VERSION}. Update swiftpods or set MENGINE_SWIFTPODS_EXECUTABLE.")
+        if(MENGINE_SWIFTPODS_VERSION VERSION_LESS "0.3.16")
+            message(FATAL_ERROR "SwiftPods 0.3.16 or later is required for archive SDK integration; found ${MENGINE_SWIFTPODS_VERSION}. Update swiftpods or set MENGINE_SWIFTPODS_EXECUTABLE.")
         endif()
 
         SET(SWIFTPODS_PLATFORM "osx")
@@ -302,7 +302,7 @@ function(_MENGINE_SWIFTPODS_PREPARE_PACKAGES SOLUTION_DIR)
         _MENGINE_SWIFTPODS_RUBY_QUOTE(NAME_RUBY "${NAME}")
         list(REMOVE_DUPLICATES "PACKAGES_${NAME}")
         list(JOIN "PACKAGES_${NAME}" "" PACKAGES)
-        SET(PODFILE "${PODFILE}\ntarget ${NAME_RUBY} do\n  settings 'BUILT_PRODUCTS_DIR' => '$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)'\n${PACKAGES}")
+        SET(PODFILE "${PODFILE}\ntarget ${NAME_RUBY} do\n${PACKAGES}")
 
         if(NAME STREQUAL APPLICATION_NAME)
             string(APPEND PODFILE "${SCRIPTS}")
@@ -311,7 +311,7 @@ function(_MENGINE_SWIFTPODS_PREPARE_PACKAGES SOLUTION_DIR)
                 _MENGINE_SWIFTPODS_RUBY_QUOTE(PLUGIN_RUBY "${PLUGIN}")
                 list(REMOVE_DUPLICATES "PACKAGES_${PLUGIN}")
                 list(JOIN "PACKAGES_${PLUGIN}" "" PLUGIN_PACKAGES)
-                string(APPEND PODFILE "  target ${PLUGIN_RUBY} do\n    inherit! :none\n    settings 'BUILT_PRODUCTS_DIR' => '$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)'\n${PLUGIN_PACKAGES}  end\n")
+                string(APPEND PODFILE "  target ${PLUGIN_RUBY} do\n    inherit! :none\n${PLUGIN_PACKAGES}  end\n")
             endforeach()
         endif()
 

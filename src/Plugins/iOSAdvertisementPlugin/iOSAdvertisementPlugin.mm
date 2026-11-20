@@ -1,5 +1,7 @@
 #import "iOSAdvertisementPlugin.h"
 
+#import "iOSAdvertisementFrequency.h"
+
 #include "Interface/ApplicationInterface.h"
 #include "Interface/SoundServiceInterface.h"
 
@@ -22,6 +24,10 @@
 - (instancetype)init {
     self = [super init];
 
+    if (self == nil) {
+        return nil;
+    }
+
     self.m_optionNoAds = [AppleDetail hasOption:@"ad.no_ads"];
     self.m_noAds = NO;
 
@@ -33,6 +39,7 @@
 
     self.m_attempts = [NSMutableDictionary dictionary];
     self.m_cooldowns = [NSMutableDictionary dictionary];
+    self.m_rewardedFrequencies = [NSMutableDictionary dictionary];
 
     self.m_interstitialPoints = nil;
     self.m_rewardedPoints = nil;
@@ -586,22 +593,31 @@
 
 - (void)setupAdBasePointCooldown:(iOSAdvertisementBasePoint *)point {
     NSString * cooldownGroupName = [point getCooldownGroupName];
+    NSString * preferenceKey = nil;
 
-    if (cooldownGroupName == nil) {
-        iOSAdvertisementCooldown * newCooldown = [[iOSAdvertisementCooldown alloc] init];
-
-        [point setCooldown:newCooldown];
-    } else {
-        iOSAdvertisementCooldown * cooldown = [self.m_cooldowns objectForKey:cooldownGroupName];
-
-        if (cooldown == nil) {
-            cooldown = [[iOSAdvertisementCooldown alloc] init];
-
-            [self.m_cooldowns setObject:cooldown forKey:cooldownGroupName];
-        }
-
-        [point setCooldown:cooldown];
+    if (cooldownGroupName != nil) {
+        preferenceKey = [@"mengine.ad.cooldown.group." stringByAppendingString:cooldownGroupName];
+    } else if ([point isKindOfClass:iOSAdvertisementInterstitialPoint.class] == YES) {
+        NSString * pointName = [point getName];
+        preferenceKey = [@"mengine.ad.cooldown.interstitial." stringByAppendingString:pointName];
     }
+
+    if (preferenceKey == nil) {
+        iOSAdvertisementCooldown * cooldown = [[iOSAdvertisementCooldown alloc] initWithPreferenceKey:nil];
+        [point setCooldown:cooldown];
+
+        return;
+    }
+
+    iOSAdvertisementCooldown * cooldown = [self.m_cooldowns objectForKey:preferenceKey];
+
+    if (cooldown == nil) {
+        cooldown = [[iOSAdvertisementCooldown alloc] initWithPreferenceKey:preferenceKey];
+
+        [self.m_cooldowns setObject:cooldown forKey:preferenceKey];
+    }
+
+    [point setCooldown:cooldown];
 }
 
 - (void)parseAdInterstitialAdPoint:(NSMutableDictionary *)points withName:(NSString *)name withJson:(NSDictionary *)json {
@@ -630,6 +646,16 @@
 
     [self setupAdBasePointCooldown:point];
     [self setupAdBasePointAttemts:point];
+
+    iOSAdvertisementFrequency * frequency = [self.m_rewardedFrequencies objectForKey:name];
+
+    if (frequency == nil) {
+        frequency = [[iOSAdvertisementFrequency alloc] initWithPlacement:name];
+
+        [self.m_rewardedFrequencies setObject:frequency forKey:name];
+    }
+
+    [point setFrequency:frequency];
 
     [points setObject:point forKey:name];
 }
@@ -683,6 +709,20 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
     return YES;
+}
+
+- (void)applicationDidEnterBackground:(UIApplication *)application {
+    MENGINE_UNUSED( application );
+
+    @synchronized (self) {
+        for (iOSAdvertisementCooldown * cooldown in [self.m_cooldowns objectEnumerator]) {
+            [cooldown save];
+        }
+
+        for (iOSAdvertisementFrequency * frequency in [self.m_rewardedFrequencies objectEnumerator]) {
+            [frequency save];
+        }
+    }
 }
 
 @end

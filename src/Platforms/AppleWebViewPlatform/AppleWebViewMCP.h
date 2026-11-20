@@ -8,8 +8,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @class AppleWebViewMCPTransport;
 
-@interface AppleWebViewMCP : NSObject
-{
+@interface AppleWebViewMCP : NSObject {
 @private
     AppleWebViewMCPTransport * m_transport;
 

@@ -42,7 +42,11 @@ static iOSConsentFlowUserGeography TRANSPARENCYCONSENT_USERGEOGRAPHY = iOSConsen
 
 - (instancetype _Nonnull)initFromUserDefaults {
     self = [super init];
-    
+
+    if (self == nil) {
+        return nil;
+    }
+
     NSUserDefaults * defaults = NSUserDefaults.standardUserDefaults;
     
     TRANSPARENCYCONSENT_USERGEOGRAPHY = (iOSConsentFlowUserGeography)[AppleKeyChain getIntegerForKey:@"mengine.consent.user_geography" defaultValue:iOSConsentFlowUserGeographyUnknown];
@@ -101,13 +105,11 @@ static iOSConsentFlowUserGeography TRANSPARENCYCONSENT_USERGEOGRAPHY = iOSConsen
         return YES;
     }
 
-    if( self.TRANSPARENCYCONSENT_PURPOSECONSENTS.length <= index )
-    {
+    if (self.TRANSPARENCYCONSENT_PURPOSECONSENTS.length <= index) {
         return NO;
     }
     
-    if( [self.TRANSPARENCYCONSENT_PURPOSECONSENTS characterAtIndex:index] == '0' )
-    {
+    if ([self.TRANSPARENCYCONSENT_PURPOSECONSENTS characterAtIndex:index] == '0') {
         return NO;
     }
     

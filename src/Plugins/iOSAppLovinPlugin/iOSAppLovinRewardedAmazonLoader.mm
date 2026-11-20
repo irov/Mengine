@@ -7,6 +7,10 @@
 - (instancetype _Nonnull) initWithSlotId:(NSString * _Nonnull) amazonAdSlotId rewardedAd:(MARewardedAd *_Nonnull) rewardedAd {
     self = [super init];
 
+    if (self == nil) {
+        return nil;
+    }
+
     self.m_rewardedAd = rewardedAd;
 
     DTBAdLoader *adLoader = [[DTBAdLoader alloc] init];

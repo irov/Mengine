@@ -2,7 +2,6 @@ package org.Mengine.Base;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 
@@ -206,52 +205,30 @@ public class MenginePreferences {
         MenginePreferences.setPreferenceString(name, valueName);
     }
 
-    static public Bundle getPreferenceBundle(@NonNull String name, Supplier<Bundle> defaultValue) {
-        String value = MenginePreferences.getPreferenceString(name, null);
+    static public MengineBundle getPreferenceBundle(@NonNull String name, Supplier<MengineBundle> defaultValue) {
+        JSONObject json = MenginePreferences.getPreferenceJSON(name, null);
 
-        if (value == null) {
+        if (json == null) {
             return defaultValue != null ? defaultValue.get() : null;
         }
 
-        try {
-            JSONObject json = new JSONObject(value);
+        MengineBundle bundle = new MengineBundle(json);
 
-            Bundle bundle = MengineUtils.bundleFromJSONObject(json);
-
-            return bundle;
-        } catch (final JSONException e) {
-            MengineLog.logError(TAG, "invalid get preference: %s bundle: %s e: %s"
-                , MenginePreferences.NAME
-                , name
-                , e.getMessage()
-            );
-
-            return defaultValue != null ? defaultValue.get() : null;
-        }
+        return bundle;
     }
 
-    static public void copyPreferenceBundle(@NonNull String name, @NonNull Bundle bundle) {
-        String value = MenginePreferences.getPreferenceString(name, null);
+    static public void copyPreferenceBundle(@NonNull String name, @NonNull MengineBundle bundle) {
+        JSONObject json = MenginePreferences.getPreferenceJSON(name, null);
 
-        if (value == null) {
+        if (json == null) {
             return;
         }
 
-        try {
-            JSONObject json = new JSONObject(value);
-
-            MengineUtils.copyBundleFromJSONObject(bundle, json);
-        } catch (final JSONException e) {
-            MengineLog.logError(TAG, "invalid copy preference: %s bundle: %s e: %s"
-                , MenginePreferences.NAME
-                , name
-                , e.getMessage()
-            );
-        }
+        bundle.putAll(json);
     }
 
-    static public void setPreferenceBundle(@NonNull String name, Bundle value) {
-        JSONObject json = MengineUtils.jsonObjectFromBundle(value);
+    static public void setPreferenceBundle(@NonNull String name, @NonNull MengineBundle value) {
+        JSONObject json = value.getJSONObject();
 
         MenginePreferences.setPreferenceJSON(name, json);
     }
@@ -279,43 +256,55 @@ public class MenginePreferences {
     }
 
     static public void setPreferenceJSON(@NonNull String name, JSONObject value) {
-        String jsonString = value.toString();
+        String jsonString = MengineUtils.jsonStringFromJSONObject(value);
+
+        if (jsonString == null) {
+            return;
+        }
 
         MenginePreferences.setPreferenceString(name, jsonString);
     }
 
     static public void setPreferences(@NonNull Map<String, ?> preferences) {
-        synchronized (MenginePreferences.SETTINGS_SYNC) {
-            MenginePreferences.SETTINGS.putAll(preferences);
-        }
-
         SharedPreferences.Editor editor = MenginePreferences.PREFERENCES.edit();
-        for (Map.Entry<String, ?> entry : preferences.entrySet()) {
-            String key = entry.getKey();
-            Object value = entry.getValue();
 
-            if (value instanceof Boolean) {
-                editor.putBoolean(key, (Boolean) value);
-            } else if (value instanceof Long) {
-                editor.putLong(key, (Long) value);
-            } else if (value instanceof String) {
-                editor.putString(key, (String) value);
-            } else {
-                MengineLog.logError(TAG, "unsupported preference type: %s key: %s value: %s"
-                    , MenginePreferences.NAME
-                    , key
-                    , value
-                );
+        synchronized (MenginePreferences.SETTINGS_SYNC) {
+            for (Map.Entry<String, ?> entry : preferences.entrySet()) {
+                String key = entry.getKey();
+                Object value = entry.getValue();
+
+                if (value instanceof Integer integerValue) {
+                    value = integerValue.longValue();
+                }
+
+                if (value instanceof Boolean booleanValue) {
+                    editor.putBoolean(key, booleanValue);
+                } else if (value instanceof Long longValue) {
+                    editor.putLong(key, longValue);
+                } else if (value instanceof String stringValue) {
+                    editor.putString(key, stringValue);
+                } else {
+                    MengineLog.logError(TAG, "unsupported preference type: %s key: %s value: %s"
+                        , MenginePreferences.NAME
+                        , key
+                        , value
+                    );
+
+                    continue;
+                }
+
+                MenginePreferences.SETTINGS.put(key, value);
             }
+
+            editor.apply();
         }
-        editor.apply();
     }
 
-    static public void setPreferences(@NonNull Bundle preferences) {
+    static public void setPreferences(@NonNull MengineBundle preferences) {
         Map<String, Object> preferencesMap = new HashMap<>();
 
-        for (String key : preferences.keySet()) {
-            Object value = MengineUtils.getBundleValue(preferences, key);
+        for (String key : preferences.keys()) {
+            Object value = preferences.getValue(key);
             preferencesMap.put(key, value);
         }
 

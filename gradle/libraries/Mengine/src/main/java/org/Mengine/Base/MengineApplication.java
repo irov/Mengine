@@ -7,7 +7,6 @@ import android.content.pm.ApplicationInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.Settings;
 
@@ -857,7 +856,7 @@ public abstract class MengineApplication extends Application {
         String acquisitionNetwork = MenginePreferences.getPreferenceString("acquisition_network", "");
         String acquisitionCampaign = MenginePreferences.getPreferenceString("acquisition_campaign", "");
 
-        Bundle preferences = new Bundle();
+        MengineBundle preferences = new MengineBundle();
 
         preferences.putLong("save_version", MENGINE_APPLICATION_SAVE_VERSION);
 
@@ -1151,7 +1150,7 @@ public abstract class MengineApplication extends Application {
 
             String serviceName = s.getServiceName();
 
-            Bundle bundle = MenginePreferences.getPreferenceBundle("service." + serviceName, null);
+            MengineBundle bundle = MenginePreferences.getPreferenceBundle("service." + serviceName, null);
 
             if (bundle == null) {
                 continue;
@@ -1180,7 +1179,7 @@ public abstract class MengineApplication extends Application {
 
             String serviceName = s.getServiceName();
 
-            Bundle bundle;
+            MengineBundle bundle;
 
             try {
                 bundle = s.onSave(this);
@@ -1203,7 +1202,7 @@ public abstract class MengineApplication extends Application {
         MengineLog.logDebug(TAG, "[END] onServicesSave");
     }
 
-    public void forceSaveService(@NonNull MengineServiceInterface s, Bundle bundle) {
+    public void forceSaveService(@NonNull MengineServiceInterface s, MengineBundle bundle) {
         String serviceName = s.getServiceName();
 
         if (BuildConfig.DEBUG == true) {

@@ -4,10 +4,12 @@
 
 - (instancetype)initWithValue:(const Mengine::FactorablePtr &)value {
     self = [super init];
-    
-    if (self) {
-        self.value = value;
+
+    if (self == nil) {
+        return nil;
     }
+
+    self.value = value;
     
     return self;
 }

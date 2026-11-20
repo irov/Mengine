@@ -1,7 +1,6 @@
 package org.Mengine.Plugin.GoogleAdvertising;
 
 import android.content.Context;
-import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 
@@ -10,6 +9,7 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 
 import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineBundle;
 import org.Mengine.Base.MengineFragmentAdvertisingId;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineListenerApplication;
@@ -46,8 +46,8 @@ public class MengineGoogleAdvertisingPlugin extends MengineService implements Me
     }
 
     @Override
-    public Bundle onSave(@NonNull MengineApplication application) {
-        Bundle bundle = new Bundle();
+    public MengineBundle onSave(@NonNull MengineApplication application) {
+        MengineBundle bundle = new MengineBundle();
 
         bundle.putInt("version", SAVE_VERSION);
 
@@ -61,7 +61,7 @@ public class MengineGoogleAdvertisingPlugin extends MengineService implements Me
     }
 
     @Override
-    public void onLoad(@NonNull MengineApplication application, @NonNull Bundle bundle) {
+    public void onLoad(@NonNull MengineApplication application, @NonNull MengineBundle bundle) {
         int version = bundle.getInt("version", 0);
 
         synchronized (m_synchronizationAdvertising) {

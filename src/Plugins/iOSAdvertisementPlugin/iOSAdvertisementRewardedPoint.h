@@ -4,7 +4,11 @@
 
 #import "iOSAdvertisementBasePoint.h"
 
+@class iOSAdvertisementFrequency;
+
 @interface iOSAdvertisementRewardedPoint : iOSAdvertisementBasePoint
+
+- (void)setFrequency:(iOSAdvertisementFrequency *)frequency;
 
 - (BOOL)canOfferAd;
 - (BOOL)canYouShowAd;
@@ -16,7 +20,5 @@
 
 @property (nonatomic) NSInteger m_showLimit;
 @property (nonatomic) NSInteger m_showTimeout;
-@property (nonatomic, copy) NSString * m_showStartKey;
-@property (nonatomic, copy) NSString * m_showCountKey;
 
 @end

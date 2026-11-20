@@ -273,42 +273,53 @@ namespace Mengine
 
             const SoundSourceInterfacePtr & source = identity->getSoundSource();
 
-            if( source->isPlay() == true )
+            if( source->isPause() == true )
             {
                 if( source->resume() == false )
                 {
                     LOGGER_ASSERTION( "invalid resume (play) identity [%u]"
-                        , identity->getUniqueIdentity() 
+                        , identity->getUniqueIdentity()
                     );
 
+                    this->stopSoundBufferUpdate_( identity );
+                    source->stop();
                     identity->setState( ESS_STOP );
 
                     continue;
                 }
 
                 this->resumeSoundBufferUpdate_( identity );
+
+                continue;
             }
-            else
+
+            if( source->isPlay() == true )
             {
-                if( source->play() == false )
-                {
-                    LOGGER_ASSERTION( "invalid resume (stop)" );
+                this->resumeSoundBufferUpdate_( identity );
 
-                    identity->setState( ESS_STOP );
+                continue;
+            }
 
-                    continue;
-                }
+            if( source->play() == false )
+            {
+                LOGGER_ASSERTION( "invalid resume (stop)" );
 
-                if( this->playSoundBufferUpdate_( identity ) == false )
-                {
-                    LOGGER_MESSAGE( "invalid play sound buffer update identity [%u]"
-                        , identity->getUniqueIdentity()
-                    );
+                this->stopSoundBufferUpdate_( identity );
+                source->stop();
+                identity->setState( ESS_STOP );
 
-                    identity->setState( ESS_STOP );
+                continue;
+            }
 
-                    continue;
-                }
+            if( this->playSoundBufferUpdate_( identity ) == false )
+            {
+                LOGGER_MESSAGE( "invalid play sound buffer update identity [%u]"
+                    , identity->getUniqueIdentity()
+                );
+
+                this->stopSoundBufferUpdate_( identity );
+                source->stop();
+                identity->setState( ESS_STOP );
             }
         }
     }
@@ -909,6 +920,8 @@ namespace Mengine
                             , _identity->getUniqueIdentity()
                         );
 
+                        this->stopSoundBufferUpdate_( _identity );
+                        source->stop();
                         _identity->setState( ESS_STOP );
 
                         return false;
@@ -918,6 +931,8 @@ namespace Mengine
                     {
                         LOGGER_ASSERTION( "invalid play sound buffer update" );
 
+                        this->stopSoundBufferUpdate_( _identity );
+                        source->stop();
                         _identity->setState( ESS_STOP );
 
                         return false;
@@ -955,6 +970,8 @@ namespace Mengine
                             , _identity->getUniqueIdentity()
                         );
 
+                        this->stopSoundBufferUpdate_( _identity );
+                        source->stop();
                         _identity->setState( ESS_STOP );
 
                         return false;
@@ -1092,6 +1109,8 @@ namespace Mengine
                             , _identity->getUniqueIdentity()
                         );
 
+                        this->stopSoundBufferUpdate_( _identity );
+                        source->stop();
                         _identity->setState( ESS_STOP );
 
                         return false;
@@ -1410,6 +1429,8 @@ namespace Mengine
                     , identityId
                 );
 
+                this->stopSoundBufferUpdate_( _identity );
+                source->stop();
                 _identity->setState( ESS_STOP );
 
                 return false;

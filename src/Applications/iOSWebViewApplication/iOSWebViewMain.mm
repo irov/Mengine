@@ -1,14 +1,11 @@
 #import "iOSWebViewApplicationDelegate.h"
 
 //////////////////////////////////////////////////////////////////////////
-int main( int _argc, char ** _argv )
-{
-    @autoreleasepool
-    {
+int main(int _argc, char ** _argv) {
+    @autoreleasepool {
         NSString * delegate = [NSBundle.mainBundle objectForInfoDictionaryKey:@"MengineApplicationDelegate"];
 
-        if( delegate == nil )
-        {
+        if (delegate == nil) {
             delegate = NSStringFromClass( iOSWebViewApplicationDelegate.class );
         }
 

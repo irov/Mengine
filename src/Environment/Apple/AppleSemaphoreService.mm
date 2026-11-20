@@ -12,15 +12,20 @@
 }
 
 - (instancetype)init {
-    if (self = [super init]) {
-        self.m_semaphores = [[NSMutableDictionary alloc] init];
+    self = [super init];
+
+    if (self == nil) {
+        return nil;
     }
+
+    self.m_semaphores = [[NSMutableDictionary alloc] init];
+
     return self;
 }
 
 - (void)activateSemaphore:(NSString * _Nonnull)name withValue:(id _Nullable)value {
     NSMutableArray<AppleSemaphoreListenerNSProxy *> * listeners;
-    @synchronized(self) {
+    @synchronized (self) {
         AppleSemaphore * semaphore = self.m_semaphores[name];
 
         if (semaphore == nil) {
@@ -44,14 +49,14 @@
 }
 
 - (void)deactivateSemaphore:(NSString * _Nonnull)name {
-    @synchronized(self) {
+    @synchronized (self) {
         [self.m_semaphores removeObjectForKey:name];
     }
 }
 
 - (void)waitSemaphore:(NSString * _Nonnull)name withListener:(AppleSemaphoreListenerNSProxy * _Nonnull)listener {
     id value;
-    @synchronized(self) {
+    @synchronized (self) {
         AppleSemaphore * semaphore = self.m_semaphores[name];
 
         if (semaphore == nil) {
@@ -76,7 +81,7 @@
 }
 
 - (void)clearSemaphores {
-    @synchronized(self) {
+    @synchronized (self) {
         [self.m_semaphores removeAllObjects];
     }
 }

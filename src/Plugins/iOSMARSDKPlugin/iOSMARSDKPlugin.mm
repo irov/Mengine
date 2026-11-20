@@ -32,6 +32,10 @@
 - (instancetype)init {
     self = [super init];
 
+    if (self == nil) {
+        return nil;
+    }
+
     self.m_provider = nil;
     self.m_delegate = [[iOSMARSDKDelegate alloc] initWithMARSDK:self];
     self.m_adRewardedDelegate = [[iOSMARSDKAdRewardedDelegate alloc] initWithMARSDK:self];
@@ -154,8 +158,7 @@
             , purchasedNonConsumableArray
         );
 
-        if( provider == nil )
-        {
+        if (provider == nil) {
             IOS_LOGGER_ERROR( @"not setup MARSDK provider" );
 
             return;
@@ -184,8 +187,7 @@
 
     MARProductInfo * productInfo = [MARProductInfo productFromJsonString:data];
 
-    if( productInfo == nil )
-    {
+    if (productInfo == nil) {
         IOS_LOGGER_ERROR( @"invalid create product from data: %@"
             , data
         );
@@ -208,16 +210,14 @@
                           responseHandler:^(NSURLResponse * _response, id _data, NSError * _connectionError) {
         (void)_response;
 
-        if( _connectionError != nil )
-        {
+        if (_connectionError != nil) {
             IOS_LOGGER_ERROR( @"prop complete '%@' response failed data: %@ error: %@"
                 , orderId
                 , [AppleDetail NSIdToString:_data]
                 , [AppleDetail getMessageFromNSError:_connectionError]
             );
 
-            if( provider == nil )
-            {
+            if (provider == nil) {
                 IOS_LOGGER_ERROR( @"not setup MARSDK provider" );
 
                 return;
@@ -235,8 +235,7 @@
             , _data
         );
 
-        if( provider == nil )
-        {
+        if (provider == nil) {
             IOS_LOGGER_ERROR( @"not setup MARSDK provider" );
 
             return;

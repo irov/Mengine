@@ -17,8 +17,7 @@
 
 @end
 
-@implementation iOSVibratorPlugin
-{
+@implementation iOSVibratorPlugin {
     CHHapticEngine * m_engine;
     BOOL m_started;
     BOOL m_running;

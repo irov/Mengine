@@ -20,8 +20,7 @@
     [OneSignal.Debug setLogLevel:ONE_S_LL_VERBOSE];
 #endif
 
-    if( MengineiOSOneSignalPlugin_AppId == nil )
-    {
+    if (MengineiOSOneSignalPlugin_AppId == nil) {
         return YES;
     }
 

@@ -23,8 +23,7 @@
 static NSString * const MENGINE_LOCAL_NOTIFICATION_PREFIX = @"mengine.local.";
 static NSString * const MENGINE_LOCAL_NOTIFICATION_LAUNCH_COUNT = @"mengine.usernotificationcenter.launch_count";
 
-@implementation iOSUserNotificationCenterPlugin
-{
+@implementation iOSUserNotificationCenterPlugin {
     NSArray<NSDictionary *> * m_notifications;
     NSMutableDictionary<NSString *, NSDate *> * m_delayDates;
     NSUInteger m_scheduleGeneration;

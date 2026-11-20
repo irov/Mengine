@@ -4,11 +4,10 @@
 
 @interface iOSAdvertisementCooldown : NSObject
 
-@property (nonatomic) NSInteger m_timestamp;
-
-- (instancetype)init;
+- (instancetype)initWithPreferenceKey:(NSString *)_preferenceKey;
 
 - (NSInteger)getLastShownTimestamp;
 - (void)resetShownTimestamp;
+- (void)save;
 
 @end

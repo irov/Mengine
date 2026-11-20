@@ -1,5 +1,6 @@
 package org.Mengine.Base;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Notification;
 import android.content.ActivityNotFoundException;
@@ -19,7 +20,9 @@ import android.os.Handler;
 import android.os.LocaleList;
 import android.os.Looper;
 import android.os.Parcelable;
+import android.os.UserHandle;
 import android.util.DisplayMetrics;
+import android.util.JsonWriter;
 import android.view.Display;
 import android.view.WindowManager;
 import android.view.WindowMetrics;
@@ -199,6 +202,34 @@ public class MengineUtils {
         Code code = new Code(file, line, method);
 
         return code;
+    }
+
+    public static boolean isActivityAvailable(@Nullable Activity activity) {
+        if (activity == null) {
+            return false;
+        }
+
+        if (activity.isFinishing() == true) {
+            return false;
+        }
+
+        if (activity.isDestroyed() == true) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean isCurrentActivity(@Nullable Activity activity, @Nullable Activity currentActivity) {
+        if (activity != currentActivity) {
+            return false;
+        }
+
+        if (MengineUtils.isActivityAvailable(activity) == false) {
+            return false;
+        }
+
+        return true;
     }
 
     public static Handler performOnMainThread(@NonNull Runnable runnable) {
@@ -905,10 +936,100 @@ public class MengineUtils {
         return new JSONObject(map);
     }
 
+    @Nullable
     public static String jsonStringFromMap(@NonNull Map<String, Object> map) {
         JSONObject jsonObject = MengineUtils.jsonObjectFromMap(map);
+        String jsonString = MengineUtils.jsonStringFromJSONObject(jsonObject);
 
-        return jsonObject.toString();
+        return jsonString;
+    }
+
+    @Nullable
+    public static String jsonStringFromJSONObject(@NonNull JSONObject value) {
+        String jsonString = MengineUtils.jsonStringFromJSONValue(value);
+
+        return jsonString;
+    }
+
+    @Nullable
+    public static String jsonStringFromJSONArray(@NonNull JSONArray value) {
+        String jsonString = MengineUtils.jsonStringFromJSONValue(value);
+
+        return jsonString;
+    }
+
+    @Nullable
+    private static String jsonStringFromJSONValue(@NonNull Object value) {
+        StringWriter output = new StringWriter();
+
+        try (JsonWriter writer = new JsonWriter(output)) {
+            MengineUtils.writeJSONValue(writer, value);
+        } catch (final IOException | IllegalArgumentException e) {
+            MengineLog.logError(TAG, "[ERROR] Cannot serialize JSON (%s)", e.getMessage());
+
+            return null;
+        }
+
+        String jsonString = output.toString();
+
+        return jsonString;
+    }
+
+    private static void writeJSONValue(@NonNull JsonWriter writer, @Nullable Object value) throws IOException {
+        if (value instanceof JSONObject object) {
+            writer.beginObject();
+
+            Iterator<String> keys = object.keys();
+
+            while (keys.hasNext() == true) {
+                String key = keys.next();
+                Object member = object.opt(key);
+
+                writer.name(key);
+                MengineUtils.writeJSONValue(writer, member);
+            }
+
+            writer.endObject();
+
+            return;
+        }
+
+        if (value instanceof JSONArray array) {
+            writer.beginArray();
+
+            for (int index = 0; index < array.length(); ++index) {
+                Object element = array.opt(index);
+
+                MengineUtils.writeJSONValue(writer, element);
+            }
+
+            writer.endArray();
+
+            return;
+        }
+
+        if (value instanceof Number number) {
+            // Keep values such as 1.0 recognizable as doubles when the JSON is read.
+            writer.value(number);
+
+            return;
+        }
+
+        if (value instanceof Boolean booleanValue) {
+            writer.value(booleanValue);
+
+            return;
+        }
+
+        if (value == JSONObject.NULL) {
+            writer.nullValue();
+
+            return;
+        }
+
+        String string = Objects.toString(value, null);
+
+        writer.value(string);
     }
 
     public static void loadLibrary(Context context, String libraryName) throws UnsatisfiedLinkError, SecurityException {
@@ -1120,36 +1241,15 @@ public class MengineUtils {
     public static void throwAssertionError(@NonNull MengineTag tag, Throwable throwable, String format, Object ... args) {
         String message = MengineLog.buildTotalMsg(format, args);
 
-        if (MengineActivity.INSTANCE == null ||
-            MengineActivity.INSTANCE.isFinishing() == true ||
-            MengineActivity.INSTANCE.isDestroyed() == true) {
+        MengineActivity activity = MengineActivity.INSTANCE;
+
+        if (MengineUtils.isActivityAvailable(activity) == false) {
             MengineUtils.throwRuntimeException(message, throwable);
 
             return;
         }
 
-        MengineUI.finishActivityWithAlertDialog(MengineActivity.INSTANCE, "AssertionError", "[%s] %s", tag, message);
-    }
-
-    public static ArrayList<Bundle> parcelableArrayListFromJSON(@NonNull JSONArray value) {
-        ArrayList<Bundle> list = new ArrayList<>();
-
-        for (int i = 0; i < value.length(); i++) {
-            try {
-                JSONObject object = value.getJSONObject(i);
-
-                Bundle bundle = MengineUtils.bundleFromJSONObject(object);
-
-                list.add(bundle);
-            } catch (JSONException e) {
-                MengineLog.logException(TAG, e, Map.of(
-                    "index", i,
-                    "value", Objects.toString(value.opt(i), "null")
-                ));
-            }
-        }
-
-        return list;
+        MengineUI.finishActivityWithAlertDialog(activity, "AssertionError", "[%s] %s", tag, message);
     }
 
     public static Object getBundleValue(@NonNull Bundle bundle, @NonNull String key) {
@@ -1203,6 +1303,9 @@ public class MengineUtils {
                 map.put(key, number.doubleValue());
             } else if (value instanceof Character || value instanceof CharSequence) {
                 map.put(key, value.toString());
+            } else if (value instanceof UserHandle) {
+                // Android profile metadata is outside the native intent extras contract.
+                continue;
             } else {
                 MengineLog.logWarning(TAG, "unsupported bundle value key: %s type: %s"
                     , key
@@ -1212,45 +1315,6 @@ public class MengineUtils {
         }
 
         return map;
-    }
-
-    public static Bundle bundleFromJSONObject(@NonNull JSONObject value) {
-        Bundle bundle = new Bundle();
-        MengineUtils.copyBundleFromJSONObject(bundle, value);
-
-        return bundle;
-    }
-
-    public static void copyBundleFromJSONObject(@NonNull Bundle bundle, @NonNull JSONObject value) {
-        Iterator<String> keys = value.keys();
-        while (keys.hasNext()) {
-            String key = keys.next();
-            try {
-                Object object = value.get(key);
-                if (object instanceof String) {
-                    bundle.putString(key, (String) object);
-                } else if (object instanceof Integer) {
-                    bundle.putInt(key, (Integer) object);
-                } else if (object instanceof Long) {
-                    bundle.putLong(key, (Long) object);
-                } else if (object instanceof Boolean) {
-                    bundle.putBoolean(key, (Boolean) object);
-                } else if (object instanceof Double) {
-                    bundle.putDouble(key, (Double) object);
-                } else if (object instanceof JSONObject) {
-                    Bundle subBundle = MengineUtils.bundleFromJSONObject((JSONObject) object);
-                    bundle.putBundle(key, subBundle);
-                } else if (object instanceof JSONArray) {
-                    ArrayList<Bundle> bundles = MengineUtils.parcelableArrayListFromJSON((JSONArray) object);
-                    bundle.putParcelableArrayList(key, bundles);
-                }
-            } catch (JSONException e) {
-                MengineLog.logException(TAG, e, Map.of(
-                    "key", key,
-                    "value", Objects.toString(value.opt(key), "null")
-                ));
-            }
-        }
     }
 
     public static JSONArray jsonArrayFromArrayList(List list) {
@@ -1757,8 +1821,9 @@ public class MengineUtils {
     static public long getMetaDataLong(@NonNull MengineApplication application, String name) {
         Bundle bundle = MengineUtils.assertMetaDataBundle(application, name);
 
-        long value = bundle.getLong(name);
+        Object value = MengineUtils.getBundleValue(bundle, name);
+        long longValue = MengineBundle.getLongValue(value, 0L);
 
-        return value;
+        return longValue;
     }
 }

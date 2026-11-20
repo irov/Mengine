@@ -7,10 +7,12 @@
 
 - (nullable instancetype)initWithCompletion:(FBlockMailComposeCompletion _Nonnull)completion {
     self = [super init];
-    
-    if (self != nil) {
-        self.m_completion = completion;
+
+    if (self == nil) {
+        return nil;
     }
+
+    self.m_completion = completion;
     
     return self;
 }
@@ -19,7 +21,7 @@
     NSString * alertTitle = nil;
     NSString * alertMessage = nil;
 
-    switch(result) {
+    switch (result) {
         case MFMailComposeResultCancelled:
             IOS_LOGGER_MESSAGE( @"MFMailComposeResultCancelled: The user cancelled the operation. No email message was queued" );
             break;
@@ -40,12 +42,9 @@
 
             alertTitle = @"Send Failed";
 
-            if( error != nil )
-            {
+            if (error != nil) {
                 alertMessage = [NSString stringWithFormat:@"The email message could not be queued. %@", [error localizedDescription]];
-            }
-            else
-            {
+            } else {
                 alertMessage = @"The email message could not be queued.";
             }
 
@@ -56,12 +55,11 @@
 
     FBlockMailComposeCompletion completion = self.m_completion;
 
-    [controller dismissViewControllerAnimated:YES completion:^ {
-        if( alertTitle != nil && alertMessage != nil )
-        {
+    [controller dismissViewControllerAnimated:YES completion:^{
+        if (alertTitle != nil && alertMessage != nil) {
             [iOSDetail showOkAlertWithTitle:alertTitle
                                     message:alertMessage
-                                         ok:^ {
+                                         ok:^{
                 completion();
             }];
 

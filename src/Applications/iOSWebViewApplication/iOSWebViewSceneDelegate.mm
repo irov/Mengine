@@ -8,28 +8,24 @@
 
 #pragma mark - Scene
 
-- (void)scene:(UIScene *)_scene willConnectToSession:(UISceneSession *)_session options:(UISceneConnectionOptions *)_options
-{
+- (void)scene:(UIScene *)_scene willConnectToSession:(UISceneSession *)_session options:(UISceneConnectionOptions *)_options {
     MENGINE_UNUSED( _session );
     MENGINE_UNUSED( _options );
 
-    if( [_scene isKindOfClass:UIWindowScene.class] == NO )
-    {
+    if ([_scene isKindOfClass:UIWindowScene.class] == NO) {
         return;
     }
 
     iOSWebViewApplicationDelegate * delegate = (iOSWebViewApplicationDelegate *)UIApplication.sharedApplication.delegate;
     UIWindowScene * scene = (UIWindowScene *)_scene;
-    if( [delegate connectScene:scene] == NO )
-    {
+    if ([delegate connectScene:scene] == NO) {
         [delegate stopApplication];
 
         return;
     }
 }
 
-- (void)sceneDidDisconnect:(UIScene *)_scene
-{
+- (void)sceneDidDisconnect:(UIScene *)_scene {
     MENGINE_UNUSED( _scene );
 
     iOSWebViewApplicationDelegate * delegate = (iOSWebViewApplicationDelegate *)UIApplication.sharedApplication.delegate;
@@ -38,12 +34,10 @@
 
 #pragma mark - Activity
 
-- (void)sceneDidBecomeActive:(UIScene *)_scene
-{
+- (void)sceneDidBecomeActive:(UIScene *)_scene {
     MENGINE_UNUSED( _scene );
 
-    if( SERVICE_PROVIDER_EXIST() == false )
-    {
+    if (SERVICE_PROVIDER_EXIST() == false) {
         return;
     }
 
@@ -54,12 +48,10 @@
     [delegate resumeRuntime];
 }
 
-- (void)sceneWillResignActive:(UIScene *)_scene
-{
+- (void)sceneWillResignActive:(UIScene *)_scene {
     MENGINE_UNUSED( _scene );
 
-    if( SERVICE_PROVIDER_EXIST() == false )
-    {
+    if (SERVICE_PROVIDER_EXIST() == false) {
         return;
     }
 
@@ -68,8 +60,7 @@
     const Mengine::Configuration & configuration = SERVICE_PROVIDER_GET()
         ->getConfiguration();
 
-    if( configuration.nopause == false )
-    {
+    if (configuration.nopause == false) {
         [delegate pauseRuntime];
     }
 
@@ -79,12 +70,10 @@
 
 #pragma mark - Foreground
 
-- (void)sceneWillEnterForeground:(UIScene *)_scene
-{
+- (void)sceneWillEnterForeground:(UIScene *)_scene {
     MENGINE_UNUSED( _scene );
 
-    if( SERVICE_PROVIDER_EXIST() == false )
-    {
+    if (SERVICE_PROVIDER_EXIST() == false) {
         return;
     }
 
@@ -92,12 +81,10 @@
         ->onApplicationWillEnterForeground();
 }
 
-- (void)sceneDidEnterBackground:(UIScene *)_scene
-{
+- (void)sceneDidEnterBackground:(UIScene *)_scene {
     MENGINE_UNUSED( _scene );
 
-    if( SERVICE_PROVIDER_EXIST() == false )
-    {
+    if (SERVICE_PROVIDER_EXIST() == false) {
         return;
     }
 

@@ -63,20 +63,17 @@
     [adjustConfig setLogLevel:ADJLogLevelVerbose];
 #endif
 
-    if( delayStart > 0.0 )
-    {
+    if (delayStart > 0.0) {
         [adjustConfig enableFirstSessionDelay];
     }
     [adjustConfig setDelegate:self];
 
     [Adjust initSdk:adjustConfig];
 
-    if( delayStart > 0.0 )
-    {
+    if (delayStart > 0.0) {
         constexpr double maxDelayStart = 10.0;
 
-        if( delayStart > maxDelayStart )
-        {
+        if (delayStart > maxDelayStart) {
             delayStart = maxDelayStart;
         }
 

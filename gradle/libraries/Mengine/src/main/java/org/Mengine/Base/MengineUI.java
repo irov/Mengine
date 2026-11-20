@@ -27,26 +27,8 @@ public class MengineUI {
     public static final MengineTag TAG = MengineTag.of("MNGUI");
 
     public static void showToast(@Nullable MengineActivity activity, @NonNull String format, Object ... args) {
-        if (activity == null) {
-            MengineLog.logError(TAG, "[ERROR] showToast activity is null format: %s args: %s"
-                , format
-                , Arrays.toString(args)
-            );
-
-            return;
-        }
-
-        if (activity.isFinishing() == true) {
-            MengineLog.logError(TAG, "[ERROR] showToast activity is finishing format: %s args: %s"
-                , format
-                , Arrays.toString(args)
-            );
-
-            return;
-        }
-
-        if (activity.isDestroyed() == true) {
-            MengineLog.logError(TAG, "[ERROR] showToast activity is destroyed format: %s args: %s"
+        if (MengineUtils.isActivityAvailable(activity) == false) {
+            MengineLog.logError(TAG, "[ERROR] showToast activity is unavailable format: %s args: %s"
                 , format
                 , Arrays.toString(args)
             );
@@ -55,6 +37,10 @@ public class MengineUI {
         }
 
         activity.runOnUiThread(() -> {
+            if (MengineUtils.isActivityAvailable(activity) == false) {
+                return;
+            }
+
             String message = MengineLog.buildTotalMsg(format, args);
 
             Toast toast = Toast.makeText(activity, message, Toast.LENGTH_SHORT);
@@ -79,28 +65,8 @@ public class MengineUI {
     }
 
     public static boolean showOkAlertDialog(@NonNull MengineActivity activity, Runnable ok, @NonNull String title, @NonNull String format, Object ... args) {
-        if (activity == null) {
-            MengineLog.logError(TAG, "[ERROR] showOkAlertDialog activity is null title: %s format: %s args: %s"
-                , title
-                , format
-                , Arrays.toString(args)
-            );
-
-            return false;
-        }
-
-        if (activity.isFinishing() == true) {
-            MengineLog.logError(TAG, "[ERROR] showOkAlertDialog activity is finishing title: %s format: %s args: %s"
-                , title
-                , format
-                , Arrays.toString(args)
-            );
-
-            return false;
-        }
-
-        if (activity.isDestroyed() == true) {
-            MengineLog.logError(TAG, "[ERROR] showOkAlertDialog activity is destroyed title: %s format: %s args: %s"
+        if (MengineUtils.isActivityAvailable(activity) == false) {
+            MengineLog.logError(TAG, "[ERROR] showOkAlertDialog activity is unavailable title: %s format: %s args: %s"
                 , title
                 , format
                 , Arrays.toString(args)
@@ -110,6 +76,10 @@ public class MengineUI {
         }
 
         activity.runOnUiThread(() -> {
+            if (MengineUtils.isActivityAvailable(activity) == false) {
+                return;
+            }
+
             String message = MengineLog.buildTotalMsg(format, args);
 
             MengineLog.logMessage(TAG, "show [OK] alert dialog title: %s message: %s"
@@ -158,16 +128,7 @@ public class MengineUI {
     }
 
     public static AlertDialog showProgressAlertDialogRes(@NonNull MengineActivity activity, @StringRes int titleId, @StringRes int messageId) {
-        if (activity == null) {
-            MengineLog.logError(TAG, "[ERROR] showProgressAlertDialogRes activity is null titleId: %d messageId: %d"
-                , titleId
-                , messageId
-            );
-
-            return null;
-        }
-
-        if (activity.isFinishing() == true || activity.isDestroyed() == true) {
+        if (MengineUtils.isActivityAvailable(activity) == false) {
             MengineLog.logError(TAG, "[ERROR] showProgressAlertDialogRes activity is unavailable titleId: %d messageId: %d"
                 , titleId
                 , messageId
@@ -207,8 +168,8 @@ public class MengineUI {
     }
 
     public static void showAllowPermissionAlertDialog(@NonNull MengineActivity activity, Runnable allow, Runnable denied, @NonNull String title, @NonNull String format, Object ... args) {
-        if (activity == null) {
-            MengineLog.logError(TAG, "[ERROR] showAllowPermissionAlertDialog activity is null title: %s format: %s args: %s"
+        if (MengineUtils.isActivityAvailable(activity) == false) {
+            MengineLog.logError(TAG, "[ERROR] showAllowPermissionAlertDialog activity is unavailable title: %s format: %s args: %s"
                 , title
                 , format
                 , Arrays.toString(args)
@@ -218,6 +179,10 @@ public class MengineUI {
         }
 
         activity.runOnUiThread(() -> {
+            if (MengineUtils.isActivityAvailable(activity) == false) {
+                return;
+            }
+
             String message = MengineLog.buildTotalMsg(format, args);
 
             MengineLog.logMessage(TAG, "show [ALLOW PERMISSION] alert dialog title: %s message: %s"
@@ -273,8 +238,8 @@ public class MengineUI {
     }
 
     public static void showAreYouSureAlertDialog(@NonNull MengineActivity activity, Runnable yes, Runnable cancel, long delayMillis, @NonNull String title, @NonNull String format, Object ... args) {
-        if (activity == null) {
-            MengineLog.logError(TAG, "[ERROR] showAreYouSureAlertDialog activity is null title: %s format: %s args: %s"
+        if (MengineUtils.isActivityAvailable(activity) == false) {
+            MengineLog.logError(TAG, "[ERROR] showAreYouSureAlertDialog activity is unavailable title: %s format: %s args: %s"
                 , title
                 , format
                 , Arrays.toString(args)
@@ -284,6 +249,10 @@ public class MengineUI {
         }
 
         activity.runOnUiThread(() -> {
+            if (MengineUtils.isActivityAvailable(activity) == false) {
+                return;
+            }
+
             String message = MengineLog.buildTotalMsg(format, args);
 
             MengineLog.logMessage(TAG, "show [ARE YOU SURE] alert dialog title: %s message: %s"
@@ -361,8 +330,8 @@ public class MengineUI {
     }
 
     public static void showChooseOptionDialog(@NonNull MengineActivity activity, @NonNull Consumer<Integer> accept, @NonNull Runnable cancel, @NonNull List<String> options, @NonNull String title) {
-        if (activity == null) {
-            MengineLog.logError(TAG, "[ERROR] showChooseOptionDialog activity is null title: %s options: %s"
+        if (MengineUtils.isActivityAvailable(activity) == false) {
+            MengineLog.logError(TAG, "[ERROR] showChooseOptionDialog activity is unavailable title: %s options: %s"
                 , title
                 , options
             );
@@ -371,6 +340,10 @@ public class MengineUI {
         }
 
         activity.runOnUiThread(() -> {
+            if (MengineUtils.isActivityAvailable(activity) == false) {
+                return;
+            }
+
             MengineLog.logMessage(TAG, "show [CHOOSE OPTION] title: %s"
                 , title
             );

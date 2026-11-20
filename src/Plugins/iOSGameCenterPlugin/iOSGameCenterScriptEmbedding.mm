@@ -22,8 +22,7 @@
 - (void)oniOSGameCenterAuthenticate:(BOOL)successful {
     pybind::object py_cb = [self getMethod:@"oniOSGameCenterAuthenticate"];
 
-    if( py_cb.is_callable() == false )
-    {
+    if (py_cb.is_callable() == false) {
         return;
     }
 
@@ -33,8 +32,7 @@
 - (void)oniOSGameCenterSynchronize:(BOOL)successful {
     pybind::object py_cb = [self getMethod:@"oniOSGameCenterSynchronize"];
 
-    if( py_cb.is_callable() == false )
-    {
+    if (py_cb.is_callable() == false) {
         return;
     }
 

@@ -1,9 +1,6 @@
 package org.Mengine.Base;
 
-import android.os.Bundle;
-
 import androidx.annotation.NonNull;
-import androidx.core.os.BundleCompat;
 
 public class MengineAdFrequency {
     public static final int SAVE_VERSION = 1;
@@ -11,8 +8,8 @@ public class MengineAdFrequency {
     protected long m_startTimestamp = 0;
     protected long m_showCount = 0;
 
-    public synchronized Bundle onSave(@NonNull MengineApplication application) {
-        Bundle bundle = new Bundle();
+    public synchronized MengineBundle onSave(@NonNull MengineApplication application) {
+        MengineBundle bundle = new MengineBundle();
 
         bundle.putInt("version", SAVE_VERSION);
         bundle.putLong("start", m_startTimestamp);
@@ -21,13 +18,9 @@ public class MengineAdFrequency {
         return bundle;
     }
 
-    public synchronized void onLoad(@NonNull MengineApplication application, @NonNull Bundle bundle) {
-        // JSON-backed bundles may restore small long values as Integer.
-        Number start = BundleCompat.getSerializable(bundle, "start", Number.class);
-        Number count = BundleCompat.getSerializable(bundle, "count", Number.class);
-
-        m_startTimestamp = start != null ? start.longValue() : 0;
-        m_showCount = count != null ? count.longValue() : 0;
+    public synchronized void onLoad(@NonNull MengineApplication application, @NonNull MengineBundle bundle) {
+        m_startTimestamp = bundle.getLong("start", 0L);
+        m_showCount = bundle.getLong("count", 0L);
     }
 
     public synchronized boolean hasShowQuota(int showLimit, long showTimeout) {
@@ -36,20 +29,24 @@ public class MengineAdFrequency {
         }
 
         long count = m_showCount;
-        long now = MengineUtils.getTimestamp();
+        long timestamp = MengineUtils.getTimestamp();
 
-        if (count == 0 || now - m_startTimestamp >= showTimeout) {
+        if (timestamp - m_startTimestamp >= showTimeout) {
             count = 0;
         }
 
-        return count < showLimit;
+        if (count >= showLimit) {
+            return false;
+        }
+
+        return true;
     }
 
     public synchronized void recordShown(long showTimeout) {
-        long now = MengineUtils.getTimestamp();
+        long timestamp = MengineUtils.getTimestamp();
 
-        if (m_showCount == 0 || now - m_startTimestamp >= showTimeout) {
-            m_startTimestamp = now;
+        if (m_showCount == 0 || timestamp - m_startTimestamp >= showTimeout) {
+            m_startTimestamp = timestamp;
             m_showCount = 0;
         }
 

@@ -633,7 +633,7 @@ namespace Mengine
 
         [mailCompose setModalPresentationStyle:UIModalPresentationFormSheet];
 
-        static iOSMailComposeDelegate * mailComposeDelegate = [[iOSMailComposeDelegate alloc] initWithCompletion:^ {
+        static iOSMailComposeDelegate * mailComposeDelegate = [[iOSMailComposeDelegate alloc] initWithCompletion:^{
             //ToDo callback
         }];
 
@@ -779,7 +779,7 @@ namespace Mengine
 
         [viewController presentViewController:mailCompose
                                      animated:YES
-                                   completion:^ {
+                                   completion:^{
             IOS_LOGGER_MESSAGE( @"open mail composer presented" );
         }] ;
 
@@ -903,8 +903,7 @@ namespace Mengine
 
                 UIPopoverPresentationController * popover = reasonAlert.popoverPresentationController;
 
-                if( popover != nil )
-                {
+                if (popover != nil) {
                     popover.sourceView = viewController.view;
                     popover.sourceRect = CGRectMake( CGRectGetMidX( viewController.view.bounds ), CGRectGetMidY( viewController.view.bounds ), 1.0, 1.0 );
                     popover.permittedArrowDirections = 0;
@@ -998,20 +997,16 @@ namespace Mengine
                                                    title:title
                                                  message:message
                                                       ok:^() {
-                    if( closeApplication == true )
-                    {
+                    if (closeApplication == true) {
                         APPLICATION_SERVICE()
                             ->quit();
                     }
                 }];
             };
 
-            if( progressAlert != nil && progressAlert.presentingViewController != nil )
-            {
+            if (progressAlert != nil && progressAlert.presentingViewController != nil) {
                 [progressAlert dismissViewControllerAnimated:YES completion:showResult];
-            }
-            else
-            {
+            } else {
                 showResult();
             }
         }];
@@ -1769,14 +1764,12 @@ namespace Mengine
         }
 
         [m_safeAreaProvider setSafeAreaViewportChangedCallback:^{
-            if( m_safeAreaViewportChangedCallback == nullptr )
-            {
+            if (m_safeAreaViewportChangedCallback == nullptr) {
                 return;
             }
 
             Viewport safeAreaViewport;
-            if( this->getSafeAreaViewport( &safeAreaViewport ) == true )
-            {
+            if (this->getSafeAreaViewport( &safeAreaViewport ) == true) {
                 m_safeAreaViewportChangedCallback( safeAreaViewport );
             }
         }];

@@ -104,9 +104,16 @@ namespace Mengine
 
         if( error != AAUDIO_OK )
         {
-            LOGGER_ERROR( "AAudio output error: %s, reopening stream"
-                , AAudio_convertResultToText( error )
-            );
+            if( error == AAUDIO_ERROR_DISCONNECTED )
+            {
+                LOGGER_WARNING( "AAudio output disconnected, reopening stream" );
+            }
+            else
+            {
+                LOGGER_ERROR( "AAudio output error: %s, reopening stream"
+                    , AAudio_convertResultToText( error )
+                );
+            }
 
             this->closeStream_();
         }

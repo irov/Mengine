@@ -13,6 +13,9 @@ src
     iOSAdvertisementCooldown.h
     iOSAdvertisementCooldown.mm
 
+    iOSAdvertisementFrequency.h
+    iOSAdvertisementFrequency.mm
+
     iOSAdvertisementBasePoint.h
     iOSAdvertisementBasePoint.mm
 

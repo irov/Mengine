@@ -13,6 +13,10 @@
 - (instancetype _Nonnull)initWithHelpshift:(id<iOSHelpshiftInterface> _Nonnull)helpshift {
     self = [super init];
 
+    if (self == nil) {
+        return nil;
+    }
+
     self.m_helpshift = helpshift;
 
     return self;
@@ -21,24 +25,23 @@
 - (void) handleHelpshiftEvent:(nonnull NSString *)eventName withData:(nullable NSDictionary *)data {
     id<iOSHelpshiftProviderInterface> provider = [self.m_helpshift getProvider];
 
-    if( provider == nil )
-    {
+    if (provider == nil) {
         return;
     }
 
-    if([eventName isEqualToString:HelpshiftEventNameSessionStarted]) {
+    if ([eventName isEqualToString:HelpshiftEventNameSessionStarted]) {
         IOS_LOGGER_MESSAGE(@"session started.");
 
         [AppleDetail addMainQueueOperation:^{
             [provider sessionStarted];
         }];
-    } else if([eventName isEqualToString:HelpshiftEventNameSessionEnded]) {
+    } else if ([eventName isEqualToString:HelpshiftEventNameSessionEnded]) {
         IOS_LOGGER_MESSAGE(@"session ended.");
 
         [AppleDetail addMainQueueOperation:^{
             [provider sessionEnded];
         }];
-    } else if([eventName isEqualToString:HelpshiftEventNameReceivedUnreadMessageCount]) {
+    } else if ([eventName isEqualToString:HelpshiftEventNameReceivedUnreadMessageCount]) {
         NSInteger count = [data[HelpshiftEventDataUnreadMessageCount] integerValue];
         NSInteger countInCache = [data[HelpshiftEventDataUnreadMessageCountIsFromCache] integerValue];
 
@@ -47,7 +50,7 @@
         [AppleDetail addMainQueueOperation:^{
             [provider receivedUnreadMessage:count countInCache:countInCache];
         }];
-    } else if([eventName isEqualToString:HelpshiftEventNameConversationStatus]) {
+    } else if ([eventName isEqualToString:HelpshiftEventNameConversationStatus]) {
         NSString * issueId = [self convertToString:[data objectForKey:HelpshiftEventDataLatestIssueId]];
         NSString * publishId = [self convertToString:[data objectForKey:HelpshiftEventDataLatestIssuePublishId]];
         bool issueOpen = [data[HelpshiftEventDataIsIssueOpen] boolValue];
@@ -57,7 +60,7 @@
         [AppleDetail addMainQueueOperation:^{
             [provider conversationStatus:issueId publishId:publishId issueOpen:issueOpen];
         }];
-    } else if([eventName isEqualToString:HelpshiftEventNameWidgetToggle]) {
+    } else if ([eventName isEqualToString:HelpshiftEventNameWidgetToggle]) {
         bool visible = [data[HelpshiftEventDataVisible] boolValue];
 
         IOS_LOGGER_MESSAGE(@"is chat screen visible: %d", visible);
@@ -65,7 +68,7 @@
         [AppleDetail addMainQueueOperation:^{
             [provider eventWidgetToggle:visible];
         }];
-    } else if([eventName isEqualToString:HelpshiftEventNameMessageAdd]) {
+    } else if ([eventName isEqualToString:HelpshiftEventNameMessageAdd]) {
         NSString * body = [self convertToString:[data objectForKey:HelpshiftEventDataMessageBody]];
         NSString * type = [self convertToString:[data objectForKey:HelpshiftEventDataMessageType]];
 
@@ -74,14 +77,14 @@
         [AppleDetail addMainQueueOperation:^{
             [provider eventMessageAdd:body type:type];
         }];
-    } else if([eventName isEqualToString:HelpshiftEventNameConversationStart]) {
+    } else if ([eventName isEqualToString:HelpshiftEventNameConversationStart]) {
         NSString * text = [self convertToString:[data objectForKey:HelpshiftEventDataMessage]];
         IOS_LOGGER_MESSAGE(@"conversation started with text: %@", text);
 
         [AppleDetail addMainQueueOperation:^{
             [provider converstationStart:text];
         }];
-    } else if([eventName isEqualToString:HelpshiftEventNameCSATSubmit]) {
+    } else if ([eventName isEqualToString:HelpshiftEventNameCSATSubmit]) {
         NSString * rating = [self convertToString:[data objectForKey:HelpshiftEventDataRating]];
         NSString * feedback = [self convertToString:[data objectForKey:HelpshiftEventDataAdditionalFeedback]];
 
@@ -90,25 +93,25 @@
         [AppleDetail addMainQueueOperation:^{
             [provider eventCSATSubmit:rating feedback:feedback];
         }];
-    } else if([eventName isEqualToString:HelpshiftEventNameConversationEnd]) {
+    } else if ([eventName isEqualToString:HelpshiftEventNameConversationEnd]) {
         IOS_LOGGER_MESSAGE(@"conversation ended.");
 
         [AppleDetail addMainQueueOperation:^{
             [provider converstationEnded];
         }];
-    } else if([eventName isEqualToString:HelpshiftEventNameConversationRejected]) {
+    } else if ([eventName isEqualToString:HelpshiftEventNameConversationRejected]) {
         IOS_LOGGER_MESSAGE(@"conversation rejected.");
 
         [AppleDetail addMainQueueOperation:^{
             [provider converstationRejected];
         }];
-    } else if([eventName isEqualToString:HelpshiftEventNameConversationResolved]) {
+    } else if ([eventName isEqualToString:HelpshiftEventNameConversationResolved]) {
         IOS_LOGGER_MESSAGE(@"conversation resolved.");
 
         [AppleDetail addMainQueueOperation:^{
             [provider converstationResolved];
         }];
-    } else if([eventName isEqualToString:HelpshiftEventNameConversationReopened]) {
+    } else if ([eventName isEqualToString:HelpshiftEventNameConversationReopened]) {
         IOS_LOGGER_MESSAGE(@"conversation reopened.");
 
         [AppleDetail addMainQueueOperation:^{
@@ -118,34 +121,29 @@
 }
 
 
-- (void) authenticationFailedForUserWithReason:(HelpshiftAuthenticationFailureReason)reason{
+- (void) authenticationFailedForUserWithReason:(HelpshiftAuthenticationFailureReason)reason {
     id<iOSHelpshiftProviderInterface> provider = [self.m_helpshift getProvider];
 
-    if( provider == nil )
-    {
+    if (provider == nil) {
         return;
     }
 
-    switch (reason)
-    {
-    case HelpshiftAuthenticationFailureReasonInvalidAuthToken:
-        {
+    switch (reason) {
+        case HelpshiftAuthenticationFailureReasonInvalidAuthToken: {
             IOS_LOGGER_MESSAGE(@"authentication Failed - InvalidAuthToken");
 
             [AppleDetail addMainQueueOperation:^{
                 [provider authenticationInvalidAuthToken];
             }];
         }break;
-    case HelpshiftAuthenticationFailureReasonAuthTokenNotProvided:
-        {
+        case HelpshiftAuthenticationFailureReasonAuthTokenNotProvided: {
             IOS_LOGGER_MESSAGE(@"authentication Failed - AuthTokenNotProvided");
 
             [AppleDetail addMainQueueOperation:^{
                 [provider authenticationTokenNotProvided];
             }];
         }break;
-    default:
-        {
+        default: {
             IOS_LOGGER_MESSAGE(@"authentication Failed - UNKNOWN");
 
             [AppleDetail addMainQueueOperation:^{

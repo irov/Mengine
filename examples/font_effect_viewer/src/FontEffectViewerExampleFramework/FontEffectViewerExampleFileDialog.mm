@@ -76,8 +76,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FontEffectViewerExampleSelectFilePath( const Char * _title, const Char * _currentPath, Char * const _path, size_t _capacity )
     {
-        @autoreleasepool
-        {
+        @autoreleasepool {
             NSOpenPanel * panel = [NSOpenPanel openPanel];
             panel.title = s_makeNSString( _title, @"Open File" );
             panel.prompt = @"Open";
@@ -88,8 +87,7 @@ namespace Mengine
 
             s_setupPanelDirectory( panel, _currentPath );
 
-            if( [panel runModal] != NSModalResponseOK )
-            {
+            if ([panel runModal] != NSModalResponseOK) {
                 return false;
             }
 
@@ -99,8 +97,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FontEffectViewerExampleSelectSaveFilePath( const Char * _title, const Char * _currentPath, const Char * _defaultName, Char * const _path, size_t _capacity )
     {
-        @autoreleasepool
-        {
+        @autoreleasepool {
             NSSavePanel * panel = [NSSavePanel savePanel];
             panel.title = s_makeNSString( _title, @"Save File" );
             panel.prompt = @"Save";
@@ -109,8 +106,7 @@ namespace Mengine
 
             s_setupPanelDirectory( panel, _currentPath );
 
-            if( [panel runModal] != NSModalResponseOK )
-            {
+            if ([panel runModal] != NSModalResponseOK) {
                 return false;
             }
 

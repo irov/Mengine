@@ -7,6 +7,10 @@
 - (instancetype _Nonnull) initWithSlotId:(NSString* _Nullable) amazonAdSlotId interstitialAd:(MAInterstitialAd* _Nonnull) interstitialAd {
     self = [super init];
 
+    if (self == nil) {
+        return nil;
+    }
+
     self.m_interstitialAd = interstitialAd;
 
     DTBAdLoader *adLoader = [[DTBAdLoader alloc] init];

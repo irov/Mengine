@@ -15,6 +15,10 @@
                                             cb:(const Mengine::iOSStoreInAppPurchaseProductsResponseInterfacePtr &)cb {
     self = [super init];
 
+    if (self == nil) {
+        return nil;
+    }
+
     self.m_inAppPurchase = inAppPurchase;
     self.m_request = request;
     self.m_cb = cb;
@@ -35,7 +39,7 @@
     Mengine::iOSStoreInAppPurchaseProductsResponseInterfacePtr cb_copy = self.m_cb;
     Mengine::iOSStoreInAppPurchaseProductsRequestInterfacePtr request_copy = self.m_request;
 
-    if( cb_copy == nullptr ) {
+    if (cb_copy == nullptr) {
         return;
     }
 
@@ -46,18 +50,18 @@
 
     NSArray<SKProduct *> * skProducts = response.products;
 
-    if( response.invalidProductIdentifiers.count != 0 ) {
+    if (response.invalidProductIdentifiers.count != 0) {
         IOS_LOGGER_WARNING( @"[SKProductsRequestDelegate] StoreKit rejected Product IDs: %@"
             , response.invalidProductIdentifiers
         );
     }
 
-    if( skProducts.count == 0 ) {
+    if (skProducts.count == 0) {
         IOS_LOGGER_WARNING( @"[SKProductsRequestDelegate] StoreKit returned an empty catalog. Check Product IDs, storefront availability and Paid Apps agreement in App Store Connect." );
     }
 
     Mengine::VectoriOSStoreInAppPurchaseProducts products;
-    for( SKProduct * skProduct in skProducts ) {
+    for (SKProduct * skProduct in skProducts) {
         Mengine::iOSStoreInAppPurchaseProductInterfacePtr product = [self.m_inAppPurchase makeProduct:skProduct];
 
         products.emplace_back( product );
@@ -76,7 +80,7 @@
     Mengine::iOSStoreInAppPurchaseProductsResponseInterfacePtr cb_copy = self.m_cb;
     Mengine::iOSStoreInAppPurchaseProductsRequestInterfacePtr request_copy = self.m_request;
 
-    if( cb_copy == nullptr ) {
+    if (cb_copy == nullptr) {
         return;
     }
 
@@ -98,7 +102,7 @@
     Mengine::iOSStoreInAppPurchaseProductsResponseInterfacePtr cb_copy = self.m_cb;
     Mengine::iOSStoreInAppPurchaseProductsRequestInterfacePtr request_copy = self.m_request;
 
-    if( cb_copy == nullptr ) {
+    if (cb_copy == nullptr) {
         return;
     }
 

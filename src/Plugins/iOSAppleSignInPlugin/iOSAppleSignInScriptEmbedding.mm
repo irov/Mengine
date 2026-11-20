@@ -18,8 +18,7 @@
 - (void)onAppleSignInSuccess:(NSDictionary<NSString *, id> *)credential {
     pybind::object py_cb = [self getMethod:@"oniOSAppleSignInSuccess"];
 
-    if( py_cb.is_callable() == false )
-    {
+    if (py_cb.is_callable() == false) {
         return;
     }
 
@@ -29,8 +28,7 @@
 - (void)onAppleSignInCancel {
     pybind::object py_cb = [self getMethod:@"oniOSAppleSignInCancel"];
 
-    if( py_cb.is_callable() == false )
-    {
+    if (py_cb.is_callable() == false) {
         return;
     }
 
@@ -40,8 +38,7 @@
 - (void)onAppleSignInError:(NSInteger)code message:(NSString *)errorMessage {
     pybind::object py_cb = [self getMethod:@"oniOSAppleSignInError"];
 
-    if( py_cb.is_callable() == false )
-    {
+    if (py_cb.is_callable() == false) {
         return;
     }
 
@@ -51,8 +48,7 @@
 - (void)onAppleSignInCredentialState:(NSString *)userId state:(iOSAppleSignInCredentialState)state {
     pybind::object py_cb = [self getMethod:@"oniOSAppleSignInCredentialState"];
 
-    if( py_cb.is_callable() == false )
-    {
+    if (py_cb.is_callable() == false) {
         return;
     }
 
@@ -62,8 +58,7 @@
 - (void)onAppleSignInCredentialStateError:(NSString *)userId code:(NSInteger)code message:(NSString *)errorMessage {
     pybind::object py_cb = [self getMethod:@"oniOSAppleSignInCredentialStateError"];
 
-    if( py_cb.is_callable() == false )
-    {
+    if (py_cb.is_callable() == false) {
         return;
     }
 
@@ -73,8 +68,7 @@
 - (void)onAppleSignInCredentialRevoked:(NSString *)userId {
     pybind::object py_cb = [self getMethod:@"oniOSAppleSignInCredentialRevoked"];
 
-    if( py_cb.is_callable() == false )
-    {
+    if (py_cb.is_callable() == false) {
         return;
     }
 

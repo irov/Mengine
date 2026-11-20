@@ -7,8 +7,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface AppleWebViewMCPTransport : NSObject
-{
+@interface AppleWebViewMCPTransport : NSObject {
 @private
     nw_connection_t m_connection;
 

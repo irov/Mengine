@@ -18,6 +18,10 @@
                                            adaptive:(BOOL)adaptive {
     self = [super initWithAdUnitIdentifier:adUnitId adFormat:MAAdFormat.banner advertisement:advertisement];
 
+    if (self == nil) {
+        return nil;
+    }
+
     self.m_bannerAdaptive = adaptive;
     self.m_bannerLoaded = NO;
     self.m_bannerShowRequested = NO;

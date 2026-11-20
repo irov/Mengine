@@ -14,11 +14,12 @@
 - (instancetype)init {
     self = [super init];
 
-    if( self != nil )
-    {
-        self.m_provider = nil;
-        self.m_delegate = nil;
+    if (self == nil) {
+        return nil;
     }
+
+    self.m_provider = nil;
+    self.m_delegate = nil;
 
     return self;
 }
@@ -53,8 +54,7 @@
     Mengine::String platformId = CONFIG_VALUE_STRING( "HelpshiftPlugin", "PlatformId", "" );
     Mengine::String domain = CONFIG_VALUE_STRING( "HelpshiftPlugin", "Domain", "" );
 
-    if( platformId.empty() == true || domain.empty() == true )
-    {
+    if (platformId.empty() == true || domain.empty() == true) {
         IOS_LOGGER_ERROR( @"don't setup PlatformId or Domain" );
 
         return NO;

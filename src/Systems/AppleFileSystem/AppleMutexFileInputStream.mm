@@ -177,8 +177,7 @@ namespace Mengine
     bool AppleMutexFileInputStream::read_( void * const _buf, size_t _offset, size_t _size, size_t * const _read )
     {
         @autoreleasepool {
-            if( _size == 0 )
-            {
+            if (_size == 0) {
                 *_read = 0;
 
                 return true;
@@ -191,8 +190,7 @@ namespace Mengine
             size_t seek_pos = m_offset + m_reading;
 
             NSError * seekError = nil;
-            if( [fileHandle seekToOffset:seek_pos error:&seekError] == NO )
-            {
+            if ([fileHandle seekToOffset:seek_pos error:&seekError] == NO) {
                 LOGGER_ERROR( "file '%s' seek %zu:%zu get error: %s"
                     , Helper::getDebugFullPath( m_stream ).c_str()
                     , seek_pos
@@ -208,8 +206,7 @@ namespace Mengine
             NSError * readError = nil;
             NSData * data = [fileHandle readDataUpToLength:_size error:&readError];
 
-            if( data == nil )
-            {
+            if (data == nil) {
                 LOGGER_ERROR( "read file '%s' offset %zu size %zu:%zu get error %s"
                     , Helper::getDebugFullPath( m_stream ).c_str()
                     , _offset
@@ -221,8 +218,7 @@ namespace Mengine
                 return false;
             }
 
-            if( data.length == 0 )
-            {
+            if (data.length == 0) {
                 *_read = 0;
 
                 return true;

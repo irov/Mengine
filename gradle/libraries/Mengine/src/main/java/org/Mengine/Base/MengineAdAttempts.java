@@ -1,7 +1,5 @@
 package org.Mengine.Base;
 
-import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 
 public class MengineAdAttempts {
@@ -9,8 +7,8 @@ public class MengineAdAttempts {
 
     public int m_attempts = 0;
 
-    public Bundle onSave(@NonNull MengineApplication application) {
-        Bundle bundle = new Bundle();
+    public MengineBundle onSave(@NonNull MengineApplication application) {
+        MengineBundle bundle = new MengineBundle();
 
         bundle.putInt("version", SAVE_VERSION);
         bundle.putInt("attempts", m_attempts);
@@ -18,7 +16,7 @@ public class MengineAdAttempts {
         return bundle;
     }
 
-    public void onLoad(@NonNull MengineApplication application, @NonNull Bundle bundle) {
+    public void onLoad(@NonNull MengineApplication application, @NonNull MengineBundle bundle) {
         int version = bundle.getInt("version", 0);
 
         m_attempts = bundle.getInt("attempts", 0);

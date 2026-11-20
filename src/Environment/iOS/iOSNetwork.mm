@@ -15,11 +15,15 @@
 
 - (instancetype)init {
     self = [super init];
-    if (self) {
-        self.m_available = YES;
-        self.m_monitor = nw_path_monitor_create();
-        self.m_queue = dispatch_queue_create("MengineNetworkMonitorQueue", DISPATCH_QUEUE_SERIAL);
+
+    if (self == nil) {
+        return nil;
     }
+
+    self.m_available = YES;
+    self.m_monitor = nw_path_monitor_create();
+    self.m_queue = dispatch_queue_create("MengineNetworkMonitorQueue", DISPATCH_QUEUE_SERIAL);
+
     return self;
 }
 

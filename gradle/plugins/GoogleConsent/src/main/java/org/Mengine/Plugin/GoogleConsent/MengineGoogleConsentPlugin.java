@@ -53,6 +53,10 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
     }
 
     private void requestConsentInfoUpdate(@NonNull MengineActivity activity) {
+        if (MengineUtils.isCurrentActivity(activity, this.getMengineActivity()) == false) {
+            return;
+        }
+
         ConsentRequestParameters.Builder builder = new ConsentRequestParameters.Builder();
 
         if (BuildConfig.DEBUG == true) {
@@ -82,6 +86,10 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
 
         consentInformation.requestConsentInfoUpdate(activity, params
             , () -> {
+                if (MengineUtils.isCurrentActivity(activity, this.getMengineActivity()) == false) {
+                    return;
+                }
+
                 boolean formAvailable = consentInformation.isConsentFormAvailable();
                 int consentStatus = consentInformation.getConsentStatus();
                 ConsentInformation.PrivacyOptionsRequirementStatus privacyOptionsRequirementStatus = consentInformation.getPrivacyOptionsRequirementStatus();
@@ -95,13 +103,17 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
                 this.loadForm(application, activity, consentInformation);
             }
             , (formError) -> {
+                if (MengineUtils.isCurrentActivity(activity, this.getMengineActivity()) == false) {
+                    return;
+                }
+
                 this.logError("consent info update failure: %s [%d]"
                     , formError.getMessage()
                     , formError.getErrorCode()
                 );
 
                 this.m_consentRequestInProgress = false;
-                this.m_consentResolved = this.notifyTransparencyConsent(application, consentInformation);
+                this.notifyTransparencyConsent(application, consentInformation);
             });
     }
 
@@ -130,6 +142,10 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
     public void loadForm(@NonNull MengineApplication application, @NonNull MengineActivity activity, @NonNull ConsentInformation consentInformation) {
         UserMessagingPlatform.loadAndShowConsentFormIfRequired(activity
             , (loadAndShowError) -> {
+                if (MengineUtils.isCurrentActivity(activity, this.getMengineActivity()) == false) {
+                    return;
+                }
+
                 if (loadAndShowError != null) {
                     this.logError("consent form load and show failure: %s [%d]"
                         , loadAndShowError.getMessage()
@@ -140,7 +156,13 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
                 }
 
                 this.m_consentRequestInProgress = false;
-                this.m_consentResolved = this.notifyTransparencyConsent(application, consentInformation);
+                boolean canRequestAds = this.notifyTransparencyConsent(application, consentInformation);
+
+                if (loadAndShowError != null) {
+                    return;
+                }
+
+                this.m_consentResolved = canRequestAds;
             });
     }
 
@@ -162,7 +184,7 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
         MengineUtils.performOnMainThread(() -> {
             MengineActivity activity = this.getMengineActivity();
 
-            if (activity == null || activity.isFinishing() == true || activity.isDestroyed() == true) {
+            if (MengineUtils.isActivityAvailable(activity) == false) {
                 this.logError("[ERROR] showConsentFlow invalid activity");
 
                 RuntimeException exception = new RuntimeException("invalid activity");
@@ -172,6 +194,10 @@ public class MengineGoogleConsentPlugin extends MengineService implements Mengin
             }
 
             UserMessagingPlatform.showPrivacyOptionsForm(activity, formError -> {
+                if (MengineUtils.isCurrentActivity(activity, this.getMengineActivity()) == false) {
+                    return;
+                }
+
                 if (formError != null) {
                     String message = formError.getMessage();
 

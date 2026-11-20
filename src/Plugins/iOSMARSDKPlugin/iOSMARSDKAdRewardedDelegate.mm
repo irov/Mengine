@@ -10,6 +10,10 @@
 - (instancetype _Nonnull)initWithMARSDK:(id<iOSMARSDKInterface>)marsdk {
     self = [super init];
 
+    if (self == nil) {
+        return nil;
+    }
+
     self.m_marsdk = marsdk;
 
     return self;
@@ -26,8 +30,7 @@
 
     id<iOSMARSDKProviderInterface> provider = [self.m_marsdk getProvider];
 
-    if( provider == nil )
-    {
+    if (provider == nil) {
         return;
     }
 
@@ -43,8 +46,7 @@
 
     id<iOSMARSDKProviderInterface> provider = [self.m_marsdk getProvider];
 
-    if( provider == nil )
-    {
+    if (provider == nil) {
         return;
     }
 
@@ -60,8 +62,7 @@
 
     id<iOSMARSDKProviderInterface> provider = [self.m_marsdk getProvider];
 
-    if( provider == nil )
-    {
+    if (provider == nil) {
         return;
     }
 
@@ -77,8 +78,7 @@
 
     id<iOSMARSDKProviderInterface> provider = [self.m_marsdk getProvider];
 
-    if( provider == nil )
-    {
+    if (provider == nil) {
         return;
     }
 
@@ -94,8 +94,7 @@
 
     id<iOSMARSDKProviderInterface> provider = [self.m_marsdk getProvider];
 
-    if( provider == nil )
-    {
+    if (provider == nil) {
         return;
     }
 
@@ -111,8 +110,7 @@
 
     id<iOSMARSDKProviderInterface> provider = [self.m_marsdk getProvider];
 
-    if( provider == nil )
-    {
+    if (provider == nil) {
         return;
     }
 
@@ -128,8 +126,7 @@
 
     id<iOSMARSDKProviderInterface> provider = [self.m_marsdk getProvider];
 
-    if( provider == nil )
-    {
+    if (provider == nil) {
         return;
     }
 
@@ -145,8 +142,7 @@
 
     id<iOSMARSDKProviderInterface> provider = [self.m_marsdk getProvider];
 
-    if( provider == nil )
-    {
+    if (provider == nil) {
         return;
     }
 

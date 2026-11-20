@@ -26,16 +26,18 @@
 - (instancetype)init {
     self = [super init];
 
-    if (self) {
-        self.m_closed = NO;
-
-        self.m_sendFine = -1;
-        self.m_acceptFine = -1;
-        self.m_time = 0.0;
-
-        self.m_config = nil;
-        self.m_adRevenue = 0.0;
+    if (self == nil) {
+        return nil;
     }
+
+    self.m_closed = NO;
+
+    self.m_sendFine = -1;
+    self.m_acceptFine = -1;
+    self.m_time = 0.0;
+
+    self.m_config = nil;
+    self.m_adRevenue = 0.0;
 
     return self;
 }
@@ -263,7 +265,7 @@
 - (NSString *)getCurrentReportingWindow {
     NSTimeInterval current_time = [[NSDate date] timeIntervalSince1970];
 
-    for(NSDictionary * window in self.m_config[@"windows"]) {
+    for (NSDictionary * window in self.m_config[@"windows"]) {
         NSString * duration_str = window[@"duration"];
 
         NSTimeInterval duration = [AppleISO8601Date NSTimeIntervalFromISO8601Duration:duration_str];
@@ -281,7 +283,7 @@
 }
 
 - (NSArray *)getConversionValue:(NSString *)window_id withValue:(double)value {
-    for(NSDictionary * condition in [self.m_config[@"conditions"] reverseObjectEnumerator]) {
+    for (NSDictionary * condition in [self.m_config[@"conditions"] reverseObjectEnumerator]) {
         double threshold = [condition[@"threshold"] doubleValue];
 
         if (threshold > value) {
@@ -290,7 +292,7 @@
 
         NSNumber * fine = condition[@"fine"];
 
-        for(NSDictionary * coarse in condition[@"coarses"]) {
+        for (NSDictionary * coarse in condition[@"coarses"]) {
             NSString * coarse_window_id = coarse[@"window"];
 
             if ([coarse_window_id isEqualToString:window_id] == NO) {

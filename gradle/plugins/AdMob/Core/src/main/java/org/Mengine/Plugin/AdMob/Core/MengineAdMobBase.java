@@ -154,7 +154,7 @@ public class MengineAdMobBase extends AdListener implements MengineAdMobAdInterf
             m_retryHandler = MengineUtils.performOnMainThreadDelayed(() -> {
                 m_retryHandler = null;
 
-                if (m_plugin.getMengineActivity() != activity) {
+                if (MengineUtils.isCurrentActivity(activity, m_plugin.getMengineActivity()) == false) {
                     return;
                 }
 

@@ -21,7 +21,7 @@
 - (void)oniOSAppLovinConsentFlowShowSuccess {
     pybind::object py_cb = [self getMethod:@"oniOSAppLovinConsentFlowShowSuccessful"];
 
-    if( py_cb.is_callable() == false ) {
+    if (py_cb.is_callable() == false) {
         return;
     }
 
@@ -31,7 +31,7 @@
 - (void)oniOSAppLovinConsentFlowShowFailed {
     pybind::object py_cb = [self getMethod:@"oniOSAppLovinConsentFlowShowFailed"];
 
-    if( py_cb.is_callable() == false ) {
+    if (py_cb.is_callable() == false) {
         return;
     }
 

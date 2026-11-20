@@ -16,8 +16,7 @@ typedef NSMutableArray<iOSNativePythonCallbackDesc *> iOSNativePythonCallbacks;
 typedef NSMutableDictionary<NSString *, iOSNativePythonCallbacks *> iOSNativePythonMethods;
 typedef NSMutableDictionary<NSString *, iOSNativePythonMethods *> iOSNativePythonCallbacksMap;
 
-@implementation iOSNativePythonPlugin
-{
+@implementation iOSNativePythonPlugin {
     iOSNativePythonCallbacksMap * m_callbacks;
 }
 
@@ -33,6 +32,10 @@ typedef NSMutableDictionary<NSString *, iOSNativePythonMethods *> iOSNativePytho
 
 - (instancetype)init {
     self = [super init];
+
+    if (self == nil) {
+        return nil;
+    }
 
     m_callbacks = [NSMutableDictionary dictionary];
 
@@ -68,28 +71,24 @@ typedef NSMutableDictionary<NSString *, iOSNativePythonMethods *> iOSNativePytho
                              method:(NSString *)method
                            callback:(const pybind::object &)cb
                                args:(const pybind::args &)args {
-    if( plugin == nil )
-    {
+    if (plugin == nil) {
         plugin = @"";
     }
 
-    if( method == nil )
-    {
+    if (method == nil) {
         method = @"";
     }
 
     iOSNativePythonMethods * pluginMethods = m_callbacks[plugin];
 
-    if( pluginMethods == nil )
-    {
+    if (pluginMethods == nil) {
         pluginMethods = [NSMutableDictionary dictionary];
         m_callbacks[plugin] = pluginMethods;
     }
 
     iOSNativePythonCallbacks * callbacks = pluginMethods[method];
 
-    if( callbacks == nil )
-    {
+    if (callbacks == nil) {
         callbacks = [NSMutableArray array];
         pluginMethods[method] = callbacks;
     }
@@ -103,20 +102,17 @@ typedef NSMutableDictionary<NSString *, iOSNativePythonMethods *> iOSNativePytho
 - (void)removeAppleCallback:(NSString *)plugin
                      method:(NSString *)method
                    callback:(const pybind::object &)cb {
-    if( plugin == nil )
-    {
+    if (plugin == nil) {
         plugin = @"";
     }
 
-    if( method == nil )
-    {
+    if (method == nil) {
         method = @"";
     }
 
     iOSNativePythonMethods * pluginMethods = m_callbacks[plugin];
 
-    if( pluginMethods == nil )
-    {
+    if (pluginMethods == nil) {
         IOS_LOGGER_ERROR( @"invalid remove iOS callback plugin '%@' method '%@' not found"
             , plugin
             , method
@@ -127,8 +123,7 @@ typedef NSMutableDictionary<NSString *, iOSNativePythonMethods *> iOSNativePytho
 
     iOSNativePythonCallbacks * callbacks = pluginMethods[method];
 
-    if( callbacks == nil )
-    {
+    if (callbacks == nil) {
         IOS_LOGGER_ERROR( @"invalid remove iOS callback plugin '%@' method '%@' not found"
             , plugin
             , method
@@ -138,19 +133,16 @@ typedef NSMutableDictionary<NSString *, iOSNativePythonMethods *> iOSNativePytho
     }
 
     NSUInteger index = NSNotFound;
-    for( NSUInteger i = 0; i != callbacks.count; ++i )
-    {
+    for (NSUInteger i = 0; i != callbacks.count; ++i) {
         iOSNativePythonCallbackDesc * desc = callbacks[i];
 
-        if( desc->m_cb.ptr() == cb.ptr() )
-        {
+        if (desc->m_cb.ptr() == cb.ptr()) {
             index = i;
             break;
         }
     }
 
-    if( index == NSNotFound )
-    {
+    if (index == NSNotFound) {
         IOS_LOGGER_ERROR( @"invalid remove iOS callback plugin '%@' method '%@' not found [cb]"
             , plugin
             , method
@@ -161,13 +153,11 @@ typedef NSMutableDictionary<NSString *, iOSNativePythonMethods *> iOSNativePytho
 
     [callbacks removeObjectAtIndex:index];
 
-    if( callbacks.count == 0 )
-    {
+    if (callbacks.count == 0) {
         [pluginMethods removeObjectForKey:method];
     }
 
-    if( pluginMethods.count == 0 )
-    {
+    if (pluginMethods.count == 0) {
         [m_callbacks removeObjectForKey:plugin];
     }
 }

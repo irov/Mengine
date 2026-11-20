@@ -502,10 +502,8 @@ namespace Mengine
 
         for( ;; )
         {
-            @autoreleasepool
-            {
-                if( this->updatePlatform() == false )
-                {
+            @autoreleasepool {
+                if (this->updatePlatform() == false) {
                     break;
                 }
 
@@ -515,8 +513,7 @@ namespace Mengine
 
                 m_prevTime = currentTime;
 
-                if( this->isNeedWindowRender() == false )
-                {
+                if (this->isNeedWindowRender() == false) {
                     THREAD_SYSTEM()
                         ->sleep( 100 );
 
@@ -525,8 +522,7 @@ namespace Mengine
 
                 this->tickPlatform( frameTime );
 
-                if( this->renderPlatform() == false )
-                {
+                if (this->renderPlatform() == false) {
                     THREAD_SYSTEM()
                         ->sleep( 100 );
 
@@ -536,22 +532,19 @@ namespace Mengine
                 bool vsync = APPLICATION_SERVICE()
                     ->getVSync();
 
-                if( vsync == true )
-                {
+                if (vsync == true) {
                     continue;
                 }
 
                 bool OPTION_maxfps = HAS_OPTION( "maxfps" );
 
-                if( OPTION_maxfps == true )
-                {
+                if (OPTION_maxfps == true) {
                     continue;
                 }
 
                 double frameDuration = Helper::getElapsedTime() - currentTime;
 
-                if( frameDuration >= MENGINE_PLATFORM_TARGET_FRAME_TIME )
-                {
+                if (frameDuration >= MENGINE_PLATFORM_TARGET_FRAME_TIME) {
                     continue;
                 }
 
@@ -1142,8 +1135,7 @@ namespace Mengine
             [alert addButtonWithTitle:@"OK"];
 
             [alert beginSheetModalForWindow:window completionHandler:^(NSModalResponse returnCode) {
-                if( returnCode != NSAlertFirstButtonReturn )
-                {
+                if (returnCode != NSAlertFirstButtonReturn) {
                     LOGGER_ERROR( "system dialog returned invalid response [%ld]"
                         , (long)returnCode
                     );
@@ -1491,47 +1483,38 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MacOSPlatformService::processEvents_()
     {
-        @autoreleasepool
-        {
-            for( ;; )
-            {
+        @autoreleasepool {
+            for (;;) {
                 NSEvent * event = [NSApp nextEventMatchingMask:NSEventMaskAny
                                                      untilDate:[NSDate distantPast]
                                                         inMode:NSDefaultRunLoopMode
                                                        dequeue:YES];
 
-                if( event == nil )
-                {
+                if (event == nil) {
                     break;
                 }
 
                 NSView * view = this->getNSView();
                 bool handled = false;
 
-                for( const MacOSEventHandlerDesc & desc : m_eventHandlers )
-                {
-                    if( desc.lambda( view, event ) == true )
-                    {
+                for (const MacOSEventHandlerDesc & desc : m_eventHandlers) {
+                    if (desc.lambda( view, event ) == true) {
                         handled = true;
                         break;
                     }
                 }
 
-                if( handled == false && m_input != nullptr )
-                {
+                if (handled == false && m_input != nullptr) {
                     m_input->handleEvent( view, event );
                 }
 
-                if( handled == false && [event type] == NSEventTypeKeyDown )
-                {
+                if (handled == false && [event type] == NSEventTypeKeyDown) {
                     unsigned short keyCode = [event keyCode];
                     NSEventModifierFlags modifierFlags = [event modifierFlags];
 
-                    if( keyCode == kVK_Return && (modifierFlags & NSEventModifierFlagOption) != 0 )
-                    {
-                        if( APPLICATION_SERVICE()
-                            ->getAllowFullscreenSwitchShortcut() == true )
-                        {
+                    if (keyCode == kVK_Return && (modifierFlags & NSEventModifierFlagOption) != 0) {
+                        if (APPLICATION_SERVICE()
+                            ->getAllowFullscreenSwitchShortcut() == true) {
                             bool fullscreen = APPLICATION_SERVICE()
                                 ->getFullscreenMode();
 

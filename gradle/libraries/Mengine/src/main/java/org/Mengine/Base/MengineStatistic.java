@@ -1,14 +1,12 @@
 package org.Mengine.Base;
 
-import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Size;
 
 public class MengineStatistic {
     public static final MengineTag TAG = MengineTag.of("MNGStatistic");
 
-    private static final Bundle STATISTICS = new Bundle();
+    private static final MengineBundle STATISTICS = new MengineBundle();
     private static final Object STATISTICS_LOCK = new Object();
 
     static public void load(@NonNull MengineApplication application) {

@@ -98,20 +98,17 @@ namespace Mengine
     bool AudioUnitSoundSystem::_initializeService()
     {
 #if defined(MENGINE_PLATFORM_IOS)
-        @autoreleasepool
-        {
+        @autoreleasepool {
             AVAudioSession * session = [AVAudioSession sharedInstance];
 
             NSError * error = nil;
-            if( [session setCategory:AVAudioSessionCategoryAmbient error:&error] == NO )
-            {
+            if ([session setCategory:AVAudioSessionCategoryAmbient error:&error] == NO) {
                 IOS_LOGGER_WARNING( @"failed to set AVAudioSession category [%@]"
                     , error.localizedDescription
                 );
             }
 
-            if( [session setActive:YES error:&error] == NO )
-            {
+            if ([session setActive:YES error:&error] == NO) {
                 IOS_LOGGER_WARNING( @"failed to activate AVAudioSession [%@]"
                     , error.localizedDescription
                 );
@@ -119,8 +116,7 @@ namespace Mengine
 
             double sampleRate = session.sampleRate;
 
-            if( sampleRate > 0.0 )
-            {
+            if (sampleRate > 0.0) {
                 m_outputSampleRate = sampleRate;
             }
         }
@@ -138,8 +134,7 @@ namespace Mengine
         }
 
 #if defined(MENGINE_PLATFORM_IOS)
-        @autoreleasepool
-        {
+        @autoreleasepool {
             AVAudioSession * session = [AVAudioSession sharedInstance];
 
             AudioUnitSoundSystem * soundSystem = this;
@@ -148,18 +143,14 @@ namespace Mengine
                 addObserverForName:AVAudioSessionInterruptionNotification
                 object:session
                 queue:nil
-                usingBlock:^( NSNotification * _notification )
-                {
+                usingBlock:^(NSNotification * _notification) {
                     NSDictionary * info = _notification.userInfo;
                     NSNumber * interruptionType = info[AVAudioSessionInterruptionTypeKey];
                     AVAudioSessionInterruptionType type = (AVAudioSessionInterruptionType)interruptionType.unsignedIntegerValue;
 
-                    if( type == AVAudioSessionInterruptionTypeBegan )
-                    {
+                    if (type == AVAudioSessionInterruptionTypeBegan) {
                         soundSystem->handleAudioInterruption_( true );
-                    }
-                    else if( type == AVAudioSessionInterruptionTypeEnded )
-                    {
+                    } else if (type == AVAudioSessionInterruptionTypeEnded) {
                         soundSystem->handleAudioInterruption_( false );
                     }
                 }
@@ -760,12 +751,10 @@ namespace Mengine
 
         IOS_LOGGER_MESSAGE( @"audio session interruption ended, restarting output" );
 
-        @autoreleasepool
-        {
+        @autoreleasepool {
             AVAudioSession * session = [AVAudioSession sharedInstance];
             NSError * error = nil;
-            if( [session setActive:YES error:&error] == NO )
-            {
+            if ([session setActive:YES error:&error] == NO) {
                 IOS_LOGGER_WARNING( @"failed to reactivate AVAudioSession [%@]"
                     , error.localizedDescription
                 );
@@ -789,11 +778,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AudioUnitSoundSystem::deactivateAudioSession_()
     {
-        @autoreleasepool
-        {
+        @autoreleasepool {
             NSError * error = nil;
-            if( [[AVAudioSession sharedInstance] setActive:NO withOptions:AVAudioSessionSetActiveOptionNotifyOthersOnDeactivation error:&error] == NO )
-            {
+            if ([[AVAudioSession sharedInstance] setActive:NO withOptions:AVAudioSessionSetActiveOptionNotifyOthersOnDeactivation error:&error] == NO) {
                 IOS_LOGGER_WARNING( @"failed to deactivate AVAudioSession [%@]"
                     , error.localizedDescription
                 );

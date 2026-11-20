@@ -1384,7 +1384,7 @@ public class MengineActivity extends AppCompatActivity {
             return false;
         }
 
-        if (this.isFinishing() == true || this.isDestroyed() == true) {
+        if (MengineUtils.isActivityAvailable(this) == false) {
             return false;
         }
 

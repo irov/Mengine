@@ -292,15 +292,15 @@ public class MengineSplashScreenPlugin extends MengineService implements Mengine
     private void hideSplash(@NonNull MengineActivity activity) {
         this.setState("splashscreen.state", "hide");
 
-        if (m_image == null) {
-            this.logWarning("hide splash screen failed, image is null");
-
-            return;
-        }
-
         MengineUtils.performOnMainThread(() -> {
-            if (activity.isFinishing() == true || activity.isDestroyed() == true) {
-                MengineSplashScreenPlugin.this.logInfo("activity is finishing, skip hide splash screen");
+            if (MengineUtils.isCurrentActivity(activity, this.getMengineActivity()) == false) {
+                this.logInfo("activity is unavailable, skip hide splash screen");
+
+                return;
+            }
+
+            if (m_image == null) {
+                this.logWarning("hide splash screen failed, image is null");
 
                 return;
             }

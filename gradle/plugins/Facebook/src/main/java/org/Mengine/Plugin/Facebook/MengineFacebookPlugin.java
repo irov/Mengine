@@ -489,7 +489,14 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
                 return;
             }
 
-            String objectString = object != null ? object.toString() : "";
+            String objectString = object != null ? MengineUtils.jsonStringFromJSONObject(object) : "";
+
+            if (objectString == null) {
+                this.nativeCall("onFacebookUserFetchError", ERROR_CODE_UNKNOWN, new IllegalStateException("Cannot serialize Facebook user"));
+
+                return;
+            }
+
             String responseString = response.toString();
 
             this.nativeCall("onFacebookUserFetchSuccess", objectString, responseString);
@@ -636,9 +643,11 @@ public class MengineFacebookPlugin extends MengineService implements MengineList
             try {
                 pictureURL = responseObject.getJSONObject("data").getString("url");
             } catch (final JSONException e) {
+                String responseString = MengineUtils.jsonStringFromJSONObject(responseObject);
+
                 this.logException(e, Map.of(
                     "graphPath", graphPath,
-                    "response", responseObject.toString()
+                    "response", responseString != null ? responseString : ""
                 ));
 
                 this.nativeCall("onFacebookProfilePictureLinkGetError", ERROR_CODE_UNKNOWN, e);

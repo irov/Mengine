@@ -23,8 +23,7 @@
 #   include "Kernel/ScriptEmbeddingHelper.h"
 #endif
 
-@implementation iOSStoreInAppPurchasePlugin
-{
+@implementation iOSStoreInAppPurchasePlugin {
     Mengine::iOSStoreInAppPurchasePaymentTransactionProviderInterfacePtr m_paymentTransactionProvider;
 
     Mengine::FactoryInterfacePtr m_factoryPaymentTransaction;
@@ -40,15 +39,16 @@
 - (instancetype)init {
     self = [super init];
 
-    if( self != nil )
-    {
-        m_paymentTransactionProvider = nullptr;
-        m_productsRequestDelegates = [NSHashTable weakObjectsHashTable];
-        m_subscriptions = [[MengineStoreSubscriptions alloc] init];
-        m_subscriptionGeneration = 0;
-        m_entitlementGeneration = 0;
-        m_entitlementGenerations = [NSMutableDictionary dictionary];
+    if (self == nil) {
+        return nil;
     }
+
+    m_paymentTransactionProvider = nullptr;
+    m_productsRequestDelegates = [NSHashTable weakObjectsHashTable];
+    m_subscriptions = [[MengineStoreSubscriptions alloc] init];
+    m_subscriptionGeneration = 0;
+    m_entitlementGeneration = 0;
+    m_entitlementGenerations = [NSMutableDictionary dictionary];
 
     return self;
 }
@@ -68,12 +68,10 @@
 
     [m_productsRequestDelegates removeAllObjects];
 
-    for( iOSStoreInAppPurchaseProductsRequestDelegate * delegate in delegates )
-    {
+    for (iOSStoreInAppPurchaseProductsRequestDelegate * delegate in delegates) {
         Mengine::iOSStoreInAppPurchaseProductsRequestInterfacePtr request = delegate.m_request;
 
-        if( request == nullptr )
-        {
+        if (request == nullptr) {
             continue;
         }
 
@@ -185,8 +183,7 @@
 }
 
 - (BOOL)canMakePayments {
-    if( [SKPaymentQueue canMakePayments] == NO )
-    {
+    if ([SKPaymentQueue canMakePayments] == NO) {
         return NO;
     }
 
@@ -196,8 +193,7 @@
 - (Mengine::iOSStoreInAppPurchaseProductsRequestInterfacePtr)requestProducts:(NSSet<NSString *> *)consumableIdentifiers
                                                       nonconsumableIdentifiers:(NSSet<NSString *> *)nonconsumableIdentifiers
                                                                             cb:(const Mengine::iOSStoreInAppPurchaseProductsResponseInterfacePtr &)cb {
-    if( [consumableIdentifiers intersectsSet:nonconsumableIdentifiers] == YES )
-    {
+    if ([consumableIdentifiers intersectsSet:nonconsumableIdentifiers] == YES) {
         IOS_LOGGER_ERROR( @"requestProducts: consumable: %@ nonconsumable: %@ not unique"
             , consumableIdentifiers
             , nonconsumableIdentifiers
@@ -238,8 +234,7 @@
 }
 
 - (BOOL)isOwnedProduct:(NSString *)productIdentifier {
-    if( [[iOSStoreInAppPurchaseEntitlements sharedInstance] isPurchased:productIdentifier] == NO )
-    {
+    if ([[iOSStoreInAppPurchaseEntitlements sharedInstance] isPurchased:productIdentifier] == NO) {
         return NO;
     }
 
@@ -247,8 +242,7 @@
 }
 
 - (BOOL)purchaseProduct:(const Mengine::iOSStoreInAppPurchaseProductInterfacePtr &)product {
-    if( [SKPaymentQueue canMakePayments] == NO )
-    {
+    if ([SKPaymentQueue canMakePayments] == NO) {
         return NO;
     }
 
@@ -277,8 +271,7 @@
     [m_subscriptions query:productIdentifier completion:^(NSDictionary * status) {
         iOSStoreInAppPurchasePlugin * strongSelf = weakSelf;
 
-        if( strongSelf == nil )
-        {
+        if (strongSelf == nil) {
             return;
         }
 
@@ -315,8 +308,7 @@
     [m_subscriptions queryEntitlements:identifiers completion:^(NSDictionary<NSString *, NSNumber *> * entitlements) {
         iOSStoreInAppPurchasePlugin * strongSelf = weakSelf;
 
-        if( strongSelf == nil )
-        {
+        if (strongSelf == nil) {
             return;
         }
 
@@ -327,8 +319,7 @@
                 @synchronized (strongSelf) {
                     currentGeneration = strongSelf->m_entitlementGenerations[productIdentifier];
 
-                    if( currentGeneration.unsignedIntValue == entitlementGeneration )
-                    {
+                    if (currentGeneration.unsignedIntValue == entitlementGeneration) {
                         [strongSelf->m_entitlementGenerations removeObjectForKey:productIdentifier];
                     }
                 }

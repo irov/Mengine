@@ -13,87 +13,111 @@ import org.Mengine.Base.MengineNetwork;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineListenerActivity;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
+import org.Mengine.Base.MengineUtils;
 
 public class MengineGoogleInAppReviewsPlugin extends MengineService implements MengineListenerActivity {
     public static final String SERVICE_NAME = "GInAppReviews";
     public static final boolean SERVICE_EMBEDDING = true;
 
     private ReviewManager m_manager;
-    private ReviewInfo m_reviewInfo;
+    private boolean m_reviewInProgress;
 
     @Override
     public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) throws MengineServiceInvalidInitializeException {
         m_manager = ReviewManagerFactory.create(activity);
-
-        m_manager.requestReviewFlow().addOnCompleteListener(task -> {
-            if (task.isSuccessful() == false) {
-                Exception exception = task.getException();
-
-                if (exception != null) {
-                    this.logWarning("requestReviewFlow error message: %s"
-                        , exception.getMessage()
-                    );
-                } else {
-                    this.logWarning("requestReviewFlow unknown error");
-                }
-
-                return;
-            }
-
-            this.logInfo("requestReviewFlow success");
-
-            m_reviewInfo = task.getResult();
-
-            this.activateSemaphore("GoogleInAppReviewsReady");
-        });
+        this.activateSemaphore("GoogleInAppReviewsReady");
     }
 
     @Override
     public void onDestroy(@NonNull MengineActivity activity) {
         m_manager = null;
-        m_reviewInfo = null;
+        m_reviewInProgress = false;
     }
 
     public void launchTheInAppReview() {
-        if (m_reviewInfo == null) {
-            this.logError("[ERROR] launchTheInAppReview reviewInfo == null");
+        MengineUtils.performOnMainThread(this::requestReviewFlow);
+    }
 
-            this.nativeCall("onGoogleInAppReviewsLaunchingTheReviewError", new RuntimeException("reviewInfo == null"));
-
+    private void requestReviewFlow() {
+        if (m_reviewInProgress == true) {
             return;
         }
 
         if (MengineNetwork.isNetworkAvailable() == false) {
-            this.logError("[ERROR] launchTheInAppReview network is not available");
+            this.logInfo("in-app review unavailable while offline");
 
-            this.nativeCall("onGoogleInAppReviewsLaunchingTheReviewError", new RuntimeException("network is not available"));
+            this.nativeCall("onGoogleInAppReviewsRequestReviewError", new IllegalStateException("network is not available"));
 
             return;
         }
 
         MengineActivity activity = this.getMengineActivity();
 
-        if (activity == null) {
-            this.logError("[ERROR] launchTheInAppReview invalid activity");
-
-            this.nativeCall("onGoogleInAppReviewsLaunchingTheReviewError", new RuntimeException("invalid activity"));
+        if (MengineUtils.isActivityAvailable(activity) == false) {
+            this.nativeCall("onGoogleInAppReviewsRequestReviewError", new IllegalStateException("review activity is not available"));
 
             return;
         }
 
+        ReviewManager manager = m_manager;
+
+        if (manager == null) {
+            this.nativeCall("onGoogleInAppReviewsRequestReviewError", new IllegalStateException("review manager is not available"));
+
+            return;
+        }
+
+        m_reviewInProgress = true;
+
+        manager.requestReviewFlow().addOnCompleteListener(task -> {
+            if (m_manager != manager) {
+                return;
+            }
+
+            if (task.isSuccessful() == false) {
+                m_reviewInProgress = false;
+                Exception exception = task.getException();
+
+                this.logWarning("requestReviewFlow failed: %s"
+                    , exception
+                );
+
+                this.nativeCall("onGoogleInAppReviewsRequestReviewError", exception);
+
+                return;
+            }
+
+            if (MengineUtils.isCurrentActivity(activity, this.getMengineActivity()) == false) {
+                m_reviewInProgress = false;
+
+                return;
+            }
+
+            ReviewInfo reviewInfo = task.getResult();
+            this.launchReviewFlow(activity, manager, reviewInfo);
+        });
+    }
+
+    private void launchReviewFlow(@NonNull MengineActivity activity, @NonNull ReviewManager manager, @NonNull ReviewInfo reviewInfo) {
         this.logInfo("launchTheInAppReview");
 
         this.buildEvent("mng_inapp_review")
             .log();
 
-        m_manager.launchReviewFlow(activity, m_reviewInfo).addOnCompleteListener(task -> {
+        manager.launchReviewFlow(activity, reviewInfo).addOnCompleteListener(task -> {
+            if (m_manager != manager) {
+                return;
+            }
+
+            m_reviewInProgress = false;
+
             if (task.isSuccessful() == false) {
                 Exception exception = task.getException();
 
                 if (exception != null) {
                     this.logWarning("launchReviewFlow error message: %s trace: %s"
                         , exception.getMessage()
-                        , exception.fillInStackTrace()
+                        , exception
                     );
                 } else {
                     this.logWarning("launchReviewFlow unknown error");

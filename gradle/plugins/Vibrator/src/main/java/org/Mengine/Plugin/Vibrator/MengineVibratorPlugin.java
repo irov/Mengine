@@ -1,6 +1,7 @@
 package org.Mengine.Plugin.Vibrator;
 
 import org.Mengine.Base.MengineApplication;
+import org.Mengine.Base.MengineBundle;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineListenerActivity;
@@ -40,8 +41,8 @@ public class MengineVibratorPlugin extends MengineService implements MengineList
     }
 
     @Override
-    public Bundle onSave(@NonNull MengineApplication application) {
-        Bundle bundle = new Bundle();
+    public MengineBundle onSave(@NonNull MengineApplication application) {
+        MengineBundle bundle = new MengineBundle();
 
         bundle.putInt("version", SAVE_VERSION);
         bundle.putBoolean("mute", m_mute);
@@ -50,7 +51,7 @@ public class MengineVibratorPlugin extends MengineService implements MengineList
     }
 
     @Override
-    public void onLoad(@NonNull MengineApplication application, @NonNull Bundle bundle) {
+    public void onLoad(@NonNull MengineApplication application, @NonNull MengineBundle bundle) {
         int version = bundle.getInt("version", 0);
 
         m_mute = bundle.getBoolean("mute", false);
@@ -63,7 +64,11 @@ public class MengineVibratorPlugin extends MengineService implements MengineList
         }
 
         activity.runOnUiThread(() -> {
-            if (this.getMengineActivity() != activity || activity.isFinishing() == true || m_mute == true) {
+            if (MengineUtils.isCurrentActivity(activity, this.getMengineActivity()) == false) {
+                return;
+            }
+
+            if (m_mute == true) {
                 return;
             }
 

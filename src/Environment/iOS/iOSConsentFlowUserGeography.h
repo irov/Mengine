@@ -2,8 +2,7 @@
 
 #import "Environment/Apple/AppleIncluder.h"
 
-typedef NS_ENUM(NSInteger, iOSConsentFlowUserGeography)
-{    
+typedef NS_ENUM(NSInteger, iOSConsentFlowUserGeography) {
     /**
      * User's geography is unknown.
      */

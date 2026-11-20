@@ -11,6 +11,10 @@
 - (instancetype _Nonnull) initWithFacebook:(id<iOSFacebookInterface> _Nonnull)facebook {
     self = [super init];
 
+    if (self == nil) {
+        return nil;
+    }
+
     self.m_facebook = facebook;
 
     return self;
@@ -21,26 +25,21 @@
 
     id<iOSFacebookProviderInterface> provider = [self.m_facebook getProvider];
 
-    if( provider == nil )
-    {
+    if (provider == nil) {
         return;
     }
 
     id postId = results[@"postId"];
 
-    if( postId == nil )
-    {
+    if (postId == nil) {
         postId = results[@"post_id"];
     }
 
     NSString * message = @"";
 
-    if( [postId isKindOfClass:[NSString class]] == YES )
-    {
+    if ([postId isKindOfClass:[NSString class]] == YES) {
         message = (NSString *)postId;
-    }
-    else if( postId != nil )
-    {
+    } else if (postId != nil) {
         message = [postId description];
     }
 
@@ -54,8 +53,7 @@
 
     id<iOSFacebookProviderInterface> provider = [self.m_facebook getProvider];
 
-    if( provider == nil )
-    {
+    if (provider == nil) {
         return;
     }
 
@@ -72,8 +70,7 @@
 
     id<iOSFacebookProviderInterface> provider = [self.m_facebook getProvider];
 
-    if( provider == nil )
-    {
+    if (provider == nil) {
         return;
     }
 

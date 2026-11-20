@@ -3,13 +3,11 @@
 #include "Config/Config.h"
 
 //////////////////////////////////////////////////////////////////////////
-int main( int _argc, char ** _argv )
-{
+int main(int _argc, char ** _argv) {
     MENGINE_UNUSED( _argc );
     MENGINE_UNUSED( _argv );
 
-    @autoreleasepool
-    {
+    @autoreleasepool {
         [NSApplication sharedApplication];
 
         BOOL hidden = [NSProcessInfo.processInfo.arguments containsObject:@"--windowhidden"];
@@ -20,8 +18,7 @@ int main( int _argc, char ** _argv )
         Class delegateClass = NSClassFromString( delegateName );
         MacOSWebViewApplicationDelegate * delegate = [[delegateClass alloc] init];
 
-        if( delegate == nil )
-        {
+        if (delegate == nil) {
             return EXIT_FAILURE;
         }
 

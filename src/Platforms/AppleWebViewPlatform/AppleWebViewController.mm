@@ -30,8 +30,7 @@ typedef UIImage AppleWebViewSnapshotImage;
 
 #pragma mark - Layout
 
-+ (void)addPinnedSubview:(AppleWebViewView *)_view toParent:(AppleWebViewView *)_parent
-{
++ (void)addPinnedSubview:(AppleWebViewView *)_view toParent:(AppleWebViewView *)_parent {
     _view.translatesAutoresizingMaskIntoConstraints = NO;
     [_parent addSubview:_view];
 
@@ -46,14 +45,12 @@ typedef UIImage AppleWebViewSnapshotImage;
 
 #pragma mark - Lifecycle
 
-- (BOOL)initializeBrowser
-{
+- (BOOL)initializeBrowser {
     NSURL * scriptURL = [NSBundle.mainBundle URLForResource:@"MengineWebViewBridge" withExtension:@"js"];
     NSError * error = nil;
     NSString * script = [NSString stringWithContentsOfURL:scriptURL encoding:NSUTF8StringEncoding error:&error];
 
-    if( script == nil )
-    {
+    if (script == nil) {
 #if defined(MENGINE_PLATFORM_MACOS)
         [AppleLog withFormat:@"WebView bridge script is unavailable"];
 #else
@@ -134,8 +131,7 @@ typedef UIImage AppleWebViewSnapshotImage;
     return YES;
 }
 
-- (void)close
-{
+- (void)close {
     m_documentCommitted = false;
 
     WEBVIEW_BRIDGE_SERVICE()
@@ -161,20 +157,16 @@ typedef UIImage AppleWebViewSnapshotImage;
 
 #pragma mark - Navigation
 
-- (BOOL)openContent:(const Mengine::FileGroupInterfacePtr &)_fileGroup entry:(const Mengine::FilePath &)_entry
-{
-    if( _fileGroup == nullptr )
-    {
+- (BOOL)openContent:(const Mengine::FileGroupInterfacePtr &)_fileGroup entry:(const Mengine::FilePath &)_entry {
+    if (_fileGroup == nullptr) {
         return NO;
     }
 
-    if( _entry.empty() == true )
-    {
+    if (_entry.empty() == true) {
         return NO;
     }
 
-    if( _fileGroup->existFile( _entry, false ) == false )
-    {
+    if (_fileGroup->existFile( _entry, false ) == false) {
         return NO;
     }
 
@@ -189,8 +181,7 @@ typedef UIImage AppleWebViewSnapshotImage;
 
     NSURL * url = components.URL;
 
-    if( url == nil )
-    {
+    if (url == nil) {
         return NO;
     }
 
@@ -202,34 +193,29 @@ typedef UIImage AppleWebViewSnapshotImage;
     return YES;
 }
 
-- (BOOL)openURL:(NSString *)_url
-{
+- (BOOL)openURL:(NSString *)_url {
     NSURL * url = [NSURL URLWithString:_url];
     NSString * scheme = url.scheme;
 
-    if( [scheme isEqualToString:@"https"] == NO )
-    {
+    if ([scheme isEqualToString:@"https"] == NO) {
         return NO;
     }
 
     NSUInteger hostLength = url.host.length;
 
-    if( hostLength == 0 )
-    {
+    if (hostLength == 0) {
         return NO;
     }
 
     NSString * user = url.user;
 
-    if( user != nil )
-    {
+    if (user != nil) {
         return NO;
     }
 
     NSString * password = url.password;
 
-    if( password != nil )
-    {
+    if (password != nil) {
         return NO;
     }
 
@@ -241,20 +227,17 @@ typedef UIImage AppleWebViewSnapshotImage;
     return YES;
 }
 
-- (void)reload
-{
+- (void)reload {
     WKWebView * browser = self.m_webView;
     m_allowedNavigationURL = browser.URL;
     [browser reload];
 }
 
-- (BOOL)goBack
-{
+- (BOOL)goBack {
     WKWebView * browser = self.m_webView;
     BOOL canGoBack = browser.canGoBack;
 
-    if( canGoBack == NO )
-    {
+    if (canGoBack == NO) {
         return NO;
     }
 
@@ -264,13 +247,11 @@ typedef UIImage AppleWebViewSnapshotImage;
     return YES;
 }
 
-- (BOOL)goForward
-{
+- (BOOL)goForward {
     WKWebView * browser = self.m_webView;
     BOOL canGoForward = browser.canGoForward;
 
-    if( canGoForward == NO )
-    {
+    if (canGoForward == NO) {
         return NO;
     }
 
@@ -280,76 +261,64 @@ typedef UIImage AppleWebViewSnapshotImage;
     return YES;
 }
 
-- (void)setExternalNavigation:(const Mengine::WebViewPlatformExtensionInterface::LambdaExternalNavigation &)_callback
-{
+- (void)setExternalNavigation:(const Mengine::WebViewPlatformExtensionInterface::LambdaExternalNavigation &)_callback {
     m_externalNavigation = _callback;
 }
 
 #pragma mark - URL validation
 
-- (BOOL)isTrustedURL:(NSURL *)_url
-{
+- (BOOL)isTrustedURL:(NSURL *)_url {
     NSString * scheme = _url.scheme;
 
-    if( [scheme isEqualToString:@"mengine"] == NO )
-    {
+    if ([scheme isEqualToString:@"mengine"] == NO) {
         return NO;
     }
 
     NSString * host = _url.host;
 
-    if( [host isEqualToString:@"localhost"] == NO )
-    {
+    if ([host isEqualToString:@"localhost"] == NO) {
         return NO;
     }
 
     NSNumber * port = _url.port;
 
-    if( port != nil )
-    {
+    if (port != nil) {
         return NO;
     }
 
     NSString * user = _url.user;
 
-    if( user != nil )
-    {
+    if (user != nil) {
         return NO;
     }
 
     NSString * password = _url.password;
 
-    if( password != nil )
-    {
+    if (password != nil) {
         return NO;
     }
 
     return YES;
 }
 
-- (BOOL)isReadableContentURL:(NSURL *)_url
-{
-    if( [self isTrustedURL:_url] == NO )
-    {
+- (BOOL)isReadableContentURL:(NSURL *)_url {
+    if ([self isTrustedURL:_url] == NO) {
         return NO;
     }
 
     NSString * path = _url.path;
 
-    if( [path hasPrefix:@"/"] == NO )
-    {
+    if ([path hasPrefix:@"/"] == NO) {
         return NO;
     }
 
     NSArray<NSString *> * components = path.pathComponents;
 
-    if( [components containsObject:@".."] == YES )
-    {
+    if ([components containsObject:@".."] == YES) {
         return NO;
     }
 
-    if( [path containsString:@"\\"] == YES )
-    {
+    if ([path containsString:@"\\"] == YES) {
         return NO;
     }
 
@@ -357,8 +326,7 @@ typedef UIImage AppleWebViewSnapshotImage;
     NSString * nullCharacter = [NSString stringWithFormat:@"%C", nullCharacterCode];
     NSRange nullRange = [path rangeOfString:nullCharacter];
 
-    if( nullRange.location != NSNotFound )
-    {
+    if (nullRange.location != NSNotFound) {
         return NO;
     }
 
@@ -367,10 +335,8 @@ typedef UIImage AppleWebViewSnapshotImage;
 
 #pragma mark - Bridge
 
-- (void)connectWebViewBridge
-{
-    if( m_documentCommitted == false )
-    {
+- (void)connectWebViewBridge {
+    if (m_documentCommitted == false) {
         return;
     }
 
@@ -379,38 +345,32 @@ typedef UIImage AppleWebViewSnapshotImage;
     [browser evaluateJavaScript:script completionHandler:nil];
 }
 
-- (BOOL)sendJSON:(const jpp::object &)_message
-{
+- (BOOL)sendJSON:(const jpp::object &)_message {
     bool ready = WEBVIEW_BRIDGE_SERVICE()
         ->isDocumentReady();
 
-    if( ready == false )
-    {
+    if (ready == false) {
         return NO;
     }
 
     WKWebView * browser = self.m_webView;
 
-    if( browser == nil )
-    {
+    if (browser == nil) {
         return NO;
     }
 
     NSURL * url = browser.URL;
 
-    if( [self isTrustedURL:url] == NO )
-    {
+    if ([self isTrustedURL:url] == NO) {
         return NO;
     }
 
-    if( _message.is_type_object() == false )
-    {
+    if (_message.is_type_object() == false) {
         return NO;
     }
 
     Mengine::String json;
-    if( Mengine::Helper::writeJSONStringCompact( _message, &json ) == false )
-    {
+    if (Mengine::Helper::writeJSONStringCompact( _message, &json ) == false) {
         return NO;
     }
 
@@ -419,8 +379,7 @@ typedef UIImage AppleWebViewSnapshotImage;
     NSData * data = [NSData dataWithBytes:buffer length:size];
     id object = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
 
-    if( [object isKindOfClass:NSDictionary.class] == NO )
-    {
+    if ([object isKindOfClass:NSDictionary.class] == NO) {
         return NO;
     }
 
@@ -437,20 +396,17 @@ typedef UIImage AppleWebViewSnapshotImage;
 
 #pragma mark - Snapshots
 
-- (void)takeSnapshot:(const Mengine::WebViewPlatformExtensionInterface::LambdaSnapshot &)_callback
-{
+- (void)takeSnapshot:(const Mengine::WebViewPlatformExtensionInterface::LambdaSnapshot &)_callback {
     WKWebView * browser = self.m_webView;
 
-    if( m_snapshot != nullptr )
-    {
+    if (m_snapshot != nullptr) {
         Mengine::Data data;
         _callback( data, 0, 0 );
 
         return;
     }
 
-    if( browser == nil )
-    {
+    if (browser == nil) {
         Mengine::Data data;
         _callback( data, 0, 0 );
 
@@ -461,24 +417,20 @@ typedef UIImage AppleWebViewSnapshotImage;
     uint64_t revision = ++m_snapshotRevision;
 
     __weak AppleWebViewController * weakSelf = self;
-    [browser takeSnapshotWithConfiguration:nil completionHandler:^(AppleWebViewSnapshotImage * _image, NSError * _error)
-    {
+    [browser takeSnapshotWithConfiguration:nil completionHandler:^(AppleWebViewSnapshotImage * _image, NSError * _error) {
         MENGINE_UNUSED( _error );
 
         AppleWebViewController * controller = weakSelf;
 
-        if( controller == nil )
-        {
+        if (controller == nil) {
             return;
         }
 
-        if( controller->m_snapshotRevision != revision )
-        {
+        if (controller->m_snapshotRevision != revision) {
             return;
         }
 
-        if( controller->m_snapshot == nullptr )
-        {
+        if (controller->m_snapshot == nullptr) {
             return;
         }
 
@@ -487,8 +439,7 @@ typedef UIImage AppleWebViewSnapshotImage;
 
         Mengine::Data data;
 
-        if( _image == nil )
-        {
+        if (_image == nil) {
             callback( data, 0, 0 );
 
             return;
@@ -506,8 +457,7 @@ typedef UIImage AppleWebViewSnapshotImage;
         uint32_t width = static_cast<uint32_t>(_image.size.width * _image.scale);
         uint32_t height = static_cast<uint32_t>(_image.size.height * _image.scale);
 #endif
-        if( png == nil )
-        {
+        if (png == nil) {
             callback( data, width, height );
 
             return;
@@ -522,12 +472,10 @@ typedef UIImage AppleWebViewSnapshotImage;
     }];
 }
 
-- (void)cancelSnapshot
-{
+- (void)cancelSnapshot {
     ++m_snapshotRevision;
 
-    if( m_snapshot == nullptr )
-    {
+    if (m_snapshot == nullptr) {
         return;
     }
 
@@ -540,24 +488,21 @@ typedef UIImage AppleWebViewSnapshotImage;
 
 #pragma mark - WKURLSchemeHandler
 
-- (void)webView:(WKWebView *)_webView startURLSchemeTask:(id<WKURLSchemeTask>)_task
-{
+- (void)webView:(WKWebView *)_webView startURLSchemeTask:(id<WKURLSchemeTask>)_task {
     MENGINE_UNUSED( _webView );
 
     NSURL * url = _task.request.URL;
     NSString * path = url.path;
     BOOL valid = [self isReadableContentURL:url];
 
-    if( valid == NO )
-    {
+    if (valid == NO) {
         NSError * error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorNoPermissionsToReadFile userInfo:nil];
         [_task didFailWithError:error];
 
         return;
     }
 
-    if( m_fileGroup == nullptr )
-    {
+    if (m_fileGroup == nullptr) {
         NSError * error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorNoPermissionsToReadFile userInfo:nil];
         [_task didFailWithError:error];
 
@@ -568,8 +513,7 @@ typedef UIImage AppleWebViewSnapshotImage;
     Mengine::ConstString relativePathString = [AppleString NSStringToConstString:relativePath];
     Mengine::FilePath filePath( relativePathString );
 
-    if( m_fileGroup->existFile( filePath, false ) == false )
-    {
+    if (m_fileGroup->existFile( filePath, false ) == false) {
         NSError * error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorFileDoesNotExist userInfo:nil];
         [_task didFailWithError:error];
 
@@ -579,8 +523,7 @@ typedef UIImage AppleWebViewSnapshotImage;
     NSError * error = nil;
     NSData * data = [AppleFile getNSDataFromFileGroup:m_fileGroup filePath:filePath error:&error];
 
-    if( data == nil )
-    {
+    if (data == nil) {
         [_task didFailWithError:error];
 
         return;
@@ -623,8 +566,7 @@ typedef UIImage AppleWebViewSnapshotImage;
     [_task didFinish];
 }
 
-- (void)webView:(WKWebView *)_webView stopURLSchemeTask:(id<WKURLSchemeTask>)_task
-{
+- (void)webView:(WKWebView *)_webView stopURLSchemeTask:(id<WKURLSchemeTask>)_task {
     MENGINE_UNUSED( _webView );
     MENGINE_UNUSED( _task );
 
@@ -633,70 +575,60 @@ typedef UIImage AppleWebViewSnapshotImage;
 
 #pragma mark - WKScriptMessageHandler
 
-- (void)userContentController:(WKUserContentController *)_controller didReceiveScriptMessage:(WKScriptMessage *)_message
-{
+- (void)userContentController:(WKUserContentController *)_controller didReceiveScriptMessage:(WKScriptMessage *)_message {
     MENGINE_UNUSED( _controller );
 
-    if( m_documentCommitted == false )
-    {
+    if (m_documentCommitted == false) {
         return;
     }
 
     WKFrameInfo * frame = _message.frameInfo;
     BOOL mainFrame = frame.mainFrame;
 
-    if( mainFrame == NO )
-    {
+    if (mainFrame == NO) {
         return;
     }
 
     NSURL * url = frame.request.URL;
 
-    if( [self isTrustedURL:url] == NO )
-    {
+    if ([self isTrustedURL:url] == NO) {
         return;
     }
 
     id messageBody = _message.body;
 
-    if( [messageBody isKindOfClass:NSString.class] == NO )
-    {
+    if ([messageBody isKindOfClass:NSString.class] == NO) {
         return;
     }
 
     NSString * json = messageBody;
     NSData * data = [json dataUsingEncoding:NSUTF8StringEncoding];
 
-    if( data == nil )
-    {
+    if (data == nil) {
         return;
     }
 
     NSUInteger maximumMessageSize = 1024 * 1024;
     NSUInteger size = data.length;
 
-    if( size > maximumMessageSize )
-    {
+    if (size > maximumMessageSize) {
         return;
     }
 
     id object = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
 
-    if( [object isKindOfClass:NSDictionary.class] == NO )
-    {
+    if ([object isKindOfClass:NSDictionary.class] == NO) {
         return;
     }
 
     NSDictionary * body = object;
     NSString * kind = body[@"kind"];
 
-    if( [kind isKindOfClass:NSString.class] == NO )
-    {
+    if ([kind isKindOfClass:NSString.class] == NO) {
         return;
     }
 
-    if( [kind isEqualToString:@"connect"] == YES )
-    {
+    if ([kind isEqualToString:@"connect"] == YES) {
         [self connectWebViewBridge];
 
         return;
@@ -704,15 +636,13 @@ typedef UIImage AppleWebViewSnapshotImage;
 
     NSString * generation = body[@"generation"];
 
-    if( [generation isKindOfClass:NSString.class] == NO )
-    {
+    if ([generation isKindOfClass:NSString.class] == NO) {
         return;
     }
 
     NSString * expected = [NSString stringWithFormat:@"%llu", m_generation];
 
-    if( [generation isEqualToString:expected] == NO )
-    {
+    if ([generation isEqualToString:expected] == NO) {
         return;
     }
 
@@ -722,21 +652,17 @@ typedef UIImage AppleWebViewSnapshotImage;
     WEBVIEW_BRIDGE_SERVICE()
         ->receiveMessage( m_generation, message );
 
-    if( WEBVIEW_BRIDGE_SERVICE()
-        ->isAppReady() == false )
-    {
+    if (WEBVIEW_BRIDGE_SERVICE()
+        ->isAppReady() == false) {
         self.m_overlay.hidden = NO;
-    }
-    else
-    {
+    } else {
         self.m_overlay.hidden = YES;
     }
 }
 
 #pragma mark - WKNavigationDelegate
 
-- (void)webView:(WKWebView *)_webView didStartProvisionalNavigation:(WKNavigation *)_navigation
-{
+- (void)webView:(WKWebView *)_webView didStartProvisionalNavigation:(WKNavigation *)_navigation {
     MENGINE_UNUSED( _webView );
 
     m_documentCommitted = false;
@@ -749,17 +675,14 @@ typedef UIImage AppleWebViewSnapshotImage;
     self.m_overlay.hidden = NO;
 }
 
-- (void)webView:(WKWebView *)_webView didCommitNavigation:(WKNavigation *)_navigation
-{
-    if( _navigation != m_navigation )
-    {
+- (void)webView:(WKWebView *)_webView didCommitNavigation:(WKNavigation *)_navigation {
+    if (_navigation != m_navigation) {
         return;
     }
 
     NSURL * url = _webView.URL;
 
-    if( [self isTrustedURL:url] == NO )
-    {
+    if ([self isTrustedURL:url] == NO) {
         WEBVIEW_BRIDGE_SERVICE()
             ->closeDocument();
 
@@ -772,8 +695,7 @@ typedef UIImage AppleWebViewSnapshotImage;
     [self connectWebViewBridge];
 }
 
-- (void)webView:(WKWebView *)_webView decidePolicyForNavigationAction:(WKNavigationAction *)_action decisionHandler:(void (^)(WKNavigationActionPolicy))_decisionHandler
-{
+- (void)webView:(WKWebView *)_webView decidePolicyForNavigationAction:(WKNavigationAction *)_action decisionHandler:(void (^)(WKNavigationActionPolicy))_decisionHandler {
     MENGINE_UNUSED( _webView );
 
     NSURL * url = _action.request.URL;
@@ -785,8 +707,7 @@ typedef UIImage AppleWebViewSnapshotImage;
     WKFrameInfo * targetFrame = _action.targetFrame;
     BOOL mainFrame = targetFrame.mainFrame;
 
-    if( mainFrame == YES && (local == YES || explicitHTTPS == YES) )
-    {
+    if (mainFrame == YES && (local == YES || explicitHTTPS == YES)) {
         m_allowedNavigationURL = nil;
         _decisionHandler( WKNavigationActionPolicyAllow );
 
@@ -797,23 +718,19 @@ typedef UIImage AppleWebViewSnapshotImage;
 
     WKNavigationType navigationType = _action.navigationType;
 
-    if( navigationType != WKNavigationTypeLinkActivated )
-    {
+    if (navigationType != WKNavigationTypeLinkActivated) {
         return;
     }
 
-    if( targetFrame != nil && mainFrame == NO )
-    {
+    if (targetFrame != nil && mainFrame == NO) {
         return;
     }
 
-    if( m_externalNavigation == nullptr )
-    {
+    if (m_externalNavigation == nullptr) {
         return;
     }
 
-    if( url == nil )
-    {
+    if (url == nil) {
         return;
     }
 
@@ -823,12 +740,10 @@ typedef UIImage AppleWebViewSnapshotImage;
     callback( value );
 }
 
-- (void)webView:(WKWebView *)_webView didFailProvisionalNavigation:(WKNavigation *)_navigation withError:(NSError *)_error
-{
+- (void)webView:(WKWebView *)_webView didFailProvisionalNavigation:(WKNavigation *)_navigation withError:(NSError *)_error {
     MENGINE_UNUSED( _webView );
 
-    if( _navigation != m_navigation )
-    {
+    if (_navigation != m_navigation) {
         return;
     }
 
@@ -848,13 +763,11 @@ typedef UIImage AppleWebViewSnapshotImage;
 #endif
 }
 
-- (void)webView:(WKWebView *)_webView didFailNavigation:(WKNavigation *)_navigation withError:(NSError *)_error
-{
+- (void)webView:(WKWebView *)_webView didFailNavigation:(WKNavigation *)_navigation withError:(NSError *)_error {
     [self webView:_webView didFailProvisionalNavigation:_navigation withError:_error];
 }
 
-- (void)webViewWebContentProcessDidTerminate:(WKWebView *)_webView
-{
+- (void)webViewWebContentProcessDidTerminate:(WKWebView *)_webView {
     MENGINE_UNUSED( _webView );
 
     m_documentCommitted = false;

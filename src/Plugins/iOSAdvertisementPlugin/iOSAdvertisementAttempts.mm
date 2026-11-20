@@ -5,6 +5,10 @@
 - (instancetype)init {
     self = [super init];
 
+    if (self == nil) {
+        return nil;
+    }
+
     self.m_attempts = 0;
 
     return self;

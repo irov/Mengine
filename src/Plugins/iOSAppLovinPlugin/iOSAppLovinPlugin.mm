@@ -32,16 +32,18 @@
 - (instancetype)init {
     self = [super init];
 
-    if (self) {
-        self.m_bannerAd = nil;
-        self.m_topperAd = nil;
-        self.m_interstitialAd = nil;
-        self.m_rewardedAd = nil;
+    if (self == nil) {
+        return nil;
+    }
+
+    self.m_bannerAd = nil;
+    self.m_topperAd = nil;
+    self.m_interstitialAd = nil;
+    self.m_rewardedAd = nil;
 
 #if defined(MENGINE_PLUGIN_IOS_APPLOVIN_MEDIATION_AMAZON)
-        self.m_amazonService = nil;
+    self.m_amazonService = nil;
 #endif
-    }
 
     return self;
 }

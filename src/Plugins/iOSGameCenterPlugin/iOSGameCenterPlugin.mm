@@ -17,6 +17,10 @@
 - (instancetype)init {
     self = [super init];
 
+    if (self == nil) {
+        return nil;
+    }
+
     self.m_gameCenterAuthenticate = NO;
     self.m_authenticateSuccess = NO;
 

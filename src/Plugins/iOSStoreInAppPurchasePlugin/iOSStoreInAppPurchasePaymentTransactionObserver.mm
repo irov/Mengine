@@ -27,6 +27,10 @@
 - (instancetype _Nonnull)init {
     self = [super init];
 
+    if (self == nil) {
+        return nil;
+    }
+
     self.m_cacheSKPaymentTransactions = [[NSMutableArray alloc] init];
 
     return self;
@@ -83,23 +87,19 @@
 
     Mengine::iOSStoreInAppPurchasePaymentTransactionProviderInterfacePtr copy_provider = [self.m_inAppPurchase getPaymentTransactionProvider];
 
-    if( copy_provider == nullptr )
-    {
+    if (copy_provider == nullptr) {
         IOS_LOGGER_ERROR( @"payment transaction provider is not set" );
 
         return;
     }
 
-    for (SKPaymentTransaction * skPaymentTransaction in transactions)
-    {
+    for (SKPaymentTransaction * skPaymentTransaction in transactions) {
         Mengine::iOSStoreInAppPurchasePaymentTransactionInterfacePtr paymentTransaction = [self.m_inAppPurchase makePaymentTransaction:skPaymentTransaction queue:queue];
 
         SKPaymentTransactionState state = skPaymentTransaction.transactionState;
 
-        switch( state )
-        {
-            case SKPaymentTransactionStatePurchasing:
-            {
+        switch (state) {
+            case SKPaymentTransactionStatePurchasing: {
                 IOS_LOGGER_MESSAGE( @"SKPaymentTransactionObserver SKPaymentTransactionStatePurchasing: %@"
                     , skPaymentTransaction.payment.productIdentifier
                 );
@@ -108,8 +108,7 @@
                     copy_provider->onPaymentQueueUpdatedTransactionPurchasing( paymentTransaction );
                 });
             } break;
-            case SKPaymentTransactionStatePurchased:
-            {
+            case SKPaymentTransactionStatePurchased: {
                 if (skPaymentTransaction.originalTransaction != nil) {
                     IOS_LOGGER_MESSAGE( @"SKPaymentTransactionObserver SKPaymentTransactionStatePurchased: %@ [originalTransaction]"
                         , skPaymentTransaction.payment.productIdentifier
@@ -140,8 +139,7 @@
                     });
                 }
             } break;
-            case SKPaymentTransactionStateFailed:
-            {
+            case SKPaymentTransactionStateFailed: {
                 IOS_LOGGER_MESSAGE( @"SKPaymentTransactionObserver SKPaymentTransactionStateFailed: %@"
                     , skPaymentTransaction.payment.productIdentifier
                 );
@@ -150,8 +148,7 @@
                     copy_provider->onPaymentQueueUpdatedTransactionFailed( paymentTransaction );
                 });
             } break;
-            case SKPaymentTransactionStateRestored:
-            {
+            case SKPaymentTransactionStateRestored: {
                 IOS_LOGGER_MESSAGE( @"SKPaymentTransactionObserver SKPaymentTransactionStateRestored: %@"
                     , skPaymentTransaction.payment.productIdentifier
                 );
@@ -166,8 +163,7 @@
                     copy_provider->onPaymentQueueUpdatedTransactionRestored( paymentTransaction );
                 });
             } break;
-            case SKPaymentTransactionStateDeferred:
-            {
+            case SKPaymentTransactionStateDeferred: {
                 IOS_LOGGER_MESSAGE( @"SKPaymentTransactionObserver SKPaymentTransactionStateDeferred: %@"
                     , skPaymentTransaction.payment.productIdentifier
                 );
@@ -210,8 +206,7 @@
 
     Mengine::iOSStoreInAppPurchasePaymentTransactionProviderInterfacePtr copy_provider = [self.m_inAppPurchase getPaymentTransactionProvider];
 
-    if( copy_provider == nullptr )
-    {
+    if (copy_provider == nullptr) {
         IOS_LOGGER_ERROR( @"payment transaction provider is not set" );
 
         return;
@@ -236,8 +231,7 @@
 
     Mengine::iOSStoreInAppPurchasePaymentTransactionProviderInterfacePtr copy_provider = [self.m_inAppPurchase getPaymentTransactionProvider];
 
-    if( copy_provider == nullptr )
-    {
+    if (copy_provider == nullptr) {
         IOS_LOGGER_ERROR( @"payment transaction provider is not set" );
 
         return;

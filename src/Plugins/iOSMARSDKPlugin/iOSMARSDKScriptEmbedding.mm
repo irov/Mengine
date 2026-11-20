@@ -20,8 +20,7 @@
 - (void)onPlatformInit:(NSDictionary *)params {
     pybind::object py_cb = [self getMethod:@"onPlatformInit"];
 
-    if( py_cb.is_callable() == false )
-    {
+    if (py_cb.is_callable() == false) {
         return;
     }
 
@@ -31,8 +30,7 @@
 - (void)onRealName:(NSDictionary *)params {
     pybind::object py_cb = [self getMethod:@"onRealName"];
 
-    if( py_cb.is_callable() == false )
-    {
+    if (py_cb.is_callable() == false) {
         return;
     }
 
@@ -42,8 +40,7 @@
 - (void)onEventWithCode:(NSInteger)code msg:(NSString *)msg {
     pybind::object py_cb = [self getMethod:@"onEventWithCode"];
 
-    if( py_cb.is_callable() == false )
-    {
+    if (py_cb.is_callable() == false) {
         return;
     }
 
@@ -53,8 +50,7 @@
 - (void)onEventCustom:(NSString *)eventName params:(NSDictionary *)params {
     pybind::object py_cb = [self getMethod:@"onEventCustom"];
 
-    if( py_cb.is_callable() == false )
-    {
+    if (py_cb.is_callable() == false) {
         return;
     }
 
@@ -64,8 +60,7 @@
 - (void)onUserLogin:(NSDictionary *)params {
     pybind::object py_cb = [self getMethod:@"onUserLogin"];
 
-    if( py_cb.is_callable() == false )
-    {
+    if (py_cb.is_callable() == false) {
         return;
     }
 
@@ -75,8 +70,7 @@
 - (void)onUserLogout:(NSDictionary *)params {
     pybind::object py_cb = [self getMethod:@"onUserLogout"];
 
-    if( py_cb.is_callable() == false )
-    {
+    if (py_cb.is_callable() == false) {
         return;
     }
 
@@ -86,8 +80,7 @@
 - (void)onPayPaid:(NSDictionary *)params {
     pybind::object py_cb = [self getMethod:@"onPayPaid"];
 
-    if( py_cb.is_callable() == false )
-    {
+    if (py_cb.is_callable() == false) {
         return;
     }
 
@@ -97,8 +90,7 @@
 - (void)onPropComplete:(NSString *)orderId {
     pybind::object py_cb = [self getMethod:@"onPropComplete"];
 
-    if( py_cb.is_callable() == false )
-    {
+    if (py_cb.is_callable() == false) {
         return;
     }
 
@@ -108,8 +100,7 @@
 - (void)onPropError:(NSString *)orderId {
     pybind::object py_cb = [self getMethod:@"onPropError"];
 
-    if( py_cb.is_callable() == false )
-    {
+    if (py_cb.is_callable() == false) {
         return;
     }
 
@@ -119,8 +110,7 @@
 - (void)onPurchasedNonConsumable:(NSArray<NSString *> *)purchased {
     pybind::object py_cb = [self getMethod:@"onPurchasedNonConsumable"];
 
-    if( py_cb.is_callable() == false )
-    {
+    if (py_cb.is_callable() == false) {
         return;
     }
 
@@ -130,8 +120,7 @@
 - (void)onAdRewardedDidFailed {
     pybind::object py_cb = [self getMethod:@"onAdRewardedDidFailed"];
 
-    if( py_cb.is_callable() == false )
-    {
+    if (py_cb.is_callable() == false) {
         return;
     }
 
@@ -141,8 +130,7 @@
 - (void)onAdRewardedDidLoaded {
     pybind::object py_cb = [self getMethod:@"onAdRewardedDidLoaded"];
 
-    if( py_cb.is_callable() == false )
-    {
+    if (py_cb.is_callable() == false) {
         return;
     }
 
@@ -152,8 +140,7 @@
 - (void)onAdRewardedDidShow {
     pybind::object py_cb = [self getMethod:@"onAdRewardedDidShow"];
 
-    if( py_cb.is_callable() == false )
-    {
+    if (py_cb.is_callable() == false) {
         return;
     }
 
@@ -163,8 +150,7 @@
 - (void)onAdRewardedDidShowFailed {
     pybind::object py_cb = [self getMethod:@"onAdRewardedDidShowFailed"];
 
-    if( py_cb.is_callable() == false )
-    {
+    if (py_cb.is_callable() == false) {
         return;
     }
 
@@ -174,8 +160,7 @@
 - (void)onAdRewardedDidClicked {
     pybind::object py_cb = [self getMethod:@"onAdRewardedDidClicked"];
 
-    if( py_cb.is_callable() == false )
-    {
+    if (py_cb.is_callable() == false) {
         return;
     }
 
@@ -185,8 +170,7 @@
 - (void)onAdRewardedDidClosed {
     pybind::object py_cb = [self getMethod:@"onAdRewardedDidClosed"];
 
-    if( py_cb.is_callable() == false )
-    {
+    if (py_cb.is_callable() == false) {
         return;
     }
 
@@ -196,8 +180,7 @@
 - (void)onAdRewardedDidSkipped {
     pybind::object py_cb = [self getMethod:@"onAdRewardedDidSkipped"];
 
-    if( py_cb.is_callable() == false )
-    {
+    if (py_cb.is_callable() == false) {
         return;
     }
 
@@ -207,8 +190,7 @@
 - (void)onAdRewardedDidFinished:(NSString *)itemName itemNum:(NSUInteger)itemNum {
     pybind::object py_cb = [self getMethod:@"onAdRewardedDidFinished"];
 
-    if( py_cb.is_callable() == false )
-    {
+    if (py_cb.is_callable() == false) {
         return;
     }
 

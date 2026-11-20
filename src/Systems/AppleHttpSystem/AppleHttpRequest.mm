@@ -59,12 +59,10 @@ namespace Mengine
 
             AppleHttpResponseParam * response = this->_onHttp( request );
 
-            if( response == nil )
-            {
+            if (response == nil) {
                 m_mutex->lock();
 
-                if( m_response != nullptr )
-                {
+                if (m_response != nullptr) {
                     m_response->setSuccessful( false );
                 }
 
@@ -75,28 +73,22 @@ namespace Mengine
 
             m_mutex->lock();
 
-            if( m_response != nullptr )
-            {
+            if (m_response != nullptr) {
                 m_response->setSuccessful( true );
 
                 m_response->setCode( (EHttpCode)response.HTTP_RESPONSE_CODE );
 
-                if( response.HTTP_CONTENT_DATA != nullptr )
-                {
+                if (response.HTTP_CONTENT_DATA != nullptr) {
                     const void * bytes = [response.HTTP_CONTENT_DATA bytes];
 
-                    if( m_isJSON == true )
-                    {
+                    if (m_isJSON == true) {
                         m_response->appendJSON( bytes, response.HTTP_CONTENT_LENGTH );
-                    }
-                    else
-                    {
+                    } else {
                         m_response->appendData( bytes, response.HTTP_CONTENT_LENGTH );
                     }
                 }
 
-                if( response.HTTP_ERROR_MESSAGE != nullptr )
-                {
+                if (response.HTTP_ERROR_MESSAGE != nullptr) {
                     String error_message = [AppleString NSStringToString:response.HTTP_ERROR_MESSAGE];
                     int32_t error_code = (int32_t)response.HTTP_ERROR_CODE;
 

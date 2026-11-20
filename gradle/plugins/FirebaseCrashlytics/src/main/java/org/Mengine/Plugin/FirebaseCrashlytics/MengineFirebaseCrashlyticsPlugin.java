@@ -131,9 +131,13 @@ public class MengineFirebaseCrashlyticsPlugin extends MengineService implements 
 
     @Override
     public void onAppState(@NonNull MengineApplication application, @NonNull Map<String, Object> states, @NonNull String name, Object value) {
-        String states_value = MengineUtils.jsonStringFromMap(states);
+        String statesValue = MengineUtils.jsonStringFromMap(states);
 
-        FirebaseCrashlytics.getInstance().setCustomKey("states", states_value);
+        if (statesValue == null) {
+            return;
+        }
+
+        FirebaseCrashlytics.getInstance().setCustomKey("states", statesValue);
     }
 
     @Override
@@ -242,7 +246,12 @@ public class MengineFirebaseCrashlyticsPlugin extends MengineService implements 
                 builder.putString(key, stringValue);
             } else if (value instanceof List<?> listValue) {
                 JSONArray json = MengineUtils.jsonArrayFromArrayList(listValue);
-                String jsonString = json.toString();
+                String jsonString = MengineUtils.jsonStringFromJSONArray(json);
+
+                if (jsonString == null) {
+                    continue;
+                }
+
                 builder.putString(key, jsonString);
             } else {
                 this.logError("[ERROR] unsupported custom key: %s value: %s class: %s"

@@ -7,6 +7,10 @@
 - (instancetype _Nonnull) initWithSlotId:(NSString * _Nullable) amazonAdSlotId adView:(MAAdView * _Nonnull) adView rect:(CGRect) rect {
     self = [super init];
 
+    if (self == nil) {
+        return nil;
+    }
+
     self.m_adView = adView;
 
     DTBAdSize *size = [[DTBAdSize alloc] initBannerAdSizeWithWidth: rect.size.width
@@ -27,7 +31,7 @@
     [self.m_adView loadAd];
 }
 
-- (void) onSuccess:(DTBAdResponse *) adResponse{
+- (void) onSuccess:(DTBAdResponse *) adResponse {
     [self.m_adView setLocalExtraParameterForKey: @"amazon_ad_response" value: adResponse];
     [self.m_adView loadAd];
 }

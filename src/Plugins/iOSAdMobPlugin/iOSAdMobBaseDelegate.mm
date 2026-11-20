@@ -13,6 +13,10 @@
                                       advertisement:(id<iOSAdvertisementInterface> _Nonnull)advertisement {
     self = [super init];
 
+    if (self == nil) {
+        return nil;
+    }
+
     self.m_adUnitId = adUnitId;
     self.m_adFormat = adFormat;
     self.m_advertisement = advertisement;

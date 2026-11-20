@@ -4,9 +4,13 @@
 
 - (instancetype _Nonnull) initWithListener:(const Mengine::AppleSemaphoreListenerInterfacePtr &)_proxy {
     self = [super init];
-    if (self) {
-        self.m_proxy = _proxy;
+
+    if (self == nil) {
+        return nil;
     }
+
+    self.m_proxy = _proxy;
+
     return self;
 }
 

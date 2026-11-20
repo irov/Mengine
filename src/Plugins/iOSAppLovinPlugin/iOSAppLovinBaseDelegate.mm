@@ -10,8 +10,12 @@
 
 - (instancetype _Nullable) initWithAdUnitIdentifier:(NSString * _Nonnull) adUnitId
                                            adFormat:(MAAdFormat * _Nonnull) adFormat
-                                      advertisement:(id<iOSAdvertisementInterface> _Nonnull)advertisement{
+                                      advertisement:(id<iOSAdvertisementInterface> _Nonnull)advertisement {
     self = [super init];
+
+    if (self == nil) {
+        return nil;
+    }
 
     self.m_adUnitId = adUnitId;
     self.m_adFormat = adFormat;

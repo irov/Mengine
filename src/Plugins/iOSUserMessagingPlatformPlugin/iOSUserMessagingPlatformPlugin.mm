@@ -31,12 +31,14 @@ static const NSInteger MENGINE_UMP_MAX_CONSENT_RETRY_ATTEMPTS = 6;
 - (instancetype)init {
     self = [super init];
 
-    if (self) {
-        self.m_completed = NO;
-        self.m_consentState = iOSUserMessagingPlatformConsentStatePending;
-        self.m_retryAttempt = 0;
-        self.m_completionHandlers = [NSMutableArray array];
+    if (self == nil) {
+        return nil;
     }
+
+    self.m_completed = NO;
+    self.m_consentState = iOSUserMessagingPlatformConsentStatePending;
+    self.m_retryAttempt = 0;
+    self.m_completionHandlers = [NSMutableArray array];
 
     return self;
 }

@@ -27,7 +27,6 @@
 
     self.m_configs = nil;
     self.m_ids = nil;
-    self.m_signals = nil;
 
     return self;
 }
@@ -58,33 +57,6 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.m_configs = [NSMutableDictionary dictionary];
 
-    iOSApplication * mengineApplication = [iOSApplication sharedInstance];
-    NSInteger installTimestamp = [mengineApplication getInstallTimestamp];
-    NSInteger sessionTimestamp = [mengineApplication getSessionTimestamp];
-    NSInteger installAgeSeconds = [AppleDetail getTimestampOffsetSeconds:sessionTimestamp baseTimestamp:installTimestamp];
-
-    NSInteger sessionDateYear = [mengineApplication getSessionDateYear];
-    NSInteger sessionDateMonth = [mengineApplication getSessionDateMonth];
-    NSInteger sessionDateDay = [mengineApplication getSessionDateDay];
-    NSInteger sessionDateHour = [mengineApplication getSessionDateHour];
-    NSInteger sessionDateWeekday = [mengineApplication getSessionDateWeekday];
-    NSInteger sessionRND = [mengineApplication getSessionRND];
-    NSInteger sessionGap = [mengineApplication getSessionGap];
-
-    NSDictionary * signals = @{
-        @"session_dateyear": @(sessionDateYear),
-        @"session_datemonth": @(sessionDateMonth),
-        @"session_dateday": @(sessionDateDay),
-        @"session_datehour": @(sessionDateHour),
-        @"session_dateweekday": @(sessionDateWeekday),
-        @"session_timestamp": @(sessionTimestamp),
-        @"session_rnd": @(sessionRND),
-        @"session_gap": @(sessionGap),
-        @"install_age": @(installAgeSeconds)
-    };
-
-    self.m_signals = signals;
-
     FIRRemoteConfigSettings *remoteConfigSettings = [[FIRRemoteConfigSettings alloc] init];
 #if defined(MENGINE_DEBUG)
     remoteConfigSettings.minimumFetchInterval = 0;
@@ -108,12 +80,51 @@
     return YES;
 }
 
+- (NSDictionary<NSString *, NSObject *> *)makeCustomSignals {
+    iOSApplication * mengineApplication = [iOSApplication sharedInstance];
+    NSInteger installTimestamp = [mengineApplication getInstallTimestamp];
+    NSInteger sessionTimestamp = [mengineApplication getSessionTimestamp];
+    NSInteger installAgeSeconds = [AppleDetail getTimestampOffsetSeconds:sessionTimestamp baseTimestamp:installTimestamp];
+
+    NSInteger sessionDateYear = [mengineApplication getSessionDateYear];
+    NSInteger sessionDateMonth = [mengineApplication getSessionDateMonth];
+    NSInteger sessionDateDay = [mengineApplication getSessionDateDay];
+    NSInteger sessionDateHour = [mengineApplication getSessionDateHour];
+    NSInteger sessionDateWeekday = [mengineApplication getSessionDateWeekday];
+    NSInteger sessionRND = [mengineApplication getSessionRND];
+    NSInteger sessionGap = [mengineApplication getSessionGap];
+
+    NSString * userId = [mengineApplication getUserId];
+    NSObject * userIdSignal = userId;
+
+    if (userId.length == 0) {
+        userIdSignal = [NSNull null];
+    }
+
+    NSDictionary<NSString *, NSObject *> * signals = @{
+        @"user_id": userIdSignal,
+        @"session_dateyear": @(sessionDateYear),
+        @"session_datemonth": @(sessionDateMonth),
+        @"session_dateday": @(sessionDateDay),
+        @"session_datehour": @(sessionDateHour),
+        @"session_dateweekday": @(sessionDateWeekday),
+        @"session_timestamp": @(sessionTimestamp),
+        @"session_rnd": @(sessionRND),
+        @"session_gap": @(sessionGap),
+        @"install_age": @(installAgeSeconds)
+    };
+
+    return signals;
+}
+
 - (void)fetchRemoteConfigValues:(FIRRemoteConfig *)remoteConfig {
     if ([[iOSNetwork sharedInstance] isNetworkAvailable] == NO) {
         return;
     }
 
-    [remoteConfig setCustomSignals:self.m_signals withCompletion:^(NSError *error) {
+    NSDictionary<NSString *, NSObject *> * signals = [self makeCustomSignals];
+
+    [remoteConfig setCustomSignals:signals withCompletion:^(NSError *error) {
         if (error != nil) {
             IOS_LOGGER_ERROR(@"Firebase Remote Config signals error: %@", [error description]);
         }

@@ -8,6 +8,5 @@
 
 @property (nonatomic) NSDictionary * m_configs;
 @property (nonatomic) NSDictionary * m_ids;
-@property (nonatomic, copy) NSDictionary * m_signals;
 
 @end

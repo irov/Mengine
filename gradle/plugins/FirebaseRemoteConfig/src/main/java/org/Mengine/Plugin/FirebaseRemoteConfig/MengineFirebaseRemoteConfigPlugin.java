@@ -1,6 +1,7 @@
 package org.Mengine.Plugin.FirebaseRemoteConfig;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -37,39 +38,12 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
     public static final boolean SERVICE_EMBEDDING = true;
 
     private Map<String, String> m_defaults = new HashMap<>();
-    private CustomSignals m_signals;
 
     private volatile boolean m_prefetching = false;
 
     @Override
     public void onAppCreate(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
         FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
-
-        long installTimestamp = application.getInstallTimestamp();
-        long sessionTimestamp = application.getSessionTimestamp();
-        long installAgeSeconds = MengineUtils.getTimestampOffsetSeconds(sessionTimestamp, installTimestamp);
-
-        long sessionDateYear = application.getSessionDateYear();
-        long sessionDateMonth = application.getSessionDateMonth();
-        long sessionDateDay = application.getSessionDateDay();
-        long sessionDateHour = application.getSessionDateHour();
-        long sessionDateWeekday = application.getSessionDateWeekday();
-        long sessionRND = application.getSessionRND();
-        long sessionGap = application.getSessionGap();
-
-        CustomSignals signals = new CustomSignals.Builder()
-            .put("session_dateyear", sessionDateYear)
-            .put("session_datemonth", sessionDateMonth)
-            .put("session_dateday", sessionDateDay)
-            .put("session_datehour", sessionDateHour)
-            .put("session_dateweekday", sessionDateWeekday)
-            .put("session_timestamp", sessionTimestamp)
-            .put("session_rnd", sessionRND)
-            .put("session_gap", sessionGap)
-            .put("install_age", installAgeSeconds)
-            .build();
-
-        m_signals = signals;
 
         FirebaseRemoteConfigSettings.Builder configSettingsBuilder = new FirebaseRemoteConfigSettings.Builder();
 
@@ -229,6 +203,41 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
         MengineFragmentRemoteConfig.INSTANCE.remoteConfigPropagate(updated);
     }
 
+    private CustomSignals makeCustomSignals(@NonNull MengineApplication application) {
+        long installTimestamp = application.getInstallTimestamp();
+        long sessionTimestamp = application.getSessionTimestamp();
+        long installAgeSeconds = MengineUtils.getTimestampOffsetSeconds(sessionTimestamp, installTimestamp);
+
+        long sessionDateYear = application.getSessionDateYear();
+        long sessionDateMonth = application.getSessionDateMonth();
+        long sessionDateDay = application.getSessionDateDay();
+        long sessionDateHour = application.getSessionDateHour();
+        long sessionDateWeekday = application.getSessionDateWeekday();
+        long sessionRND = application.getSessionRND();
+        long sessionGap = application.getSessionGap();
+
+        String userId = application.getUserId();
+
+        if (TextUtils.isEmpty(userId) == true) {
+            userId = null;
+        }
+
+        CustomSignals signals = new CustomSignals.Builder()
+            .put("user_id", userId)
+            .put("session_dateyear", sessionDateYear)
+            .put("session_datemonth", sessionDateMonth)
+            .put("session_dateday", sessionDateDay)
+            .put("session_datehour", sessionDateHour)
+            .put("session_dateweekday", sessionDateWeekday)
+            .put("session_timestamp", sessionTimestamp)
+            .put("session_rnd", sessionRND)
+            .put("session_gap", sessionGap)
+            .put("install_age", installAgeSeconds)
+            .build();
+
+        return signals;
+    }
+
     protected void fetchAndActivate() {
         if (MengineNetwork.isNetworkAvailable() == false) {
             this.logInfo("remote config invalid network not available");
@@ -240,14 +249,21 @@ public class MengineFirebaseRemoteConfigPlugin extends MengineService implements
             return;
         }
 
+        MengineApplication application = this.getMengineApplication();
+
+        if (application == null) {
+            return;
+        }
+
         FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
+        CustomSignals signals = this.makeCustomSignals(application);
 
         this.buildEvent("mng_fb_rc_fetch")
             .log();
 
         m_prefetching = true;
 
-        remoteConfig.setCustomSignals(m_signals)
+        remoteConfig.setCustomSignals(signals)
             .continueWithTask(task -> {
                 if (task.isSuccessful() == false) {
                     this.logError("[ERROR] remote config invalid set custom signals: %s"

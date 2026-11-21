@@ -136,7 +136,7 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_IRONSOURCE == true) {
-        implementation 'com.applovin.mediation:ironsource-adapter:9.7.0.0.0'
+        implementation 'com.applovin.mediation:ironsource-adapter:9.8.0.0.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_LIFTOFF == true) {
@@ -144,7 +144,7 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_LINE == true) {
-        implementation 'com.applovin.mediation:line-adapter:3000.2.0.0'
+        implementation 'com.applovin.mediation:line-adapter:3000.2.0.1'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MAIO == true) {
@@ -152,7 +152,7 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_META == true) {
-        implementation 'com.applovin.mediation:facebook-adapter:6.22.0.1'
+        implementation 'com.applovin.mediation:facebook-adapter:6.22.1.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_MINTEGRAL == true) {
@@ -168,11 +168,11 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_OGURY == true) {
-        implementation 'com.applovin.mediation:ogury-presage-adapter:6.3.1.1'
+        implementation 'com.applovin.mediation:ogury-presage-adapter:6.4.0.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_PANGLE == true) {
-        implementation 'com.applovin.mediation:bytedance-adapter:8.4.0.5.0'
+        implementation 'com.applovin.mediation:bytedance-adapter:8.4.0.6.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_PUBMATIC == true) {
@@ -184,11 +184,11 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_UNITYADS == true) {
-        implementation 'com.applovin.mediation:unityads-adapter:4.21.0.1'
+        implementation 'com.applovin.mediation:unityads-adapter:4.22.0.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_VERVE == true) {
-        implementation 'com.applovin.mediation:verve-adapter:3.9.3.0'
+        implementation 'com.applovin.mediation:verve-adapter:3.10.0.0'
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_VK == true) {
@@ -200,6 +200,6 @@ dependencies {
     }
 
     if (MENGINE_APP_PLUGIN_APPLOVIN_MEDIATION_YSO == true) {
-        implementation 'com.applovin.mediation:yso-network-adapter:1.3.9.0'
+        implementation 'com.applovin.mediation:yso-network-adapter:1.3.10.0'
     }
 }

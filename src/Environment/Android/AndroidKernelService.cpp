@@ -25,21 +25,16 @@ extern "C"
         Mengine::ConstString plugin = Mengine::Helper::AndroidMakeConstStringFromJString( env, _plugin );
         Mengine::ConstString method = Mengine::Helper::AndroidMakeConstStringFromJString( env, _method );
 
+        JNIEnv * main_jenv = Mengine::Mengine_JNI_GetEnv();
+
         if( ANDROID_KERNEL_SERVICE()
-            ->hasPluginMethod( plugin, method ) == false )
+            ->callPluginMethod( main_jenv, plugin, method, _args ) == false )
         {
             LOGGER_ERROR( "plugin '%s' method '%s' not found"
                 , plugin.c_str()
                 , method.c_str()
             );
-
-            return;
         }
-
-        JNIEnv * main_jenv = Mengine::Mengine_JNI_GetEnv();
-
-        ANDROID_KERNEL_SERVICE()
-            ->callPluginMethod( main_jenv, plugin, method, _args );
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidKernelService_1addPlugin )(JNIEnv * env, jclass cls, jstring _plugin, jobject _jmodule)
@@ -183,7 +178,7 @@ namespace Mengine
         return jmodule;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidKernelService::hasPluginMethod( const ConstString & _plugin, const ConstString & _method ) const
+    bool AndroidKernelService::callPluginMethod( JNIEnv * _jenv, const ConstString & _plugin, const ConstString & _method, jobjectArray _args ) const
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_callbacksMutex );
 
@@ -194,26 +189,14 @@ namespace Mengine
             return false;
         }
 
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidKernelService::callPluginMethod( JNIEnv * _jenv, const ConstString & _plugin, const ConstString & _method, jobjectArray _args ) const
-    {
-        MENGINE_THREAD_MUTEX_SCOPE( m_callbacksMutex );
-
-        MapAndroidCallbacks::const_iterator it_found = m_callbacks.find( StdUtility::make_pair( _plugin, _method ) );
-
-        if( it_found == m_callbacks.end() )
-        {
-            return;
-        }
-
         const VectorAndroidCallbacks & callbacks = it_found->second;
 
         for( const AndroidPluginCallbackInterfacePtr & callback : callbacks )
         {
             callback->invoke( _jenv, _args );
         }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     AndroidPluginCallbackInterfacePtr AndroidKernelService::addPluginCallback( const ConstString & _plugin, const ConstString & _method, const AndroidPluginCallbackInterfacePtr & _callback )

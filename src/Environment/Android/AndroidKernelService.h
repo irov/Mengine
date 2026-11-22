@@ -30,8 +30,7 @@ namespace Mengine
         jobject removePlugin( const ConstString & _plugin ) override;
 
     public:
-        bool hasPluginMethod( const ConstString & _plugin, const ConstString & _method ) const override;
-        void callPluginMethod( JNIEnv * _jenv, const ConstString & _plugin, const ConstString & _method, jobjectArray _args ) const override;
+        bool callPluginMethod( JNIEnv * _jenv, const ConstString & _plugin, const ConstString & _method, jobjectArray _args ) const override;
 
     public:
         AndroidPluginCallbackInterfacePtr addPluginCallback( const ConstString & _plugin, const ConstString & _method, const AndroidPluginCallbackInterfacePtr & _callback ) override;

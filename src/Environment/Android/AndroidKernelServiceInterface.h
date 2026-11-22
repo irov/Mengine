@@ -22,8 +22,7 @@ namespace Mengine
         virtual jobject removePlugin( const ConstString & _plugin ) = 0;
 
     public:
-        virtual bool hasPluginMethod( const ConstString & _plugin, const ConstString & _method ) const = 0;
-        virtual void callPluginMethod( JNIEnv * _jenv, const ConstString & _plugin, const ConstString & _method, jobjectArray _args ) const = 0;
+        virtual bool callPluginMethod( JNIEnv * _jenv, const ConstString & _plugin, const ConstString & _method, jobjectArray _args ) const = 0;
 
     public:
         virtual AndroidPluginCallbackInterfacePtr addPluginCallback( const ConstString & _plugin, const ConstString & _method, const AndroidPluginCallbackInterfacePtr & _callback ) = 0;

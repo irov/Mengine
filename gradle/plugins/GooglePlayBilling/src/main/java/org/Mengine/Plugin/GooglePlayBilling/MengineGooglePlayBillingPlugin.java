@@ -45,7 +45,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
@@ -67,7 +66,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
     private volatile boolean m_productsQueried;
     private QueryProductDetailsParams m_queryProducts;
     private final AtomicReference<String> m_pendingPurchaseProductId = new AtomicReference<>(null);
-    private final AtomicBoolean m_restorePurchasesInProgress = new AtomicBoolean(false);
+    private MengineGooglePlayBillingRestorePurchases m_restorePurchases;
     private final Map<String, List<Consumer<Boolean>>> m_purchaseProcessingCompletions = new HashMap<>();
 
     @Override
@@ -200,6 +199,10 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
         BillingClient billingClient = m_billingClient;
         m_billingClient = null;
 
+        if (m_restorePurchases != null) {
+            this.completeRestorePurchases(m_restorePurchases);
+        }
+
         if (billingClient != null) {
             billingClient.endConnection();
         }
@@ -209,7 +212,6 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
         m_queryProducts = null;
 
         m_pendingPurchaseProductId.set(null);
-        m_restorePurchasesInProgress.set(false);
 
         synchronized (m_purchaseProcessingCompletions) {
             m_purchaseProcessingCompletions.clear();
@@ -608,16 +610,38 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
             return;
         }
 
-        if (m_restorePurchasesInProgress.compareAndSet(false, true) == false) {
-            this.logWarning("restorePurchases already in progress");
+        MengineUtils.performOnMainThread(() -> {
+            this.startRestorePurchases(billingClient, accountToken);
+        });
+    }
 
+    @MainThread
+    private void startRestorePurchases(@NonNull BillingClient billingClient, @Nullable String accountToken) {
+        if (m_billingClient != billingClient) {
             return;
         }
+
+        MengineGooglePlayBillingRestorePurchases activeOperation = m_restorePurchases;
+
+        if (activeOperation != null) {
+            if (activeOperation.isRequest(billingClient, accountToken) == true) {
+                this.logWarning("restorePurchases already in progress, the request waits for its result");
+
+                return;
+            }
+
+            this.logWarning("restorePurchases cancels the request in progress for another account");
+
+            this.completeRestorePurchases(activeOperation);
+        }
+
+        MengineGooglePlayBillingRestorePurchases operation = new MengineGooglePlayBillingRestorePurchases(billingClient, accountToken);
+        m_restorePurchases = operation;
 
         this.buildEvent("mng_billing_restore_purchases")
             .log();
 
-        this.queryRestorePurchases(billingClient, 0, purchases -> {
+        this.queryRestorePurchases(operation, 0, purchases -> {
             List<Purchase> restorablePurchases = purchases;
 
             if (accountToken != null) {
@@ -633,17 +657,17 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
             }
 
             Consumer<Boolean> completion = MengineUtils.createCountDownConsumer(restorablePurchases, successful -> {
-                if (m_billingClient != billingClient) {
-                    return;
-                }
+                MengineUtils.performOnMainThread(() -> {
+                    if (successful == false) {
+                        this.failRestorePurchases(operation);
 
-                if (successful == false) {
-                    this.failRestorePurchases();
+                        return;
+                    }
 
-                    return;
-                }
-
-                this.queryRestorePurchases(billingClient, 0, this::finishRestorePurchases);
+                    this.queryRestorePurchases(operation, 0, ownedPurchases -> {
+                        this.finishRestorePurchases(operation, ownedPurchases);
+                    });
+                });
             });
 
             for (Purchase purchase : restorablePurchases) {
@@ -652,8 +676,9 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
         });
     }
 
-    private void queryRestorePurchases(@NonNull BillingClient billingClient, int attempt, @NonNull Consumer<List<Purchase>> onSuccess) {
-        if (m_billingClient != billingClient) {
+    @MainThread
+    private void queryRestorePurchases(@NonNull MengineGooglePlayBillingRestorePurchases operation, int attempt, @NonNull Consumer<List<Purchase>> onSuccess) {
+        if (operation.isCompleted() == true) {
             return;
         }
 
@@ -661,37 +686,42 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
             .setProductType(BillingClient.ProductType.INAPP)
             .build();
 
+        BillingClient billingClient = operation.getClient();
+
         billingClient.queryPurchasesAsync(purchasesParams, (billingResult, purchases) -> {
-            if (m_billingClient != billingClient) {
-                return;
-            }
+            MengineUtils.performOnMainThread(() -> {
+                if (operation.isCompleted() == true) {
+                    return;
+                }
 
-            int responseCode = billingResult.getResponseCode();
+                int responseCode = billingResult.getResponseCode();
 
-            if (responseCode == BillingClient.BillingResponseCode.OK) {
-                onSuccess.accept(purchases);
+                if (responseCode == BillingClient.BillingResponseCode.OK) {
+                    onSuccess.accept(purchases);
 
-                return;
-            }
+                    return;
+                }
 
-            if (this.scheduleRestorePurchasesRetry(billingClient, attempt, responseCode, onSuccess) == true) {
-                return;
-            }
+                if (this.scheduleRestorePurchasesRetry(operation, attempt, responseCode, onSuccess) == true) {
+                    return;
+                }
 
-            this.logError("[ERROR] billing invalid restore purchases responseCode: %d message: %s"
-                , responseCode
-                , billingResult.getDebugMessage()
-            );
+                this.logError("[ERROR] billing invalid restore purchases responseCode: %d message: %s"
+                    , responseCode
+                    , billingResult.getDebugMessage()
+                );
 
-            this.buildEvent("mng_billing_restore_purchases_failed")
-                .addParameterLong("error_code", responseCode)
-                .log();
+                this.buildEvent("mng_billing_restore_purchases_failed")
+                    .addParameterLong("error_code", responseCode)
+                    .log();
 
-            this.failRestorePurchases();
+                this.failRestorePurchases(operation);
+            });
         });
     }
 
-    private boolean scheduleRestorePurchasesRetry(@NonNull BillingClient billingClient, int attempt, int responseCode, @NonNull Consumer<List<Purchase>> onSuccess) {
+    @MainThread
+    private boolean scheduleRestorePurchasesRetry(@NonNull MengineGooglePlayBillingRestorePurchases operation, int attempt, int responseCode, @NonNull Consumer<List<Purchase>> onSuccess) {
         if (attempt >= RESTORE_QUERY_MAX_RETRIES) {
             return false;
         }
@@ -708,7 +738,9 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
             , responseCode
         );
 
-        Handler handler = MengineUtils.performOnMainThreadDelayed(() -> this.queryRestorePurchases(billingClient, nextAttempt, onSuccess), delay);
+        Handler handler = MengineUtils.performOnMainThreadDelayed(() -> {
+            this.queryRestorePurchases(operation, nextAttempt, onSuccess);
+        }, delay);
 
         if (handler == null) {
             return false;
@@ -717,7 +749,23 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
         return true;
     }
 
-    private void finishRestorePurchases(@NonNull List<Purchase> purchases) {
+    @MainThread
+    private void completeRestorePurchases(@NonNull MengineGooglePlayBillingRestorePurchases operation) {
+        operation.complete(() -> {
+            if (m_restorePurchases != operation) {
+                return;
+            }
+
+            m_restorePurchases = null;
+        });
+    }
+
+    @MainThread
+    private void finishRestorePurchases(@NonNull MengineGooglePlayBillingRestorePurchases operation, @NonNull List<Purchase> purchases) {
+        if (operation.isCompleted() == true) {
+            return;
+        }
+
         Set<String> owned = new HashSet<>();
 
         for (Purchase purchase : purchases) {
@@ -732,8 +780,9 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
             owned.addAll(purchase.getProducts());
         }
 
+        this.completeRestorePurchases(operation);
+
         MengineFragmentInAppPurchase.INSTANCE.ownedInAppProducts(owned);
-        m_restorePurchasesInProgress.set(false);
 
         this.buildEvent("mng_billing_restore_purchases_success")
             .log();
@@ -742,8 +791,13 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
         MengineUI.showToastRes(this.getMengineActivity(), R.string.mengine_googleplaybilling_restore_purchases_success);
     }
 
-    private void failRestorePurchases() {
-        m_restorePurchasesInProgress.set(false);
+    @MainThread
+    private void failRestorePurchases(@NonNull MengineGooglePlayBillingRestorePurchases operation) {
+        if (operation.isCompleted() == true) {
+            return;
+        }
+
+        this.completeRestorePurchases(operation);
 
         this.nativeCall("onGooglePlayBillingRestorePurchasesFailed");
         MengineUI.showToastRes(this.getMengineActivity(), R.string.mengine_googleplaybilling_restore_purchases_failed);

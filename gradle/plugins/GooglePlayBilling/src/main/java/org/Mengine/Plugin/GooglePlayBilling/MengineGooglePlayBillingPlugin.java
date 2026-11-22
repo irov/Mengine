@@ -5,7 +5,9 @@ import android.os.Handler;
 
 import androidx.annotation.AnyThread;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
+import com.android.billingclient.api.AccountIdentifiers;
 import com.android.billingclient.api.AcknowledgePurchaseParams;
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
@@ -965,7 +967,26 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
             }
         };
 
-        this.nativeCall("onGooglePlayBillingPurchaseDeliver", products, token, cb);
+        String accountToken = MengineGooglePlayBillingPlugin.getPurchaseAccountToken(purchase);
+
+        this.nativeCall("onGooglePlayBillingPurchaseDeliver", products, token, accountToken, cb);
+    }
+
+    @Nullable
+    private static String getPurchaseAccountToken(@NonNull Purchase purchase) {
+        AccountIdentifiers accountIdentifiers = purchase.getAccountIdentifiers();
+
+        if (accountIdentifiers == null) {
+            return null;
+        }
+
+        String obfuscatedAccountId = accountIdentifiers.getObfuscatedAccountId();
+
+        if ("".equals(obfuscatedAccountId) == true) {
+            return null;
+        }
+
+        return obfuscatedAccountId;
     }
 
     @AnyThread

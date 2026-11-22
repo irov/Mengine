@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import androidx.annotation.AnyThread;
+import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -16,6 +17,7 @@ import com.android.billingclient.api.BillingResult;
 import com.android.billingclient.api.ConsumeParams;
 import com.android.billingclient.api.PendingPurchasesParams;
 import com.android.billingclient.api.ProductDetails;
+import com.android.billingclient.api.ProductDetailsResponseListener;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.QueryProductDetailsParams;
@@ -63,7 +65,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
     private volatile BillingClient m_billingClient;
     private boolean m_billingConnecting;
     private volatile boolean m_productsQueried;
-    private final AtomicBoolean m_queryProductsInProgress = new AtomicBoolean(false);
+    private QueryProductDetailsParams m_queryProducts;
     private final AtomicReference<String> m_pendingPurchaseProductId = new AtomicReference<>(null);
     private final AtomicBoolean m_restorePurchasesInProgress = new AtomicBoolean(false);
     private final Map<String, List<Consumer<Boolean>>> m_purchaseProcessingCompletions = new HashMap<>();
@@ -204,7 +206,8 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
 
         m_billingConnecting = false;
         m_productsQueried = false;
-        m_queryProductsInProgress.set(false);
+        m_queryProducts = null;
+
         m_pendingPurchaseProductId.set(null);
         m_restorePurchasesInProgress.set(false);
 
@@ -371,6 +374,13 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
     }
 
     public void queryProducts(@NonNull List<String> consumableProducts, @NonNull List<String> nonConsumableProducts) {
+        MengineUtils.performOnMainThread(() -> {
+            this.startQueryProducts(consumableProducts, nonConsumableProducts);
+        });
+    }
+
+    @MainThread
+    private void startQueryProducts(@NonNull List<String> consumableProducts, @NonNull List<String> nonConsumableProducts) {
         if (consumableProducts.isEmpty() == true) {
             if (nonConsumableProducts.isEmpty() == true) {
                 this.logError("[Error] queryProducts empty products list");
@@ -403,9 +413,16 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
 
         if (billingClient.isReady() == false) {
             this.logInfo("queryProducts billing client not ready");
-            MengineUtils.performOnMainThread(this::billingConnect);
 
             this.nativeCall("onGooglePlayBillingQueryProductFailed");
+
+            this.billingConnect();
+
+            return;
+        }
+
+        if (m_queryProducts != null) {
+            this.logWarning("queryProducts already in progress, the request waits for its result");
 
             return;
         }
@@ -421,26 +438,29 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
             productList.add(product);
         }
 
-        QueryProductDetailsParams.Builder params = QueryProductDetailsParams.newBuilder();
-        params.setProductList(productList);
+        QueryProductDetailsParams.Builder builder = QueryProductDetailsParams.newBuilder();
+        builder.setProductList(productList);
 
-        if (m_queryProductsInProgress.compareAndSet(false, true) == false) {
-            return;
-        }
+        QueryProductDetailsParams params = builder.build();
+        m_queryProducts = params;
 
-        billingClient.queryProductDetailsAsync(params.build(), (billingResult, productDetailsResult) -> {
+        ProductDetailsResponseListener listener = (billingResult, productDetailsResult) -> {
             if (m_billingClient != billingClient) {
                 return;
             }
 
-            m_queryProductsInProgress.set(false);
+            if (m_queryProducts != params) {
+                return;
+            }
+
+            m_queryProducts = null;
 
             int responseCode = billingResult.getResponseCode();
 
             if (responseCode != BillingClient.BillingResponseCode.OK) {
                 String debugMessage = billingResult.getDebugMessage();
 
-                if (MengineGooglePlayBillingPlugin.this.isBillingResponseRetryable(responseCode) == true) {
+                if (this.isBillingResponseRetryable(responseCode) == true) {
                     this.logWarning("billing query product details temporary failure code: %d message: %s"
                         , responseCode
                         , debugMessage
@@ -550,6 +570,12 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
             m_productsQueried = true;
             this.nativeCall("onGooglePlayBillingQueryProductSuccess", desc_products);
             this.queryOwnedPurchases();
+        };
+
+        billingClient.queryProductDetailsAsync(params, (billingResult, productDetailsResult) -> {
+            MengineUtils.performOnMainThread(() -> {
+                listener.onProductDetailsResponse(billingResult, productDetailsResult);
+            });
         });
     }
 

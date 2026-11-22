@@ -269,6 +269,11 @@ namespace Mengine
         }
 
         callbacks.erase( it_callback_found );
+
+        if( callbacks.empty() == true )
+        {
+            m_callbacks.erase( it_found );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidKernelService::activateSemaphore( JNIEnv * _jenv, const ConstString & _semaphore, jobject _value )

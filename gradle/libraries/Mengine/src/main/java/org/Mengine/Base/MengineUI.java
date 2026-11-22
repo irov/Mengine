@@ -168,6 +168,8 @@ public class MengineUI {
     }
 
     public static void showAllowPermissionAlertDialog(@NonNull MengineActivity activity, Runnable allow, Runnable denied, @NonNull String title, @NonNull String format, Object ... args) {
+        MengineOperation<Runnable> operation = MengineUI.createDialogOperation("showAllowPermissionAlertDialog");
+
         if (MengineUtils.isActivityAvailable(activity) == false) {
             MengineLog.logError(TAG, "[ERROR] showAllowPermissionAlertDialog activity is unavailable title: %s format: %s args: %s"
                 , title
@@ -175,11 +177,19 @@ public class MengineUI {
                 , Arrays.toString(args)
             );
 
+            operation.complete(denied);
+
             return;
         }
 
         activity.runOnUiThread(() -> {
             if (MengineUtils.isActivityAvailable(activity) == false) {
+                MengineLog.logError(TAG, "[ERROR] showAllowPermissionAlertDialog activity became unavailable title: %s"
+                    , title
+                );
+
+                operation.complete(denied);
+
                 return;
             }
 
@@ -196,20 +206,24 @@ public class MengineUI {
             builder.setMessage(message);
             builder.setCancelable(false);
             builder.setPositiveButton("ALLOW", (dialog, which) -> {
+                if (operation.isCompleted() == true) {
+                    return;
+                }
+
                 MengineLog.logMessage(TAG, "select [ALLOW PERMISSION] alert dialog ALLOW clicked");
 
-                if (allow != null) {
-                    allow.run();
-                }
+                operation.complete(allow);
 
                 dialog.dismiss();
             });
             builder.setNegativeButton("NO THANKS", (dialog, id) -> {
+                if (operation.isCompleted() == true) {
+                    return;
+                }
+
                 MengineLog.logMessage(TAG, "select [ALLOW PERMISSION] alert dialog NO clicked");
 
-                if (denied != null) {
-                    denied.run();
-                }
+                operation.complete(denied);
 
                 dialog.dismiss();
             });
@@ -228,6 +242,10 @@ public class MengineUI {
                 , Arrays.toString(args)
             );
 
+            MengineUtils.performOnMainThread(() -> {
+                MengineUI.runOutcome(denied);
+            });
+
             return;
         }
 
@@ -238,6 +256,8 @@ public class MengineUI {
     }
 
     public static void showAreYouSureAlertDialog(@NonNull MengineActivity activity, Runnable yes, Runnable cancel, long delayMillis, @NonNull String title, @NonNull String format, Object ... args) {
+        MengineOperation<Runnable> operation = MengineUI.createDialogOperation("showAreYouSureAlertDialog");
+
         if (MengineUtils.isActivityAvailable(activity) == false) {
             MengineLog.logError(TAG, "[ERROR] showAreYouSureAlertDialog activity is unavailable title: %s format: %s args: %s"
                 , title
@@ -245,11 +265,19 @@ public class MengineUI {
                 , Arrays.toString(args)
             );
 
+            operation.complete(cancel);
+
             return;
         }
 
         activity.runOnUiThread(() -> {
             if (MengineUtils.isActivityAvailable(activity) == false) {
+                MengineLog.logError(TAG, "[ERROR] showAreYouSureAlertDialog activity became unavailable title: %s"
+                    , title
+                );
+
+                operation.complete(cancel);
+
                 return;
             }
 
@@ -273,20 +301,24 @@ public class MengineUI {
             builder.setMessage(spannableMessage);
             builder.setCancelable(false);
             builder.setPositiveButton("YES", (dialog, which) -> {
+                if (operation.isCompleted() == true) {
+                    return;
+                }
+
                 MengineLog.logMessage(TAG, "select [ARE YOU SURE] alert dialog YES clicked");
 
-                if (yes != null) {
-                    yes.run();
-                }
+                operation.complete(yes);
 
                 dialog.dismiss();
             });
             builder.setNegativeButton("CANCEL", (dialog, id) -> {
+                if (operation.isCompleted() == true) {
+                    return;
+                }
+
                 MengineLog.logMessage(TAG, "select [ARE YOU SURE] alert dialog CANCEL clicked");
 
-                if (cancel != null) {
-                    cancel.run();
-                }
+                operation.complete(cancel);
 
                 dialog.dismiss();
             });
@@ -320,6 +352,10 @@ public class MengineUI {
                 , Arrays.toString(args)
             );
 
+            MengineUtils.performOnMainThread(() -> {
+                MengineUI.runOutcome(cancel);
+            });
+
             return;
         }
 
@@ -330,17 +366,27 @@ public class MengineUI {
     }
 
     public static void showChooseOptionDialog(@NonNull MengineActivity activity, @NonNull Consumer<Integer> accept, @NonNull Runnable cancel, @NonNull List<String> options, @NonNull String title) {
+        MengineOperation<Runnable> operation = MengineUI.createDialogOperation("showChooseOptionDialog");
+
         if (MengineUtils.isActivityAvailable(activity) == false) {
             MengineLog.logError(TAG, "[ERROR] showChooseOptionDialog activity is unavailable title: %s options: %s"
                 , title
                 , options
             );
 
+            operation.complete(cancel);
+
             return;
         }
 
         activity.runOnUiThread(() -> {
             if (MengineUtils.isActivityAvailable(activity) == false) {
+                MengineLog.logError(TAG, "[ERROR] showChooseOptionDialog activity became unavailable title: %s"
+                    , title
+                );
+
+                operation.complete(cancel);
+
                 return;
             }
 
@@ -369,25 +415,35 @@ public class MengineUI {
             builder.setCancelable(false);
 
             builder.setPositiveButton("ACCEPT", (dialog, which) -> {
+                if (operation.isCompleted() == true) {
+                    return;
+                }
+
                 Integer option = selectedPos[0];
 
                 MengineLog.logMessage(TAG,"click [CHOOSE OPTION] accept option: %d"
                     , option
                 );
 
-                if (accept != null) {
+                operation.complete(() -> {
+                    if (accept == null) {
+                        return;
+                    }
+
                     accept.accept(option);
-                }
+                });
 
                 dialog.dismiss();
             });
 
             builder.setNegativeButton("CANCEL", (dialog, id) -> {
+                if (operation.isCompleted() == true) {
+                    return;
+                }
+
                 MengineLog.logMessage(TAG, "click [CHOOSE OPTION] cancel");
 
-                if (cancel != null) {
-                    cancel.run();
-                }
+                operation.complete(cancel);
 
                 dialog.dismiss();
             });
@@ -408,6 +464,10 @@ public class MengineUI {
                 , optionIds
             );
 
+            MengineUtils.performOnMainThread(() -> {
+                MengineUI.runOutcome(cancel);
+            });
+
             return;
         }
 
@@ -420,6 +480,23 @@ public class MengineUI {
         }
 
         MengineUI.showChooseOptionDialog(activity, accept, cancel, options, title);
+    }
+
+    private static MengineOperation<Runnable> createDialogOperation(@NonNull String name) {
+        return new MengineOperation<>(name) {
+            @Override
+            protected void onComplete(@Nullable Runnable action) {
+                MengineUI.runOutcome(action);
+            }
+        };
+    }
+
+    private static void runOutcome(@Nullable Runnable outcome) {
+        if (outcome == null) {
+            return;
+        }
+
+        outcome.run();
     }
 
     public static void finishActivityWithAlertDialog(@NonNull MengineActivity activity, @NonNull String title, @NonNull String format, Object ... args) {

@@ -64,7 +64,6 @@
 #include "Kernel/VectorRenderIndex.h"
 #include "Kernel/ResolutionHelper.h"
 #include "Kernel/Data.h"
-#include "Kernel/Stringstream.h"
 #include "Kernel/Logger.h"
 #include "Kernel/ResourceImageSequence.h"
 #include "Kernel/ResourceImage.h"
@@ -787,14 +786,22 @@ namespace Mengine
             return py_module;
         }
         //////////////////////////////////////////////////////////////////////////
-        static String s_makeUID( uint32_t _length )
+        static PyObject * s_makeUID( pybind::kernel_interface * _kernel, uint32_t _length )
         {
-            MENGINE_ASSERTION_FATAL( _length < 1024, "max UID length equal 1024" );
+            MENGINE_ASSERTION_FATAL( _length < 1024, "UID length must be less than 1024" );
 
-            Char uid[1024 + 1] = {'\0'};
-            Helper::makeUID( _length, uid );
+            String uid( _length, '\0' );
 
-            return String( uid, _length );
+            if( Helper::makeUID( _length, uid.data() ) == false )
+            {
+                _kernel->error_message( "invalid make UID" );
+
+                return nullptr;
+            }
+
+            PyObject * py_uid = _kernel->string_from_char_size( uid.data(), uid.size() );
+
+            return py_uid;
         }
         //////////////////////////////////////////////////////////////////////////
         static const String & s_getTextFromId( const ConstString & _textId )
@@ -1069,23 +1076,6 @@ namespace Mengine
             {
                 Helper::allocateMemory( _size, "pymemleak" );
             }
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static String s_generateUniqueIdentity( uint32_t _length )
-        {
-            MENGINE_ASSERTION_FATAL( _length < 1024, "max UID length equal 1024" );
-
-            Stringstream ss;
-
-            Char uid[1024 + 1] = {'\0'};
-            Helper::makeUID( _length, uid );
-            uid[_length] = '\0';
-
-            ss << uid;
-
-            String str = ss.str();
-
-            return str;
         }
         //////////////////////////////////////////////////////////////////////////
         static bool s_setClipboardText( const Char * _value )
@@ -2654,6 +2644,22 @@ namespace Mengine
             const AccountUID & accountUID = account->getUID();
 
             PyObject * py_value = _kernel->string_from_char_size( accountUID.data, AccountUID::size_data );
+
+            return py_value;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static PyObject * s_getAccountPurchaseToken( pybind::kernel_interface * _kernel, const ConstString & _accountId )
+        {
+            const AccountInterfacePtr & account = ACCOUNT_SERVICE()
+                ->getAccount( _accountId );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( account, "account '%s' is none"
+                , _accountId.c_str()
+            );
+
+            const UUIDv4 & purchaseToken = account->getPurchaseToken();
+
+            PyObject * py_value = _kernel->string_from_char_size( purchaseToken.data, UUIDv4::size_data );
 
             return py_value;
         }
@@ -4481,6 +4487,7 @@ namespace Mengine
         pybind::def_function( _kernel, "changeCurrentAccountSettingStrings", &Detail::s_changeCurrentAccountSettingStrings );
 
         pybind::def_function_kernel( _kernel, "getAccountUID", &Detail::s_getAccountUID );
+        pybind::def_function_kernel( _kernel, "getAccountPurchaseToken", &Detail::s_getAccountPurchaseToken );
 
         pybind::def_function_kernel( _kernel, "getAccountSetting", &Detail::s_getAccountSetting );
         pybind::def_function_kernel( _kernel, "getAccountSettingBool", &Detail::s_getAccountSettingBool );
@@ -4668,7 +4675,7 @@ namespace Mengine
 
         pybind::def_function_kernel( _kernel, "reloadModule", &Detail::s_reloadModule );
 
-        pybind::def_function( _kernel, "makeUID", &Detail::s_makeUID );
+        pybind::def_function_kernel( _kernel, "makeUID", &Detail::s_makeUID );
 
         pybind::def_function( _kernel, "getTextFromId", &Detail::s_getTextFromId );
 
@@ -4695,7 +4702,7 @@ namespace Mengine
         pybind::def_function( _kernel, "freezeEngine", &Detail::s_freezeEngine );
         pybind::def_function( _kernel, "memleakEngine", &Detail::s_memleakEngine );
 
-        pybind::def_function( _kernel, "generateUniqueIdentity", &Detail::s_generateUniqueIdentity );
+        pybind::def_function_kernel( _kernel, "generateUniqueIdentity", &Detail::s_makeUID );
 
         pybind::def_function( _kernel, "setClipboardText", &Detail::s_setClipboardText );
         pybind::def_function_kernel( _kernel, "getClipboardText", &Detail::s_getClipboardText );

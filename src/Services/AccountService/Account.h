@@ -2,10 +2,12 @@
 
 #include "Interface/AccountInterface.h"
 #include "Interface/ArchivatorInterface.h"
+#include "Interface/ConfigInterface.h"
 #include "Interface/FileGroupInterface.h"
-#include "Interface/ConfigServiceInterface.h"
+#include "Interface/ContentInterface.h"
 
 #include "Kernel/ConstString.h"
+#include "Kernel/String.h"
 #include "Kernel/Map.h"
 
 namespace Mengine
@@ -25,12 +27,16 @@ namespace Mengine
         void finalize();
 
     public:
+        bool setup();
+
+    public:
         const ConstString & getAccountId() const override;
         const FilePath & getFolderName() const override;
 
     public:
         void setUID( const AccountUID & _uid ) override;
         const AccountUID & getUID() const override;
+        const UUIDv4 & getPurchaseToken() const override;
 
     public:
         bool addSetting( const ConstString & _setting, const Char * _defaultValue, const AccountSettingProviderInterfacePtr & _provider ) override;
@@ -45,9 +51,6 @@ namespace Mengine
         bool load() override;
         bool save() override;
 
-    protected:
-        ConfigInterfacePtr getLoadSettingConfig_() const;
-
     public:
         InputStreamInterfacePtr openReadBinaryFile( const FilePath & _filePath ) override;
         void closeReadBinaryFile( const InputStreamInterfacePtr & _stream ) override;
@@ -61,11 +64,15 @@ namespace Mengine
         bool hasBinaryFile( const FilePath & _filepath ) const override;
 
     protected:
+        ConfigInterfacePtr getLoadSettingConfig_() const;
+
+    protected:
         ArchivatorInterfacePtr m_archivator;
         FileGroupInterfacePtr m_fileGroup;
 
         ConstString m_accountId;
         AccountUID m_uid;
+        UUIDv4 m_purchaseToken;
         uint32_t m_projectVersion;
 
         FilePath m_folderName;

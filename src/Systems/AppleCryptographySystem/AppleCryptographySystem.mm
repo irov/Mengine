@@ -32,22 +32,34 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AppleCryptographySystem::generateRandomSeed( uint64_t * const _seed ) const
+    bool AppleCryptographySystem::generateRandomBytes( void * const _buffer, size_t _size ) const
     {
-        union {
-            SInt8 bytes[sizeof(uint64_t)];
-            uint64_t randomNumber = 0;
-        };
-        
-        int status = ::SecRandomCopyBytes( kSecRandomDefault, sizeof(bytes), bytes );
-        
+        if( _size == 0 )
+        {
+            return true;
+        }
+
+        int status = ::SecRandomCopyBytes( kSecRandomDefault, _size, _buffer );
+
         if( status != errSecSuccess )
         {
             return false;
         }
-        
-        *_seed = randomNumber;
-        
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AppleCryptographySystem::generateRandomSeed( uint64_t * const _seed ) const
+    {
+        uint64_t seed;
+
+        if( this->generateRandomBytes( &seed, sizeof(seed) ) == false )
+        {
+            return false;
+        }
+
+        *_seed = seed;
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -64,13 +76,12 @@ namespace Mengine
         
         uint8_t buffer[512];
         size_t dataSize = length / 2;
-        int result = ::SecRandomCopyBytes( kSecRandomDefault, dataSize, buffer );
-            
-        if( result != errSecSuccess)
+
+        if( this->generateRandomBytes( buffer, dataSize ) == false )
         {
             return false;
         }
-        
+
         if( Helper::encodeHexadecimal( buffer, dataSize, _hexadecimal, _capacity, _flags, nullptr ) == false )
         {
             return false;

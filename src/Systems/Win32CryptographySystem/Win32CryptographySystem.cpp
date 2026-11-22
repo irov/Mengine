@@ -7,6 +7,7 @@
 #include "Kernel/ReadHelper.h"
 #include "Kernel/Hexadecimal.h"
 
+#include "Config/StdAlgorithm.h"
 #include "Config/StdString.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -53,15 +54,37 @@ namespace Mengine
         m_hCryptProvider = NULL;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Win32CryptographySystem::generateRandomBytes( void * const _buffer, size_t _size ) const
+    {
+        BYTE * buffer = static_cast<BYTE *>(_buffer);
+        size_t remaining = _size;
+
+        while( remaining != 0 )
+        {
+            DWORD size = static_cast<DWORD>(StdAlgorithm::min( remaining, static_cast<size_t>(MAXDWORD) ));
+
+            if( ::CryptGenRandom( m_hCryptProvider, size, buffer ) == FALSE )
+            {
+                LOGGER_ERROR( "CryptGenRandom invalid %ls"
+                    , Helper::Win32GetLastErrorMessageW()
+                );
+
+                return false;
+            }
+
+            buffer += size;
+            remaining -= size;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Win32CryptographySystem::generateRandomSeed( uint64_t * const _seed ) const
     {
         BYTE pbData[sizeof( uint64_t )];
-        if( ::CryptGenRandom( m_hCryptProvider, sizeof( pbData ), pbData ) == FALSE )
-        {
-            LOGGER_ERROR( "CryptGenRandom invalid %ls"
-                , Helper::Win32GetLastErrorMessageW()
-            );
 
+        if( this->generateRandomBytes( pbData, sizeof(pbData) ) == false )
+        {
             return false;
         }
 
@@ -85,15 +108,10 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( length % 2 == 0, "invalid odd %zu", length );
 
         size_t dataSize = length / 2;
-        DWORD dwLen = (DWORD)dataSize;
-
         BYTE pbData[512];
-        if( ::CryptGenRandom( m_hCryptProvider, dwLen, pbData ) == FALSE )
-        {
-            LOGGER_ERROR( "CryptGenRandom invalid %ls"
-                , Helper::Win32GetLastErrorMessageW()
-            );
 
+        if( this->generateRandomBytes( pbData, dataSize ) == false )
+        {
             return false;
         }
 

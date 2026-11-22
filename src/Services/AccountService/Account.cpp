@@ -15,10 +15,13 @@
 #include "Kernel/JSONHelper.h"
 #include "Kernel/ContentHelper.h"
 #include "Kernel/ConfigHelper.h"
-
-#include "Config/StdString.h"
-
+#include "Kernel/UUIDv4.h"
+#include "Kernel/UUIDv4Helper.h"
+#include "Kernel/Hexadecimal.h"
 #include "Kernel/MemoryCopy.h"
+
+#include "Config/StdIntTypes.h"
+#include "Config/StdString.h"
 
 #ifndef MENGINE_ACCOUNT_SETTINGS_JSON_PATH
 #define MENGINE_ACCOUNT_SETTINGS_JSON_PATH "settings.json"
@@ -26,6 +29,12 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    // Initial account save format with PROJECT_VERSION and UID.
+    static const int64_t ACCOUNT_SAVE_VERSION__TARDIGRADE = MENGINE_INT64_C(1);
+
+    // Added SAVE_VERSION and PURCHASE_TOKEN.
+    static const int64_t ACCOUNT_SAVE_VERSION__KAKAPO = MENGINE_INT64_C(2);
     //////////////////////////////////////////////////////////////////////////
     Account::Account()
         : m_projectVersion( 0 )
@@ -67,6 +76,39 @@ namespace Mengine
         m_settings.clear();
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Account::setup()
+    {
+        if( m_fileGroup->createDirectory( m_folderName ) == false )
+        {
+            LOGGER_ERROR( "account with ID '%s' failed create directory '%s'"
+                , m_accountId.c_str()
+                , m_folderName.c_str()
+            );
+
+            return false;
+        }
+
+        if( Helper::makeUID( AccountUID::size_data, m_uid.data ) == false )
+        {
+            LOGGER_ERROR( "account '%s' invalid make UID"
+                , m_accountId.c_str()
+            );
+
+            return false;
+        }
+
+        if( Helper::makeUUIDv4( &m_purchaseToken, EHF_LOWERCASE ) == false )
+        {
+            LOGGER_ERROR( "account '%s' invalid make purchase token"
+                , m_accountId.c_str()
+            );
+
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     const ConstString & Account::getAccountId() const
     {
         return m_accountId;
@@ -80,6 +122,11 @@ namespace Mengine
     const AccountUID & Account::getUID() const
     {
         return m_uid;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const UUIDv4 & Account::getPurchaseToken() const
+    {
+        return m_purchaseToken;
     }
     //////////////////////////////////////////////////////////////////////////
     const FilePath & Account::getFolderName() const
@@ -193,10 +240,10 @@ namespace Mengine
             return false;
         }
 
-        uint32_t projectVersion;
-        if( config->hasValueInteger( "ACCOUNT", "PROJECT_VERSION", MENGINE_UINT32_C(0), &projectVersion ) == false )
+        int64_t projectVersion;
+        if( config->hasValue( "ACCOUNT", "PROJECT_VERSION", MENGINE_INT64_C(1), &projectVersion ) == false )
         {
-            LOGGER_ERROR( "account '%s' failed not found project version"
+            LOGGER_ERROR( "account '%s' failed read project version"
                 , m_accountId.c_str()
             );
 
@@ -205,7 +252,7 @@ namespace Mengine
 
         if( m_projectVersion != projectVersion )
         {
-            LOGGER_ERROR( "account '%s' failed invalid project version '%u' need '%u'"
+            LOGGER_ERROR( "account '%s' failed invalid project version '%" MENGINE_PRId64 "' need '%u'"
                 , m_accountId.c_str()
                 , projectVersion
                 , m_projectVersion
@@ -224,14 +271,79 @@ namespace Mengine
             return false;
         }
 
-        MENGINE_ASSERTION_FATAL( uid.size() == 20, "account '%s' invalid uid '%s'"
+        MENGINE_ASSERTION_FATAL( uid.size() == AccountUID::size_data, "account '%s' invalid uid '%s'"
             , m_accountId.c_str()
             , uid.c_str()
         );
 
-        Helper::memoryCopy( m_uid.data, 0, uid.c_str(), 0, 20 );
+        Helper::memoryCopy( m_uid.data, 0, uid.c_str(), 0, AccountUID::size_data );
 
-        LOGGER_INFO( "account", "load account '%s' projectVersion [%u] uid '%.20s' settings"
+        int64_t saveVersion;
+        if( config->hasValue( "ACCOUNT", "SAVE_VERSION", ACCOUNT_SAVE_VERSION__TARDIGRADE, &saveVersion ) == false )
+        {
+            if( config->existValue( "ACCOUNT", "SAVE_VERSION" ) == true )
+            {
+                LOGGER_ERROR( "account '%s' invalid save version"
+                    , m_accountId.c_str()
+                );
+
+                return false;
+            }
+        }
+
+        UUIDv4 purchaseToken;
+
+        switch( saveVersion )
+        {
+        case ACCOUNT_SAVE_VERSION__TARDIGRADE:
+            {
+                if( Helper::makeUUIDv4( &purchaseToken, EHF_LOWERCASE ) == false )
+                {
+                    LOGGER_ERROR( "account '%s' invalid make purchase token"
+                        , m_accountId.c_str()
+                    );
+
+                    return false;
+                }
+            }break;
+        case ACCOUNT_SAVE_VERSION__KAKAPO:
+            {
+                String purchaseTokenString;
+                if( config->hasValue( "ACCOUNT", "PURCHASE_TOKEN", String(), &purchaseTokenString ) == false )
+                {
+                    LOGGER_ERROR( "account '%s' failed not found purchase token"
+                        , m_accountId.c_str()
+                    );
+
+                    return false;
+                }
+
+                const Char * purchaseTokenValue = purchaseTokenString.c_str();
+                size_t purchaseTokenSize = purchaseTokenString.size();
+
+                if( Helper::parseUUIDv4( purchaseTokenValue, purchaseTokenSize, &purchaseToken ) == false )
+                {
+                    LOGGER_ERROR( "account '%s' invalid purchase token"
+                        , m_accountId.c_str()
+                    );
+
+                    return false;
+                }
+            }break;
+        default:
+            {
+                LOGGER_ERROR( "account '%s' unsupported save version '%" MENGINE_PRId64 "'"
+                    , m_accountId.c_str()
+                    , saveVersion
+                );
+
+                return false;
+            }
+        }
+
+        m_purchaseToken = purchaseToken;
+
+        LOGGER_INFO( "account", "load account '%s' projectVersion [%" MENGINE_PRId64 "] uid '%.20s' settings"
             , m_accountId.c_str()
             , projectVersion
             , m_uid.data
@@ -258,29 +370,29 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ConfigInterfacePtr Account::getLoadSettingConfig_() const
     {
-        if( m_settingsJSONContent->exist( true ) == true )
+        if( m_settingsJSONContent->exist( true ) == false )
         {
-            ConfigInterfacePtr config = Helper::loadConfig( m_settingsJSONContent, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
+            LOGGER_ERROR( "account '%s' settings config not found '%s'"
+                , m_accountId.c_str()
+                , Helper::getContentFullPath( m_settingsJSONContent ).c_str()
+            );
 
-            if( config == nullptr )
-            {
-                LOGGER_ERROR( "get account '%s' settings failed load '%s'"
-                    , m_accountId.c_str()
-                    , Helper::getContentFullPath( m_settingsJSONContent ).c_str()
-                );
-
-                return nullptr;
-            }
-
-            return config;
+            return nullptr;
         }
 
-        LOGGER_ERROR( "account '%s' settings config not found '%s'"
-            , m_accountId.c_str()
-            , Helper::getContentFullPath( m_settingsJSONContent ).c_str()
-        );
+        ConfigInterfacePtr config = Helper::loadConfig( m_settingsJSONContent, ConstString::none(), MENGINE_DOCUMENT_FACTORABLE );
 
-        return nullptr;
+        if( config == nullptr )
+        {
+            LOGGER_ERROR( "get account '%s' settings failed load '%s'"
+                , m_accountId.c_str()
+                , Helper::getContentFullPath( m_settingsJSONContent ).c_str()
+            );
+
+            return nullptr;
+        }
+
+        return config;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Account::save()
@@ -289,8 +401,10 @@ namespace Mengine
 
         jpp::object j_account = jpp::make_object();
 
+        j_account.set( "SAVE_VERSION", ACCOUNT_SAVE_VERSION__KAKAPO );
         j_account.set( "PROJECT_VERSION", m_projectVersion );
-        j_account.set( "UID", jpp::make_stringn( m_uid.data, AccountUID::size_data ) );
+        j_account.set( "UID", m_uid.data, AccountUID::size_data );
+        j_account.set( "PURCHASE_TOKEN", m_purchaseToken.data, UUIDv4::size_data );
 
         LOGGER_INFO( "account", "save account '%s' projectVersion [%u] uid '%.20s' settings"
             , m_accountId.c_str()
@@ -302,15 +416,14 @@ namespace Mengine
 
         for( auto && [key, st] : m_settings )
         {
-            const Char * key_str = key.c_str();
             const Char * value_str = st.value.c_str();
 
             LOGGER_INFO( "account", "save setting '%s' value '%s'"
-                , key_str
+                , key.c_str()
                 , value_str
             );
 
-            j_settings.set( key_str, value_str );
+            j_settings.set( key.c_str(), value_str );
         }
 
         j_root.set( "ACCOUNT", j_account );

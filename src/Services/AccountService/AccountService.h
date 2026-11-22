@@ -4,6 +4,7 @@
 #include "Interface/ArchivatorInterface.h"
 #include "Interface/FileGroupInterface.h"
 #include "Interface/FactoryInterface.h"
+#include "Interface/ConfigInterface.h"
 
 #include "Account.h"
 
@@ -83,6 +84,7 @@ namespace Mengine
         AccountInterfacePtr createGlobalAccount_( const ConstString & _accountId, const DocumentInterfacePtr & _doc );
 
     protected:
+        AccountPtr makeAccount_( const ConstString & _accountId, const DocumentInterfacePtr & _doc );
         AccountInterfacePtr newAccount_( const ConstString & _accountId, const DocumentInterfacePtr & _doc );
 
     protected:

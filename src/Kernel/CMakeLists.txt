@@ -809,6 +809,12 @@ Core
     UID.h
     UID.cpp
 
+    UUIDv4.h
+    UUIDv4.cpp
+
+    UUIDv4Helper.h
+    UUIDv4Helper.cpp
+
     Base64.h
     Base64.cpp
 

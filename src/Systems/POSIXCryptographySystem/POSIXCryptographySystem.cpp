@@ -69,45 +69,6 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool generateRandomBytes( void * const _buffer, size_t _size )
-        {
-            if( _size == 0 )
-            {
-                return true;
-            }
-
-            uint8_t * bytes = static_cast<uint8_t *>(_buffer);
-            size_t offset = 0;
-
-#if defined(SYS_getrandom)
-            while( offset != _size )
-            {
-                ssize_t randomSize = ::syscall( SYS_getrandom, bytes + offset, _size - offset, 0 );
-
-                if( randomSize > 0 )
-                {
-                    offset += (size_t)randomSize;
-
-                    continue;
-                }
-
-                if( randomSize == -1 && errno == EINTR )
-                {
-                    continue;
-                }
-
-                break;
-            }
-
-            if( offset == _size )
-            {
-                return true;
-            }
-#endif
-
-            return Detail::readRandomDevice( bytes + offset, _size - offset );
-        }
-        //////////////////////////////////////////////////////////////////////////
     }
     //////////////////////////////////////////////////////////////////////////
     POSIXCryptographySystem::POSIXCryptographySystem()
@@ -127,11 +88,55 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    bool POSIXCryptographySystem::generateRandomBytes( void * const _buffer, size_t _size ) const
+    {
+        if( _size == 0 )
+        {
+            return true;
+        }
+
+        uint8_t * bytes = static_cast<uint8_t *>(_buffer);
+        size_t offset = 0;
+
+#if defined(SYS_getrandom)
+        while( offset != _size )
+        {
+            ssize_t randomSize = ::syscall( SYS_getrandom, bytes + offset, _size - offset, 0 );
+
+            if( randomSize > 0 )
+            {
+                offset += (size_t)randomSize;
+
+                continue;
+            }
+
+            if( randomSize == -1 && errno == EINTR )
+            {
+                continue;
+            }
+
+            break;
+        }
+
+        if( offset == _size )
+        {
+            return true;
+        }
+#endif
+
+        if( Detail::readRandomDevice( bytes + offset, _size - offset ) == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool POSIXCryptographySystem::generateRandomSeed( uint64_t * const _seed ) const
     {
         uint64_t seed;
 
-        if( Detail::generateRandomBytes( &seed, sizeof(seed) ) == false )
+        if( this->generateRandomBytes( &seed, sizeof(seed) ) == false )
         {
             return false;
         }
@@ -155,7 +160,7 @@ namespace Mengine
         uint8_t randomBytes[512];
         size_t randomSize = length / 2;
 
-        if( Detail::generateRandomBytes( randomBytes, randomSize ) == false )
+        if( this->generateRandomBytes( randomBytes, randomSize ) == false )
         {
             return false;
         }

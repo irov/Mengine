@@ -8,6 +8,7 @@
 
 #include "Kernel/Mixin.h"
 #include "Kernel/AccountUID.h"
+#include "Kernel/UUIDv4.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/Magic.h"
@@ -27,6 +28,7 @@ namespace Mengine
     public:
         virtual void setUID( const AccountUID & _uid ) = 0;
         virtual const AccountUID & getUID() const = 0;
+        virtual const UUIDv4 & getPurchaseToken() const = 0;
 
     public:
         virtual bool addSetting( const ConstString & _setting, const Char * _defaultValue, const AccountSettingProviderInterfacePtr & _provider ) = 0;

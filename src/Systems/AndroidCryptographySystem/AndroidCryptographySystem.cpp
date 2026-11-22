@@ -31,12 +31,28 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
+    bool AndroidCryptographySystem::generateRandomBytes( void * const _buffer, size_t _size ) const
+    {
+        if( _size == 0 )
+        {
+            return true;
+        }
+
+        ::arc4random_buf( _buffer, _size );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool AndroidCryptographySystem::generateRandomSeed( uint64_t * const _seed ) const
     {
-        uint64_t rnd;
-        ::arc4random_buf( &rnd, sizeof(rnd) );
+        uint64_t seed;
 
-        *_seed = rnd;
+        if( this->generateRandomBytes( &seed, sizeof(seed) ) == false )
+        {
+            return false;
+        }
+
+        *_seed = seed;
 
         return true;
     }
@@ -54,7 +70,11 @@ namespace Mengine
 
         uint8_t randomBytes[512];
         size_t randomSize = length / 2;
-        ::arc4random_buf( randomBytes, randomSize );
+
+        if( this->generateRandomBytes( randomBytes, randomSize ) == false )
+        {
+            return false;
+        }
 
         if( Helper::encodeHexadecimal( randomBytes, randomSize, _hexadecimal, _capacity, _flags, nullptr ) == false )
         {

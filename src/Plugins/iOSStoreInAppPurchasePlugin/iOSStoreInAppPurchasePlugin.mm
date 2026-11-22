@@ -242,6 +242,10 @@
 }
 
 - (BOOL)purchaseProduct:(const Mengine::iOSStoreInAppPurchaseProductInterfacePtr &)product {
+    return [self purchaseProduct:product accountToken:nil];
+}
+
+- (BOOL)purchaseProduct:(const Mengine::iOSStoreInAppPurchaseProductInterfacePtr &)product accountToken:(NSString *)accountToken {
     if ([SKPaymentQueue canMakePayments] == NO) {
         return NO;
     }
@@ -253,7 +257,8 @@
     Mengine::iOSStoreInAppPurchaseProductPtr inAppProduct = Mengine::iOSStoreInAppPurchaseProductPtr::from( product );
     SKProduct * skProduct = inAppProduct->getSKProduct();
 
-    SKPayment * payment = [SKPayment paymentWithProduct:skProduct];
+    SKMutablePayment * payment = [SKMutablePayment paymentWithProduct:skProduct];
+    payment.applicationUsername = accountToken;
     [[SKPaymentQueue defaultQueue] addPayment:payment];
 
     return YES;

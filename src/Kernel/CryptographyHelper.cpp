@@ -7,6 +7,17 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
+        bool generateRandomBytes( void * const _buffer, size_t _size )
+        {
+            if( CRYPTOGRAPHY_SYSTEM()
+                ->generateRandomBytes( _buffer, _size ) == false )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
         bool generateRandomSeed( uint64_t * const _seed )
         {
             if( CRYPTOGRAPHY_SYSTEM()

@@ -1,11 +1,12 @@
 #pragma once
 
-#include "Kernel/String.h"
+#include "Config/Char.h"
+#include "Config/StdInt.h"
 
 namespace Mengine
 {
     namespace Helper
     {
-        void makeUID( uint32_t _length, Char * const _uid );
+        bool makeUID( uint32_t _length, Char * const _uid );
     }
 }

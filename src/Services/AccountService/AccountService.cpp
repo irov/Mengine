@@ -17,7 +17,6 @@
 #include "Kernel/Stringstream.h"
 #include "Kernel/PathString.h"
 #include "Kernel/ConfigHelper.h"
-#include "Kernel/UID.h"
 #include "Kernel/OptionHelper.h"
 #include "Kernel/NotificationHelper.h"
 #include "Kernel/JSONHelper.h"
@@ -177,11 +176,6 @@ namespace Mengine
             , _accountId.c_str()
         );
 
-        AccountUID uid;
-        Helper::makeUID( 20, uid.data );
-
-        newAccount->setUID( uid );
-
         m_accounts.emplace( _accountId, newAccount );
 
         m_currentAccountId = _accountId;
@@ -224,11 +218,6 @@ namespace Mengine
             , _accountId.c_str()
         );
 
-        AccountUID uid;
-        Helper::makeUID( 20, uid.data );
-
-        newAccount->setUID( uid );
-
         m_accounts.emplace( _accountId, newAccount );
 
         m_globalAccountId = _accountId;
@@ -267,23 +256,13 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    AccountInterfacePtr AccountService::newAccount_( const ConstString & _accountId, const DocumentInterfacePtr & _doc )
+    AccountPtr AccountService::makeAccount_( const ConstString & _accountId, const DocumentInterfacePtr & _doc )
     {
         PathString accountString;
         accountString.append( _accountId.c_str(), _accountId.size() );
         accountString.append( MENGINE_PATH_FORWARDSLASH );
 
         FilePath accountPath = Helper::stringizeFilePath( accountString );
-
-        if( m_fileGroup->createDirectory( accountPath ) == false )
-        {
-            LOGGER_ERROR( "account with ID '%s' failed create directory '%s'"
-                , _accountId.c_str()
-                , accountPath.c_str()
-            );
-
-            return nullptr;
-        }
 
         AccountPtr newAccount = m_factoryAccounts->createObject( _doc );
 
@@ -302,6 +281,23 @@ namespace Mengine
         m_invalidateAccounts = true;
 
         return newAccount;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    AccountInterfacePtr AccountService::newAccount_( const ConstString & _accountId, const DocumentInterfacePtr & _doc )
+    {
+        AccountPtr account = this->makeAccount_( _accountId, _doc );
+
+        if( account == nullptr )
+        {
+            return nullptr;
+        }
+
+        if( account->setup() == false )
+        {
+            return nullptr;
+        }
+
+        return account;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AccountService::hasAccount( const ConstString & _accountId ) const
@@ -615,7 +611,7 @@ namespace Mengine
 
         for( const ConstString & accountId : values )
         {
-            AccountInterfacePtr account = this->newAccount_( accountId, MENGINE_DOCUMENT_FACTORABLE );
+            AccountInterfacePtr account = this->makeAccount_( accountId, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( account, "invalid create account '%s'"
                 , accountId.c_str()
@@ -626,10 +622,6 @@ namespace Mengine
             if( this->loadAccount_( account ) == false )
             {
                 m_accounts.erase( accountId );
-
-                LOGGER_ERROR( "invalid load account '%s'"
-                    , accountId.c_str()
-                );
 
                 continue;
             }

@@ -60,6 +60,11 @@ namespace Mengine
         return m_skPaymentTransaction.transactionIdentifier;
     }
     /////////////////////////////////////////////////////////////////////////////
+    NSString * iOSStoreInAppPurchasePaymentTransaction::getAccountToken() const
+    {
+        return m_skPaymentTransaction.payment.applicationUsername;
+    }
+    ///////////////////////////////////////////////////////////////////////////
     bool iOSStoreInAppPurchasePaymentTransaction::isCancelled() const
     {
         NSError * error = m_skPaymentTransaction.error;

@@ -32,6 +32,7 @@ namespace Mengine
     public:
         virtual NSString * getProductIdentifier() const = 0;
         virtual NSString * getTransactionIdentifier() const = 0;
+        virtual NSString * getAccountToken() const = 0;
         virtual bool isCancelled() const = 0;
 
     public:
@@ -94,6 +95,7 @@ namespace Mengine
                                                                           cb:(const Mengine::iOSStoreInAppPurchaseProductsResponseInterfacePtr &)cb;
 - (BOOL)isOwnedProduct:(NSString *)productIdentifier;
 - (BOOL)purchaseProduct:(const Mengine::iOSStoreInAppPurchaseProductInterfacePtr &)product;
+- (BOOL)purchaseProduct:(const Mengine::iOSStoreInAppPurchaseProductInterfacePtr &)product accountToken:(NSString *)accountToken;
 - (void)restoreCompletedTransactions;
 - (void)querySubscriptionStatus:(NSString *)productIdentifier;
 - (void)refreshEntitlements:(NSSet<NSString *> *)productIdentifiers;

@@ -15,6 +15,7 @@ namespace Mengine
         SERVICE_DECLARE( "CryptographySystem" )
 
     public:
+        virtual bool generateRandomBytes( void * const _buffer, size_t _size ) const = 0;
         virtual bool generateRandomSeed( uint64_t * const _seed ) const = 0;
         virtual bool generateRandomHexadecimal( Char * const _hexadecimal, size_t _capacity, uint32_t _flags ) const = 0;
     };

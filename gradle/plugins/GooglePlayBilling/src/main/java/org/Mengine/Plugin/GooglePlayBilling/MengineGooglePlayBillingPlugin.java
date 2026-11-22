@@ -731,7 +731,11 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
         MengineUI.showToastRes(this.getMengineActivity(), R.string.mengine_googleplaybilling_restore_purchases_failed);
     }
 
-    public void buyInApp(String productId) {
+    public void buyInApp(@NonNull String productId) {
+        this.buyInApp(productId, null);
+    }
+
+    public void buyInApp(@NonNull String productId, @Nullable String accountToken) {
         this.logInfo("buyInApp productId: %s"
             , productId
         );
@@ -812,12 +816,22 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
                     return;
                 }
 
-                this.launchBillingFlow(productId, productDetails);
+                if (accountToken == null) {
+                    this.launchBillingFlow(productId, productDetails);
+
+                    return;
+                }
+
+                this.launchBillingFlow(productId, productDetails, accountToken);
             });
         });
     }
 
     protected void launchBillingFlow(@NonNull String productId, @NonNull ProductDetails product) {
+        this.launchBillingFlow(productId, product, null);
+    }
+
+    private void launchBillingFlow(@NonNull String productId, @NonNull ProductDetails product, @Nullable String accountToken) {
         BillingClient billingClient = m_billingClient;
 
         if (billingClient == null) {
@@ -847,9 +861,14 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
 
         productDetailsParamsList.add(productParams);
 
-        BillingFlowParams flowParams = BillingFlowParams.newBuilder()
-            .setProductDetailsParamsList(productDetailsParamsList)
-            .build();
+        BillingFlowParams.Builder flowParamsBuilder = BillingFlowParams.newBuilder()
+            .setProductDetailsParamsList(productDetailsParamsList);
+
+        if (accountToken != null) {
+            flowParamsBuilder.setObfuscatedAccountId(accountToken);
+        }
+
+        BillingFlowParams flowParams = flowParamsBuilder.build();
 
         BillingResult billingResult = billingClient.launchBillingFlow(activity, flowParams);
 

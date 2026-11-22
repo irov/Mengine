@@ -592,6 +592,10 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
     }
 
     public void restorePurchases() {
+        this.restorePurchases(null);
+    }
+
+    public void restorePurchases(@Nullable String accountToken) {
         this.logInfo("restorePurchases");
 
         BillingClient billingClient = m_billingClient;
@@ -614,7 +618,21 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
             .log();
 
         this.queryRestorePurchases(billingClient, 0, purchases -> {
-            Consumer<Boolean> completion = MengineUtils.createCountDownConsumer(purchases, successful -> {
+            List<Purchase> restorablePurchases = purchases;
+
+            if (accountToken != null) {
+                restorablePurchases = new ArrayList<>();
+
+                for (Purchase purchase : purchases) {
+                    if (MengineGooglePlayBillingPlugin.isPurchaseRestorable(purchase, accountToken) == false) {
+                        continue;
+                    }
+
+                    restorablePurchases.add(purchase);
+                }
+            }
+
+            Consumer<Boolean> completion = MengineUtils.createCountDownConsumer(restorablePurchases, successful -> {
                 if (m_billingClient != billingClient) {
                     return;
                 }
@@ -628,7 +646,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
                 this.queryRestorePurchases(billingClient, 0, this::finishRestorePurchases);
             });
 
-            for (Purchase purchase : purchases) {
+            for (Purchase purchase : restorablePurchases) {
                 this.handlePurchase(purchase, completion);
             }
         });
@@ -1032,6 +1050,20 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
         }
 
         return obfuscatedAccountId;
+    }
+
+    private static boolean isPurchaseRestorable(@NonNull Purchase purchase, @NonNull String accountToken) {
+        String owner = MengineGooglePlayBillingPlugin.getPurchaseAccountToken(purchase);
+
+        if (owner == null) {
+            return true;
+        }
+
+        if (accountToken.equalsIgnoreCase(owner) == false) {
+            return false;
+        }
+
+        return true;
     }
 
     @AnyThread

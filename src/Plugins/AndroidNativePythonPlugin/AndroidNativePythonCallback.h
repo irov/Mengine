@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Environment/Android/AndroidEnv.h"
-#include "Environment/Python/PythonIncluder.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/Scriptable.h"
@@ -21,10 +20,6 @@ namespace Mengine
         ~AndroidNativePythonCallback() override;
 
     public:
-        void setKernel( pybind::kernel_interface * _kernel );
-        pybind::kernel_interface * getKernel() const;
-
-    public:
         void setJavaFunctor( JNIEnv * _jenv, jobject _functor );
         MENGINE_NODISCARD jobject getJavaFunctor() const;
 
@@ -32,8 +27,9 @@ namespace Mengine
         void call( bool _result, const Params & _params );
 
     protected:
-        pybind::kernel_interface * m_kernel;
         jobject m_functor;
+
+        bool m_called;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AndroidNativePythonCallback> AndroidNativePythonCallbackPtr;

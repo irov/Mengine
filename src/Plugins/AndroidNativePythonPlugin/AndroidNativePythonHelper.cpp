@@ -171,7 +171,6 @@ namespace Mengine
                 AndroidNativePythonCallbackPtr functor = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "AndroidNativePython" ), STRINGIZE_STRING_LOCAL( "AndroidNativePythonCallback" ), _doc );
 
-                functor->setKernel( _kernel );
                 functor->setJavaFunctor( _jenv, _obj );
 
                 PyObject * py_functor = pybind::ptr( _kernel, functor );

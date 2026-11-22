@@ -5,6 +5,7 @@
 
 #include "Kernel/Error.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/Logger.h"
 
 #include "Config/Char.h"
 
@@ -12,8 +13,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     AndroidNativePythonCallback::AndroidNativePythonCallback()
-        : m_kernel( nullptr )
-        , m_functor( nullptr )
+        : m_functor( nullptr )
+        , m_called( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -28,16 +29,6 @@ namespace Mengine
             Mengine_JNI_DeleteGlobalRef( jenv, m_functor );
             m_functor = nullptr;
         }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidNativePythonCallback::setKernel( pybind::kernel_interface * _kernel )
-    {
-        m_kernel = _kernel;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    pybind::kernel_interface * AndroidNativePythonCallback::getKernel() const
-    {
-        return m_kernel;
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonCallback::setJavaFunctor( JNIEnv * _jenv, jobject _functor )
@@ -57,6 +48,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativePythonCallback::call( bool _result, const Params & _params )
     {
+        if( m_called == true )
+        {
+            LOGGER_ERROR( "android callback already called" );
+
+            return;
+        }
+
+        m_called = true;
+
         JNIEnv * jenv = Mengine_JNI_GetEnv();
 
         MENGINE_ASSERTION_MEMORY_PANIC( jenv, "invalid get jenv" );

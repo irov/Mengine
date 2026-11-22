@@ -82,7 +82,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
 
             int responseCode = billingResult.getResponseCode();
             String debugMessage = billingResult.getDebugMessage();
-            String productId = m_pendingPurchaseProductId.getAndSet(null);
+            String productId = this.completeBuyInApp(responseCode, purchases);
 
             switch (responseCode) {
                 case BillingClient.BillingResponseCode.FEATURE_NOT_SUPPORTED: {
@@ -100,7 +100,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
                     this.nativeCall("onGooglePlayBillingPurchasesUpdatedServiceDisconnected", productId);
                 }break;
                 case BillingClient.BillingResponseCode.OK: {
-                    this.logInfo("onPurchasesUpdated [User success the purchase]");
+                    this.logInfo("onPurchasesUpdated [Purchase update received]");
 
                     if (purchases != null) {
                         this.handlePurchases(purchases);
@@ -747,6 +747,43 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
 
         this.nativeCall("onGooglePlayBillingRestorePurchasesFailed");
         MengineUI.showToastRes(this.getMengineActivity(), R.string.mengine_googleplaybilling_restore_purchases_failed);
+    }
+
+    @Nullable
+    private String completeBuyInApp(int responseCode, @Nullable List<Purchase> purchases) {
+        if (responseCode != BillingClient.BillingResponseCode.OK) {
+            return m_pendingPurchaseProductId.getAndSet(null);
+        }
+
+        if (purchases == null) {
+            return m_pendingPurchaseProductId.getAndSet(null);
+        }
+
+        if (purchases.isEmpty() == true) {
+            return m_pendingPurchaseProductId.getAndSet(null);
+        }
+
+        String productId = m_pendingPurchaseProductId.get();
+
+        if (productId == null) {
+            return null;
+        }
+
+        for (Purchase purchase : purchases) {
+            List<String> products = purchase.getProducts();
+
+            if (products.contains(productId) == false) {
+                continue;
+            }
+
+            if (m_pendingPurchaseProductId.compareAndSet(productId, null) == false) {
+                return null;
+            }
+
+            return productId;
+        }
+
+        return null;
     }
 
     public void buyInApp(@NonNull String productId) {

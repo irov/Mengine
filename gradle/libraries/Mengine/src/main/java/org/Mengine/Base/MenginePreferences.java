@@ -9,6 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -35,6 +36,10 @@ public class MenginePreferences {
         for (Map.Entry<String, ?> entry : settings.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
+
+            if (value instanceof Set<?> setValue) {
+                value = Collections.unmodifiableSet(new HashSet<>(setValue));
+            }
 
             MenginePreferences.SETTINGS.put(key, value);
         }
@@ -142,19 +147,25 @@ public class MenginePreferences {
 
     @SuppressWarnings("unchecked")
     static public void setPreferenceStrings(@NonNull String name, Set<String> value) {
+        Set<String> strings = null;
+
+        if (value != null) {
+            strings = Collections.unmodifiableSet(new HashSet<>(value));
+        }
+
         synchronized (MenginePreferences.SETTINGS_SYNC) {
             Set<String> currentValue = (Set<String>)MenginePreferences.SETTINGS.getOrDefault(name, null);
 
-            if (Objects.equals(currentValue, value) == true) {
+            if (Objects.equals(currentValue, strings) == true) {
                 return;
             }
 
-            MenginePreferences.SETTINGS.put(name, value);
-        }
+            MenginePreferences.SETTINGS.put(name, strings);
 
-        SharedPreferences.Editor editor = MenginePreferences.PREFERENCES.edit();
-        editor.putStringSet(name, value);
-        editor.apply();
+            SharedPreferences.Editor editor = MenginePreferences.PREFERENCES.edit();
+            editor.putStringSet(name, strings);
+            editor.apply();
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -162,19 +173,47 @@ public class MenginePreferences {
         synchronized (MenginePreferences.SETTINGS_SYNC) {
             Set<String> currentValue = (Set<String>)MenginePreferences.SETTINGS.getOrDefault(name, null);
 
-            if (currentValue == null) {
-                currentValue = new HashSet<>();
-                MenginePreferences.SETTINGS.put(name, currentValue);
+            Set<String> newValue = new HashSet<>();
+
+            if (currentValue != null) {
+                newValue.addAll(currentValue);
             }
 
-            currentValue.addAll(value);
+            newValue.addAll(value);
+
+            Set<String> strings = Collections.unmodifiableSet(newValue);
+
+            MenginePreferences.SETTINGS.put(name, strings);
+
+            SharedPreferences.Editor editor = MenginePreferences.PREFERENCES.edit();
+            editor.putStringSet(name, strings);
+            editor.apply();
         }
+    }
 
-        Set<String> values = MenginePreferences.getPreferenceStrings(name, null);
+    @SuppressWarnings("unchecked")
+    static public void removePreferenceStrings(@NonNull String name, Collection<String> value) {
+        synchronized (MenginePreferences.SETTINGS_SYNC) {
+            Set<String> currentValue = (Set<String>)MenginePreferences.SETTINGS.getOrDefault(name, null);
 
-        SharedPreferences.Editor editor = MenginePreferences.PREFERENCES.edit();
-        editor.putStringSet(name, values);
-        editor.apply();
+            if (currentValue == null) {
+                return;
+            }
+
+            Set<String> newValue = new HashSet<>(currentValue);
+
+            if (newValue.removeAll(value) == false) {
+                return;
+            }
+
+            Set<String> strings = Collections.unmodifiableSet(newValue);
+
+            MenginePreferences.SETTINGS.put(name, strings);
+
+            SharedPreferences.Editor editor = MenginePreferences.PREFERENCES.edit();
+            editor.putStringSet(name, strings);
+            editor.apply();
+        }
     }
 
     static public <T extends Enum<T>> T getPreferenceEnum(@NonNull String name, Class<T> enumType, T defaultValue) {

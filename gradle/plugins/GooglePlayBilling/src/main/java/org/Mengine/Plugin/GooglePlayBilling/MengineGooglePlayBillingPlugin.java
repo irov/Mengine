@@ -896,19 +896,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
     }
 
     private void clearPurchaseDelivered(@NonNull String token) {
-        Set<String> deliveredTokens = MenginePreferences.getPreferenceStrings(PREFERENCE_PURCHASE_DELIVERED_TOKENS, null);
-
-        if (deliveredTokens == null) {
-            return;
-        }
-
-        if (deliveredTokens.contains(token) == false) {
-            return;
-        }
-
-        Set<String> updatedTokens = new HashSet<>(deliveredTokens);
-        updatedTokens.remove(token);
-        MenginePreferences.setPreferenceStrings(PREFERENCE_PURCHASE_DELIVERED_TOKENS, updatedTokens);
+        MenginePreferences.removePreferenceStrings(PREFERENCE_PURCHASE_DELIVERED_TOKENS, Collections.singleton(token));
     }
 
     private boolean beginPurchaseProcessing(@NonNull String token, @NonNull Consumer<Boolean> completion) {

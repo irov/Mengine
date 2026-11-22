@@ -17,6 +17,7 @@ import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.games.AchievementsClient;
 import com.google.android.gms.games.AuthenticationResult;
 import com.google.android.gms.games.EventsClient;
+import com.google.android.gms.games.GamesClientStatusCodes;
 import com.google.android.gms.games.GamesSignInClient;
 import com.google.android.gms.games.LeaderboardsClient;
 import com.google.android.gms.games.PlayGames;
@@ -251,6 +252,7 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
             case CommonStatusCodes.CONNECTION_SUSPENDED_DURING_CALL:
             case CommonStatusCodes.RECONNECTION_TIMED_OUT_DURING_UPDATE:
             case CommonStatusCodes.RECONNECTION_TIMED_OUT:
+            case GamesClientStatusCodes.NETWORK_ERROR_NO_DATA:
                 return true;
             default:
                 return false;

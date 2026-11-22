@@ -65,6 +65,14 @@ public class MengineUI {
     }
 
     public static boolean showOkAlertDialog(@NonNull MengineActivity activity, Runnable ok, @NonNull String title, @NonNull String format, Object ... args) {
+        if (MengineUI.showOkAlertDialog(activity, ok, null, title, format, args) == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    static boolean showOkAlertDialog(@NonNull MengineActivity activity, @Nullable Runnable ok, @Nullable Runnable cancel, @NonNull String title, @NonNull String format, Object ... args) {
         if (MengineUtils.isActivityAvailable(activity) == false) {
             MengineLog.logError(TAG, "[ERROR] showOkAlertDialog activity is unavailable title: %s format: %s args: %s"
                 , title
@@ -75,8 +83,16 @@ public class MengineUI {
             return false;
         }
 
+        MengineOperation<Runnable> operation = MengineUI.createDialogOperation("showOkAlertDialog");
+
         activity.runOnUiThread(() -> {
             if (MengineUtils.isActivityAvailable(activity) == false) {
+                MengineLog.logError(TAG, "[ERROR] showOkAlertDialog activity became unavailable title: %s"
+                    , title
+                );
+
+                operation.complete(cancel);
+
                 return;
             }
 
@@ -93,11 +109,13 @@ public class MengineUI {
             builder.setMessage(message);
             builder.setCancelable(false);
             builder.setPositiveButton("OK", (dialog, which) -> {
+                if (operation.isCompleted() == true) {
+                    return;
+                }
+
                 MengineLog.logMessage(TAG, "select [OK] alert dialog OK clicked");
 
-                if (ok != null) {
-                    ok.run();
-                }
+                operation.complete(ok);
 
                 dialog.dismiss();
             });

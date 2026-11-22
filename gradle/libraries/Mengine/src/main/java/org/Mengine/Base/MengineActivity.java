@@ -1257,7 +1257,7 @@ public class MengineActivity extends AppCompatActivity {
     }
 
     public boolean showSystemDialog(String title, String message, @NonNull MengineNativeRunnable callback) {
-        if (MengineUI.showOkAlertDialog(this, callback, title, message) == false) {
+        if (MengineUI.showOkAlertDialog(this, callback, callback::close, title, message) == false) {
             callback.close();
 
             return false;

@@ -30,7 +30,7 @@ extern "C"
         if( ANDROID_KERNEL_SERVICE()
             ->callPluginMethod( main_jenv, plugin, method, _args ) == false )
         {
-            LOGGER_ERROR( "plugin '%s' method '%s' not found"
+            LOGGER_FATAL( "plugin '%s' method '%s' not found"
                 , plugin.c_str()
                 , method.c_str()
             );

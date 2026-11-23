@@ -115,27 +115,56 @@ namespace Mengine
         m_accountProvider = _accountProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    AccountInterfacePtr AccountService::createAccount( const DocumentInterfacePtr & _doc )
+    AccountInterfacePtr AccountService::createAccount( bool _default, const DocumentInterfacePtr & _doc )
     {
-        uint32_t new_playerId = ++m_playerEnumerator;
+        uint32_t newPlayerId = ++m_playerEnumerator;
 
         Stringstream streamAccountId;
-        streamAccountId << "Player_" << new_playerId;
+        streamAccountId << "Player_" << newPlayerId;
 
         ConstString accountId = Helper::stringizeString( streamAccountId.str() );
 
-        AccountInterfacePtr account = this->createAccount_( accountId, _doc );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( account, "account with ID '%s' invalid create. Account not created"
+        MENGINE_ASSERTION_FATAL( m_accounts.find( accountId ) == nullptr, "account with ID '%s' already exist. Account not created"
             , accountId.c_str()
         );
 
-        LOGGER_INFO( "account", "create account '%s' UID '%.20s'"
-            , account->getAccountId().c_str()
-            , account->getUID().data
+        this->unselectCurrentAccount_();
+
+        AccountInterfacePtr newAccount = this->newAccount_( accountId, _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( newAccount, "account with ID '%s' invalid create. Account not created"
+            , accountId.c_str()
         );
 
-        return account;
+        m_accounts.emplace( accountId, newAccount );
+
+        m_currentAccountId = accountId;
+
+        if( _default == true )
+        {
+            this->setDefaultAccount( accountId );
+        }
+
+        if( m_accountProvider != nullptr )
+        {
+            m_accountProvider->onCreateAccount( newAccount, false );
+        }
+
+        newAccount->apply();
+
+        if( m_accountProvider != nullptr )
+        {
+            m_accountProvider->onSelectAccount( newAccount );
+        }
+
+        m_invalidateAccounts = true;
+
+        LOGGER_INFO( "account", "create account '%s' UID '%.20s'"
+            , newAccount->getAccountId().c_str()
+            , newAccount->getUID().data
+        );
+
+        return newAccount;
     }
     //////////////////////////////////////////////////////////////////////////
     AccountInterfacePtr AccountService::createGlobalAccount( const DocumentInterfacePtr & _doc )
@@ -160,41 +189,6 @@ namespace Mengine
         );
 
         return account;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    AccountInterfacePtr AccountService::createAccount_( const ConstString & _accountId, const DocumentInterfacePtr & _doc )
-    {
-        MENGINE_ASSERTION_FATAL( m_accounts.find( _accountId ) == nullptr, "account with ID '%s' already exist. Account not created"
-            , _accountId.c_str()
-        );
-
-        this->unselectCurrentAccount_();
-
-        AccountInterfacePtr newAccount = this->newAccount_( _accountId, _doc );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( newAccount, "account with ID '%s' invalid create. Account not created"
-            , _accountId.c_str()
-        );
-
-        m_accounts.emplace( _accountId, newAccount );
-
-        m_currentAccountId = _accountId;
-
-        if( m_accountProvider != nullptr )
-        {
-            m_accountProvider->onCreateAccount( newAccount, false );
-        }
-
-        newAccount->apply();
-
-        if( m_accountProvider != nullptr )
-        {
-            m_accountProvider->onSelectAccount( newAccount );
-        }
-
-        m_invalidateAccounts = true;
-
-        return newAccount;
     }
     //////////////////////////////////////////////////////////////////////////
     AccountInterfacePtr AccountService::createGlobalAccount_( const ConstString & _accountId, const DocumentInterfacePtr & _doc )

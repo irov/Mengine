@@ -102,6 +102,12 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         static bool s_addAccountSetting( pybind::kernel_interface * _kernel, const ConstString & _accountId, const ConstString & _setting, PyObject * _defaultValue, const pybind::object & _cb, const pybind::args & _args );
+        static bool s_addAccountSettingBool( pybind::kernel_interface * _kernel, const ConstString & _accountId, const ConstString & _setting, bool _defaultValue, const pybind::object & _cb, const pybind::args & _args );
+        static bool s_addAccountSettingInt( pybind::kernel_interface * _kernel, const ConstString & _accountId, const ConstString & _setting, int32_t _defaultValue, const pybind::object & _cb, const pybind::args & _args );
+        static bool s_addAccountSettingUInt( pybind::kernel_interface * _kernel, const ConstString & _accountId, const ConstString & _setting, uint32_t _defaultValue, const pybind::object & _cb, const pybind::args & _args );
+        static bool s_addAccountSettingUInt64( pybind::kernel_interface * _kernel, const ConstString & _accountId, const ConstString & _setting, uint64_t _defaultValue, const pybind::object & _cb, const pybind::args & _args );
+        static bool s_addAccountSettingFloat( pybind::kernel_interface * _kernel, const ConstString & _accountId, const ConstString & _setting, float _defaultValue, const pybind::object & _cb, const pybind::args & _args );
+        static bool s_addAccountSettingStrings( pybind::kernel_interface * _kernel, const ConstString & _accountId, const ConstString & _setting, const VectorWString & _defaultValue, const pybind::object & _cb, const pybind::args & _args );
         static bool s_changeAccountSetting( pybind::kernel_interface * _kernel, const ConstString & _accountId, const ConstString & _setting, PyObject * _value );
         static bool s_changeAccountSettingBool( const ConstString & _accountId, const ConstString & _setting, bool _value );
         static bool s_changeAccountSettingInt( const ConstString & _accountId, const ConstString & _setting, int32_t _value );
@@ -1764,6 +1770,144 @@ namespace Mengine
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
+        static bool s_addCurrentAccountSettingBool( pybind::kernel_interface * _kernel, const ConstString & _setting, bool _defaultValue, const pybind::object & _cb, const pybind::args & _args )
+        {
+            if( ACCOUNT_SERVICE()
+                ->hasCurrentAccount() == false )
+            {
+                LOGGER_ERROR( "currentAccount is none [%s]"
+                    , _setting.c_str()
+                );
+
+                return false;
+            }
+
+            const ConstString & accountId = ACCOUNT_SERVICE()
+                ->getCurrentAccountId();
+
+            if( s_addAccountSettingBool( _kernel, accountId, _setting, _defaultValue, _cb, _args ) == false )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool s_addCurrentAccountSettingInt( pybind::kernel_interface * _kernel, const ConstString & _setting, int32_t _defaultValue, const pybind::object & _cb, const pybind::args & _args )
+        {
+            if( ACCOUNT_SERVICE()
+                ->hasCurrentAccount() == false )
+            {
+                LOGGER_ERROR( "currentAccount is none [%s]"
+                    , _setting.c_str()
+                );
+
+                return false;
+            }
+
+            const ConstString & accountId = ACCOUNT_SERVICE()
+                ->getCurrentAccountId();
+
+            if( s_addAccountSettingInt( _kernel, accountId, _setting, _defaultValue, _cb, _args ) == false )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool s_addCurrentAccountSettingUInt( pybind::kernel_interface * _kernel, const ConstString & _setting, uint32_t _defaultValue, const pybind::object & _cb, const pybind::args & _args )
+        {
+            if( ACCOUNT_SERVICE()
+                ->hasCurrentAccount() == false )
+            {
+                LOGGER_ERROR( "currentAccount is none [%s]"
+                    , _setting.c_str()
+                );
+
+                return false;
+            }
+
+            const ConstString & accountId = ACCOUNT_SERVICE()
+                ->getCurrentAccountId();
+
+            if( s_addAccountSettingUInt( _kernel, accountId, _setting, _defaultValue, _cb, _args ) == false )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool s_addCurrentAccountSettingUInt64( pybind::kernel_interface * _kernel, const ConstString & _setting, uint64_t _defaultValue, const pybind::object & _cb, const pybind::args & _args )
+        {
+            if( ACCOUNT_SERVICE()
+                ->hasCurrentAccount() == false )
+            {
+                LOGGER_ERROR( "currentAccount is none [%s]"
+                    , _setting.c_str()
+                );
+
+                return false;
+            }
+
+            const ConstString & accountId = ACCOUNT_SERVICE()
+                ->getCurrentAccountId();
+
+            if( s_addAccountSettingUInt64( _kernel, accountId, _setting, _defaultValue, _cb, _args ) == false )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool s_addCurrentAccountSettingFloat( pybind::kernel_interface * _kernel, const ConstString & _setting, float _defaultValue, const pybind::object & _cb, const pybind::args & _args )
+        {
+            if( ACCOUNT_SERVICE()
+                ->hasCurrentAccount() == false )
+            {
+                LOGGER_ERROR( "currentAccount is none [%s]"
+                    , _setting.c_str()
+                );
+
+                return false;
+            }
+
+            const ConstString & accountId = ACCOUNT_SERVICE()
+                ->getCurrentAccountId();
+
+            if( s_addAccountSettingFloat( _kernel, accountId, _setting, _defaultValue, _cb, _args ) == false )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool s_addCurrentAccountSettingStrings( pybind::kernel_interface * _kernel, const ConstString & _setting, const VectorWString & _defaultValue, const pybind::object & _cb, const pybind::args & _args )
+        {
+            if( ACCOUNT_SERVICE()
+                ->hasCurrentAccount() == false )
+            {
+                LOGGER_ERROR( "currentAccount is none [%s]"
+                    , _setting.c_str()
+                );
+
+                return false;
+            }
+
+            const ConstString & accountId = ACCOUNT_SERVICE()
+                ->getCurrentAccountId();
+
+            if( s_addAccountSettingStrings( _kernel, accountId, _setting, _defaultValue, _cb, _args ) == false )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
         static bool s_changeCurrentAccountSetting( pybind::kernel_interface * _kernel, const ConstString & _setting, PyObject * _value )
         {
             if( ACCOUNT_SERVICE()
@@ -1984,6 +2128,188 @@ namespace Mengine
                 , _accountId.c_str()
                 , _setting.c_str()
                 , utf8_defaultValue
+            );
+
+            return result;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool s_addAccountSettingBool( pybind::kernel_interface * _kernel, const ConstString & _accountId, const ConstString & _setting, bool _defaultValue, const pybind::object & _cb, const pybind::args & _args )
+        {
+            const AccountInterfacePtr & account = ACCOUNT_SERVICE()
+                ->getAccount( _accountId );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( account, "account not found '%s'"
+                , _accountId.c_str()
+            );
+
+            const Char * defaultValue = _defaultValue == true ? "True" : "False";
+
+            PyAccountSettingProviderPtr provider = Helper::makeFactorableUnique<PythonAccountSettingProvider>( MENGINE_DOCUMENT_PYTHON, _kernel, _accountId, _cb, _args );
+
+            bool result = account->addSetting( _setting, defaultValue, provider );
+
+            LOGGER_INFO( "account", "%s add account '%s' setting '%s' default value '%s'"
+                , result == true ? "success" : "failed"
+                , _accountId.c_str()
+                , _setting.c_str()
+                , defaultValue
+            );
+
+            return result;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool s_addAccountSettingInt( pybind::kernel_interface * _kernel, const ConstString & _accountId, const ConstString & _setting, int32_t _defaultValue, const pybind::object & _cb, const pybind::args & _args )
+        {
+            const AccountInterfacePtr & account = ACCOUNT_SERVICE()
+                ->getAccount( _accountId );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( account, "account not found '%s'"
+                , _accountId.c_str()
+            );
+
+            Char defaultValue[64 + 1] = {'\0'};
+            if( Helper::stringalized( _defaultValue, defaultValue, 64 ) == false )
+            {
+                return false;
+            }
+
+            PyAccountSettingProviderPtr provider = Helper::makeFactorableUnique<PythonAccountSettingProvider>( MENGINE_DOCUMENT_PYTHON, _kernel, _accountId, _cb, _args );
+
+            bool result = account->addSetting( _setting, defaultValue, provider );
+
+            LOGGER_INFO( "account", "%s add account '%s' setting '%s' default value '%s'"
+                , result == true ? "success" : "failed"
+                , _accountId.c_str()
+                , _setting.c_str()
+                , defaultValue
+            );
+
+            return result;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool s_addAccountSettingUInt( pybind::kernel_interface * _kernel, const ConstString & _accountId, const ConstString & _setting, uint32_t _defaultValue, const pybind::object & _cb, const pybind::args & _args )
+        {
+            const AccountInterfacePtr & account = ACCOUNT_SERVICE()
+                ->getAccount( _accountId );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( account, "account not found '%s'"
+                , _accountId.c_str()
+            );
+
+            Char defaultValue[64 + 1] = {'\0'};
+            if( Helper::stringalized( _defaultValue, defaultValue, 64 ) == false )
+            {
+                return false;
+            }
+
+            PyAccountSettingProviderPtr provider = Helper::makeFactorableUnique<PythonAccountSettingProvider>( MENGINE_DOCUMENT_PYTHON, _kernel, _accountId, _cb, _args );
+
+            bool result = account->addSetting( _setting, defaultValue, provider );
+
+            LOGGER_INFO( "account", "%s add account '%s' setting '%s' default value '%s'"
+                , result == true ? "success" : "failed"
+                , _accountId.c_str()
+                , _setting.c_str()
+                , defaultValue
+            );
+
+            return result;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool s_addAccountSettingUInt64( pybind::kernel_interface * _kernel, const ConstString & _accountId, const ConstString & _setting, uint64_t _defaultValue, const pybind::object & _cb, const pybind::args & _args )
+        {
+            const AccountInterfacePtr & account = ACCOUNT_SERVICE()
+                ->getAccount( _accountId );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( account, "account not found '%s'"
+                , _accountId.c_str()
+            );
+
+            Char defaultValue[64 + 1] = {'\0'};
+            if( Helper::stringalized( _defaultValue, defaultValue, 64 ) == false )
+            {
+                return false;
+            }
+
+            PyAccountSettingProviderPtr provider = Helper::makeFactorableUnique<PythonAccountSettingProvider>( MENGINE_DOCUMENT_PYTHON, _kernel, _accountId, _cb, _args );
+
+            bool result = account->addSetting( _setting, defaultValue, provider );
+
+            LOGGER_INFO( "account", "%s add account '%s' setting '%s' default value '%s'"
+                , result == true ? "success" : "failed"
+                , _accountId.c_str()
+                , _setting.c_str()
+                , defaultValue
+            );
+
+            return result;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool s_addAccountSettingFloat( pybind::kernel_interface * _kernel, const ConstString & _accountId, const ConstString & _setting, float _defaultValue, const pybind::object & _cb, const pybind::args & _args )
+        {
+            const AccountInterfacePtr & account = ACCOUNT_SERVICE()
+                ->getAccount( _accountId );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( account, "account not found '%s'"
+                , _accountId.c_str()
+            );
+
+            Char defaultValue[256 + 1] = {'\0'};
+            if( Helper::stringalized( _defaultValue, defaultValue, 256 ) == false )
+            {
+                return false;
+            }
+
+            PyAccountSettingProviderPtr provider = Helper::makeFactorableUnique<PythonAccountSettingProvider>( MENGINE_DOCUMENT_PYTHON, _kernel, _accountId, _cb, _args );
+
+            bool result = account->addSetting( _setting, defaultValue, provider );
+
+            LOGGER_INFO( "account", "%s add account '%s' setting '%s' default value '%s'"
+                , result == true ? "success" : "failed"
+                , _accountId.c_str()
+                , _setting.c_str()
+                , defaultValue
+            );
+
+            return result;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool s_addAccountSettingStrings( pybind::kernel_interface * _kernel, const ConstString & _accountId, const ConstString & _setting, const VectorWString & _defaultValue, const pybind::object & _cb, const pybind::args & _args )
+        {
+            const AccountInterfacePtr & account = ACCOUNT_SERVICE()
+                ->getAccount( _accountId );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( account, "account not found '%s'"
+                , _accountId.c_str()
+            );
+
+            String defaultValue;
+
+            for( const WString & value : _defaultValue )
+            {
+                if( defaultValue.empty() == false )
+                {
+                    defaultValue += " ,,, ";
+                }
+
+                String utf8Value;
+                if( Helper::unicodeToUtf8( value, &utf8Value ) == false )
+                {
+                    return false;
+                }
+
+                defaultValue += utf8Value;
+            }
+
+            PyAccountSettingProviderPtr provider = Helper::makeFactorableUnique<PythonAccountSettingProvider>( MENGINE_DOCUMENT_PYTHON, _kernel, _accountId, _cb, _args );
+
+            bool result = account->addSetting( _setting, defaultValue.c_str(), provider );
+
+            LOGGER_INFO( "account", "%s add account '%s' setting '%s' default value '%s'"
+                , result == true ? "success" : "failed"
+                , _accountId.c_str()
+                , _setting.c_str()
+                , defaultValue.c_str()
             );
 
             return result;
@@ -3113,9 +3439,23 @@ namespace Mengine
         static PyObject * s_createAccount( pybind::kernel_interface * _kernel )
         {
             AccountInterfacePtr account = ACCOUNT_SERVICE()
-                ->createAccount( MENGINE_DOCUMENT_PYTHON );
+                ->createAccount( false, MENGINE_DOCUMENT_PYTHON );
 
             MENGINE_ASSERTION_MEMORY_PANIC( account, "invalid create account" );
+
+            const ConstString & accountId = account->getAccountId();
+
+            PyObject * py_value = pybind::ptr( _kernel, accountId );
+
+            return py_value;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static PyObject * s_createDefaultAccount( pybind::kernel_interface * _kernel )
+        {
+            AccountInterfacePtr account = ACCOUNT_SERVICE()
+                ->createAccount( true, MENGINE_DOCUMENT_PYTHON );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( account, "invalid create default account" );
 
             const ConstString & accountId = account->getAccountId();
 
@@ -4477,6 +4817,12 @@ namespace Mengine
         pybind::def_function( _kernel, "getCurrentAccountSettingFloatDefault", &Detail::s_getCurrentAccountSettingFloatDefault );
 
         pybind::def_function_kernel_args( _kernel, "addCurrentAccountSetting", &Detail::s_addCurrentAccountSetting );
+        pybind::def_function_kernel_args( _kernel, "addCurrentAccountSettingBool", &Detail::s_addCurrentAccountSettingBool );
+        pybind::def_function_kernel_args( _kernel, "addCurrentAccountSettingInt", &Detail::s_addCurrentAccountSettingInt );
+        pybind::def_function_kernel_args( _kernel, "addCurrentAccountSettingUInt", &Detail::s_addCurrentAccountSettingUInt );
+        pybind::def_function_kernel_args( _kernel, "addCurrentAccountSettingUInt64", &Detail::s_addCurrentAccountSettingUInt64 );
+        pybind::def_function_kernel_args( _kernel, "addCurrentAccountSettingFloat", &Detail::s_addCurrentAccountSettingFloat );
+        pybind::def_function_kernel_args( _kernel, "addCurrentAccountSettingStrings", &Detail::s_addCurrentAccountSettingStrings );
         pybind::def_function( _kernel, "hasCurrentAccountSetting", &Detail::s_hasCurrentAccountSetting );
         pybind::def_function_kernel( _kernel, "changeCurrentAccountSetting", &Detail::s_changeCurrentAccountSetting );
         pybind::def_function( _kernel, "changeCurrentAccountSettingBool", &Detail::s_changeCurrentAccountSettingBool );
@@ -4499,6 +4845,12 @@ namespace Mengine
         pybind::def_function( _kernel, "getAccountSettingFloatDefault", &Detail::s_getAccountSettingFloatDefault );
 
         pybind::def_function_kernel_args( _kernel, "addAccountSetting", &Detail::s_addAccountSetting );
+        pybind::def_function_kernel_args( _kernel, "addAccountSettingBool", &Detail::s_addAccountSettingBool );
+        pybind::def_function_kernel_args( _kernel, "addAccountSettingInt", &Detail::s_addAccountSettingInt );
+        pybind::def_function_kernel_args( _kernel, "addAccountSettingUInt", &Detail::s_addAccountSettingUInt );
+        pybind::def_function_kernel_args( _kernel, "addAccountSettingUInt64", &Detail::s_addAccountSettingUInt64 );
+        pybind::def_function_kernel_args( _kernel, "addAccountSettingFloat", &Detail::s_addAccountSettingFloat );
+        pybind::def_function_kernel_args( _kernel, "addAccountSettingStrings", &Detail::s_addAccountSettingStrings );
         pybind::def_function( _kernel, "hasAccountSetting", &Detail::s_hasAccountSetting );
         pybind::def_function_kernel( _kernel, "changeAccountSetting", &Detail::s_changeAccountSetting );
         pybind::def_function( _kernel, "changeAccountSettingBool", &Detail::s_changeAccountSettingBool );
@@ -4529,6 +4881,7 @@ namespace Mengine
         pybind::def_function( _kernel, "changeGlobalSettingStrings", &Detail::s_changeGlobalSettingStrings );
 
         pybind::def_function_kernel( _kernel, "createAccount", &Detail::s_createAccount );
+        pybind::def_function_kernel( _kernel, "createDefaultAccount", &Detail::s_createDefaultAccount );
         pybind::def_function_kernel( _kernel, "createGlobalAccount", &Detail::s_createGlobalAccount );
 
         pybind::def_function( _kernel, "selectAccount", &Detail::s_selectAccount );

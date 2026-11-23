@@ -31,7 +31,7 @@ namespace Mengine
         void setAccountProvider( const AccountProviderInterfacePtr & _accountProvider ) override;
 
     public:
-        AccountInterfacePtr createAccount( const DocumentInterfacePtr & _doc ) override;
+        AccountInterfacePtr createAccount( bool _default, const DocumentInterfacePtr & _doc ) override;
         AccountInterfacePtr createGlobalAccount( const DocumentInterfacePtr & _doc ) override;
 
     public:
@@ -80,7 +80,6 @@ namespace Mengine
 
     protected:
         bool loadAccount_( const AccountInterfacePtr & _account );
-        AccountInterfacePtr createAccount_( const ConstString & _accountId, const DocumentInterfacePtr & _doc );
         AccountInterfacePtr createGlobalAccount_( const ConstString & _accountId, const DocumentInterfacePtr & _doc );
 
     protected:

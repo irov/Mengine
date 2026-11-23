@@ -9,11 +9,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public abstract class MengineOperation<T> {
     private static final MengineTag TAG = MengineTag.of("MNGOperation");
 
-    private final String m_name;
+    private final String m_format;
+    private final Object[] m_args;
     private final AtomicBoolean m_completed;
 
-    protected MengineOperation(@NonNull String name) {
-        m_name = name;
+    protected MengineOperation(@NonNull String format, Object ... args) {
+        m_format = format;
+        m_args = args;
         m_completed = new AtomicBoolean(false);
     }
 
@@ -25,8 +27,10 @@ public abstract class MengineOperation<T> {
     @AnyThread
     public final void complete(T result) {
         if (m_completed.compareAndSet(false, true) == false) {
+            String name = MengineLog.buildTotalMsg(m_format, m_args);
+
             MengineLog.logError(MengineOperation.TAG, "operation '%s' already completed"
-                , m_name
+                , name
             );
 
             return;

@@ -1,4 +1,4 @@
-MENGINE_PROJECT(Windows)
+MENGINE_PROJECT(WindowsEnvironment)
 
 ADD_FILTER(
 src

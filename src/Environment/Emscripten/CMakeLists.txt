@@ -1,4 +1,4 @@
-MENGINE_PROJECT(Emscripten)
+MENGINE_PROJECT(EmscriptenEnvironment)
 
 ADD_FILTER(
 src

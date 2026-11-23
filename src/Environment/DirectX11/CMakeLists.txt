@@ -1,4 +1,4 @@
-MENGINE_PROJECT(DirectX11)
+MENGINE_PROJECT(DirectX11Environment)
 
 ADD_FILTER(
 src     

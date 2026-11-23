@@ -4,14 +4,14 @@
 
 namespace Mengine
 {
-    class iOSStoreInAppPurchaseScriptEmbedding
+    class iOSStoreKitScriptEmbedding
         : public ScriptEmbeddingInterface
     {
-        DECLARE_FACTORABLE( iOSStoreInAppPurchaseScriptEmbedding );
+        DECLARE_FACTORABLE( iOSStoreKitScriptEmbedding );
 
     public:
-        iOSStoreInAppPurchaseScriptEmbedding();
-        ~iOSStoreInAppPurchaseScriptEmbedding() override;
+        iOSStoreKitScriptEmbedding();
+        ~iOSStoreKitScriptEmbedding() override;
 
     public:
         bool embed( pybind::kernel_interface * _kernel ) override;

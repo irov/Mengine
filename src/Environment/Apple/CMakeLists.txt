@@ -1,4 +1,4 @@
-MENGINE_PROJECT(Apple)
+MENGINE_PROJECT(AppleEnvironment)
 
 ADD_FILTER(
 src

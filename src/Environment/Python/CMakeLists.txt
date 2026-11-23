@@ -1,4 +1,4 @@
-MENGINE_PROJECT(Python)
+MENGINE_PROJECT(PythonEnvironment)
 
 ADD_FILTER(
 src

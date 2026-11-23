@@ -43,7 +43,7 @@ ADD_CUSTOM_TARGET(MacOSWebViewContent
 )
 ADD_DEPENDENCIES(${PROJECT_NAME} MacOSWebViewContent)
 
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} MengineWebViewRuntime MacOSWebViewPlatform MacOS Apple
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} MengineWebViewRuntime MacOSWebViewPlatform MacOSEnvironment AppleEnvironment
     "-framework AppKit" "-framework WebKit" "-framework Security" "-framework SystemConfiguration")
 SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES
     MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/info.plist"

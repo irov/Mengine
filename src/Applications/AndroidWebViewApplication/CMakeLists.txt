@@ -13,4 +13,4 @@ IF(MENGINE_WEBVIEW_MCP)
 ENDIF()
 
 ADD_MENGINE_EXECUTABLE_ANDROID()
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} MengineWebViewRuntime AndroidWebViewPlatform Android Kernel)
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} MengineWebViewRuntime AndroidWebViewPlatform AndroidEnvironment Kernel)

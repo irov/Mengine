@@ -25,6 +25,6 @@ ELSEIF(CMAKE_SIZEOF_VOID_P EQUAL 8)
 ELSE()
     SET(WebView2Architecture x86)
 ENDIF()
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel Windows WebViewBridgeService
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel WindowsEnvironment WebViewBridgeService
     ${menginewebview2sdk_SOURCE_DIR}/build/native/${WebView2Architecture}/WebView2LoaderStatic.lib
     ole32 oleaut32 shlwapi version wininet)

@@ -38,7 +38,7 @@ ADD_MENGINE_DOWNLOAD_SKADNETWORKITEMS_PLIST("https://raw.githubusercontent.com/g
     CONVERTER "${CMAKE_CURRENT_SOURCE_DIR}/convert_skadnetworkitems_plist.py")
 
 if(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
-    TARGET_LINK_LIBRARIES(${PROJECT_NAME} Python)
+    TARGET_LINK_LIBRARIES(${PROJECT_NAME} PythonEnvironment)
 endif()
 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} iOSAdvertisementPlugin)

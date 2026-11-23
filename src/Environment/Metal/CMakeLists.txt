@@ -1,4 +1,4 @@
-MENGINE_PROJECT(Metal)
+MENGINE_PROJECT(MetalEnvironment)
 
 ADD_FILTER(
 src

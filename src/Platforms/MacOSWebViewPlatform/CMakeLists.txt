@@ -7,4 +7,4 @@ src
 )
 
 ADD_MENGINE_LIBRARY(Platforms)
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel WebViewBridgeService AppleWebViewPlatform Apple "-framework AppKit")
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} Kernel WebViewBridgeService AppleWebViewPlatform AppleEnvironment "-framework AppKit")

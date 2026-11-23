@@ -7,4 +7,4 @@ src
 )
 
 ADD_MENGINE_LIBRARY(Platforms)
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} Android Kernel WebViewBridgeService)
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} AndroidEnvironment Kernel WebViewBridgeService)

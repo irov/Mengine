@@ -1,4 +1,4 @@
-MENGINE_PROJECT(Android)
+MENGINE_PROJECT(AndroidEnvironment)
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/jpp/include)
 

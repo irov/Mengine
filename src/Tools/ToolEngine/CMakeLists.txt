@@ -58,7 +58,7 @@ if(WIN32)
         Win32DateTimeSystem
         Win32FileSystem
         Win32Platform
-        Windows
+        WindowsEnvironment
     )
 else()
     TARGET_LINK_LIBRARIES(${PROJECT_NAME} PUBLIC
@@ -68,8 +68,8 @@ else()
         POSIXTimeSystem
         AppleFileSystem
         MacOSPlatform
-        Apple
-        MacOS
+        AppleEnvironment
+        MacOSEnvironment
         "-framework Security"
     )
 endif()

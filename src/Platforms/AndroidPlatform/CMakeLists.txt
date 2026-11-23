@@ -25,7 +25,7 @@ src
 
 ADD_MENGINE_LIBRARY(Platforms)
 
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} Android)
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} AndroidEnvironment)
 
 find_library(EGL-lib EGL)
 

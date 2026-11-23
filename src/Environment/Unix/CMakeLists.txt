@@ -1,4 +1,4 @@
-MENGINE_PROJECT(Unix)
+MENGINE_PROJECT(UnixEnvironment)
 
 ADD_FILTER(
 src

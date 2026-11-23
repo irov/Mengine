@@ -46,7 +46,7 @@ ADD_CUSTOM_TARGET(iOSWebViewContent
     VERBATIM
 )
 ADD_DEPENDENCIES(${PROJECT_NAME} iOSWebViewContent)
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} MengineWebViewRuntime iOSWebViewPlatform iOS Apple
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} MengineWebViewRuntime iOSWebViewPlatform iOSEnvironment AppleEnvironment
     "-framework UIKit" "-framework WebKit" "-framework CoreGraphics" "-framework Security" "-framework SystemConfiguration"
     "-framework AdSupport" "-framework AppTrackingTransparency")
 SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES

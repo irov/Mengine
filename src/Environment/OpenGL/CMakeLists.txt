@@ -1,4 +1,4 @@
-MENGINE_PROJECT(OpenGL)
+MENGINE_PROJECT(OpenGLEnvironment)
 
 ADD_FILTER(
 src

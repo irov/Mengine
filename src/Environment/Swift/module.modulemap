@@ -1,0 +1,3 @@
+module MengineSwiftLog {
+    header "SwiftLog.h"
+}

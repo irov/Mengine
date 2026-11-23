@@ -24,7 +24,7 @@ namespace Mengine
         void finalize() override;
 
     public:
-        UniqueId addGlobalHandler( const InputHandlerInterfacePtr & _handler, const DocumentInterfacePtr & _doc ) override;
+        UniqueId addGlobalHandler( const InputHandlerInterfacePtr & _handler, bool _enable, const DocumentInterfacePtr & _doc ) override;
         InputHandlerInterfacePtr removeGlobalHandler( UniqueId _id ) override;
 
     public:

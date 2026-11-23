@@ -279,7 +279,7 @@ namespace Mengine
 
             InputHandlerInterfacePtr handler = Helper::makeFactorableUnique<Detail::GlobalKeyHandler>( _doc, _code, _isDown, _event, false );
 
-            UniqueId id = globalInputHandle->addGlobalHandler( handler, _doc );
+            UniqueId id = globalInputHandle->addGlobalHandler( handler, true, _doc );
 
             return id;
         }
@@ -291,7 +291,7 @@ namespace Mengine
 
             InputHandlerInterfacePtr handler = Helper::makeFactorableUnique<Detail::GlobalKeyHandler>( _doc, _code, _isDown, _event, true );
 
-            UniqueId id = globalInputHandle->addGlobalHandler( handler, _doc );
+            UniqueId id = globalInputHandle->addGlobalHandler( handler, true, _doc );
 
             return id;
         }
@@ -303,7 +303,7 @@ namespace Mengine
 
             InputHandlerInterfacePtr handler = Helper::makeFactorableUnique<Detail::GlobalAccelerometerHandler>( _doc, _event );
 
-            UniqueId id = globalInputHandle->addGlobalHandler( handler, _doc );
+            UniqueId id = globalInputHandle->addGlobalHandler( handler, true, _doc );
 
             return id;
         }
@@ -315,7 +315,7 @@ namespace Mengine
 
             InputHandlerInterfacePtr handler = Helper::makeFactorableUnique<Detail::GlobalMouseButtonHandler>( _doc, _button, _isDown, _event );
 
-            UniqueId id = globalInputHandle->addGlobalHandler( handler, _doc );
+            UniqueId id = globalInputHandle->addGlobalHandler( handler, true, _doc );
 
             return id;
         }
@@ -327,7 +327,7 @@ namespace Mengine
 
             InputHandlerInterfacePtr handler = Helper::makeFactorableUnique<Detail::GlobalMouseMoveHandler>( _doc, _event );
 
-            UniqueId id = globalInputHandle->addGlobalHandler( handler, _doc );
+            UniqueId id = globalInputHandle->addGlobalHandler( handler, true, _doc );
 
             return id;
         }
@@ -339,7 +339,7 @@ namespace Mengine
 
             InputHandlerInterfacePtr handler = Helper::makeFactorableUnique<Detail::GlobalMouseWheelHandler>( _doc, _event );
 
-            UniqueId id = globalInputHandle->addGlobalHandler( handler, _doc );
+            UniqueId id = globalInputHandle->addGlobalHandler( handler, true, _doc );
 
             return id;
         }

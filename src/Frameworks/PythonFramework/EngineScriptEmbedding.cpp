@@ -3822,14 +3822,14 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             FactoryInterfacePtr m_factoryPyGlobalMouseLeaveHandlers;
             //////////////////////////////////////////////////////////////////////////
-            UniqueId s_addMouseLeaveHandler( const pybind::object & _cb, const pybind::args & _args )
+            UniqueId s_addMouseLeaveHandler( const pybind::object & _cb, bool _enable, const pybind::args & _args )
             {
                 const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                     ->getGlobalInputHandler();
 
                 PyGlobalMouseLeaveHandlerPtr handler = Helper::makePythonCallbackProvider( m_factoryPyGlobalMouseLeaveHandlers, _cb, _args, MENGINE_DOCUMENT_PYTHON );
 
-                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYTHON );
+                UniqueId id = globalHandleSystem->addGlobalHandler( handler, _enable, MENGINE_DOCUMENT_PYTHON );
 
                 return id;
             }
@@ -3870,14 +3870,14 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             FactoryInterfacePtr m_factoryPyGlobalMouseMoveHandlers;
             //////////////////////////////////////////////////////////////////////////
-            UniqueId s_addMouseMoveHandler( const pybind::object & _cb, const pybind::args & _args )
+            UniqueId s_addMouseMoveHandler( const pybind::object & _cb, bool _enable, const pybind::args & _args )
             {
                 const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                     ->getGlobalInputHandler();
 
                 PyGlobalMouseMoveHandlerPtr handler = Helper::makePythonCallbackProvider( m_factoryPyGlobalMouseMoveHandlers, _cb, _args, MENGINE_DOCUMENT_PYTHON );
 
-                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYTHON );
+                UniqueId id = globalHandleSystem->addGlobalHandler( handler, _enable, MENGINE_DOCUMENT_PYTHON );
 
                 return id;
             }
@@ -3915,14 +3915,14 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             FactoryInterfacePtr m_factoryPyGlobalMouseHandlerButtons;
             //////////////////////////////////////////////////////////////////////////
-            UniqueId s_addMouseButtonHandler( const pybind::object & _cb, const pybind::args & _args )
+            UniqueId s_addMouseButtonHandler( const pybind::object & _cb, bool _enable, const pybind::args & _args )
             {
                 const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                     ->getGlobalInputHandler();
 
                 PyGlobalMouseHandlerButtonPtr handler = Helper::makePythonCallbackProvider( m_factoryPyGlobalMouseHandlerButtons, _cb, _args, MENGINE_DOCUMENT_PYTHON );
 
-                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYTHON );
+                UniqueId id = globalHandleSystem->addGlobalHandler( handler, _enable, MENGINE_DOCUMENT_PYTHON );
 
                 return id;
             }
@@ -3961,14 +3961,14 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             FactoryInterfacePtr m_factoryPyGlobalMouseHandlerButtonEnds;
             //////////////////////////////////////////////////////////////////////////
-            UniqueId s_addMouseButtonHandlerEnd( const pybind::object & _cb, const pybind::args & _args )
+            UniqueId s_addMouseButtonHandlerEnd( const pybind::object & _cb, bool _enable, const pybind::args & _args )
             {
                 const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                     ->getGlobalInputHandler();
 
                 PyGlobalMouseHandlerButtonEndPtr handler = Helper::makePythonCallbackProvider( m_factoryPyGlobalMouseHandlerButtonEnds, _cb, _args, MENGINE_DOCUMENT_PYTHON );
 
-                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYTHON );
+                UniqueId id = globalHandleSystem->addGlobalHandler( handler, _enable, MENGINE_DOCUMENT_PYTHON );
 
                 return id;
             }
@@ -4007,7 +4007,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             FactoryInterfacePtr m_factoryPyGlobalMouseHandlerButtonBegins;
             //////////////////////////////////////////////////////////////////////////
-            UniqueId s_addMouseButtonHandlerBegin( const pybind::object & _cb, const pybind::args & _args )
+            UniqueId s_addMouseButtonHandlerBegin( const pybind::object & _cb, bool _enable, const pybind::args & _args )
             {
                 const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                     ->getGlobalInputHandler();
@@ -4016,7 +4016,7 @@ namespace Mengine
 
                 PyGlobalMouseHandlerButtonBeginPtr handler = Helper::makePythonCallbackProvider( m_factoryPyGlobalMouseHandlerButtonBegins, _cb, _args, MENGINE_DOCUMENT_PYTHON );
 
-                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYTHON );
+                UniqueId id = globalHandleSystem->addGlobalHandler( handler, _enable, MENGINE_DOCUMENT_PYTHON );
 
                 return id;
             }
@@ -4050,7 +4050,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             FactoryInterfacePtr m_factoryPyGlobalMouseHandlerWheels;
             //////////////////////////////////////////////////////////////////////////
-            UniqueId s_addMouseWheelHandler( const pybind::object & _cb, const pybind::args & _args )
+            UniqueId s_addMouseWheelHandler( const pybind::object & _cb, bool _enable, const pybind::args & _args )
             {
                 const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                     ->getGlobalInputHandler();
@@ -4059,7 +4059,7 @@ namespace Mengine
 
                 PyGlobalMouseHandlerWheelPtr handler = Helper::makePythonCallbackProvider( m_factoryPyGlobalMouseHandlerWheels, _cb, _args, MENGINE_DOCUMENT_PYTHON );
 
-                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYTHON );
+                UniqueId id = globalHandleSystem->addGlobalHandler( handler, _enable, MENGINE_DOCUMENT_PYTHON );
 
                 return id;
             }
@@ -4092,7 +4092,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             FactoryInterfacePtr m_factoryPyGlobalKeyHandler;
             //////////////////////////////////////////////////////////////////////////
-            UniqueId s_addKeyHandler( const pybind::object & _cb, const pybind::args & _args )
+            UniqueId s_addKeyHandler( const pybind::object & _cb, bool _enable, const pybind::args & _args )
             {
                 const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                     ->getGlobalInputHandler();
@@ -4101,7 +4101,7 @@ namespace Mengine
 
                 PyGlobalKeyHandlerPtr handler = Helper::makePythonCallbackProvider( m_factoryPyGlobalKeyHandler, _cb, _args, MENGINE_DOCUMENT_PYTHON );
 
-                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYTHON );
+                UniqueId id = globalHandleSystem->addGlobalHandler( handler, _enable, MENGINE_DOCUMENT_PYTHON );
 
                 return id;
             }
@@ -4132,7 +4132,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             FactoryInterfacePtr m_factoryPyGlobalTextHandler;
             //////////////////////////////////////////////////////////////////////////
-            UniqueId s_addTextHandler( const pybind::object & _cb, const pybind::args & _args )
+            UniqueId s_addTextHandler( const pybind::object & _cb, bool _enable, const pybind::args & _args )
             {
                 const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                     ->getGlobalInputHandler();
@@ -4141,7 +4141,7 @@ namespace Mengine
 
                 PyGlobalBaseHandlerPtr handler = Helper::makePythonCallbackProvider( m_factoryPyGlobalTextHandler, _cb, _args, MENGINE_DOCUMENT_PYTHON );
 
-                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYTHON );
+                UniqueId id = globalHandleSystem->addGlobalHandler( handler, _enable, MENGINE_DOCUMENT_PYTHON );
 
                 return id;
             }
@@ -4172,7 +4172,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             FactoryInterfacePtr m_factoryPyGlobalAccelerometerHandler;
             //////////////////////////////////////////////////////////////////////////
-            UniqueId s_addAccelerometerHandler( const pybind::object & _cb, const pybind::args & _args )
+            UniqueId s_addAccelerometerHandler( const pybind::object & _cb, bool _enable, const pybind::args & _args )
             {
                 const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                     ->getGlobalInputHandler();
@@ -4181,7 +4181,7 @@ namespace Mengine
 
                 PyGlobalBaseHandlerPtr handler = Helper::makePythonCallbackProvider( m_factoryPyGlobalAccelerometerHandler, _cb, _args, MENGINE_DOCUMENT_PYTHON );
 
-                UniqueId id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYTHON );
+                UniqueId id = globalHandleSystem->addGlobalHandler( handler, _enable, MENGINE_DOCUMENT_PYTHON );
 
                 return id;
             }

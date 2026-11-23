@@ -17,7 +17,7 @@ namespace Mengine
         virtual void finalize() = 0;
 
     public:
-        virtual UniqueId addGlobalHandler( const InputHandlerInterfacePtr & _handler, const DocumentInterfacePtr & _doc ) = 0;
+        virtual UniqueId addGlobalHandler( const InputHandlerInterfacePtr & _handler, bool _enable, const DocumentInterfacePtr & _doc ) = 0;
         virtual InputHandlerInterfacePtr removeGlobalHandler( UniqueId _id ) = 0;
 
     public:

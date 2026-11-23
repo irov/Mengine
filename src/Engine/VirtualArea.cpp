@@ -712,8 +712,7 @@ namespace Mengine
         const GlobalInputHandlerInterfacePtr & globalInputHandler = PLAYER_SERVICE()
             ->getGlobalInputHandler();
 
-        m_globalHandlerId = globalInputHandler->addGlobalHandler( m_globalHandler, MENGINE_DOCUMENT_FACTORABLE );
-        globalInputHandler->enableGlobalHandler( m_globalHandlerId, false );
+        m_globalHandlerId = globalInputHandler->addGlobalHandler( m_globalHandler, false, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

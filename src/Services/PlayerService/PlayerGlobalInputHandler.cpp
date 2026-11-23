@@ -303,7 +303,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    UniqueId PlayerGlobalInputHandler::addGlobalHandler( const InputHandlerInterfacePtr & _handler, const DocumentInterfacePtr & _doc )
+    UniqueId PlayerGlobalInputHandler::addGlobalHandler( const InputHandlerInterfacePtr & _handler, bool _enable, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
@@ -314,7 +314,7 @@ namespace Mengine
         desc.id = new_id;
 
         desc.handler = _handler;
-        desc.enable = true;
+        desc.enable = _enable;
         desc.dead = false;
 
 #if defined(MENGINE_DOCUMENT_ENABLE)

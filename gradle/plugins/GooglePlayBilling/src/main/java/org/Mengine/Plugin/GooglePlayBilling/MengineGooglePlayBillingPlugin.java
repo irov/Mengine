@@ -889,11 +889,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
         return null;
     }
 
-    public void buyInApp(@NonNull String productId) {
-        this.buyInApp(productId, null);
-    }
-
-    public void buyInApp(@NonNull String productId, @Nullable String accountToken) {
+    public void buyInApp(@NonNull String productId, @NonNull String accountToken) {
         this.logInfo("buyInApp productId: %s"
             , productId
         );
@@ -914,7 +910,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
     }
 
     @MainThread
-    private void startBuyInApp(@NonNull BillingClient billingClient, @NonNull String productId, @Nullable String accountToken) {
+    private void startBuyInApp(@NonNull BillingClient billingClient, @NonNull String productId, @NonNull String accountToken) {
         if (billingClient.isReady() == false) {
             this.logError("[ERROR] buyInApp billing client not ready");
             this.nativeCall("onGooglePlayBillingBuyInAppLaunchFlowError", productId, ERROR_CODE_NOT_READY, new RuntimeException("Billing client not ready"));
@@ -983,7 +979,7 @@ public class MengineGooglePlayBillingPlugin extends MengineService implements Me
 
                 ProductDetails productDetails = productDetailsList.get(0);
 
-                if (accountToken == null) {
+                if (accountToken.isEmpty() == true) {
                     this.launchBillingFlow(productId, productDetails);
 
                     return;

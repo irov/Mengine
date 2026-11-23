@@ -134,6 +134,12 @@ namespace Mengine
             ArrayString<128> platform_section;
             platform_section.append( _section );
 
+            Char buffer[1024 + 1] = {'\0'};
+            if( Helper::stringalized( _value, buffer, 1024 ) == false )
+            {
+                return false;
+            }
+
             MemoryConfig::RecordDesc * tag_record;
             if( Detail::getRecord( _records, _section, _key, &tag_record ) == false )
             {
@@ -142,12 +148,6 @@ namespace Mengine
                 desc.key.assign( _key );
 
                 tag_record = &_records.emplace_back( desc );
-            }
-
-            Char buffer[1024 + 1] = {'\0'};
-            if( Helper::stringalized( _value, buffer, 1024 ) == false )
-            {
-                return false;
             }
 
             tag_record->value.assign( buffer );

@@ -101,6 +101,12 @@ namespace Mengine
                 return false;
             }
 
+            Char buffer[1024 + 1] = {'\0'};
+            if( Helper::stringalized( _value, buffer, 1024 ) == false )
+            {
+                return false;
+            }
+
             FilePath propertyPath = Detail::makePersistentPropertyFilePath( _section, _key );
 
             OutputStreamInterfacePtr stream = userFileGroup->createOutputFile( _doc );
@@ -108,12 +114,6 @@ namespace Mengine
             MENGINE_ASSERTION_MEMORY_PANIC( stream, "invalid create output file" );
 
             if( userFileGroup->openOutputFile( propertyPath, stream, false ) == false )
-            {
-                return false;
-            }
-
-            Char buffer[1024 + 1] = {'\0'};
-            if( Helper::stringalized( _value, buffer, 1024 ) == false )
             {
                 return false;
             }

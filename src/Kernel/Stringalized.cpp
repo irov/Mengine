@@ -3,9 +3,15 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
 
+#include "Config/Limits.h"
 #include "Config/StdIntTypes.h"
 #include "Config/StdIO.h"
 #include "Config/StdString.h"
+
+//////////////////////////////////////////////////////////////////////////
+#define MENGINE_STRINGALIZED_FLOAT_FORMAT "%." MENGINE_PP_STRINGIZE(MENGINE_FLT_DECIMAL_DIG) "g"
+#define MENGINE_STRINGALIZED_DOUBLE_FORMAT "%." MENGINE_PP_STRINGIZE(MENGINE_DBL_DECIMAL_DIG) "g"
+//////////////////////////////////////////////////////////////////////////
 
 namespace Mengine
 {
@@ -322,7 +328,7 @@ namespace Mengine
         {
             uint32_t tmp_value = _value;
 
-            int32_t result = MENGINE_SNPRINTF( _string, _capacity, "%" MENGINE_PRIu32, tmp_value );
+            int32_t result = StdIO::snprintf( _string, _capacity, "%" MENGINE_PRIu32, tmp_value );
 
             if( result < 0 )
             {
@@ -339,7 +345,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( int8_t _value, Char * const _string, size_t _capacity )
         {
-            int32_t result = MENGINE_SNPRINTF( _string, _capacity, "%" MENGINE_PRId8, _value );
+            int32_t result = StdIO::snprintf( _string, _capacity, "%" MENGINE_PRId8, _value );
 
             if( result < 0 )
             {
@@ -356,7 +362,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( uint8_t _value, Char * const _string, size_t _capacity )
         {
-            int32_t result = MENGINE_SNPRINTF( _string, _capacity, "%" MENGINE_PRIu8, _value );
+            int32_t result = StdIO::snprintf( _string, _capacity, "%" MENGINE_PRIu8, _value );
 
             if( result < 0 )
             {
@@ -373,7 +379,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( int16_t _value, Char * const _string, size_t _capacity )
         {
-            int32_t result = MENGINE_SNPRINTF( _string, _capacity, "%" MENGINE_PRId16, _value );
+            int32_t result = StdIO::snprintf( _string, _capacity, "%" MENGINE_PRId16, _value );
 
             if( result < 0 )
             {
@@ -390,7 +396,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( uint16_t _value, Char * const _string, size_t _capacity )
         {
-            int32_t result = MENGINE_SNPRINTF( _string, _capacity, "%" MENGINE_PRIu16, _value );
+            int32_t result = StdIO::snprintf( _string, _capacity, "%" MENGINE_PRIu16, _value );
 
             if( result < 0 )
             {
@@ -407,7 +413,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( int32_t _value, Char * const _string, size_t _capacity )
         {
-            int32_t result = MENGINE_SNPRINTF( _string, _capacity, "%" MENGINE_PRId32, _value );
+            int32_t result = StdIO::snprintf( _string, _capacity, "%" MENGINE_PRId32, _value );
 
             if( result < 0 )
             {
@@ -424,7 +430,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( uint32_t _value, Char * const _string, size_t _capacity )
         {
-            int32_t result = MENGINE_SNPRINTF( _string, _capacity, "%" MENGINE_PRIu32, _value );
+            int32_t result = StdIO::snprintf( _string, _capacity, "%" MENGINE_PRIu32, _value );
 
             if( result < 0 )
             {
@@ -441,7 +447,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( int64_t _value, Char * const _string, size_t _capacity )
         {
-            int32_t result = MENGINE_SNPRINTF( _string, _capacity, "%" MENGINE_PRId64, _value );
+            int32_t result = StdIO::snprintf( _string, _capacity, "%" MENGINE_PRId64, _value );
 
             if( result < 0 )
             {
@@ -458,7 +464,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( uint64_t _value, Char * const _string, size_t _capacity )
         {
-            int32_t result = MENGINE_SNPRINTF( _string, _capacity, "%" MENGINE_PRIu64, _value );
+            int32_t result = StdIO::snprintf( _string, _capacity, "%" MENGINE_PRIu64, _value );
 
             if( result < 0 )
             {
@@ -477,7 +483,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( size_t _value, Char * const _string, size_t _capacity )
         {
-            int32_t result = MENGINE_SNPRINTF( _string, _capacity, "%zu", _value );
+            int32_t result = StdIO::snprintf( _string, _capacity, "%zu", _value );
 
             if( result < 0 )
             {
@@ -496,8 +502,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( float _value, Char * const _string, size_t _capacity )
         {
-            int32_t result = MENGINE_SNPRINTF( _string, _capacity, "%g", _value );
-            
+            int32_t result = StdIO::snprintf( _string, _capacity, MENGINE_STRINGALIZED_FLOAT_FORMAT, _value );
+
             if( result < 0 )
             {
                 return false;
@@ -513,7 +519,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( double _value, Char * const _string, size_t _capacity )
         {
-            int32_t result = MENGINE_SNPRINTF( _string, _capacity, "%lf", _value );
+            int32_t result = StdIO::snprintf( _string, _capacity, MENGINE_STRINGALIZED_DOUBLE_FORMAT, _value );
 
             if( result < 0 )
             {
@@ -530,8 +536,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( const mt::vec2f & _value, Char * const _string, size_t _capacity )
         {
-            int32_t result = MENGINE_SNPRINTF( _string, _capacity, "%g %g", _value.x, _value.y );
-            
+            int32_t result = StdIO::snprintf( _string, _capacity, MENGINE_STRINGALIZED_FLOAT_FORMAT " " MENGINE_STRINGALIZED_FLOAT_FORMAT, _value.x, _value.y );
+
             if( result < 0 )
             {
                 return false;
@@ -547,7 +553,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( const mt::vec3f & _value, Char * const _string, size_t _capacity )
         {
-            int32_t result = MENGINE_SNPRINTF( _string, _capacity, "%g %g %g", _value.x, _value.y, _value.z );
+            int32_t result = StdIO::snprintf( _string, _capacity, MENGINE_STRINGALIZED_FLOAT_FORMAT " " MENGINE_STRINGALIZED_FLOAT_FORMAT " " MENGINE_STRINGALIZED_FLOAT_FORMAT, _value.x, _value.y, _value.z );
 
             if( result < 0 )
             {
@@ -564,7 +570,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( const mt::vec4f & _value, Char * const _string, size_t _capacity )
         {
-            int32_t result = MENGINE_SNPRINTF( _string, _capacity, "%g %g %g %g", _value.x, _value.y, _value.z, _value.w );
+            int32_t result = StdIO::snprintf( _string, _capacity, MENGINE_STRINGALIZED_FLOAT_FORMAT " " MENGINE_STRINGALIZED_FLOAT_FORMAT " " MENGINE_STRINGALIZED_FLOAT_FORMAT " " MENGINE_STRINGALIZED_FLOAT_FORMAT, _value.x, _value.y, _value.z, _value.w );
 
             if( result < 0 )
             {
@@ -581,8 +587,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( const mt::uv4f & _value, Char * const _string, size_t _capacity )
         {
-            int32_t result = MENGINE_SNPRINTF( _string, _capacity, "%g %g %g %g %g %g %g %g", _value.p0.x, _value.p0.y, _value.p1.x, _value.p1.y, _value.p2.x, _value.p2.y, _value.p3.x, _value.p3.y );
-            
+            int32_t result = StdIO::snprintf( _string, _capacity, MENGINE_STRINGALIZED_FLOAT_FORMAT " " MENGINE_STRINGALIZED_FLOAT_FORMAT " " MENGINE_STRINGALIZED_FLOAT_FORMAT " " MENGINE_STRINGALIZED_FLOAT_FORMAT " " MENGINE_STRINGALIZED_FLOAT_FORMAT " " MENGINE_STRINGALIZED_FLOAT_FORMAT " " MENGINE_STRINGALIZED_FLOAT_FORMAT " " MENGINE_STRINGALIZED_FLOAT_FORMAT, _value.p0.x, _value.p0.y, _value.p1.x, _value.p1.y, _value.p2.x, _value.p2.y, _value.p3.x, _value.p3.y );
+
             if( result < 0 )
             {
                 return false;
@@ -598,7 +604,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( const Char * _value, Char * const _string, size_t _capacity )
         {
-            int32_t result = MENGINE_SNPRINTF( _string, _capacity, "%s", _value );
+            int32_t result = StdIO::snprintf( _string, _capacity, "%s", _value );
 
             if( result < 0 )
             {
@@ -615,7 +621,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( const String & _value, Char * const _string, size_t _capacity )
         {
-            int32_t result = MENGINE_SNPRINTF( _string, _capacity, "%s", _value.c_str() );
+            int32_t result = StdIO::snprintf( _string, _capacity, "%s", _value.c_str() );
 
             if( result < 0 )
             {
@@ -632,7 +638,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( const PathString & _value, Char * const _string, size_t _capacity )
         {
-            int32_t result = MENGINE_SNPRINTF( _string, _capacity, "%s", _value.c_str() );
+            int32_t result = StdIO::snprintf( _string, _capacity, "%s", _value.c_str() );
 
             if( result < 0 )
             {
@@ -649,7 +655,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( const URLString & _value, Char * const _string, size_t _capacity )
         {
-            int32_t result = MENGINE_SNPRINTF( _string, _capacity, "%s", _value.c_str() );
+            int32_t result = StdIO::snprintf( _string, _capacity, "%s", _value.c_str() );
 
             if( result < 0 )
             {
@@ -666,7 +672,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( const ConstString & _value, Char * const _string, size_t _capacity )
         {
-            int32_t result = MENGINE_SNPRINTF( _string, _capacity, "%s", _value.c_str() );
+            int32_t result = StdIO::snprintf( _string, _capacity, "%s", _value.c_str() );
 
             if( result < 0 )
             {
@@ -683,7 +689,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( const FilePath & _value, Char * const _string, size_t _capacity )
         {
-            int32_t result = MENGINE_SNPRINTF( _string, _capacity, "%s", _value.c_str() );
+            int32_t result = StdIO::snprintf( _string, _capacity, "%s", _value.c_str() );
 
             if( result < 0 )
             {
@@ -704,7 +710,7 @@ namespace Mengine
 
             for( const ConstString & tag : _value )
             {
-                int32_t result = MENGINE_SNPRINTF( _string + offset, _capacity - offset, "%s ", tag.c_str() );
+                int32_t result = StdIO::snprintf( _string + offset, _capacity - offset, "%s ", tag.c_str() );
 
                 if( result < 0 )
                 {
@@ -727,7 +733,7 @@ namespace Mengine
             uint32_t width = _value.getWidth();
             uint32_t height = _value.getHeight();
 
-            int32_t result = MENGINE_SNPRINTF( _string, _capacity, "%" MENGINE_PRIu32" %" MENGINE_PRIu32, width, height );
+            int32_t result = StdIO::snprintf( _string, _capacity, "%" MENGINE_PRIu32" %" MENGINE_PRIu32, width, height );
 
             if( result < 0 )
             {
@@ -749,7 +755,7 @@ namespace Mengine
             float b = _value.getB();
             float a = _value.getA();
 
-            int32_t result = MENGINE_SNPRINTF( _string, _capacity, "%g %g %g %g", r, g, b, a );
+            int32_t result = StdIO::snprintf( _string, _capacity, MENGINE_STRINGALIZED_FLOAT_FORMAT " " MENGINE_STRINGALIZED_FLOAT_FORMAT " " MENGINE_STRINGALIZED_FLOAT_FORMAT " " MENGINE_STRINGALIZED_FLOAT_FORMAT, r, g, b, a );
 
             if( result < 0 )
             {
@@ -773,7 +779,7 @@ namespace Mengine
             float ex = _value.viewport.end.x;
             float ey = _value.viewport.end.y;
 
-            int32_t result = MENGINE_SNPRINTF( _string, _capacity, "%g %g %g %g %g %g", width, height, bx, by, ex, ey );
+            int32_t result = StdIO::snprintf( _string, _capacity, MENGINE_STRINGALIZED_FLOAT_FORMAT " " MENGINE_STRINGALIZED_FLOAT_FORMAT " " MENGINE_STRINGALIZED_FLOAT_FORMAT " " MENGINE_STRINGALIZED_FLOAT_FORMAT " " MENGINE_STRINGALIZED_FLOAT_FORMAT " " MENGINE_STRINGALIZED_FLOAT_FORMAT, width, height, bx, by, ex, ey );
 
             if( result < 0 )
             {
@@ -967,7 +973,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( float _value, WChar * const _string, size_t _capacity )
         {
-            int32_t result = MENGINE_SWPRINTF( _string, _capacity, L"%g", _value );
+            int32_t result = MENGINE_SWPRINTF( _string, _capacity, L"" MENGINE_STRINGALIZED_FLOAT_FORMAT, _value );
 
             if( result < 0 )
             {
@@ -984,7 +990,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( double _value, WChar * const _string, size_t _capacity )
         {
-            int32_t result = MENGINE_SWPRINTF( _string, _capacity, L"%lf", _value );
+            int32_t result = MENGINE_SWPRINTF( _string, _capacity, L"" MENGINE_STRINGALIZED_DOUBLE_FORMAT, _value );
 
             if( result < 0 )
             {
@@ -1001,7 +1007,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( const mt::vec2f & _value, WChar * const _string, size_t _capacity )
         {
-            int32_t result = MENGINE_SWPRINTF( _string, _capacity, L"%g %g", _value.x, _value.y );
+            int32_t result = MENGINE_SWPRINTF( _string, _capacity, L"" MENGINE_STRINGALIZED_FLOAT_FORMAT " " MENGINE_STRINGALIZED_FLOAT_FORMAT, _value.x, _value.y );
 
             if( result < 0 )
             {
@@ -1018,7 +1024,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( const mt::vec3f & _value, WChar * const _string, size_t _capacity )
         {
-            int32_t result = MENGINE_SWPRINTF( _string, _capacity, L"%g %g %g", _value.x, _value.y, _value.z );
+            int32_t result = MENGINE_SWPRINTF( _string, _capacity, L"" MENGINE_STRINGALIZED_FLOAT_FORMAT " " MENGINE_STRINGALIZED_FLOAT_FORMAT " " MENGINE_STRINGALIZED_FLOAT_FORMAT, _value.x, _value.y, _value.z );
 
             if( result < 0 )
             {
@@ -1035,7 +1041,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( const mt::vec4f & _value, WChar * const _string, size_t _capacity )
         {
-            int32_t result = MENGINE_SWPRINTF( _string, _capacity, L"%g %g %g %g", _value.x, _value.y, _value.z, _value.w );
+            int32_t result = MENGINE_SWPRINTF( _string, _capacity, L"" MENGINE_STRINGALIZED_FLOAT_FORMAT " " MENGINE_STRINGALIZED_FLOAT_FORMAT " " MENGINE_STRINGALIZED_FLOAT_FORMAT " " MENGINE_STRINGALIZED_FLOAT_FORMAT, _value.x, _value.y, _value.z, _value.w );
 
             if( result < 0 )
             {
@@ -1052,8 +1058,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( const mt::uv4f & _value, WChar * const _string, size_t _capacity )
         {
-            int32_t result = MENGINE_SWPRINTF( _string, _capacity, L"%g %g %g %g %g %g %g %g", _value.p0.x, _value.p0.y, _value.p1.x, _value.p1.y, _value.p2.x, _value.p2.y, _value.p3.x, _value.p3.y );
-            
+            int32_t result = MENGINE_SWPRINTF( _string, _capacity, L"" MENGINE_STRINGALIZED_FLOAT_FORMAT " " MENGINE_STRINGALIZED_FLOAT_FORMAT " " MENGINE_STRINGALIZED_FLOAT_FORMAT " " MENGINE_STRINGALIZED_FLOAT_FORMAT " " MENGINE_STRINGALIZED_FLOAT_FORMAT " " MENGINE_STRINGALIZED_FLOAT_FORMAT " " MENGINE_STRINGALIZED_FLOAT_FORMAT " " MENGINE_STRINGALIZED_FLOAT_FORMAT, _value.p0.x, _value.p0.y, _value.p1.x, _value.p1.y, _value.p2.x, _value.p2.y, _value.p3.x, _value.p3.y );
+
             if( result < 0 )
             {
                 return false;
@@ -1145,8 +1151,8 @@ namespace Mengine
             float b = _value.getB();
             float a = _value.getA();
 
-            int32_t result = MENGINE_SWPRINTF( _string, _capacity, L"%g %g %g %g", r, g, b, a );
-            
+            int32_t result = MENGINE_SWPRINTF( _string, _capacity, L"" MENGINE_STRINGALIZED_FLOAT_FORMAT " " MENGINE_STRINGALIZED_FLOAT_FORMAT " " MENGINE_STRINGALIZED_FLOAT_FORMAT " " MENGINE_STRINGALIZED_FLOAT_FORMAT, r, g, b, a );
+
             if( result < 0 )
             {
                 return false;
@@ -1169,7 +1175,7 @@ namespace Mengine
             float ex = _value.viewport.end.x;
             float ey = _value.viewport.end.y;
 
-            int32_t result = MENGINE_SWPRINTF( _string, _capacity, L"%g %g %g %g %g %g", width, height, bx, by, ex, ey );
+            int32_t result = MENGINE_SWPRINTF( _string, _capacity, L"" MENGINE_STRINGALIZED_FLOAT_FORMAT " " MENGINE_STRINGALIZED_FLOAT_FORMAT " " MENGINE_STRINGALIZED_FLOAT_FORMAT " " MENGINE_STRINGALIZED_FLOAT_FORMAT " " MENGINE_STRINGALIZED_FLOAT_FORMAT " " MENGINE_STRINGALIZED_FLOAT_FORMAT, width, height, bx, by, ex, ey );
 
             if( result < 0 )
             {

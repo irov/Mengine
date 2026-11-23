@@ -77,7 +77,6 @@ public interface MengineServiceInterface {
     void logException(@NonNull Throwable e, @NonNull Map<String, Object> attributes);
 
     void assertionError(@NonNull String format, Object ... args);
-    void assertMainThread();
 
     MengineAnalyticsEventBuilderInterface buildEvent(@Size(min = 1, max = 40) String name);
 

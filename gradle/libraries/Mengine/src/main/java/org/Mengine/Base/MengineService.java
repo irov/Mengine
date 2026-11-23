@@ -277,12 +277,6 @@ public class MengineService implements MengineServiceInterface {
     }
 
     @Override
-    public void assertMainThread() {
-        MengineTag t = this.getServiceTag();
-        MengineUtils.assertMainThread(t);
-    }
-
-    @Override
     public JSONObject getServiceConfig() {
         if (m_serviceConfig == null) {
             JSONObject serviceConfig = MengineFragmentRemoteConfig.INSTANCE.getRemoteConfig(m_serviceName);

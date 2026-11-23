@@ -232,30 +232,6 @@ public class MengineUtils {
         return true;
     }
 
-    public static boolean isMainThread() {
-        final Looper mainLooper = Looper.getMainLooper();
-
-        if (Looper.myLooper() != mainLooper) {
-            return false;
-        }
-
-        return true;
-    }
-
-    public static void assertMainThread(@NonNull MengineTag tag) {
-        if (BuildConfig.DEBUG == false) {
-            return;
-        }
-
-        if (MengineUtils.isMainThread() == true) {
-            return;
-        }
-
-        MengineUtils.throwAssertionError(tag, null, "invalid thread '%s' expected main thread"
-            , Thread.currentThread().getName()
-        );
-    }
-
     public static Handler performOnMainThread(@NonNull Runnable runnable) {
         final Looper mainLooper = Looper.getMainLooper();
 

@@ -254,9 +254,9 @@ public class MengineProcedureSendMail implements MengineProcedureInterface {
             MengineFileLoggerService fileLoggerService = application.getService(MengineFileLoggerService.class);
 
             if (fileLoggerService != null) {
-                File logFileAndroid = fileLoggerService.getLogFile();
+                File logFileAndroid = fileLoggerService.flushLogFile();
 
-                if (logFileAndroid != null && logFileAndroid.exists()) {
+                if (logFileAndroid != null && logFileAndroid.exists() == true) {
                     File fileLoggerZipFile = MengineUtils.createTempFile(context, "mng_android_log_", ".zip");
 
                     if (fileLoggerZipFile != null && MengineUtils.zipFiles(logFileAndroid, fileLoggerZipFile) == true) {

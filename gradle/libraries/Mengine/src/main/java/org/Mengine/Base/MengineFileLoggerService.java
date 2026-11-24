@@ -3,6 +3,7 @@ package org.Mengine.Base;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,12 +27,27 @@ public class MengineFileLoggerService extends MengineService implements MengineL
     private File m_oldLogFile;
     private FileWriter m_writer;
 
-    public File getLogFile() {
-        return m_logFile;
+    public synchronized File getOldLogFile() {
+        return m_oldLogFile;
     }
 
-    public File getOldLogFile() {
-        return m_oldLogFile;
+    @Nullable
+    public File flushLogFile() {
+        try {
+            synchronized (this) {
+                if (m_writer == null) {
+                    return null;
+                }
+
+                m_writer.flush();
+
+                return m_logFile;
+            }
+        } catch (IOException e) {
+            this.logException(e, Map.of("operation", "flushLogFile"));
+
+            return null;
+        }
     }
 
     private static void copyFile(File source, File dest) throws IOException {
@@ -39,7 +55,18 @@ public class MengineFileLoggerService extends MengineService implements MengineL
              FileOutputStream destStream = new FileOutputStream(dest);
              FileChannel sourceChannel = sourceStream.getChannel();
              FileChannel destChannel = destStream.getChannel()) {
-            destChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
+            long size = sourceChannel.size();
+            long position = 0;
+
+            while (position < size) {
+                long copied = destChannel.transferFrom(sourceChannel, position, size - position);
+
+                if (copied == 0) {
+                    throw new IOException("incomplete log file copy");
+                }
+
+                position += copied;
+            }
         }
     }
 
@@ -98,7 +125,7 @@ public class MengineFileLoggerService extends MengineService implements MengineL
     }
 
     @Override
-    public void onAppInit(@NonNull MengineApplication application, boolean isMainProcess) throws MengineServiceInvalidInitializeException {
+    public synchronized void onAppInit(@NonNull MengineApplication application, boolean isMainProcess) throws MengineServiceInvalidInitializeException {
         if (isMainProcess == false) {
             return;
         }
@@ -109,6 +136,10 @@ public class MengineFileLoggerService extends MengineService implements MengineL
 
         m_logFile = this.openLogFile(context);
 
+        if (m_logFile == null) {
+            return;
+        }
+
         try {
             m_writer = new FileWriter(m_logFile, true);
         } catch (IOException e) {
@@ -117,12 +148,11 @@ public class MengineFileLoggerService extends MengineService implements MengineL
     }
 
     @Override
-    public void onAppFinalize(@NonNull MengineApplication application) {
+    public synchronized void onAppFinalize(@NonNull MengineApplication application) {
         super.onAppFinalize(application);
 
         if (m_writer != null) {
             try {
-                m_writer.flush();
                 m_writer.close();
             } catch (IOException ignored) {
                 // ignore
@@ -137,18 +167,10 @@ public class MengineFileLoggerService extends MengineService implements MengineL
 
     @Override
     public void onPause(@NonNull MengineActivity activity) {
-        if (m_writer == null) {
-            return;
-        }
-
-        try {
-            m_writer.flush();
-        } catch (IOException ignored) {
-            // ignore
-        }
+        this.flushLogFile();
     }
 
-    private void writeLine(String line) {
+    private synchronized void writeLine(String line) {
         if (m_writer == null) {
             return;
         }

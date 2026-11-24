@@ -205,9 +205,11 @@ namespace Mengine
         ETouchCode acquireFingerIndex_( jint _fingerId );
         ETouchCode releaseFingerIndex_( jint _fingerId );
         ETouchCode getFingerIndex_( jint _fingerId ) const;
+        void touchMoveEvent_( Timestamp _timestamp, jint _pointerId, jfloat _x, jfloat _y, jfloat _pressure );
 
     protected:
-        void androidNativeTouchEvent( jlong _eventTime, jint _action, jint _pointerId, jfloat _x, jfloat _y, jfloat _pressure ) override;
+        void androidNativeTouchEvent( jlong _eventTime, jint _action, jint _pointerId, jfloat _x, jfloat _y, jfloat _pressure, jboolean _isTouch ) override;
+        void androidNativeTouchMoveEndEvent( jlong _eventTime ) override;
         void androidNativeAccelerationEvent( jlong _eventTimestamp, jfloat _x, jfloat _y, jfloat _z ) override;
         void androidNativeIntentStartEvent( const String & _action, const String & _data, const String & _type, uint32_t _flags, const Params & _extras ) override;
         void androidNativeIntentNewEvent( const String & _action, const String & _data, const String & _type, uint32_t _flags, const Params & _extras ) override;
@@ -306,6 +308,7 @@ namespace Mengine
         EGLSurface m_eglSurface;
 
         jint m_fingers[MENGINE_INPUT_MAX_TOUCH];
+        jboolean m_fingersTouch[MENGINE_INPUT_MAX_TOUCH];
 
         jfloat m_currentFingersX[MENGINE_INPUT_MAX_TOUCH];
         jfloat m_currentFingersY[MENGINE_INPUT_MAX_TOUCH];

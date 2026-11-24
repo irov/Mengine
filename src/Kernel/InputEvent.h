@@ -79,6 +79,7 @@ namespace Mengine
         InputPositionData position;
 
         ETouchCode touchId;
+        bool isTouch;
 
         float pressure;
 
@@ -136,12 +137,27 @@ namespace Mengine
         InputPositionData position;
 
         ETouchCode touchId;
+        bool isTouch;
 
         float pressure;
 
         mt::vec2f screenDelta;
         mt::vec2f worldDelta;
         float dpressure;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    struct InputMouseMoveEndEvent
+    {
+        InputBaseData base;
+        InputSpecialData special;
+
+        bool isTouch;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    struct InputPointerCancelEvent
+    {
+        InputBaseData base;
+        InputSpecialData special;
     };
     //////////////////////////////////////////////////////////////////////////
     struct InputMouseEnterEvent
@@ -174,6 +190,9 @@ namespace Mengine
 
         float scale;
         EInputGesturePhase phase;
+        bool isTouch;
+        ETouchCode touchId0;
+        ETouchCode touchId1;
     };
     //////////////////////////////////////////////////////////////////////////
     struct InputGestureRotationEvent
@@ -184,6 +203,7 @@ namespace Mengine
 
         float degrees;
         EInputGesturePhase phase;
+        bool isTouch;
     };
     //////////////////////////////////////////////////////////////////////////
     struct InputGestureSmartMagnificationEvent
@@ -191,6 +211,8 @@ namespace Mengine
         InputBaseData base;
         InputSpecialData special;
         InputPositionData position;
+
+        bool isTouch;
     };
     //////////////////////////////////////////////////////////////////////////
     struct InputGestureSwipeEvent
@@ -200,6 +222,7 @@ namespace Mengine
         InputPositionData position;
 
         mt::vec2f direction;
+        bool isTouch;
     };
     //////////////////////////////////////////////////////////////////////////
     struct InputGesturePressureEvent
@@ -212,6 +235,17 @@ namespace Mengine
         int32_t stage;
         float stageTransition;
         EInputGesturePhase phase;
+        bool isTouch;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    struct InputGestureDoubleTapEvent
+    {
+        InputBaseData base;
+        InputSpecialData special;
+        InputPositionData position;
+
+        ETouchCode touchId;
+        bool isTouch;
     };
     //////////////////////////////////////////////////////////////////////////
     struct InputControllerConnectEvent

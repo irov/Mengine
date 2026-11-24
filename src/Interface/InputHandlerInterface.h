@@ -23,7 +23,9 @@ namespace Mengine
         virtual bool handleMouseButtonEvent( const InputMouseButtonEvent & _event ) = 0;
         virtual bool handleMouseButtonEventBegin( const InputMouseButtonEvent & _event ) = 0;
         virtual bool handleMouseButtonEventEnd( const InputMouseButtonEvent & _event ) = 0;
+        virtual void handleMouseButtonEventCancel( const InputMouseButtonEvent & _event ) = 0;
         virtual bool handleMouseMove( const InputMouseMoveEvent & _event ) = 0;
+        virtual void handleMouseMoveEnd( const InputMouseMoveEndEvent & _event ) = 0;
         virtual bool handleMouseWheel( const InputMouseWheelEvent & _event ) = 0;
 
     public:
@@ -35,6 +37,7 @@ namespace Mengine
         virtual bool handleGestureRotation( const InputGestureRotationEvent & _event ) = 0;
         virtual bool handleGestureSmartMagnification( const InputGestureSmartMagnificationEvent & _event ) = 0;
         virtual bool handleGestureSwipe( const InputGestureSwipeEvent & _event ) = 0;
+        virtual bool handleGestureDoubleTap( const InputGestureDoubleTapEvent & _event ) = 0;
         virtual bool handleGesturePressure( const InputGesturePressureEvent & _event ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////

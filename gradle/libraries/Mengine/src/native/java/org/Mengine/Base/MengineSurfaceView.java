@@ -587,42 +587,74 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
         float y = event.getY(index);
         float p = event.getPressure(index);
 
-        this.nativeTouchEvent(eventTime, pointerId, x, y, p, action);
+        int toolType = event.getToolType(index);
+        boolean isTouch = MengineSurfaceView.isTouchToolType(toolType);
+
+        this.nativeTouchEvent(eventTime, pointerId, x, y, p, action, isTouch);
     }
 
-    protected void nativeTouchEvent(long eventTime, int pointerId, float x, float y, float p, int action) {
+    protected void nativeTouchEvent(long eventTime, int pointerId, float x, float y, float p, int action, boolean isTouch) {
         float xn = x / m_surfaceWidthF;
         float yn = y / m_surfaceHeightF;
         float pn = Math.min(p, 1.f);
 
-        MengineNative.AndroidPlatform_touchEvent(eventTime, action, pointerId, xn, yn, pn);
+        MengineNative.AndroidPlatform_touchEvent(eventTime, action, pointerId, xn, yn, pn, isTouch);
+    }
+
+    private static boolean isTouchToolType(int toolType) {
+        return toolType == MotionEvent.TOOL_TYPE_FINGER
+            || toolType == MotionEvent.TOOL_TYPE_STYLUS
+            || toolType == MotionEvent.TOOL_TYPE_ERASER;
+    }
+
+    protected void nativeTouchMove(MotionEvent event, int pointerCount, int historyIndex) {
+        boolean historical = historyIndex >= 0;
+        long eventTime = historical == true ? event.getHistoricalEventTime(historyIndex) : event.getEventTime();
+        boolean touchMoved = false;
+
+        for (int pointerIndex = 0; pointerIndex != pointerCount; ++pointerIndex) {
+            float x;
+            float y;
+            float pressure;
+
+            if (historical == true) {
+                x = event.getHistoricalX(pointerIndex, historyIndex);
+                y = event.getHistoricalY(pointerIndex, historyIndex);
+                pressure = event.getHistoricalPressure(pointerIndex, historyIndex);
+            } else {
+                x = event.getX(pointerIndex);
+                y = event.getY(pointerIndex);
+                pressure = event.getPressure(pointerIndex);
+            }
+
+            int pointerId = event.getPointerId(pointerIndex);
+            int toolType = event.getToolType(pointerIndex);
+            boolean isTouch = MengineSurfaceView.isTouchToolType(toolType);
+
+            this.nativeTouchEvent(eventTime, pointerId, x, y, pressure, MotionEvent.ACTION_MOVE, isTouch);
+
+            touchMoved |= isTouch;
+        }
+
+        if (touchMoved == true) {
+            MengineNative.AndroidPlatform_touchMoveEndEvent(eventTime);
+        }
     }
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        int pointerCount = event.getPointerCount();
         int action = event.getActionMasked();
 
         switch (action) {
             case MotionEvent.ACTION_MOVE: {
-                final int historySize = event.getHistorySize();
+                int pointerCount = event.getPointerCount();
+                int historySize = event.getHistorySize();
 
                 for (int historyIndex = 0; historyIndex != historySize; ++historyIndex) {
-                    long historicalEventTime = event.getHistoricalEventTime(historyIndex);
-
-                    for (int pointerIndex = 0; pointerIndex != pointerCount; ++pointerIndex) {
-                        int pointerId = event.getPointerId(pointerIndex);
-                        float x  = event.getHistoricalX(pointerIndex, historyIndex);
-                        float y  = event.getHistoricalY(pointerIndex, historyIndex);
-                        float p = event.getHistoricalPressure(pointerIndex, historyIndex);
-
-                        this.nativeTouchEvent(historicalEventTime, pointerId, x, y, p, MotionEvent.ACTION_MOVE);
-                    }
+                    this.nativeTouchMove(event, pointerCount, historyIndex);
                 }
 
-                for (int pointerIndex = 0; pointerIndex != pointerCount; ++pointerIndex) {
-                    this.nativeTouchEvent(event, pointerIndex, action);
-                }
+                this.nativeTouchMove(event, pointerCount, -1);
                 break;
             }
             case MotionEvent.ACTION_UP: {
@@ -655,7 +687,7 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
             case MotionEvent.ACTION_CANCEL: {
                 long eventTime = event.getEventTime();
 
-                MengineNative.AndroidPlatform_touchEvent(eventTime, action, -1, 0.f, 0.f, 0.f);
+                MengineNative.AndroidPlatform_touchEvent(eventTime, action, -1, 0.f, 0.f, 0.f, false);
                 break;
             }
         }

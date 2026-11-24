@@ -177,7 +177,6 @@ namespace Mengine
         , m_invalidateVsync( true )
         , m_cursorMode( false )
         , m_invalidateCursorMode( true )
-        , m_inputMouseButtonEventBlock( false )
         , m_debugPause( false )
         , m_initailizeGame( false )
     {
@@ -1015,11 +1014,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::handleMouseButtonEvent( const InputMouseButtonEvent & _event )
     {
-        if( m_inputMouseButtonEventBlock == true )
-        {
-            return false;
-        }
-
         if( MODULE_SERVICE()
             ->handleMouseButtonEvent( _event ) == true )
         {
@@ -1037,11 +1031,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::handleMouseButtonEventBegin( const InputMouseButtonEvent & _event )
     {
-        if( m_inputMouseButtonEventBlock == true )
-        {
-            return false;
-        }
-
         if( MODULE_SERVICE()
             ->handleMouseButtonEventBegin( _event ) == true )
         {
@@ -1059,11 +1048,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::handleMouseButtonEventEnd( const InputMouseButtonEvent & _event )
     {
-        if( m_inputMouseButtonEventBlock == true )
-        {
-            return false;
-        }
-
         if( MODULE_SERVICE()
             ->handleMouseButtonEventEnd( _event ) == true )
         {
@@ -1077,6 +1061,15 @@ namespace Mengine
         }
 
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Application::handleMouseButtonEventCancel( const InputMouseButtonEvent & _event )
+    {
+        MODULE_SERVICE()
+            ->handleMouseButtonEventCancel( _event );
+
+        GAME_SERVICE()
+            ->handleMouseButtonEventCancel( _event );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::handleMouseMove( const InputMouseMoveEvent & _event )
@@ -1094,6 +1087,15 @@ namespace Mengine
         }
 
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Application::handleMouseMoveEnd( const InputMouseMoveEndEvent & _event )
+    {
+        MODULE_SERVICE()
+            ->handleMouseMoveEnd( _event );
+
+        GAME_SERVICE()
+            ->handleMouseMoveEnd( _event );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::handleMouseWheel( const InputMouseWheelEvent & _event )
@@ -1222,6 +1224,26 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Application::handleGestureDoubleTap( const InputGestureDoubleTapEvent & _event )
+    {
+        InputGestureDoubleTapEvent event = _event;
+        Helper::calcGlobalInputPositionWorld( &event.position );
+
+        if( MODULE_SERVICE()
+            ->handleGestureDoubleTap( event ) == true )
+        {
+            return true;
+        }
+
+        if( GAME_SERVICE()
+            ->handleGestureDoubleTap( event ) == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Application::handleGesturePressure( const InputGesturePressureEvent & _event )
     {
         InputGesturePressureEvent event = _event;
@@ -1283,12 +1305,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::setInputMouseButtonEventBlock( bool _block )
     {
-        m_inputMouseButtonEventBlock = _block;
+        INPUT_SERVICE()
+            ->setMouseButtonEventBlock( _block );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::getInputMouseButtonEventBlock() const
     {
-        return m_inputMouseButtonEventBlock;
+        bool block = INPUT_SERVICE()
+            ->getMouseButtonEventBlock();
+
+        return block;
     }
     //////////////////////////////////////////////////////////////////////////
     void Application::setFocus( bool _focus )

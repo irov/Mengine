@@ -172,6 +172,13 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool PythonGameEventReceiver::onGameGestureDoubleTap( const InputGestureDoubleTapEvent & _event )
+    {
+        bool result = m_cb.call( _event );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool PythonGameEventReceiver::onGameGesturePressure( const InputGesturePressureEvent & _event )
     {
         bool result = m_cb.call( _event );

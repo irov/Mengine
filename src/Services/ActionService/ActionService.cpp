@@ -368,11 +368,25 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    void ActionService::handleMouseButtonEventCancel( const InputMouseButtonEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool ActionService::handleMouseMove( const InputMouseMoveEvent & _event )
     {
         MENGINE_UNUSED( _event );
 
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ActionService::handleMouseMoveEnd( const InputMouseMoveEndEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     bool ActionService::handleMouseWheel( const InputMouseWheelEvent & _event )
@@ -416,6 +430,13 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     bool ActionService::handleGestureSwipe( const InputGestureSwipeEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ActionService::handleGestureDoubleTap( const InputGestureDoubleTapEvent & _event )
     {
         MENGINE_UNUSED( _event );
 

@@ -2,8 +2,10 @@
 
 #include "VirtualAreaGlobalInputHandler.h"
 
+#include "Interface/ApplicationInterface.h"
 #include "Interface/ArrowServiceInterface.h"
 #include "Interface/GlobalInputHandlerInterface.h"
+#include "Interface/InputServiceInterface.h"
 #include "Interface/PlayerServiceInterface.h"
 #include "Interface/RenderResolutionInterface.h"
 #include "Interface/TransformationInterface.h"
@@ -51,7 +53,6 @@ namespace Mengine
         , m_frictionFactor( VIRTUAL_AREA_DEFAULT_FRICTION_FACTOR )
         , m_rigidity( 0.5f )
         , m_dragStartThreshold( 50.f )
-        , m_lastPinchDistance( 0.f )
         , m_returnTime( 0.f )
         , m_returnDuration( 0.f )
         , m_snappingCoefficient( 0.0001f )
@@ -70,19 +71,18 @@ namespace Mengine
         , m_scrollLocked( false )
         , m_frozen( false )
         , m_dragging( false )
-        , m_pinchActive( false )
         , m_returnActive( false )
     {
-        m_touches.resize( MENGINE_INPUT_MAX_TOUCH );
+        m_touches.resize( MENGINE_INPUT_MAX_TOUCH * 2 );
 
-        for( uint32_t index = 0; index != MENGINE_INPUT_MAX_TOUCH; ++index )
+        for( size_t index = 0; index != m_touches.size(); ++index )
         {
             TouchDesc & touch = m_touches[index];
 
             touch.active = false;
             touch.pressed = false;
             touch.dragging = false;
-            touch.touchId = (ETouchCode)index;
+            touch.touchId = static_cast<ETouchCode>(index % MENGINE_INPUT_MAX_TOUCH);
             touch.startScreen = mt::vec2f( 0.f, 0.f );
             touch.screen = mt::vec2f( 0.f, 0.f );
             touch.previousScreen = mt::vec2f( 0.f, 0.f );
@@ -1014,12 +1014,7 @@ namespace Mengine
 
         if( _event.isDown == true )
         {
-            TouchDesc * touch = this->getTouch_( _event.touchId );
-
-            if( touch != nullptr && touch->active == false )
-            {
-                this->beginTouch_( _context, _event );
-            }
+            this->beginTouch_( _context, _event );
         }
         else
         {
@@ -1031,14 +1026,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool VirtualArea::handleMouseButtonEventBegin( const RenderContext * _context, const InputMouseButtonEvent & _event )
     {
-        if( m_frozen == true || m_scrollLocked == true || _event.isDown == false )
+        if( m_frozen == true )
         {
             return false;
         }
 
-        TouchDesc * touch = this->getTouch_( _event.touchId );
+        if( m_scrollLocked == true )
+        {
+            return false;
+        }
 
-        if( touch == nullptr || touch->active == true )
+        if( _event.isDown == false )
         {
             return false;
         }
@@ -1150,17 +1148,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool VirtualArea::handleGestureMagnification( const RenderContext * _context, const InputGestureMagnificationEvent & _event )
     {
-        if( m_frozen == true )
-        {
-            return false;
-        }
-
-        if( m_scrollLocked == true )
-        {
-            return false;
-        }
-
-        if( m_enableScale == false )
+        if( _event.isTouch == true )
         {
             return false;
         }
@@ -1170,14 +1158,13 @@ namespace Mengine
             return false;
         }
 
-        if( _event.scale == 1.f )
+        float factor = 1.f / _event.scale;
+        const mt::vec2f & screen = _event.position.screen;
+
+        if( this->applyMagnification_( factor, screen, _context ) == false )
         {
             return false;
         }
-
-        float factor = 1.f / _event.scale;
-
-        this->scaleToPoint_( factor, _event.position.screen, _context );
 
         return m_defaultHandle;
     }
@@ -1199,6 +1186,14 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     bool VirtualArea::handleGestureSwipe( const RenderContext * _context, const InputGestureSwipeEvent & _event )
+    {
+        MENGINE_UNUSED( _context );
+        MENGINE_UNUSED( _event );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool VirtualArea::handleGestureDoubleTap( const RenderContext * _context, const InputGestureDoubleTapEvent & _event )
     {
         MENGINE_UNUSED( _context );
         MENGINE_UNUSED( _event );
@@ -1385,8 +1380,7 @@ namespace Mengine
         }
 
         m_dragging = false;
-        m_pinchActive = false;
-        m_lastPinchDistance = 0.f;
+        m_touchPinchRecognizer.reset();
         m_velocity = mt::vec2f( 0.f, 0.f );
         this->stopElasticReturn_();
 
@@ -1398,18 +1392,23 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool VirtualArea::beginTouch_( const RenderContext * _context, const InputMouseButtonEvent & _event )
+    void VirtualArea::beginTouch_( const RenderContext * _context, const InputMouseButtonEvent & _event )
     {
         if( _context == nullptr )
         {
-            return false;
+            return;
         }
 
-        TouchDesc * touch = this->getTouch_( _event.touchId );
+        TouchDesc * touch = this->getTouch_( _event.touchId, _event.isTouch );
 
         if( touch == nullptr )
         {
-            return false;
+            return;
+        }
+
+        if( touch->active == true )
+        {
+            return;
         }
 
         touch->active = true;
@@ -1426,31 +1425,37 @@ namespace Mengine
         this->stopElasticReturn_();
 
         m_velocity = mt::vec2f( 0.f, 0.f );
-        m_pinchActive = false;
-        m_lastPinchDistance = 0.f;
 
         this->setGlobalHandlerEnable_( m_frozen == false );
 
-        if( m_enableScale == true && this->getTouchCount() == 2 )
+        if( _event.isTouch == true )
         {
-            this->updatePinch_();
+            this->rebaseTouchPinch_();
         }
 
         this->notifyTouch_();
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool VirtualArea::moveTouch_( const InputMouseMoveEvent & _event )
     {
-        if( m_frozen == true || m_scrollLocked == true )
+        if( m_frozen == true )
         {
             return false;
         }
 
-        TouchDesc * touch = this->getTouch_( _event.touchId );
+        if( m_scrollLocked == true )
+        {
+            return false;
+        }
 
-        if( touch == nullptr || touch->active == false )
+        TouchDesc * touch = this->getTouch_( _event.touchId, _event.isTouch );
+
+        if( touch == nullptr )
+        {
+            return false;
+        }
+
+        if( touch->active == false )
         {
             return false;
         }
@@ -1465,12 +1470,9 @@ namespace Mengine
 
         touch->world = worldPosition;
 
-        if( m_enableScale == true && this->getTouchCount() == 2 )
-        {
-            return this->updatePinch_();
-        }
+        uint32_t touchCount = this->getTouchCount();
 
-        if( this->getTouchCount() != 1 )
+        if( touchCount != 1 )
         {
             return false;
         }
@@ -1547,7 +1549,7 @@ namespace Mengine
             return false;
         }
 
-        if( this->releaseTouch_( _event.touchId, _event.isCancelled ) == false )
+        if( this->releaseTouch_( _event.touchId, _event.isTouch, _event.isCancelled ) == false )
         {
             return false;
         }
@@ -1555,11 +1557,16 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool VirtualArea::releaseTouch_( ETouchCode _touchId, bool _isCancelled )
+    bool VirtualArea::releaseTouch_( ETouchCode _touchId, bool _isTouch, bool _isCancelled )
     {
-        TouchDesc * touch = this->getTouch_( _touchId );
+        TouchDesc * touch = this->getTouch_( _touchId, _isTouch );
 
-        if( touch == nullptr || touch->active == false )
+        if( touch == nullptr )
+        {
+            return false;
+        }
+
+        if( touch->active == false )
         {
             return false;
         }
@@ -1592,12 +1599,10 @@ namespace Mengine
         }
 
         m_dragging = false;
-        m_pinchActive = false;
-        m_lastPinchDistance = 0.f;
 
-        if( m_enableScale == true && this->getTouchCount() == 2 )
+        if( _isTouch == true )
         {
-            this->updatePinch_();
+            this->rebaseTouchPinch_();
         }
 
         if( this->getTouchCount() == 0 && m_allowOutOfBounds == true )
@@ -1616,13 +1621,22 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool VirtualArea::updatePinch_()
+    void VirtualArea::rebaseTouchPinch_()
+    {
+        m_touchPinchRecognizer.reset();
+
+        this->updateTouchPinch_();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void VirtualArea::updateTouchPinch_()
     {
         const TouchDesc * touch0 = nullptr;
         const TouchDesc * touch1 = nullptr;
 
-        for( const TouchDesc & touch : m_touches )
+        for( uint32_t index = 0; index != MENGINE_INPUT_MAX_TOUCH; ++index )
         {
+            const TouchDesc & touch = m_touches[index];
+
             if( touch.active == false )
             {
                 continue;
@@ -1631,48 +1645,83 @@ namespace Mengine
             if( touch0 == nullptr )
             {
                 touch0 = &touch;
+
+                continue;
             }
-            else
+
+            if( touch1 != nullptr )
             {
-                touch1 = &touch;
-                break;
+                return;
             }
+
+            touch1 = &touch;
         }
 
-        if( touch0 == nullptr || touch1 == nullptr )
+        if( touch1 == nullptr )
+        {
+            return;
+        }
+
+        if( this->isTouchPositionCurrent_( *touch0 ) == false )
+        {
+            m_touchPinchRecognizer.reset();
+
+            return;
+        }
+
+        if( this->isTouchPositionCurrent_( *touch1 ) == false )
+        {
+            m_touchPinchRecognizer.reset();
+
+            return;
+        }
+
+        const Resolution & resolution = APPLICATION_SERVICE()
+            ->getCurrentWindowResolution();
+
+        if( m_touchPinchRecognizer.isActive() == false )
+        {
+            m_touchPinchRecognizer.begin( touch0->screen, touch1->screen, resolution );
+
+            return;
+        }
+
+        float scale;
+        if( m_touchPinchRecognizer.update( touch0->screen, touch1->screen, resolution, &scale ) != IGP_CHANGE )
+        {
+            return;
+        }
+
+        float factor = 1.f / scale;
+        mt::vec2f center = (touch0->screen + touch1->screen) * 0.5f;
+        const RenderContext * context = &touch0->context;
+
+        this->applyMagnification_( factor, center, context );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool VirtualArea::applyMagnification_( float _factor, const mt::vec2f & _screenPoint, const RenderContext * _context )
+    {
+        if( m_frozen == true )
         {
             return false;
         }
 
-        mt::vec2f screenDelta = touch0->screen - touch1->screen;
-        mt::vec2f adaptScreenDelta;
-        Helper::adaptScreenDelta( screenDelta, &adaptScreenDelta );
-
-        mt::vec2f contentDelta = this->getScreenContentDelta_( adaptScreenDelta, &touch0->context );
-        float currentDistance = mt::length_v2( contentDelta );
-
-        if( currentDistance <= 0.0001f )
+        if( m_scrollLocked == true )
         {
-            m_pinchActive = false;
-            m_lastPinchDistance = 0.f;
-
             return false;
         }
 
-        if( m_pinchActive == false )
+        if( m_enableScale == false )
         {
-            m_pinchActive = true;
-            m_lastPinchDistance = currentDistance;
-            m_velocity = mt::vec2f( 0.f, 0.f );
-
-            return true;
+            return false;
         }
 
-        float factor = m_lastPinchDistance / currentDistance;
-        m_lastPinchDistance = currentDistance;
+        if( _factor == 1.f )
+        {
+            return false;
+        }
 
-        mt::vec2f screenCenter = (touch0->screen + touch1->screen) * 0.5f;
-        this->scaleToPoint_( factor, screenCenter, &touch0->context );
+        this->scaleToPoint_( _factor, _screenPoint, _context );
 
         return true;
     }
@@ -2046,28 +2095,39 @@ namespace Mengine
         globalInputHandler->enableGlobalHandler( m_globalHandlerId, _enable );
     }
     //////////////////////////////////////////////////////////////////////////
-    VirtualArea::TouchDesc * VirtualArea::getTouch_( ETouchCode _touchId )
+    VirtualArea::TouchDesc * VirtualArea::getTouch_( ETouchCode _touchId, bool _isTouch )
     {
-        const uint32_t index = (uint32_t)_touchId;
+        uint32_t index = static_cast<uint32_t>(_touchId);
 
         if( index >= MENGINE_INPUT_MAX_TOUCH )
         {
             return nullptr;
+        }
+
+        if( _isTouch == false )
+        {
+            index += MENGINE_INPUT_MAX_TOUCH;
         }
 
         return &m_touches[index];
     }
     //////////////////////////////////////////////////////////////////////////
-    const VirtualArea::TouchDesc * VirtualArea::getTouch_( ETouchCode _touchId ) const
+    bool VirtualArea::isTouchPositionCurrent_( const TouchDesc & _touch ) const
     {
-        const uint32_t index = (uint32_t)_touchId;
+        const mt::vec2f * position = INPUT_SERVICE()
+            ->getTouchPosition( _touch.touchId );
 
-        if( index >= MENGINE_INPUT_MAX_TOUCH )
+        if( position == nullptr )
         {
-            return nullptr;
+            return false;
         }
 
-        return &m_touches[index];
+        if( mt::cmp_v2_v2( *position, _touch.screen ) == false )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
 }

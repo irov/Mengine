@@ -19,6 +19,7 @@ namespace Mengine
     struct InputScrollData;
     struct InputPositionData;
     struct RenderContext;
+    class Resolution;
     enum EInputGesturePhase : uint8_t;
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
@@ -35,11 +36,13 @@ namespace Mengine
 
         void calcInputPositionWorld( const RenderContext * _context, InputPositionData * const _position );
         void calcGlobalInputPositionWorld( InputPositionData * const _position );
+        mt::vec2f calcTouchDelta( const mt::vec2f & _from, const mt::vec2f & _to, const Resolution & _resolution );
 
-        void pushMouseMoveEvent( Timestamp _timestamp, ETouchCode _touchId, float _x, float _y, float _dx, float _dy, float _pressure, float _dpressure );
-        void pushMouseMoveEvent( Timestamp _timestamp, ETouchCode _touchId, float _x, float _y, float _dx, float _dy, float _pressure, float _dpressure, const InputSpecialData & _special );
-        void pushMouseButtonEvent( Timestamp _timestamp, ETouchCode _touchId, float _x, float _y, EMouseButtonCode _button, float _pressure, bool _isDown, bool _isCancelled = false );
-        void pushMouseButtonEvent( Timestamp _timestamp, ETouchCode _touchId, float _x, float _y, EMouseButtonCode _button, float _pressure, bool _isDown, const InputSpecialData & _special, bool _isCancelled = false );
+        void pushMouseMoveEvent( Timestamp _timestamp, ETouchCode _touchId, float _x, float _y, float _dx, float _dy, float _pressure, float _dpressure, bool _isTouch = false );
+        void pushMouseMoveEvent( Timestamp _timestamp, ETouchCode _touchId, float _x, float _y, float _dx, float _dy, float _pressure, float _dpressure, const InputSpecialData & _special, bool _isTouch = false );
+        void pushTouchMoveEndEvent( Timestamp _timestamp );
+        void pushMouseButtonEvent( Timestamp _timestamp, ETouchCode _touchId, float _x, float _y, EMouseButtonCode _button, float _pressure, bool _isDown, bool _isCancelled = false, bool _isTouch = false );
+        void pushMouseButtonEvent( Timestamp _timestamp, ETouchCode _touchId, float _x, float _y, EMouseButtonCode _button, float _pressure, bool _isDown, const InputSpecialData & _special, bool _isCancelled = false, bool _isTouch = false );
         void pushKeyEvent( Timestamp _timestamp, float _x, float _y, float _pressure, EKeyCode _code, bool _isDown, bool _repeating );
         void pushKeyEvent( Timestamp _timestamp, float _x, float _y, float _pressure, EKeyCode _code, bool _isDown, bool _repeating, const InputSpecialData & _special );
         void pushTextEvent( Timestamp _timestamp, float _x, float _y, float _pressure, const WChar * _text );

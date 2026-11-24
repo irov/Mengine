@@ -1,13 +1,9 @@
 #pragma once
 
-#include "Interface/InputHandlerInterface.h"
-
 #include "../MCPCommandInterface.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/Map.h"
-
-#include "Config/Timestamp.h"
 
 namespace Mengine
 {
@@ -25,22 +21,15 @@ namespace Mengine
         EMCPCommandStatus execute( const MCPCommandRequest & _request, MCPCommandResponse * const _response ) override;
 
     protected:
-        struct TouchEvent
+        enum ETouchAction
         {
-            Timestamp timestamp;
-            ETouchCode touchId;
-            float x;
-            float y;
-            float pressure;
+            ETA_MOVE,
+            ETA_START,
+            ETA_END,
+            ETA_CANCEL
         };
 
-        typedef void (MCPInputTouchCommand::*Action)( const TouchEvent & _event );
-        typedef Map<ConstString, Action> MapActions;
-
-        void move_( const TouchEvent & _event );
-        void start_( const TouchEvent & _event );
-        void end_( const TouchEvent & _event );
-        void cancel_( const TouchEvent & _event );
+        typedef Map<ConstString, ETouchAction> MapActions;
 
     protected:
         MCPInputContext * m_context;

@@ -95,6 +95,13 @@
 #define MENGINE_DEVELOPMENT_USER_FOLDER_NAME "User"
 #endif
 //////////////////////////////////////////////////////////////////////////
+#define MENGINE_ANDROID_PLATFORM_ACTION_DOWN 0 //ACTION_DOWN
+#define MENGINE_ANDROID_PLATFORM_ACTION_UP 1 //ACTION_UP
+#define MENGINE_ANDROID_PLATFORM_ACTION_MOVE 2 //ACTION_MOVE
+#define MENGINE_ANDROID_PLATFORM_ACTION_CANCEL 3 //ACTION_CANCEL
+#define MENGINE_ANDROID_PLATFORM_ACTION_POINTER_DOWN 5 //ACTION_POINTER_DOWN
+#define MENGINE_ANDROID_PLATFORM_ACTION_POINTER_UP 6 //ACTION_POINTER_UP
+//////////////////////////////////////////////////////////////////////////
 extern "C"
 {
     //////////////////////////////////////////////////////////////////////////
@@ -407,7 +414,7 @@ extern "C"
         platformExtension->androidNativeTextEvent( eventTime, unicode );
     }
     ///////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1touchEvent )(JNIEnv * env, jclass cls, jlong eventTime, jint action, jint pointerId, jfloat x, jfloat y, jfloat pressure)
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1touchEvent )(JNIEnv * env, jclass cls, jlong eventTime, jint action, jint pointerId, jfloat x, jfloat y, jfloat pressure, jboolean isTouch)
     {
         if( g_androidPlatformActived == false )
         {
@@ -417,7 +424,20 @@ extern "C"
         Mengine::AndroidRenderPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
-        platformExtension->androidNativeTouchEvent( eventTime, action, pointerId, x, y, pressure );
+        platformExtension->androidNativeTouchEvent( eventTime, action, pointerId, x, y, pressure, isTouch );
+    }
+    ///////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1touchMoveEndEvent )(JNIEnv *, jclass, jlong eventTime)
+    {
+        if( g_androidPlatformActived == false )
+        {
+            return;
+        }
+
+        Mengine::AndroidRenderPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        platformExtension->androidNativeTouchMoveEndEvent( eventTime );
     }
     ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1accelerationEvent )(JNIEnv * env, jclass cls, jlong eventTimestamp, jfloat x, jfloat y, jfloat z)
@@ -855,6 +875,7 @@ namespace Mengine
         , m_swappyInitialized( false )
     {
         StdAlgorithm::fill_n( m_fingers, MENGINE_INPUT_MAX_TOUCH, -1 );
+        StdAlgorithm::fill_n( m_fingersTouch, MENGINE_INPUT_MAX_TOUCH, JNI_FALSE );
 
         StdAlgorithm::fill_n( m_currentFingersX, MENGINE_INPUT_MAX_TOUCH, 0.f );
         StdAlgorithm::fill_n( m_currentFingersY, MENGINE_INPUT_MAX_TOUCH, 0.f );
@@ -2806,11 +2827,11 @@ namespace Mengine
         return TC_TOUCH_INVALID;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::androidNativeTouchEvent( jlong _eventTime, jint _action, jint _pointerId, jfloat _x, jfloat _y, jfloat _pressure )
+    void AndroidPlatformService::androidNativeTouchEvent( jlong _eventTime, jint _action, jint _pointerId, jfloat _x, jfloat _y, jfloat _pressure, jboolean _isTouch )
     {
         Timestamp eventTime = static_cast<Timestamp>(_eventTime);
 
-        if( _action == 3 && _pointerId == -1 ) //ACTION_CANCEL for all active pointers
+        if( _action == MENGINE_ANDROID_PLATFORM_ACTION_CANCEL && _pointerId == -1 )
         {
             for( uint32_t index = 0; index != MENGINE_INPUT_MAX_TOUCH; ++index )
             {
@@ -2823,7 +2844,11 @@ namespace Mengine
                 m_currentFingersPressure[index] = 0.f;
 
                 ETouchCode fingerIndex = static_cast<ETouchCode>(index);
-                Helper::pushMouseButtonEvent( eventTime, fingerIndex, m_currentFingersX[index], m_currentFingersY[index], MC_LBUTTON, 0.f, false, true );
+                jfloat x = m_currentFingersX[index];
+                jfloat y = m_currentFingersY[index];
+                bool isTouch = m_fingersTouch[index] == JNI_TRUE;
+
+                Helper::pushMouseButtonEvent( eventTime, fingerIndex, x, y, MC_LBUTTON, 0.f, false, true, isTouch );
             }
 
             m_lastFingerPressure = 0.f;
@@ -2833,8 +2858,8 @@ namespace Mengine
 
         switch( _action )
         {
-        case 0: //ACTION_DOWN
-        case 5: //ACTION_POINTER_DOWN
+        case MENGINE_ANDROID_PLATFORM_ACTION_DOWN:
+        case MENGINE_ANDROID_PLATFORM_ACTION_POINTER_DOWN:
             {
                 ETouchCode fingerIndex = this->acquireFingerIndex_( _pointerId );
 
@@ -2862,11 +2887,15 @@ namespace Mengine
                     , _pressure
                 );
 
-                Helper::pushMouseButtonEvent( eventTime, fingerIndex, _x, _y, MC_LBUTTON, _pressure, true );
+                m_fingersTouch[fingerIndex] = _isTouch;
+
+                bool isTouch = _isTouch == JNI_TRUE;
+
+                Helper::pushMouseButtonEvent( eventTime, fingerIndex, _x, _y, MC_LBUTTON, _pressure, true, false, isTouch );
             }break;
-        case 1: //ACTION_UP
-        case 3: //ACTION_CANCEL
-        case 6: //ACTION_POINTER_UP
+        case MENGINE_ANDROID_PLATFORM_ACTION_UP:
+        case MENGINE_ANDROID_PLATFORM_ACTION_CANCEL:
+        case MENGINE_ANDROID_PLATFORM_ACTION_POINTER_UP:
             {
                 ETouchCode fingerIndex = this->releaseFingerIndex_( _pointerId );
 
@@ -2894,53 +2923,68 @@ namespace Mengine
                     , _pressure
                 );
 
-                bool isCancelled = _action == 3;
-                Helper::pushMouseButtonEvent( eventTime, fingerIndex, _x, _y, MC_LBUTTON, _pressure, false, isCancelled );
+                bool isCancelled = _action == MENGINE_ANDROID_PLATFORM_ACTION_CANCEL;
+                bool isTouch = m_fingersTouch[fingerIndex] == JNI_TRUE;
+
+                Helper::pushMouseButtonEvent( eventTime, fingerIndex, _x, _y, MC_LBUTTON, _pressure, false, isCancelled, isTouch );
             }break;
-        case 2: //ACTION_MOVE
-            {
-                ETouchCode fingerIndex = this->getFingerIndex_( _pointerId );
-
-                if( fingerIndex == TC_TOUCH_INVALID )
-                {
-                    LOGGER_INFO( "platform", "failed to get finger index for pointerId %d"
-                        , _pointerId
-                    );
-
-                    return;
-                }
-
-                jfloat previousX = m_currentFingersX[fingerIndex];
-                jfloat previousY = m_currentFingersY[fingerIndex];
-                jfloat previousPressure = m_currentFingersPressure[fingerIndex];
-
-                jfloat dx = _x - previousX;
-                jfloat dy = _y - previousY;
-                jfloat dpressure = _pressure - previousPressure;
-
-                m_currentFingersX[fingerIndex] = _x;
-                m_currentFingersY[fingerIndex] = _y;
-                m_currentFingersPressure[fingerIndex] = _pressure;
-
-                m_lastFingerX = _x;
-                m_lastFingerY = _y;
-                m_lastFingerPressure = _pressure;
-
-                LOGGER_INFO( "platform", "touch [%d] move position: %.4f;%.4f pressure: %.4f delta: %.4f;%.4f dpressure: %.4f"
-                    , fingerIndex
-                    , _x
-                    , _y
-                    , _pressure
-                    , dx
-                    , dy
-                    , dpressure
-                );
-
-                Helper::pushMouseMoveEvent( eventTime, fingerIndex, _x, _y, dx, dy, _pressure, dpressure );
-            }break;
+        case MENGINE_ANDROID_PLATFORM_ACTION_MOVE:
+            this->touchMoveEvent_( eventTime, _pointerId, _x, _y, _pressure );
+            break;
         default:
             break;
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::touchMoveEvent_( Timestamp _timestamp, jint _pointerId, jfloat _x, jfloat _y, jfloat _pressure )
+    {
+        ETouchCode fingerIndex = this->getFingerIndex_( _pointerId );
+
+        if( fingerIndex == TC_TOUCH_INVALID )
+        {
+            LOGGER_INFO( "platform", "failed to get finger index for pointerId %d"
+                , _pointerId
+            );
+
+            return;
+        }
+
+        jfloat previousX = m_currentFingersX[fingerIndex];
+        jfloat previousY = m_currentFingersY[fingerIndex];
+        jfloat previousPressure = m_currentFingersPressure[fingerIndex];
+
+        jfloat dx = _x - previousX;
+        jfloat dy = _y - previousY;
+        jfloat dpressure = _pressure - previousPressure;
+
+        m_currentFingersX[fingerIndex] = _x;
+        m_currentFingersY[fingerIndex] = _y;
+        m_currentFingersPressure[fingerIndex] = _pressure;
+
+        m_lastFingerX = _x;
+        m_lastFingerY = _y;
+        m_lastFingerPressure = _pressure;
+
+        LOGGER_INFO( "platform", "touch [%d] move position: %.4f;%.4f pressure: %.4f delta: %.4f;%.4f dpressure: %.4f"
+            , fingerIndex
+            , _x
+            , _y
+            , _pressure
+            , dx
+            , dy
+            , dpressure
+        );
+
+        bool isTouch = m_fingersTouch[fingerIndex] == JNI_TRUE;
+
+        Helper::pushMouseMoveEvent( _timestamp, fingerIndex, _x, _y, dx, dy, _pressure, dpressure, isTouch );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::androidNativeTouchMoveEndEvent( jlong _eventTime )
+    {
+        Timestamp timestamp = static_cast<Timestamp>(_eventTime);
+
+        Helper::pushTouchMoveEndEvent( timestamp );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeAccelerationEvent( jlong _eventTimestamp, jfloat _dx, jfloat _dy, jfloat _dz )

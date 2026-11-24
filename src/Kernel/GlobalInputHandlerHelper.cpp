@@ -78,11 +78,25 @@ namespace Mengine
                     return false;
                 }
 
+                void handleMouseButtonEventCancel( const InputMouseButtonEvent & _event ) override
+                {
+                    MENGINE_UNUSED( _event );
+
+                    //Empty
+                }
+
                 bool handleMouseMove( const InputMouseMoveEvent & _event ) override
                 {
                     MENGINE_UNUSED( _event );
 
                     return false;
+                }
+
+                void handleMouseMoveEnd( const InputMouseMoveEndEvent & _event ) override
+                {
+                    MENGINE_UNUSED( _event );
+
+                    //Empty
                 }
 
                 bool handleMouseWheel( const InputMouseWheelEvent & _event ) override
@@ -130,6 +144,13 @@ namespace Mengine
                 }
 
                 bool handleGestureSwipe( const InputGestureSwipeEvent & _event ) override
+                {
+                    MENGINE_UNUSED( _event );
+
+                    return false;
+                }
+
+                bool handleGestureDoubleTap( const InputGestureDoubleTapEvent & _event ) override
                 {
                     MENGINE_UNUSED( _event );
 
@@ -253,6 +274,32 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             typedef IntrusivePtr<GlobalMouseButtonHandler, InputHandlerInterface> GlobalMouseButtonHandlerPtr;
             //////////////////////////////////////////////////////////////////////////
+            class GlobalMouseButtonCancelHandler
+                : public GlobalBaseHandler
+            {
+            public:
+                GlobalMouseButtonCancelHandler( EMouseButtonCode _button, const LambdaInputMouseButtonEvent & _event )
+                    : m_code( _button )
+                    , m_event( _event )
+                {
+                }
+
+            protected:
+                void handleMouseButtonEventCancel( const InputMouseButtonEvent & _event ) override
+                {
+                    if( m_code != _event.button )
+                    {
+                        return;
+                    }
+
+                    m_event( _event );
+                }
+
+            protected:
+                EMouseButtonCode m_code;
+                LambdaInputMouseButtonEvent m_event;
+            };
+            //////////////////////////////////////////////////////////////////////////
             class GlobalMouseMoveHandler
                 : public GlobalBaseHandler
             {
@@ -351,6 +398,18 @@ namespace Mengine
                 ->getGlobalInputHandler();
 
             InputHandlerInterfacePtr handler = Helper::makeFactorableUnique<Detail::GlobalMouseButtonHandler>( _doc, _button, _isDown, _event );
+
+            UniqueId id = globalInputHandle->addGlobalHandler( handler, true, _doc );
+
+            return id;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        UniqueId addGlobalMouseButtonHandlerCancel( EMouseButtonCode _button, const LambdaInputMouseButtonEvent & _event, const DocumentInterfacePtr & _doc )
+        {
+            const GlobalInputHandlerInterfacePtr & globalInputHandle = PLAYER_SERVICE()
+                ->getGlobalInputHandler();
+
+            InputHandlerInterfacePtr handler = Helper::makeFactorableUnique<Detail::GlobalMouseButtonCancelHandler>( _doc, _button, _event );
 
             UniqueId id = globalInputHandle->addGlobalHandler( handler, true, _doc );
 

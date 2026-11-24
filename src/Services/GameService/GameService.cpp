@@ -227,6 +227,12 @@ namespace Mengine
         return handle;
     }
     //////////////////////////////////////////////////////////////////////////
+    void GameService::handleMouseButtonEventCancel( const InputMouseButtonEvent & _event )
+    {
+        PLAYER_SERVICE()
+            ->handleMouseButtonEventCancel( _event );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool GameService::handleMouseMove( const InputMouseMoveEvent & _event )
     {
         bool handle = false;
@@ -244,6 +250,12 @@ namespace Mengine
         }
 
         return handle;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void GameService::handleMouseMoveEnd( const InputMouseMoveEndEvent & _event )
+    {
+        PLAYER_SERVICE()
+            ->handleMouseMoveEnd( _event );
     }
     //////////////////////////////////////////////////////////////////////////
     bool GameService::handleMouseWheel( const InputMouseWheelEvent & _event )
@@ -354,6 +366,25 @@ namespace Mengine
 
         if( PLAYER_SERVICE()
             ->handleGestureSwipe( _event ) == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool GameService::handleGestureDoubleTap( const InputGestureDoubleTapEvent & _event )
+    {
+        bool handle = EVENTABLE_METHODR( EVENT_GAME_GESTURE_DOUBLE_TAP, false )
+            ->onGameGestureDoubleTap( _event );
+
+        if( handle == true )
+        {
+            return true;
+        }
+
+        if( PLAYER_SERVICE()
+            ->handleGestureDoubleTap( _event ) == false )
         {
             return false;
         }

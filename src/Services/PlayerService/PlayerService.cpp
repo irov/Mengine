@@ -515,6 +515,16 @@ namespace Mengine
         return handler;
     }
     //////////////////////////////////////////////////////////////////////////
+    void PlayerService::handleMouseButtonEventCancel( const InputMouseButtonEvent & _event )
+    {
+        if( m_globalInputHandler == nullptr )
+        {
+            return;
+        }
+
+        m_globalInputHandler->handleMouseButtonEventCancel( _event );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool PlayerService::handleMouseMove( const InputMouseMoveEvent & _event )
     {
         if( m_globalInputHandler != nullptr )
@@ -531,6 +541,16 @@ namespace Mengine
         }
 
         return handler;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PlayerService::handleMouseMoveEnd( const InputMouseMoveEndEvent & _event )
+    {
+        if( m_globalInputHandler == nullptr )
+        {
+            return;
+        }
+
+        m_globalInputHandler->handleMouseMoveEnd( _event );
     }
     //////////////////////////////////////////////////////////////////////////
     bool PlayerService::handleMouseWheel( const InputMouseWheelEvent & _event )
@@ -823,6 +843,22 @@ namespace Mengine
 
         if( PICKER_SERVICE()
             ->handleGestureSwipe( _event ) == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PlayerService::handleGestureDoubleTap( const InputGestureDoubleTapEvent & _event )
+    {
+        if( m_globalInputHandler != nullptr )
+        {
+            m_globalInputHandler->handleGestureDoubleTap( _event );
+        }
+
+        if( PICKER_SERVICE()
+            ->handleGestureDoubleTap( _event ) == false )
         {
             return false;
         }

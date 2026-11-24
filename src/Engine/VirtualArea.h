@@ -5,6 +5,7 @@
 #include "Interface/PickerInputHandlerInterface.h"
 
 #include "Kernel/Node.h"
+#include "Kernel/TouchPinchRecognizer.h"
 #include "Kernel/BaseRender.h"
 #include "Kernel/BasePicker.h"
 #include "Kernel/BaseEventation.h"
@@ -220,6 +221,7 @@ namespace Mengine
         bool handleGestureRotation( const RenderContext * _context, const InputGestureRotationEvent & _event ) override;
         bool handleGestureSmartMagnification( const RenderContext * _context, const InputGestureSmartMagnificationEvent & _event ) override;
         bool handleGestureSwipe( const RenderContext * _context, const InputGestureSwipeEvent & _event ) override;
+        bool handleGestureDoubleTap( const RenderContext * _context, const InputGestureDoubleTapEvent & _event ) override;
         bool handleGesturePressure( const RenderContext * _context, const InputGesturePressureEvent & _event ) override;
 
     protected:
@@ -241,11 +243,13 @@ namespace Mengine
         void stopDrag_();
 
     protected:
-        bool beginTouch_( const RenderContext * _context, const InputMouseButtonEvent & _event );
+        void beginTouch_( const RenderContext * _context, const InputMouseButtonEvent & _event );
         bool moveTouch_( const InputMouseMoveEvent & _event );
         bool endTouch_( const InputMouseButtonEvent & _event );
-        bool releaseTouch_( ETouchCode _touchId, bool _isCancelled );
-        bool updatePinch_();
+        bool releaseTouch_( ETouchCode _touchId, bool _isTouch, bool _isCancelled );
+        void rebaseTouchPinch_();
+        void updateTouchPinch_();
+        bool applyMagnification_( float _factor, const mt::vec2f & _screenPoint, const RenderContext * _context );
         void scaleToPoint_( float _factor, const mt::vec2f & _screenPoint, const RenderContext * _context );
 
     protected:
@@ -282,8 +286,8 @@ namespace Mengine
             mt::vec2f previousWorld;
         };
 
-        TouchDesc * getTouch_( ETouchCode _touchId );
-        const TouchDesc * getTouch_( ETouchCode _touchId ) const;
+        TouchDesc * getTouch_( ETouchCode _touchId, bool _isTouch );
+        bool isTouchPositionCurrent_( const TouchDesc & _touch ) const;
 
     protected:
         Viewport m_viewport;
@@ -307,7 +311,6 @@ namespace Mengine
         float m_frictionFactor;
         float m_rigidity;
         float m_dragStartThreshold;
-        float m_lastPinchDistance;
         float m_returnTime;
         float m_returnDuration;
         float m_snappingCoefficient;
@@ -322,6 +325,7 @@ namespace Mengine
         RenderScissorPtr m_renderScissor;
 
         Vector<TouchDesc> m_touches;
+        TouchPinchRecognizer m_touchPinchRecognizer;
         Vector<float> m_snappingPoints;
 
         InputHandlerInterfacePtr m_globalHandler;
@@ -337,7 +341,6 @@ namespace Mengine
         bool m_scrollLocked;
         bool m_frozen;
         bool m_dragging;
-        bool m_pinchActive;
         bool m_returnActive;
     };
     //////////////////////////////////////////////////////////////////////////

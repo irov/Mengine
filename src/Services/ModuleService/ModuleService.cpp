@@ -359,6 +359,14 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    void ModuleService::handleMouseButtonEventCancel( const InputMouseButtonEvent & _event )
+    {
+        for( const ModuleInterfacePtr & module : m_modules )
+        {
+            module->handleMouseButtonEventCancel( _event );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool ModuleService::handleMouseMove( const InputMouseMoveEvent & _event )
     {
         for( const ModuleInterfacePtr & module : m_modules )
@@ -370,6 +378,14 @@ namespace Mengine
         }
 
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ModuleService::handleMouseMoveEnd( const InputMouseMoveEndEvent & _event )
+    {
+        for( const ModuleInterfacePtr & module : m_modules )
+        {
+            module->handleMouseMoveEnd( _event );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool ModuleService::handleMouseWheel( const InputMouseWheelEvent & _event )
@@ -450,6 +466,19 @@ namespace Mengine
         for( const ModuleInterfacePtr & module : m_modules )
         {
             if( module->handleGestureSwipe( _event ) == true )
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ModuleService::handleGestureDoubleTap( const InputGestureDoubleTapEvent & _event )
+    {
+        for( const ModuleInterfacePtr & module : m_modules )
+        {
+            if( module->handleGestureDoubleTap( _event ) == true )
             {
                 return true;
             }

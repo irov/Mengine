@@ -41,7 +41,8 @@ public class MengineNative {
     public static native void AndroidPlatform_controllerAxisEvent(long eventTime, int deviceId, int axis, float value);
     public static native void AndroidPlatform_windowInsetsEvent(Rect safeArea, Rect displayCutout);
     public static native void AndroidPlatform_textEvent(long eventTime, int unicode);
-    public static native void AndroidPlatform_touchEvent(long eventTime, int action, int pointerId, float x, float y, float pressure);
+    public static native void AndroidPlatform_touchEvent(long eventTime, int action, int pointerId, float x, float y, float pressure, boolean isTouch);
+    public static native void AndroidPlatform_touchMoveEndEvent(long eventTime);
     public static native void AndroidPlatform_accelerationEvent(long eventTime, float x, float y, float z);
     public static native void AndroidPlatform_pauseEvent(float x, float y);
     public static native void AndroidPlatform_resumeEvent(float x, float y);

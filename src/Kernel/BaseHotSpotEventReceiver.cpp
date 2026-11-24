@@ -133,6 +133,14 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool BaseHotSpotEventReceiver::onHotSpotGestureDoubleTap( const RenderContext * _context, const InputGestureDoubleTapEvent & _event )
+    {
+        MENGINE_UNUSED( _context );
+        MENGINE_UNUSED( _event );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool BaseHotSpotEventReceiver::onHotSpotGesturePressure( const RenderContext * _context, const InputGesturePressureEvent & _event )
     {
         MENGINE_UNUSED( _context );

@@ -21,6 +21,7 @@ namespace Mengine
         UniqueId addGlobalKeyOnceHandler( EKeyCode _code, bool _isDown, const LambdaInputKeyEvent & _event, const DocumentInterfacePtr & _doc );
         UniqueId addGlobalAccelerometerHandler( const LambdaInputAccelerometerEvent & _event, const DocumentInterfacePtr & _doc );
         UniqueId addGlobalMouseButtonHandler( EMouseButtonCode _button, bool _isDown, const LambdaInputMouseButtonEvent & _event, const DocumentInterfacePtr & _doc );
+        UniqueId addGlobalMouseButtonHandlerCancel( EMouseButtonCode _button, const LambdaInputMouseButtonEvent & _event, const DocumentInterfacePtr & _doc );
         UniqueId addGlobalMouseMoveHandler( const LambdaInputMouseMoveEvent & _event, const DocumentInterfacePtr & _doc );
         UniqueId addGlobalMouseWheelHandler( const LambdaInputMouseWheelEvent & _event, const DocumentInterfacePtr & _doc );
         //////////////////////////////////////////////////////////////////////////

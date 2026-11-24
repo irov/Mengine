@@ -102,6 +102,7 @@ namespace Mengine
         bool handleGestureRotation( const RenderContext * _context, const InputGestureRotationEvent & _event ) override;
         bool handleGestureSmartMagnification( const RenderContext * _context, const InputGestureSmartMagnificationEvent & _event ) override;
         bool handleGestureSwipe( const RenderContext * _context, const InputGestureSwipeEvent & _event ) override;
+        bool handleGestureDoubleTap( const RenderContext * _context, const InputGestureDoubleTapEvent & _event ) override;
         bool handleGesturePressure( const RenderContext * _context, const InputGesturePressureEvent & _event ) override;
 
     protected:

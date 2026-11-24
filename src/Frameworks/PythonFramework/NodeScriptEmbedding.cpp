@@ -681,6 +681,7 @@ namespace Mengine
                 Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onHandleGestureRotation" ), EVENT_HOTSPOT_GESTURE_ROTATION, MENGINE_DOCUMENT_PYTHON );
                 Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onHandleGestureSmartMagnification" ), EVENT_HOTSPOT_GESTURE_SMART_MAGNIFICATION, MENGINE_DOCUMENT_PYTHON );
                 Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onHandleGestureSwipe" ), EVENT_HOTSPOT_GESTURE_SWIPE, MENGINE_DOCUMENT_PYTHON );
+                Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onHandleGestureDoubleTap" ), EVENT_HOTSPOT_GESTURE_DOUBLE_TAP, MENGINE_DOCUMENT_PYTHON );
                 Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onHandleGesturePressure" ), EVENT_HOTSPOT_GESTURE_PRESSURE, MENGINE_DOCUMENT_PYTHON );
                 Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onHandleMouseOverDestroy" ), EVENT_HOTSPOT_MOUSE_OVER_DESTROY, MENGINE_DOCUMENT_PYTHON );
                 Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, STRINGIZE_STRING_LOCAL( "onHandleActivate" ), EVENT_HOTSPOT_ACTIVATE, MENGINE_DOCUMENT_PYTHON );

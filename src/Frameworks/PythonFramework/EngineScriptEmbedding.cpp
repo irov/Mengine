@@ -187,6 +187,7 @@ namespace Mengine
                 m_factoryPyGlobalMouseMoveHandlers = Helper::makeFactoryPool<PyGlobalMouseMoveHandler, 32>( MENGINE_DOCUMENT_FACTORABLE );
                 m_factoryPyGlobalMouseHandlerButtons = Helper::makeFactoryPool<PyGlobalMouseHandlerButton, 32>( MENGINE_DOCUMENT_FACTORABLE );
                 m_factoryPyGlobalMouseHandlerButtonEnds = Helper::makeFactoryPool<PyGlobalMouseHandlerButtonEnd, 32>( MENGINE_DOCUMENT_FACTORABLE );
+                m_factoryPyGlobalMouseHandlerButtonCancels = Helper::makeFactoryPool<PyGlobalMouseHandlerButtonCancel, 32>( MENGINE_DOCUMENT_FACTORABLE );
                 m_factoryPyGlobalMouseHandlerWheels = Helper::makeFactoryPool<PyGlobalMouseHandlerWheel, 32>( MENGINE_DOCUMENT_FACTORABLE );
                 m_factoryPyGlobalGestureHandlers = Helper::makeFactoryPool<PyGlobalGestureHandler, 32>( MENGINE_DOCUMENT_FACTORABLE );
                 m_factoryPyGlobalMouseHandlerButtonBegins = Helper::makeFactoryPool<PyGlobalMouseHandlerButtonBegin, 32>( MENGINE_DOCUMENT_FACTORABLE );
@@ -230,6 +231,7 @@ namespace Mengine
                 MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPyGlobalMouseMoveHandlers );
                 MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPyGlobalMouseHandlerButtons );
                 MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPyGlobalMouseHandlerButtonEnds );
+                MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPyGlobalMouseHandlerButtonCancels );
                 MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPyGlobalMouseHandlerWheels );
                 MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPyGlobalGestureHandlers );
                 MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPyGlobalMouseHandlerButtonBegins );
@@ -251,6 +253,7 @@ namespace Mengine
                 m_factoryPyGlobalMouseMoveHandlers = nullptr;
                 m_factoryPyGlobalMouseHandlerButtons = nullptr;
                 m_factoryPyGlobalMouseHandlerButtonEnds = nullptr;
+                m_factoryPyGlobalMouseHandlerButtonCancels = nullptr;
                 m_factoryPyGlobalMouseHandlerWheels = nullptr;
                 m_factoryPyGlobalGestureHandlers = nullptr;
                 m_factoryPyGlobalMouseHandlerButtonBegins = nullptr;
@@ -3757,6 +3760,13 @@ namespace Mengine
                     return false;
                 }
 
+                void handleMouseButtonEventCancel( const InputMouseButtonEvent & _event ) override
+                {
+                    MENGINE_UNUSED( _event );
+
+                    //Empty
+                }
+
                 bool handleMouseMove( const InputMouseMoveEvent & _event ) override
                 {
                     MENGINE_UNUSED( _event );
@@ -3764,6 +3774,13 @@ namespace Mengine
                     //Empty
 
                     return false;
+                }
+
+                void handleMouseMoveEnd( const InputMouseMoveEndEvent & _event ) override
+                {
+                    MENGINE_UNUSED( _event );
+
+                    //Empty
                 }
 
                 bool handleMouseWheel( const InputMouseWheelEvent & _event ) override
@@ -3815,6 +3832,13 @@ namespace Mengine
                 }
 
                 bool handleGestureSwipe( const InputGestureSwipeEvent & _event ) override
+                {
+                    MENGINE_UNUSED( _event );
+
+                    return false;
+                }
+
+                bool handleGestureDoubleTap( const InputGestureDoubleTapEvent & _event ) override
                 {
                     MENGINE_UNUSED( _event );
 
@@ -4027,6 +4051,41 @@ namespace Mengine
                 return id;
             }
             //////////////////////////////////////////////////////////////////////////
+            class PyGlobalMouseHandlerButtonCancel
+                : public PyGlobalBaseHandler
+            {
+                DECLARE_FACTORABLE( PyGlobalMouseHandlerButtonCancel );
+
+            protected:
+                void handleMouseButtonEventCancel( const InputMouseButtonEvent & _event ) override
+                {
+                    InputMouseButtonEvent ev = _event;
+
+                    PLAYER_SERVICE()
+                        ->calcGlobalMouseWorldPosition( ev.position.screen, &ev.position.world );
+
+                    pybind::object py_result = this->call_cb( ev );
+
+                    this->checkCallbackResult_( py_result );
+                }
+            };
+            //////////////////////////////////////////////////////////////////////////
+            typedef IntrusivePtr<PyGlobalMouseHandlerButtonCancel> PyGlobalMouseHandlerButtonCancelPtr;
+            //////////////////////////////////////////////////////////////////////////
+            FactoryInterfacePtr m_factoryPyGlobalMouseHandlerButtonCancels;
+            //////////////////////////////////////////////////////////////////////////
+            UniqueId s_addMouseButtonHandlerCancel( const pybind::object & _cb, bool _enable, const pybind::args & _args )
+            {
+                const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
+                    ->getGlobalInputHandler();
+
+                PyGlobalMouseHandlerButtonCancelPtr handler = Helper::makePythonCallbackProvider( m_factoryPyGlobalMouseHandlerButtonCancels, _cb, _args, MENGINE_DOCUMENT_PYTHON );
+
+                UniqueId id = globalHandleSystem->addGlobalHandler( handler, _enable, MENGINE_DOCUMENT_PYTHON );
+
+                return id;
+            }
+            //////////////////////////////////////////////////////////////////////////
             class PyGlobalMouseHandlerButtonBegin
                 : public PyGlobalBaseHandler
             {
@@ -4115,6 +4174,7 @@ namespace Mengine
                 ROTATION,
                 SMART_MAGNIFICATION,
                 SWIPE,
+                DOUBLE_TAP,
                 PRESSURE,
             };
             //////////////////////////////////////////////////////////////////////////
@@ -4175,6 +4235,20 @@ namespace Mengine
                 bool handleGestureSwipe( const InputGestureSwipeEvent & _event ) override
                 {
                     if( m_gesture != EGesture::SWIPE )
+                    {
+                        return false;
+                    }
+
+                    pybind::object py_result = this->call_cb( _event );
+
+                    this->checkCallbackResult_( py_result );
+
+                    return false;
+                }
+
+                bool handleGestureDoubleTap( const InputGestureDoubleTapEvent & _event ) override
+                {
+                    if( m_gesture != EGesture::DOUBLE_TAP )
                     {
                         return false;
                     }
@@ -4248,6 +4322,13 @@ namespace Mengine
             UniqueId s_addGestureSwipeHandler( const pybind::object & _cb, bool _enable, const pybind::args & _args )
             {
                 UniqueId id = this->addGestureHandler_( EGesture::SWIPE, _cb, _enable, _args );
+
+                return id;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            UniqueId s_addGestureDoubleTapHandler( const pybind::object & _cb, bool _enable, const pybind::args & _args )
+            {
+                UniqueId id = this->addGestureHandler_( EGesture::DOUBLE_TAP, _cb, _enable, _args );
 
                 return id;
             }
@@ -4926,11 +5007,13 @@ namespace Mengine
         pybind::def_functor_args( _kernel, "addMouseButtonHandler", nodeScriptMethod, &EngineScriptMethod::s_addMouseButtonHandler );
         pybind::def_functor_args( _kernel, "addMouseButtonHandlerBegin", nodeScriptMethod, &EngineScriptMethod::s_addMouseButtonHandlerBegin );
         pybind::def_functor_args( _kernel, "addMouseButtonHandlerEnd", nodeScriptMethod, &EngineScriptMethod::s_addMouseButtonHandlerEnd );
+        pybind::def_functor_args( _kernel, "addMouseButtonHandlerCancel", nodeScriptMethod, &EngineScriptMethod::s_addMouseButtonHandlerCancel );
         pybind::def_functor_args( _kernel, "addMouseWheelHandler", nodeScriptMethod, &EngineScriptMethod::s_addMouseWheelHandler );
         pybind::def_functor_args( _kernel, "addGestureMagnificationHandler", nodeScriptMethod, &EngineScriptMethod::s_addGestureMagnificationHandler );
         pybind::def_functor_args( _kernel, "addGestureRotationHandler", nodeScriptMethod, &EngineScriptMethod::s_addGestureRotationHandler );
         pybind::def_functor_args( _kernel, "addGestureSmartMagnificationHandler", nodeScriptMethod, &EngineScriptMethod::s_addGestureSmartMagnificationHandler );
         pybind::def_functor_args( _kernel, "addGestureSwipeHandler", nodeScriptMethod, &EngineScriptMethod::s_addGestureSwipeHandler );
+        pybind::def_functor_args( _kernel, "addGestureDoubleTapHandler", nodeScriptMethod, &EngineScriptMethod::s_addGestureDoubleTapHandler );
         pybind::def_functor_args( _kernel, "addGesturePressureHandler", nodeScriptMethod, &EngineScriptMethod::s_addGesturePressureHandler );
         pybind::def_functor_args( _kernel, "addKeyHandler", nodeScriptMethod, &EngineScriptMethod::s_addKeyHandler );
         pybind::def_functor_args( _kernel, "addTextHandler", nodeScriptMethod, &EngineScriptMethod::s_addTextHandler );
@@ -5148,6 +5231,7 @@ namespace Mengine
             .def_member( "special", &InputMouseButtonEvent::special )
             .def_member( "position", &InputMouseButtonEvent::position )
             .def_member( "touchId", &InputMouseButtonEvent::touchId )
+            .def_member( "isTouch", &InputMouseButtonEvent::isTouch )
             .def_member( "pressure", &InputMouseButtonEvent::pressure )
             .def_member( "button", &InputMouseButtonEvent::button )
             .def_member( "isDown", &InputMouseButtonEvent::isDown )
@@ -5195,6 +5279,7 @@ namespace Mengine
             .def_member( "special", &InputMouseMoveEvent::special )
             .def_member( "position", &InputMouseMoveEvent::position )
             .def_member( "touchId", &InputMouseMoveEvent::touchId )
+            .def_member( "isTouch", &InputMouseMoveEvent::isTouch )
             .def_member( "pressure", &InputMouseMoveEvent::pressure )
             .def_member( "screenDelta", &InputMouseMoveEvent::screenDelta )
             .def_member( "worldDelta", &InputMouseMoveEvent::worldDelta )
@@ -5223,6 +5308,9 @@ namespace Mengine
             .def_member( "position", &InputGestureMagnificationEvent::position )
             .def_member( "scale", &InputGestureMagnificationEvent::scale )
             .def_member( "phase", &InputGestureMagnificationEvent::phase )
+            .def_member( "isTouch", &InputGestureMagnificationEvent::isTouch )
+            .def_member( "touchId0", &InputGestureMagnificationEvent::touchId0 )
+            .def_member( "touchId1", &InputGestureMagnificationEvent::touchId1 )
             ;
 
         pybind::struct_<InputGestureRotationEvent>( _kernel, "InputGestureRotationEvent" )
@@ -5231,12 +5319,14 @@ namespace Mengine
             .def_member( "position", &InputGestureRotationEvent::position )
             .def_member( "degrees", &InputGestureRotationEvent::degrees )
             .def_member( "phase", &InputGestureRotationEvent::phase )
+            .def_member( "isTouch", &InputGestureRotationEvent::isTouch )
             ;
 
         pybind::struct_<InputGestureSmartMagnificationEvent>( _kernel, "InputGestureSmartMagnificationEvent" )
             .def_member( "base", &InputGestureSmartMagnificationEvent::base )
             .def_member( "special", &InputGestureSmartMagnificationEvent::special )
             .def_member( "position", &InputGestureSmartMagnificationEvent::position )
+            .def_member( "isTouch", &InputGestureSmartMagnificationEvent::isTouch )
             ;
 
         pybind::struct_<InputGestureSwipeEvent>( _kernel, "InputGestureSwipeEvent" )
@@ -5244,6 +5334,15 @@ namespace Mengine
             .def_member( "special", &InputGestureSwipeEvent::special )
             .def_member( "position", &InputGestureSwipeEvent::position )
             .def_member( "direction", &InputGestureSwipeEvent::direction )
+            .def_member( "isTouch", &InputGestureSwipeEvent::isTouch )
+            ;
+
+        pybind::struct_<InputGestureDoubleTapEvent>( _kernel, "InputGestureDoubleTapEvent" )
+            .def_member( "base", &InputGestureDoubleTapEvent::base )
+            .def_member( "special", &InputGestureDoubleTapEvent::special )
+            .def_member( "position", &InputGestureDoubleTapEvent::position )
+            .def_member( "touchId", &InputGestureDoubleTapEvent::touchId )
+            .def_member( "isTouch", &InputGestureDoubleTapEvent::isTouch )
             ;
 
         pybind::struct_<InputGesturePressureEvent>( _kernel, "InputGesturePressureEvent" )
@@ -5254,6 +5353,7 @@ namespace Mengine
             .def_member( "stage", &InputGesturePressureEvent::stage )
             .def_member( "stageTransition", &InputGesturePressureEvent::stageTransition )
             .def_member( "phase", &InputGesturePressureEvent::phase )
+            .def_member( "isTouch", &InputGesturePressureEvent::isTouch )
             ;
 
         pybind::interface_<PythonValueFollowerLinear, pybind::bases<PythonValueFollower>>( _kernel, "PythonValueFollowerLinear" )

@@ -21,6 +21,7 @@ namespace Mengine
         , m_direction( EUIPBD_LEFT_TO_RIGHT )
         , m_cancelHandlerId( INVALID_UNIQUE_ID )
         , m_dragTouchId( TC_TOUCH0 )
+        , m_dragIsTouch( false )
         , m_dragging( false )
     {
     }
@@ -268,19 +269,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool UISlider::_activate()
     {
-        m_cancelHandlerId = Helper::addGlobalMouseButtonHandler( MC_LBUTTON, false, [this]( const InputMouseButtonEvent & _event )
+        m_cancelHandlerId = Helper::addGlobalMouseButtonHandlerCancel( MC_LBUTTON, [this]( const InputMouseButtonEvent & _event )
         {
-            if( _event.isCancelled == false )
-            {
-                return;
-            }
-
             if( m_dragging == false )
             {
                 return;
             }
 
             if( _event.touchId != m_dragTouchId )
+            {
+                return;
+            }
+
+            if( _event.isTouch != m_dragIsTouch )
             {
                 return;
             }
@@ -358,6 +359,7 @@ namespace Mengine
 
         m_dragging = true;
         m_dragTouchId = _event.touchId;
+        m_dragIsTouch = _event.isTouch;
 
         this->setValueFromWorldPoint_( _event.position.world );
 
@@ -369,6 +371,11 @@ namespace Mengine
         MENGINE_UNUSED( _context );
 
         if( m_dragging == false || _event.touchId != m_dragTouchId || _event.button != MC_LBUTTON || _event.isDown == true )
+        {
+            return false;
+        }
+
+        if( _event.isTouch != m_dragIsTouch )
         {
             return false;
         }
@@ -388,6 +395,11 @@ namespace Mengine
         MENGINE_UNUSED( _context );
 
         if( m_dragging == false || _event.touchId != m_dragTouchId )
+        {
+            return false;
+        }
+
+        if( _event.isTouch != m_dragIsTouch )
         {
             return false;
         }
@@ -444,6 +456,14 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     bool UISlider::handleGestureSwipe( const RenderContext * _context, const InputGestureSwipeEvent & _event )
+    {
+        MENGINE_UNUSED( _context );
+        MENGINE_UNUSED( _event );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool UISlider::handleGestureDoubleTap( const RenderContext * _context, const InputGestureDoubleTapEvent & _event )
     {
         MENGINE_UNUSED( _context );
         MENGINE_UNUSED( _event );

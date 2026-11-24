@@ -151,6 +151,18 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool PythonHotSpotEventReceiver::onHotSpotGestureDoubleTap( const RenderContext * _context, const InputGestureDoubleTapEvent & _event )
+    {
+        pybind::object context = Detail::makeRenderContext( m_cb, _context );
+
+        if( m_cb.call( context, _event ) == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool PythonHotSpotEventReceiver::onHotSpotGesturePressure( const RenderContext * _context, const InputGesturePressureEvent & _event )
     {
         pybind::object context = Detail::makeRenderContext( m_cb, _context );

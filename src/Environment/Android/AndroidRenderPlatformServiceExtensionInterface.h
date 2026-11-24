@@ -23,7 +23,8 @@ namespace Mengine
         virtual void androidNativeControllerButtonEvent( jlong _eventTime, jint _deviceId, jint _keyCode, jfloat _value, jboolean _isDown ) = 0;
         virtual void androidNativeControllerAxisEvent( jlong _eventTime, jint _deviceId, jint _axis, jfloat _value ) = 0;
         virtual void androidNativeTextEvent( jlong _eventTime, jint _unicode ) = 0;
-        virtual void androidNativeTouchEvent( jlong _eventTime, jint _action, jint _pointerId, jfloat _x, jfloat _y, jfloat _pressure ) = 0;
+        virtual void androidNativeTouchEvent( jlong _eventTime, jint _action, jint _pointerId, jfloat _x, jfloat _y, jfloat _pressure, jboolean _isTouch ) = 0;
+        virtual void androidNativeTouchMoveEndEvent( jlong _eventTime ) = 0;
         virtual void androidNativeAccelerationEvent( jlong _eventTime, jfloat _x, jfloat _y, jfloat _z ) = 0;
     };
 }

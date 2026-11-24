@@ -5,8 +5,10 @@
 #include "Interface/PlayerServiceInterface.h"
 
 #include "RenderContext.h"
+#include "Resolution.h"
 #include "TimestampHelper.h"
 
+#include "Config/StdAlgorithm.h"
 #include "Config/StdString.h"
 
 namespace Mengine
@@ -17,6 +19,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         namespace Detail
         {
+            //////////////////////////////////////////////////////////////////////////
             template<class T>
             static void fillGestureEvent( Timestamp _timestamp, float _x, float _y, const InputSpecialData & _special, T * const _event )
             {
@@ -27,6 +30,7 @@ namespace Mengine
 
                 _event->base.timestamp = _timestamp;
                 _event->special = _special;
+                _event->isTouch = false;
                 _event->position.screen.set( vx, vy );
                 _event->position.world.set( 0.f, 0.f );
             }
@@ -115,16 +119,30 @@ namespace Mengine
             Helper::calcInputPositionWorld( context, _position );
         }
         //////////////////////////////////////////////////////////////////////////
-        void pushMouseMoveEvent( Timestamp _timestamp, ETouchCode _touchId, float _x, float _y, float _dx, float _dy, float _pressure, float _dpressure )
+        mt::vec2f calcTouchDelta( const mt::vec2f & _from, const mt::vec2f & _to, const Resolution & _resolution )
+        {
+            mt::vec2f delta = _to - _from;
+
+            float width = _resolution.getWidthF();
+            float height = _resolution.getHeightF();
+            float shortSide = StdAlgorithm::min( width, height );
+
+            delta.x *= width / shortSide;
+            delta.y *= height / shortSide;
+
+            return delta;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void pushMouseMoveEvent( Timestamp _timestamp, ETouchCode _touchId, float _x, float _y, float _dx, float _dy, float _pressure, float _dpressure, bool _isTouch )
         {
             InputSpecialData special;
             INPUT_SERVICE()
                 ->getSpecial( &special );
 
-            Helper::pushMouseMoveEvent( _timestamp, _touchId, _x, _y, _dx, _dy, _pressure, _dpressure, special );
+            Helper::pushMouseMoveEvent( _timestamp, _touchId, _x, _y, _dx, _dy, _pressure, _dpressure, special, _isTouch );
         }
         //////////////////////////////////////////////////////////////////////////
-        void pushMouseMoveEvent( Timestamp _timestamp, ETouchCode _touchId, float _x, float _y, float _dx, float _dy, float _pressure, float _dpressure, const InputSpecialData & _special )
+        void pushMouseMoveEvent( Timestamp _timestamp, ETouchCode _touchId, float _x, float _y, float _dx, float _dy, float _pressure, float _dpressure, const InputSpecialData & _special, bool _isTouch )
         {
             float vx;
             float vy;
@@ -134,35 +152,45 @@ namespace Mengine
                 return;
             }
 
-            InputMouseMoveEvent ev;
-            ev.base.timestamp = _timestamp;
-
-            ev.special = _special;
-
-            ev.touchId = _touchId;
-
-            ev.position.screen = mt::vec2f( vx, vy );
-            ev.position.world = mt::vec2f( 0.f, 0.f );
-            ev.pressure = _pressure;
-
-            ev.screenDelta = mt::vec2f( _dx, _dy );
-            ev.worldDelta = mt::vec2f( 0.f, 0.f );
-            ev.dpressure = _dpressure;
+            InputMouseMoveEvent event;
+            event.base.timestamp = _timestamp;
+            event.special = _special;
+            event.touchId = _touchId;
+            event.isTouch = _isTouch;
+            event.position.screen.set( vx, vy );
+            event.position.world.set( 0.f, 0.f );
+            event.pressure = _pressure;
+            event.screenDelta.set( _dx, _dy );
+            event.worldDelta.set( 0.f, 0.f );
+            event.dpressure = _dpressure;
 
             INPUT_SERVICE()
-                ->pushEvent( ev );
+                ->pushEvent( event );
         }
         //////////////////////////////////////////////////////////////////////////
-        void pushMouseButtonEvent( Timestamp _timestamp, ETouchCode _touchId, float _x, float _y, EMouseButtonCode _button, float _pressure, bool _isDown, bool _isCancelled )
+        void pushTouchMoveEndEvent( Timestamp _timestamp )
+        {
+            InputMouseMoveEndEvent event;
+            event.base.timestamp = _timestamp;
+            event.isTouch = true;
+
+            INPUT_SERVICE()
+                ->getSpecial( &event.special );
+
+            INPUT_SERVICE()
+                ->pushEvent( event );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void pushMouseButtonEvent( Timestamp _timestamp, ETouchCode _touchId, float _x, float _y, EMouseButtonCode _button, float _pressure, bool _isDown, bool _isCancelled, bool _isTouch )
         {
             InputSpecialData special;
             INPUT_SERVICE()
                 ->getSpecial( &special );
 
-            Helper::pushMouseButtonEvent( _timestamp, _touchId, _x, _y, _button, _pressure, _isDown, special, _isCancelled );
+            Helper::pushMouseButtonEvent( _timestamp, _touchId, _x, _y, _button, _pressure, _isDown, special, _isCancelled, _isTouch );
         }
         //////////////////////////////////////////////////////////////////////////
-        void pushMouseButtonEvent( Timestamp _timestamp, ETouchCode _touchId, float _x, float _y, EMouseButtonCode _button, float _pressure, bool _isDown, const InputSpecialData & _special, bool _isCancelled )
+        void pushMouseButtonEvent( Timestamp _timestamp, ETouchCode _touchId, float _x, float _y, EMouseButtonCode _button, float _pressure, bool _isDown, const InputSpecialData & _special, bool _isCancelled, bool _isTouch )
         {
             float vx;
             float vy;
@@ -175,6 +203,7 @@ namespace Mengine
             ev.special = _special;
 
             ev.touchId = _touchId;
+            ev.isTouch = _isTouch;
 
             ev.position.screen = mt::vec2f( vx, vy );
             ev.position.world = mt::vec2f( 0.f, 0.f );
@@ -353,6 +382,8 @@ namespace Mengine
             InputGestureMagnificationEvent event;
             event.scale = _scale;
             event.phase = _phase;
+            event.touchId0 = TC_TOUCH_INVALID;
+            event.touchId1 = TC_TOUCH_INVALID;
 
             Detail::fillGestureEvent( _timestamp, _x, _y, _special, &event );
 

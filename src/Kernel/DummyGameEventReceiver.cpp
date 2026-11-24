@@ -169,6 +169,13 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool DummyGameEventReceiver::onGameGestureDoubleTap( const InputGestureDoubleTapEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool DummyGameEventReceiver::onGameGesturePressure( const InputGesturePressureEvent & _event )
     {
         MENGINE_UNUSED( _event );

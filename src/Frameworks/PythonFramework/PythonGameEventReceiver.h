@@ -40,6 +40,7 @@ namespace Mengine
         bool onGameGestureRotation( const InputGestureRotationEvent & _event ) override;
         bool onGameGestureSmartMagnification( const InputGestureSmartMagnificationEvent & _event ) override;
         bool onGameGestureSwipe( const InputGestureSwipeEvent & _event ) override;
+        bool onGameGestureDoubleTap( const InputGestureDoubleTapEvent & _event ) override;
         bool onGameGesturePressure( const InputGesturePressureEvent & _event ) override;
 
     protected:

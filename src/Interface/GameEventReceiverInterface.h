@@ -77,6 +77,7 @@ namespace Mengine
         EVENT_GAME_GESTURE_SMART_MAGNIFICATION,
         EVENT_GAME_GESTURE_SWIPE,
         EVENT_GAME_GESTURE_PRESSURE,
+        EVENT_GAME_GESTURE_DOUBLE_TAP,
 
         __EVENT_GAME_LAST__
     };
@@ -107,6 +108,7 @@ namespace Mengine
         virtual bool onGameGestureRotation( const InputGestureRotationEvent & _event ) = 0;
         virtual bool onGameGestureSmartMagnification( const InputGestureSmartMagnificationEvent & _event ) = 0;
         virtual bool onGameGestureSwipe( const InputGestureSwipeEvent & _event ) = 0;
+        virtual bool onGameGestureDoubleTap( const InputGestureDoubleTapEvent & _event ) = 0;
         virtual bool onGameGesturePressure( const InputGesturePressureEvent & _event ) = 0;
 
     public:
@@ -169,6 +171,7 @@ namespace Mengine
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_GESTURE_SMART_MAGNIFICATION );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_GESTURE_SWIPE );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_GESTURE_PRESSURE );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_GESTURE_DOUBLE_TAP );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_TIME_FACTOR_CHANGE );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_SETTING_CHANGE );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_PREPARATION );

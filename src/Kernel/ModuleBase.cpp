@@ -203,11 +203,25 @@ namespace Mengine
         return handle;
     }
     //////////////////////////////////////////////////////////////////////////
+    void ModuleBase::handleMouseButtonEventCancel( const InputMouseButtonEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool ModuleBase::handleMouseMove( const InputMouseMoveEvent & _event )
     {
         bool handle = this->_handleMouseMove( _event );
 
         return handle;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ModuleBase::handleMouseMoveEnd( const InputMouseMoveEndEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     bool ModuleBase::handleMouseWheel( const InputMouseWheelEvent & _event )
@@ -312,6 +326,13 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     bool ModuleBase::handleGestureSwipe( const InputGestureSwipeEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ModuleBase::handleGestureDoubleTap( const InputGestureDoubleTapEvent & _event )
     {
         MENGINE_UNUSED( _event );
 

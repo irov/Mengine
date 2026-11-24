@@ -18,10 +18,10 @@ namespace Mengine
         ConstString end = STRINGIZE_STRING_LOCAL( "end" );
         ConstString cancel = STRINGIZE_STRING_LOCAL( "cancel" );
 
-        m_actions.emplace( move, &MCPInputTouchCommand::move_ );
-        m_actions.emplace( start, &MCPInputTouchCommand::start_ );
-        m_actions.emplace( end, &MCPInputTouchCommand::end_ );
-        m_actions.emplace( cancel, &MCPInputTouchCommand::cancel_ );
+        m_actions.emplace( move, ETA_MOVE );
+        m_actions.emplace( start, ETA_START );
+        m_actions.emplace( end, ETA_END );
+        m_actions.emplace( cancel, ETA_CANCEL );
     }
     //////////////////////////////////////////////////////////////////////////
     EMCPCommandStatus MCPInputTouchCommand::execute( const MCPCommandRequest & _request, MCPCommandResponse * const _response )
@@ -50,7 +50,8 @@ namespace Mengine
         jpp::array touches( touchesObject );
         Timestamp timestamp = Helper::getSystemTimestamp();
         uint32_t eventCount = 0;
-        Action action = it->second;
+        ETouchAction action = it->second;
+        bool touchMoved = false;
 
         for( const jpp::object & touch : touches )
         {
@@ -60,7 +61,7 @@ namespace Mengine
             {
                 _response->errorMessage = "touch id exceeds MENGINE_INPUT_MAX_TOUCH";
 
-                return EMCPCommandStatus::FAILURE;
+                break;
             }
 
             mt::vec2f point;
@@ -69,43 +70,42 @@ namespace Mengine
             {
                 _response->errorMessage = error;
 
-                return EMCPCommandStatus::FAILURE;
+                break;
             }
 
-            TouchEvent event;
-            event.timestamp = timestamp;
-            event.touchId = (ETouchCode)id;
-            event.x = point.x;
-            event.y = point.y;
-            event.pressure = touch.get( "pressure", 1.f );
-            (this->*action)( event );
+            ETouchCode touchId = static_cast<ETouchCode>(id);
+            float pressure = touch.get( "pressure", 1.f );
             ++eventCount;
+
+            if( action == ETA_MOVE )
+            {
+                Helper::pushMouseMoveEvent( timestamp, touchId, point.x, point.y, 0.f, 0.f, pressure, 0.f, true );
+
+                touchMoved = true;
+
+                continue;
+            }
+
+            bool down = action == ETA_START;
+            bool cancelled = action == ETA_CANCEL;
+
+            Helper::pushMouseButtonEvent( timestamp, touchId, point.x, point.y, MC_LBUTTON, pressure, down, cancelled, true );
+        }
+
+        if( touchMoved == true )
+        {
+            Helper::pushTouchMoveEndEvent( timestamp );
+        }
+
+        if( _response->errorMessage.empty() == false )
+        {
+            return EMCPCommandStatus::FAILURE;
         }
 
         _response->result.set( "action", actionValue );
         _response->result.set( "events", eventCount );
 
         return EMCPCommandStatus::SUCCESS;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MCPInputTouchCommand::move_( const TouchEvent & _event )
-    {
-        Helper::pushMouseMoveEvent( _event.timestamp, _event.touchId, _event.x, _event.y, 0.f, 0.f, _event.pressure, 0.f );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MCPInputTouchCommand::start_( const TouchEvent & _event )
-    {
-        Helper::pushMouseButtonEvent( _event.timestamp, _event.touchId, _event.x, _event.y, MC_LBUTTON, _event.pressure, true );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MCPInputTouchCommand::end_( const TouchEvent & _event )
-    {
-        Helper::pushMouseButtonEvent( _event.timestamp, _event.touchId, _event.x, _event.y, MC_LBUTTON, _event.pressure, false );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MCPInputTouchCommand::cancel_( const TouchEvent & _event )
-    {
-        Helper::pushMouseButtonEvent( _event.timestamp, _event.touchId, _event.x, _event.y, MC_LBUTTON, _event.pressure, false, true );
     }
     //////////////////////////////////////////////////////////////////////////
 }

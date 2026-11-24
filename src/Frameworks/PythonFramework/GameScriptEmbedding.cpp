@@ -47,6 +47,7 @@ namespace Mengine
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onHandleGestureRotation" ), EVENT_GAME_GESTURE_ROTATION, _doc );
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onHandleGestureSmartMagnification" ), EVENT_GAME_GESTURE_SMART_MAGNIFICATION, _doc );
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onHandleGestureSwipe" ), EVENT_GAME_GESTURE_SWIPE, _doc );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onHandleGestureDoubleTap" ), EVENT_GAME_GESTURE_DOUBLE_TAP, _doc );
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onHandleGesturePressure" ), EVENT_GAME_GESTURE_PRESSURE, _doc );
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onTimeFactorChange" ), EVENT_GAME_TIME_FACTOR_CHANGE, _doc );
             Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, STRINGIZE_STRING_LOCAL( "onSettingChange" ), EVENT_GAME_SETTING_CHANGE, _doc );

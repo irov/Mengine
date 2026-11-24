@@ -429,6 +429,29 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool HotSpot::handleGestureDoubleTap( const RenderContext * _context, const InputGestureDoubleTapEvent & _event )
+    {
+        bool handle = EVENTABLE_METHODR( EVENT_HOTSPOT_GESTURE_DOUBLE_TAP, false )
+            ->onHotSpotGestureDoubleTap( _context, _event );
+
+        if( handle == true )
+        {
+            return true;
+        }
+
+        for( const PickerInputHandlerDesc & desc : m_pickerInputHandlers )
+        {
+            const PickerInputHandlerInterfacePtr & handler = desc.handler;
+
+            if( handler->handleGestureDoubleTap( _context, _event ) == true )
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool HotSpot::handleGesturePressure( const RenderContext * _context, const InputGesturePressureEvent & _event )
     {
         bool handle = EVENTABLE_METHODR( EVENT_HOTSPOT_GESTURE_PRESSURE, false )

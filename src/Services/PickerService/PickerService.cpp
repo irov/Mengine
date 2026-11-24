@@ -720,6 +720,13 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    void PickerService::handleMouseButtonEventCancel( const InputMouseButtonEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool PickerService::handleMouseMove( const InputMouseMoveEvent & _event )
     {
         MENGINE_VECTOR_AUX( m_states );
@@ -784,6 +791,13 @@ namespace Mengine
         }
 
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PickerService::handleMouseMoveEnd( const InputMouseMoveEndEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     bool PickerService::handleMouseWheel( const InputMouseWheelEvent & _event )
@@ -1146,6 +1160,70 @@ namespace Mengine
             );
 
             if( inputHandler->handleGestureSwipe( &desc.context, ne ) == false )
+            {
+                continue;
+            }
+
+            return m_handleValue;
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PickerService::handleGestureDoubleTap( const InputGestureDoubleTapEvent & _event )
+    {
+        MENGINE_VECTOR_AUX( m_states );
+
+        const mt::vec2f & screen = _event.position.screen;
+
+        if( this->pickStates_( screen, _event.touchId, 0.f, _event.special, &m_states ) == false )
+        {
+            return false;
+        }
+
+        MENGINE_PROFILER_CATEGORY();
+
+        for( VectorPickerStates::reverse_iterator
+            it = m_states.rbegin(),
+            it_end = m_states.rend();
+            it != it_end;
+            ++it )
+        {
+            const PickerStateDesc & desc = *it;
+
+            PickerInterface * picker = desc.picker;
+
+            if( picker->isPickerEnable() == false )
+            {
+                continue;
+            }
+
+            if( picker->isPickerPicked() == false )
+            {
+                continue;
+            }
+
+            if( picker->isPickerFreeze() == true )
+            {
+                return m_handleValue;
+            }
+
+            PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
+
+            const RenderContext * context = &desc.context;
+            InputGestureDoubleTapEvent event = _event;
+
+            Helper::calcInputPositionWorld( context, &event.position );
+
+            LOGGER_INFO( "picker", "handle type '%s' name '%s' UID [%u] pos [%.4f;%.4f] [double tap]"
+                , MENGINE_MIXIN_DEBUG_TYPE( inputHandler )
+                , MENGINE_MIXIN_DEBUG_NAME( inputHandler )
+                , MENGINE_MIXIN_DEBUG_UID( inputHandler )
+                , event.position.world.x
+                , event.position.world.y
+            );
+
+            if( inputHandler->handleGestureDoubleTap( context, event ) == false )
             {
                 continue;
             }

@@ -1,7 +1,7 @@
 #include "iOSInput.h"
 
-#include "Kernel/Logger.h"
 #include "Kernel/InputServiceHelper.h"
+#include "Kernel/Logger.h"
 #include "Kernel/TimestampHelper.h"
 
 #include "Config/StdAlgorithm.h"
@@ -15,6 +15,18 @@ namespace Mengine
 #if defined(MENGINE_PLATFORM_IOS_ACCELEROMETER)
         static constexpr NSTimeInterval IOS_ACCELEROMETER_UPDATE_INTERVAL = 0.02;
 #endif
+        //////////////////////////////////////////////////////////////////////////
+        static bool isDirectTouch( const UITouch * _touch )
+        {
+            UITouchType type = _touch.type;
+
+            if( type == UITouchTypeDirect )
+            {
+                return true;
+            }
+
+            return type == UITouchTypePencil;
+        }
         //////////////////////////////////////////////////////////////////////////
         static Timestamp getTouchTimestamp( const UITouch * _touch )
         {
@@ -200,13 +212,17 @@ namespace Mengine
             m_lastCursorPosition = point;
 
             Timestamp timestamp = Detail::getTouchTimestamp( touch );
+            bool isTouch = Detail::isDirectTouch( touch );
 
-            Helper::pushMouseButtonEvent( timestamp, fingerIndex, point.x, point.y, MC_LBUTTON, pressure, true );
+            Helper::pushMouseButtonEvent( timestamp, fingerIndex, point.x, point.y, MC_LBUTTON, pressure, true, false, isTouch );
         }
     }
     //////////////////////////////////////////////////////////////////////////
     void iOSInput::handleTouchMoved( NSSet<UITouch *> * _touches, UIView * _view )
     {
+        Timestamp touchMoveTime = 0;
+        bool touchMoved = false;
+
         for( UITouch * touch in _touches )
         {
             ETouchCode fingerIndex = this->getFingerIndex_( touch );
@@ -240,8 +256,20 @@ namespace Mengine
             m_lastCursorPosition = point;
 
             Timestamp timestamp = Detail::getTouchTimestamp( touch );
+            bool isTouch = Detail::isDirectTouch( touch );
 
-            Helper::pushMouseMoveEvent( timestamp, fingerIndex, point.x, point.y, dx, dy, pressure, 0.f );
+            Helper::pushMouseMoveEvent( timestamp, fingerIndex, point.x, point.y, dx, dy, pressure, 0.f, isTouch );
+
+            if( isTouch == true )
+            {
+                touchMoveTime = StdAlgorithm::max( touchMoveTime, timestamp );
+                touchMoved = true;
+            }
+        }
+
+        if( touchMoved == true )
+        {
+            Helper::pushTouchMoveEndEvent( touchMoveTime );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -283,8 +311,9 @@ namespace Mengine
             m_lastCursorPosition = point;
 
             Timestamp timestamp = Detail::getTouchTimestamp( touch );
+            bool isTouch = Detail::isDirectTouch( touch );
 
-            Helper::pushMouseButtonEvent( timestamp, fingerIndex, point.x, point.y, MC_LBUTTON, pressure, false, _isCancelled );
+            Helper::pushMouseButtonEvent( timestamp, fingerIndex, point.x, point.y, MC_LBUTTON, pressure, false, _isCancelled, isTouch );
         }
     }
     //////////////////////////////////////////////////////////////////////////

@@ -1015,7 +1015,7 @@ namespace Mengine
             const mt::vec2f & touchPoint = m_touchPositions[slot];
 
             ETouchCode code = (ETouchCode)slot;
-            Helper::pushMouseButtonEvent( timestamp, code, touchPoint.x, touchPoint.y, MC_LBUTTON, 0.f, false, true );
+            Helper::pushMouseButtonEvent( timestamp, code, touchPoint.x, touchPoint.y, MC_LBUTTON, 0.f, false, true, true );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1288,6 +1288,7 @@ namespace Mengine
         EmscriptenPlatformService * platform = static_cast<EmscriptenPlatformService *>(_user);
 
         Timestamp timestamp = platform->getInputTimestamp();
+        bool touchMoved = false;
 
         for( int32_t index = 0; index != _event->numTouches; ++index )
         {
@@ -1350,14 +1351,16 @@ namespace Mengine
                 float dx = point.x - previous.x;
                 float dy = point.y - previous.y;
 
-                Helper::pushMouseMoveEvent( timestamp, code, point.x, point.y, dx, dy, 1.f, 0.f );
+                Helper::pushMouseMoveEvent( timestamp, code, point.x, point.y, dx, dy, 1.f, 0.f, true );
+
+                touchMoved = true;
             }
             else
             {
                 bool down = _type == EMSCRIPTEN_EVENT_TOUCHSTART;
                 bool isCancelled = _type == EMSCRIPTEN_EVENT_TOUCHCANCEL;
 
-                Helper::pushMouseButtonEvent( timestamp, code, point.x, point.y, MC_LBUTTON, 1.f, down, isCancelled );
+                Helper::pushMouseButtonEvent( timestamp, code, point.x, point.y, MC_LBUTTON, 1.f, down, isCancelled, true );
 
                 if( down == false )
                 {
@@ -1366,6 +1369,11 @@ namespace Mengine
             }
 
             platform->m_touchPositions[slot] = point;
+        }
+
+        if( touchMoved == true )
+        {
+            Helper::pushTouchMoveEndEvent( timestamp );
         }
 
         return true;

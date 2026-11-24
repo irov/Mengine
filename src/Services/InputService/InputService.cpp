@@ -3,6 +3,7 @@
 #include "Interface/ThreadSystemInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/ActionServiceInterface.h"
+#include "Interface/PlatformServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/Assertion.h"
@@ -21,9 +22,17 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     InputService::InputService()
+        : m_mouseButtonEventBlock( false )
     {
         StdAlgorithm::fill_n( m_cursorPosition, MENGINE_INPUT_MAX_TOUCH, mt::vec2f( 0.f, 0.f ) );
         StdAlgorithm::fill_n( m_cursorPressure, MENGINE_INPUT_MAX_TOUCH, 0.f );
+        StdAlgorithm::fill_n( m_touchButtons, MENGINE_INPUT_MAX_TOUCH, IBS_RELEASED );
+
+        for( auto & buttonStates : m_mouseButtons )
+        {
+            StdAlgorithm::fill_n( buttonStates, MENGINE_INPUT_MAX_MOUSE_BUTTON_CODE, IBS_RELEASED );
+        }
+
         StdAlgorithm::fill_n( m_keyBuffer, MENGINE_INPUT_MAX_KEY_CODE, false );
         StdAlgorithm::fill_n( m_mouseBuffer, MENGINE_INPUT_MAX_MOUSE_BUTTON_CODE, false );
         StdAlgorithm::fill_n( m_controllerDeadZones, CONTROLLER_AXIS_COUNT, 0.15f );
@@ -225,6 +234,21 @@ namespace Mengine
         bool isDown = m_mouseBuffer[_button];
 
         return isDown;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void InputService::setMouseButtonEventBlock( bool _block )
+    {
+        m_mouseButtonEventBlock = _block;
+
+        if( _block == true )
+        {
+            m_touchGestureRecognizer.resetTap();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool InputService::getMouseButtonEventBlock() const
+    {
+        return m_mouseButtonEventBlock;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t InputService::getControllerCount() const
@@ -459,6 +483,17 @@ namespace Mengine
         return pressure;
     }
     //////////////////////////////////////////////////////////////////////////
+    const mt::vec2f * InputService::getTouchPosition( ETouchCode _touchId ) const
+    {
+        MENGINE_ASSERTION_FATAL( _touchId < MENGINE_INPUT_MAX_TOUCH, "invalid touch id %u"
+            , _touchId
+        );
+
+        const mt::vec2f * position = m_touchGestureRecognizer.getTouchPosition( _touchId );
+
+        return position;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void InputService::addMousePositionProvider( const InputMousePositionProviderInterfacePtr & _provider, const DocumentInterfacePtr & _doc )
     {
         MENGINE_UNUSED( _doc );
@@ -507,6 +542,18 @@ namespace Mengine
             ACTION_SERVICE()
                 ->handleFocus( _focus );
         }
+
+        if( _focus == true )
+        {
+            return;
+        }
+
+        InputPointerCancelEvent event;
+        event.base.timestamp = PLATFORM_SERVICE()
+            ->getInputTimestamp();
+        this->getSpecial( &event.special );
+
+        this->pushEvent( event );
     }
     //////////////////////////////////////////////////////////////////////////
     void InputService::pushEvent( const InputVariantEvent & _event )
@@ -586,6 +633,94 @@ namespace Mengine
             , _event.button
         );
 
+        EInputButtonState & state = _event.isTouch == true
+            ? m_touchButtons[_event.touchId]
+            : m_mouseButtons[_event.touchId][_event.button];
+
+        EInputButtonState previousState = state;
+
+        if( _event.isTouch == true )
+        {
+            bool wasDown = previousState != IBS_RELEASED;
+
+            if( _event.isDown == wasDown )
+            {
+                return;
+            }
+        }
+
+        EInputButtonDispatch dispatch = IBD_BUTTON;
+
+        if( _event.isDown == true )
+        {
+            if( state == IBS_RELEASED )
+            {
+                state = m_mouseButtonEventBlock == true ? IBS_BLOCKED : IBS_PRESSED;
+            }
+
+            if( m_mouseButtonEventBlock == true )
+            {
+                dispatch = IBD_NONE;
+            }
+        }
+        else
+        {
+            state = IBS_RELEASED;
+
+            if( previousState == IBS_RELEASED )
+            {
+                dispatch = IBD_NONE;
+            }
+            else if( m_mouseButtonEventBlock == true )
+            {
+                dispatch = IBD_CANCEL;
+            }
+        }
+
+        if( previousState == IBS_BLOCKED )
+        {
+            dispatch = IBD_NONE;
+        }
+
+        if( dispatch == IBD_NONE )
+        {
+            this->dispatchMouseButtonEvent_( _event, IBD_NONE );
+
+            return;
+        }
+
+        InputMouseButtonEvent event = _event;
+
+        if( dispatch == IBD_CANCEL )
+        {
+            event.isCancelled = true;
+        }
+
+        if( _event.isTouch == false )
+        {
+            this->dispatchMouseButtonEvent_( event, dispatch );
+
+            return;
+        }
+
+        const Resolution & resolution = APPLICATION_SERVICE()
+            ->getCurrentWindowResolution();
+
+        TouchGestureRecognizer::Event gesture;
+        bool recognized = m_touchGestureRecognizer.handleButton( event, resolution, &gesture );
+
+        this->dispatchMouseButtonEvent_( event, dispatch );
+
+        if( recognized == false )
+        {
+            return;
+        }
+
+        this->dispatchTouchGesture_( gesture );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void InputService::dispatchMouseButtonEvent_( const InputMouseButtonEvent & _event, EInputButtonDispatch _dispatch )
+    {
         LOGGER_INFO( "input", "handle mouse button touch [%u] pos [%.4f:%.4f] button [%u] down [%u] pressed [%u] cancelled [%u] pressure [%f]"
             , _event.touchId
             , _event.position.screen.x
@@ -606,6 +741,22 @@ namespace Mengine
         }
 
         this->applyCursorPosition_( _event.touchId, _event.position.screen, _event.pressure );
+
+        if( _dispatch == IBD_NONE )
+        {
+            return;
+        }
+
+        if( _event.isCancelled == true )
+        {
+            APPLICATION_SERVICE()
+                ->handleMouseButtonEventCancel( _event );
+        }
+
+        if( _dispatch == IBD_CANCEL )
+        {
+            return;
+        }
 
         APPLICATION_SERVICE()
             ->handleMouseButtonEventBegin( _event );
@@ -641,6 +792,120 @@ namespace Mengine
 
         APPLICATION_SERVICE()
             ->handleMouseMove( _event );
+
+        if( _event.isTouch == false )
+        {
+            InputMouseMoveEndEvent endEvent;
+            endEvent.base = _event.base;
+            endEvent.special = _event.special;
+            endEvent.isTouch = false;
+
+            this->dispatchEvent_( endEvent );
+
+            return;
+        }
+
+        const Resolution & resolution = APPLICATION_SERVICE()
+            ->getCurrentWindowResolution();
+
+        m_touchGestureRecognizer.handleMove( _event, resolution );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void InputService::dispatchEvent_( const InputMouseMoveEndEvent & _event )
+    {
+        APPLICATION_SERVICE()
+            ->handleMouseMoveEnd( _event );
+
+        if( _event.isTouch == false )
+        {
+            return;
+        }
+
+        const Resolution & resolution = APPLICATION_SERVICE()
+            ->getCurrentWindowResolution();
+
+        TouchGestureRecognizer::Event gesture;
+        if( m_touchGestureRecognizer.finishMove( _event, resolution, &gesture ) == false )
+        {
+            return;
+        }
+
+        this->dispatchTouchGesture_( gesture );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void InputService::dispatchEvent_( const InputPointerCancelEvent & _event )
+    {
+        EInputButtonDispatch touchDispatch = m_mouseButtonEventBlock == true ? IBD_CANCEL : IBD_BUTTON;
+
+        for( uint32_t index = 0; index != MENGINE_INPUT_MAX_TOUCH; ++index )
+        {
+            ETouchCode touchId = static_cast<ETouchCode>(index);
+
+            InputMouseButtonEvent release;
+            release.base = _event.base;
+            release.special = _event.special;
+            release.position.screen = m_cursorPosition[index];
+            release.position.world.set( 0.f, 0.f );
+            release.touchId = touchId;
+            release.isTouch = false;
+            release.pressure = 0.f;
+            release.isDown = false;
+            release.isPressed = true;
+            release.isCancelled = true;
+
+            for( uint32_t button = 0; button != MENGINE_INPUT_MAX_MOUSE_BUTTON_CODE; ++button )
+            {
+                EInputButtonState state = m_mouseButtons[index][button];
+
+                if( state == IBS_RELEASED )
+                {
+                    continue;
+                }
+
+                m_mouseButtons[index][button] = IBS_RELEASED;
+                release.button = static_cast<EMouseButtonCode>(button);
+
+                EInputButtonDispatch dispatch = state == IBS_PRESSED ? IBD_CANCEL : IBD_NONE;
+
+                this->dispatchMouseButtonEvent_( release, dispatch );
+            }
+
+            EInputButtonState state = m_touchButtons[index];
+
+            if( state == IBS_RELEASED )
+            {
+                continue;
+            }
+
+            m_touchButtons[index] = IBS_RELEASED;
+            release.button = MC_LBUTTON;
+            release.isTouch = true;
+
+            if( state == IBS_BLOCKED )
+            {
+                this->dispatchMouseButtonEvent_( release, IBD_NONE );
+
+                continue;
+            }
+
+            const mt::vec2f * screen = m_touchGestureRecognizer.getTouchPosition( touchId );
+
+            MENGINE_ASSERTION_FATAL( screen != nullptr, "missing touch position [%u]"
+                , touchId
+            );
+
+            release.position.screen = *screen;
+
+            this->dispatchMouseButtonEvent_( release, touchDispatch );
+        }
+
+        TouchGestureRecognizer::Event gesture;
+        if( m_touchGestureRecognizer.cancel( _event, &gesture ) == false )
+        {
+            return;
+        }
+
+        this->dispatchTouchGesture_( gesture );
     }
     //////////////////////////////////////////////////////////////////////////
     void InputService::dispatchEvent_( const InputMouseWheelEvent & _event )
@@ -700,6 +965,14 @@ namespace Mengine
             ->handleMouseLeave( _event );
     }
     //////////////////////////////////////////////////////////////////////////
+    void InputService::dispatchTouchGesture_( const TouchGestureRecognizer::Event & _gesture )
+    {
+        Helper::visit( _gesture, [this]( const auto & _event )
+        {
+            this->dispatchEvent_( _event );
+        } );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void InputService::dispatchEvent_( const InputGestureMagnificationEvent & _event )
     {
         APPLICATION_SERVICE()
@@ -722,6 +995,17 @@ namespace Mengine
     {
         APPLICATION_SERVICE()
             ->handleGestureSwipe( _event );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void InputService::dispatchEvent_( const InputGestureDoubleTapEvent & _event )
+    {
+        if( m_mouseButtonEventBlock == true )
+        {
+            return;
+        }
+
+        APPLICATION_SERVICE()
+            ->handleGestureDoubleTap( _event );
     }
     //////////////////////////////////////////////////////////////////////////
     void InputService::dispatchEvent_( const InputGesturePressureEvent & _event )

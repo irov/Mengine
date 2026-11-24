@@ -40,6 +40,7 @@ namespace Mengine
         void move_( const TouchEvent & _event );
         void start_( const TouchEvent & _event );
         void end_( const TouchEvent & _event );
+        void cancel_( const TouchEvent & _event );
 
     protected:
         MCPInputContext * m_context;

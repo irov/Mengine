@@ -100,6 +100,9 @@ namespace Mengine
     public:
         void beginFill() override;
         void endFill() override;
+        bool setLinearGradient( const mt::vec2f & _from, const mt::vec2f & _to, const VectorGraphicsGradientStops & _stops ) override;
+        bool setRadialGradient( const mt::vec2f & _center, float _radius, const VectorGraphicsGradientStops & _stops ) override;
+        void clearFillGradient() override;
 
     public:
         GraphicsPathPtr createPath() override;
@@ -140,6 +143,28 @@ namespace Mengine
         void _invalidateColor() const override;
 
     protected:
+        struct GradientDesc
+        {
+            bool radial;
+            mt::vec2f origin;
+            mt::vec2f coordinateScale;
+            VectorGraphicsGradientStops stops;
+        };
+
+        struct GradientMaterialDesc
+        {
+            RenderTextureInterfacePtr texture;
+            RenderMaterialInterfacePtr material;
+            uint64_t generation = 0;
+            bool radial = false;
+        };
+
+        typedef Vector<GradientDesc> VectorGradients;
+        typedef Vector<GradientMaterialDesc> VectorGradientMaterials;
+
+        bool setFillGradient_( GradientDesc _gradient, const VectorGraphicsGradientStops & _stops );
+        const RenderMaterialInterfacePtr & getGradientMaterial_( uint32_t _key ) const;
+        void updateVertexUVs_() const;
         void updateLocalVertex2D_() const;
 
     protected:
@@ -149,6 +174,8 @@ namespace Mengine
         mt::vec4f m_uvRect;
 
         RenderMaterialInterfacePtr m_material;
+        VectorGradients m_gradients;
+        mutable VectorGradientMaterials m_gradientMaterials;
 
         mutable VectorRenderVertex2D m_renderVertex2D;
         mutable VectorRenderIndex m_renderIndices;

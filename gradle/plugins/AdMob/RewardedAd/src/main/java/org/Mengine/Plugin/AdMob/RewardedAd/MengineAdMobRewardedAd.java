@@ -18,7 +18,6 @@ import org.Mengine.Base.MengineAdResponseInterface;
 import org.Mengine.Base.MengineAdService;
 import org.Mengine.Base.MengineAnalyticsEventBuilderInterface;
 import org.Mengine.Base.MengineNetwork;
-import org.Mengine.Base.MenginePlatformEventQueue;
 import org.Mengine.Base.MengineTag;
 import org.Mengine.Plugin.AdMob.Core.MengineAdMobBase;
 import org.Mengine.Plugin.AdMob.Core.MengineAdMobPluginInterface;
@@ -31,9 +30,6 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
 
     private LoadCallback m_loadCallback;
     private volatile RewardedAd m_rewardedAd;
-
-    private volatile boolean m_showing = false;
-    private @NonNull String m_placement = "";
 
     public MengineAdMobRewardedAd(@NonNull MengineAdService adService, @NonNull MengineAdMobPluginInterface plugin, @NonNull String adUnitId) {
         super(adService, plugin, MengineAdFormat.ADFORMAT_REWARDED, adUnitId);
@@ -82,12 +78,7 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
             m_rewardedAd = null;
         }
 
-        if (m_showing == true) {
-            MenginePlatformEventQueue.pushFreezeEvent(TAG.toString(), false);
-        }
-
-        m_showing = false;
-        m_placement = "";
+        m_fullscreenAdShow.finishShow();
     }
 
     @Override
@@ -138,6 +129,10 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
         m_rewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
             @Override
             public void onAdDismissedFullScreenContent() {
+                if (m_rewardedAd != rewardedAd) {
+                    return;
+                }
+
                 m_rewardedAd = null;
 
                 MengineAdMobRewardedAd.this.log("onAdDismissedFullScreenContent");
@@ -147,11 +142,9 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
 
                 MengineAdMobRewardedAd.this.setRewardedState("dismissed");
 
-                MenginePlatformEventQueue.pushFreezeEvent(TAG.toString(), false);
+                String placement = m_fullscreenAdShow.finishShow();
 
-                m_showing = false;
-
-                adResponse.onAdShowSuccess(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_REWARDED, m_placement);
+                adResponse.onAdShowSuccess(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_REWARDED, placement);
 
                 MengineAdMobRewardedAd.this.performOnMainThread(() -> {
                     MengineAdMobRewardedAd.this.loadAd();
@@ -160,6 +153,10 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
 
             @Override
             public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
+                if (m_rewardedAd != rewardedAd) {
+                    return;
+                }
+
                 m_rewardedAd = null;
 
                 MengineAdMobRewardedAd.this.logAdError("onAdFailedToShowFullScreenContent", adError);
@@ -173,11 +170,9 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
 
                 MengineAdMobRewardedAd.this.setRewardedState("show_failed." + errorCode);
 
-                MenginePlatformEventQueue.pushFreezeEvent(TAG.toString(), false);
+                String placement = m_fullscreenAdShow.finishShow();
 
-                m_showing = false;
-
-                adResponse.onAdShowFailed(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_REWARDED, m_placement, errorCode);
+                adResponse.onAdShowFailed(MengineAdMediation.ADMEDIATION_ADMOB, MengineAdFormat.ADFORMAT_REWARDED, placement, errorCode);
 
                 MengineAdMobRewardedAd.this.performOnMainThread(() -> {
                     MengineAdMobRewardedAd.this.loadAd();
@@ -192,8 +187,6 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
                     .log();
 
                 MengineAdMobRewardedAd.this.setRewardedState("showed");
-
-                MenginePlatformEventQueue.pushFreezeEvent(TAG.toString(), true);
             }
 
             @Override
@@ -226,7 +219,9 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
                 long valueMicros = adValue.getValueMicros();
                 double value = valueMicros / 1000000.0;
 
-                MengineAdMobRewardedAd.this.revenuePaid(responseInfo, MengineAdFormat.ADFORMAT_REWARDED, m_placement, value);
+                String placement = m_fullscreenAdShow.getPlacement();
+
+                MengineAdMobRewardedAd.this.revenuePaid(responseInfo, MengineAdFormat.ADFORMAT_REWARDED, placement, value);
             }
         });
 
@@ -264,7 +259,7 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
 
         boolean ready = m_rewardedAd != null;
 
-        if (m_showing == true) {
+        if (m_fullscreenAdShow.isShowing() == true) {
             ready = false;
         }
 
@@ -289,7 +284,7 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
 
         boolean ready = m_rewardedAd != null;
 
-        if (m_showing == true) {
+        if (m_fullscreenAdShow.isShowing() == true) {
             ready = false;
         }
 
@@ -312,9 +307,10 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
             return false;
         }
 
-        boolean ready = m_rewardedAd != null;
+        RewardedAd showAd = m_rewardedAd;
+        boolean ready = showAd != null;
 
-        if (m_showing == true) {
+        if (m_fullscreenAdShow.isShowing() == true) {
             ready = false;
         }
 
@@ -329,13 +325,10 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
             return false;
         }
 
-        m_showing = true;
-        m_placement = placement;
-
-        RewardedAd show_rewardedAd = m_rewardedAd;
-
-        boolean scheduled = this.performOnMainThread(() -> {
-            show_rewardedAd.show(activity, rewardItem -> {
+        boolean scheduled = m_fullscreenAdShow.show(activity, placement, () -> {
+            return m_rewardedAd == showAd;
+        }, () -> {
+            showAd.show(activity, rewardItem -> {
                 MengineAdMobRewardedAd.this.performOnMainThread(() -> {
                     String rewardType = rewardItem.getType();
                     int rewardAmount = rewardItem.getAmount();
@@ -356,9 +349,6 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
         });
 
         if (scheduled == false) {
-            m_showing = false;
-            m_placement = "";
-
             return false;
         }
 
@@ -367,7 +357,11 @@ public class MengineAdMobRewardedAd extends MengineAdMobBase implements MengineA
 
     @Override
     public boolean isShowingRewarded() {
-        return m_showing;
+        if (m_fullscreenAdShow.isShowing() == false) {
+            return false;
+        }
+
+        return true;
     }
 
     private static class LoadCallback extends RewardedAdLoadCallback {

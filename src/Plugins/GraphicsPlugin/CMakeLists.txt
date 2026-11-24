@@ -7,6 +7,9 @@ src
     Graphics.h
     Graphics.cpp
 
+    GraphicsGradient.h
+    GraphicsGradient.cpp
+
     GraphicsPath.h
     GraphicsPath.cpp
 

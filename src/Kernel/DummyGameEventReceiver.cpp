@@ -141,6 +141,41 @@ namespace Mengine
         // Empty
     }
     //////////////////////////////////////////////////////////////////////////
+    bool DummyGameEventReceiver::onGameGestureMagnification( const InputGestureMagnificationEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DummyGameEventReceiver::onGameGestureRotation( const InputGestureRotationEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DummyGameEventReceiver::onGameGestureSmartMagnification( const InputGestureSmartMagnificationEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DummyGameEventReceiver::onGameGestureSwipe( const InputGestureSwipeEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DummyGameEventReceiver::onGameGesturePressure( const InputGesturePressureEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void DummyGameEventReceiver::onGameTimeFactorChange( float _timeFactor )
     {
         MENGINE_UNUSED( _timeFactor );

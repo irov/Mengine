@@ -17,6 +17,21 @@
             }
         },
         {
+            "Name": "GraphicsRadialGradient",
+            "VertexShader": {
+                "Name": "Vertex_Blend"
+            },
+            "FragmentShader": {
+                "Name": "Fragment_RadialGradient"
+            },
+            "VertexAttribute": {
+                "Name": "Vertex2D_UV1"
+            },
+            "Sampler": {
+                "Count": 1
+            }
+        },
+        {
             "Name": "Blend_Premultiply",
             "VertexShader": {
                 "Name": "Vertex_Blend"

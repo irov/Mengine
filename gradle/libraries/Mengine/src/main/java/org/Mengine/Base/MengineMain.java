@@ -38,6 +38,8 @@ public class MengineMain implements Runnable {
                 , e.getMessage()
             );
 
+            MenginePlatformEventQueue.close();
+
             return false;
         }
 
@@ -77,45 +79,52 @@ public class MengineMain implements Runnable {
 
     @Override
     public void run() {
-        MengineLog.logInfo(TAG, "main wait latch");
-
         try {
-            m_runLatch.await();
-        } catch (final InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return;
-        }
+            MengineLog.logInfo(TAG, "main wait latch");
 
-        MengineLog.logInfo(TAG, "main run");
+            try {
+                m_runLatch.await();
+            } catch (final InterruptedException e) {
+                Thread.currentThread().interrupt();
 
-        try {
-            Process.setThreadPriority(Process.THREAD_PRIORITY_DISPLAY);
-        } catch (final Exception e) {
-            MengineLog.logInfo(TAG, "modify main thread priority exception: %s"
-                , e.getMessage()
-            );
-        }
-
-        if (MengineNative.AndroidMain_main(m_nativeApplication) == false) {
-            if (m_thread.isInterrupted() == false) {
-                if (MengineActivity.INSTANCE == null) {
-                    MengineApplication.INSTANCE.invalidInitialize(new MengineServiceInvalidInitializeException("main finish with failed"), Map.of());
-                } else {
-                    MengineActivity.INSTANCE.finishWithAlertDialog("main finish with failed");
-                }
-            } else {
-                MengineLog.logInfo(TAG, "main finish with failed");
+                return;
             }
 
-            return;
-        }
+            MengineLog.logInfo(TAG, "main run");
 
-        MengineLog.logInfo(TAG, "main finish successful");
+            try {
+                Process.setThreadPriority(Process.THREAD_PRIORITY_DISPLAY);
+            } catch (final Exception e) {
+                MengineLog.logInfo(TAG, "modify main thread priority exception: %s"
+                    , e.getMessage()
+                );
+            }
+
+            if (MengineNative.AndroidMain_main(m_nativeApplication) == false) {
+                if (m_thread.isInterrupted() == false) {
+                    if (MengineActivity.INSTANCE == null) {
+                        MengineApplication.INSTANCE.invalidInitialize(new MengineServiceInvalidInitializeException("main finish with failed"), Map.of());
+                    } else {
+                        MengineActivity.INSTANCE.finishWithAlertDialog("main finish with failed");
+                    }
+                } else {
+                    MengineLog.logInfo(TAG, "main finish with failed");
+                }
+
+                return;
+            }
+
+            MengineLog.logInfo(TAG, "main finish successful");
+        } finally {
+            MenginePlatformEventQueue.close();
+        }
 
         if (m_quitRequested == true) {
             MengineLog.logInfo(TAG, "main quit process");
 
-            MengineApplication.INSTANCE.terminateProcess();
+            MengineUtils.performOnMainThread(() -> {
+                MengineApplication.INSTANCE.terminateProcess();
+            });
         }
     }
 }

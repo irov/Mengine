@@ -394,6 +394,41 @@ namespace Mengine
         MENGINE_UNUSED( _event );
     }
     //////////////////////////////////////////////////////////////////////////
+    bool ActionService::handleGestureMagnification( const InputGestureMagnificationEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ActionService::handleGestureRotation( const InputGestureRotationEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ActionService::handleGestureSmartMagnification( const InputGestureSmartMagnificationEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ActionService::handleGestureSwipe( const InputGestureSwipeEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ActionService::handleGesturePressure( const InputGesturePressureEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void ActionService::handleFocus( bool _focus )
     {
         if( _focus == true )

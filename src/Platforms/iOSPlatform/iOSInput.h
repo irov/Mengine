@@ -43,6 +43,7 @@ namespace Mengine
 
     protected:
         void calcCursorPosition_( UIView * _view, CGPoint _location, mt::vec2f * const _point ) const;
+        void endTouches_( NSSet<UITouch *> * _touches, UIView * _view, bool _isCancelled );
 
     protected:
         ETouchCode acquireFingerIndex_( UITouch * _touch );

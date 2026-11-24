@@ -6,18 +6,25 @@ import android.os.Bundle;
 import android.view.Surface;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
+import java.util.function.Consumer;
 
 public class MenginePlatformEventQueue {
     private static final MengineTag TAG = MengineTag.of("MNGPlatformEventQueue");
 
+    public static final int FREEZE_UPDATE = 1 << 0;
+    public static final int FREEZE_RENDER = 1 << 1;
+    public static final int FREEZE_SOUND = 1 << 2;
+    public static final int FREEZE_ALL = FREEZE_UPDATE | FREEZE_RENDER | FREEZE_SOUND;
+
     public sealed interface PlatformEvent permits
         QuitEvent, PauseEvent, ResumeEvent, StopEvent, StartEvent, RestartEvent, DestroyEvent,
-        FreezeEvent, SurfaceCreateEvent, SurfaceDestroyEvent, SurfaceChangedEvent, WindowInsetsEvent,
+        FreezeEvent, UnfreezeEvent, SurfaceCreateEvent, SurfaceDestroyEvent, SurfaceChangedEvent, WindowInsetsEvent,
         ClipboardChangedEvent, WindowFocusChangedEvent, LowMemoryEvent, TrimMemoryEvent, ChangeLocaleEvent,
         IntentStartEvent, IntentNewEvent {
     }
@@ -29,7 +36,8 @@ public class MenginePlatformEventQueue {
     record StartEvent() implements PlatformEvent {}
     record RestartEvent() implements PlatformEvent {}
     record DestroyEvent() implements PlatformEvent {}
-    record FreezeEvent(String owner, boolean freeze) implements PlatformEvent {}
+    record FreezeEvent(int flags, @Nullable Consumer<Boolean> completion) implements PlatformEvent {}
+    record UnfreezeEvent(int flags) implements PlatformEvent {}
     record SurfaceCreateEvent(Surface surface) implements PlatformEvent {}
     record SurfaceDestroyEvent(CountDownLatch released) implements PlatformEvent {}
     record SurfaceChangedEvent(Surface surface, int surfaceWidth, int surfaceHeight, int deviceWidth, int deviceHeight, float rate) implements PlatformEvent {}
@@ -73,14 +81,55 @@ public class MenginePlatformEventQueue {
     private static final Object m_syncEvents = new Object();
     private static final List<PlatformEvent> m_events = new ArrayList<>();
     private static final List<PlatformEvent> m_eventsAux = new ArrayList<>();
+    private static volatile boolean m_quitEventQueued;
+    private static volatile boolean m_closed;
 
-    protected static void pushEvent(PlatformEvent event) {
+    protected static boolean pushEvent(PlatformEvent event) {
         if (BuildConfig.DEBUG == true) {
             MengineLog.logInfo(TAG, "platform event pushed: %s", event);
         }
 
         synchronized (m_syncEvents) {
+            if (m_closed == true) {
+                return false;
+            }
+
             m_events.add(event);
+        }
+
+        return true;
+    }
+
+    static void close() {
+        List<PlatformEvent> pendingEvents;
+
+        synchronized (m_syncEvents) {
+            if (m_closed == true) {
+                return;
+            }
+
+            m_closed = true;
+            pendingEvents = new ArrayList<>(m_eventsAux);
+            pendingEvents.addAll(m_events);
+            m_eventsAux.clear();
+            m_events.clear();
+        }
+
+        for (PlatformEvent event : pendingEvents) {
+            if (event instanceof SurfaceDestroyEvent surfaceDestroyEvent) {
+                CountDownLatch released = surfaceDestroyEvent.released();
+                released.countDown();
+            } else if (event instanceof FreezeEvent freezeEvent) {
+                Consumer<Boolean> completion = freezeEvent.completion();
+
+                if (completion == null) {
+                    continue;
+                }
+
+                MengineUtils.performOnMainThread(() -> {
+                    completion.accept(false);
+                });
+            }
         }
     }
 
@@ -120,8 +169,16 @@ public class MenginePlatformEventQueue {
         MengineNative.AndroidPlatform_unlockActivity();
     }
 
-    public static void pushFreezeEvent(String owner, boolean freeze) {
-        MenginePlatformEventQueue.pushEvent(new FreezeEvent(owner, freeze));
+    public static boolean pushFreezeEvent(int flags, @Nullable Consumer<Boolean> completion) {
+        if (MenginePlatformEventQueue.pushEvent(new FreezeEvent(flags, completion)) == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static void pushUnfreezeEvent(int flags) {
+        MenginePlatformEventQueue.pushEvent(new UnfreezeEvent(flags));
     }
 
     public static void pushClipboardChangedEvent() {
@@ -133,6 +190,10 @@ public class MenginePlatformEventQueue {
     }
 
     public static void pushQuitEvent() {
+        synchronized (m_syncEvents) {
+            m_quitEventQueued = true;
+        }
+
         MenginePlatformEventQueue.pushEvent(new QuitEvent());
     }
 
@@ -245,8 +306,12 @@ public class MenginePlatformEventQueue {
         SurfaceDestroyEvent event = new SurfaceDestroyEvent(released);
 
         MengineNative.AndroidPlatform_lockActivity();
-        MenginePlatformEventQueue.pushEvent(event);
+        boolean accepted = MenginePlatformEventQueue.pushEvent(event);
         MengineNative.AndroidPlatform_unlockActivity();
+
+        if (accepted == false) {
+            released.countDown();
+        }
 
         return released;
     }
@@ -274,6 +339,10 @@ public class MenginePlatformEventQueue {
 
     public static boolean processEvents(@NonNull MengineApplication application) {
         synchronized (m_syncEvents) {
+            if (m_closed == true) {
+                return true;
+            }
+
             m_eventsAux.addAll(m_events);
             m_events.clear();
         }
@@ -281,10 +350,29 @@ public class MenginePlatformEventQueue {
         while (m_eventsAux.isEmpty() == false) {
             PlatformEvent event = m_eventsAux.get(0);
 
+            if (BuildConfig.MENGINE_RUNTIME_NATIVE == false
+                && (event instanceof FreezeEvent) == false
+                && (event instanceof UnfreezeEvent) == false
+                && (event instanceof QuitEvent) == false) {
+                m_eventsAux.remove(0);
+
+                continue;
+            }
+
             if (application.isQuitRequested() == true
                 && (event instanceof QuitEvent) == false
                 && (event instanceof SurfaceDestroyEvent) == false) {
                 m_eventsAux.remove(0);
+
+                if (event instanceof FreezeEvent freezeEvent) {
+                    Consumer<Boolean> completion = freezeEvent.completion();
+
+                    if (completion != null) {
+                        MengineUtils.performOnMainThread(() -> {
+                            completion.accept(false);
+                        });
+                    }
+                }
 
                 continue;
             }
@@ -295,7 +383,7 @@ public class MenginePlatformEventQueue {
             if (event instanceof SurfaceDestroyEvent surfaceDestroyEvent) {
                 // SurfaceHolder waits on the UI thread. Release the window before notifying listeners.
                 MenginePlatformEventQueue.releaseSurface(surfaceDestroyEvent);
-            } else if (event instanceof QuitEvent) {
+            } else if (BuildConfig.MENGINE_RUNTIME_NATIVE == true && event instanceof QuitEvent) {
                 for (PlatformEvent pendingEvent : m_eventsAux) {
                     if (pendingEvent instanceof SurfaceDestroyEvent surfaceDestroyEvent) {
                         MenginePlatformEventQueue.releaseSurface(surfaceDestroyEvent);
@@ -324,17 +412,48 @@ public class MenginePlatformEventQueue {
             } else if (event instanceof DestroyEvent) {
                 MengineNative.AndroidPlatform_destroyEvent();
             } else if (event instanceof FreezeEvent freezeEvent) {
-                String freezeOwner = freezeEvent.owner();
-                boolean freezeValue = freezeEvent.freeze();
-                MengineNative.AndroidPlatform_freezeEvent(freezeOwner, freezeValue);
+                boolean applied = m_quitEventQueued == false;
+
+                if (applied == true && BuildConfig.MENGINE_RUNTIME_NATIVE == true) {
+                    int freezeFlags = freezeEvent.flags();
+
+                    MengineNative.AndroidPlatform_freezeEvent(freezeFlags);
+                }
+
+                Consumer<Boolean> completion = freezeEvent.completion();
+
+                if (completion != null) {
+                    MengineUtils.performOnMainThread(() -> {
+                        if (m_closed == true) {
+                            completion.accept(false);
+
+                            return;
+                        }
+
+                        if (m_quitEventQueued == true) {
+                            completion.accept(false);
+
+                            return;
+                        }
+
+                        completion.accept(applied);
+                    });
+                }
+            } else if (event instanceof UnfreezeEvent unfreezeEvent) {
+                if (m_quitEventQueued == false && BuildConfig.MENGINE_RUNTIME_NATIVE == true) {
+                    int freezeFlags = unfreezeEvent.flags();
+
+                    MengineNative.AndroidPlatform_unfreezeEvent(freezeFlags);
+                }
             } else if (event instanceof ClipboardChangedEvent) {
                 MengineNative.AndroidPlatform_clipboardChangedEvent();
             } else if (event instanceof WindowFocusChangedEvent focusEvent) {
                 boolean focusValue = focusEvent.focus();
                 MengineNative.AndroidPlatform_windowFocusChangedEvent(focusValue);
             } else if (event instanceof QuitEvent) {
-                MengineNative.AndroidPlatform_quitEvent();
-                m_eventsAux.clear();
+                if (BuildConfig.MENGINE_RUNTIME_NATIVE == true) {
+                    MengineNative.AndroidPlatform_quitEvent();
+                }
 
                 return true;
             } else if (event instanceof LowMemoryEvent) {

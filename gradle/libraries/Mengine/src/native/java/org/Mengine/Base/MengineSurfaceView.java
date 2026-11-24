@@ -640,13 +640,23 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
             case MotionEvent.ACTION_POINTER_UP:
             case MotionEvent.ACTION_POINTER_DOWN: {
                 int index = event.getActionIndex();
-                this.nativeTouchEvent(event, index, action);
+
+                int pointerAction = action;
+                if (action == MotionEvent.ACTION_POINTER_UP) {
+                    int flags = event.getFlags();
+
+                    if ((flags & MotionEvent.FLAG_CANCELED) != 0) {
+                        pointerAction = MotionEvent.ACTION_CANCEL;
+                    }
+                }
+
+                this.nativeTouchEvent(event, index, pointerAction);
                 break;
             }
             case MotionEvent.ACTION_CANCEL: {
-                for (int index = 0; index != pointerCount; ++index) {
-                    this.nativeTouchEvent(event, index, MotionEvent.ACTION_UP);
-                }
+                long eventTime = event.getEventTime();
+
+                MengineNative.AndroidPlatform_touchEvent(eventTime, action, -1, 0.f, 0.f, 0.f);
                 break;
             }
         }

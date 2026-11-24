@@ -29,6 +29,13 @@ namespace Mengine
     public:
         virtual bool handleMouseEnter( const InputMouseEnterEvent & _event ) = 0;
         virtual void handleMouseLeave( const InputMouseLeaveEvent & _event ) = 0;
+
+    public:
+        virtual bool handleGestureMagnification( const InputGestureMagnificationEvent & _event ) = 0;
+        virtual bool handleGestureRotation( const InputGestureRotationEvent & _event ) = 0;
+        virtual bool handleGestureSmartMagnification( const InputGestureSmartMagnificationEvent & _event ) = 0;
+        virtual bool handleGestureSwipe( const InputGestureSwipeEvent & _event ) = 0;
+        virtual bool handleGesturePressure( const InputGesturePressureEvent & _event ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<InputHandlerInterface> InputHandlerInterfacePtr;

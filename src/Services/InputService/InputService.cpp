@@ -586,13 +586,14 @@ namespace Mengine
             , _event.button
         );
 
-        LOGGER_INFO( "input", "handle mouse button touch [%u] pos [%.4f:%.4f] button [%u] down [%u] pressed [%u] pressure [%f]"
+        LOGGER_INFO( "input", "handle mouse button touch [%u] pos [%.4f:%.4f] button [%u] down [%u] pressed [%u] cancelled [%u] pressure [%f]"
             , _event.touchId
             , _event.position.screen.x
             , _event.position.screen.y
             , _event.button
             , _event.isDown
             , _event.isPressed
+            , _event.isCancelled
             , _event.pressure
         );
 
@@ -644,9 +645,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void InputService::dispatchEvent_( const InputMouseWheelEvent & _event )
     {
+        const InputScrollData & scroll = _event.scroll;
+
+        if( scroll.steps == 0 && scroll.delta.x == 0.f && scroll.delta.y == 0.f &&
+            scroll.phase == IGP_NONE && scroll.momentumPhase == IGP_NONE )
+        {
+            return;
+        }
+
         LOGGER_INFO( "input", "handle mouse wheel wheel [%u] scroll [%d] pos [%.4f:%.4f] "
             , _event.wheel
-            , _event.scroll
+            , scroll.steps
             , _event.position.screen.x
             , _event.position.screen.y
         );
@@ -689,6 +698,36 @@ namespace Mengine
 
         APPLICATION_SERVICE()
             ->handleMouseLeave( _event );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void InputService::dispatchEvent_( const InputGestureMagnificationEvent & _event )
+    {
+        APPLICATION_SERVICE()
+            ->handleGestureMagnification( _event );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void InputService::dispatchEvent_( const InputGestureRotationEvent & _event )
+    {
+        APPLICATION_SERVICE()
+            ->handleGestureRotation( _event );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void InputService::dispatchEvent_( const InputGestureSmartMagnificationEvent & _event )
+    {
+        APPLICATION_SERVICE()
+            ->handleGestureSmartMagnification( _event );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void InputService::dispatchEvent_( const InputGestureSwipeEvent & _event )
+    {
+        APPLICATION_SERVICE()
+            ->handleGestureSwipe( _event );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void InputService::dispatchEvent_( const InputGesturePressureEvent & _event )
+    {
+        APPLICATION_SERVICE()
+            ->handleGesturePressure( _event );
     }
     //////////////////////////////////////////////////////////////////////////
     void InputService::dispatchEvent_( const InputControllerConnectEvent & _event )

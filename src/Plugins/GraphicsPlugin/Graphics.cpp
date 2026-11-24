@@ -3,9 +3,13 @@
 #include <cstddef>
 
 #include "Interface/RenderMaterialServiceInterface.h"
+#include "Interface/RenderTextureServiceInterface.h"
+
+#include "GraphicsGradient.h"
 
 #include "Kernel/BezierHelper.h"
 #include "Kernel/Assertion.h"
+#include "Kernel/AssertionMath.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Materialable.h"
 #include "Kernel/Logger.h"
@@ -13,6 +17,7 @@
 #include "Kernel/FactorableUnique.h"
 
 #include "Config/StdAlgorithm.h"
+#include "Config/StdUtility.h"
 
 #include "math/line2.h"
 
@@ -89,6 +94,7 @@ namespace Mengine
         }
 
         m_material = nullptr;
+        m_gradientMaterials.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     void Graphics::_dispose()
@@ -401,6 +407,168 @@ namespace Mengine
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Graphics::setLinearGradient( const mt::vec2f & _from, const mt::vec2f & _to, const VectorGraphicsGradientStops & _stops )
+    {
+        mt::vec2f axis = _to - _from;
+        float lengthSquared = mt::dot_v2_v2( axis, axis );
+
+        MENGINE_ASSERTION_ISINFINITE( lengthSquared, "invalid linear gradient length squared" );
+
+        if( lengthSquared <= 0.f )
+        {
+            return false;
+        }
+
+        mt::vec2f scale = axis / lengthSquared;
+
+        MENGINE_ASSERTION_ISINFINITE( scale.x, "invalid linear gradient horizontal scale" );
+        MENGINE_ASSERTION_ISINFINITE( scale.y, "invalid linear gradient vertical scale" );
+
+        GradientDesc gradient;
+        gradient.radial = false;
+        gradient.origin = _from;
+        gradient.coordinateScale = scale;
+
+        if( this->setFillGradient_( StdUtility::move( gradient ), _stops ) == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Graphics::setRadialGradient( const mt::vec2f & _center, float _radius, const VectorGraphicsGradientStops & _stops )
+    {
+        MENGINE_ASSERTION_ISINFINITE( _center.x, "invalid radial gradient center x" );
+        MENGINE_ASSERTION_ISINFINITE( _center.y, "invalid radial gradient center y" );
+        MENGINE_ASSERTION_ISINFINITE( _radius, "invalid radial gradient radius" );
+
+        if( _radius <= 0.f )
+        {
+            return false;
+        }
+
+        float inverseRadius = 1.f / _radius;
+
+        MENGINE_ASSERTION_ISINFINITE( inverseRadius, "invalid radial gradient inverse radius" );
+
+        GradientDesc gradient;
+        gradient.radial = true;
+        gradient.origin = _center;
+        gradient.coordinateScale.set( inverseRadius, inverseRadius );
+
+        if( this->setFillGradient_( StdUtility::move( gradient ), _stops ) == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Graphics::setFillGradient_( GradientDesc _gradient, const VectorGraphicsGradientStops & _stops )
+    {
+        if( _stops.empty() == true )
+        {
+            return false;
+        }
+
+        _gradient.stops.reserve( _stops.size() );
+        float previousOffset = 0.f;
+
+        for( const GraphicsGradientStopDesc & stop : _stops )
+        {
+            MENGINE_ASSERTION_ISINFINITE( stop.offset, "invalid gradient stop offset" );
+
+            if( stop.offset < previousOffset )
+            {
+                return false;
+            }
+
+            if( stop.offset > 1.f )
+            {
+                return false;
+            }
+
+            float r = stop.color.getR();
+            float g = stop.color.getG();
+            float b = stop.color.getB();
+            float a = stop.color.getA();
+
+            MENGINE_ASSERTION_ISINFINITE( r, "invalid gradient red component" );
+            MENGINE_ASSERTION_ISINFINITE( g, "invalid gradient green component" );
+            MENGINE_ASSERTION_ISINFINITE( b, "invalid gradient blue component" );
+            MENGINE_ASSERTION_ISINFINITE( a, "invalid gradient alpha component" );
+
+            float clampedR = StdAlgorithm::clamp( r, 0.f, 1.f );
+            float clampedG = StdAlgorithm::clamp( g, 0.f, 1.f );
+            float clampedB = StdAlgorithm::clamp( b, 0.f, 1.f );
+            float clampedA = StdAlgorithm::clamp( a, 0.f, 1.f );
+
+            Color color( clampedR, clampedG, clampedB, clampedA );
+            _gradient.stops.emplace_back( GraphicsGradientStopDesc{stop.offset, color} );
+            previousOffset = stop.offset;
+        }
+
+        for( size_t index = 0; index != m_gradients.size(); ++index )
+        {
+            const GradientDesc & paint = m_gradients[index];
+
+            if( paint.radial != _gradient.radial )
+            {
+                continue;
+            }
+
+            if( paint.origin != _gradient.origin )
+            {
+                continue;
+            }
+
+            if( paint.coordinateScale != _gradient.coordinateScale )
+            {
+                continue;
+            }
+
+            if( paint.stops.size() != _gradient.stops.size() )
+            {
+                continue;
+            }
+
+            bool equal = StdAlgorithm::equal( paint.stops.begin(), paint.stops.end(), _gradient.stops.begin(), []( const GraphicsGradientStopDesc & _left, const GraphicsGradientStopDesc & _right )
+            {
+                if( _left.offset != _right.offset )
+                {
+                    return false;
+                }
+
+                if( _left.color.isEqualF( _right.color ) == false )
+                {
+                    return false;
+                }
+
+                return true;
+            } );
+
+            if( equal == true )
+            {
+                uint32_t key = (uint32_t)index + 1;
+                GP_CALL( gp_set_fill_key, (m_canvas, key) );
+
+                return true;
+            }
+        }
+
+        m_gradients.emplace_back( StdUtility::move( _gradient ) );
+        uint32_t key = (uint32_t)m_gradients.size();
+        GP_CALL( gp_set_fill_key, (m_canvas, key) );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Graphics::clearFillGradient()
+    {
+        GP_CALL( gp_set_fill_key, (m_canvas, 0) );
+    }
+    //////////////////////////////////////////////////////////////////////////
     GraphicsPathPtr Graphics::createPath()
     {
         GraphicsPathPtr path = Helper::makeFactorableUnique<GraphicsPath>( MENGINE_DOCUMENT_FACTORABLE, m_canvas );
@@ -576,6 +744,13 @@ namespace Mengine
         m_renderIndices.clear();
         m_renderBatches.clear();
         m_renderBatchBoundingBoxes.clear();
+        m_gradients.clear();
+
+        for( GradientMaterialDesc & gradient : m_gradientMaterials )
+        {
+            gradient.generation = 0;
+        }
+
         mt::box2_reset( &m_renderBoundingBox, 0.f, 0.f );
 
         m_invalidateLocalVertex2D = true;
@@ -596,11 +771,76 @@ namespace Mengine
         for( size_t index = 0; index != m_renderBatches.size(); ++index )
         {
             const gp_render_batch_t & batch = m_renderBatches[index];
+            const RenderMaterialInterfacePtr & material = batch.fill_key == 0 ? m_material : this->getGradientMaterial_( batch.fill_key );
+
+            if( material == nullptr )
+            {
+                continue;
+            }
+
             const RenderVertex2D * vertexData = m_renderVertex2D.data() + batch.vertex_offset;
             const RenderIndex * indexData = m_renderIndices.data() + batch.index_offset;
 
-            _renderPipeline->addRenderObject( _context, m_material, nullptr, vertexData, batch.vertex_count, indexData, batch.index_count, &m_renderBatchBoundingBoxes[index], EROF_NONE, MENGINE_DOCUMENT_FORWARD );
+            _renderPipeline->addRenderObject( _context, material, nullptr, vertexData, batch.vertex_count, indexData, batch.index_count, &m_renderBatchBoundingBoxes[index], EROF_NONE, MENGINE_DOCUMENT_FORWARD );
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderMaterialInterfacePtr & Graphics::getGradientMaterial_( uint32_t _key ) const
+    {
+        if( m_gradientMaterials.size() < _key )
+        {
+            m_gradientMaterials.resize( _key );
+        }
+
+        size_t index = _key - 1;
+        const GradientDesc & gradient = m_gradients[index];
+        GradientMaterialDesc & cache = m_gradientMaterials[index];
+
+        if( cache.texture == nullptr )
+        {
+            cache.texture = RENDERTEXTURE_SERVICE()
+                ->createTexture( 1, Helper::GRAPHICS_GRADIENT_RAMP_WIDTH, 1, PF_A8R8G8B8, DF_IMAGE_NONE, MENGINE_DOCUMENT_FACTORABLE );
+
+            if( cache.texture == nullptr )
+            {
+                LOGGER_ERROR( "invalid create Graphics gradient texture" );
+
+                return RenderMaterialInterfacePtr::none();
+            }
+        }
+
+        uint64_t generation = GRAPHICS_SERVICE()
+            ->getGradientTextureGeneration();
+
+        if( cache.generation != generation )
+        {
+            if( Helper::uploadGraphicsGradientRamp( cache.texture, gradient.stops ) == false )
+            {
+                LOGGER_ERROR( "invalid upload Graphics gradient texture" );
+
+                return RenderMaterialInterfacePtr::none();
+            }
+
+            cache.generation = generation;
+        }
+
+        if( cache.material == nullptr || cache.radial != gradient.radial )
+        {
+            const RenderMaterialStage * stage = GRAPHICS_SERVICE()
+                ->getGradientMaterialStage( gradient.radial );
+
+            if( stage == nullptr )
+            {
+                return RenderMaterialInterfacePtr::none();
+            }
+
+            ConstString name = STRINGIZE_STRING_LOCAL( "GraphicsGradient" );
+            cache.material = RENDERMATERIAL_SERVICE()
+                ->getMaterial2( name, stage, PT_TRIANGLELIST, &cache.texture, 1, MENGINE_DOCUMENT_FACTORABLE );
+            cache.radial = gradient.radial;
+        }
+
+        return cache.material;
     }
     //////////////////////////////////////////////////////////////////////////
     void Graphics::_invalidateWorldMatrix() const
@@ -613,6 +853,48 @@ namespace Mengine
         BaseRender::_invalidateColor();
 
         m_invalidateLocalVertex2D = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Graphics::updateVertexUVs_() const
+    {
+        for( const gp_render_batch_t & batch : m_renderBatches )
+        {
+            RenderVertex2D * vertices = m_renderVertex2D.data() + batch.vertex_offset;
+
+            if( batch.fill_key != 0 )
+            {
+                const GradientDesc & gradient = m_gradients[batch.fill_key - 1];
+                for( uint32_t index = 0; index != batch.vertex_count; ++index )
+                {
+                    RenderVertex2D & vertex = vertices[index];
+                    mt::vec2f point( vertex.position.x - gradient.origin.x, vertex.position.y - gradient.origin.y );
+
+                    if( gradient.radial == true )
+                    {
+                        vertex.uv[0] = point * gradient.coordinateScale;
+                    }
+                    else
+                    {
+                        float offset = mt::dot_v2_v2( point, gradient.coordinateScale );
+                        vertex.uv[0].set( offset, 0.5f );
+                    }
+                }
+            }
+            else if( m_resourceImage != nullptr )
+            {
+                for( uint32_t index = 0; index != batch.vertex_count; ++index )
+                {
+                    RenderVertex2D & vertex = vertices[index];
+                    mt::vec2f uv(
+                        m_uvRect.x + vertex.uv[0].x * (m_uvRect.z - m_uvRect.x),
+                        m_uvRect.y + vertex.uv[0].y * (m_uvRect.w - m_uvRect.y)
+                    );
+
+                    m_resourceImage->correctUV( 0, uv, &vertex.uv[0] );
+                    m_resourceImage->correctUV( 1, uv, &vertex.uv[1] );
+                }
+            }
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void Graphics::updateLocalVertex2D_() const
@@ -666,21 +948,15 @@ namespace Mengine
 
         GP_CALL( gp_render, (m_canvas, &mesh) );
 
+        if( m_resourceImage != nullptr || m_gradients.empty() == false )
+        {
+            this->updateVertexUVs_();
+        }
+
         const mt::mat4f & wm = this->getWorldMatrix();
 
         for( RenderVertex2D & vertex : m_renderVertex2D )
         {
-            if( m_resourceImage != nullptr )
-            {
-                mt::vec2f uv(
-                    m_uvRect.x + vertex.uv[0].x * (m_uvRect.z - m_uvRect.x),
-                    m_uvRect.y + vertex.uv[0].y * (m_uvRect.w - m_uvRect.y)
-                );
-
-                m_resourceImage->correctUV( 0, uv, &vertex.uv[0] );
-                m_resourceImage->correctUV( 1, uv, &vertex.uv[1] );
-            }
-
 #if defined(MENGINE_RENDER_COLOR_RGBA)
             // graphics packs colors as 0xAARRGGBB. RGBA render backends read
             // the uint32 bytes as R, G, B, A, so swap red and blue before the

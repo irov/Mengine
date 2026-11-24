@@ -80,7 +80,12 @@ namespace Mengine
             InputMouseLeaveEvent,
             InputControllerConnectEvent,
             InputControllerButtonEvent,
-            InputControllerAxisEvent> InputVariantEvent;
+            InputControllerAxisEvent,
+            InputGestureMagnificationEvent,
+            InputGestureRotationEvent,
+            InputGestureSmartMagnificationEvent,
+            InputGestureSwipeEvent,
+            InputGesturePressureEvent> InputVariantEvent;
 
         virtual void pushEvent( const InputVariantEvent & _event ) = 0;
     };

@@ -28,7 +28,8 @@ namespace Mengine
         virtual void androidNativeStartEvent() = 0;
         virtual void androidNativeRestartEvent() = 0;
         virtual void androidNativeDestroyEvent() = 0;
-        virtual void androidNativeFreezeEvent( const ConstString & _owner, bool _freeze ) = 0;
+        virtual void androidNativeFreezeEvent( uint32_t _flags ) = 0;
+        virtual void androidNativeUnfreezeEvent( uint32_t _flags ) = 0;
         virtual void androidNativeClipboardChangedEvent() = 0;
         virtual void androidNativeWindowFocusChangedEvent( jboolean _focus ) = 0;
         virtual void androidNativeDeleteAccountAccepted() = 0;

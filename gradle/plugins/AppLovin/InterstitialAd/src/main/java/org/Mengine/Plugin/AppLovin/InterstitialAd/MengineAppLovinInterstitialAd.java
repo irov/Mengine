@@ -22,7 +22,6 @@ import org.Mengine.Base.MengineAnalyticsEventBuilderInterface;
 import org.Mengine.Base.MengineNetwork;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
 import org.Mengine.Base.MengineUtils;
-import org.Mengine.Base.MenginePlatformEventQueue;
 import org.Mengine.Base.MengineTag;
 import org.Mengine.Plugin.AppLovin.Core.MengineAppLovinBase;
 import org.Mengine.Plugin.AppLovin.Core.MengineAppLovinInterstitialAdInterface;
@@ -34,9 +33,7 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
     public static final MengineTag TAG = MengineTag.of("MNGAppLovinInterstitialAd");
 
 
-    private MaxInterstitialAd m_interstitialAd;
-
-    private boolean m_showing = false;
+    private volatile MaxInterstitialAd m_interstitialAd;
 
     public MengineAppLovinInterstitialAd(@NonNull MengineAdService adService, @NonNull MengineAppLovinPluginInterface plugin, @NonNull String adUnitId) throws MengineServiceInvalidInitializeException {
         super(adService, plugin, MaxAdFormat.INTERSTITIAL, adUnitId);
@@ -79,16 +76,22 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
     public void onActivityDestroy(@NonNull MengineActivity activity) {
         super.onActivityDestroy(activity);
 
-        if (m_interstitialAd != null) {
-            m_interstitialAd.setListener(null);
-            m_interstitialAd.setRequestListener(null);
-            m_interstitialAd.setRevenueListener(null);
-            m_interstitialAd.setExpirationListener(null);
-            m_interstitialAd.setAdReviewListener(null);
+        MaxInterstitialAd ad = m_interstitialAd;
+        m_interstitialAd = null;
 
-            m_interstitialAd.destroy();
-            m_interstitialAd = null;
+        m_fullscreenAdShow.finishShow();
+
+        if (ad == null) {
+            return;
         }
+
+        ad.setListener(null);
+        ad.setRequestListener(null);
+        ad.setRevenueListener(null);
+        ad.setExpirationListener(null);
+        ad.setAdReviewListener(null);
+
+        ad.destroy();
     }
 
     @Override
@@ -151,7 +154,9 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
     }
 
     public boolean showInterstitial(@NonNull MengineActivity activity, String placement) {
-        if (m_interstitialAd == null) {
+        MaxInterstitialAd showAd = m_interstitialAd;
+
+        if (showAd == null) {
             return false;
         }
 
@@ -159,7 +164,7 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
             return false;
         }
 
-        boolean ready = m_interstitialAd.isReady();
+        boolean ready = showAd.isReady();
 
         this.log("showInterstitial", Map.of("placement", placement, "ready", ready));
 
@@ -172,16 +177,26 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
             return false;
         }
 
-        m_showing = true;
+        boolean started = m_fullscreenAdShow.show(activity, placement, () -> {
+            return m_interstitialAd == showAd;
+        }, () -> {
+            showAd.showAd(placement, activity);
+        });
 
-        m_interstitialAd.showAd(placement, activity);
+        if (started == false) {
+            return false;
+        }
 
         return true;
     }
 
     @Override
     public boolean isShowingInterstitial() {
-        return m_showing;
+        if (m_fullscreenAdShow.isShowing() == false) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override
@@ -219,8 +234,6 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
             .log();
 
         this.setInterstitialState("displayed." + placement + "." + ad.getNetworkName());
-
-        MenginePlatformEventQueue.pushFreezeEvent(TAG.toString(), true);
     }
 
     @Override
@@ -236,9 +249,7 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
 
         this.setInterstitialState("hidden." + placement + "." + ad.getNetworkName());
 
-        MenginePlatformEventQueue.pushFreezeEvent(TAG.toString(), false);
-
-        m_showing = false;
+        m_fullscreenAdShow.finishShow();
 
         MengineUtils.performOnMainThread(() -> {
             MengineAdResponseInterface adResponse = m_adService.getAdResponse();
@@ -296,7 +307,7 @@ public class MengineAppLovinInterstitialAd extends MengineAppLovinBase implement
 
         this.setInterstitialState("display_failed." + placement + "." + ad.getNetworkName() + "." + errorCode);
 
-        m_showing = false;
+        m_fullscreenAdShow.finishShow();
 
         MengineUtils.performOnMainThread(() -> {
             MengineAdResponseInterface adResponse = m_adService.getAdResponse();

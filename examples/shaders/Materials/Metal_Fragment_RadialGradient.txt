@@ -1,0 +1,14 @@
+#include <metal_stdlib>
+using namespace metal;
+
+struct FragmentIn
+{
+    float4 position [[position]];
+    half4 color;
+    float2 uv0;
+};
+
+fragment half4 fragmentShader(FragmentIn in [[stage_in]], texture2d<half> ramp [[texture(0)]], sampler rampSampler [[sampler(0)]])
+{
+    return in.color * ramp.sample(rampSampler, float2(length(in.uv0), 0.5));
+}

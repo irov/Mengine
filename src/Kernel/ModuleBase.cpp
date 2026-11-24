@@ -290,6 +290,41 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
+    bool ModuleBase::handleGestureMagnification( const InputGestureMagnificationEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ModuleBase::handleGestureRotation( const InputGestureRotationEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ModuleBase::handleGestureSmartMagnification( const InputGestureSmartMagnificationEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ModuleBase::handleGestureSwipe( const InputGestureSwipeEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ModuleBase::handleGesturePressure( const InputGesturePressureEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void ModuleBase::preUpdate()
     {
         this->_preUpdate();

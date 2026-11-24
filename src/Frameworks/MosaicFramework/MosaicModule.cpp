@@ -268,9 +268,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MosaicModule::_handleMouseWheel( const InputMouseWheelEvent & _event )
     {
+        if( _event.scroll.steps == 0 )
+        {
+            return false;
+        }
+
         this->updateModifiers_( _event.special );
 
-        float scroll = (float)_event.scroll;
+        float scroll = (float)_event.scroll.steps;
         float distance = mt::clamp( 16.f, StdMath::fabsf( scroll ) * 4.f, 48.f );
 
         m_input.wheel.y += scroll < 0.f ? -distance : distance;

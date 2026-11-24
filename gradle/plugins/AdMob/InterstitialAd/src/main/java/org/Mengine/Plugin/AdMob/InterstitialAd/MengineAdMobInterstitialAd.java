@@ -19,7 +19,6 @@ import org.Mengine.Base.MengineAdResponseInterface;
 import org.Mengine.Base.MengineAdService;
 import org.Mengine.Base.MengineAnalyticsEventBuilderInterface;
 import org.Mengine.Base.MengineNetwork;
-import org.Mengine.Base.MenginePlatformEventQueue;
 import org.Mengine.Base.MengineTag;
 import org.Mengine.Plugin.AdMob.Core.MengineAdMobBase;
 import org.Mengine.Plugin.AdMob.Core.MengineAdMobInterstitialAdInterface;
@@ -33,9 +32,6 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
     private LoadCallback m_loadCallback;
     private volatile InterstitialAd m_interstitialAd;
     private OnPaidEventListener m_onPaidEventListener;
-
-    private volatile boolean m_showing = false;
-    private String m_placement = "";
 
     public MengineAdMobInterstitialAd(@NonNull MengineAdService adService, @NonNull MengineAdMobPluginInterface plugin, @NonNull String adUnitId) {
         super(adService, plugin, MengineAdFormat.ADFORMAT_INTERSTITIAL, adUnitId);
@@ -84,12 +80,7 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
             m_interstitialAd = null;
         }
 
-        if (m_showing == true) {
-            MenginePlatformEventQueue.pushFreezeEvent(TAG.toString(), false);
-        }
-
-        m_showing = false;
-        m_placement = "";
+        m_fullscreenAdShow.finishShow();
     }
 
     @Override
@@ -138,9 +129,11 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
         m_interstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
             @Override
             public void onAdDismissedFullScreenContent() {
+                if (m_interstitialAd != interstitialAd) {
+                    return;
+                }
+
                 m_interstitialAd = null;
-                String placement = m_placement;
-                m_placement = "";
 
                 MengineAdMobInterstitialAd.this.log("onAdDismissedFullScreenContent");
 
@@ -149,9 +142,7 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
 
                 MengineAdMobInterstitialAd.this.setInterstitialState("dismissed");
 
-                MenginePlatformEventQueue.pushFreezeEvent(TAG.toString(), false);
-
-                m_showing = false;
+                String placement = m_fullscreenAdShow.finishShow();
 
                 MengineAdMobInterstitialAd.this.performOnMainThread(() -> {
                     MengineAdResponseInterface adResponse = m_adService.getAdResponse();
@@ -164,9 +155,11 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
 
             @Override
             public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
+                if (m_interstitialAd != interstitialAd) {
+                    return;
+                }
+
                 m_interstitialAd = null;
-                String placement = m_placement;
-                m_placement = "";
 
                 MengineAdMobInterstitialAd.this.logAdError("onAdFailedToShowFullScreenContent", adError);
 
@@ -179,9 +172,7 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
 
                 MengineAdMobInterstitialAd.this.setInterstitialState("show_failed." + errorCode);
 
-                MenginePlatformEventQueue.pushFreezeEvent(TAG.toString(), false);
-
-                m_showing = false;
+                String placement = m_fullscreenAdShow.finishShow();
 
                 MengineAdMobInterstitialAd.this.performOnMainThread(() -> {
                     MengineAdResponseInterface adResponse = m_adService.getAdResponse();
@@ -200,8 +191,6 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
                     .log();
 
                 MengineAdMobInterstitialAd.this.setInterstitialState("showed");
-
-                MenginePlatformEventQueue.pushFreezeEvent(TAG.toString(), true);
             }
 
             @Override
@@ -234,7 +223,9 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
                 long valueMicros = adValue.getValueMicros();
                 double value = valueMicros / 1000000.0;
 
-                MengineAdMobInterstitialAd.this.revenuePaid(responseInfo, MengineAdFormat.ADFORMAT_INTERSTITIAL, m_placement, value);
+                String placement = m_fullscreenAdShow.getPlacement();
+
+                MengineAdMobInterstitialAd.this.revenuePaid(responseInfo, MengineAdFormat.ADFORMAT_INTERSTITIAL, placement, value);
             }
         });
 
@@ -272,7 +263,7 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
 
         boolean ready = m_interstitialAd != null;
 
-        if (m_showing == true) {
+        if (m_fullscreenAdShow.isShowing() == true) {
             ready = false;
         }
 
@@ -295,9 +286,10 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
             return false;
         }
 
-        boolean ready = m_interstitialAd != null;
+        InterstitialAd showAd = m_interstitialAd;
+        boolean ready = showAd != null;
 
-        if (m_showing == true) {
+        if (m_fullscreenAdShow.isShowing() == true) {
             ready = false;
         }
 
@@ -312,19 +304,13 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
             return false;
         }
 
-        m_showing = true;
-        m_placement = placement;
-
-        InterstitialAd show_interstitialAd = m_interstitialAd;
-
-        boolean scheduled = this.performOnMainThread(() -> {
-            show_interstitialAd.show(activity);
+        boolean scheduled = m_fullscreenAdShow.show(activity, placement, () -> {
+            return m_interstitialAd == showAd;
+        }, () -> {
+            showAd.show(activity);
         });
 
         if (scheduled == false) {
-            m_showing = false;
-            m_placement = "";
-
             return false;
         }
 
@@ -333,7 +319,11 @@ public class MengineAdMobInterstitialAd extends MengineAdMobBase implements Meng
 
     @Override
     public boolean isShowingInterstitial() {
-        return m_showing;
+        if (m_fullscreenAdShow.isShowing() == false) {
+            return false;
+        }
+
+        return true;
     }
 
     private static class LoadCallback extends InterstitialAdLoadCallback {

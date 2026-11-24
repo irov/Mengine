@@ -8,6 +8,7 @@
 #include "Interface/RenderResolutionInterface.h"
 #include "Interface/TransformationInterface.h"
 
+#include "Kernel/AssertionMath.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/EventableHelper.h"
@@ -15,6 +16,7 @@
 #include "Kernel/PrototypeHelper.h"
 #include "Kernel/ResolutionHelper.h"
 
+#include "Config/Limits.h"
 #include "Config/StdMath.h"
 
 #include "math/utils.h"
@@ -1064,19 +1066,70 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool VirtualArea::handleMouseWheel( const RenderContext * _context, const InputMouseWheelEvent & _event )
     {
-        if( m_frozen == true || m_scrollLocked == true || m_enableScale == false )
+        if( m_frozen == true )
         {
             return false;
         }
 
-        if( _event.scroll > 0 )
+        if( m_scrollLocked == true )
         {
-            this->scaleToPoint_( 1.f - m_wheelScaleFactor, _event.position.screen, _context );
+            return false;
+        }
+
+        if( m_enableScale == false )
+        {
+            return false;
+        }
+
+        float factor;
+
+        if( _event.scroll.isPrecise == true )
+        {
+            if( _event.scroll.phase == IGP_CANCEL )
+            {
+                return false;
+            }
+
+            float delta = _event.scroll.delta.y;
+
+            if( delta == 0.f )
+            {
+                return false;
+            }
+
+            float wheelScale = 1.f + m_wheelScaleFactor;
+            factor = StdMath::powf( wheelScale, delta );
+
+            if( factor > MENGINE_FLT_MAX )
+            {
+                return false;
+            }
+
+            MENGINE_ASSERTION_ISINFINITE( factor, "invalid scroll scale factor" );
+
+            if( factor <= 0.f )
+            {
+                return false;
+            }
+
+            if( factor == 1.f )
+            {
+                return false;
+            }
         }
         else
         {
-            this->scaleToPoint_( 1.f + m_wheelScaleFactor, _event.position.screen, _context );
+            int32_t steps = _event.scroll.steps;
+
+            if( steps == 0 )
+            {
+                return false;
+            }
+
+            factor = steps > 0 ? 1.f - m_wheelScaleFactor : 1.f + m_wheelScaleFactor;
         }
+
+        this->scaleToPoint_( factor, _event.position.screen, _context );
 
         return m_defaultHandle;
     }
@@ -1093,6 +1146,72 @@ namespace Mengine
     {
         MENGINE_UNUSED( _context );
         MENGINE_UNUSED( _event );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool VirtualArea::handleGestureMagnification( const RenderContext * _context, const InputGestureMagnificationEvent & _event )
+    {
+        if( m_frozen == true )
+        {
+            return false;
+        }
+
+        if( m_scrollLocked == true )
+        {
+            return false;
+        }
+
+        if( m_enableScale == false )
+        {
+            return false;
+        }
+
+        if( _event.phase == IGP_CANCEL )
+        {
+            return false;
+        }
+
+        if( _event.scale == 1.f )
+        {
+            return false;
+        }
+
+        float factor = 1.f / _event.scale;
+
+        this->scaleToPoint_( factor, _event.position.screen, _context );
+
+        return m_defaultHandle;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool VirtualArea::handleGestureRotation( const RenderContext * _context, const InputGestureRotationEvent & _event )
+    {
+        MENGINE_UNUSED( _context );
+        MENGINE_UNUSED( _event );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool VirtualArea::handleGestureSmartMagnification( const RenderContext * _context, const InputGestureSmartMagnificationEvent & _event )
+    {
+        MENGINE_UNUSED( _context );
+        MENGINE_UNUSED( _event );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool VirtualArea::handleGestureSwipe( const RenderContext * _context, const InputGestureSwipeEvent & _event )
+    {
+        MENGINE_UNUSED( _context );
+        MENGINE_UNUSED( _event );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool VirtualArea::handleGesturePressure( const RenderContext * _context, const InputGesturePressureEvent & _event )
+    {
+        MENGINE_UNUSED( _context );
+        MENGINE_UNUSED( _event );
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     const RenderResolutionInterfacePtr & VirtualArea::getPickerResolution() const
@@ -1428,10 +1547,15 @@ namespace Mengine
             return false;
         }
 
-        return this->releaseTouch_( _event.touchId );
+        if( this->releaseTouch_( _event.touchId, _event.isCancelled ) == false )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool VirtualArea::releaseTouch_( ETouchCode _touchId )
+    bool VirtualArea::releaseTouch_( ETouchCode _touchId, bool _isCancelled )
     {
         TouchDesc * touch = this->getTouch_( _touchId );
 
@@ -1446,15 +1570,22 @@ namespace Mengine
 
         if( m_dragging == true )
         {
-            const float velocityLimit = 150.f;
-            const float velocityLength = mt::length_v2( m_velocity );
-
-            if( velocityLength > velocityLimit )
+            if( _isCancelled == true )
             {
-                m_velocity *= velocityLimit / velocityLength;
+                m_velocity = mt::vec2f( 0.f, 0.f );
             }
+            else
+            {
+                float velocityLimit = 150.f;
+                float velocityLength = mt::length_v2( m_velocity );
 
-            m_velocity *= 0.05f;
+                if( velocityLength > velocityLimit )
+                {
+                    m_velocity *= velocityLimit / velocityLength;
+                }
+
+                m_velocity *= 0.05f;
+            }
 
             EVENTABLE_METHOD( EVENT_VIRTUAL_AREA_DRAG_END )
                 ->onVirtualAreaDragEnd( m_position, m_velocity );

@@ -57,6 +57,13 @@ namespace Mengine
         pybind::registration_stl_vector_type_cast<VectorGraphicsPathPoints>( _kernel );
         pybind::registration_stl_vector_type_cast<Vector<float>>( _kernel );
 
+        pybind::struct_<GraphicsGradientStopDesc>( _kernel, "GraphicsGradientStop" )
+            .def_constructor( pybind::init<float, const Color &>() )
+            .def_member( "offset", &GraphicsGradientStopDesc::offset )
+            .def_member( "color", &GraphicsGradientStopDesc::color );
+
+        pybind::registration_stl_vector_type_cast<VectorGraphicsGradientStops>( _kernel );
+
         pybind::struct_<GraphicsPathStyle>( _kernel, "GraphicsPathStyle" )
             .def_constructor( pybind::init<>() )
             .def_member( "attributes", &GraphicsPathStyle::attributes )
@@ -137,6 +144,9 @@ namespace Mengine
             .def( "popState", &Graphics::popState )
             .def( "beginFill", &Graphics::beginFill )
             .def( "endFill", &Graphics::endFill )
+            .def( "setLinearGradient", &Graphics::setLinearGradient )
+            .def( "setRadialGradient", &Graphics::setRadialGradient )
+            .def( "clearFillGradient", &Graphics::clearFillGradient )
             .def( "createPath", &Graphics::createPath )
             .def( "drawPath", &Graphics::drawPath )
             .def( "drawRect", &Graphics::drawRect )
@@ -175,7 +185,9 @@ namespace Mengine
 
         pybind::unregistration_stl_vector_type_cast<Vector<float>>( _kernel );
         pybind::unregistration_stl_vector_type_cast<VectorGraphicsPathPoints>( _kernel );
+        pybind::unregistration_stl_vector_type_cast<VectorGraphicsGradientStops>( _kernel );
 
+        _kernel->remove_scope<GraphicsGradientStopDesc>();
         _kernel->remove_scope<GraphicsPathPoint>();
         Helper::unregisterScriptWrapping<Graphics>();
     }

@@ -9,6 +9,7 @@
 
 #include "ResourceJSON.h"
 
+#include "Kernel/AssertionMath.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/JSONHelper.h"
 #include "Kernel/String.h"
@@ -16,7 +17,6 @@
 
 #include "Config/StdIO.h"
 
-#include <cmath>
 #include <cstring>
 #include <limits>
 
@@ -135,14 +135,19 @@ namespace Mengine
                     return false;
                 }
 
-                if( std::isfinite( real ) == false )
+                MENGINE_ASSERTION_ISINFINITE( real, "invalid JSON number %f"
+                    , real
+                );
+
+                jpp::object j_real = jpp::make_real( real );
+                if( j_real.is_type_real() == false )
                 {
-                    kernel->set_error( pybind::error_type_e::Value, "NaN and Infinity are not valid JSON numbers" );
+                    kernel->set_error( pybind::error_type_e::Value, "unable to encode floating-point value as a JSON number" );
 
                     return false;
                 }
 
-                *_result = jpp::make_real( real );
+                *_result = j_real;
 
                 return true;
             }

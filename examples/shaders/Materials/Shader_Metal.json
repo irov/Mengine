@@ -135,6 +135,12 @@
             }
         },
         {
+            "Name": "Fragment_RadialGradient",
+            "File": {
+                "Path": "Materials/Metal_Fragment_RadialGradient.txt"
+            }
+        },
+        {
             "Name": "Fragment_Blend_Premultiply",
             "File": {
                 "Path": "Materials/Metal_Fragment_Blend_Premultiply.txt"

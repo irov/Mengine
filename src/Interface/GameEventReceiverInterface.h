@@ -72,6 +72,12 @@ namespace Mengine
         EVENT_GAME_ANALYTICS_FLUSH,
         EVENT_GAME_SAFE_AREA_VIEWPORT,
 
+        EVENT_GAME_GESTURE_MAGNIFICATION,
+        EVENT_GAME_GESTURE_ROTATION,
+        EVENT_GAME_GESTURE_SMART_MAGNIFICATION,
+        EVENT_GAME_GESTURE_SWIPE,
+        EVENT_GAME_GESTURE_PRESSURE,
+
         __EVENT_GAME_LAST__
     };
     //////////////////////////////////////////////////////////////////////////
@@ -95,6 +101,15 @@ namespace Mengine
         virtual bool onGameMouseWheel( const InputMouseWheelEvent & _event ) = 0;
         virtual void onGameAppMouseEnter( const InputMouseEnterEvent & _event ) = 0;
         virtual void onGameAppMouseLeave( const InputMouseLeaveEvent & _event ) = 0;
+
+    public:
+        virtual bool onGameGestureMagnification( const InputGestureMagnificationEvent & _event ) = 0;
+        virtual bool onGameGestureRotation( const InputGestureRotationEvent & _event ) = 0;
+        virtual bool onGameGestureSmartMagnification( const InputGestureSmartMagnificationEvent & _event ) = 0;
+        virtual bool onGameGestureSwipe( const InputGestureSwipeEvent & _event ) = 0;
+        virtual bool onGameGesturePressure( const InputGesturePressureEvent & _event ) = 0;
+
+    public:
         virtual void onGameTimeFactorChange( float _timeFactor ) = 0;
         virtual void onGameSettingChange( const SettingInterfacePtr & _setting, const Char * _key ) = 0;
         virtual bool onGamePreparation( bool _debug ) = 0;
@@ -149,6 +164,11 @@ namespace Mengine
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_MOUSE_WHEEL );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_APP_MOUSE_ENTER );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_APP_MOUSE_LEAVE );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_GESTURE_MAGNIFICATION );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_GESTURE_ROTATION );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_GESTURE_SMART_MAGNIFICATION );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_GESTURE_SWIPE );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_GESTURE_PRESSURE );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_TIME_FACTOR_CHANGE );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_SETTING_CHANGE );
     EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_PREPARATION );

@@ -107,7 +107,42 @@ namespace Mengine
             return;
         }
 
-        m_area->releaseTouch_( _event.touchId );
+        m_area->releaseTouch_( _event.touchId, false );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool VirtualAreaGlobalInputHandler::handleGestureMagnification( const InputGestureMagnificationEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool VirtualAreaGlobalInputHandler::handleGestureRotation( const InputGestureRotationEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool VirtualAreaGlobalInputHandler::handleGestureSmartMagnification( const InputGestureSmartMagnificationEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool VirtualAreaGlobalInputHandler::handleGestureSwipe( const InputGestureSwipeEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool VirtualAreaGlobalInputHandler::handleGesturePressure( const InputGesturePressureEvent & _event )
+    {
+        MENGINE_UNUSED( _event );
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
 }

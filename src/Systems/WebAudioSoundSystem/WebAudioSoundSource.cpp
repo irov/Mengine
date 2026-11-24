@@ -3,7 +3,7 @@
 #include "WebAudioBridge.h"
 #include "WebAudioSoundBuffer.h"
 
-#include "Config/StdMath.h"
+#include "Kernel/AssertionMath.h"
 
 namespace Mengine
 {
@@ -119,10 +119,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool WebAudioSoundSource::setPosition( float _position )
     {
-        if( StdMath::isfinite( _position ) == false )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_ISINFINITE( _position, "invalid sound position %f"
+            , _position
+        );
 
         if( _position < 0.f )
         {

@@ -14,7 +14,7 @@
 #include "Kernel/EnumeratorHelper.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
-#include "Kernel/Assertion.h"
+#include "Kernel/AssertionMath.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
@@ -33,7 +33,6 @@
 #include "Kernel/TimestampHelper.h"
 
 #include "Config/StdAlgorithm.h"
-#include "Config/StdMath.h"
 
 #include "math/utils.h"
 
@@ -1357,7 +1356,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _identity, "invalid identity set pos ms" );
 
-        MENGINE_ASSERTION( StdMath::isfinite( _position ) == true, "invalid sound position %f"
+        MENGINE_ASSERTION_ISINFINITE( _position, "invalid sound position %f"
             , _position
         );
 

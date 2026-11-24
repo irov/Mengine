@@ -285,6 +285,101 @@ namespace Mengine
             ->handleMouseLeave( _event );
     }
     //////////////////////////////////////////////////////////////////////////
+    bool GameService::handleGestureMagnification( const InputGestureMagnificationEvent & _event )
+    {
+        bool handle = EVENTABLE_METHODR( EVENT_GAME_GESTURE_MAGNIFICATION, false )
+            ->onGameGestureMagnification( _event );
+
+        if( handle == true )
+        {
+            return true;
+        }
+
+        if( PLAYER_SERVICE()
+            ->handleGestureMagnification( _event ) == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool GameService::handleGestureRotation( const InputGestureRotationEvent & _event )
+    {
+        bool handle = EVENTABLE_METHODR( EVENT_GAME_GESTURE_ROTATION, false )
+            ->onGameGestureRotation( _event );
+
+        if( handle == true )
+        {
+            return true;
+        }
+
+        if( PLAYER_SERVICE()
+            ->handleGestureRotation( _event ) == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool GameService::handleGestureSmartMagnification( const InputGestureSmartMagnificationEvent & _event )
+    {
+        bool handle = EVENTABLE_METHODR( EVENT_GAME_GESTURE_SMART_MAGNIFICATION, false )
+            ->onGameGestureSmartMagnification( _event );
+
+        if( handle == true )
+        {
+            return true;
+        }
+
+        if( PLAYER_SERVICE()
+            ->handleGestureSmartMagnification( _event ) == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool GameService::handleGestureSwipe( const InputGestureSwipeEvent & _event )
+    {
+        bool handle = EVENTABLE_METHODR( EVENT_GAME_GESTURE_SWIPE, false )
+            ->onGameGestureSwipe( _event );
+
+        if( handle == true )
+        {
+            return true;
+        }
+
+        if( PLAYER_SERVICE()
+            ->handleGestureSwipe( _event ) == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool GameService::handleGesturePressure( const InputGesturePressureEvent & _event )
+    {
+        bool handle = EVENTABLE_METHODR( EVENT_GAME_GESTURE_PRESSURE, false )
+            ->onGameGesturePressure( _event );
+
+        if( handle == true )
+        {
+            return true;
+        }
+
+        if( PLAYER_SERVICE()
+            ->handleGesturePressure( _event ) == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void GameService::_update()
     {
 #if defined(MENGINE_DEBUG)

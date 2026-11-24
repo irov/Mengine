@@ -2,6 +2,8 @@
 
 #include "Interface/TransformationInterface.h"
 
+#include "Kernel/GlobalInputHandlerHelper.h"
+
 #include "math/mat4.h"
 
 #include <cmath>
@@ -17,6 +19,7 @@ namespace Mengine
         , m_step( 0.f )
         , m_value( 0.f )
         , m_direction( EUIPBD_LEFT_TO_RIGHT )
+        , m_cancelHandlerId( INVALID_UNIQUE_ID )
         , m_dragTouchId( TC_TOUCH0 )
         , m_dragging( false )
     {
@@ -32,6 +35,8 @@ namespace Mengine
         {
             return;
         }
+
+        m_dragging = false;
 
         PickerInputHandlerInterfacePtr handler = PickerInputHandlerInterfacePtr::from( this );
 
@@ -261,8 +266,48 @@ namespace Mengine
         return m_changeCallback;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool UISlider::_activate()
+    {
+        m_cancelHandlerId = Helper::addGlobalMouseButtonHandler( MC_LBUTTON, false, [this]( const InputMouseButtonEvent & _event )
+        {
+            if( _event.isCancelled == false )
+            {
+                return;
+            }
+
+            if( m_dragging == false )
+            {
+                return;
+            }
+
+            if( _event.touchId != m_dragTouchId )
+            {
+                return;
+            }
+
+            m_dragging = false;
+        }, MENGINE_DOCUMENT_FACTORABLE );
+
+        if( m_cancelHandlerId == INVALID_UNIQUE_ID )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void UISlider::_deactivate()
+    {
+        this->removeCancelHandler_();
+        m_dragging = false;
+
+        Node::_deactivate();
+    }
+    //////////////////////////////////////////////////////////////////////////
     void UISlider::_dispose()
     {
+        this->removeCancelHandler_();
+
         if( m_hotSpot != nullptr )
         {
             PickerInputHandlerInterfacePtr handler = PickerInputHandlerInterfacePtr::from( this );
@@ -328,9 +373,12 @@ namespace Mengine
             return false;
         }
 
-        this->setValueFromWorldPoint_( _event.position.world );
-
         m_dragging = false;
+
+        if( _event.isCancelled == false )
+        {
+            this->setValueFromWorldPoint_( _event.position.world );
+        }
 
         return true;
     }
@@ -369,6 +417,46 @@ namespace Mengine
     {
         MENGINE_UNUSED( _context );
         MENGINE_UNUSED( _event );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool UISlider::handleGestureMagnification( const RenderContext * _context, const InputGestureMagnificationEvent & _event )
+    {
+        MENGINE_UNUSED( _context );
+        MENGINE_UNUSED( _event );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool UISlider::handleGestureRotation( const RenderContext * _context, const InputGestureRotationEvent & _event )
+    {
+        MENGINE_UNUSED( _context );
+        MENGINE_UNUSED( _event );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool UISlider::handleGestureSmartMagnification( const RenderContext * _context, const InputGestureSmartMagnificationEvent & _event )
+    {
+        MENGINE_UNUSED( _context );
+        MENGINE_UNUSED( _event );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool UISlider::handleGestureSwipe( const RenderContext * _context, const InputGestureSwipeEvent & _event )
+    {
+        MENGINE_UNUSED( _context );
+        MENGINE_UNUSED( _event );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool UISlider::handleGesturePressure( const RenderContext * _context, const InputGesturePressureEvent & _event )
+    {
+        MENGINE_UNUSED( _context );
+        MENGINE_UNUSED( _event );
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     float UISlider::normalizeValue_( float _value ) const
@@ -479,6 +567,19 @@ namespace Mengine
 
         const mt::vec3f & currentPosition = transformation->getLocalPosition();
         transformation->setLocalPosition( mt::vec3f( position.x, position.y, currentPosition.z ) );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void UISlider::removeCancelHandler_()
+    {
+        if( m_cancelHandlerId == INVALID_UNIQUE_ID )
+        {
+            return;
+        }
+
+        UniqueId handlerId = m_cancelHandlerId;
+        m_cancelHandlerId = INVALID_UNIQUE_ID;
+
+        Helper::removeGlobalHandler( handlerId );
     }
     //////////////////////////////////////////////////////////////////////////
 }

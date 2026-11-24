@@ -143,6 +143,14 @@
             }
         },
         {
+            "Name": "Fragment_RadialGradient",
+            "File": {
+                "Path": "Materials/DX11_Fragment_RadialGradient.hlsl",
+                "Converter": "text2pso11",
+                "Compile": true
+            }
+        },
+        {
             "Name": "Fragment_Blend_Premultiply",
             "File": {
                 "Path": "Materials/DX11_Fragment_Blend_Premultiply.hlsl",

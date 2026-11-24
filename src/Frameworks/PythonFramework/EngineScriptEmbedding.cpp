@@ -188,6 +188,7 @@ namespace Mengine
                 m_factoryPyGlobalMouseHandlerButtons = Helper::makeFactoryPool<PyGlobalMouseHandlerButton, 32>( MENGINE_DOCUMENT_FACTORABLE );
                 m_factoryPyGlobalMouseHandlerButtonEnds = Helper::makeFactoryPool<PyGlobalMouseHandlerButtonEnd, 32>( MENGINE_DOCUMENT_FACTORABLE );
                 m_factoryPyGlobalMouseHandlerWheels = Helper::makeFactoryPool<PyGlobalMouseHandlerWheel, 32>( MENGINE_DOCUMENT_FACTORABLE );
+                m_factoryPyGlobalGestureHandlers = Helper::makeFactoryPool<PyGlobalGestureHandler, 32>( MENGINE_DOCUMENT_FACTORABLE );
                 m_factoryPyGlobalMouseHandlerButtonBegins = Helper::makeFactoryPool<PyGlobalMouseHandlerButtonBegin, 32>( MENGINE_DOCUMENT_FACTORABLE );
                 m_factoryPyGlobalKeyHandler = Helper::makeFactoryPool<PyGlobalKeyHandler, 32>( MENGINE_DOCUMENT_FACTORABLE );
                 m_factoryPyGlobalTextHandler = Helper::makeFactoryPool<PyGlobalTextHandler, 32>( MENGINE_DOCUMENT_FACTORABLE );
@@ -230,6 +231,7 @@ namespace Mengine
                 MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPyGlobalMouseHandlerButtons );
                 MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPyGlobalMouseHandlerButtonEnds );
                 MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPyGlobalMouseHandlerWheels );
+                MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPyGlobalGestureHandlers );
                 MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPyGlobalMouseHandlerButtonBegins );
                 MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPyGlobalKeyHandler );
                 MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPyGlobalTextHandler );
@@ -250,6 +252,7 @@ namespace Mengine
                 m_factoryPyGlobalMouseHandlerButtons = nullptr;
                 m_factoryPyGlobalMouseHandlerButtonEnds = nullptr;
                 m_factoryPyGlobalMouseHandlerWheels = nullptr;
+                m_factoryPyGlobalGestureHandlers = nullptr;
                 m_factoryPyGlobalMouseHandlerButtonBegins = nullptr;
                 m_factoryPyGlobalKeyHandler = nullptr;
                 m_factoryPyGlobalTextHandler = nullptr;
@@ -3772,6 +3775,7 @@ namespace Mengine
                     return false;
                 }
 
+            protected:
                 bool handleMouseEnter( const InputMouseEnterEvent & _event ) override
                 {
                     MENGINE_UNUSED( _event );
@@ -3786,6 +3790,56 @@ namespace Mengine
                     MENGINE_UNUSED( _event );
 
                     //Empty
+                }
+
+            protected:
+                bool handleGestureMagnification( const InputGestureMagnificationEvent & _event ) override
+                {
+                    MENGINE_UNUSED( _event );
+
+                    return false;
+                }
+
+                bool handleGestureRotation( const InputGestureRotationEvent & _event ) override
+                {
+                    MENGINE_UNUSED( _event );
+
+                    return false;
+                }
+
+                bool handleGestureSmartMagnification( const InputGestureSmartMagnificationEvent & _event ) override
+                {
+                    MENGINE_UNUSED( _event );
+
+                    return false;
+                }
+
+                bool handleGestureSwipe( const InputGestureSwipeEvent & _event ) override
+                {
+                    MENGINE_UNUSED( _event );
+
+                    return false;
+                }
+
+                bool handleGesturePressure( const InputGesturePressureEvent & _event ) override
+                {
+                    MENGINE_UNUSED( _event );
+
+                    return false;
+                }
+
+            protected:
+                void checkCallbackResult_( const pybind::object & _result ) const
+                {
+                    if( _result.is_none() == false )
+                    {
+                        LOGGER_ERROR( "cb '%s' args '%s' return value '%s' type '%s' not None"
+                            , this->get_cb().repr().c_str()
+                            , this->get_args().repr().c_str()
+                            , _result.repr().c_str()
+                            , _result.repr_type().c_str()
+                        );
+                    }
                 }
             };
             //////////////////////////////////////////////////////////////////////////
@@ -4027,20 +4081,11 @@ namespace Mengine
                 DECLARE_FACTORABLE( PyGlobalMouseHandlerWheel );
 
             protected:
-                //////////////////////////////////////////////////////////////////////////
                 bool handleMouseWheel( const InputMouseWheelEvent & _event ) override
                 {
                     pybind::object py_result = this->call_cb( _event );
 
-                    if( py_result.is_none() == false )
-                    {
-                        LOGGER_ERROR( "cb '%s' args '%s' return value '%s' type '%s' not None"
-                            , this->get_cb().repr().c_str()
-                            , this->get_args().repr().c_str()
-                            , py_result.repr().c_str()
-                            , py_result.repr_type().c_str()
-                        );
-                    }
+                    this->checkCallbackResult_( py_result );
 
                     return false;
                 }
@@ -4060,6 +4105,156 @@ namespace Mengine
                 PyGlobalMouseHandlerWheelPtr handler = Helper::makePythonCallbackProvider( m_factoryPyGlobalMouseHandlerWheels, _cb, _args, MENGINE_DOCUMENT_PYTHON );
 
                 UniqueId id = globalHandleSystem->addGlobalHandler( handler, _enable, MENGINE_DOCUMENT_PYTHON );
+
+                return id;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            enum class EGesture
+            {
+                MAGNIFICATION,
+                ROTATION,
+                SMART_MAGNIFICATION,
+                SWIPE,
+                PRESSURE,
+            };
+            //////////////////////////////////////////////////////////////////////////
+            class PyGlobalGestureHandler
+                : public PyGlobalBaseHandler
+            {
+                DECLARE_FACTORABLE( PyGlobalGestureHandler );
+
+            public:
+                void setGesture( EGesture _gesture )
+                {
+                    m_gesture = _gesture;
+                }
+
+            protected:
+                bool handleGestureMagnification( const InputGestureMagnificationEvent & _event ) override
+                {
+                    if( m_gesture != EGesture::MAGNIFICATION )
+                    {
+                        return false;
+                    }
+
+                    pybind::object py_result = this->call_cb( _event );
+
+                    this->checkCallbackResult_( py_result );
+
+                    return false;
+                }
+
+                bool handleGestureRotation( const InputGestureRotationEvent & _event ) override
+                {
+                    if( m_gesture != EGesture::ROTATION )
+                    {
+                        return false;
+                    }
+
+                    pybind::object py_result = this->call_cb( _event );
+
+                    this->checkCallbackResult_( py_result );
+
+                    return false;
+                }
+
+                bool handleGestureSmartMagnification( const InputGestureSmartMagnificationEvent & _event ) override
+                {
+                    if( m_gesture != EGesture::SMART_MAGNIFICATION )
+                    {
+                        return false;
+                    }
+
+                    pybind::object py_result = this->call_cb( _event );
+
+                    this->checkCallbackResult_( py_result );
+
+                    return false;
+                }
+
+                bool handleGestureSwipe( const InputGestureSwipeEvent & _event ) override
+                {
+                    if( m_gesture != EGesture::SWIPE )
+                    {
+                        return false;
+                    }
+
+                    pybind::object py_result = this->call_cb( _event );
+
+                    this->checkCallbackResult_( py_result );
+
+                    return false;
+                }
+
+                bool handleGesturePressure( const InputGesturePressureEvent & _event ) override
+                {
+                    if( m_gesture != EGesture::PRESSURE )
+                    {
+                        return false;
+                    }
+
+                    pybind::object py_result = this->call_cb( _event );
+
+                    this->checkCallbackResult_( py_result );
+
+                    return false;
+                }
+
+            protected:
+                EGesture m_gesture = EGesture::MAGNIFICATION;
+            };
+            //////////////////////////////////////////////////////////////////////////
+            typedef IntrusivePtr<PyGlobalGestureHandler> PyGlobalGestureHandlerPtr;
+            //////////////////////////////////////////////////////////////////////////
+            FactoryInterfacePtr m_factoryPyGlobalGestureHandlers;
+            //////////////////////////////////////////////////////////////////////////
+            UniqueId addGestureHandler_( EGesture _gesture, const pybind::object & _cb, bool _enable, const pybind::args & _args )
+            {
+                const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
+                    ->getGlobalInputHandler();
+
+                MENGINE_ASSERTION_MEMORY_PANIC( globalHandleSystem, "invalid get global input handler" );
+
+                PyGlobalGestureHandlerPtr handler = Helper::makePythonCallbackProvider( m_factoryPyGlobalGestureHandlers, _cb, _args, MENGINE_DOCUMENT_PYTHON );
+
+                handler->setGesture( _gesture );
+
+                UniqueId id = globalHandleSystem->addGlobalHandler( handler, _enable, MENGINE_DOCUMENT_PYTHON );
+
+                return id;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            UniqueId s_addGestureMagnificationHandler( const pybind::object & _cb, bool _enable, const pybind::args & _args )
+            {
+                UniqueId id = this->addGestureHandler_( EGesture::MAGNIFICATION, _cb, _enable, _args );
+
+                return id;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            UniqueId s_addGestureRotationHandler( const pybind::object & _cb, bool _enable, const pybind::args & _args )
+            {
+                UniqueId id = this->addGestureHandler_( EGesture::ROTATION, _cb, _enable, _args );
+
+                return id;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            UniqueId s_addGestureSmartMagnificationHandler( const pybind::object & _cb, bool _enable, const pybind::args & _args )
+            {
+                UniqueId id = this->addGestureHandler_( EGesture::SMART_MAGNIFICATION, _cb, _enable, _args );
+
+                return id;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            UniqueId s_addGestureSwipeHandler( const pybind::object & _cb, bool _enable, const pybind::args & _args )
+            {
+                UniqueId id = this->addGestureHandler_( EGesture::SWIPE, _cb, _enable, _args );
+
+                return id;
+            }
+            //////////////////////////////////////////////////////////////////////////
+            UniqueId s_addGesturePressureHandler( const pybind::object & _cb, bool _enable, const pybind::args & _args )
+            {
+                UniqueId id = this->addGestureHandler_( EGesture::PRESSURE, _cb, _enable, _args );
 
                 return id;
             }
@@ -4732,6 +4927,11 @@ namespace Mengine
         pybind::def_functor_args( _kernel, "addMouseButtonHandlerBegin", nodeScriptMethod, &EngineScriptMethod::s_addMouseButtonHandlerBegin );
         pybind::def_functor_args( _kernel, "addMouseButtonHandlerEnd", nodeScriptMethod, &EngineScriptMethod::s_addMouseButtonHandlerEnd );
         pybind::def_functor_args( _kernel, "addMouseWheelHandler", nodeScriptMethod, &EngineScriptMethod::s_addMouseWheelHandler );
+        pybind::def_functor_args( _kernel, "addGestureMagnificationHandler", nodeScriptMethod, &EngineScriptMethod::s_addGestureMagnificationHandler );
+        pybind::def_functor_args( _kernel, "addGestureRotationHandler", nodeScriptMethod, &EngineScriptMethod::s_addGestureRotationHandler );
+        pybind::def_functor_args( _kernel, "addGestureSmartMagnificationHandler", nodeScriptMethod, &EngineScriptMethod::s_addGestureSmartMagnificationHandler );
+        pybind::def_functor_args( _kernel, "addGestureSwipeHandler", nodeScriptMethod, &EngineScriptMethod::s_addGestureSwipeHandler );
+        pybind::def_functor_args( _kernel, "addGesturePressureHandler", nodeScriptMethod, &EngineScriptMethod::s_addGesturePressureHandler );
         pybind::def_functor_args( _kernel, "addKeyHandler", nodeScriptMethod, &EngineScriptMethod::s_addKeyHandler );
         pybind::def_functor_args( _kernel, "addTextHandler", nodeScriptMethod, &EngineScriptMethod::s_addTextHandler );
         pybind::def_functor_args( _kernel, "addAccelerometerHandler", nodeScriptMethod, &EngineScriptMethod::s_addAccelerometerHandler );
@@ -4952,6 +5152,33 @@ namespace Mengine
             .def_member( "button", &InputMouseButtonEvent::button )
             .def_member( "isDown", &InputMouseButtonEvent::isDown )
             .def_member( "isPressed", &InputMouseButtonEvent::isPressed )
+            .def_member( "isCancelled", &InputMouseButtonEvent::isCancelled )
+            ;
+
+        pybind::enum_<EInputScrollUnit>( _kernel, "EInputScrollUnit" )
+            .def( "ISU_STEPS", ISU_STEPS )
+            .def( "ISU_SCREEN", ISU_SCREEN )
+            .def( "ISU_LINES", ISU_LINES )
+            .def( "ISU_PAGES", ISU_PAGES )
+            ;
+
+        pybind::enum_<EInputGesturePhase>( _kernel, "EInputGesturePhase" )
+            .def( "IGP_NONE", IGP_NONE )
+            .def( "IGP_MAY_BEGIN", IGP_MAY_BEGIN )
+            .def( "IGP_BEGIN", IGP_BEGIN )
+            .def( "IGP_CHANGE", IGP_CHANGE )
+            .def( "IGP_END", IGP_END )
+            .def( "IGP_CANCEL", IGP_CANCEL )
+            ;
+
+        pybind::struct_<InputScrollData>( _kernel, "InputScrollData" )
+            .def_member( "steps", &InputScrollData::steps )
+            .def_member( "delta", &InputScrollData::delta )
+            .def_member( "unit", &InputScrollData::unit )
+            .def_member( "phase", &InputScrollData::phase )
+            .def_member( "momentumPhase", &InputScrollData::momentumPhase )
+            .def_member( "isPrecise", &InputScrollData::isPrecise )
+            .def_member( "isDirectionInvertedFromDevice", &InputScrollData::isDirectionInvertedFromDevice )
             ;
 
         pybind::struct_<InputMouseWheelEvent>( _kernel, "InputMouseWheelEvent" )
@@ -4988,6 +5215,45 @@ namespace Mengine
             .def_member( "position", &InputMouseLeaveEvent::position )
             .def_member( "touchId", &InputMouseLeaveEvent::touchId )
             .def_member( "pressure", &InputMouseLeaveEvent::pressure )
+            ;
+
+        pybind::struct_<InputGestureMagnificationEvent>( _kernel, "InputGestureMagnificationEvent" )
+            .def_member( "base", &InputGestureMagnificationEvent::base )
+            .def_member( "special", &InputGestureMagnificationEvent::special )
+            .def_member( "position", &InputGestureMagnificationEvent::position )
+            .def_member( "scale", &InputGestureMagnificationEvent::scale )
+            .def_member( "phase", &InputGestureMagnificationEvent::phase )
+            ;
+
+        pybind::struct_<InputGestureRotationEvent>( _kernel, "InputGestureRotationEvent" )
+            .def_member( "base", &InputGestureRotationEvent::base )
+            .def_member( "special", &InputGestureRotationEvent::special )
+            .def_member( "position", &InputGestureRotationEvent::position )
+            .def_member( "degrees", &InputGestureRotationEvent::degrees )
+            .def_member( "phase", &InputGestureRotationEvent::phase )
+            ;
+
+        pybind::struct_<InputGestureSmartMagnificationEvent>( _kernel, "InputGestureSmartMagnificationEvent" )
+            .def_member( "base", &InputGestureSmartMagnificationEvent::base )
+            .def_member( "special", &InputGestureSmartMagnificationEvent::special )
+            .def_member( "position", &InputGestureSmartMagnificationEvent::position )
+            ;
+
+        pybind::struct_<InputGestureSwipeEvent>( _kernel, "InputGestureSwipeEvent" )
+            .def_member( "base", &InputGestureSwipeEvent::base )
+            .def_member( "special", &InputGestureSwipeEvent::special )
+            .def_member( "position", &InputGestureSwipeEvent::position )
+            .def_member( "direction", &InputGestureSwipeEvent::direction )
+            ;
+
+        pybind::struct_<InputGesturePressureEvent>( _kernel, "InputGesturePressureEvent" )
+            .def_member( "base", &InputGesturePressureEvent::base )
+            .def_member( "special", &InputGesturePressureEvent::special )
+            .def_member( "position", &InputGesturePressureEvent::position )
+            .def_member( "pressure", &InputGesturePressureEvent::pressure )
+            .def_member( "stage", &InputGesturePressureEvent::stage )
+            .def_member( "stageTransition", &InputGesturePressureEvent::stageTransition )
+            .def_member( "phase", &InputGesturePressureEvent::phase )
             ;
 
         pybind::interface_<PythonValueFollowerLinear, pybind::bases<PythonValueFollower>>( _kernel, "PythonValueFollowerLinear" )

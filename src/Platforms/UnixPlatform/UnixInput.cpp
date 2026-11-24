@@ -260,7 +260,7 @@ namespace Mengine
             }
 
             m_mouseButtonDown[index] = false;
-            Helper::pushMouseButtonEvent( timestamp, TC_TOUCH0, point.x, point.y, (EMouseButtonCode)index, 0.f, false );
+            Helper::pushMouseButtonEvent( timestamp, TC_TOUCH0, point.x, point.y, (EMouseButtonCode)index, 0.f, false, true );
         }
     }
     //////////////////////////////////////////////////////////////////////////

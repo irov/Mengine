@@ -139,6 +139,13 @@ namespace Mengine
         void handleMouseLeave( const InputMouseLeaveEvent & _event ) override;
 
     public:
+        bool handleGestureMagnification( const InputGestureMagnificationEvent & _event ) override;
+        bool handleGestureRotation( const InputGestureRotationEvent & _event ) override;
+        bool handleGestureSmartMagnification( const InputGestureSmartMagnificationEvent & _event ) override;
+        bool handleGestureSwipe( const InputGestureSwipeEvent & _event ) override;
+        bool handleGesturePressure( const InputGesturePressureEvent & _event ) override;
+
+    public:
         void setParticleEnable( bool _enabled ) override;
         bool getParticleEnable() const override;
 

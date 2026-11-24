@@ -85,6 +85,36 @@ namespace Mengine
         EMouseButtonCode button;
         bool isDown;
         bool isPressed;
+        bool isCancelled;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    enum EInputScrollUnit
+    {
+        ISU_STEPS,
+        ISU_SCREEN,
+        ISU_LINES,
+        ISU_PAGES
+    };
+    //////////////////////////////////////////////////////////////////////////
+    enum EInputGesturePhase : uint8_t
+    {
+        IGP_NONE,
+        IGP_MAY_BEGIN,
+        IGP_BEGIN,
+        IGP_CHANGE,
+        IGP_END,
+        IGP_CANCEL
+    };
+    //////////////////////////////////////////////////////////////////////////
+    struct InputScrollData
+    {
+        int32_t steps;
+        mt::vec2f delta;
+        EInputScrollUnit unit;
+        EInputGesturePhase phase;
+        EInputGesturePhase momentumPhase;
+        bool isPrecise;
+        bool isDirectionInvertedFromDevice;
     };
     //////////////////////////////////////////////////////////////////////////
     struct InputMouseWheelEvent
@@ -96,7 +126,7 @@ namespace Mengine
         float pressure;
 
         EWheelCode wheel;
-        int32_t scroll;
+        InputScrollData scroll;
     };
     //////////////////////////////////////////////////////////////////////////
     struct InputMouseMoveEvent
@@ -134,6 +164,54 @@ namespace Mengine
         ETouchCode touchId;
 
         float pressure;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    struct InputGestureMagnificationEvent
+    {
+        InputBaseData base;
+        InputSpecialData special;
+        InputPositionData position;
+
+        float scale;
+        EInputGesturePhase phase;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    struct InputGestureRotationEvent
+    {
+        InputBaseData base;
+        InputSpecialData special;
+        InputPositionData position;
+
+        float degrees;
+        EInputGesturePhase phase;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    struct InputGestureSmartMagnificationEvent
+    {
+        InputBaseData base;
+        InputSpecialData special;
+        InputPositionData position;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    struct InputGestureSwipeEvent
+    {
+        InputBaseData base;
+        InputSpecialData special;
+        InputPositionData position;
+
+        mt::vec2f direction;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    struct InputGesturePressureEvent
+    {
+        InputBaseData base;
+        InputSpecialData special;
+        InputPositionData position;
+
+        float pressure;
+        int32_t stage;
+        float stageTransition;
+        EInputGesturePhase phase;
     };
     //////////////////////////////////////////////////////////////////////////
     struct InputControllerConnectEvent

@@ -1,12 +1,12 @@
 #include "SoundDecoderOGGVorbis.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/AssertionMath.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ProfilerHelper.h"
 #include "Kernel/AssertionType.h"
 
 #include "Config/StdLib.h"
-#include "Config/StdMath.h"
 #include "Config/Abs.h"
 
 namespace Mengine
@@ -163,14 +163,9 @@ namespace Mengine
         double al_total = ov_time_total( &m_oggVorbisFile, -1 );
         float total = (float)(al_total * 1000.0);
 
-        if( StdMath::isfinite( total ) == false )
-        {
-            LOGGER_ERROR( "sound decoder OGG Vorbis invalid duration: %f"
-                , total
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_ISINFINITE( total, "sound decoder OGG Vorbis invalid duration: %f"
+            , total
+        );
 
         if( total < 0.f )
         {

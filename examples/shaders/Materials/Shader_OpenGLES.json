@@ -135,6 +135,12 @@
             }
         },
         {
+            "Name": "Fragment_RadialGradient",
+            "File": {
+                "Path": "Materials/GLES_Fragment_RadialGradient.txt"
+            }
+        },
+        {
             "Name": "Fragment_Blend_Premultiply",
             "File": {
                 "Path": "Materials/GLES_Fragment_Blend_Premultiply.txt"

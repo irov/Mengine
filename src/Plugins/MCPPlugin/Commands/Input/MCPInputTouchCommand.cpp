@@ -21,7 +21,7 @@ namespace Mengine
         m_actions.emplace( move, &MCPInputTouchCommand::move_ );
         m_actions.emplace( start, &MCPInputTouchCommand::start_ );
         m_actions.emplace( end, &MCPInputTouchCommand::end_ );
-        m_actions.emplace( cancel, &MCPInputTouchCommand::end_ );
+        m_actions.emplace( cancel, &MCPInputTouchCommand::cancel_ );
     }
     //////////////////////////////////////////////////////////////////////////
     EMCPCommandStatus MCPInputTouchCommand::execute( const MCPCommandRequest & _request, MCPCommandResponse * const _response )
@@ -101,6 +101,11 @@ namespace Mengine
     void MCPInputTouchCommand::end_( const TouchEvent & _event )
     {
         Helper::pushMouseButtonEvent( _event.timestamp, _event.touchId, _event.x, _event.y, MC_LBUTTON, _event.pressure, false );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MCPInputTouchCommand::cancel_( const TouchEvent & _event )
+    {
+        Helper::pushMouseButtonEvent( _event.timestamp, _event.touchId, _event.x, _event.y, MC_LBUTTON, _event.pressure, false, true );
     }
     //////////////////////////////////////////////////////////////////////////
 }

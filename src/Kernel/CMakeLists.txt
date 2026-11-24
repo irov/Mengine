@@ -558,6 +558,7 @@ Assertion
     AssertionToDo.h
     AssertionResourceType.h
     AssertionResourceUID.h
+    AssertionMath.h
     AssertionMemoryPanic.h
     AssertionMainThreadGuard.h
     AssertionVocabulary.h

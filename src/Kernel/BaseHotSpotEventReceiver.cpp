@@ -101,6 +101,46 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool BaseHotSpotEventReceiver::onHotSpotGestureMagnification( const RenderContext * _context, const InputGestureMagnificationEvent & _event )
+    {
+        MENGINE_UNUSED( _context );
+        MENGINE_UNUSED( _event );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool BaseHotSpotEventReceiver::onHotSpotGestureRotation( const RenderContext * _context, const InputGestureRotationEvent & _event )
+    {
+        MENGINE_UNUSED( _context );
+        MENGINE_UNUSED( _event );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool BaseHotSpotEventReceiver::onHotSpotGestureSmartMagnification( const RenderContext * _context, const InputGestureSmartMagnificationEvent & _event )
+    {
+        MENGINE_UNUSED( _context );
+        MENGINE_UNUSED( _event );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool BaseHotSpotEventReceiver::onHotSpotGestureSwipe( const RenderContext * _context, const InputGestureSwipeEvent & _event )
+    {
+        MENGINE_UNUSED( _context );
+        MENGINE_UNUSED( _event );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool BaseHotSpotEventReceiver::onHotSpotGesturePressure( const RenderContext * _context, const InputGesturePressureEvent & _event )
+    {
+        MENGINE_UNUSED( _context );
+        MENGINE_UNUSED( _event );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void BaseHotSpotEventReceiver::onHotSpotMouseOverDestroy()
     {
         //Empty

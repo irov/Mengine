@@ -21,6 +21,7 @@ import org.Mengine.Base.MengineAdResponseInterface;
 import org.Mengine.Base.MengineAdService;
 import org.Mengine.Base.MengineAnalyticsEventBuilderInterface;
 import org.Mengine.Base.MengineFragmentAdRevenue;
+import org.Mengine.Base.MengineFullscreenAdShow;
 import org.Mengine.Base.MengineLog;
 import org.Mengine.Base.MengineParamAdRevenue;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
@@ -37,6 +38,7 @@ public class MengineAppLovinBase implements MengineAppLovinAdInterface {
     protected final MaxAdFormat m_adFormat;
 
     protected final String m_adUnitId;
+    protected final MengineFullscreenAdShow m_fullscreenAdShow;
 
     protected int m_enumeratorRequest;
     protected int m_requestId;
@@ -48,6 +50,16 @@ public class MengineAppLovinBase implements MengineAppLovinAdInterface {
         m_plugin = plugin;
         m_adFormat = adFormat;
         m_adUnitId = adUnitId;
+
+        m_fullscreenAdShow = new MengineFullscreenAdShow(activity -> {
+            MengineActivity currentActivity = m_plugin.getMengineActivity();
+
+            if (MengineUtils.isCurrentActivity(activity, currentActivity) == false) {
+                return false;
+            }
+
+            return true;
+        }, null);
 
         m_enumeratorRequest = 0;
         m_requestId = 0;

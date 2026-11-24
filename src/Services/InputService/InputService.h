@@ -84,6 +84,11 @@ namespace Mengine
         void dispatchEvent_( const InputMouseWheelEvent & _params );
         void dispatchEvent_( const InputMouseEnterEvent & _params );
         void dispatchEvent_( const InputMouseLeaveEvent & _params );
+        void dispatchEvent_( const InputGestureMagnificationEvent & _params );
+        void dispatchEvent_( const InputGestureRotationEvent & _params );
+        void dispatchEvent_( const InputGestureSmartMagnificationEvent & _params );
+        void dispatchEvent_( const InputGestureSwipeEvent & _params );
+        void dispatchEvent_( const InputGesturePressureEvent & _params );
         void dispatchEvent_( const InputControllerConnectEvent & _event );
         void dispatchEvent_( const InputControllerButtonEvent & _event );
         void dispatchEvent_( const InputControllerAxisEvent & _event );

@@ -32,6 +32,7 @@
 #include "Kernel/StaticString.h"
 #include "Kernel/IntrusiveList.h"
 
+#include "Config/Atomic.h"
 #include "Config/Timestamp.h"
 
 #include <EGL/egl.h>
@@ -222,7 +223,8 @@ namespace Mengine
         void androidNativeStartEvent() override;
         void androidNativeRestartEvent() override;
         void androidNativeDestroyEvent() override;
-        void androidNativeFreezeEvent( const ConstString & _owner, bool _freeze ) override;
+        void androidNativeFreezeEvent( uint32_t _flags ) override;
+        void androidNativeUnfreezeEvent( uint32_t _flags ) override;
         void androidNativeClipboardChangedEvent() override;
         void androidNativeWindowFocusChangedEvent( jboolean _focus ) override;
         void androidNativeDeleteAccountAccepted() override;
@@ -264,6 +266,19 @@ namespace Mengine
         LoggerInterfacePtr m_proxyLogger;
 
         ThreadMutexInterfacePtr m_activityMutex;
+
+        // Values match the freeze flags in MenginePlatformEventQueue.
+        enum EAndroidFreezeFlags : uint32_t
+        {
+            AFF_UPDATE = 1 << 0,
+            AFF_RENDER = 1 << 1,
+            AFF_SOUND = 1 << 2,
+            AFF_ALL = AFF_UPDATE | AFF_RENDER | AFF_SOUND
+        };
+
+        AtomicUInt32 m_updateFreezeCount;
+        AtomicUInt32 m_renderFreezeCount;
+        AtomicUInt32 m_soundFreezeCount;
 
         typedef IntrusiveList<AndroidNativeRunnable> IntrusiveListAndroidNativeRunnables;
         IntrusiveListAndroidNativeRunnables m_nativeRunnables;

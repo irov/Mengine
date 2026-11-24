@@ -77,6 +77,13 @@ namespace Mengine
         bool handleMouseEnter( const InputMouseEnterEvent & _event ) override;
         void handleMouseLeave( const InputMouseLeaveEvent & _event ) override;
 
+    public:
+        bool handleGestureMagnification( const InputGestureMagnificationEvent & _event ) override;
+        bool handleGestureRotation( const InputGestureRotationEvent & _event ) override;
+        bool handleGestureSmartMagnification( const InputGestureSmartMagnificationEvent & _event ) override;
+        bool handleGestureSwipe( const InputGestureSwipeEvent & _event ) override;
+        bool handleGesturePressure( const InputGesturePressureEvent & _event ) override;
+
     protected:
         void updateTraps_();
 
@@ -85,9 +92,6 @@ namespace Mengine
         bool pickStates_( const mt::vec2f & _screenPosition, ETouchCode _touchId, float _pressure, const InputSpecialData & _special, VectorPickerStates * const _states ) const;
         bool getStates_( const mt::vec2f & _screenPosition, VectorPickerStates * const _states ) const;
         bool testPickerScissor_( const PickerStateDesc & _desc, const mt::vec2f & _screenPosition ) const;
-
-    protected:
-        void calculateInputPositionWorld_( const PickerStateDesc & _desc, InputPositionData * const _position ) const;
 
     protected:
         ScenePtr m_scene;

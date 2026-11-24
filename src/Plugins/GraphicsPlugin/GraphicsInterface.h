@@ -17,6 +17,16 @@ struct gp_graphics_t;
 
 namespace Mengine
 {
+    struct RenderMaterialStage;
+
+    //////////////////////////////////////////////////////////////////////////
+    struct GraphicsGradientStopDesc
+    {
+        float offset;
+        Color color;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef Vector<GraphicsGradientStopDesc> VectorGraphicsGradientStops;
     //////////////////////////////////////////////////////////////////////////
     enum class EGraphicsLineCap : uint8_t
     {
@@ -143,6 +153,9 @@ namespace Mengine
         virtual void popState() = 0;
         virtual void beginFill() = 0;
         virtual void endFill() = 0;
+        virtual bool setLinearGradient( const mt::vec2f & _from, const mt::vec2f & _to, const VectorGraphicsGradientStops & _stops ) = 0;
+        virtual bool setRadialGradient( const mt::vec2f & _center, float _radius, const VectorGraphicsGradientStops & _stops ) = 0;
+        virtual void clearFillGradient() = 0;
 
     public:
         virtual GraphicsPathPtr createPath() = 0;
@@ -183,6 +196,8 @@ namespace Mengine
 
     public:
         virtual gp_graphics_t * getGraphics() const = 0;
+        virtual const RenderMaterialStage * getGradientMaterialStage( bool _radial ) = 0;
+        virtual uint64_t getGradientTextureGeneration() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
 }

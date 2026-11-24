@@ -1000,7 +1000,7 @@ namespace Mengine
             m_mouseButtonDown[index] = false;
 
             EMouseButtonCode button = (EMouseButtonCode)index;
-            Helper::pushMouseButtonEvent( timestamp, TC_TOUCH0, point.x, point.y, button, 0.f, false );
+            Helper::pushMouseButtonEvent( timestamp, TC_TOUCH0, point.x, point.y, button, 0.f, false, true );
         }
 
         for( uint32_t slot = 0; slot != MENGINE_INPUT_MAX_TOUCH; ++slot )
@@ -1015,7 +1015,7 @@ namespace Mengine
             const mt::vec2f & touchPoint = m_touchPositions[slot];
 
             ETouchCode code = (ETouchCode)slot;
-            Helper::pushMouseButtonEvent( timestamp, code, touchPoint.x, touchPoint.y, MC_LBUTTON, 0.f, false );
+            Helper::pushMouseButtonEvent( timestamp, code, touchPoint.x, touchPoint.y, MC_LBUTTON, 0.f, false, true );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1229,17 +1229,55 @@ namespace Mengine
 
         EmscriptenPlatformService * platform = static_cast<EmscriptenPlatformService *>(_user);
 
-        if( _event->deltaY == 0.0 )
+        if( _event->deltaX == 0.0 && _event->deltaY == 0.0 )
         {
             return false;
         }
+
+        InputScrollData scroll{};
+        scroll.delta.set( (float)_event->deltaX, (float)_event->deltaY );
+
+        switch( _event->deltaMode )
+        {
+        case DOM_DELTA_PIXEL:
+            {
+                double width;
+                double height;
+                if( emscripten_get_element_css_size( "#canvas", &width, &height ) != EMSCRIPTEN_RESULT_SUCCESS )
+                {
+                    return false;
+                }
+
+                if( width <= 0.0 )
+                {
+                    return false;
+                }
+
+                if( height <= 0.0 )
+                {
+                    return false;
+                }
+
+                scroll.unit = ISU_SCREEN;
+                scroll.delta.x /= (float)width;
+                scroll.delta.y /= (float)height;
+            }break;
+        case DOM_DELTA_LINE:
+            scroll.unit = ISU_LINES;
+            break;
+        case DOM_DELTA_PAGE:
+            scroll.unit = ISU_PAGES;
+            break;
+        default:
+            return false;
+        }
+
+        scroll.steps = _event->deltaY > 0.0 ? -1 : (_event->deltaY < 0.0 ? 1 : 0);
 
         mt::vec2f point;
         platform->getPointer_( _event->mouse.clientX, _event->mouse.clientY, &point );
 
         Timestamp timestamp = platform->getInputTimestamp();
-
-        int32_t scroll = _event->deltaY > 0.0 ? -1 : 1;
         Helper::pushMouseWheelEvent( timestamp, point.x, point.y, 0.f, WC_CENTRAL, scroll );
 
         return true;
@@ -1317,8 +1355,9 @@ namespace Mengine
             else
             {
                 bool down = _type == EMSCRIPTEN_EVENT_TOUCHSTART;
+                bool isCancelled = _type == EMSCRIPTEN_EVENT_TOUCHCANCEL;
 
-                Helper::pushMouseButtonEvent( timestamp, code, point.x, point.y, MC_LBUTTON, 1.f, down );
+                Helper::pushMouseButtonEvent( timestamp, code, point.x, point.y, MC_LBUTTON, 1.f, down, isCancelled );
 
                 if( down == false )
                 {

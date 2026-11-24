@@ -91,6 +91,8 @@ namespace Mengine
         using std::ceil;
         using std::fmod;
         using std::isfinite;
+        using std::isnan;
+        using std::isinf;
     }
 }
 

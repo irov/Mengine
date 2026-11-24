@@ -6,10 +6,11 @@
 #include "../../Contexts/MCPRuntimeContext.h"
 #include "MCPAdvanceFramesOperation.h"
 
+#include "Kernel/AssertionMath.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FactorableUnique.h"
 
-#include "Config/StdMath.h"
+#include "Config/StdLimits.h"
 
 namespace Mengine
 {
@@ -110,14 +111,22 @@ namespace Mengine
             return EMCPCommandStatus::FAILURE;
         }
 
-        float value = _request.params.get( "value", -1.f );
+        double rawValue = _request.params.get( "value", -1.0 );
 
-        if( StdMath::isfinite( value ) == false )
+        constexpr double maxValue = StdLimits::numeric_limits<float>::max();
+
+        if( rawValue < -maxValue || rawValue > maxValue )
         {
-            _response->errorMessage = "time_scale requires a finite value";
+            _response->errorMessage = "time_scale value is out of float range";
 
             return EMCPCommandStatus::FAILURE;
         }
+
+        float value = (float)rawValue;
+
+        MENGINE_ASSERTION_ISINFINITE( value, "invalid time scale %f"
+            , value
+        );
 
         if( value < 0.f )
         {
@@ -184,14 +193,22 @@ namespace Mengine
             }
         }
 
-        float timeFactor = _request.params.get( "value", 1.f );
+        double rawTimeFactor = _request.params.get( "value", 1.0 );
 
-        if( StdMath::isfinite( timeFactor ) == false )
+        constexpr double maxValue = StdLimits::numeric_limits<float>::max();
+
+        if( rawTimeFactor < -maxValue || rawTimeFactor > maxValue )
         {
-            _response->errorMessage = "advance frame time factor must be finite";
+            _response->errorMessage = "advance frame time factor is out of float range";
 
             return EMCPCommandStatus::FAILURE;
         }
+
+        float timeFactor = (float)rawTimeFactor;
+
+        MENGINE_ASSERTION_ISINFINITE( timeFactor, "invalid advance frame time factor %f"
+            , timeFactor
+        );
 
         if( timeFactor < 0.f )
         {

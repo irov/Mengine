@@ -18,6 +18,7 @@
 - When changing a shared interface, inspect and update all affected implementations and callers, including platform-specific and optional components.
 - Preserve ownership and lifecycle contracts. Handle cleanup after partial initialization and release resources, registrations, and callbacks at the appropriate lifecycle stage.
 - Preserve the encoding and line endings of edited files. Avoid unrelated formatting changes.
+- Omit trivial comments that repeat what the code already shows. Add explanatory comments only to warn about a non-obvious pitfall or to clarify intentional behavior that could be mistaken for a bug.
 - When a review identifies a mistake, check all analogous places in your own changes and fix the same mistake consistently.
 - Document general project conventions rather than turning a solution to one task into a project-wide requirement.
 

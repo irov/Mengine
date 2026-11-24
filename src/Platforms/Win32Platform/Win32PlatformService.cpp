@@ -1722,7 +1722,7 @@ namespace Mengine
 
                     if( (::GetKeyState( VK_LBUTTON ) & 0x8000) == 0 )
                     {
-                        Helper::pushMouseButtonEvent( messageTimestamp, TC_TOUCH0, point.x, point.y, MC_LBUTTON, 0.f, false );
+                        Helper::pushMouseButtonEvent( messageTimestamp, TC_TOUCH0, point.x, point.y, MC_LBUTTON, 0.f, false, true );
                     }
                 }
 
@@ -1732,7 +1732,7 @@ namespace Mengine
 
                     if( (::GetKeyState( VK_RBUTTON ) & 0x8000) == 0 )
                     {
-                        Helper::pushMouseButtonEvent( messageTimestamp, TC_TOUCH0, point.x, point.y, MC_RBUTTON, 0.f, false );
+                        Helper::pushMouseButtonEvent( messageTimestamp, TC_TOUCH0, point.x, point.y, MC_RBUTTON, 0.f, false, true );
                     }
                 }
 
@@ -1742,7 +1742,7 @@ namespace Mengine
 
                     if( (::GetKeyState( VK_MBUTTON ) & 0x8000) == 0 )
                     {
-                        Helper::pushMouseButtonEvent( messageTimestamp, TC_TOUCH0, point.x, point.y, MC_MBUTTON, 0.f, false );
+                        Helper::pushMouseButtonEvent( messageTimestamp, TC_TOUCH0, point.x, point.y, MC_MBUTTON, 0.f, false, true );
                     }
                 }
 
@@ -1848,6 +1848,7 @@ namespace Mengine
                 *_result = 0;
             }break;
         case WM_MOUSEWHEEL:
+        case WM_MOUSEHWHEEL:
             {
                 LOGGER_INFO( "platform", "HWND [%p] WM_MOUSEWHEEL wParam [%" MENGINE_PRWPARAM "] lParam [%" MENGINE_PRLPARAM "] visible [%d]"
                     , hWnd
@@ -1871,7 +1872,18 @@ namespace Mengine
                     return false;
                 }
 
-                int32_t scroll = zDelta / WHEEL_DELTA;
+                InputScrollData scroll{};
+                float steps = (float)zDelta / (float)WHEEL_DELTA;
+
+                if( uMsg == WM_MOUSEHWHEEL )
+                {
+                    scroll.delta.set( steps, 0.f );
+                }
+                else
+                {
+                    scroll.steps = zDelta / WHEEL_DELTA;
+                    scroll.delta.set( 0.f, -steps );
+                }
 
                 Helper::pushMouseWheelEvent( messageTimestamp, point.x, point.y, 0.f, WC_CENTRAL, scroll );
 

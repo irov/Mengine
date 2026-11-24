@@ -2,7 +2,7 @@
 
 #include "AudioUnitSoundSystemExtensionInterface.h"
 
-#include "Kernel/Assertion.h"
+#include "Kernel/AssertionMath.h"
 #include "Kernel/Logger.h"
 #include "Kernel/SpinLockScope.h"
 #include "Kernel/SpinLockTryScope.h"
@@ -402,7 +402,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AudioUnitSoundSource::setPosition( float _position )
     {
-        MENGINE_ASSERTION( StdMath::isfinite( _position ) == true, "invalid sound position %f"
+        MENGINE_ASSERTION_ISINFINITE( _position, "invalid sound position %f"
             , _position
         );
 

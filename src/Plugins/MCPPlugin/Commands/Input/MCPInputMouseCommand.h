@@ -35,6 +35,14 @@ namespace Mengine
             float dy;
             EMouseButtonCode button;
             int32_t wheel;
+            InputScrollData scroll;
+            float scale = 1.f;
+            float degrees = 0.f;
+            mt::vec2f swipeDirection = mt::vec2f( 0.f, 0.f );
+            float pressure = 0.f;
+            int32_t pressureStage = 0;
+            float stageTransition = 0.f;
+            EInputGesturePhase gesturePhase = IGP_CHANGE;
         };
 
         typedef void (MCPInputMouseCommand::*Action)( const MouseEventDesc & _event );
@@ -46,6 +54,12 @@ namespace Mengine
         void click_( const MouseEventDesc & _event );
         void doubleClick_( const MouseEventDesc & _event );
         void wheel_( const MouseEventDesc & _event );
+        void scroll_( const MouseEventDesc & _event );
+        void pinch_( const MouseEventDesc & _event );
+        void rotate_( const MouseEventDesc & _event );
+        void smartMagnify_( const MouseEventDesc & _event );
+        void swipe_( const MouseEventDesc & _event );
+        void pressure_( const MouseEventDesc & _event );
 
     protected:
         MCPInputContext * m_context;

@@ -3,6 +3,8 @@
 #include "UIControlCallbackInterface.h"
 #include "UIProgressBar.h"
 
+#include "Interface/PickerInputHandlerInterface.h"
+
 #include "Kernel/Node.h"
 #include "Kernel/HotSpot.h"
 #include "Kernel/BaseTransformation.h"
@@ -57,6 +59,8 @@ namespace Mengine
         const UIFloatValueCallbackInterfacePtr & getChangeCallback() const;
 
     protected:
+        bool _activate() override;
+        void _deactivate() override;
         void _dispose() override;
 
     public:
@@ -67,13 +71,23 @@ namespace Mengine
         bool handleMouseButtonEventEnd( const RenderContext * _context, const InputMouseButtonEvent & _event ) override;
         bool handleMouseMove( const RenderContext * _context, const InputMouseMoveEvent & _event ) override;
         bool handleMouseWheel( const RenderContext * _context, const InputMouseWheelEvent & _event ) override;
+
+    public:
         bool handleMouseEnter( const RenderContext * _context, const InputMouseEnterEvent & _event ) override;
         void handleMouseLeave( const RenderContext * _context, const InputMouseLeaveEvent & _event ) override;
+
+    public:
+        bool handleGestureMagnification( const RenderContext * _context, const InputGestureMagnificationEvent & _event ) override;
+        bool handleGestureRotation( const RenderContext * _context, const InputGestureRotationEvent & _event ) override;
+        bool handleGestureSmartMagnification( const RenderContext * _context, const InputGestureSmartMagnificationEvent & _event ) override;
+        bool handleGestureSwipe( const RenderContext * _context, const InputGestureSwipeEvent & _event ) override;
+        bool handleGesturePressure( const RenderContext * _context, const InputGesturePressureEvent & _event ) override;
 
     private:
         float normalizeValue_( float _value ) const;
         void setValueFromWorldPoint_( const mt::vec2f & _worldPoint );
         void updateVisuals_();
+        void removeCancelHandler_();
 
     private:
         HotSpotPtr m_hotSpot;
@@ -90,6 +104,7 @@ namespace Mengine
         float m_value;
 
         EUIProgressBarDirection m_direction;
+        UniqueId m_cancelHandlerId;
         ETouchCode m_dragTouchId;
         bool m_dragging;
     };

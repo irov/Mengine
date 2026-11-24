@@ -97,6 +97,13 @@ namespace Mengine
         bool handleMouseEnter( const RenderContext * _context, const InputMouseEnterEvent & _event ) override;
         void handleMouseLeave( const RenderContext * _context, const InputMouseLeaveEvent & _event ) override;
 
+    public:
+        bool handleGestureMagnification( const RenderContext * _context, const InputGestureMagnificationEvent & _event ) override;
+        bool handleGestureRotation( const RenderContext * _context, const InputGestureRotationEvent & _event ) override;
+        bool handleGestureSmartMagnification( const RenderContext * _context, const InputGestureSmartMagnificationEvent & _event ) override;
+        bool handleGestureSwipe( const RenderContext * _context, const InputGestureSwipeEvent & _event ) override;
+        bool handleGesturePressure( const RenderContext * _context, const InputGesturePressureEvent & _event ) override;
+
     protected:
         void _setPickerEnable( bool _enable ) override;
 

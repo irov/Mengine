@@ -1,5 +1,6 @@
 #import "MacOSInput.h"
 
+#import "Kernel/AssertionMath.h"
 #import "Kernel/InputServiceHelper.h"
 #import "Kernel/UnicodeHelper.h"
 
@@ -10,6 +11,25 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    namespace Detail
+    {
+        static EInputGesturePhase convertGesturePhase( NSEventPhase _phase )
+        {
+            switch( _phase )
+            {
+            case NSEventPhaseMayBegin: return IGP_MAY_BEGIN;
+            case NSEventPhaseBegan: return IGP_BEGIN;
+            case NSEventPhaseStationary:
+            case NSEventPhaseChanged: return IGP_CHANGE;
+            case NSEventPhaseEnded: return IGP_END;
+            case NSEventPhaseCancelled: return IGP_CANCEL;
+            case NSEventPhaseNone: break;
+            }
+
+            return IGP_NONE;
+        }
+    }
     //////////////////////////////////////////////////////////////////////////
     MacOSInput::MacOSInput()
     {
@@ -120,19 +140,47 @@ namespace Mengine
                 mt::vec2f point;
                 this->calcCursorPosition_( _view, [_event locationInWindow], &point );
 
+                CGFloat scrollingDeltaX = [_event scrollingDeltaX];
                 CGFloat scrollingDeltaY = [_event scrollingDeltaY];
 
-                int32_t scroll = (int32_t)StdMath::round( (float)scrollingDeltaY );
+                MENGINE_ASSERTION_ISINFINITE( scrollingDeltaX, "invalid horizontal scroll delta" );
+                MENGINE_ASSERTION_ISINFINITE( scrollingDeltaY, "invalid vertical scroll delta" );
 
-                if( scroll == 0 && scrollingDeltaY != 0.0 )
+                InputScrollData scroll{};
+
+                double rounded = StdMath::round( scrollingDeltaY );
+                scroll.steps = (int32_t)StdAlgorithm::clamp( rounded, (double)INT32_MIN, (double)INT32_MAX );
+
+                if( scroll.steps == 0 && scrollingDeltaY != 0.0 )
                 {
-                    scroll = scrollingDeltaY > 0.0 ? 1 : -1;
+                    scroll.steps = scrollingDeltaY > 0.0 ? 1 : -1;
                 }
 
-                if( scroll != 0 )
+                scroll.phase = Detail::convertGesturePhase( [_event phase] );
+                scroll.momentumPhase = Detail::convertGesturePhase( [_event momentumPhase] );
+                scroll.isDirectionInvertedFromDevice = [_event isDirectionInvertedFromDevice] == YES;
+                scroll.isPrecise = [_event hasPreciseScrollingDeltas] == YES;
+
+                if( scroll.isPrecise == true )
                 {
-                    Helper::pushMouseWheelEvent( this->getEventTimestamp_( _event ), point.x, point.y, 0.f, WC_CENTRAL, scroll );
+                    scroll.unit = ISU_SCREEN;
+                    this->calcCursorDelta_( _view, -scrollingDeltaX, scrollingDeltaY, &scroll.delta );
                 }
+                else
+                {
+                    scroll.delta.set( (float)-scrollingDeltaX, (float)-scrollingDeltaY );
+                }
+
+                Timestamp timestamp = this->getEventTimestamp_( _event );
+                Helper::pushMouseWheelEvent( timestamp, point.x, point.y, 0.f, WC_CENTRAL, scroll );
+            }break;
+        case NSEventTypeMagnify:
+        case NSEventTypeRotate:
+        case NSEventTypeSmartMagnify:
+        case NSEventTypeSwipe:
+        case NSEventTypePressure:
+            {
+                this->handleGestureEvent_( _view, _event );
             }break;
         case NSEventTypeKeyDown:
             {
@@ -220,6 +268,94 @@ namespace Mengine
                 this->calcCursorPosition_( _view, [_event locationInWindow], &point );
 
                 Helper::pushMouseLeaveEvent( this->getEventTimestamp_( _event ), TC_TOUCH0, point.x, point.y, 0.f );
+            }break;
+        default:
+            break;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MacOSInput::handleGestureEvent_( NSView * _view, NSEvent * _event )
+    {
+        mt::vec2f point;
+        this->calcCursorPosition_( _view, [_event locationInWindow], &point );
+
+        NSEventModifierFlags flags = [_event modifierFlags];
+        InputSpecialData special;
+        special.isAlt = (flags & NSEventModifierFlagOption) != 0;
+        special.isShift = (flags & NSEventModifierFlagShift) != 0;
+        special.isControl = (flags & NSEventModifierFlagControl) != 0;
+        special.isSpecial = (flags & NSEventModifierFlagCommand) != 0;
+
+        Timestamp timestamp = this->getEventTimestamp_( _event );
+
+        switch( [_event type] )
+        {
+        case NSEventTypeMagnify:
+            {
+                float scale = 1.f + (float)[_event magnification];
+
+                MENGINE_ASSERTION_ISINFINITE( scale, "invalid magnification scale" );
+
+                if( scale <= 0.f )
+                {
+                    break;
+                }
+
+                EInputGesturePhase phase = Detail::convertGesturePhase( [_event phase] );
+                Helper::pushGestureMagnificationEvent( timestamp, point.x, point.y, scale, phase, special );
+            }break;
+        case NSEventTypeRotate:
+            {
+                float degrees = [_event rotation];
+
+                MENGINE_ASSERTION_ISINFINITE( degrees, "invalid gesture rotation angle" );
+
+                EInputGesturePhase phase = Detail::convertGesturePhase( [_event phase] );
+                Helper::pushGestureRotationEvent( timestamp, point.x, point.y, degrees, phase, special );
+            }break;
+        case NSEventTypeSmartMagnify:
+            {
+                Helper::pushGestureSmartMagnificationEvent( timestamp, point.x, point.y, special );
+            }break;
+        case NSEventTypeSwipe:
+            {
+                float directionX = -(float)[_event deltaX];
+                float directionY = -(float)[_event deltaY];
+
+                MENGINE_ASSERTION_ISINFINITE( directionX, "invalid horizontal swipe direction" );
+                MENGINE_ASSERTION_ISINFINITE( directionY, "invalid vertical swipe direction" );
+
+                if( directionX == 0.f && directionY == 0.f )
+                {
+                    break;
+                }
+
+                mt::vec2f direction( directionX, directionY );
+                Helper::pushGestureSwipeEvent( timestamp, point.x, point.y, direction, special );
+            }break;
+        case NSEventTypePressure:
+            {
+                NSInteger nativeStage = [_event stage];
+
+                if( nativeStage < 0 )
+                {
+                    break;
+                }
+
+                if( nativeStage > INT32_MAX )
+                {
+                    break;
+                }
+
+                float pressure = [_event pressure];
+                float stageTransition = (float)[_event stageTransition];
+
+                MENGINE_ASSERTION_ISINFINITE( pressure, "invalid gesture pressure" );
+                MENGINE_ASSERTION_ISINFINITE( stageTransition, "invalid pressure stage transition" );
+
+                int32_t stage = (int32_t)nativeStage;
+                EInputGesturePhase phase = Detail::convertGesturePhase( [_event phase] );
+                Helper::pushGesturePressureEvent( timestamp, point.x, point.y, pressure, stage, stageTransition, phase, special );
             }break;
         default:
             break;

@@ -42,11 +42,36 @@ namespace Mengine
         graphics->setLineColor( {1.f, 0.25f, 0.f, 1.f} );
         graphics->drawCircle( {200.f, 300.f}, 50.f );
 
-        graphics->setLineColor( {0.5f, 0.25f, 1.f, 1.f} );
+        const VectorGraphicsGradientStops sky = {
+            {0.f, Color( 79.f / 255.f, 183.f / 255.f, 1.f, 1.f )},
+            {1.f, Color( 168.f / 255.f, 228.f / 255.f, 1.f, 1.f )}
+        };
+
+        if( graphics->setLinearGradient( {400.f, 300.f}, {400.f, 400.f}, sky ) == false )
+        {
+            return false;
+        }
+
         graphics->drawRect( {400.f, 300.f}, 100.f, 100.f );
 
-        graphics->setLineColor( {0.25f, 1.f, 0.75f, 1.f} );
+        const VectorGraphicsGradientStops radial = {
+            {0.f, Color( 1.f, 0.9f, 0.5f, 1.f )},
+            {0.65f, Color( 0.9f, 0.25f, 0.5f, 0.85f )},
+            {1.f, Color( 0.25f, 0.3f, 1.f, 0.6f )}
+        };
+
+        graphics->pushState();
+        if( graphics->setRadialGradient( {630.f, 325.f}, 60.f, radial ) == false )
+        {
+            graphics->popState();
+
+            return false;
+        }
+
         graphics->drawRoundedRect( {600.f, 300.f}, 100.f, 100.f, 25.f );
+        graphics->popState();
+        graphics->drawEllipse( {800.f, 350.f}, 50.f, 35.f );
+        graphics->clearFillGradient();
         graphics->endFill();
 
         m_scene->addChild( graphicsNode );

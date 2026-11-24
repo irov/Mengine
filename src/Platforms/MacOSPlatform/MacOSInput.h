@@ -41,6 +41,7 @@ namespace Mengine
         Timestamp getEventTimestamp_( NSEvent * _event ) const;
 
     protected:
+        void handleGestureEvent_( NSView * _view, NSEvent * _event );
         bool handleKeyEvent_( NSView * _view, NSEvent * _event, bool _down );
         bool handleFlagsChangedEvent_( NSView * _view, NSEvent * _event );
         bool handleTextEvent_( NSView * _view, NSEvent * _event );

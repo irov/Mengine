@@ -6,14 +6,13 @@
 #import "Environment/iOS/iOSDetail.h"
 #import "Environment/iOS/iOSLog.h"
 
-#include "Kernel/Assertion.h"
+#include "Kernel/AssertionMath.h"
 #include "Kernel/ScriptEmbeddingHelper.h"
 
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
 #   include "iOSUserNotificationCenterScriptEmbedding.h"
 #endif
 
-#include "Config/StdMath.h"
 #include "Config/StdLimits.h"
 
 #import <UserNotifications/UserNotifications.h>
@@ -89,7 +88,7 @@ static NSString * const MENGINE_LOCAL_NOTIFICATION_LAUNCH_COUNT = @"mengine.user
 }
 
 - (void)setNotificationDelay:(NSString *)identifier delay:(NSTimeInterval)delay {
-    MENGINE_ASSERTION_FATAL( Mengine::StdMath::isfinite( delay ) == true, "invalid local notification '%s' delay %f"
+    MENGINE_ASSERTION_ISINFINITE( delay, "invalid local notification '%s' delay %f"
         , [identifier UTF8String]
         , delay
     );
@@ -195,9 +194,10 @@ static NSString * const MENGINE_LOCAL_NOTIFICATION_LAUNCH_COUNT = @"mengine.user
 
         double value = [number doubleValue];
 
-        if (Mengine::StdMath::isfinite( value ) == false) {
-            return NO;
-        }
+        MENGINE_ASSERTION_ISINFINITE( value, "invalid local notification field '%s': %f"
+            , [key UTF8String]
+            , value
+        );
 
         long long integerValue = [number longLongValue];
 
@@ -543,15 +543,21 @@ static NSString * const MENGINE_LOCAL_NOTIFICATION_LAUNCH_COUNT = @"mengine.user
 }
 
 - (void)queueNotificationsWithInterval:(NSTimeInterval)interval {
-    if (Mengine::StdMath::isfinite(interval) == false) {
-        return;
-    }
+    MENGINE_ASSERTION_ISINFINITE( interval, "invalid local notification interval %f"
+        , interval
+    );
 
-    if (interval <= 0.0) {
+    if ((interval > 0.0) == false) {
         return;
     }
 
     NSArray<NSString *> * names = [self getNotificationNames_];
+    NSTimeInterval maximumInterval = Mengine::StdLimits::numeric_limits<NSTimeInterval>::max() / MAX(names.count, 1);
+
+    if (interval > maximumInterval) {
+        return;
+    }
+
     NSUInteger index = 0;
 
     for (NSString * name in names) {

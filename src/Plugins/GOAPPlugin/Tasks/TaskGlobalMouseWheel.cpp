@@ -27,6 +27,11 @@ namespace Mengine
     {
         auto lambda = [this, _node]( const InputMouseWheelEvent & _event )
         {
+            if( _event.scroll.steps == 0 )
+            {
+                return;
+            }
+
             if( m_filter( _event ) == false )
             {
                 return;

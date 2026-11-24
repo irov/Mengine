@@ -18,6 +18,7 @@ import org.Mengine.Base.MengineAdResponseInterface;
 import org.Mengine.Base.MengineAdService;
 import org.Mengine.Base.MengineAnalyticsEventBuilderInterface;
 import org.Mengine.Base.MengineFragmentAdRevenue;
+import org.Mengine.Base.MengineFullscreenAdShow;
 import org.Mengine.Base.MengineLog;
 import org.Mengine.Base.MengineParamAdRevenue;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
@@ -34,8 +35,9 @@ public class MengineAdMobBase extends AdListener implements MengineAdMobAdInterf
     protected final MengineAdFormat m_adFormat;
 
     protected final String m_adUnitId;
+    protected final MengineFullscreenAdShow m_fullscreenAdShow;
+
     private Handler m_retryHandler;
-    private final Object m_mainThreadLock = new Object();
     private Map<Runnable, Handler> m_mainThreadTasks;
 
     protected int m_enumeratorRequest;
@@ -48,6 +50,10 @@ public class MengineAdMobBase extends AdListener implements MengineAdMobAdInterf
         m_plugin = plugin;
         m_adFormat = adFormat;
         m_adUnitId = adUnitId;
+
+        m_fullscreenAdShow = new MengineFullscreenAdShow(activity -> {
+            return m_mainThreadTasks != null;
+        }, this::performOnMainThread);
 
         m_enumeratorRequest = 0;
         m_requestId = 0;
@@ -67,14 +73,14 @@ public class MengineAdMobBase extends AdListener implements MengineAdMobAdInterf
 
     @Override
     public void onActivityCreate(@NonNull MengineActivity activity) {
-        synchronized (m_mainThreadLock) {
+        synchronized (m_fullscreenAdShow) {
             m_mainThreadTasks = new HashMap<>();
         }
     }
 
     @Override
     public void onActivityDestroy(@NonNull MengineActivity activity) {
-        synchronized (m_mainThreadLock) {
+        synchronized (m_fullscreenAdShow) {
             if (m_mainThreadTasks != null) {
                 for (Handler handler : m_mainThreadTasks.values()) {
                     handler.removeCallbacksAndMessages(null);
@@ -95,7 +101,7 @@ public class MengineAdMobBase extends AdListener implements MengineAdMobAdInterf
     }
 
     protected boolean performOnMainThread(@NonNull Runnable runnable) {
-        synchronized (m_mainThreadLock) {
+        synchronized (m_fullscreenAdShow) {
             if (m_mainThreadTasks == null) {
                 return false;
             }
@@ -104,7 +110,7 @@ public class MengineAdMobBase extends AdListener implements MengineAdMobAdInterf
                 Runnable task = new Runnable() {
                     @Override
                     public void run() {
-                        synchronized (m_mainThreadLock) {
+                        synchronized (m_fullscreenAdShow) {
                             if (m_mainThreadTasks == null) {
                                 return;
                             }

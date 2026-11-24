@@ -190,7 +190,14 @@ public class MengineWebViewService extends MengineService implements MengineList
 
     @Nullable
     public MengineWebViewEvent pollWebViewEvent() {
-        if (this.isWebViewQuitRequested() == true) {
+        boolean quitRequested = this.isWebViewQuitRequested();
+
+        if (quitRequested == false) {
+            MengineApplication application = this.getMengineApplication();
+            quitRequested = MenginePlatformEventQueue.processEvents(application);
+        }
+
+        if (quitRequested == true) {
             MengineWebViewEvent event = new MengineWebViewEvent(MengineWebViewEvent.QUIT, null);
 
             return event;
@@ -273,6 +280,8 @@ public class MengineWebViewService extends MengineService implements MengineList
     }
 
     public void onWebViewRuntimeFailed() {
+        MenginePlatformEventQueue.close();
+
         m_ui.post(() -> {
             MengineWebViewActivityContent content = m_content;
 

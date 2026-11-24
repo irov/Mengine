@@ -247,6 +247,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void iOSInput::handleTouchEnded( NSSet<UITouch *> * _touches, UIView * _view )
     {
+        this->endTouches_( _touches, _view, false );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void iOSInput::handleTouchCancelled( NSSet<UITouch *> * _touches, UIView * _view )
+    {
+        this->endTouches_( _touches, _view, true );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void iOSInput::endTouches_( NSSet<UITouch *> * _touches, UIView * _view, bool _isCancelled )
+    {
         for( UITouch * touch in _touches )
         {
             ETouchCode fingerIndex = this->releaseFingerIndex_( touch );
@@ -274,13 +284,8 @@ namespace Mengine
 
             Timestamp timestamp = Detail::getTouchTimestamp( touch );
 
-            Helper::pushMouseButtonEvent( timestamp, fingerIndex, point.x, point.y, MC_LBUTTON, pressure, false );
+            Helper::pushMouseButtonEvent( timestamp, fingerIndex, point.x, point.y, MC_LBUTTON, pressure, false, _isCancelled );
         }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void iOSInput::handleTouchCancelled( NSSet<UITouch *> * _touches, UIView * _view )
-    {
-        this->handleTouchEnded( _touches, _view );
     }
     //////////////////////////////////////////////////////////////////////////
     bool iOSInput::isKeyDown( EKeyCode _code ) const

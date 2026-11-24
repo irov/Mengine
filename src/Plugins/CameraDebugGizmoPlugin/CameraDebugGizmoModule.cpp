@@ -76,6 +76,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool CameraDebugGizmoModule::_handleMouseWheel( const InputMouseWheelEvent & _event )
     {
+        if( _event.scroll.steps == 0 )
+        {
+            return false;
+        }
+
         bool controlDown = _event.special.isControl;
 
         if( controlDown == false )
@@ -98,7 +103,7 @@ namespace Mengine
 
         mt::vec2f new_camera_scale = camera_scale;
 
-        float scale_step = float( _event.scroll ) * m_scaleStepStep;
+        float scale_step = float( _event.scroll.steps ) * m_scaleStepStep;
 
         if( new_camera_scale.x + scale_step > m_scaleStepMax )
         {

@@ -8,7 +8,7 @@
 #include "Kernel/SpinLockTryScope.h"
 #include "Kernel/Logger.h"
 #include "Kernel/MemoryStreamHelper.h"
-#include "Kernel/Assertion.h"
+#include "Kernel/AssertionMath.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ThreadMutexHelper.h"
 
@@ -170,7 +170,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MixerSoundBufferStream::playSource( bool _looped, float _position )
     {
-        MENGINE_ASSERTION( StdMath::isfinite( _position ) == true, "invalid sound position %f"
+        MENGINE_ASSERTION_ISINFINITE( _position, "invalid sound position %f"
             , _position
         );
 
@@ -225,7 +225,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MixerSoundBufferStream::setTimePosition( float _position )
     {
-        MENGINE_ASSERTION( StdMath::isfinite( _position ) == true, "invalid sound position %f"
+        MENGINE_ASSERTION_ISINFINITE( _position, "invalid sound position %f"
             , _position
         );
 

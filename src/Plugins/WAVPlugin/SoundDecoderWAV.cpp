@@ -5,10 +5,9 @@
 #include "Kernel/Magic.h"
 #include "Kernel/Logger.h"
 #include "Kernel/ProfilerHelper.h"
+#include "Kernel/AssertionMath.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionType.h"
-
-#include "Config/StdMath.h"
 
 #include "math/utils.h"
 
@@ -102,6 +101,16 @@ namespace Mengine
             return false;
         }
 
+        if( header.NumChannels == 0 || header.SampleRate == 0 )
+        {
+            LOGGER_ERROR( "sound decoder WAV invalid format: channels %u, sample rate %u"
+                , header.NumChannels
+                , header.SampleRate
+            );
+
+            return false;
+        }
+
         stream->skip( header.Subchunk1Size - 16 );
 
         size_t chunkDataSize;
@@ -123,14 +132,9 @@ namespace Mengine
 
         float duration = (float)((double)m_dataInfo.size * 1000.0 / ((double)m_dataInfo.frequency * m_dataInfo.channels * m_dataInfo.bits));
 
-        if( StdMath::isfinite( duration ) == false )
-        {
-            LOGGER_ERROR( "sound decoder WAV invalid duration: %f"
-                , duration
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_ISINFINITE( duration, "sound decoder WAV invalid duration: %f"
+            , duration
+        );
 
         m_dataInfo.duration = duration;
 

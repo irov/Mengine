@@ -64,6 +64,13 @@ namespace Mengine
         bool handleMouseEnter( const InputMouseEnterEvent & _event ) override;
         void handleMouseLeave( const InputMouseLeaveEvent & _event ) override;
 
+    public:
+        bool handleGestureMagnification( const InputGestureMagnificationEvent & _event ) override;
+        bool handleGestureRotation( const InputGestureRotationEvent & _event ) override;
+        bool handleGestureSmartMagnification( const InputGestureSmartMagnificationEvent & _event ) override;
+        bool handleGestureSwipe( const InputGestureSwipeEvent & _event ) override;
+        bool handleGesturePressure( const InputGesturePressureEvent & _event ) override;
+
     protected:
         const ModuleInterfacePtr & findModule_( const ConstString & _name ) const;
         ModuleInterfacePtr popModule_( const ConstString & _name );

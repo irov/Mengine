@@ -253,8 +253,7 @@ namespace Mengine
                 continue;
             }
 
-            bool handle = desc.handler->handleMouseWheel( _event );
-            MENGINE_UNUSED( handle );
+            desc.handler->handleMouseWheel( _event );
         }
 
         return false;
@@ -301,6 +300,116 @@ namespace Mengine
 
             desc.handler->handleMouseLeave( _event );
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PlayerGlobalInputHandler::handleGestureMagnification( const InputGestureMagnificationEvent & _event )
+    {
+        this->processHandlers_();
+
+        for( const GlobalHandlerDesc & desc : m_handlers )
+        {
+            if( desc.dead == true )
+            {
+                continue;
+            }
+
+            if( desc.enable == false )
+            {
+                continue;
+            }
+
+            desc.handler->handleGestureMagnification( _event );
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PlayerGlobalInputHandler::handleGestureRotation( const InputGestureRotationEvent & _event )
+    {
+        this->processHandlers_();
+
+        for( const GlobalHandlerDesc & desc : m_handlers )
+        {
+            if( desc.dead == true )
+            {
+                continue;
+            }
+
+            if( desc.enable == false )
+            {
+                continue;
+            }
+
+            desc.handler->handleGestureRotation( _event );
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PlayerGlobalInputHandler::handleGestureSmartMagnification( const InputGestureSmartMagnificationEvent & _event )
+    {
+        this->processHandlers_();
+
+        for( const GlobalHandlerDesc & desc : m_handlers )
+        {
+            if( desc.dead == true )
+            {
+                continue;
+            }
+
+            if( desc.enable == false )
+            {
+                continue;
+            }
+
+            desc.handler->handleGestureSmartMagnification( _event );
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PlayerGlobalInputHandler::handleGestureSwipe( const InputGestureSwipeEvent & _event )
+    {
+        this->processHandlers_();
+
+        for( const GlobalHandlerDesc & desc : m_handlers )
+        {
+            if( desc.dead == true )
+            {
+                continue;
+            }
+
+            if( desc.enable == false )
+            {
+                continue;
+            }
+
+            desc.handler->handleGestureSwipe( _event );
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PlayerGlobalInputHandler::handleGesturePressure( const InputGesturePressureEvent & _event )
+    {
+        this->processHandlers_();
+
+        for( const GlobalHandlerDesc & desc : m_handlers )
+        {
+            if( desc.dead == true )
+            {
+                continue;
+            }
+
+            if( desc.enable == false )
+            {
+                continue;
+            }
+
+            desc.handler->handleGesturePressure( _event );
+        }
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     UniqueId PlayerGlobalInputHandler::addGlobalHandler( const InputHandlerInterfacePtr & _handler, bool _enable, const DocumentInterfacePtr & _doc )

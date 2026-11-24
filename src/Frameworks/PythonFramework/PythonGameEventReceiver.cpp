@@ -144,6 +144,41 @@ namespace Mengine
         m_cb.call( _event );
     }
     //////////////////////////////////////////////////////////////////////////
+    bool PythonGameEventReceiver::onGameGestureMagnification( const InputGestureMagnificationEvent & _event )
+    {
+        bool result = m_cb.call( _event );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PythonGameEventReceiver::onGameGestureRotation( const InputGestureRotationEvent & _event )
+    {
+        bool result = m_cb.call( _event );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PythonGameEventReceiver::onGameGestureSmartMagnification( const InputGestureSmartMagnificationEvent & _event )
+    {
+        bool result = m_cb.call( _event );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PythonGameEventReceiver::onGameGestureSwipe( const InputGestureSwipeEvent & _event )
+    {
+        bool result = m_cb.call( _event );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PythonGameEventReceiver::onGameGesturePressure( const InputGesturePressureEvent & _event )
+    {
+        bool result = m_cb.call( _event );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void PythonGameEventReceiver::onGameTimeFactorChange( float _timeFactor )
     {
         m_cb.call( _timeFactor );

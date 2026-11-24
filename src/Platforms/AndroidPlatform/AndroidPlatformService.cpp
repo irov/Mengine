@@ -553,7 +553,7 @@ extern "C"
         platformExtension->androidNativeDestroyEvent();
     }
     ///////////////////////////////////////////////////////////////////////
-    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1freezeEvent )(JNIEnv * env, jclass cls, jstring owner, jboolean freeze)
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1freezeEvent )(JNIEnv * env, jclass cls, jint flags)
     {
         if( g_androidPlatformActived == false )
         {
@@ -563,9 +563,24 @@ extern "C"
         Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
             ->getUnknown();
 
-        Mengine::ConstString owner_const = Mengine::Helper::AndroidMakeConstStringFromJString( env, owner );
+        uint32_t freezeFlags = static_cast<uint32_t>(flags);
 
-        platformExtension->androidNativeFreezeEvent( owner_const, freeze );
+        platformExtension->androidNativeFreezeEvent( freezeFlags );
+    }
+    ///////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1unfreezeEvent )(JNIEnv * env, jclass cls, jint flags)
+    {
+        if( g_androidPlatformActived == false )
+        {
+            return;
+        }
+
+        Mengine::AndroidPlatformServiceExtensionInterface * platformExtension = PLATFORM_SERVICE()
+            ->getUnknown();
+
+        uint32_t freezeFlags = static_cast<uint32_t>(flags);
+
+        platformExtension->androidNativeUnfreezeEvent( freezeFlags );
     }
     ///////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL MENGINE_JAVA_INTERFACE( AndroidPlatform_1clipboardChangedEvent )(JNIEnv * env, jclass cls)
@@ -797,8 +812,30 @@ SERVICE_FACTORY( PlatformService, Mengine::AndroidPlatformService );
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    namespace Detail
+    {
+        static bool incrementFreezeCount( AtomicUInt32 * const _count )
+        {
+            uint32_t previousCount = _count->fetch_add( 1 );
+
+            return previousCount == 0;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static bool decrementFreezeCount( AtomicUInt32 * const _count )
+        {
+            uint32_t previousCount = _count->fetch_sub( 1 );
+
+            MENGINE_ASSERTION_FATAL( previousCount != 0, "unbalanced Android unfreeze event" );
+
+            return previousCount == 1;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     AndroidPlatformService::AndroidPlatformService()
         : m_beginTime( 0 )
+        , m_updateFreezeCount( 0 )
+        , m_renderFreezeCount( 0 )
+        , m_soundFreezeCount( 0 )
         , m_activityState( EAS_INITIALIZE )
         , m_nativeWindow( nullptr )
         , m_eglDisplay( EGL_NO_DISPLAY )
@@ -1060,6 +1097,10 @@ namespace Mengine
 
         g_androidPlatformActived = false;
 
+        m_updateFreezeCount.store( 0 );
+        m_renderFreezeCount.store( 0 );
+        m_soundFreezeCount.store( 0 );
+
         m_deleteAccountAccepted = nullptr;
         m_deleteAccountCanceled = nullptr;
 
@@ -1299,6 +1340,16 @@ namespace Mengine
             }
 
             this->tickPlatform( frameTime );
+
+            if( APPLICATION_SERVICE()
+                ->isRenderFrozen() == true )
+            {
+                m_activityMutex->unlock();
+
+                usleep( SWAPPY_SWAP_60FPS / 1000 );
+
+                continue;
+            }
 
             if( this->renderPlatform() == false )
             {
@@ -2759,6 +2810,27 @@ namespace Mengine
     {
         Timestamp eventTime = static_cast<Timestamp>(_eventTime);
 
+        if( _action == 3 && _pointerId == -1 ) //ACTION_CANCEL for all active pointers
+        {
+            for( uint32_t index = 0; index != MENGINE_INPUT_MAX_TOUCH; ++index )
+            {
+                if( m_fingers[index] == -1 )
+                {
+                    continue;
+                }
+
+                m_fingers[index] = -1;
+                m_currentFingersPressure[index] = 0.f;
+
+                ETouchCode fingerIndex = static_cast<ETouchCode>(index);
+                Helper::pushMouseButtonEvent( eventTime, fingerIndex, m_currentFingersX[index], m_currentFingersY[index], MC_LBUTTON, 0.f, false, true );
+            }
+
+            m_lastFingerPressure = 0.f;
+
+            return;
+        }
+
         switch( _action )
         {
         case 0: //ACTION_DOWN
@@ -2793,6 +2865,7 @@ namespace Mengine
                 Helper::pushMouseButtonEvent( eventTime, fingerIndex, _x, _y, MC_LBUTTON, _pressure, true );
             }break;
         case 1: //ACTION_UP
+        case 3: //ACTION_CANCEL
         case 6: //ACTION_POINTER_UP
             {
                 ETouchCode fingerIndex = this->releaseFingerIndex_( _pointerId );
@@ -2821,7 +2894,8 @@ namespace Mengine
                     , _pressure
                 );
 
-                Helper::pushMouseButtonEvent( eventTime, fingerIndex, _x, _y, MC_LBUTTON, _pressure, false );
+                bool isCancelled = _action == 3;
+                Helper::pushMouseButtonEvent( eventTime, fingerIndex, _x, _y, MC_LBUTTON, _pressure, false, isCancelled );
             }break;
         case 2: //ACTION_MOVE
             {
@@ -3427,21 +3501,84 @@ namespace Mengine
         //ToDo
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidPlatformService::androidNativeFreezeEvent( const ConstString & _owner, bool _freeze )
+    void AndroidPlatformService::androidNativeFreezeEvent( uint32_t _flags )
     {
-        LOGGER_INFO( "platform", "freeze event: owner '%s' %d"
-            , _owner.c_str()
-            , _freeze
+        MENGINE_ASSERTION_FATAL( _flags != 0 && (_flags & ~AFF_ALL) == 0, "invalid Android freeze flags [%u]"
+            , _flags
         );
 
-        APPLICATION_SERVICE()
-            ->setUpdateFreeze( _owner, _freeze );
+        LOGGER_INFO( "platform", "freeze event: flags [%u]"
+            , _flags
+        );
 
-        APPLICATION_SERVICE()
-            ->setRenderFreeze( _owner, _freeze );
+        ConstString freezeOwner = STRINGIZE_STRING_LOCAL( "AndroidPlatform" );
 
-        SOUND_SERVICE()
-            ->setMute( _owner, _freeze );
+        if( (_flags & AFF_UPDATE) != 0 )
+        {
+            if( Detail::incrementFreezeCount( &m_updateFreezeCount ) == true )
+            {
+                APPLICATION_SERVICE()
+                    ->setUpdateFreeze( freezeOwner, true );
+            }
+        }
+
+        if( (_flags & AFF_RENDER) != 0 )
+        {
+            if( Detail::incrementFreezeCount( &m_renderFreezeCount ) == true )
+            {
+                APPLICATION_SERVICE()
+                    ->setRenderFreeze( freezeOwner, true );
+            }
+        }
+
+        if( (_flags & AFF_SOUND) != 0 )
+        {
+            if( Detail::incrementFreezeCount( &m_soundFreezeCount ) == true )
+            {
+                SOUND_SERVICE()
+                    ->setMute( freezeOwner, true );
+            }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidPlatformService::androidNativeUnfreezeEvent( uint32_t _flags )
+    {
+        MENGINE_ASSERTION_FATAL( _flags != 0 && (_flags & ~AFF_ALL) == 0, "invalid Android unfreeze flags [%u]"
+            , _flags
+        );
+
+        LOGGER_INFO( "platform", "unfreeze event: flags [%u]"
+            , _flags
+        );
+
+        ConstString freezeOwner = STRINGIZE_STRING_LOCAL( "AndroidPlatform" );
+
+        if( (_flags & AFF_UPDATE) != 0 )
+        {
+            if( Detail::decrementFreezeCount( &m_updateFreezeCount ) == true )
+            {
+                APPLICATION_SERVICE()
+                    ->setUpdateFreeze( freezeOwner, false );
+            }
+        }
+
+        if( (_flags & AFF_RENDER) != 0 )
+        {
+            if( Detail::decrementFreezeCount( &m_renderFreezeCount ) == true )
+            {
+                APPLICATION_SERVICE()
+                    ->setRenderFreeze( freezeOwner, false );
+            }
+        }
+
+        if( (_flags & AFF_SOUND) != 0 )
+        {
+            if( Detail::decrementFreezeCount( &m_soundFreezeCount ) == true )
+            {
+                SOUND_SERVICE()
+                    ->setMute( freezeOwner, false );
+            }
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidPlatformService::androidNativeClipboardChangedEvent()

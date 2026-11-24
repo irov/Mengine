@@ -229,6 +229,32 @@ namespace Mengine
         MENGINE_INLINE static const Color & identity();
 
     public:
+        MENGINE_INLINE bool isEqualF( const Color & _other ) const
+        {
+            if( m_r != _other.m_r )
+            {
+                return false;
+            }
+
+            if( m_g != _other.m_g )
+            {
+                return false;
+            }
+
+            if( m_b != _other.m_b )
+            {
+                return false;
+            }
+
+            if( m_a != _other.m_a )
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+    public:
         MENGINE_INLINE bool isSolid() const;
 
     public:

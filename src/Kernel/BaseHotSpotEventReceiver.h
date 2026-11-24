@@ -19,6 +19,11 @@ namespace Mengine
         bool onHotSpotMouseButtonEnd( const RenderContext * _context, const InputMouseButtonEvent & _event ) override;
         bool onHotSpotMouseMove( const RenderContext * _context, const InputMouseMoveEvent & _event ) override;
         bool onHotSpotMouseWheel( const RenderContext * _context, const InputMouseWheelEvent & _event ) override;
+        bool onHotSpotGestureMagnification( const RenderContext * _context, const InputGestureMagnificationEvent & _event ) override;
+        bool onHotSpotGestureRotation( const RenderContext * _context, const InputGestureRotationEvent & _event ) override;
+        bool onHotSpotGestureSmartMagnification( const RenderContext * _context, const InputGestureSmartMagnificationEvent & _event ) override;
+        bool onHotSpotGestureSwipe( const RenderContext * _context, const InputGestureSwipeEvent & _event ) override;
+        bool onHotSpotGesturePressure( const RenderContext * _context, const InputGesturePressureEvent & _event ) override;
         void onHotSpotMouseOverDestroy() override;
     };
 }

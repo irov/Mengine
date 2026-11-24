@@ -1,16 +1,36 @@
 #include "InputServiceHelper.h"
 
-#include "TimestampHelper.h"
-
 #include "Interface/InputServiceInterface.h"
+#include "Interface/ArrowServiceInterface.h"
 #include "Interface/PlayerServiceInterface.h"
+
+#include "RenderContext.h"
+#include "TimestampHelper.h"
 
 #include "Config/StdString.h"
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
+        //////////////////////////////////////////////////////////////////////////
+        namespace Detail
+        {
+            template<class T>
+            static void fillGestureEvent( Timestamp _timestamp, float _x, float _y, const InputSpecialData & _special, T * const _event )
+            {
+                float vx;
+                float vy;
+                INPUT_SERVICE()
+                    ->validCursorPosition( _x, _y, &vx, &vy );
+
+                _event->base.timestamp = _timestamp;
+                _event->special = _special;
+                _event->position.screen.set( vx, vy );
+                _event->position.world.set( 0.f, 0.f );
+            }
+        }
         //////////////////////////////////////////////////////////////////////////
         bool isSpecialDown()
         {
@@ -66,6 +86,35 @@ namespace Mengine
                 ->isMouseButtonDown( _button );
         }
         //////////////////////////////////////////////////////////////////////////
+        void calcInputPositionWorld( const RenderContext * _context, InputPositionData * const _position )
+        {
+            ARROW_SERVICE()
+                ->calcMouseWorldPosition( _context, _position->screen, &_position->world );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void calcGlobalInputPositionWorld( InputPositionData * const _position )
+        {
+            const RenderContext * context = PLAYER_SERVICE()
+                ->getRenderContext();
+
+            if( context->camera == nullptr )
+            {
+                return;
+            }
+
+            if( context->viewport == nullptr )
+            {
+                return;
+            }
+
+            if( context->resolution == nullptr )
+            {
+                return;
+            }
+
+            Helper::calcInputPositionWorld( context, _position );
+        }
+        //////////////////////////////////////////////////////////////////////////
         void pushMouseMoveEvent( Timestamp _timestamp, ETouchCode _touchId, float _x, float _y, float _dx, float _dy, float _pressure, float _dpressure )
         {
             InputSpecialData special;
@@ -104,16 +153,16 @@ namespace Mengine
                 ->pushEvent( ev );
         }
         //////////////////////////////////////////////////////////////////////////
-        void pushMouseButtonEvent( Timestamp _timestamp, ETouchCode _touchId, float _x, float _y, EMouseButtonCode _button, float _pressure, bool _isDown )
+        void pushMouseButtonEvent( Timestamp _timestamp, ETouchCode _touchId, float _x, float _y, EMouseButtonCode _button, float _pressure, bool _isDown, bool _isCancelled )
         {
             InputSpecialData special;
             INPUT_SERVICE()
                 ->getSpecial( &special );
 
-            Helper::pushMouseButtonEvent( _timestamp, _touchId, _x, _y, _button, _pressure, _isDown, special );
+            Helper::pushMouseButtonEvent( _timestamp, _touchId, _x, _y, _button, _pressure, _isDown, special, _isCancelled );
         }
         //////////////////////////////////////////////////////////////////////////
-        void pushMouseButtonEvent( Timestamp _timestamp, ETouchCode _touchId, float _x, float _y, EMouseButtonCode _button, float _pressure, bool _isDown, const InputSpecialData & _special )
+        void pushMouseButtonEvent( Timestamp _timestamp, ETouchCode _touchId, float _x, float _y, EMouseButtonCode _button, float _pressure, bool _isDown, const InputSpecialData & _special, bool _isCancelled )
         {
             float vx;
             float vy;
@@ -134,6 +183,7 @@ namespace Mengine
             ev.button = _button;
             ev.isDown = _isDown;
             ev.isPressed = true;
+            ev.isCancelled = _isCancelled;
 
             INPUT_SERVICE()
                 ->pushEvent( ev );
@@ -259,6 +309,24 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void pushMouseWheelEvent( Timestamp _timestamp, float _x, float _y, float _pressure, EWheelCode _wheel, int32_t _scroll, const InputSpecialData & _special )
         {
+            InputScrollData scroll{};
+            scroll.steps = _scroll;
+            scroll.delta.set( 0.f, -(float)_scroll );
+
+            Helper::pushMouseWheelEvent( _timestamp, _x, _y, _pressure, _wheel, scroll, _special );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void pushMouseWheelEvent( Timestamp _timestamp, float _x, float _y, float _pressure, EWheelCode _wheel, const InputScrollData & _scroll )
+        {
+            InputSpecialData special;
+            INPUT_SERVICE()
+                ->getSpecial( &special );
+
+            Helper::pushMouseWheelEvent( _timestamp, _x, _y, _pressure, _wheel, _scroll, special );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void pushMouseWheelEvent( Timestamp _timestamp, float _x, float _y, float _pressure, EWheelCode _wheel, const InputScrollData & _scroll, const InputSpecialData & _special )
+        {
             float vx;
             float vy;
             INPUT_SERVICE()
@@ -278,6 +346,65 @@ namespace Mengine
 
             INPUT_SERVICE()
                 ->pushEvent( ev );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void pushGestureMagnificationEvent( Timestamp _timestamp, float _x, float _y, float _scale, EInputGesturePhase _phase, const InputSpecialData & _special )
+        {
+            InputGestureMagnificationEvent event;
+            event.scale = _scale;
+            event.phase = _phase;
+
+            Detail::fillGestureEvent( _timestamp, _x, _y, _special, &event );
+
+            INPUT_SERVICE()
+                ->pushEvent( event );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void pushGestureRotationEvent( Timestamp _timestamp, float _x, float _y, float _degrees, EInputGesturePhase _phase, const InputSpecialData & _special )
+        {
+            InputGestureRotationEvent event;
+            event.degrees = _degrees;
+            event.phase = _phase;
+
+            Detail::fillGestureEvent( _timestamp, _x, _y, _special, &event );
+
+            INPUT_SERVICE()
+                ->pushEvent( event );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void pushGestureSmartMagnificationEvent( Timestamp _timestamp, float _x, float _y, const InputSpecialData & _special )
+        {
+            InputGestureSmartMagnificationEvent event;
+
+            Detail::fillGestureEvent( _timestamp, _x, _y, _special, &event );
+
+            INPUT_SERVICE()
+                ->pushEvent( event );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void pushGestureSwipeEvent( Timestamp _timestamp, float _x, float _y, const mt::vec2f & _direction, const InputSpecialData & _special )
+        {
+            InputGestureSwipeEvent event;
+            event.direction = _direction;
+
+            Detail::fillGestureEvent( _timestamp, _x, _y, _special, &event );
+
+            INPUT_SERVICE()
+                ->pushEvent( event );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void pushGesturePressureEvent( Timestamp _timestamp, float _x, float _y, float _pressure, int32_t _stage, float _stageTransition, EInputGesturePhase _phase, const InputSpecialData & _special )
+        {
+            InputGesturePressureEvent event;
+            event.pressure = _pressure;
+            event.stage = _stage;
+            event.stageTransition = _stageTransition;
+            event.phase = _phase;
+
+            Detail::fillGestureEvent( _timestamp, _x, _y, _special, &event );
+
+            INPUT_SERVICE()
+                ->pushEvent( event );
         }
         //////////////////////////////////////////////////////////////////////////
         void pushAccelerometerEvent( Timestamp _timestamp, Timestamp _timestampSensor, float _dx, float _dy, float _dz )

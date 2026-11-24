@@ -897,6 +897,8 @@ public class MengineActivity extends AppCompatActivity {
 
         MengineApplication application = (MengineApplication)this.getApplication();
 
+        application.stopPlayTime();
+
         if (application.isInvalidInitialize() == true) {
             MengineLog.logMessage(TAG, "onPause: application invalid initialize");
 
@@ -947,6 +949,8 @@ public class MengineActivity extends AppCompatActivity {
 
             return;
         }
+
+        application.startPlayTime();
 
         application.setState("activity.lifecycle", "resume");
 

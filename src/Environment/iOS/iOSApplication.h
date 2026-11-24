@@ -31,6 +31,10 @@
 - (NSInteger)getSessionDateWeekday;
 - (NSInteger)getSessionGap;
 
+- (NSInteger)getPlayTime;
+- (void)startPlayTime;
+- (void)stopPlayTime;
+
 - (NSString * _Nonnull)getUserId;
 
 @property (nonatomic, strong) NSString * _Nonnull m_installId;

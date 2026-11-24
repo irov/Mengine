@@ -10,6 +10,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.os.PersistableBundle;
 
+import org.Mengine.Base.MengineUtils;
+
 import java.util.Objects;
 
 public class MengineLocalNotificationsJobService extends JobService {
@@ -96,7 +98,7 @@ public class MengineLocalNotificationsJobService extends JobService {
             int day = bundle.getInt(MengineLocalNotificationsConstants.KEY_DAY);
             int hour = bundle.getInt(MengineLocalNotificationsConstants.KEY_HOUR);
             int minute = bundle.getInt(MengineLocalNotificationsConstants.KEY_MINUTE);
-            long now = System.currentTimeMillis();
+            long now = MengineUtils.getTimestamp();
             long delay = MengineLocalNotificationsPlugin.calculateCalendarDelay(month, day, hour, minute, now);
             MengineLocalNotificationsJobService.scheduleNotification(context, delay, bundle);
         }

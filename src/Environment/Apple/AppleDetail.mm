@@ -38,6 +38,19 @@
     return millis;
 }
 
++ (NSTimeInterval)getSystemUptime {
+    NSTimeInterval uptime = NSProcessInfo.processInfo.systemUptime;
+
+    return uptime;
+}
+
++ (NSInteger)getUptimeTimestamp {
+    NSTimeInterval uptime = [AppleDetail getSystemUptime];
+    NSInteger timestamp = (NSInteger)(uptime * 1000.0);
+
+    return timestamp;
+}
+
 + (NSInteger)getTimestampOffsetSeconds:(NSInteger)timestamp baseTimestamp:(NSInteger)baseTimestamp {
     NSInteger offset = MAX(0L, (timestamp - baseTimestamp) / 1000L);
 

@@ -7,14 +7,20 @@
 #import "Environment/iOS/iOSDetail.h"
 
 static NSString * const kMengineAccountDeletionRestartKey = @"mengine.app.account_deletion_restart";
+static NSString * const kMenginePlayTimeKey = @"mengine.app.play_time";
 
-@implementation iOSApplication
+@implementation iOSApplication {
+    NSInteger m_playTime;
+    NSInteger m_playTimeStarted;
+}
 
 + (instancetype)sharedInstance {
     static iOSApplication * sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         sharedInstance = [[iOSApplication alloc] init];
+        sharedInstance->m_playTime = [AppleUserDefaults getIntegerForKey:kMenginePlayTimeKey defaultValue:0];
+        sharedInstance->m_playTimeStarted = -1;
     });
     return sharedInstance;
 }
@@ -106,6 +112,9 @@ static NSString * const kMengineAccountDeletionRestartKey = @"mengine.app.accoun
 }
 
 - (void)removeUserData {
+    m_playTime = 0;
+    m_playTimeStarted = -1;
+
     [AppleKeyChain clear];
     [AppleUserDefaults clear];
     
@@ -180,6 +189,39 @@ static NSString * const kMengineAccountDeletionRestartKey = @"mengine.app.accoun
 
 - (NSInteger)getSessionGap {
     return self.m_sessionGap;
+}
+
+- (NSInteger)getPlayTime {
+    if (m_playTimeStarted == -1) {
+        return m_playTime;
+    }
+
+    NSInteger now = [AppleDetail getUptimeTimestamp];
+    NSInteger elapsedTime = now - m_playTimeStarted;
+    NSInteger playTime = m_playTime + elapsedTime;
+
+    return playTime;
+}
+
+- (void)startPlayTime {
+    if (m_playTimeStarted != -1) {
+        return;
+    }
+
+    m_playTimeStarted = [AppleDetail getUptimeTimestamp];
+}
+
+- (void)stopPlayTime {
+    if (m_playTimeStarted == -1) {
+        return;
+    }
+
+    NSInteger now = [AppleDetail getUptimeTimestamp];
+    NSInteger elapsedTime = now - m_playTimeStarted;
+    m_playTimeStarted = -1;
+    m_playTime += elapsedTime;
+
+    [AppleUserDefaults addIntegerForKey:kMenginePlayTimeKey value:elapsedTime];
 }
 
 - (NSString * _Nonnull)getUserId {

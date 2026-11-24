@@ -3,6 +3,7 @@
 #import "Environment/Apple/AppleBundle.h"
 #import "Environment/Apple/AppleDetail.h"
 
+#import "Environment/iOS/iOSApplication.h"
 #import "Environment/iOS/iOSDetail.h"
 #import "Environment/iOS/iOSLog.h"
 
@@ -20,12 +21,15 @@
 #define PLUGIN_BUNDLE_NAME "MengineiOSUserNotificationCenterPlugin"
 
 static NSString * const MENGINE_LOCAL_NOTIFICATION_PREFIX = @"mengine.local.";
-static NSString * const MENGINE_LOCAL_NOTIFICATION_LAUNCH_COUNT = @"mengine.usernotificationcenter.launch_count";
 
 @implementation iOSUserNotificationCenterPlugin {
     NSArray<NSDictionary *> * m_notifications;
     NSMutableDictionary<NSString *, NSDate *> * m_delayDates;
     NSUInteger m_scheduleGeneration;
+    BOOL m_authorizationLaunchQueued;
+
+    NSInteger m_requestLaunch;
+    NSInteger m_requestTime;
 }
 
 + (instancetype)sharedInstance {
@@ -43,6 +47,9 @@ static NSString * const MENGINE_LOCAL_NOTIFICATION_LAUNCH_COUNT = @"mengine.user
     if (self == nil) {
         return nil;
     }
+
+    m_requestLaunch = [AppleBundle getPluginConfigInteger:@PLUGIN_BUNDLE_NAME withKey:@"RequestAuthorizationLaunch" withDefault:0];
+    m_requestTime = [AppleBundle getPluginConfigInteger:@PLUGIN_BUNDLE_NAME withKey:@"RequestAuthorizationTime" withDefault:0];
 
     m_notifications = @[];
     m_delayDates = [NSMutableDictionary dictionary];
@@ -705,23 +712,50 @@ static NSString * const MENGINE_LOCAL_NOTIFICATION_LAUNCH_COUNT = @"mengine.user
 }
 
 - (void)requestAuthorizationOnLaunch_ {
+    if (m_authorizationLaunchQueued == YES) {
+        return;
+    }
+
+    m_authorizationLaunchQueued = YES;
+
     __weak iOSUserNotificationCenterPlugin * weakSelf = self;
 
     [iOSDetail addDidBecomeActiveOperationWithCompletion:^(void (^ _Nonnull operationCompletion)(void)) {
-        NSUserDefaults * defaults = [NSUserDefaults standardUserDefaults];
-        NSInteger launchCount = [defaults integerForKey:MENGINE_LOCAL_NOTIFICATION_LAUNCH_COUNT] + 1;
-        [defaults setInteger:launchCount forKey:MENGINE_LOCAL_NOTIFICATION_LAUNCH_COUNT];
+        iOSUserNotificationCenterPlugin * strongSelf = weakSelf;
+
+        if (strongSelf == nil) {
+            operationCompletion();
+
+            return;
+        }
 
         operationCompletion();
 
-        NSInteger requestLaunch = [AppleBundle getPluginConfigInteger:@PLUGIN_BUNDLE_NAME withKey:@"RequestAuthorizationLaunch" withDefault:0];
+        NSInteger requestLaunch = strongSelf->m_requestLaunch;
+        NSInteger requestTime = strongSelf->m_requestTime;
 
         if (requestLaunch <= 0) {
             return;
         }
 
+        NSInteger launchCount = [iOSApplication.sharedInstance getSessionIndex] + 1;
+
         if (launchCount < requestLaunch) {
             return;
+        }
+
+        if (requestTime > 0) {
+            NSInteger playTime = [iOSApplication.sharedInstance getPlayTime];
+            NSInteger playedSeconds = playTime / 1000;
+
+            if (playedSeconds < requestTime) {
+                IOS_LOGGER_MESSAGE(@"notification authorization requires %ld seconds of play time, got %ld"
+                    , (long)requestTime
+                    , (long)playedSeconds
+                );
+
+                return;
+            }
         }
 
         [[UNUserNotificationCenter currentNotificationCenter] getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
@@ -747,6 +781,24 @@ static NSString * const MENGINE_LOCAL_NOTIFICATION_LAUNCH_COUNT = @"mengine.user
     }];
 }
 
+#pragma mark - iOSPluginConfigDelegateInterface
+
+- (void)onConfig:(NSDictionary *)config ids:(NSDictionary *)ids {
+    MENGINE_UNUSED( ids );
+
+    NSDictionary * notificationConfig = [config objectForKey:@"local_notifications"];
+
+    if (notificationConfig == nil) {
+        return;
+    }
+
+    id requestLaunch = [notificationConfig objectForKey:@"offset_session"];
+    id requestTime = [notificationConfig objectForKey:@"offset_time"];
+
+    m_requestLaunch = [requestLaunch isKindOfClass:NSNumber.class] == YES ? [requestLaunch integerValue] : 0;
+    m_requestTime = [requestTime isKindOfClass:NSNumber.class] == YES ? [requestTime integerValue] : 0;
+}
+
 #pragma mark - UIApplicationDelegate
 
 - (BOOL)application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
@@ -755,8 +807,6 @@ static NSString * const MENGINE_LOCAL_NOTIFICATION_LAUNCH_COUNT = @"mengine.user
     center.delegate = self;
 
     m_notifications = [self loadNotifications_];
-
-    [self requestAuthorizationOnLaunch_];
 
     return YES;
 }
@@ -773,6 +823,10 @@ static NSString * const MENGINE_LOCAL_NOTIFICATION_LAUNCH_COUNT = @"mengine.user
 #if defined(MENGINE_BUILD_MENGINE_SCRIPT_EMBEDDED)
     Mengine::Helper::addScriptEmbedding<Mengine::iOSUserNotificationCenterScriptEmbedding>( MENGINE_DOCUMENT_FUNCTION );
 #endif
+}
+
+- (void)onRunEnd {
+    [self requestAuthorizationOnLaunch_];
 }
 
 - (void)onStopEnd {

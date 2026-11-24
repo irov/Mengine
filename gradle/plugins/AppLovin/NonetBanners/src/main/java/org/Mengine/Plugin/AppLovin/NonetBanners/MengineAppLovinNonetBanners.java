@@ -140,13 +140,8 @@ public class MengineAppLovinNonetBanners implements MengineAppLovinNonetBannersI
         JSONObject applovin_nonetbanner = configs.getOrDefault("applovin_nonetbanner", null);
 
         if (applovin_nonetbanner != null) {
-            boolean enable = applovin_nonetbanner.optBoolean("enable", false);
-
-            m_showBannersEnabled = enable;
-
-            long duration = applovin_nonetbanner.optLong("duration", 30000);
-
-            m_showBannerDurationTime = duration;
+            m_showBannersEnabled = applovin_nonetbanner.optBoolean("enable", false);
+            m_showBannerDurationTime = applovin_nonetbanner.optLong("duration", 30000);
         }
     }
 

@@ -5,8 +5,11 @@ import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineFragmentEngine;
 import org.Mengine.Base.MengineListenerActivity;
+import org.Mengine.Base.MengineListenerApplication;
 import org.Mengine.Base.MengineListenerEngine;
+import org.Mengine.Base.MengineListenerRemoteConfig;
 import org.Mengine.Base.MengineUtils;
+import org.json.JSONObject;
 import org.xmlpull.v1.XmlPullParserException;
 
 import androidx.annotation.NonNull;
@@ -31,7 +34,6 @@ import android.content.res.XmlResourceParser;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.PersistableBundle;
-import android.os.SystemClock;
 import android.os.Bundle;
 import android.service.notification.StatusBarNotification;
 
@@ -52,7 +54,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-public class MengineLocalNotificationsPlugin extends MengineService implements MengineListenerActivity, MengineListenerEngine {
+public class MengineLocalNotificationsPlugin extends MengineService implements MengineListenerActivity, MengineListenerApplication, MengineListenerEngine, MengineListenerRemoteConfig {
     public static final String SERVICE_NAME = "LNotifications";
     public static final boolean SERVICE_EMBEDDING = true;
 
@@ -61,8 +63,9 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
     static final String NOTIFICATION_TAG = "mengine_local_notification";
     private static final String PREFERENCES_NAME = "mengine.local_notifications";
     private static final String PREFERENCES_SCHEDULED_ALARM_IDS = "scheduled_alarm_ids";
-    private static final String PREFERENCES_LAUNCH_COUNT = "launch_count";
+    private static final String REMOTE_CONFIG_NAME = "local_notifications";
     private static final String RESOURCE_REQUEST_LAUNCH = "mengine_local_notifications_request_launch";
+    private static final String RESOURCE_REQUEST_TIME = "mengine_local_notifications_request_time";
 
     static class LocalNotificationDesc {
         public int id;
@@ -89,27 +92,39 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
         }
     }
 
+    private long m_launchCount;
+    private long m_requestLaunch;
+    private long m_requestTime;
+
     private List<LocalNotificationDesc> m_internalLocalNotifications = new ArrayList<>();
     private final Set<Integer> m_scheduledAlarmNotificationIds = new HashSet<>();
     private final Map<String, Long> m_notificationTimes = new HashMap<>();
 
     private boolean m_notificationPermissionGranted = false;
     private boolean m_notificationPermissionRequested = false;
-    private int m_launchCount = 0;
+
+    @Override
+    public void onAppCreate(@NonNull MengineApplication application) {
+        m_launchCount = application.getSessionIndex() + 1;
+
+        m_requestLaunch = MengineLocalNotificationsPlugin.getPermissionResource(application, RESOURCE_REQUEST_LAUNCH, 1);
+        m_requestTime = MengineLocalNotificationsPlugin.getPermissionResource(application, RESOURCE_REQUEST_TIME, 0);
+    }
+
+    @Override
+    public void onMengineRemoteConfigFetch(@NonNull MengineApplication application, boolean updated, @NonNull Map<String, JSONObject> configs, @NonNull Map<String, Integer> ids) {
+        JSONObject config = configs.get(REMOTE_CONFIG_NAME);
+
+        if (config == null) {
+            return;
+        }
+
+        m_requestLaunch = config.optLong("offset_session");
+        m_requestTime = config.optLong("offset_time");
+    }
 
     @Override
     public void onCreate(@NonNull MengineActivity activity, Bundle savedInstanceState) {
-        SharedPreferences preferences = activity.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
-        m_launchCount = preferences.getInt(PREFERENCES_LAUNCH_COUNT, 0);
-
-        if (savedInstanceState == null) {
-            m_launchCount += 1;
-
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putInt(PREFERENCES_LAUNCH_COUNT, m_launchCount);
-            editor.apply();
-        }
-
         if (MengineLocalNotificationsPlugin.hasPostNotificationsPermission(activity) == false) {
             return;
         }
@@ -162,7 +177,8 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
             return;
         }
 
-        int requestLaunch = MengineLocalNotificationsPlugin.getRequestPermissionLaunch(activity);
+        long requestLaunch = m_requestLaunch;
+        long requestTime = m_requestTime;
 
         if (requestLaunch <= 0) {
             this.logInfo("notification permission is not requested on launch");
@@ -179,6 +195,21 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
             return;
         }
 
+        if (requestTime > 0) {
+            MengineApplication application = this.getMengineApplication();
+            long playTime = application.getPlayTime();
+            long playedSeconds = TimeUnit.MILLISECONDS.toSeconds(playTime);
+
+            if (playedSeconds < requestTime) {
+                this.logInfo("notification permission requires %d seconds of play time, got %d"
+                    , requestTime
+                    , playedSeconds
+                );
+
+                return;
+            }
+        }
+
         m_notificationPermissionRequested = true;
 
         activity.checkPermissionPostNotifications(() -> {
@@ -188,18 +219,18 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
         );
     }
 
-    private static int getRequestPermissionLaunch(@NonNull Context context) {
+    private static int getPermissionResource(@NonNull Context context, @NonNull String name, int defaultValue) {
         Resources resources = context.getResources();
         String packageName = context.getPackageName();
-        int id = resources.getIdentifier(RESOURCE_REQUEST_LAUNCH, "integer", packageName);
+        int id = resources.getIdentifier(name, "integer", packageName);
 
         if (id == 0) {
-            return 1;
+            return defaultValue;
         }
 
-        int requestLaunch = resources.getInteger(id);
+        int value = resources.getInteger(id);
 
-        return requestLaunch;
+        return value;
     }
 
     private static boolean hasPostNotificationsPermission(@NonNull Context context) {
@@ -239,7 +270,7 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
     private List<ScheduledNotification> makeScheduledNotifications() {
         Locale locale = Locale.getDefault();
         String language = locale.getLanguage();
-        long now = System.currentTimeMillis();
+        long now = MengineUtils.getTimestamp();
         List<ScheduledNotification> notifications = new ArrayList<>();
 
         for (LocalNotificationDesc desc : m_internalLocalNotifications) {
@@ -420,7 +451,7 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
                 return;
             }
 
-            long time = System.currentTimeMillis() + delayMillis;
+            long time = MengineUtils.getTimestamp() + delayMillis;
 
             m_notificationTimes.put(name, time);
         }
@@ -518,7 +549,7 @@ public class MengineLocalNotificationsPlugin extends MengineService implements M
             return;
         }
 
-        long futureInMillis = SystemClock.elapsedRealtime() + delay;
+        long futureInMillis = MengineUtils.getBootTimestamp() + delay;
 
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
 

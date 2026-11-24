@@ -91,6 +91,17 @@
     return value;
 }
 
++ (BOOL)addIntegerForKey:(NSString *)key value:(NSInteger)value {
+    NSInteger currentValue = [self getIntegerForKey:key defaultValue:0];
+    NSInteger newValue = (NSInteger)((NSUInteger)currentValue + (NSUInteger)value);
+
+    if ([self setIntegerForKey:key value:newValue] == NO) {
+        return NO;
+    }
+
+    return YES;
+}
+
 + (BOOL)hasKey:(NSString *)key {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     

@@ -307,17 +307,13 @@ public class MengineDataDogPlugin extends MengineService implements MengineListe
         JSONObject datadog_debug_message = configs.getOrDefault("datadog_debug_message", null);
 
         if (datadog_debug_message != null) {
-            boolean enable = datadog_debug_message.optBoolean("enable", false);
-
-            m_enableDebugMessage = enable;
+            m_enableDebugMessage = datadog_debug_message.optBoolean("enable", false);
         }
 
         JSONObject datadog_info_message = configs.getOrDefault("datadog_info_message", null);
 
         if (datadog_info_message != null) {
-            boolean enable = datadog_info_message.optBoolean("enable", false);
-
-            m_enableInfoMessage = enable;
+            m_enableInfoMessage = datadog_info_message.optBoolean("enable", false);
         }
 
         if (m_loggerDataDog != null) {

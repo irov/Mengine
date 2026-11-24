@@ -1,12 +1,13 @@
 #pragma once
 
 #import "Environment/iOS/iOSPluginInterface.h"
+#import "Environment/iOS/iOSPluginConfigDelegateInterface.h"
 
 #import <UserNotifications/UserNotifications.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface iOSUserNotificationCenterPlugin : NSObject<iOSPluginInterface, UNUserNotificationCenterDelegate>
+@interface iOSUserNotificationCenterPlugin : NSObject<iOSPluginInterface, iOSPluginConfigDelegateInterface, UNUserNotificationCenterDelegate>
 
 + (instancetype)sharedInstance;
 

@@ -1,5 +1,7 @@
 #import "iOSAdMobRewardedInterstitialDelegate.h"
 
+#import "Environment/Apple/AppleDetail.h"
+
 #import "Environment/iOS/iOSDetail.h"
 #import "Environment/iOS/iOSNetwork.h"
 
@@ -34,7 +36,9 @@
 - (BOOL)canYouShow:(NSString *)placement {
     if (self.m_showing == NO) {
         if (self.m_ad != nil) {
-            if (NSProcessInfo.processInfo.systemUptime - self.m_loadedTimestamp >= 3600.0) {
+            NSTimeInterval now = [AppleDetail getSystemUptime];
+
+            if (now - self.m_loadedTimestamp >= 3600.0) {
                 [self log:@"rewardedInterstitial.expired"];
                 self.m_ad.fullScreenContentDelegate = nil;
                 self.m_ad = nil;
@@ -166,7 +170,7 @@
         }
 
         strongSelf.m_ad = ad;
-        strongSelf.m_loadedTimestamp = NSProcessInfo.processInfo.systemUptime;
+        strongSelf.m_loadedTimestamp = [AppleDetail getSystemUptime];
         strongSelf.m_requestAttempt = 0;
         ad.fullScreenContentDelegate = strongSelf;
 

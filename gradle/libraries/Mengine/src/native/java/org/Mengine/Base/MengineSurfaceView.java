@@ -9,7 +9,6 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.hardware.input.InputManager;
 import android.os.Build;
-import android.os.SystemClock;
 import android.util.SparseBooleanArray;
 import android.util.SparseIntArray;
 import android.view.Display;
@@ -257,7 +256,7 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
 
         for (int index = 0; index != m_controllerDevices.size(); ++index) {
             int deviceId = m_controllerDevices.keyAt(index);
-            long eventTime = SystemClock.uptimeMillis();
+            long eventTime = MengineUtils.getUptimeTimestamp();
 
             MengineNative.AndroidPlatform_controllerConnectEvent(eventTime, deviceId + 1, false);
         }
@@ -468,7 +467,7 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
             m_controllerDevices.delete(deviceId);
         }
 
-        long eventTime = SystemClock.uptimeMillis();
+        long eventTime = MengineUtils.getUptimeTimestamp();
 
         MengineNative.AndroidPlatform_controllerConnectEvent(eventTime, deviceId + 1, controller);
     }
@@ -486,7 +485,7 @@ public class MengineSurfaceView extends SurfaceView implements SurfaceHolder.Cal
 
         m_controllerDevices.delete(deviceId);
         m_controllerHatStates.delete(deviceId);
-        long eventTime = SystemClock.uptimeMillis();
+        long eventTime = MengineUtils.getUptimeTimestamp();
 
         MengineNative.AndroidPlatform_controllerConnectEvent(eventTime, deviceId + 1, false);
     }

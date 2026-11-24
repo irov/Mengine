@@ -216,7 +216,7 @@ SERVICE_EXTERN( WebViewPlatformService );
         return;
     }
 
-    self.m_previousTime = NSProcessInfo.processInfo.systemUptime;
+    self.m_previousTime = [AppleDetail getSystemUptime];
 
     __weak iOSWebViewApplicationDelegate * weakSelf = self;
     NSTimeInterval runtimeInterval = 0.01;
@@ -233,7 +233,7 @@ SERVICE_EXTERN( WebViewPlatformService );
             return;
         }
 
-        CFTimeInterval now = NSProcessInfo.processInfo.systemUptime;
+        CFTimeInterval now = [AppleDetail getSystemUptime];
         float milliseconds = static_cast<float>((now - delegate.m_previousTime) * 1000.0);
         delegate.m_previousTime = now;
 

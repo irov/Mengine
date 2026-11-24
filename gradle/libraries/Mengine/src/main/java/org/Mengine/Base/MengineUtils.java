@@ -20,6 +20,7 @@ import android.os.Handler;
 import android.os.LocaleList;
 import android.os.Looper;
 import android.os.Parcelable;
+import android.os.SystemClock;
 import android.os.UserHandle;
 import android.util.DisplayMetrics;
 import android.util.JsonWriter;
@@ -57,6 +58,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -65,6 +67,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.TimeZone;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -422,6 +425,18 @@ public class MengineUtils {
         return timestamp;
     }
 
+    public static long getUptimeTimestamp() {
+        long timestamp = SystemClock.uptimeMillis();
+
+        return timestamp;
+    }
+
+    public static long getBootTimestamp() {
+        long timestamp = SystemClock.elapsedRealtime();
+
+        return timestamp;
+    }
+
     public static long getDurationTimestamp(long begin) {
         long timestamp = MengineUtils.getTimestamp();
 
@@ -725,6 +740,15 @@ public class MengineUtils {
         }
 
         return null;
+    }
+
+    public static Calendar getCurrentCalendar(@NonNull String timeZoneId) {
+        long now = MengineUtils.getTimestamp();
+        TimeZone timeZone = TimeZone.getTimeZone(timeZoneId);
+        Calendar calendar = Calendar.getInstance(timeZone);
+        calendar.setTimeInMillis(now);
+
+        return calendar;
     }
 
     public static String getDateFormat(long timestamp, String format) {

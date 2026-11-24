@@ -167,8 +167,9 @@ public class MengineFileLoggerService extends MengineService implements MengineL
             .withZone(ZoneId.systemDefault());
 
     private static String makeTimestamp() {
-        Instant now = Instant.now();
-        String timestamp = TS_FORMAT.format(now);
+        long now = MengineUtils.getTimestamp();
+        Instant instant = Instant.ofEpochMilli(now);
+        String timestamp = TS_FORMAT.format(instant);
         return timestamp;
     }
 

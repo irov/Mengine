@@ -506,6 +506,8 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
     [AppleLog withFormat:@"Mengine application applicationDidBecomeActive"];
 
     if (self.m_isApplicationTerminating == NO) {
+        [iOSApplication.sharedInstance startPlayTime];
+
         if (self.m_isIdleTimerDisabled == YES) {
             application.idleTimerDisabled = YES;
         }
@@ -594,6 +596,8 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
 - (void)handleApplicationWillResignActive:(UIApplication *)application {
     [AppleLog withFormat:@"Mengine application applicationWillResignActive"];
 
+    [iOSApplication.sharedInstance stopPlayTime];
+
     if (self.m_isIdleTimerDisabled == YES) {
         application.idleTimerDisabled = NO;
     }
@@ -627,6 +631,8 @@ typedef void (^iOSDidBecomeActiveOperationBlock)(void (^completion)(void));
     self.m_isApplicationForeground = NO;
 
     [AppleLog withFormat:@"Mengine application applicationWillTerminate"];
+
+    [iOSApplication.sharedInstance stopPlayTime];
 
     if (self.m_isIdleTimerDisabled == YES) {
         application.idleTimerDisabled = NO;

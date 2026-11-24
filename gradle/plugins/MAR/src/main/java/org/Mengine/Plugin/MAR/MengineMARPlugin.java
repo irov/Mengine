@@ -34,11 +34,11 @@ import org.Mengine.Base.MengineListenerEngine;
 import org.Mengine.Base.MengineListenerKeyEvent;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineServiceInvalidInitializeException;
+import org.Mengine.Base.MengineUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Calendar;
-import java.util.TimeZone;
 
 public class MengineMARPlugin extends MengineService implements MARInitListener, MengineListenerApplication, MengineListenerKeyEvent, MengineListenerEngine, MengineListenerActivity {
     public static final String SERVICE_NAME = "MAR";
@@ -698,8 +698,7 @@ public class MengineMARPlugin extends MengineService implements MARInitListener,
     }
 
     private String getCurrentTime() {
-        TimeZone tz = TimeZone.getTimeZone("Asia/Beijing");
-        Calendar calendar = Calendar.getInstance(tz);
+        Calendar calendar = MengineUtils.getCurrentCalendar("Asia/Beijing");
         int DATE = calendar.get(Calendar.DATE);
         int MONTH = calendar.get(Calendar.MONTH);
         int YEAR = calendar.get(Calendar.YEAR);

@@ -112,6 +112,27 @@ public class MenginePreferences {
         editor.apply();
     }
 
+    static public long addPreferenceLong(@NonNull String name, long value) {
+        long newValue;
+        synchronized (MenginePreferences.SETTINGS_SYNC) {
+            long currentValue = (Long)MenginePreferences.SETTINGS.getOrDefault(name, 0L);
+
+            if (value == 0L) {
+                return currentValue;
+            }
+
+            newValue = currentValue + value;
+
+            MenginePreferences.SETTINGS.put(name, newValue);
+        }
+
+        SharedPreferences.Editor editor = MenginePreferences.PREFERENCES.edit();
+        editor.putLong(name, newValue);
+        editor.apply();
+
+        return newValue;
+    }
+
     static public String getPreferenceString(@NonNull String name, String defaultValue) {
         synchronized (MenginePreferences.SETTINGS_SYNC) {
             String value = (String)MenginePreferences.SETTINGS.getOrDefault(name, defaultValue);

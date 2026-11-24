@@ -13,6 +13,7 @@ import android.provider.Settings;
 import androidx.annotation.AnyRes;
 import androidx.annotation.BoolRes;
 import androidx.annotation.IntegerRes;
+import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Size;
 import androidx.annotation.StringRes;
@@ -33,6 +34,7 @@ public abstract class MengineApplication extends Application {
     private static final MengineTag TAG = MengineTag.of("MNGApplication");
     private static final String PREFERENCE_ACCOUNT_DELETION_RESTART = "account_deletion_restart";
     private static final String PREFERENCE_EXPECTED_PROCESS_EXIT = "expected_process_exit";
+    private static final String PREFERENCE_PLAY_TIME = "play_time";
 
     static {
         System.loadLibrary(BuildConfig.MENGINE_NATIVE_APPLICATION);
@@ -53,6 +55,9 @@ public abstract class MengineApplication extends Application {
     private String m_sessionId;
     private Calendar m_sessionDate;
     private long m_sessionGap = 0;
+
+    private long m_playTime;
+    private long m_playTimeStarted = -1;
 
     protected String m_userId;
 
@@ -248,6 +253,41 @@ public abstract class MengineApplication extends Application {
 
     public long getSessionGap() {
         return m_sessionGap;
+    }
+
+    @MainThread
+    public long getPlayTime() {
+        if (m_playTimeStarted == -1) {
+            return m_playTime;
+        }
+
+        long now = MengineUtils.getUptimeTimestamp();
+        long elapsedTime = now - m_playTimeStarted;
+        long playTime = m_playTime + elapsedTime;
+
+        return playTime;
+    }
+
+    @MainThread
+    void startPlayTime() {
+        if (m_playTimeStarted != -1) {
+            return;
+        }
+
+        m_playTimeStarted = MengineUtils.getUptimeTimestamp();
+    }
+
+    @MainThread
+    void stopPlayTime() {
+        if (m_playTimeStarted == -1) {
+            return;
+        }
+
+        long now = MengineUtils.getUptimeTimestamp();
+        long elapsedTime = now - m_playTimeStarted;
+        m_playTimeStarted = -1;
+
+        m_playTime = MenginePreferences.addPreferenceLong(PREFERENCE_PLAY_TIME, elapsedTime);
     }
 
     public String getDeviceManufacturer() {
@@ -604,6 +644,9 @@ public abstract class MengineApplication extends Application {
     }
 
     public void removeUserData() {
+        m_playTime = 0;
+        m_playTimeStarted = -1;
+
         MenginePreferences.clearPreferences();
 
         MengineFragmentAttribution.INSTANCE.clearProject();
@@ -635,6 +678,7 @@ public abstract class MengineApplication extends Application {
     }
 
     public void terminateProcess() {
+        this.stopPlayTime();
         this.setExpectedProcessExit();
 
         System.exit(0);
@@ -792,6 +836,8 @@ public abstract class MengineApplication extends Application {
         }
 
         MenginePreferences.initialize(this, TAG);
+
+        m_playTime = MenginePreferences.getPreferenceLong(PREFERENCE_PLAY_TIME, 0);
 
         if (BuildConfig.DEBUG == true) {
             String deviceInfo = MengineUtils.getPrintDeviceInfo();
@@ -1227,6 +1273,7 @@ public abstract class MengineApplication extends Application {
     public void onTerminate() {
         MengineLog.logDebug(TAG, "[BEGIN] onTerminate");
 
+        this.stopPlayTime();
         this.onServicesSave();
 
         List<MengineListenerApplication> applicationListeners = this.getApplicationListeners();

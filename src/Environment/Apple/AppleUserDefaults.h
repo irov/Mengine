@@ -12,6 +12,7 @@
 
 + (BOOL)setIntegerForKey:(NSString *)key value:(NSInteger)value;
 + (NSInteger)getIntegerForKey:(NSString *)key defaultValue:(NSInteger)defaultValue;
++ (BOOL)addIntegerForKey:(NSString *)key value:(NSInteger)value;
 
 + (BOOL)hasKey:(NSString *)key;
 + (BOOL)removeKey:(NSString *)key;

@@ -3,6 +3,7 @@
 #include "Kernel/Layer.h"
 #include "Kernel/ResourceImage.h"
 #include "Kernel/RenderCameraOrthogonal.h"
+#include "Kernel/RenderScissor.h"
 #include "Kernel/RenderViewport.h"
 
 #include "Kernel/Viewport.h"
@@ -35,6 +36,10 @@ namespace Mengine
     protected:
         void createViewport_();
         void clearViewport_();
+
+    public:
+        void setClipViewport( const Viewport & _viewport );
+        void removeClipViewport();
 
     public:
         bool setImageMask( const ResourceImagePtr & _resourceImageMask );
@@ -82,6 +87,7 @@ namespace Mengine
 
         RenderCameraOrthogonalPtr m_renderCamera;
         RenderViewportPtr m_renderViewport;
+        RenderScissorPtr m_clipScissor;
 
         RenderInterfacePtr m_renderTarget;
 

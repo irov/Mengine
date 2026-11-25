@@ -76,6 +76,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Layer2D::_dispose()
     {
+        this->removeClipViewport();
+
         m_renderCamera = nullptr;
         m_renderViewport = nullptr;
 
@@ -180,6 +182,51 @@ namespace Mengine
 
         render->setRenderCamera( nullptr );
         render->setRenderViewport( nullptr );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Layer2D::setClipViewport( const Viewport & _viewport )
+    {
+        if( m_clipScissor == nullptr )
+        {
+            RenderScissorPtr scissor = Helper::generateNodeFactorable<RenderScissor>( MENGINE_DOCUMENT_FACTORABLE );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( scissor, "name '%s' invalid create clip scissor"
+                , this->getName().c_str()
+            );
+
+            scissor->setName( STRINGIZE_STRING_LOCAL( "Layer2DClip" ) );
+            scissor->setIntersectParent( true );
+            scissor->setScissorViewport( _viewport );
+
+            this->addChild( scissor );
+
+            m_clipScissor = scissor;
+        }
+        else
+        {
+            m_clipScissor->setScissorViewport( _viewport );
+        }
+
+        this->setRenderScissor( m_clipScissor );
+        this->updatePickers();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Layer2D::removeClipViewport()
+    {
+        if( m_clipScissor == nullptr )
+        {
+            return;
+        }
+
+        if( this->getRenderScissor() == m_clipScissor )
+        {
+            this->setRenderScissor( nullptr );
+        }
+
+        m_clipScissor->removeFromParent();
+        m_clipScissor = nullptr;
+
+        this->updatePickers();
     }
     //////////////////////////////////////////////////////////////////////////
     bool Layer2D::setImageMask( const ResourceImagePtr & _resourceImageMask )

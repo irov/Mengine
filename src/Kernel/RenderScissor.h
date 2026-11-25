@@ -34,6 +34,8 @@ namespace Mengine
         void setScissorViewport( const Viewport & _viewport );
         const Viewport & getScissorViewport() const;
 
+        void setIntersectParent( bool _intersectParent );
+
     public:
         const Viewport & getScissorViewportWM() const override;
 
@@ -42,6 +44,7 @@ namespace Mengine
 
         void invalidateViewport_() const;
         void updateViewport_() const;
+        const RenderScissorInterface * findParentScissor_() const;
 
     protected:
         void notifyChangeWindowResolution( bool _fullscreen, const Resolution & _resolution );
@@ -49,7 +52,9 @@ namespace Mengine
     protected:
         Viewport m_viewport;
 
+        bool m_intersectParent;
         mutable Viewport m_viewportWM;
+        mutable Viewport m_clippedViewportWM;
         mutable bool m_invalidateViewport;
     };
     //////////////////////////////////////////////////////////////////////////
@@ -58,16 +63,6 @@ namespace Mengine
     MENGINE_INLINE void RenderScissor::invalidateViewport_() const
     {
         m_invalidateViewport = true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE const Viewport & RenderScissor::getScissorViewportWM() const
-    {
-        if( m_invalidateViewport == true )
-        {
-            this->updateViewport_();
-        }
-
-        return m_viewportWM;
     }
     //////////////////////////////////////////////////////////////////////////
 }

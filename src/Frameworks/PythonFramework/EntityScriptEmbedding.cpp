@@ -427,6 +427,8 @@ namespace Mengine
             .def( "getSize", &Layer2D::getSize )
             .def( "setViewport", &Layer2D::setViewport )
             .def( "removeViewport", &Layer2D::removeViewport )
+            .def( "setClipViewport", &Layer2D::setClipViewport )
+            .def( "removeClipViewport", &Layer2D::removeClipViewport )
             .def( "setImageMask", &Layer2D::setImageMask )
             .def( "removeImageMask", &Layer2D::removeImageMask )
             ;

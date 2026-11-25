@@ -1522,6 +1522,11 @@ namespace Mengine
 
         const Viewport & scissorViewport = scissor->getScissorViewportWM();
 
+        if( scissorViewport.empty() == true )
+        {
+            return false;
+        }
+
         mt::vec2f contentPosition;
         resolution->fromScreenToContentPosition( _screenPosition, &contentPosition );
 

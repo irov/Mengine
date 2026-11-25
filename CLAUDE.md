@@ -12,6 +12,7 @@
 ## While making changes
 
 - Preserve Debug assertions for impossible states that violate internal contracts. Release builds may assume those contracts and can crash if they are violated. Use ordinary runtime checks at external data boundaries so Release handles invalid input.
+- In Release, when a failure leaves the application unable to reach or restore a valid state, log the original error and any available traceback, then terminate the process.
 - Treat every fix and feature as part of an engine: keep solutions concise, cohesive, and idiomatic to Mengine's architecture. Add abstractions, state, and special cases only when the required behavior justifies them.
 - Reuse the appropriate existing abstractions and keep behavior in the component responsible for it.
 - Keep related APIs, operations, and lifecycles symmetric where their contracts match. Introduce differences only when behavior or ownership requires them.

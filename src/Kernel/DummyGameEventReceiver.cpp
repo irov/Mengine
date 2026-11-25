@@ -141,42 +141,7 @@ namespace Mengine
         // Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DummyGameEventReceiver::onGameGestureMagnification( const InputGestureMagnificationEvent & _event )
-    {
-        MENGINE_UNUSED( _event );
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool DummyGameEventReceiver::onGameGestureRotation( const InputGestureRotationEvent & _event )
-    {
-        MENGINE_UNUSED( _event );
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool DummyGameEventReceiver::onGameGestureSmartMagnification( const InputGestureSmartMagnificationEvent & _event )
-    {
-        MENGINE_UNUSED( _event );
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool DummyGameEventReceiver::onGameGestureSwipe( const InputGestureSwipeEvent & _event )
-    {
-        MENGINE_UNUSED( _event );
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool DummyGameEventReceiver::onGameGestureDoubleTap( const InputGestureDoubleTapEvent & _event )
-    {
-        MENGINE_UNUSED( _event );
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool DummyGameEventReceiver::onGameGesturePressure( const InputGesturePressureEvent & _event )
+    bool DummyGameEventReceiver::onGameGesture( const InputGestureEvent & _event )
     {
         MENGINE_UNUSED( _event );
 

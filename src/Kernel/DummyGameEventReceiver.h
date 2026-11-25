@@ -30,12 +30,7 @@ namespace Mengine
         void onGameAppMouseLeave( const InputMouseLeaveEvent & _event ) override;
 
     public:
-        bool onGameGestureMagnification( const InputGestureMagnificationEvent & _event ) override;
-        bool onGameGestureRotation( const InputGestureRotationEvent & _event ) override;
-        bool onGameGestureSmartMagnification( const InputGestureSmartMagnificationEvent & _event ) override;
-        bool onGameGestureSwipe( const InputGestureSwipeEvent & _event ) override;
-        bool onGameGestureDoubleTap( const InputGestureDoubleTapEvent & _event ) override;
-        bool onGameGesturePressure( const InputGesturePressureEvent & _event ) override;
+        bool onGameGesture( const InputGestureEvent & _event ) override;
 
     public:
         void onGameTimeFactorChange( float _timeFactor ) override;

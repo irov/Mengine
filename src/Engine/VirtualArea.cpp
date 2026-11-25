@@ -2,10 +2,8 @@
 
 #include "VirtualAreaGlobalInputHandler.h"
 
-#include "Interface/ApplicationInterface.h"
 #include "Interface/ArrowServiceInterface.h"
 #include "Interface/GlobalInputHandlerInterface.h"
-#include "Interface/InputServiceInterface.h"
 #include "Interface/PlayerServiceInterface.h"
 #include "Interface/RenderResolutionInterface.h"
 #include "Interface/TransformationInterface.h"
@@ -1146,8 +1144,13 @@ namespace Mengine
         MENGINE_UNUSED( _event );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool VirtualArea::handleGestureMagnification( const RenderContext * _context, const InputGestureMagnificationEvent & _event )
+    bool VirtualArea::handleGestureEvent( const RenderContext * _context, const InputGestureEvent & _event )
     {
+        if( _event.type != IGT_MAGNIFICATION )
+        {
+            return false;
+        }
+
         if( _event.isTouch == true )
         {
             return false;
@@ -1167,46 +1170,6 @@ namespace Mengine
         }
 
         return m_defaultHandle;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool VirtualArea::handleGestureRotation( const RenderContext * _context, const InputGestureRotationEvent & _event )
-    {
-        MENGINE_UNUSED( _context );
-        MENGINE_UNUSED( _event );
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool VirtualArea::handleGestureSmartMagnification( const RenderContext * _context, const InputGestureSmartMagnificationEvent & _event )
-    {
-        MENGINE_UNUSED( _context );
-        MENGINE_UNUSED( _event );
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool VirtualArea::handleGestureSwipe( const RenderContext * _context, const InputGestureSwipeEvent & _event )
-    {
-        MENGINE_UNUSED( _context );
-        MENGINE_UNUSED( _event );
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool VirtualArea::handleGestureDoubleTap( const RenderContext * _context, const InputGestureDoubleTapEvent & _event )
-    {
-        MENGINE_UNUSED( _context );
-        MENGINE_UNUSED( _event );
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool VirtualArea::handleGesturePressure( const RenderContext * _context, const InputGesturePressureEvent & _event )
-    {
-        MENGINE_UNUSED( _context );
-        MENGINE_UNUSED( _event );
-
-        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     const RenderResolutionInterfacePtr & VirtualArea::getPickerResolution() const
@@ -1380,7 +1343,6 @@ namespace Mengine
         }
 
         m_dragging = false;
-        m_touchPinchRecognizer.reset();
         m_velocity = mt::vec2f( 0.f, 0.f );
         this->stopElasticReturn_();
 
@@ -1427,11 +1389,6 @@ namespace Mengine
         m_velocity = mt::vec2f( 0.f, 0.f );
 
         this->setGlobalHandlerEnable_( m_frozen == false );
-
-        if( _event.isTouch == true )
-        {
-            this->rebaseTouchPinch_();
-        }
 
         this->notifyTouch_();
     }
@@ -1600,11 +1557,6 @@ namespace Mengine
 
         m_dragging = false;
 
-        if( _isTouch == true )
-        {
-            this->rebaseTouchPinch_();
-        }
-
         if( this->getTouchCount() == 0 && m_allowOutOfBounds == true )
         {
             mt::vec2f offset = this->getBoundsOffset_( m_position );
@@ -1621,82 +1573,30 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void VirtualArea::rebaseTouchPinch_()
+    void VirtualArea::pinchTouch_( const InputGestureEvent & _event )
     {
-        m_touchPinchRecognizer.reset();
-
-        this->updateTouchPinch_();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void VirtualArea::updateTouchPinch_()
-    {
-        const TouchDesc * touch0 = nullptr;
-        const TouchDesc * touch1 = nullptr;
-
-        for( uint32_t index = 0; index != MENGINE_INPUT_MAX_TOUCH; ++index )
-        {
-            const TouchDesc & touch = m_touches[index];
-
-            if( touch.active == false )
-            {
-                continue;
-            }
-
-            if( touch0 == nullptr )
-            {
-                touch0 = &touch;
-
-                continue;
-            }
-
-            if( touch1 != nullptr )
-            {
-                return;
-            }
-
-            touch1 = &touch;
-        }
-
-        if( touch1 == nullptr )
+        if( _event.phase != IGP_CHANGE )
         {
             return;
         }
 
-        if( this->isTouchPositionCurrent_( *touch0 ) == false )
-        {
-            m_touchPinchRecognizer.reset();
+        const TouchDesc * touch0 = this->getTouch_( _event.touchId0, true );
 
-            return;
-        }
-
-        if( this->isTouchPositionCurrent_( *touch1 ) == false )
-        {
-            m_touchPinchRecognizer.reset();
-
-            return;
-        }
-
-        const Resolution & resolution = APPLICATION_SERVICE()
-            ->getCurrentWindowResolution();
-
-        if( m_touchPinchRecognizer.isActive() == false )
-        {
-            m_touchPinchRecognizer.begin( touch0->screen, touch1->screen, resolution );
-
-            return;
-        }
-
-        float scale;
-        if( m_touchPinchRecognizer.update( touch0->screen, touch1->screen, resolution, &scale ) != IGP_CHANGE )
+        if( touch0->active == false )
         {
             return;
         }
 
-        float factor = 1.f / scale;
-        mt::vec2f center = (touch0->screen + touch1->screen) * 0.5f;
-        const RenderContext * context = &touch0->context;
+        const TouchDesc * touch1 = this->getTouch_( _event.touchId1, true );
 
-        this->applyMagnification_( factor, center, context );
+        if( touch1->active == false )
+        {
+            return;
+        }
+
+        float factor = 1.f / _event.scale;
+
+        this->applyMagnification_( factor, _event.position.screen, &touch0->context );
     }
     //////////////////////////////////////////////////////////////////////////
     bool VirtualArea::applyMagnification_( float _factor, const mt::vec2f & _screenPoint, const RenderContext * _context )
@@ -2110,24 +2010,6 @@ namespace Mengine
         }
 
         return &m_touches[index];
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool VirtualArea::isTouchPositionCurrent_( const TouchDesc & _touch ) const
-    {
-        const mt::vec2f * position = INPUT_SERVICE()
-            ->getTouchPosition( _touch.touchId );
-
-        if( position == nullptr )
-        {
-            return false;
-        }
-
-        if( mt::cmp_v2_v2( *position, _touch.screen ) == false )
-        {
-            return false;
-        }
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
 }

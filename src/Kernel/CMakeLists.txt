@@ -681,8 +681,6 @@ Core
 
     InputServiceHelper.cpp
     InputServiceHelper.h
-    TouchPinchRecognizer.cpp
-    TouchPinchRecognizer.h
 
     PixelFormat.h
 

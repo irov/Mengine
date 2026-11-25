@@ -92,13 +92,6 @@ namespace Mengine
                     return false;
                 }
 
-                void handleMouseMoveEnd( const InputMouseMoveEndEvent & _event ) override
-                {
-                    MENGINE_UNUSED( _event );
-
-                    //Empty
-                }
-
                 bool handleMouseWheel( const InputMouseWheelEvent & _event ) override
                 {
                     MENGINE_UNUSED( _event );
@@ -122,42 +115,7 @@ namespace Mengine
                 }
 
             protected:
-                bool handleGestureMagnification( const InputGestureMagnificationEvent & _event ) override
-                {
-                    MENGINE_UNUSED( _event );
-
-                    return false;
-                }
-
-                bool handleGestureRotation( const InputGestureRotationEvent & _event ) override
-                {
-                    MENGINE_UNUSED( _event );
-
-                    return false;
-                }
-
-                bool handleGestureSmartMagnification( const InputGestureSmartMagnificationEvent & _event ) override
-                {
-                    MENGINE_UNUSED( _event );
-
-                    return false;
-                }
-
-                bool handleGestureSwipe( const InputGestureSwipeEvent & _event ) override
-                {
-                    MENGINE_UNUSED( _event );
-
-                    return false;
-                }
-
-                bool handleGestureDoubleTap( const InputGestureDoubleTapEvent & _event ) override
-                {
-                    MENGINE_UNUSED( _event );
-
-                    return false;
-                }
-
-                bool handleGesturePressure( const InputGesturePressureEvent & _event ) override
+                bool handleGestureEvent( const InputGestureEvent & _event ) override
                 {
                     MENGINE_UNUSED( _event );
 

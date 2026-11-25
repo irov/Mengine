@@ -62,7 +62,6 @@ namespace Mengine
         bool handleMouseButtonEventEnd( const InputMouseButtonEvent & _event ) override;
         void handleMouseButtonEventCancel( const InputMouseButtonEvent & _event ) override;
         bool handleMouseMove( const InputMouseMoveEvent & _event ) override;
-        void handleMouseMoveEnd( const InputMouseMoveEndEvent & _event ) override;
         bool handleMouseWheel( const InputMouseWheelEvent & _event ) override;
 
     protected:
@@ -77,12 +76,7 @@ namespace Mengine
         void handleMouseLeave( const InputMouseLeaveEvent & _event ) override;
 
     public:
-        bool handleGestureMagnification( const InputGestureMagnificationEvent & _event ) override;
-        bool handleGestureRotation( const InputGestureRotationEvent & _event ) override;
-        bool handleGestureSmartMagnification( const InputGestureSmartMagnificationEvent & _event ) override;
-        bool handleGestureSwipe( const InputGestureSwipeEvent & _event ) override;
-        bool handleGestureDoubleTap( const InputGestureDoubleTapEvent & _event ) override;
-        bool handleGesturePressure( const InputGesturePressureEvent & _event ) override;
+        bool handleGestureEvent( const InputGestureEvent & _event ) override;
 
     protected:
         virtual bool _handleMouseEnter( const InputMouseEnterEvent & _event );

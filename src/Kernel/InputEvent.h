@@ -146,12 +146,10 @@ namespace Mengine
         float dpressure;
     };
     //////////////////////////////////////////////////////////////////////////
-    struct InputMouseMoveEndEvent
+    struct InputTouchMoveEndEvent
     {
         InputBaseData base;
         InputSpecialData special;
-
-        bool isTouch;
     };
     //////////////////////////////////////////////////////////////////////////
     struct InputPointerCancelEvent
@@ -182,70 +180,34 @@ namespace Mengine
         float pressure;
     };
     //////////////////////////////////////////////////////////////////////////
-    struct InputGestureMagnificationEvent
+    enum EInputGestureType : uint8_t
+    {
+        IGT_MAGNIFICATION,
+        IGT_ROTATION,
+        IGT_SMART_MAGNIFICATION,
+        IGT_SWIPE,
+        IGT_PRESSURE,
+        IGT_DOUBLE_TAP
+    };
+    //////////////////////////////////////////////////////////////////////////
+    struct InputGestureEvent
     {
         InputBaseData base;
         InputSpecialData special;
         InputPositionData position;
 
-        float scale;
+        EInputGestureType type;
         EInputGesturePhase phase;
         bool isTouch;
         ETouchCode touchId0;
         ETouchCode touchId1;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    struct InputGestureRotationEvent
-    {
-        InputBaseData base;
-        InputSpecialData special;
-        InputPositionData position;
 
+        float scale;
         float degrees;
-        EInputGesturePhase phase;
-        bool isTouch;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    struct InputGestureSmartMagnificationEvent
-    {
-        InputBaseData base;
-        InputSpecialData special;
-        InputPositionData position;
-
-        bool isTouch;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    struct InputGestureSwipeEvent
-    {
-        InputBaseData base;
-        InputSpecialData special;
-        InputPositionData position;
-
         mt::vec2f direction;
-        bool isTouch;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    struct InputGesturePressureEvent
-    {
-        InputBaseData base;
-        InputSpecialData special;
-        InputPositionData position;
-
         float pressure;
         int32_t stage;
         float stageTransition;
-        EInputGesturePhase phase;
-        bool isTouch;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    struct InputGestureDoubleTapEvent
-    {
-        InputBaseData base;
-        InputSpecialData special;
-        InputPositionData position;
-
-        ETouchCode touchId;
-        bool isTouch;
     };
     //////////////////////////////////////////////////////////////////////////
     struct InputControllerConnectEvent

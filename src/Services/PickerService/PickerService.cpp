@@ -793,13 +793,6 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PickerService::handleMouseMoveEnd( const InputMouseMoveEndEvent & _event )
-    {
-        MENGINE_UNUSED( _event );
-
-        //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool PickerService::handleMouseWheel( const InputMouseWheelEvent & _event )
     {
         MENGINE_VECTOR_AUX( m_states );
@@ -926,11 +919,11 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PickerService::handleGestureMagnification( const InputGestureMagnificationEvent & _event )
+    bool PickerService::handleGestureEvent( const InputGestureEvent & _event )
     {
         MENGINE_VECTOR_AUX( m_states );
 
-        if( this->pickStates_( _event.position.screen, TC_TOUCH0, 0.f, _event.special, &m_states ) == false )
+        if( this->pickStates_( _event.position.screen, _event.touchId0, 0.f, _event.special, &m_states ) == false )
         {
             return false;
         }
@@ -964,11 +957,11 @@ namespace Mengine
 
             PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
-            InputGestureMagnificationEvent ne = _event;
+            InputGestureEvent ne = _event;
 
             Helper::calcInputPositionWorld( &desc.context, &ne.position );
 
-            LOGGER_INFO( "picker", "handle type '%s' name '%s' UID [%u] pos [%.4f;%.4f] [magnification]"
+            LOGGER_INFO( "picker", "handle type '%s' name '%s' UID [%u] pos [%.4f;%.4f] [gesture]"
                 , MENGINE_MIXIN_DEBUG_TYPE( inputHandler )
                 , MENGINE_MIXIN_DEBUG_NAME( inputHandler )
                 , MENGINE_MIXIN_DEBUG_UID( inputHandler )
@@ -976,315 +969,7 @@ namespace Mengine
                 , ne.position.world.y
             );
 
-            if( inputHandler->handleGestureMagnification( &desc.context, ne ) == false )
-            {
-                continue;
-            }
-
-            return m_handleValue;
-        }
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool PickerService::handleGestureRotation( const InputGestureRotationEvent & _event )
-    {
-        MENGINE_VECTOR_AUX( m_states );
-
-        if( this->pickStates_( _event.position.screen, TC_TOUCH0, 0.f, _event.special, &m_states ) == false )
-        {
-            return false;
-        }
-
-        MENGINE_PROFILER_CATEGORY();
-
-        for( VectorPickerStates::reverse_iterator
-            it = m_states.rbegin(),
-            it_end = m_states.rend();
-            it != it_end;
-            ++it )
-        {
-            const PickerStateDesc & desc = *it;
-
-            PickerInterface * picker = desc.picker;
-
-            if( picker->isPickerEnable() == false )
-            {
-                continue;
-            }
-
-            if( picker->isPickerPicked() == false )
-            {
-                continue;
-            }
-
-            if( picker->isPickerFreeze() == true )
-            {
-                return m_handleValue;
-            }
-
-            PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
-
-            InputGestureRotationEvent ne = _event;
-
-            Helper::calcInputPositionWorld( &desc.context, &ne.position );
-
-            LOGGER_INFO( "picker", "handle type '%s' name '%s' UID [%u] pos [%.4f;%.4f] [rotation]"
-                , MENGINE_MIXIN_DEBUG_TYPE( inputHandler )
-                , MENGINE_MIXIN_DEBUG_NAME( inputHandler )
-                , MENGINE_MIXIN_DEBUG_UID( inputHandler )
-                , ne.position.world.x
-                , ne.position.world.y
-            );
-
-            if( inputHandler->handleGestureRotation( &desc.context, ne ) == false )
-            {
-                continue;
-            }
-
-            return m_handleValue;
-        }
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool PickerService::handleGestureSmartMagnification( const InputGestureSmartMagnificationEvent & _event )
-    {
-        MENGINE_VECTOR_AUX( m_states );
-
-        if( this->pickStates_( _event.position.screen, TC_TOUCH0, 0.f, _event.special, &m_states ) == false )
-        {
-            return false;
-        }
-
-        MENGINE_PROFILER_CATEGORY();
-
-        for( VectorPickerStates::reverse_iterator
-            it = m_states.rbegin(),
-            it_end = m_states.rend();
-            it != it_end;
-            ++it )
-        {
-            const PickerStateDesc & desc = *it;
-
-            PickerInterface * picker = desc.picker;
-
-            if( picker->isPickerEnable() == false )
-            {
-                continue;
-            }
-
-            if( picker->isPickerPicked() == false )
-            {
-                continue;
-            }
-
-            if( picker->isPickerFreeze() == true )
-            {
-                return m_handleValue;
-            }
-
-            PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
-
-            InputGestureSmartMagnificationEvent ne = _event;
-
-            Helper::calcInputPositionWorld( &desc.context, &ne.position );
-
-            LOGGER_INFO( "picker", "handle type '%s' name '%s' UID [%u] pos [%.4f;%.4f] [smart magnification]"
-                , MENGINE_MIXIN_DEBUG_TYPE( inputHandler )
-                , MENGINE_MIXIN_DEBUG_NAME( inputHandler )
-                , MENGINE_MIXIN_DEBUG_UID( inputHandler )
-                , ne.position.world.x
-                , ne.position.world.y
-            );
-
-            if( inputHandler->handleGestureSmartMagnification( &desc.context, ne ) == false )
-            {
-                continue;
-            }
-
-            return m_handleValue;
-        }
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool PickerService::handleGestureSwipe( const InputGestureSwipeEvent & _event )
-    {
-        MENGINE_VECTOR_AUX( m_states );
-
-        if( this->pickStates_( _event.position.screen, TC_TOUCH0, 0.f, _event.special, &m_states ) == false )
-        {
-            return false;
-        }
-
-        MENGINE_PROFILER_CATEGORY();
-
-        for( VectorPickerStates::reverse_iterator
-            it = m_states.rbegin(),
-            it_end = m_states.rend();
-            it != it_end;
-            ++it )
-        {
-            const PickerStateDesc & desc = *it;
-
-            PickerInterface * picker = desc.picker;
-
-            if( picker->isPickerEnable() == false )
-            {
-                continue;
-            }
-
-            if( picker->isPickerPicked() == false )
-            {
-                continue;
-            }
-
-            if( picker->isPickerFreeze() == true )
-            {
-                return m_handleValue;
-            }
-
-            PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
-
-            InputGestureSwipeEvent ne = _event;
-
-            Helper::calcInputPositionWorld( &desc.context, &ne.position );
-
-            LOGGER_INFO( "picker", "handle type '%s' name '%s' UID [%u] pos [%.4f;%.4f] [swipe]"
-                , MENGINE_MIXIN_DEBUG_TYPE( inputHandler )
-                , MENGINE_MIXIN_DEBUG_NAME( inputHandler )
-                , MENGINE_MIXIN_DEBUG_UID( inputHandler )
-                , ne.position.world.x
-                , ne.position.world.y
-            );
-
-            if( inputHandler->handleGestureSwipe( &desc.context, ne ) == false )
-            {
-                continue;
-            }
-
-            return m_handleValue;
-        }
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool PickerService::handleGestureDoubleTap( const InputGestureDoubleTapEvent & _event )
-    {
-        MENGINE_VECTOR_AUX( m_states );
-
-        const mt::vec2f & screen = _event.position.screen;
-
-        if( this->pickStates_( screen, _event.touchId, 0.f, _event.special, &m_states ) == false )
-        {
-            return false;
-        }
-
-        MENGINE_PROFILER_CATEGORY();
-
-        for( VectorPickerStates::reverse_iterator
-            it = m_states.rbegin(),
-            it_end = m_states.rend();
-            it != it_end;
-            ++it )
-        {
-            const PickerStateDesc & desc = *it;
-
-            PickerInterface * picker = desc.picker;
-
-            if( picker->isPickerEnable() == false )
-            {
-                continue;
-            }
-
-            if( picker->isPickerPicked() == false )
-            {
-                continue;
-            }
-
-            if( picker->isPickerFreeze() == true )
-            {
-                return m_handleValue;
-            }
-
-            PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
-
-            const RenderContext * context = &desc.context;
-            InputGestureDoubleTapEvent event = _event;
-
-            Helper::calcInputPositionWorld( context, &event.position );
-
-            LOGGER_INFO( "picker", "handle type '%s' name '%s' UID [%u] pos [%.4f;%.4f] [double tap]"
-                , MENGINE_MIXIN_DEBUG_TYPE( inputHandler )
-                , MENGINE_MIXIN_DEBUG_NAME( inputHandler )
-                , MENGINE_MIXIN_DEBUG_UID( inputHandler )
-                , event.position.world.x
-                , event.position.world.y
-            );
-
-            if( inputHandler->handleGestureDoubleTap( context, event ) == false )
-            {
-                continue;
-            }
-
-            return m_handleValue;
-        }
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool PickerService::handleGesturePressure( const InputGesturePressureEvent & _event )
-    {
-        MENGINE_VECTOR_AUX( m_states );
-
-        if( this->pickStates_( _event.position.screen, TC_TOUCH0, 0.f, _event.special, &m_states ) == false )
-        {
-            return false;
-        }
-
-        MENGINE_PROFILER_CATEGORY();
-
-        for( VectorPickerStates::reverse_iterator
-            it = m_states.rbegin(),
-            it_end = m_states.rend();
-            it != it_end;
-            ++it )
-        {
-            const PickerStateDesc & desc = *it;
-
-            PickerInterface * picker = desc.picker;
-
-            if( picker->isPickerEnable() == false )
-            {
-                continue;
-            }
-
-            if( picker->isPickerPicked() == false )
-            {
-                continue;
-            }
-
-            if( picker->isPickerFreeze() == true )
-            {
-                return m_handleValue;
-            }
-
-            PickerInputHandlerInterface * inputHandler = picker->getPickerInputHandler();
-
-            InputGesturePressureEvent ne = _event;
-
-            Helper::calcInputPositionWorld( &desc.context, &ne.position );
-
-            LOGGER_INFO( "picker", "handle type '%s' name '%s' UID [%u] pos [%.4f;%.4f] [pressure]"
-                , MENGINE_MIXIN_DEBUG_TYPE( inputHandler )
-                , MENGINE_MIXIN_DEBUG_NAME( inputHandler )
-                , MENGINE_MIXIN_DEBUG_UID( inputHandler )
-                , ne.position.world.x
-                , ne.position.world.y
-            );
-
-            if( inputHandler->handleGesturePressure( &desc.context, ne ) == false )
+            if( inputHandler->handleGestureEvent( &desc.context, ne ) == false )
             {
                 continue;
             }

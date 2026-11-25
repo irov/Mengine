@@ -27,12 +27,7 @@ namespace Mengine
         virtual void handleMouseLeave( const RenderContext * _context, const InputMouseLeaveEvent & _event ) = 0;
 
     public:
-        virtual bool handleGestureMagnification( const RenderContext * _context, const InputGestureMagnificationEvent & _event ) = 0;
-        virtual bool handleGestureRotation( const RenderContext * _context, const InputGestureRotationEvent & _event ) = 0;
-        virtual bool handleGestureSmartMagnification( const RenderContext * _context, const InputGestureSmartMagnificationEvent & _event ) = 0;
-        virtual bool handleGestureSwipe( const RenderContext * _context, const InputGestureSwipeEvent & _event ) = 0;
-        virtual bool handleGestureDoubleTap( const RenderContext * _context, const InputGestureDoubleTapEvent & _event ) = 0;
-        virtual bool handleGesturePressure( const RenderContext * _context, const InputGesturePressureEvent & _event ) = 0;
+        virtual bool handleGestureEvent( const RenderContext * _context, const InputGestureEvent & _event ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<PickerInputHandlerInterface> PickerInputHandlerInterfacePtr;

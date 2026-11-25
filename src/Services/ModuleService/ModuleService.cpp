@@ -380,14 +380,6 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleService::handleMouseMoveEnd( const InputMouseMoveEndEvent & _event )
-    {
-        for( const ModuleInterfacePtr & module : m_modules )
-        {
-            module->handleMouseMoveEnd( _event );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool ModuleService::handleMouseWheel( const InputMouseWheelEvent & _event )
     {
         for( const ModuleInterfacePtr & module : m_modules )
@@ -422,76 +414,11 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ModuleService::handleGestureMagnification( const InputGestureMagnificationEvent & _event )
+    bool ModuleService::handleGestureEvent( const InputGestureEvent & _event )
     {
         for( const ModuleInterfacePtr & module : m_modules )
         {
-            if( module->handleGestureMagnification( _event ) == true )
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ModuleService::handleGestureRotation( const InputGestureRotationEvent & _event )
-    {
-        for( const ModuleInterfacePtr & module : m_modules )
-        {
-            if( module->handleGestureRotation( _event ) == true )
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ModuleService::handleGestureSmartMagnification( const InputGestureSmartMagnificationEvent & _event )
-    {
-        for( const ModuleInterfacePtr & module : m_modules )
-        {
-            if( module->handleGestureSmartMagnification( _event ) == true )
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ModuleService::handleGestureSwipe( const InputGestureSwipeEvent & _event )
-    {
-        for( const ModuleInterfacePtr & module : m_modules )
-        {
-            if( module->handleGestureSwipe( _event ) == true )
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ModuleService::handleGestureDoubleTap( const InputGestureDoubleTapEvent & _event )
-    {
-        for( const ModuleInterfacePtr & module : m_modules )
-        {
-            if( module->handleGestureDoubleTap( _event ) == true )
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ModuleService::handleGesturePressure( const InputGesturePressureEvent & _event )
-    {
-        for( const ModuleInterfacePtr & module : m_modules )
-        {
-            if( module->handleGesturePressure( _event ) == true )
+            if( module->handleGestureEvent( _event ) == true )
             {
                 return true;
             }

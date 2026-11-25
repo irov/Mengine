@@ -543,16 +543,6 @@ namespace Mengine
         return handler;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PlayerService::handleMouseMoveEnd( const InputMouseMoveEndEvent & _event )
-    {
-        if( m_globalInputHandler == nullptr )
-        {
-            return;
-        }
-
-        m_globalInputHandler->handleMouseMoveEnd( _event );
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool PlayerService::handleMouseWheel( const InputMouseWheelEvent & _event )
     {
         if( m_globalInputHandler != nullptr )
@@ -786,95 +776,15 @@ namespace Mengine
             ->handleMouseLeave( _event );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PlayerService::handleGestureMagnification( const InputGestureMagnificationEvent & _event )
+    bool PlayerService::handleGestureEvent( const InputGestureEvent & _event )
     {
         if( m_globalInputHandler != nullptr )
         {
-            m_globalInputHandler->handleGestureMagnification( _event );
+            m_globalInputHandler->handleGestureEvent( _event );
         }
 
         if( PICKER_SERVICE()
-            ->handleGestureMagnification( _event ) == false )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool PlayerService::handleGestureRotation( const InputGestureRotationEvent & _event )
-    {
-        if( m_globalInputHandler != nullptr )
-        {
-            m_globalInputHandler->handleGestureRotation( _event );
-        }
-
-        if( PICKER_SERVICE()
-            ->handleGestureRotation( _event ) == false )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool PlayerService::handleGestureSmartMagnification( const InputGestureSmartMagnificationEvent & _event )
-    {
-        if( m_globalInputHandler != nullptr )
-        {
-            m_globalInputHandler->handleGestureSmartMagnification( _event );
-        }
-
-        if( PICKER_SERVICE()
-            ->handleGestureSmartMagnification( _event ) == false )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool PlayerService::handleGestureSwipe( const InputGestureSwipeEvent & _event )
-    {
-        if( m_globalInputHandler != nullptr )
-        {
-            m_globalInputHandler->handleGestureSwipe( _event );
-        }
-
-        if( PICKER_SERVICE()
-            ->handleGestureSwipe( _event ) == false )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool PlayerService::handleGestureDoubleTap( const InputGestureDoubleTapEvent & _event )
-    {
-        if( m_globalInputHandler != nullptr )
-        {
-            m_globalInputHandler->handleGestureDoubleTap( _event );
-        }
-
-        if( PICKER_SERVICE()
-            ->handleGestureDoubleTap( _event ) == false )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool PlayerService::handleGesturePressure( const InputGesturePressureEvent & _event )
-    {
-        if( m_globalInputHandler != nullptr )
-        {
-            m_globalInputHandler->handleGesturePressure( _event );
-        }
-
-        if( PICKER_SERVICE()
-            ->handleGesturePressure( _event ) == false )
+            ->handleGestureEvent( _event ) == false )
         {
             return false;
         }

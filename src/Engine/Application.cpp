@@ -1089,15 +1089,6 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Application::handleMouseMoveEnd( const InputMouseMoveEndEvent & _event )
-    {
-        MODULE_SERVICE()
-            ->handleMouseMoveEnd( _event );
-
-        GAME_SERVICE()
-            ->handleMouseMoveEnd( _event );
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool Application::handleMouseWheel( const InputMouseWheelEvent & _event )
     {
         InputMouseWheelEvent event = _event;
@@ -1144,119 +1135,19 @@ namespace Mengine
             ->handleMouseLeave( _event );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Application::handleGestureMagnification( const InputGestureMagnificationEvent & _event )
+    bool Application::handleGestureEvent( const InputGestureEvent & _event )
     {
-        InputGestureMagnificationEvent event = _event;
+        InputGestureEvent event = _event;
         Helper::calcGlobalInputPositionWorld( &event.position );
 
         if( MODULE_SERVICE()
-            ->handleGestureMagnification( event ) == true )
+            ->handleGestureEvent( event ) == true )
         {
             return true;
         }
 
         if( GAME_SERVICE()
-            ->handleGestureMagnification( event ) == false )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Application::handleGestureRotation( const InputGestureRotationEvent & _event )
-    {
-        InputGestureRotationEvent event = _event;
-        Helper::calcGlobalInputPositionWorld( &event.position );
-
-        if( MODULE_SERVICE()
-            ->handleGestureRotation( event ) == true )
-        {
-            return true;
-        }
-
-        if( GAME_SERVICE()
-            ->handleGestureRotation( event ) == false )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Application::handleGestureSmartMagnification( const InputGestureSmartMagnificationEvent & _event )
-    {
-        InputGestureSmartMagnificationEvent event = _event;
-        Helper::calcGlobalInputPositionWorld( &event.position );
-
-        if( MODULE_SERVICE()
-            ->handleGestureSmartMagnification( event ) == true )
-        {
-            return true;
-        }
-
-        if( GAME_SERVICE()
-            ->handleGestureSmartMagnification( event ) == false )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Application::handleGestureSwipe( const InputGestureSwipeEvent & _event )
-    {
-        InputGestureSwipeEvent event = _event;
-        Helper::calcGlobalInputPositionWorld( &event.position );
-
-        if( MODULE_SERVICE()
-            ->handleGestureSwipe( event ) == true )
-        {
-            return true;
-        }
-
-        if( GAME_SERVICE()
-            ->handleGestureSwipe( event ) == false )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Application::handleGestureDoubleTap( const InputGestureDoubleTapEvent & _event )
-    {
-        InputGestureDoubleTapEvent event = _event;
-        Helper::calcGlobalInputPositionWorld( &event.position );
-
-        if( MODULE_SERVICE()
-            ->handleGestureDoubleTap( event ) == true )
-        {
-            return true;
-        }
-
-        if( GAME_SERVICE()
-            ->handleGestureDoubleTap( event ) == false )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Application::handleGesturePressure( const InputGesturePressureEvent & _event )
-    {
-        InputGesturePressureEvent event = _event;
-        Helper::calcGlobalInputPositionWorld( &event.position );
-
-        if( MODULE_SERVICE()
-            ->handleGesturePressure( event ) == true )
-        {
-            return true;
-        }
-
-        if( GAME_SERVICE()
-            ->handleGesturePressure( event ) == false )
+            ->handleGestureEvent( event ) == false )
         {
             return false;
         }

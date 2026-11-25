@@ -252,12 +252,6 @@ namespace Mengine
         return handle;
     }
     //////////////////////////////////////////////////////////////////////////
-    void GameService::handleMouseMoveEnd( const InputMouseMoveEndEvent & _event )
-    {
-        PLAYER_SERVICE()
-            ->handleMouseMoveEnd( _event );
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool GameService::handleMouseWheel( const InputMouseWheelEvent & _event )
     {
         bool handle = false;
@@ -297,10 +291,10 @@ namespace Mengine
             ->handleMouseLeave( _event );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool GameService::handleGestureMagnification( const InputGestureMagnificationEvent & _event )
+    bool GameService::handleGestureEvent( const InputGestureEvent & _event )
     {
-        bool handle = EVENTABLE_METHODR( EVENT_GAME_GESTURE_MAGNIFICATION, false )
-            ->onGameGestureMagnification( _event );
+        bool handle = EVENTABLE_METHODR( EVENT_GAME_GESTURE, false )
+            ->onGameGesture( _event );
 
         if( handle == true )
         {
@@ -308,102 +302,7 @@ namespace Mengine
         }
 
         if( PLAYER_SERVICE()
-            ->handleGestureMagnification( _event ) == false )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool GameService::handleGestureRotation( const InputGestureRotationEvent & _event )
-    {
-        bool handle = EVENTABLE_METHODR( EVENT_GAME_GESTURE_ROTATION, false )
-            ->onGameGestureRotation( _event );
-
-        if( handle == true )
-        {
-            return true;
-        }
-
-        if( PLAYER_SERVICE()
-            ->handleGestureRotation( _event ) == false )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool GameService::handleGestureSmartMagnification( const InputGestureSmartMagnificationEvent & _event )
-    {
-        bool handle = EVENTABLE_METHODR( EVENT_GAME_GESTURE_SMART_MAGNIFICATION, false )
-            ->onGameGestureSmartMagnification( _event );
-
-        if( handle == true )
-        {
-            return true;
-        }
-
-        if( PLAYER_SERVICE()
-            ->handleGestureSmartMagnification( _event ) == false )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool GameService::handleGestureSwipe( const InputGestureSwipeEvent & _event )
-    {
-        bool handle = EVENTABLE_METHODR( EVENT_GAME_GESTURE_SWIPE, false )
-            ->onGameGestureSwipe( _event );
-
-        if( handle == true )
-        {
-            return true;
-        }
-
-        if( PLAYER_SERVICE()
-            ->handleGestureSwipe( _event ) == false )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool GameService::handleGestureDoubleTap( const InputGestureDoubleTapEvent & _event )
-    {
-        bool handle = EVENTABLE_METHODR( EVENT_GAME_GESTURE_DOUBLE_TAP, false )
-            ->onGameGestureDoubleTap( _event );
-
-        if( handle == true )
-        {
-            return true;
-        }
-
-        if( PLAYER_SERVICE()
-            ->handleGestureDoubleTap( _event ) == false )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool GameService::handleGesturePressure( const InputGesturePressureEvent & _event )
-    {
-        bool handle = EVENTABLE_METHODR( EVENT_GAME_GESTURE_PRESSURE, false )
-            ->onGameGesturePressure( _event );
-
-        if( handle == true )
-        {
-            return true;
-        }
-
-        if( PLAYER_SERVICE()
-            ->handleGesturePressure( _event ) == false )
+            ->handleGestureEvent( _event ) == false )
         {
             return false;
         }

@@ -1,7 +1,8 @@
 #include "TouchGestureRecognizer.h"
 
 #include "Kernel/Assertion.h"
-#include "Kernel/InputServiceHelper.h"
+
+#include "Config/StdAlgorithm.h"
 
 namespace Mengine
 {
@@ -10,23 +11,86 @@ namespace Mengine
     static const Timestamp TOUCH_DOUBLE_TAP_MAX_INTERVAL = MENGINE_UINT64_C( 350 );
     static const float TOUCH_TAP_MAX_DISTANCE = 0.015f;
     static const float TOUCH_DOUBLE_TAP_MAX_DISTANCE = 0.025f;
+    static const float TOUCH_PINCH_MIN_DISTANCE = 0.001f;
+    //////////////////////////////////////////////////////////////////////////
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+        static mt::vec2f calcTouchDelta( const mt::vec2f & _from, const mt::vec2f & _to, const Resolution & _resolution )
+        {
+            mt::vec2f delta = _to - _from;
+
+            float width = _resolution.getWidthF();
+            float height = _resolution.getHeightF();
+            float shortSide = StdAlgorithm::min( width, height );
+
+            delta.x *= width / shortSide;
+            delta.y *= height / shortSide;
+
+            return delta;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static float calcTouchDistanceSquared( const mt::vec2f & _from, const mt::vec2f & _to, const Resolution & _resolution )
+        {
+            mt::vec2f delta = Detail::calcTouchDelta( _from, _to, _resolution );
+            float distanceSquared = mt::dot_v2_v2( delta, delta );
+
+            return distanceSquared;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static float calcTouchDistance( const mt::vec2f & _from, const mt::vec2f & _to, const Resolution & _resolution )
+        {
+            mt::vec2f delta = Detail::calcTouchDelta( _from, _to, _resolution );
+            float distance = mt::length_v2( delta );
+
+            return distance;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void fillTouchGestureEvent( const InputBaseData & _base, const InputSpecialData & _special, EInputGestureType _type, const mt::vec2f & _screen, EInputGesturePhase _phase, ETouchCode _touchId0, ETouchCode _touchId1, InputGestureEvent * const _event )
+        {
+            _event->base = _base;
+            _event->special = _special;
+            _event->position.screen = _screen;
+            _event->position.world = mt::vec2f( 0.f, 0.f );
+            _event->type = _type;
+            _event->phase = _phase;
+            _event->isTouch = true;
+            _event->touchId0 = _touchId0;
+            _event->touchId1 = _touchId1;
+            _event->scale = 1.f;
+            _event->degrees = 0.f;
+            _event->direction = mt::vec2f( 0.f, 0.f );
+            _event->pressure = 0.f;
+            _event->stage = 0;
+            _event->stageTransition = 0.f;
+        }
+        //////////////////////////////////////////////////////////////////////////
+    }
     //////////////////////////////////////////////////////////////////////////
     TouchGestureRecognizer::TouchGestureRecognizer()
-        : m_touches{}
-        , m_touchCount( 0 )
+        : m_touchCount( 0 )
         , m_startScreen( 0.f, 0.f )
         , m_startTimestamp( 0 )
-        , m_singleTouch( false )
         , m_tapCandidate( false )
         , m_lastTapScreen( 0.f, 0.f )
         , m_lastTapTimestamp( 0 )
         , m_hasLastTap( false )
         , m_pinchTouch0( TC_TOUCH_INVALID )
         , m_pinchTouch1( TC_TOUCH_INVALID )
+        , m_pinchDistance( 0.f )
+    {
+        for( TouchDesc & touch : m_touches )
+        {
+            touch.screen = mt::vec2f( 0.f, 0.f );
+            touch.active = false;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    TouchGestureRecognizer::~TouchGestureRecognizer()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TouchGestureRecognizer::handleButton( const InputMouseButtonEvent & _event, const Resolution & _resolution, Event * const _gesture )
+    bool TouchGestureRecognizer::handleButton( const InputMouseButtonEvent & _event, const Resolution & _resolution, InputGestureEvent * const _gesture )
     {
         TouchDesc & touch = m_touches[_event.touchId];
 
@@ -45,14 +109,12 @@ namespace Mengine
             {
                 m_startScreen = touch.screen;
                 m_startTimestamp = _event.base.timestamp;
-                m_singleTouch = true;
                 m_tapCandidate = true;
 
                 return false;
             }
 
-            m_singleTouch = false;
-            m_hasLastTap = false;
+            this->resetTap();
 
             if( m_touchCount == 2 )
             {
@@ -76,7 +138,6 @@ namespace Mengine
 
         if( _event.isCancelled == true )
         {
-            m_singleTouch = false;
             this->resetTap();
 
             if( this->endPinch_( _event.base, _event.special, IGP_CANCEL, _gesture ) == false )
@@ -102,14 +163,14 @@ namespace Mengine
             return true;
         }
 
-        if( m_singleTouch == false )
+        if( m_tapCandidate == false )
         {
             return false;
         }
 
-        m_singleTouch = false;
+        m_tapCandidate = false;
 
-        if( this->finishSingleTouch_( _event, _resolution, _gesture ) == false )
+        if( this->finishTap_( _event, _resolution, _gesture ) == false )
         {
             return false;
         }
@@ -128,28 +189,27 @@ namespace Mengine
 
         touch.screen = _event.position.screen;
 
-        if( m_singleTouch == false )
+        if( m_tapCandidate == false )
         {
             return;
         }
 
-        mt::vec2f delta = Helper::calcTouchDelta( m_startScreen, touch.screen, _resolution );
-        float distanceSquared = mt::dot_v2_v2( delta, delta );
+        float distanceSquared = Detail::calcTouchDistanceSquared( m_startScreen, touch.screen, _resolution );
 
         if( distanceSquared > TOUCH_TAP_MAX_DISTANCE * TOUCH_TAP_MAX_DISTANCE )
         {
-            m_tapCandidate = false;
+            this->resetTap();
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TouchGestureRecognizer::finishMove( const InputMouseMoveEndEvent & _event, const Resolution & _resolution, Event * const _gesture )
+    bool TouchGestureRecognizer::finishMove( const InputTouchMoveEndEvent & _event, const Resolution & _resolution, InputGestureEvent * const _gesture )
     {
         if( m_touchCount != 2 )
         {
             return false;
         }
 
-        if( m_pinch.isActive() == false )
+        if( m_pinchDistance == 0.f )
         {
             if( this->beginPinch_( _event.base, _event.special, _resolution, _gesture ) == false )
             {
@@ -162,41 +222,24 @@ namespace Mengine
         const TouchDesc & touch0 = m_touches[m_pinchTouch0];
         const TouchDesc & touch1 = m_touches[m_pinchTouch1];
 
-        float scale;
-        EInputGesturePhase phase = m_pinch.update( touch0.screen, touch1.screen, _resolution, &scale );
+        float distance = Detail::calcTouchDistance( touch0.screen, touch1.screen, _resolution );
 
-        if( phase == IGP_CANCEL )
+        if( distance == m_pinchDistance )
         {
-            this->makePinchEvent_( _event.base, _event.special, 1.f, IGP_CANCEL, _gesture );
+            return false;
+        }
+
+        if( distance < TOUCH_PINCH_MIN_DISTANCE )
+        {
+            this->endPinch_( _event.base, _event.special, IGP_CANCEL, _gesture );
 
             return true;
         }
 
-        if( phase != IGP_CHANGE )
-        {
-            return false;
-        }
+        float scale = distance / m_pinchDistance;
+        m_pinchDistance = distance;
 
         this->makePinchEvent_( _event.base, _event.special, scale, IGP_CHANGE, _gesture );
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool TouchGestureRecognizer::cancel( const InputPointerCancelEvent & _event, Event * const _gesture )
-    {
-        for( TouchDesc & touch : m_touches )
-        {
-            touch.active = false;
-        }
-
-        m_touchCount = 0;
-        m_singleTouch = false;
-        this->resetTap();
-
-        if( this->endPinch_( _event.base, _event.special, IGP_CANCEL, _gesture ) == false )
-        {
-            return false;
-        }
 
         return true;
     }
@@ -207,19 +250,18 @@ namespace Mengine
         m_hasLastTap = false;
     }
     //////////////////////////////////////////////////////////////////////////
-    const mt::vec2f * TouchGestureRecognizer::getTouchPosition( ETouchCode _touchId ) const
+    const mt::vec2f & TouchGestureRecognizer::getTouchPosition( ETouchCode _touchId ) const
     {
         const TouchDesc & touch = m_touches[_touchId];
 
-        if( touch.active == false )
-        {
-            return nullptr;
-        }
+        MENGINE_ASSERTION_FATAL( touch.active == true, "touch [%u] is not active"
+            , _touchId
+        );
 
-        return &touch.screen;
+        return touch.screen;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TouchGestureRecognizer::finishSingleTouch_( const InputMouseButtonEvent & _event, const Resolution & _resolution, Event * const _gesture )
+    bool TouchGestureRecognizer::finishTap_( const InputMouseButtonEvent & _event, const Resolution & _resolution, InputGestureEvent * const _gesture )
     {
         bool hasLastTap = m_hasLastTap;
         m_hasLastTap = false;
@@ -227,11 +269,6 @@ namespace Mengine
         Timestamp timestamp = _event.base.timestamp;
 
         if( timestamp < m_startTimestamp )
-        {
-            return false;
-        }
-
-        if( m_tapCandidate == false )
         {
             return false;
         }
@@ -244,8 +281,7 @@ namespace Mengine
         }
 
         const mt::vec2f & screen = _event.position.screen;
-        mt::vec2f delta = Helper::calcTouchDelta( m_startScreen, screen, _resolution );
-        float distanceSquared = mt::dot_v2_v2( delta, delta );
+        float distanceSquared = Detail::calcTouchDistanceSquared( m_startScreen, screen, _resolution );
 
         if( distanceSquared > TOUCH_TAP_MAX_DISTANCE * TOUCH_TAP_MAX_DISTANCE )
         {
@@ -276,31 +312,24 @@ namespace Mengine
             return false;
         }
 
-        mt::vec2f tapDelta = Helper::calcTouchDelta( lastTapScreen, screen, _resolution );
-        float tapDistanceSquared = mt::dot_v2_v2( tapDelta, tapDelta );
-        bool withinTapDistance = tapDistanceSquared <= TOUCH_DOUBLE_TAP_MAX_DISTANCE * TOUCH_DOUBLE_TAP_MAX_DISTANCE;
+        float tapDistanceSquared = Detail::calcTouchDistanceSquared( lastTapScreen, screen, _resolution );
 
-        if( withinTapDistance == false )
+        if( tapDistanceSquared > TOUCH_DOUBLE_TAP_MAX_DISTANCE * TOUCH_DOUBLE_TAP_MAX_DISTANCE )
         {
             return false;
         }
 
         m_hasLastTap = false;
 
-        InputGestureDoubleTapEvent tap;
-        tap.base = _event.base;
-        tap.special = _event.special;
-        tap.position = _event.position;
-        tap.touchId = _event.touchId;
-        tap.isTouch = true;
-
-        *_gesture = tap;
+        Detail::fillTouchGestureEvent( _event.base, _event.special, IGT_DOUBLE_TAP, screen, IGP_NONE, _event.touchId, TC_TOUCH_INVALID, _gesture );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TouchGestureRecognizer::beginPinch_( const InputBaseData & _base, const InputSpecialData & _special, const Resolution & _resolution, Event * const _gesture )
+    bool TouchGestureRecognizer::beginPinch_( const InputBaseData & _base, const InputSpecialData & _special, const Resolution & _resolution, InputGestureEvent * const _gesture )
     {
+        MENGINE_ASSERTION_FATAL( m_pinchDistance == 0.f, "touch pinch is already active" );
+
         ETouchCode first = TC_TOUCH_INVALID;
 
         for( uint32_t index = 0; index != MENGINE_INPUT_MAX_TOUCH; ++index )
@@ -321,13 +350,16 @@ namespace Mengine
 
             const TouchDesc & firstTouch = m_touches[first];
 
-            if( m_pinch.begin( firstTouch.screen, touch.screen, _resolution ) == false )
+            float distance = Detail::calcTouchDistance( firstTouch.screen, touch.screen, _resolution );
+
+            if( distance < TOUCH_PINCH_MIN_DISTANCE )
             {
                 return false;
             }
 
             m_pinchTouch0 = first;
             m_pinchTouch1 = static_cast<ETouchCode>(index);
+            m_pinchDistance = distance;
 
             this->makePinchEvent_( _base, _special, 1.f, IGP_BEGIN, _gesture );
 
@@ -337,38 +369,29 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TouchGestureRecognizer::endPinch_( const InputBaseData & _base, const InputSpecialData & _special, EInputGesturePhase _phase, Event * const _gesture )
+    bool TouchGestureRecognizer::endPinch_( const InputBaseData & _base, const InputSpecialData & _special, EInputGesturePhase _phase, InputGestureEvent * const _gesture )
     {
-        if( m_pinch.isActive() == false )
+        if( m_pinchDistance == 0.f )
         {
             return false;
         }
 
         this->makePinchEvent_( _base, _special, 1.f, _phase, _gesture );
 
-        m_pinch.reset();
+        m_pinchDistance = 0.f;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TouchGestureRecognizer::makePinchEvent_( const InputBaseData & _base, const InputSpecialData & _special, float _scale, EInputGesturePhase _phase, Event * const _gesture ) const
+    void TouchGestureRecognizer::makePinchEvent_( const InputBaseData & _base, const InputSpecialData & _special, float _scale, EInputGesturePhase _phase, InputGestureEvent * const _gesture ) const
     {
         const TouchDesc & touch0 = m_touches[m_pinchTouch0];
         const TouchDesc & touch1 = m_touches[m_pinchTouch1];
         mt::vec2f screen = (touch0.screen + touch1.screen) * 0.5f;
 
-        InputGestureMagnificationEvent pinch;
-        pinch.base = _base;
-        pinch.special = _special;
-        pinch.position.screen = screen;
-        pinch.position.world = mt::vec2f( 0.f, 0.f );
-        pinch.scale = _scale;
-        pinch.phase = _phase;
-        pinch.isTouch = true;
-        pinch.touchId0 = m_pinchTouch0;
-        pinch.touchId1 = m_pinchTouch1;
+        Detail::fillTouchGestureEvent( _base, _special, IGT_MAGNIFICATION, screen, _phase, m_pinchTouch0, m_pinchTouch1, _gesture );
 
-        *_gesture = pinch;
+        _gesture->scale = _scale;
     }
     //////////////////////////////////////////////////////////////////////////
 }

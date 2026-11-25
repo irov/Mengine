@@ -96,21 +96,6 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void VirtualAreaGlobalInputHandler::handleMouseMoveEnd( const InputMouseMoveEndEvent & _event )
-    {
-        if( _event.isTouch == false )
-        {
-            return;
-        }
-
-        if( m_area == nullptr )
-        {
-            return;
-        }
-
-        m_area->updateTouchPinch_();
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool VirtualAreaGlobalInputHandler::handleMouseWheel( const InputMouseWheelEvent & _event )
     {
         MENGINE_UNUSED( _event );
@@ -135,44 +120,24 @@ namespace Mengine
         m_area->releaseTouch_( _event.touchId, false, false );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool VirtualAreaGlobalInputHandler::handleGestureMagnification( const InputGestureMagnificationEvent & _event )
+    bool VirtualAreaGlobalInputHandler::handleGestureEvent( const InputGestureEvent & _event )
     {
-        MENGINE_UNUSED( _event );
+        if( _event.type != IGT_MAGNIFICATION )
+        {
+            return false;
+        }
 
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool VirtualAreaGlobalInputHandler::handleGestureRotation( const InputGestureRotationEvent & _event )
-    {
-        MENGINE_UNUSED( _event );
+        if( _event.isTouch == false )
+        {
+            return false;
+        }
 
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool VirtualAreaGlobalInputHandler::handleGestureSmartMagnification( const InputGestureSmartMagnificationEvent & _event )
-    {
-        MENGINE_UNUSED( _event );
+        if( m_area == nullptr )
+        {
+            return false;
+        }
 
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool VirtualAreaGlobalInputHandler::handleGestureSwipe( const InputGestureSwipeEvent & _event )
-    {
-        MENGINE_UNUSED( _event );
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool VirtualAreaGlobalInputHandler::handleGestureDoubleTap( const InputGestureDoubleTapEvent & _event )
-    {
-        MENGINE_UNUSED( _event );
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool VirtualAreaGlobalInputHandler::handleGesturePressure( const InputGesturePressureEvent & _event )
-    {
-        MENGINE_UNUSED( _event );
+        m_area->pinchTouch_( _event );
 
         return false;
     }

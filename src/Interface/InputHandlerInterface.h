@@ -25,7 +25,6 @@ namespace Mengine
         virtual bool handleMouseButtonEventEnd( const InputMouseButtonEvent & _event ) = 0;
         virtual void handleMouseButtonEventCancel( const InputMouseButtonEvent & _event ) = 0;
         virtual bool handleMouseMove( const InputMouseMoveEvent & _event ) = 0;
-        virtual void handleMouseMoveEnd( const InputMouseMoveEndEvent & _event ) = 0;
         virtual bool handleMouseWheel( const InputMouseWheelEvent & _event ) = 0;
 
     public:
@@ -33,12 +32,7 @@ namespace Mengine
         virtual void handleMouseLeave( const InputMouseLeaveEvent & _event ) = 0;
 
     public:
-        virtual bool handleGestureMagnification( const InputGestureMagnificationEvent & _event ) = 0;
-        virtual bool handleGestureRotation( const InputGestureRotationEvent & _event ) = 0;
-        virtual bool handleGestureSmartMagnification( const InputGestureSmartMagnificationEvent & _event ) = 0;
-        virtual bool handleGestureSwipe( const InputGestureSwipeEvent & _event ) = 0;
-        virtual bool handleGestureDoubleTap( const InputGestureDoubleTapEvent & _event ) = 0;
-        virtual bool handleGesturePressure( const InputGesturePressureEvent & _event ) = 0;
+        virtual bool handleGestureEvent( const InputGestureEvent & _event ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<InputHandlerInterface> InputHandlerInterfacePtr;

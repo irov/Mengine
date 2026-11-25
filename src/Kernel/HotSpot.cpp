@@ -337,10 +337,10 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool HotSpot::handleGestureMagnification( const RenderContext * _context, const InputGestureMagnificationEvent & _event )
+    bool HotSpot::handleGestureEvent( const RenderContext * _context, const InputGestureEvent & _event )
     {
-        bool handle = EVENTABLE_METHODR( EVENT_HOTSPOT_GESTURE_MAGNIFICATION, false )
-            ->onHotSpotGestureMagnification( _context, _event );
+        bool handle = EVENTABLE_METHODR( EVENT_HOTSPOT_GESTURE, false )
+            ->onHotSpotGesture( _context, _event );
 
         if( handle == true )
         {
@@ -351,122 +351,7 @@ namespace Mengine
         {
             const PickerInputHandlerInterfacePtr & handler = desc.handler;
 
-            if( handler->handleGestureMagnification( _context, _event ) == true )
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool HotSpot::handleGestureRotation( const RenderContext * _context, const InputGestureRotationEvent & _event )
-    {
-        bool handle = EVENTABLE_METHODR( EVENT_HOTSPOT_GESTURE_ROTATION, false )
-            ->onHotSpotGestureRotation( _context, _event );
-
-        if( handle == true )
-        {
-            return true;
-        }
-
-        for( const PickerInputHandlerDesc & desc : m_pickerInputHandlers )
-        {
-            const PickerInputHandlerInterfacePtr & handler = desc.handler;
-
-            if( handler->handleGestureRotation( _context, _event ) == true )
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool HotSpot::handleGestureSmartMagnification( const RenderContext * _context, const InputGestureSmartMagnificationEvent & _event )
-    {
-        bool handle = EVENTABLE_METHODR( EVENT_HOTSPOT_GESTURE_SMART_MAGNIFICATION, false )
-            ->onHotSpotGestureSmartMagnification( _context, _event );
-
-        if( handle == true )
-        {
-            return true;
-        }
-
-        for( const PickerInputHandlerDesc & desc : m_pickerInputHandlers )
-        {
-            const PickerInputHandlerInterfacePtr & handler = desc.handler;
-
-            if( handler->handleGestureSmartMagnification( _context, _event ) == true )
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool HotSpot::handleGestureSwipe( const RenderContext * _context, const InputGestureSwipeEvent & _event )
-    {
-        bool handle = EVENTABLE_METHODR( EVENT_HOTSPOT_GESTURE_SWIPE, false )
-            ->onHotSpotGestureSwipe( _context, _event );
-
-        if( handle == true )
-        {
-            return true;
-        }
-
-        for( const PickerInputHandlerDesc & desc : m_pickerInputHandlers )
-        {
-            const PickerInputHandlerInterfacePtr & handler = desc.handler;
-
-            if( handler->handleGestureSwipe( _context, _event ) == true )
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool HotSpot::handleGestureDoubleTap( const RenderContext * _context, const InputGestureDoubleTapEvent & _event )
-    {
-        bool handle = EVENTABLE_METHODR( EVENT_HOTSPOT_GESTURE_DOUBLE_TAP, false )
-            ->onHotSpotGestureDoubleTap( _context, _event );
-
-        if( handle == true )
-        {
-            return true;
-        }
-
-        for( const PickerInputHandlerDesc & desc : m_pickerInputHandlers )
-        {
-            const PickerInputHandlerInterfacePtr & handler = desc.handler;
-
-            if( handler->handleGestureDoubleTap( _context, _event ) == true )
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool HotSpot::handleGesturePressure( const RenderContext * _context, const InputGesturePressureEvent & _event )
-    {
-        bool handle = EVENTABLE_METHODR( EVENT_HOTSPOT_GESTURE_PRESSURE, false )
-            ->onHotSpotGesturePressure( _context, _event );
-
-        if( handle == true )
-        {
-            return true;
-        }
-
-        for( const PickerInputHandlerDesc & desc : m_pickerInputHandlers )
-        {
-            const PickerInputHandlerInterfacePtr & handler = desc.handler;
-
-            if( handler->handleGesturePressure( _context, _event ) == true )
+            if( handler->handleGestureEvent( _context, _event ) == true )
             {
                 return true;
             }

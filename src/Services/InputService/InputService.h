@@ -65,7 +65,6 @@ namespace Mengine
         const mt::vec2f & getCursorPosition( ETouchCode _touchId ) const override;
         float getCursorPressure( ETouchCode _touchId ) const override;
         bool validCursorPosition( float _x, float _y, float * const _vx, float * const _vy ) const override;
-        const mt::vec2f * getTouchPosition( ETouchCode _touchId ) const override;
 
     public:
         void addMousePositionProvider( const InputMousePositionProviderInterfacePtr & _provider, const DocumentInterfacePtr & _doc ) override;
@@ -86,17 +85,12 @@ namespace Mengine
         void dispatchEvent_( const InputAccelerometerEvent & _params );
         void dispatchEvent_( const InputMouseButtonEvent & _params );
         void dispatchEvent_( const InputMouseMoveEvent & _params );
-        void dispatchEvent_( const InputMouseMoveEndEvent & _params );
+        void dispatchEvent_( const InputTouchMoveEndEvent & _params );
         void dispatchEvent_( const InputPointerCancelEvent & _params );
         void dispatchEvent_( const InputMouseWheelEvent & _params );
         void dispatchEvent_( const InputMouseEnterEvent & _params );
         void dispatchEvent_( const InputMouseLeaveEvent & _params );
-        void dispatchEvent_( const InputGestureMagnificationEvent & _params );
-        void dispatchEvent_( const InputGestureRotationEvent & _params );
-        void dispatchEvent_( const InputGestureSmartMagnificationEvent & _params );
-        void dispatchEvent_( const InputGestureSwipeEvent & _params );
-        void dispatchEvent_( const InputGestureDoubleTapEvent & _params );
-        void dispatchEvent_( const InputGesturePressureEvent & _params );
+        void dispatchEvent_( const InputGestureEvent & _params );
         void dispatchEvent_( const InputControllerConnectEvent & _event );
         void dispatchEvent_( const InputControllerButtonEvent & _event );
         void dispatchEvent_( const InputControllerAxisEvent & _event );
@@ -109,7 +103,6 @@ namespace Mengine
             IBD_CANCEL
         };
 
-        void dispatchTouchGesture_( const TouchGestureRecognizer::Event & _gesture );
         void dispatchMouseButtonEvent_( const InputMouseButtonEvent & _event, EInputButtonDispatch _dispatch );
 
         void applyCursorPosition_( ETouchCode _touchId, const mt::vec2f & _screenPosition, float _pressure );
@@ -148,7 +141,6 @@ namespace Mengine
         EInputButtonState m_touchButtons[MENGINE_INPUT_MAX_TOUCH];
         EInputButtonState m_mouseButtons[MENGINE_INPUT_MAX_TOUCH][MENGINE_INPUT_MAX_MOUSE_BUTTON_CODE];
         bool m_keyBuffer[MENGINE_INPUT_MAX_KEY_CODE];
-        bool m_mouseBuffer[MENGINE_INPUT_MAX_MOUSE_BUTTON_CODE];
         bool m_mouseButtonEventBlock;
 
         struct InputControllerHandlerDesc

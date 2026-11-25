@@ -3776,13 +3776,6 @@ namespace Mengine
                     return false;
                 }
 
-                void handleMouseMoveEnd( const InputMouseMoveEndEvent & _event ) override
-                {
-                    MENGINE_UNUSED( _event );
-
-                    //Empty
-                }
-
                 bool handleMouseWheel( const InputMouseWheelEvent & _event ) override
                 {
                     MENGINE_UNUSED( _event );
@@ -3810,42 +3803,7 @@ namespace Mengine
                 }
 
             protected:
-                bool handleGestureMagnification( const InputGestureMagnificationEvent & _event ) override
-                {
-                    MENGINE_UNUSED( _event );
-
-                    return false;
-                }
-
-                bool handleGestureRotation( const InputGestureRotationEvent & _event ) override
-                {
-                    MENGINE_UNUSED( _event );
-
-                    return false;
-                }
-
-                bool handleGestureSmartMagnification( const InputGestureSmartMagnificationEvent & _event ) override
-                {
-                    MENGINE_UNUSED( _event );
-
-                    return false;
-                }
-
-                bool handleGestureSwipe( const InputGestureSwipeEvent & _event ) override
-                {
-                    MENGINE_UNUSED( _event );
-
-                    return false;
-                }
-
-                bool handleGestureDoubleTap( const InputGestureDoubleTapEvent & _event ) override
-                {
-                    MENGINE_UNUSED( _event );
-
-                    return false;
-                }
-
-                bool handleGesturePressure( const InputGesturePressureEvent & _event ) override
+                bool handleGestureEvent( const InputGestureEvent & _event ) override
                 {
                     MENGINE_UNUSED( _event );
 
@@ -4168,121 +4126,27 @@ namespace Mengine
                 return id;
             }
             //////////////////////////////////////////////////////////////////////////
-            enum class EGesture
-            {
-                MAGNIFICATION,
-                ROTATION,
-                SMART_MAGNIFICATION,
-                SWIPE,
-                DOUBLE_TAP,
-                PRESSURE,
-            };
-            //////////////////////////////////////////////////////////////////////////
             class PyGlobalGestureHandler
                 : public PyGlobalBaseHandler
             {
                 DECLARE_FACTORABLE( PyGlobalGestureHandler );
 
-            public:
-                void setGesture( EGesture _gesture )
-                {
-                    m_gesture = _gesture;
-                }
-
             protected:
-                bool handleGestureMagnification( const InputGestureMagnificationEvent & _event ) override
+                bool handleGestureEvent( const InputGestureEvent & _event ) override
                 {
-                    if( m_gesture != EGesture::MAGNIFICATION )
-                    {
-                        return false;
-                    }
-
                     pybind::object py_result = this->call_cb( _event );
 
                     this->checkCallbackResult_( py_result );
 
                     return false;
                 }
-
-                bool handleGestureRotation( const InputGestureRotationEvent & _event ) override
-                {
-                    if( m_gesture != EGesture::ROTATION )
-                    {
-                        return false;
-                    }
-
-                    pybind::object py_result = this->call_cb( _event );
-
-                    this->checkCallbackResult_( py_result );
-
-                    return false;
-                }
-
-                bool handleGestureSmartMagnification( const InputGestureSmartMagnificationEvent & _event ) override
-                {
-                    if( m_gesture != EGesture::SMART_MAGNIFICATION )
-                    {
-                        return false;
-                    }
-
-                    pybind::object py_result = this->call_cb( _event );
-
-                    this->checkCallbackResult_( py_result );
-
-                    return false;
-                }
-
-                bool handleGestureSwipe( const InputGestureSwipeEvent & _event ) override
-                {
-                    if( m_gesture != EGesture::SWIPE )
-                    {
-                        return false;
-                    }
-
-                    pybind::object py_result = this->call_cb( _event );
-
-                    this->checkCallbackResult_( py_result );
-
-                    return false;
-                }
-
-                bool handleGestureDoubleTap( const InputGestureDoubleTapEvent & _event ) override
-                {
-                    if( m_gesture != EGesture::DOUBLE_TAP )
-                    {
-                        return false;
-                    }
-
-                    pybind::object py_result = this->call_cb( _event );
-
-                    this->checkCallbackResult_( py_result );
-
-                    return false;
-                }
-
-                bool handleGesturePressure( const InputGesturePressureEvent & _event ) override
-                {
-                    if( m_gesture != EGesture::PRESSURE )
-                    {
-                        return false;
-                    }
-
-                    pybind::object py_result = this->call_cb( _event );
-
-                    this->checkCallbackResult_( py_result );
-
-                    return false;
-                }
-
-            protected:
-                EGesture m_gesture = EGesture::MAGNIFICATION;
             };
             //////////////////////////////////////////////////////////////////////////
             typedef IntrusivePtr<PyGlobalGestureHandler> PyGlobalGestureHandlerPtr;
             //////////////////////////////////////////////////////////////////////////
             FactoryInterfacePtr m_factoryPyGlobalGestureHandlers;
             //////////////////////////////////////////////////////////////////////////
-            UniqueId addGestureHandler_( EGesture _gesture, const pybind::object & _cb, bool _enable, const pybind::args & _args )
+            UniqueId s_addGestureHandler( const pybind::object & _cb, bool _enable, const pybind::args & _args )
             {
                 const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                     ->getGlobalInputHandler();
@@ -4291,51 +4155,7 @@ namespace Mengine
 
                 PyGlobalGestureHandlerPtr handler = Helper::makePythonCallbackProvider( m_factoryPyGlobalGestureHandlers, _cb, _args, MENGINE_DOCUMENT_PYTHON );
 
-                handler->setGesture( _gesture );
-
                 UniqueId id = globalHandleSystem->addGlobalHandler( handler, _enable, MENGINE_DOCUMENT_PYTHON );
-
-                return id;
-            }
-            //////////////////////////////////////////////////////////////////////////
-            UniqueId s_addGestureMagnificationHandler( const pybind::object & _cb, bool _enable, const pybind::args & _args )
-            {
-                UniqueId id = this->addGestureHandler_( EGesture::MAGNIFICATION, _cb, _enable, _args );
-
-                return id;
-            }
-            //////////////////////////////////////////////////////////////////////////
-            UniqueId s_addGestureRotationHandler( const pybind::object & _cb, bool _enable, const pybind::args & _args )
-            {
-                UniqueId id = this->addGestureHandler_( EGesture::ROTATION, _cb, _enable, _args );
-
-                return id;
-            }
-            //////////////////////////////////////////////////////////////////////////
-            UniqueId s_addGestureSmartMagnificationHandler( const pybind::object & _cb, bool _enable, const pybind::args & _args )
-            {
-                UniqueId id = this->addGestureHandler_( EGesture::SMART_MAGNIFICATION, _cb, _enable, _args );
-
-                return id;
-            }
-            //////////////////////////////////////////////////////////////////////////
-            UniqueId s_addGestureSwipeHandler( const pybind::object & _cb, bool _enable, const pybind::args & _args )
-            {
-                UniqueId id = this->addGestureHandler_( EGesture::SWIPE, _cb, _enable, _args );
-
-                return id;
-            }
-            //////////////////////////////////////////////////////////////////////////
-            UniqueId s_addGestureDoubleTapHandler( const pybind::object & _cb, bool _enable, const pybind::args & _args )
-            {
-                UniqueId id = this->addGestureHandler_( EGesture::DOUBLE_TAP, _cb, _enable, _args );
-
-                return id;
-            }
-            //////////////////////////////////////////////////////////////////////////
-            UniqueId s_addGesturePressureHandler( const pybind::object & _cb, bool _enable, const pybind::args & _args )
-            {
-                UniqueId id = this->addGestureHandler_( EGesture::PRESSURE, _cb, _enable, _args );
 
                 return id;
             }
@@ -5009,12 +4829,7 @@ namespace Mengine
         pybind::def_functor_args( _kernel, "addMouseButtonHandlerEnd", nodeScriptMethod, &EngineScriptMethod::s_addMouseButtonHandlerEnd );
         pybind::def_functor_args( _kernel, "addMouseButtonHandlerCancel", nodeScriptMethod, &EngineScriptMethod::s_addMouseButtonHandlerCancel );
         pybind::def_functor_args( _kernel, "addMouseWheelHandler", nodeScriptMethod, &EngineScriptMethod::s_addMouseWheelHandler );
-        pybind::def_functor_args( _kernel, "addGestureMagnificationHandler", nodeScriptMethod, &EngineScriptMethod::s_addGestureMagnificationHandler );
-        pybind::def_functor_args( _kernel, "addGestureRotationHandler", nodeScriptMethod, &EngineScriptMethod::s_addGestureRotationHandler );
-        pybind::def_functor_args( _kernel, "addGestureSmartMagnificationHandler", nodeScriptMethod, &EngineScriptMethod::s_addGestureSmartMagnificationHandler );
-        pybind::def_functor_args( _kernel, "addGestureSwipeHandler", nodeScriptMethod, &EngineScriptMethod::s_addGestureSwipeHandler );
-        pybind::def_functor_args( _kernel, "addGestureDoubleTapHandler", nodeScriptMethod, &EngineScriptMethod::s_addGestureDoubleTapHandler );
-        pybind::def_functor_args( _kernel, "addGesturePressureHandler", nodeScriptMethod, &EngineScriptMethod::s_addGesturePressureHandler );
+        pybind::def_functor_args( _kernel, "addGestureHandler", nodeScriptMethod, &EngineScriptMethod::s_addGestureHandler );
         pybind::def_functor_args( _kernel, "addKeyHandler", nodeScriptMethod, &EngineScriptMethod::s_addKeyHandler );
         pybind::def_functor_args( _kernel, "addTextHandler", nodeScriptMethod, &EngineScriptMethod::s_addTextHandler );
         pybind::def_functor_args( _kernel, "addAccelerometerHandler", nodeScriptMethod, &EngineScriptMethod::s_addAccelerometerHandler );
@@ -5302,58 +5117,30 @@ namespace Mengine
             .def_member( "pressure", &InputMouseLeaveEvent::pressure )
             ;
 
-        pybind::struct_<InputGestureMagnificationEvent>( _kernel, "InputGestureMagnificationEvent" )
-            .def_member( "base", &InputGestureMagnificationEvent::base )
-            .def_member( "special", &InputGestureMagnificationEvent::special )
-            .def_member( "position", &InputGestureMagnificationEvent::position )
-            .def_member( "scale", &InputGestureMagnificationEvent::scale )
-            .def_member( "phase", &InputGestureMagnificationEvent::phase )
-            .def_member( "isTouch", &InputGestureMagnificationEvent::isTouch )
-            .def_member( "touchId0", &InputGestureMagnificationEvent::touchId0 )
-            .def_member( "touchId1", &InputGestureMagnificationEvent::touchId1 )
+        pybind::enum_<EInputGestureType>( _kernel, "EInputGestureType" )
+            .def( "IGT_MAGNIFICATION", IGT_MAGNIFICATION )
+            .def( "IGT_ROTATION", IGT_ROTATION )
+            .def( "IGT_SMART_MAGNIFICATION", IGT_SMART_MAGNIFICATION )
+            .def( "IGT_SWIPE", IGT_SWIPE )
+            .def( "IGT_PRESSURE", IGT_PRESSURE )
+            .def( "IGT_DOUBLE_TAP", IGT_DOUBLE_TAP )
             ;
 
-        pybind::struct_<InputGestureRotationEvent>( _kernel, "InputGestureRotationEvent" )
-            .def_member( "base", &InputGestureRotationEvent::base )
-            .def_member( "special", &InputGestureRotationEvent::special )
-            .def_member( "position", &InputGestureRotationEvent::position )
-            .def_member( "degrees", &InputGestureRotationEvent::degrees )
-            .def_member( "phase", &InputGestureRotationEvent::phase )
-            .def_member( "isTouch", &InputGestureRotationEvent::isTouch )
-            ;
-
-        pybind::struct_<InputGestureSmartMagnificationEvent>( _kernel, "InputGestureSmartMagnificationEvent" )
-            .def_member( "base", &InputGestureSmartMagnificationEvent::base )
-            .def_member( "special", &InputGestureSmartMagnificationEvent::special )
-            .def_member( "position", &InputGestureSmartMagnificationEvent::position )
-            .def_member( "isTouch", &InputGestureSmartMagnificationEvent::isTouch )
-            ;
-
-        pybind::struct_<InputGestureSwipeEvent>( _kernel, "InputGestureSwipeEvent" )
-            .def_member( "base", &InputGestureSwipeEvent::base )
-            .def_member( "special", &InputGestureSwipeEvent::special )
-            .def_member( "position", &InputGestureSwipeEvent::position )
-            .def_member( "direction", &InputGestureSwipeEvent::direction )
-            .def_member( "isTouch", &InputGestureSwipeEvent::isTouch )
-            ;
-
-        pybind::struct_<InputGestureDoubleTapEvent>( _kernel, "InputGestureDoubleTapEvent" )
-            .def_member( "base", &InputGestureDoubleTapEvent::base )
-            .def_member( "special", &InputGestureDoubleTapEvent::special )
-            .def_member( "position", &InputGestureDoubleTapEvent::position )
-            .def_member( "touchId", &InputGestureDoubleTapEvent::touchId )
-            .def_member( "isTouch", &InputGestureDoubleTapEvent::isTouch )
-            ;
-
-        pybind::struct_<InputGesturePressureEvent>( _kernel, "InputGesturePressureEvent" )
-            .def_member( "base", &InputGesturePressureEvent::base )
-            .def_member( "special", &InputGesturePressureEvent::special )
-            .def_member( "position", &InputGesturePressureEvent::position )
-            .def_member( "pressure", &InputGesturePressureEvent::pressure )
-            .def_member( "stage", &InputGesturePressureEvent::stage )
-            .def_member( "stageTransition", &InputGesturePressureEvent::stageTransition )
-            .def_member( "phase", &InputGesturePressureEvent::phase )
-            .def_member( "isTouch", &InputGesturePressureEvent::isTouch )
+        pybind::struct_<InputGestureEvent>( _kernel, "InputGestureEvent" )
+            .def_member( "base", &InputGestureEvent::base )
+            .def_member( "special", &InputGestureEvent::special )
+            .def_member( "position", &InputGestureEvent::position )
+            .def_member( "type", &InputGestureEvent::type )
+            .def_member( "phase", &InputGestureEvent::phase )
+            .def_member( "isTouch", &InputGestureEvent::isTouch )
+            .def_member( "touchId0", &InputGestureEvent::touchId0 )
+            .def_member( "touchId1", &InputGestureEvent::touchId1 )
+            .def_member( "scale", &InputGestureEvent::scale )
+            .def_member( "degrees", &InputGestureEvent::degrees )
+            .def_member( "direction", &InputGestureEvent::direction )
+            .def_member( "pressure", &InputGestureEvent::pressure )
+            .def_member( "stage", &InputGestureEvent::stage )
+            .def_member( "stageTransition", &InputGestureEvent::stageTransition )
             ;
 
         pybind::interface_<PythonValueFollowerLinear, pybind::bases<PythonValueFollower>>( _kernel, "PythonValueFollowerLinear" )

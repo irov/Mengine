@@ -103,67 +103,7 @@ namespace Mengine
         return m_cb.call( context, _event );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonHotSpotEventReceiver::onHotSpotGestureMagnification( const RenderContext * _context, const InputGestureMagnificationEvent & _event )
-    {
-        pybind::object context = Detail::makeRenderContext( m_cb, _context );
-
-        if( m_cb.call( context, _event ) == false )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool PythonHotSpotEventReceiver::onHotSpotGestureRotation( const RenderContext * _context, const InputGestureRotationEvent & _event )
-    {
-        pybind::object context = Detail::makeRenderContext( m_cb, _context );
-
-        if( m_cb.call( context, _event ) == false )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool PythonHotSpotEventReceiver::onHotSpotGestureSmartMagnification( const RenderContext * _context, const InputGestureSmartMagnificationEvent & _event )
-    {
-        pybind::object context = Detail::makeRenderContext( m_cb, _context );
-
-        if( m_cb.call( context, _event ) == false )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool PythonHotSpotEventReceiver::onHotSpotGestureSwipe( const RenderContext * _context, const InputGestureSwipeEvent & _event )
-    {
-        pybind::object context = Detail::makeRenderContext( m_cb, _context );
-
-        if( m_cb.call( context, _event ) == false )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool PythonHotSpotEventReceiver::onHotSpotGestureDoubleTap( const RenderContext * _context, const InputGestureDoubleTapEvent & _event )
-    {
-        pybind::object context = Detail::makeRenderContext( m_cb, _context );
-
-        if( m_cb.call( context, _event ) == false )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool PythonHotSpotEventReceiver::onHotSpotGesturePressure( const RenderContext * _context, const InputGesturePressureEvent & _event )
+    bool PythonHotSpotEventReceiver::onHotSpotGesture( const RenderContext * _context, const InputGestureEvent & _event )
     {
         pybind::object context = Detail::makeRenderContext( m_cb, _context );
 

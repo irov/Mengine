@@ -3320,47 +3320,7 @@ namespace Mengine
         this->inputPointer_( FIGMA_POINTER_EVENT_MOVE, _event.touchId, localPoint.x, localPoint.y, FIGMA_POINTER_BUTTON_NONE, Detail::getFigmaInputModifiers( _event.special ), nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Figma::handleGestureMagnification( const RenderContext * _context, const InputGestureMagnificationEvent & _event )
-    {
-        MENGINE_UNUSED( _context );
-        MENGINE_UNUSED( _event );
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Figma::handleGestureRotation( const RenderContext * _context, const InputGestureRotationEvent & _event )
-    {
-        MENGINE_UNUSED( _context );
-        MENGINE_UNUSED( _event );
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Figma::handleGestureSmartMagnification( const RenderContext * _context, const InputGestureSmartMagnificationEvent & _event )
-    {
-        MENGINE_UNUSED( _context );
-        MENGINE_UNUSED( _event );
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Figma::handleGestureSwipe( const RenderContext * _context, const InputGestureSwipeEvent & _event )
-    {
-        MENGINE_UNUSED( _context );
-        MENGINE_UNUSED( _event );
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Figma::handleGestureDoubleTap( const RenderContext * _context, const InputGestureDoubleTapEvent & _event )
-    {
-        MENGINE_UNUSED( _context );
-        MENGINE_UNUSED( _event );
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Figma::handleGesturePressure( const RenderContext * _context, const InputGesturePressureEvent & _event )
+    bool Figma::handleGestureEvent( const RenderContext * _context, const InputGestureEvent & _event )
     {
         MENGINE_UNUSED( _context );
         MENGINE_UNUSED( _event );

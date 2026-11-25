@@ -257,26 +257,6 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PlayerGlobalInputHandler::handleMouseMoveEnd( const InputMouseMoveEndEvent & _event )
-    {
-        this->processHandlers_();
-
-        for( const GlobalHandlerDesc & desc : m_handlers )
-        {
-            if( desc.dead == true )
-            {
-                continue;
-            }
-
-            if( desc.enable == false )
-            {
-                continue;
-            }
-
-            desc.handler->handleMouseMoveEnd( _event );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool PlayerGlobalInputHandler::handleMouseWheel( const InputMouseWheelEvent & _event )
     {
         this->processHandlers_();
@@ -342,7 +322,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PlayerGlobalInputHandler::handleGestureMagnification( const InputGestureMagnificationEvent & _event )
+    bool PlayerGlobalInputHandler::handleGestureEvent( const InputGestureEvent & _event )
     {
         this->processHandlers_();
 
@@ -358,117 +338,7 @@ namespace Mengine
                 continue;
             }
 
-            desc.handler->handleGestureMagnification( _event );
-        }
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool PlayerGlobalInputHandler::handleGestureRotation( const InputGestureRotationEvent & _event )
-    {
-        this->processHandlers_();
-
-        for( const GlobalHandlerDesc & desc : m_handlers )
-        {
-            if( desc.dead == true )
-            {
-                continue;
-            }
-
-            if( desc.enable == false )
-            {
-                continue;
-            }
-
-            desc.handler->handleGestureRotation( _event );
-        }
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool PlayerGlobalInputHandler::handleGestureSmartMagnification( const InputGestureSmartMagnificationEvent & _event )
-    {
-        this->processHandlers_();
-
-        for( const GlobalHandlerDesc & desc : m_handlers )
-        {
-            if( desc.dead == true )
-            {
-                continue;
-            }
-
-            if( desc.enable == false )
-            {
-                continue;
-            }
-
-            desc.handler->handleGestureSmartMagnification( _event );
-        }
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool PlayerGlobalInputHandler::handleGestureSwipe( const InputGestureSwipeEvent & _event )
-    {
-        this->processHandlers_();
-
-        for( const GlobalHandlerDesc & desc : m_handlers )
-        {
-            if( desc.dead == true )
-            {
-                continue;
-            }
-
-            if( desc.enable == false )
-            {
-                continue;
-            }
-
-            desc.handler->handleGestureSwipe( _event );
-        }
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool PlayerGlobalInputHandler::handleGestureDoubleTap( const InputGestureDoubleTapEvent & _event )
-    {
-        this->processHandlers_();
-
-        for( const GlobalHandlerDesc & desc : m_handlers )
-        {
-            if( desc.dead == true )
-            {
-                continue;
-            }
-
-            if( desc.enable == false )
-            {
-                continue;
-            }
-
-            desc.handler->handleGestureDoubleTap( _event );
-        }
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool PlayerGlobalInputHandler::handleGesturePressure( const InputGesturePressureEvent & _event )
-    {
-        this->processHandlers_();
-
-        for( const GlobalHandlerDesc & desc : m_handlers )
-        {
-            if( desc.dead == true )
-            {
-                continue;
-            }
-
-            if( desc.enable == false )
-            {
-                continue;
-            }
-
-            desc.handler->handleGesturePressure( _event );
+            desc.handler->handleGestureEvent( _event );
         }
 
         return false;

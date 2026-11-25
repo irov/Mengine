@@ -5,10 +5,8 @@
 #include "Interface/PlayerServiceInterface.h"
 
 #include "RenderContext.h"
-#include "Resolution.h"
 #include "TimestampHelper.h"
 
-#include "Config/StdAlgorithm.h"
 #include "Config/StdString.h"
 
 namespace Mengine
@@ -20,8 +18,7 @@ namespace Mengine
         namespace Detail
         {
             //////////////////////////////////////////////////////////////////////////
-            template<class T>
-            static void fillGestureEvent( Timestamp _timestamp, float _x, float _y, const InputSpecialData & _special, T * const _event )
+            static void fillGestureEvent( Timestamp _timestamp, EInputGestureType _type, float _x, float _y, EInputGesturePhase _phase, const InputSpecialData & _special, InputGestureEvent * const _event )
             {
                 float vx;
                 float vy;
@@ -30,9 +27,19 @@ namespace Mengine
 
                 _event->base.timestamp = _timestamp;
                 _event->special = _special;
-                _event->isTouch = false;
                 _event->position.screen.set( vx, vy );
                 _event->position.world.set( 0.f, 0.f );
+                _event->type = _type;
+                _event->phase = _phase;
+                _event->isTouch = false;
+                _event->touchId0 = TC_TOUCH0;
+                _event->touchId1 = TC_TOUCH_INVALID;
+                _event->scale = 1.f;
+                _event->degrees = 0.f;
+                _event->direction = mt::vec2f( 0.f, 0.f );
+                _event->pressure = 0.f;
+                _event->stage = 0;
+                _event->stageTransition = 0.f;
             }
         }
         //////////////////////////////////////////////////////////////////////////
@@ -119,20 +126,6 @@ namespace Mengine
             Helper::calcInputPositionWorld( context, _position );
         }
         //////////////////////////////////////////////////////////////////////////
-        mt::vec2f calcTouchDelta( const mt::vec2f & _from, const mt::vec2f & _to, const Resolution & _resolution )
-        {
-            mt::vec2f delta = _to - _from;
-
-            float width = _resolution.getWidthF();
-            float height = _resolution.getHeightF();
-            float shortSide = StdAlgorithm::min( width, height );
-
-            delta.x *= width / shortSide;
-            delta.y *= height / shortSide;
-
-            return delta;
-        }
-        //////////////////////////////////////////////////////////////////////////
         void pushMouseMoveEvent( Timestamp _timestamp, ETouchCode _touchId, float _x, float _y, float _dx, float _dy, float _pressure, float _dpressure, bool _isTouch )
         {
             InputSpecialData special;
@@ -170,9 +163,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void pushTouchMoveEndEvent( Timestamp _timestamp )
         {
-            InputMouseMoveEndEvent event;
+            InputTouchMoveEndEvent event;
             event.base.timestamp = _timestamp;
-            event.isTouch = true;
 
             INPUT_SERVICE()
                 ->getSpecial( &event.special );
@@ -379,13 +371,10 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void pushGestureMagnificationEvent( Timestamp _timestamp, float _x, float _y, float _scale, EInputGesturePhase _phase, const InputSpecialData & _special )
         {
-            InputGestureMagnificationEvent event;
-            event.scale = _scale;
-            event.phase = _phase;
-            event.touchId0 = TC_TOUCH_INVALID;
-            event.touchId1 = TC_TOUCH_INVALID;
+            InputGestureEvent event;
+            Detail::fillGestureEvent( _timestamp, IGT_MAGNIFICATION, _x, _y, _phase, _special, &event );
 
-            Detail::fillGestureEvent( _timestamp, _x, _y, _special, &event );
+            event.scale = _scale;
 
             INPUT_SERVICE()
                 ->pushEvent( event );
@@ -393,11 +382,10 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void pushGestureRotationEvent( Timestamp _timestamp, float _x, float _y, float _degrees, EInputGesturePhase _phase, const InputSpecialData & _special )
         {
-            InputGestureRotationEvent event;
-            event.degrees = _degrees;
-            event.phase = _phase;
+            InputGestureEvent event;
+            Detail::fillGestureEvent( _timestamp, IGT_ROTATION, _x, _y, _phase, _special, &event );
 
-            Detail::fillGestureEvent( _timestamp, _x, _y, _special, &event );
+            event.degrees = _degrees;
 
             INPUT_SERVICE()
                 ->pushEvent( event );
@@ -405,9 +393,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void pushGestureSmartMagnificationEvent( Timestamp _timestamp, float _x, float _y, const InputSpecialData & _special )
         {
-            InputGestureSmartMagnificationEvent event;
-
-            Detail::fillGestureEvent( _timestamp, _x, _y, _special, &event );
+            InputGestureEvent event;
+            Detail::fillGestureEvent( _timestamp, IGT_SMART_MAGNIFICATION, _x, _y, IGP_NONE, _special, &event );
 
             INPUT_SERVICE()
                 ->pushEvent( event );
@@ -415,10 +402,10 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void pushGestureSwipeEvent( Timestamp _timestamp, float _x, float _y, const mt::vec2f & _direction, const InputSpecialData & _special )
         {
-            InputGestureSwipeEvent event;
-            event.direction = _direction;
+            InputGestureEvent event;
+            Detail::fillGestureEvent( _timestamp, IGT_SWIPE, _x, _y, IGP_NONE, _special, &event );
 
-            Detail::fillGestureEvent( _timestamp, _x, _y, _special, &event );
+            event.direction = _direction;
 
             INPUT_SERVICE()
                 ->pushEvent( event );
@@ -426,13 +413,12 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void pushGesturePressureEvent( Timestamp _timestamp, float _x, float _y, float _pressure, int32_t _stage, float _stageTransition, EInputGesturePhase _phase, const InputSpecialData & _special )
         {
-            InputGesturePressureEvent event;
+            InputGestureEvent event;
+            Detail::fillGestureEvent( _timestamp, IGT_PRESSURE, _x, _y, _phase, _special, &event );
+
             event.pressure = _pressure;
             event.stage = _stage;
             event.stageTransition = _stageTransition;
-            event.phase = _phase;
-
-            Detail::fillGestureEvent( _timestamp, _x, _y, _special, &event );
 
             INPUT_SERVICE()
                 ->pushEvent( event );

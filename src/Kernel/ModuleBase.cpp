@@ -217,13 +217,6 @@ namespace Mengine
         return handle;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleBase::handleMouseMoveEnd( const InputMouseMoveEndEvent & _event )
-    {
-        MENGINE_UNUSED( _event );
-
-        //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool ModuleBase::handleMouseWheel( const InputMouseWheelEvent & _event )
     {
         bool handle = this->_handleMouseWheel( _event );
@@ -304,42 +297,7 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ModuleBase::handleGestureMagnification( const InputGestureMagnificationEvent & _event )
-    {
-        MENGINE_UNUSED( _event );
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ModuleBase::handleGestureRotation( const InputGestureRotationEvent & _event )
-    {
-        MENGINE_UNUSED( _event );
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ModuleBase::handleGestureSmartMagnification( const InputGestureSmartMagnificationEvent & _event )
-    {
-        MENGINE_UNUSED( _event );
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ModuleBase::handleGestureSwipe( const InputGestureSwipeEvent & _event )
-    {
-        MENGINE_UNUSED( _event );
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ModuleBase::handleGestureDoubleTap( const InputGestureDoubleTapEvent & _event )
-    {
-        MENGINE_UNUSED( _event );
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ModuleBase::handleGesturePressure( const InputGesturePressureEvent & _event )
+    bool ModuleBase::handleGestureEvent( const InputGestureEvent & _event )
     {
         MENGINE_UNUSED( _event );
 

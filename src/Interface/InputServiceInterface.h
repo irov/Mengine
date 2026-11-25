@@ -59,7 +59,6 @@ namespace Mengine
         virtual const mt::vec2f & getCursorPosition( ETouchCode _touchId ) const = 0;
         virtual float getCursorPressure( ETouchCode _touchId ) const = 0;
         virtual bool validCursorPosition( float _x, float _y, float * const _vx, float * const _vy ) const = 0;
-        virtual const mt::vec2f * getTouchPosition( ETouchCode _touchId ) const = 0;
 
     public:
         virtual void addMousePositionProvider( const InputMousePositionProviderInterfacePtr & _provider, const DocumentInterfacePtr & _doc ) = 0;
@@ -78,7 +77,7 @@ namespace Mengine
             InputAccelerometerEvent,
             InputMouseButtonEvent,
             InputMouseMoveEvent,
-            InputMouseMoveEndEvent,
+            InputTouchMoveEndEvent,
             InputMouseWheelEvent,
             InputMouseEnterEvent,
             InputMouseLeaveEvent,
@@ -86,12 +85,7 @@ namespace Mengine
             InputControllerConnectEvent,
             InputControllerButtonEvent,
             InputControllerAxisEvent,
-            InputGestureMagnificationEvent,
-            InputGestureRotationEvent,
-            InputGestureSmartMagnificationEvent,
-            InputGestureSwipeEvent,
-            InputGestureDoubleTapEvent,
-            InputGesturePressureEvent> InputVariantEvent;
+            InputGestureEvent> InputVariantEvent;
 
         virtual void pushEvent( const InputVariantEvent & _event ) = 0;
     };

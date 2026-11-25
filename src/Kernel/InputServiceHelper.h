@@ -19,7 +19,6 @@ namespace Mengine
     struct InputScrollData;
     struct InputPositionData;
     struct RenderContext;
-    class Resolution;
     enum EInputGesturePhase : uint8_t;
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
@@ -36,7 +35,6 @@ namespace Mengine
 
         void calcInputPositionWorld( const RenderContext * _context, InputPositionData * const _position );
         void calcGlobalInputPositionWorld( InputPositionData * const _position );
-        mt::vec2f calcTouchDelta( const mt::vec2f & _from, const mt::vec2f & _to, const Resolution & _resolution );
 
         void pushMouseMoveEvent( Timestamp _timestamp, ETouchCode _touchId, float _x, float _y, float _dx, float _dy, float _pressure, float _dpressure, bool _isTouch = false );
         void pushMouseMoveEvent( Timestamp _timestamp, ETouchCode _touchId, float _x, float _y, float _dx, float _dy, float _pressure, float _dpressure, const InputSpecialData & _special, bool _isTouch = false );

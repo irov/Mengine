@@ -431,47 +431,7 @@ namespace Mengine
         MENGINE_UNUSED( _event );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool UISlider::handleGestureMagnification( const RenderContext * _context, const InputGestureMagnificationEvent & _event )
-    {
-        MENGINE_UNUSED( _context );
-        MENGINE_UNUSED( _event );
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool UISlider::handleGestureRotation( const RenderContext * _context, const InputGestureRotationEvent & _event )
-    {
-        MENGINE_UNUSED( _context );
-        MENGINE_UNUSED( _event );
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool UISlider::handleGestureSmartMagnification( const RenderContext * _context, const InputGestureSmartMagnificationEvent & _event )
-    {
-        MENGINE_UNUSED( _context );
-        MENGINE_UNUSED( _event );
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool UISlider::handleGestureSwipe( const RenderContext * _context, const InputGestureSwipeEvent & _event )
-    {
-        MENGINE_UNUSED( _context );
-        MENGINE_UNUSED( _event );
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool UISlider::handleGestureDoubleTap( const RenderContext * _context, const InputGestureDoubleTapEvent & _event )
-    {
-        MENGINE_UNUSED( _context );
-        MENGINE_UNUSED( _event );
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool UISlider::handleGesturePressure( const RenderContext * _context, const InputGesturePressureEvent & _event )
+    bool UISlider::handleGestureEvent( const RenderContext * _context, const InputGestureEvent & _event )
     {
         MENGINE_UNUSED( _context );
         MENGINE_UNUSED( _event );

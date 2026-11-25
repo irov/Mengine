@@ -145,12 +145,7 @@ namespace Mengine
         void handleMouseLeave( const RenderContext * _context, const InputMouseLeaveEvent & _event ) override;
 
     public:
-        bool handleGestureMagnification( const RenderContext * _context, const InputGestureMagnificationEvent & _event ) override;
-        bool handleGestureRotation( const RenderContext * _context, const InputGestureRotationEvent & _event ) override;
-        bool handleGestureSmartMagnification( const RenderContext * _context, const InputGestureSmartMagnificationEvent & _event ) override;
-        bool handleGestureSwipe( const RenderContext * _context, const InputGestureSwipeEvent & _event ) override;
-        bool handleGestureDoubleTap( const RenderContext * _context, const InputGestureDoubleTapEvent & _event ) override;
-        bool handleGesturePressure( const RenderContext * _context, const InputGesturePressureEvent & _event ) override;
+        bool handleGestureEvent( const RenderContext * _context, const InputGestureEvent & _event ) override;
 
     protected:
         static figma_result_t FIGMA_CALL routeTriggerCallback_( void * _userData, const figma_trigger_event_t * _event );

@@ -30,7 +30,3 @@ TARGET_LINK_LIBRARIES(${PROJECT_NAME} AndroidEnvironment)
 find_library(EGL-lib EGL)
 
 target_link_libraries(${PROJECT_NAME} ${EGL-lib})
-
-find_package(games-frame-pacing REQUIRED CONFIG)
-
-target_link_libraries(${PROJECT_NAME} games-frame-pacing::swappy_static)

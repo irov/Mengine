@@ -336,7 +336,5 @@ namespace Mengine
 
         bool m_desktop;
         bool m_touchpad;
-
-        bool m_swappyInitialized;
     };
 }

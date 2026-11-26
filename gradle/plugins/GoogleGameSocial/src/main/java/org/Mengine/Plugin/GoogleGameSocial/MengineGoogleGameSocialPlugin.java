@@ -28,7 +28,6 @@ import com.google.android.gms.games.achievement.AchievementBuffer;
 import org.Mengine.Base.MengineActivity;
 import org.Mengine.Base.MengineApplication;
 import org.Mengine.Base.MengineNetwork;
-import org.Mengine.Base.MenginePreferences;
 import org.Mengine.Base.MengineService;
 import org.Mengine.Base.MengineListenerActivity;
 import org.Mengine.Base.MengineListenerApplication;
@@ -46,8 +45,6 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
     public static final boolean SERVICE_EMBEDDING = true;
 
     public static final @StringRes int METADATA_SERVER_CLIENT_ID = R.string.mengine_google_game_social_server_client_id;
-
-    private static final String PREFERENCE_KEY_TRYING_SIGN_IN_INTENT = "mengine.googlegamesocial.trying_sign_in_intent";
 
     private ActivityResultLauncher<Intent> m_achievementLauncher;
     private ActivityResultLauncher<Intent> m_leaderboardLauncher;
@@ -72,8 +69,6 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
     @Override
     public void onAppCreate(@NonNull MengineApplication application) throws MengineServiceInvalidInitializeException {
         PlayGamesSdk.initialize(application);
-
-        this.finishSignInIntent();
     }
 
     @Override
@@ -128,8 +123,6 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                     result.getResultCode()
                 );
 
-                this.finishSignInIntent();
-
                 return;
             }
 
@@ -138,8 +131,6 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
             this.logInfo("gamesResolutionLauncher onActivityResult intent: %s",
                 data
             );
-
-            this.finishSignInIntent();
 
             this.signInSilently();
         });
@@ -277,10 +268,6 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
         this.logException(e, attributes);
     }
 
-    private void finishSignInIntent() {
-        MenginePreferences.setPreferenceBoolean(PREFERENCE_KEY_TRYING_SIGN_IN_INTENT, false);
-    }
-
     private void signInSilently() {
         if (m_isAuthenticated == true) {
             this.logInfo("signInSilently already authenticated");
@@ -318,17 +305,9 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
             AuthenticationResult result = isAuthenticatedTask.getResult();
 
             if (result.isAuthenticated() == false) {
-                this.logInfo("signInSilently isAuthenticated failed, trying signInIntent");
+                this.logInfo("signInSilently not authenticated");
 
                 m_isAuthenticated = false;
-
-                if (MenginePreferences.getPreferenceBoolean(PREFERENCE_KEY_TRYING_SIGN_IN_INTENT, false) == false) {
-                    MenginePreferences.setPreferenceBoolean(PREFERENCE_KEY_TRYING_SIGN_IN_INTENT, true);
-
-                    this.logInfo("signInSilently trying signInIntent");
-
-                    this.signInIntent();
-                }
 
                 return;
             }
@@ -337,8 +316,6 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
 
             m_isAuthenticated = true;
 
-            this.finishSignInIntent();
-
             this.activateSemaphore("GoogleGameSocialAuthenticated");
         });
     }
@@ -346,8 +323,6 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
     public void signInIntent() {
         if (m_gamesSignInClient == null) {
             this.logError("[ERROR] signInIntent gamesSignInClient not initialized");
-
-            this.finishSignInIntent();
 
             return;
         }
@@ -371,15 +346,11 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                             m_gamesResolutionLauncher.launch(request);
                         } else {
                             this.logError("[ERROR] signInIntent gamesResolutionLauncher not available");
-
-                            this.finishSignInIntent();
                         }
                     } catch (Exception ex) {
                         this.logException(ex, Map.of(
                             "method", "signInIntent"
                         ));
-
-                        this.finishSignInIntent();
                     }
 
                     return;
@@ -393,8 +364,6 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
                     this.logError("[ERROR] signInIntent failed: null exception");
                 }
 
-                this.finishSignInIntent();
-
                 return;
             }
 
@@ -405,16 +374,12 @@ public class MengineGoogleGameSocialPlugin extends MengineService implements Men
 
                 m_isAuthenticated = false;
 
-                this.finishSignInIntent();
-
                 return;
             }
 
             this.logInfo("signInIntent success");
 
             m_isAuthenticated = true;
-
-            this.finishSignInIntent();
 
             this.activateSemaphore("GoogleGameSocialAuthenticated");
         });

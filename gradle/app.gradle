@@ -225,7 +225,6 @@ android {
 
                 debug {
                     firebaseCrashlytics {
-                        mappingFileUploadEnabled = true
                         nativeSymbolUploadEnabled = true
 
                         unstrippedNativeLibsDir = buildDirectory.dir("intermediates/merged_native_libs/debug/mergeDebugNativeLibs/out/lib")
@@ -238,7 +237,6 @@ android {
 
                 release {
                     firebaseCrashlytics {
-                        mappingFileUploadEnabled = true
                         nativeSymbolUploadEnabled = true
 
                         unstrippedNativeLibsDir = buildDirectory.dir("intermediates/merged_native_libs/release/mergeReleaseNativeLibs/out/lib")
@@ -255,14 +253,12 @@ android {
             buildTypes {
                 debug {
                     firebaseCrashlytics {
-                        mappingFileUploadEnabled = false
                         nativeSymbolUploadEnabled = false
                     }
                 }
 
                 release {
                     firebaseCrashlytics {
-                        mappingFileUploadEnabled = false
                         nativeSymbolUploadEnabled = false
                     }
                 }
@@ -337,6 +333,43 @@ android {
     }
 
     namespace = "org.Mengine.Project"
+}
+
+androidComponents {
+    if (MENGINE_APP_PLUGIN_FIREBASE_CRASHLYTICS == true) {
+        finalizeDsl { final androidDsl ->
+            final def release = androidDsl.buildTypes.release
+
+            androidDsl.buildTypes.debug.firebaseCrashlytics.mappingFileUploadEnabled = false
+            release.firebaseCrashlytics.mappingFileUploadEnabled = ANDROID_APP_BUILD_PUBLISH == true && release.isMinifyEnabled() == true
+        }
+    }
+
+    if (ANDROID_APP_BUILD_PUBLISH == true && ANDROID_APP_BUNDLE_ENABLE == true) {
+        onVariants(selector().withBuildType("release")) { final variant ->
+            if (variant.isMinifyEnabled() == false) {
+                return
+            }
+
+            final def bundleFile = variant.artifacts.get(rootProject.ext.androidBundleArtifact)
+            final def mappingFile = variant.artifacts.get(rootProject.ext.androidObfuscationMappingArtifact)
+            final def archiveDirectory = layout.buildDirectory.dir("outputs/bundle-archive/${variant.name}")
+            final String variantName = variant.name.capitalize()
+            final String bundleTaskName = "bundle${variantName}"
+
+            final def archiveTask = tasks.register("archive${variantName}Bundle", Zip) {
+                from(bundleFile)
+                from(mappingFile)
+                zip64 = true
+                archiveFileName.set("${project.name}-${variant.name}-${ANDROID_APP_BUILD_NUMBER}-with-mapping.zip")
+                destinationDirectory.set(archiveDirectory)
+            }
+
+            tasks.matching { it.name == bundleTaskName }.configureEach { final task ->
+                task.dependsOn(archiveTask)
+            }
+        }
+    }
 }
 
 if (ANDROID_APP_SPLIT_ENABLE == true) {

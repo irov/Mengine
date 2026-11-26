@@ -1,3 +1,5 @@
+import com.android.build.api.artifact.SingleArtifact
+
 buildscript {
     apply from: rootProject.projectDir.getAbsolutePath() + '/utils.gradle'
 
@@ -44,6 +46,8 @@ buildscript {
 }
 
 ext.plugin_extensions = []
+ext.androidBundleArtifact = SingleArtifact.BUNDLE.INSTANCE
+ext.androidObfuscationMappingArtifact = SingleArtifact.OBFUSCATION_MAPPING_FILE.INSTANCE
 
 final String ANDROID_APP_NDK_VERSION = Utils.getStringProperty("ANDROID_APP_NDK_VERSION", "30.0.16248370")
 final String ANDROID_APP_CMAKE_VERSION = Utils.getStringProperty("ANDROID_APP_CMAKE_VERSION", "3.31.6")
